@@ -7,10 +7,11 @@ Hier findet man alle nötigen Informationen der Wort Uhr von Ulrichradig.de
 Es handelt sich hier um die Version 2 der Wort Uhr. 
 Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu   
 
-## Für den Nachbau wird folgende Hardware benötigt:
+## Für den Nachbau wird folgende Hardware/Software benötigt:
 * NodeMCU (getestetes Board Lolin Version3)
 * WS2812B oder WS2816 RGB LED Stripes
 * Netzteil 5V 2A
+* Arduino Version 1.8.1
 
 ## Anschluss
 * RX = Data Bus
