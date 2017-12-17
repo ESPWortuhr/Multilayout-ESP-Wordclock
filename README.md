@@ -31,7 +31,10 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 
 ## To DO (Ideen):
 * Symbol zu einem bestimmten Datum/Uhrzeit
-* Getrennte Helligkeitsregelung Hintergrundbeleuchtung/Anzeige   
+* Getrennte Helligkeitsregelung Hintergrundbeleuchtung/Anzeige 
+* "The Matrix" effekt
+* Minten Effekte
+* Silvester Countdown
 
 ## ChangeLog                      
 
