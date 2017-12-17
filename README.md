@@ -24,6 +24,11 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * libs enthält alle benötigten Libs
 * docs enthält Anleitungen   
 
+## Arduino 1.8.5 vorbereiten
+* Datei --> Voreinstellungen --> Zusätzliche Boardverwalter-URLs --> "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
+* Werkzeuge --> Board --> Boardverwalter --> esp8266 Version 2.3.0 installieren
+* lib Verzeichnis in das Arduino library Verzeichnis kopieren
+
 ## To DO (Ideen):
 * Symbol zu einem bestimmten Datum/Uhrzeit
 * Getrennte Helligkeitsregelung Hintergrundbeleuchtung/Anzeige   
