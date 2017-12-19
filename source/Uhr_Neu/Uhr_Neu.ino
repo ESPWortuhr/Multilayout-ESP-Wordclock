@@ -1,14 +1,27 @@
-// ToDo  05.10.15 UH
+/*--------------------------------------------------
+Author: Ulrich Radig
+Wort Uhr Version 2
+www.ulrich-radig.de
 
-// - RTC Modul
-// - Zeitverlauf Farben konfigurierbar
-//   Sommer-Zeit: Letzter Sonntag März um 2 Uhr
-//   Winter-Zeit: Letzter Sonntag Oktober um 3 Uhr   
-// - Server-IP eintragen
-// - Erreichbare WLANs vorblenden / Scannen
-// - Überblenden
-// - Tretis
-// eigene Profile speichen Werte speichern
+Version 2.0.0 
+* (Ulrich Radig)
+* inital version   
+Version 2.0.1
+* (Markus Aust)
+* Minuten LED´s
+
+Ideen
+- RTC Modul
+- Zeitverlauf Farben konfigurierbar
+  Sommer-Zeit: Letzter Sonntag März um 2 Uhr
+  Winter-Zeit: Letzter Sonntag Oktober um 3 Uhr   
+- Server-IP eintragen
+- Erreichbare WLANs vorblenden / Scannen
+- Überblenden
+- Tretis
+
+
+--------------------------------------------------*/
 
 //---------------------------------------------------------
 // WLAN-Status
@@ -1186,6 +1199,7 @@ void eeprom_read()
 {
   EEPROM_readAnything( 0, G );  
   #ifdef DEBUG  
+   USE_SERIAL.println("Version 2.0.1");
    USE_SERIAL.printf("Sernr     : %u\n",  G.sernr);
    USE_SERIAL.printf("SSID      : %s\n",  G.ssid);  
    USE_SERIAL.printf("Passwd    : %s\n",  G.passwd);
