@@ -9,6 +9,9 @@ Version 2.0.0
 Version 2.0.1
 * (Markus Aust)
 * Minuten LED´s
+Version 2.0.2
+* (Eisbaeeer)
+* Fix NTP issue
 
 Ideen
 - RTC Modul
@@ -57,6 +60,7 @@ char wstatus[7][25]=
 #include <Arduino.h>
 #include <NeoPixelBus.h>   
 #include <ESP8266WiFi.h>
+
 //--OTA--
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -959,7 +963,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
         if (cc == 97) {       // Zeitserver speichern 
           G.conf = 97; 
           ii = 0;
-          for (int k=9;k<25;k++){  G.zeitserver[ii] = str[k];  ii++; } 
+          for (int k=9;k<24;k++){  G.zeitserver[ii] = str[k];  ii++; } 
           G.zeitserver[ii] = '\0';    
           break;           
         }       

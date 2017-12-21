@@ -47,3 +47,6 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * Minuten LED´s
 * (Eisbaeeer)
 * Versionierung
+### Version 2.0.2
+* (Eisbaeeer)
+* fix NTP DNS lookup (falsche IP im DNS lookup)

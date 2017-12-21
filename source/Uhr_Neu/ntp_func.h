@@ -44,7 +44,9 @@ unsigned long sendNTPpacket(IPAddress& address)
 
 void set_ntp_zeit()
 {
-  WiFi.hostByName(ntpServerName, timeServerIP); 
+  WiFi.hostByName(ntpServerName, timeServerIP);
+  USE_SERIAL.print("NTP Server Name: "), USE_SERIAL.println(ntpServerName);
+  USE_SERIAL.print("NTP Server IP  : "), USE_SERIAL.println(timeServerIP);
   sendNTPpacket(timeServerIP); // send an NTP packet to a time server
   // wait to see if a reply is available
   delay(1000);
