@@ -1,3 +1,4 @@
+#define VER "2.0.1"  // Software Version
 #ifndef _UHR_H
 #define _UHR_H
 

@@ -164,6 +164,7 @@ void setup()
   #ifdef DEBUG  
   USE_SERIAL.println("--------------------------------------");   
   USE_SERIAL.println("ESP Uhr"); 
+  USE_SERIAL.print("Version         : "), USE_SERIAL.println(VER);
   USE_SERIAL.printf("Chip ID         : %08X\n",     ESP.getChipId());
   USE_SERIAL.printf("Flash ID        : %08X\n\n",   ESP.getFlashChipId());
   USE_SERIAL.printf("CPU Speed       : %u MHz \n\n", ESP.getCpuFreqMHz());

@@ -23,6 +23,7 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * source enthält den Sketch für Arduino
 * libs enthält alle benötigten Libs
 * docs enthält Anleitungen   
+* compiled enthält die binary (für Webupdate)
 
 ## Arduino 1.8.5 vorbereiten
 * Datei --> Voreinstellungen --> Zusätzliche Boardverwalter-URLs --> "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
@@ -44,3 +45,5 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ### Version 2.0.1
 * (Markus Aust)
 * Minuten LED´s
+* (Eisbaeeer)
+* Versionierung
