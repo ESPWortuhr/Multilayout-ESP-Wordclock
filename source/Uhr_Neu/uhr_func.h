@@ -14,8 +14,12 @@ void led_set(uint16_t i) {
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_110
-#include "uhr_func_110.h"
+#ifdef UHR_114
+#include "uhr_func_114.h"
+#endif  
+
+#ifdef UHR_125
+#include "uhr_func_125.h"
 #endif  
 
 #ifdef UHR_169 
@@ -546,7 +550,7 @@ void show_sekunde() {
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_110                                                                                        //vorher 169  markus 
+#ifdef UHR_114                                                                                        //vorher 169  markus 
 void show_minuten() {
   unsigned char m;
 
@@ -560,6 +564,26 @@ void show_minuten() {
     if (m > 1){ led_set(min_arr[G.zeige_min-1][115]); }                                             // vorher 1   Aber WARUM 114, 115 116 117 da nehmen muss, weiß ich net- 
     if (m > 2){ led_set(min_arr[G.zeige_min-1][116]); }                                             //vorher 2    jedenfalls zeigte er mir die minuten bei der falschen LEDs an.
     if (m > 3){ led_set(min_arr[G.zeige_min-1][117]); }                                             //vorher 3    Teste mal selber--
+  }   
+}
+#endif   
+
+//------------------------------------------------------------------------------
+
+#ifdef UHR_125                                                                                        //vorher 169  markus 
+void show_minuten() {
+  unsigned char m;
+
+  if (G.zeige_min > 0){  
+    // Minuten / Sekunden-Animation
+    // Minute (1-4)  ermitteln
+    m = _minute;
+    while (m > 4) { m -= 5; }
+
+    if (m > 0){ led_set(min_arr[G.zeige_min-1][128]); }                                               
+    if (m > 1){ led_set(min_arr[G.zeige_min-1][127]); }                                             
+    if (m > 2){ led_set(min_arr[G.zeige_min-1][126]); }                                             
+    if (m > 3){ led_set(min_arr[G.zeige_min-1][125]); }                                             
   }   
 }
 #endif   
@@ -608,15 +632,14 @@ void show_zeit(int flag) {
   }
   
   if (uhrzeit & ((uint32_t)1 << ESIST))   { es_ist();  }
-  if (uhrzeit & ((uint32_t)1 << VOR))     { vor();     }
-  if (uhrzeit & ((uint32_t)1 << NACH))    { nach();    }
-  if (uhrzeit & ((uint32_t)1 << UHR))     { uhr();     }
   if (uhrzeit & ((uint32_t)1 << FUENF))   { fuenf();   }
   if (uhrzeit & ((uint32_t)1 << ZEHN))    { zehn();    }
   if (uhrzeit & ((uint32_t)1 << VIERTEL)) { viertel(); }
   if (uhrzeit & ((uint32_t)1 << ZWANZIG)) { zwanzig(); }
   if (uhrzeit & ((uint32_t)1 << HALB))    { halb();    }
   if (uhrzeit & ((uint32_t)1 << EINS))    { eins();    }
+  if (uhrzeit & ((uint32_t)1 << VOR))     { vor();     }
+  if (uhrzeit & ((uint32_t)1 << NACH))    { nach();    }
   if (uhrzeit & ((uint32_t)1 << H_EIN ))  { h_ein();   }
   if (uhrzeit & ((uint32_t)1 << H_ZWEI))  { h_zwei();  }
   if (uhrzeit & ((uint32_t)1 << H_DREI )) { h_drei();  }
@@ -629,12 +652,17 @@ void show_zeit(int flag) {
   if (uhrzeit & ((uint32_t)1 << H_ZEHN))  { h_zehn();  }
   if (uhrzeit & ((uint32_t)1 << H_ELF))   { h_elf();   }
   if (uhrzeit & ((uint32_t)1 << H_ZWOELF)){ h_zwoelf();}
+  if (uhrzeit & ((uint32_t)1 << UHR))     { uhr();     }
  
     
 //  if (m > 0) {
 //    animation = 99;
 //  }
-#ifdef UHR_110                                                                        //aus169  110 gemacht
+#ifdef UHR_114                                                                        //aus169  110 gemacht
+  show_minuten();
+#endif
+
+#ifdef UHR_125
   show_minuten();
 #endif
   led_show();  

@@ -1,19 +1,38 @@
-#define VER "2.0.2"  // Software Version
+/*--------------------------------------------------
+ * Hier Anpassungen der Hardware vornehmen.
+ */
+
+#define VER "2.0.3"  // Software Version
+
+/*--------------------------------------------------------------------------
+ * Hier wird definiert, welche Anzahl von LED´s bzw. Reihen verwendet werden
+ */
+//#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
+#define UHR_125                         // Uhr mit 11 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
+//#define UHR_169
+
+/*--------------------------------------------------------------------------
+ * ENDE Hardware Konfiguration. Ab hier nichts mehr Ändern!
+ */
+
 #ifndef _UHR_H
 #define _UHR_H
 
-#define DEBUG
+#define DEBUG = true
 #define USE_SERIAL Serial
 
 #define SERNR 115
 
-#define UHR_110
-//#define UHR_169
+#ifdef UHR_114 
+#define NUM_PIXELS   114                
+#define NUM_SMATRIX  114                
+#define ROWS_MATRIX   11                
+#endif  
 
-#ifdef UHR_110 
-#define NUM_PIXELS   114                //110 zu 114
-#define NUM_SMATRIX  114                //110 zu 114
-#define ROWS_MATRIX   11                 //10 zu 11
+#ifdef UHR_125 
+#define NUM_PIXELS   125                
+#define NUM_SMATRIX  125                
+#define ROWS_MATRIX   12                
 #endif  
 
 #ifdef UHR_169 

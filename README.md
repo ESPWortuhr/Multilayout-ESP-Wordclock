@@ -50,3 +50,6 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ### Version 2.0.2
 * (Eisbaeeer)
 * fix NTP DNS lookup (falsche IP im DNS lookup)
+### Bersion 2.0.3
+* (Eisbaeeer)
+* Neue Variante mit 11x11 Reihen LED´s hinzugefügt
