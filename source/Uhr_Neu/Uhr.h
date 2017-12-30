@@ -12,7 +12,8 @@
 //#define UHR_169
 
 /*--------------------------------------------------------------------------
- * ENDE Hardware Konfiguration. Ab hier nichts mehr Ändern!
+ * ENDE Hardware Konfiguration. Ab hier nichts mehr Ändern!!!
+/*--------------------------------------------------------------------------
  */
 
 #ifndef _UHR_H
@@ -20,7 +21,7 @@
 
 #define USE_SERIAL Serial
 
-#define SERNR 116             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+#define SERNR 118             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 #define DEBUG                 //DEBUG ON|OFF
 
 #ifdef UHR_114 
@@ -83,6 +84,7 @@ struct GLOBAL {
   int bb;   
   int hell;   
   int ldr;
+  int ldrCal;
   int geschw;   
   int client_nr;
   int zeige_sek;    

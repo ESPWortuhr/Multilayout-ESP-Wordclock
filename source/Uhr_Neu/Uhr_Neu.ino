@@ -18,9 +18,11 @@ Version 2.0.3
 Version 2.0.4
 * (path83 & Eisbaeeer)
 * LDR für automatische Helligkeitsregelung
+Version 2.0.5
+* IP Adresse per Laufschrift ausgeben
+* LDR Kalibrierung über WebConfig
 
 Ideen / Todo
-- WLAN SSID issue (Leerzeichen)
 - Zeitverlauf Farben konfigurierbar
   Sommer-Zeit: Letzter Sonntag März um 2 Uhr
   Winter-Zeit: Letzter Sonntag Oktober um 3 Uhr   
@@ -148,6 +150,7 @@ void setup()
     G.zeige_sek = 0; 
     G.zeige_min = 1;
     G.ldr       = 0; 
+    G.ldrCal    = 0;
 
     strcpy(G.zeitserver, "ptbtime1.ptb.de");
     strcpy(G.hostname, "uhr");     
@@ -525,8 +528,9 @@ void loop()
   if (G.conf == 91) {  
     eeprom_write(); 
     delay(100);
-    #ifdef DEBUG     
-      USE_SERIAL.print("LDR : "+G.ldr);
+    #ifdef DEBUG  
+      USE_SERIAL.printf("LDR : %u\n\n", G.ldr);
+      USE_SERIAL.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
     #endif  
     G.conf = 0;     
   }
@@ -755,6 +759,9 @@ void loop()
     strcat(str, s);   
     strcat(str, "\",\"ldr\":\"");
     sprintf(s, "%d", G.ldr);   
+    strcat(str, s); 
+    strcat(str, "\",\"ldrCal\":\"");
+    sprintf(s, "%d", G.ldrCal);   
     strcat(str, s);   
     strcat(str, "\"}");
     webSocket.sendTXT(G.client_nr, str, strlen(str));    
@@ -961,10 +968,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
         if (cc == 91) {       // LDR speichern 
           G.conf = 91;
           G.ldr   = split(9,3);
-          uint16_t LDRdebug = G.ldr;
-        #ifdef DEBUG     
-        USE_SERIAL.println("LDR: " +LDRdebug);
-        #endif  
+          G.ldrCal = split(12,3);
           break;           
         }                 
         if (cc == 95) {       // Helligkeit speichern 
@@ -1137,9 +1141,21 @@ void WiFiStart_Client()
     #ifdef DEBUG     
      USE_SERIAL.println("");
      USE_SERIAL.println("WiFi-Client connected");
+    
     // Print the IP address
      USE_SERIAL.println(WiFi.localIP());
     #endif      
+    
+    // IP-Adresse als Laufschrift anzeigen
+    char buf[16];
+    sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3] );
+    uint16_t StringLength = sizeof(buf)/ sizeof(buf[0]);
+    StringLength = StringLength * 6;
+    for (int i=0; i <= StringLength; i++) {
+      zeigeip();
+      delay(200);
+    }
+    // ---- ENDE Print the IP address   
     wlan_client = true;
   }
 
@@ -1163,6 +1179,16 @@ void WiFiStart_AP()
    USE_SERIAL.print("AP IP address: ");
      USE_SERIAL.println(myIP);
   #endif      
+      // IP-Adresse als Laufschrift anzeigen
+    char buf[16];
+    sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3] );
+    uint16_t StringLength = sizeof(buf)/ sizeof(buf[0]);
+    StringLength = StringLength * 6;
+    for (int i=0; i <= StringLength; i++) {
+      zeigeipap();
+      delay(200);
+    }
+    // ---- ENDE Print the IP address
   wlan_client = false;
 
 }
@@ -1272,6 +1298,7 @@ void eeprom_read()
    USE_SERIAL.printf("H22       : %u\n",  G.h22);
    USE_SERIAL.printf("H24       : %u\n",  G.h24);
    USE_SERIAL.printf("LDR       : %u\n",  G.ldr);
+   USE_SERIAL.printf("LDRCal    : %u\n",  G.ldrCal);
    
   #endif  
   delay(100);

@@ -11,10 +11,12 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * NodeMCU (getestetes Board Lolin Version3)
 * WS2812B oder WS2816 RGB LED Stripes
 * Netzteil 5V 2A
-* Arduino Version 1.8.1
+* Arduino Version 1.8.5
+* 470 Ohm Widerstand
+* Optional: LDR, 10 KOhm Widerstand
 
-## Anschluss
-* RX = Data Bus (470 Ohm Widestand in Reihe!)
+## Anschluss WS2812 Stripe
+* RX = Data Bus (470 Ohm Widerstand in Reihe!)
 * GND = Ground
 * VV = 5V
 
@@ -33,7 +35,6 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * lib Verzeichnis in das Arduino library Verzeichnis kopieren bzw. ZIP importieren
 
 ## To DO & (Ideen):
-* Bugfix WLAN SSID (Leerstelle)
 * Symbol zu einem bestimmten Datum/Uhrzeit
 * Getrennte Helligkeitsregelung Hintergrundbeleuchtung/Anzeige 
 * "The Matrix" effekt
@@ -59,3 +60,7 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ### Version 2.0.4
 * (path83 & Eisbaeeer)
 * LDR für automatische Helligkeitsregelung
+### Version 2.0.5
+* (Eisbaeeer)
+* IP Adresse per Laufschrift ausgeben
+* LDR Kalibrierung über WebConfig

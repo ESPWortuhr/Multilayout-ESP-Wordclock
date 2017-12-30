@@ -205,14 +205,18 @@ void doLDRLogic() {
   if(millis() >= waitUntilLDR) {
      waitUntilLDR = millis();
      int temp = analogRead(A0);
-     temp = temp - 30;                //Kalibrierung des LDR, damit der Wert bei voller Raumhelligkeit auf 0 geht.
+  //  #ifdef DEBUG     
+  //    USE_SERIAL.print("LDR Wert : ");USE_SERIAL.println(temp);
+  //  #endif 
+
+     temp = temp - G.ldrCal;                
      if (temp >= 900 ) temp = 900;
-     
-//  #ifdef DEBUG     
-//      USE_SERIAL.print("LDR Wert : ");USE_SERIAL.println(temp);
-//  #endif 
-      ldrVal = map(temp, 0, 900, 5, 100);
+     if (temp <= 1 ) temp = 1;
+      ldrVal = map(temp, 1, 900, 1, 100);
       waitUntilLDR += oneseconddelay;
+//      #ifdef DEBUG     
+//      USE_SERIAL.print("LDR Wert : ");USE_SERIAL.println(ldrVal);
+//      #endif
   }
 }
 
@@ -303,7 +307,79 @@ void schweif_up(){
 #endif   
 
 //------------------------------------------------------------------------------
+
+void zeigeipap() {
+    static int i = 0, ii = 0;
+        
+    char buf[16];
+    sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3] );
+
+  // Alle Pixes eins nach recht schieben 
+  for (int b = 0;b<10;b++) {
+    for (int a = 0; a < ROWS_MATRIX; a++) {
+      strip.SetPixelColor(matrix[a][b], strip.GetPixelColor(matrix[a][b+1]));              
+    }
+  }  
+    
+  if (i < 5) {
+    for(int h=0;h<8;h++){
+      if (font_7x5[buf[ii]][i] & (1 << h)) {  
+        led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][10]);               
+      }else{            
+        led_set_pixel(0, 0, 0, matrix[h+1][10]);  
+      }        
+    }
+  }else{ 
+    for(int h=0;h<8;h++){    
+      led_set_pixel(0, 0, 0, matrix[h+1][10]);          
+    }
+  }  
+  led_show();
+
+  i++;
+  if (i > 5) { 
+    i = 0; 
+    ii++;
+    if (ii > strlen(buf)){ ii = 0; }   
+  }   
+}
 //------------------------------------------------------------------------------
+
+void zeigeip() {
+    static int i = 0, ii = 0;
+        
+    char buf[16];
+    sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3] );
+
+  // Alle Pixes eins nach recht schieben 
+  for (int b = 0;b<10;b++) {
+    for (int a = 0; a < ROWS_MATRIX; a++) {
+      strip.SetPixelColor(matrix[a][b], strip.GetPixelColor(matrix[a][b+1]));              
+    }
+  }  
+    
+  if (i < 5) {
+    for(int h=0;h<8;h++){
+      if (font_7x5[buf[ii]][i] & (1 << h)) {  
+        led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][10]);               
+      }else{            
+        led_set_pixel(0, 0, 0, matrix[h+1][10]);  
+      }        
+    }
+  }else{ 
+    for(int h=0;h<8;h++){    
+      led_set_pixel(0, 0, 0, matrix[h+1][10]);          
+    }
+  }  
+  led_show();
+
+  i++;
+  if (i > 5) { 
+    i = 0; 
+    ii++;
+    if (ii > strlen(buf)){ ii = 0; }   
+  }   
+}
 //------------------------------------------------------------------------------
 
 void laufschrift() {
