@@ -15,14 +15,16 @@ Version 2.0.2
 Version 2.0.3
 * (Eisbaeeer)
 * Konfig für 125 LED´s (11 Reihen) hinzugefügt
+Version 2.0.4
+* (path83 & Eisbaeeer)
+* LDR für automatische Helligkeitsregelung
 
-Ideen
-- RTC Modul
+Ideen / Todo
+- WLAN SSID issue (Leerzeichen)
 - Zeitverlauf Farben konfigurierbar
   Sommer-Zeit: Letzter Sonntag März um 2 Uhr
   Winter-Zeit: Letzter Sonntag Oktober um 3 Uhr   
 - Server-IP eintragen
-- Erreichbare WLANs vorblenden / Scannen
 - Überblenden
 - Tretis
 
@@ -120,7 +122,8 @@ void setup()
   //-------------------------------------   
   EEPROM.begin(512);
   
-  eeprom_read();    
+  eeprom_read();
+      
   if (G.sernr !=SERNR){
     for( int i = 0; i < 512; i++ ){ EEPROM.write(i,i); }
     EEPROM.commit();     
@@ -143,7 +146,8 @@ void setup()
     G.geschw    = 10;  
     G.client_nr = 0;
     G.zeige_sek = 0; 
-    G.zeige_min = 0; 
+    G.zeige_min = 1;
+    G.ldr       = 0; 
 
     strcpy(G.zeitserver, "ptbtime1.ptb.de");
     strcpy(G.hostname, "uhr");     
@@ -159,7 +163,7 @@ void setup()
     G.h22       = 100;
     G.h24       = 100;    
 
-    for( int i = 0; i < 10; i++ ){ for( int ii = 0; ii < 5; ii++ ){ G.rgb1[i][ii] = 0; } }      
+    for( int i = 0; i < 10; i++ ){ for( int ii = 0; ii < 5; ii++ ){ G.rgb1[i][ii] = 0; } }
     eeprom_write();           
     
   #ifdef DEBUG    
@@ -260,7 +264,7 @@ void setup()
    USE_SERIAL.println("--------------------------------------");       
    USE_SERIAL.println("");      
   #endif 
-    
+      
 }
 //------------------------------------------------------------------------------
 // Ende setup()
@@ -307,7 +311,6 @@ void loop()
   
   webSocket.loop();
 
-
   //------------------------------------------------
   // Sekunde48
   //------------------------------------------------  
@@ -328,9 +331,18 @@ void loop()
   #endif   
 
   //------------------------------------------------
-  // Sekunde
+  // Sekunde und LDR Regelung
   //------------------------------------------------  
   if (last_sekunde != _sekunde) { 
+  
+  //--- LDR Regelung
+  //
+  if (G.ldr == 1 )
+  {
+    doLDRLogic();
+  }
+  //--- LDR Regelung
+      
     if (G.prog == 0 && G.conf == 0) { 
       show_zeit(0); // Anzeige Uhrzeit ohne Config
     }
@@ -503,6 +515,19 @@ void loop()
     show_zeit(1); // Anzeige Uhrzeit mit Config
     eeprom_write(); 
     delay(100);
+    G.conf = 0;     
+  }
+  //------------------------------------------------
+
+  //------------------------------------------------
+  // LDR Einstellung speichern
+  //------------------------------------------------  
+  if (G.conf == 91) {  
+    eeprom_write(); 
+    delay(100);
+    #ifdef DEBUG     
+      USE_SERIAL.print("LDR : "+G.ldr);
+    #endif  
     G.conf = 0;     
   }
   //------------------------------------------------
@@ -727,7 +752,10 @@ void loop()
     strcat(str, s);        
     strcat(str, "\",\"zeige_min\":\"");
     sprintf(s, "%d", G.zeige_min);   
-    strcat(str, s);        
+    strcat(str, s);   
+    strcat(str, "\",\"ldr\":\"");
+    sprintf(s, "%d", G.ldr);   
+    strcat(str, s);   
     strcat(str, "\"}");
     webSocket.sendTXT(G.client_nr, str, strlen(str));    
     G.conf = 0;   
@@ -929,7 +957,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
           G.conf = 94;
           G.zeige_min   = split(9,3);
           break;           
-        }            
+        } 
+        if (cc == 91) {       // LDR speichern 
+          G.conf = 91;
+          G.ldr   = split(9,3);
+          uint16_t LDRdebug = G.ldr;
+        #ifdef DEBUG     
+        USE_SERIAL.println("LDR: " +LDRdebug);
+        #endif  
+          break;           
+        }                 
         if (cc == 95) {       // Helligkeit speichern 
           G.conf = 95;
           G.conf = 95;
@@ -1234,6 +1271,8 @@ void eeprom_read()
    USE_SERIAL.printf("H18       : %u\n",  G.h18);         
    USE_SERIAL.printf("H22       : %u\n",  G.h22);
    USE_SERIAL.printf("H24       : %u\n",  G.h24);
+   USE_SERIAL.printf("LDR       : %u\n",  G.ldr);
+   
   #endif  
   delay(100);
 }
@@ -1257,3 +1296,4 @@ void WiFiEvent(WiFiEvent_t event) {
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
+

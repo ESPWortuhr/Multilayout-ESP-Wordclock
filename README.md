@@ -14,23 +14,26 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * Arduino Version 1.8.1
 
 ## Anschluss
-* RX = Data Bus
+* RX = Data Bus (470 Ohm Widestand in Reihe!)
 * GND = Ground
 * VV = 5V
- 
+
+## Anschluss LDR (optional)
+![LDR](pics/LDR.jpg)
+      
 ## Verzeichnisstruktur
 * pics enthält Bilder
 * source enthält den Sketch für Arduino
 * libs enthält alle benötigten Libs
 * docs enthält Anleitungen   
-* compiled enthält die binary (für Webupdate)
 
 ## Arduino 1.8.5 vorbereiten
 * Datei --> Voreinstellungen --> Zusätzliche Boardverwalter-URLs --> "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
 * Werkzeuge --> Board --> Boardverwalter --> esp8266 Version 2.3.0 installieren
-* lib Verzeichnis in das Arduino library Verzeichnis kopieren
+* lib Verzeichnis in das Arduino library Verzeichnis kopieren bzw. ZIP importieren
 
-## To DO (Ideen):
+## To DO & (Ideen):
+* Bugfix WLAN SSID (Leerstelle)
 * Symbol zu einem bestimmten Datum/Uhrzeit
 * Getrennte Helligkeitsregelung Hintergrundbeleuchtung/Anzeige 
 * "The Matrix" effekt
@@ -50,6 +53,9 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ### Version 2.0.2
 * (Eisbaeeer)
 * fix NTP DNS lookup (falsche IP im DNS lookup)
-### Bersion 2.0.3
+### Version 2.0.3
 * (Eisbaeeer)
 * Neue Variante mit 11x11 Reihen LED´s hinzugefügt
+### Version 2.0.4
+* (path83 & Eisbaeeer)
+* LDR für automatische Helligkeitsregelung

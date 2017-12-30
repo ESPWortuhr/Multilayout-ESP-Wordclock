@@ -7,8 +7,8 @@
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED´s bzw. Reihen verwendet werden
  */
-//#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
-#define UHR_125                         // Uhr mit 11 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
+#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
+//#define UHR_125                         // Uhr mit 11 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
 //#define UHR_169
 
 /*--------------------------------------------------------------------------
@@ -18,10 +18,10 @@
 #ifndef _UHR_H
 #define _UHR_H
 
-#define DEBUG = true
 #define USE_SERIAL Serial
 
-#define SERNR 115
+#define SERNR 116             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+#define DEBUG                 //DEBUG ON|OFF
 
 #ifdef UHR_114 
 #define NUM_PIXELS   114                
@@ -82,6 +82,7 @@ struct GLOBAL {
   int gg;
   int bb;   
   int hell;   
+  int ldr;
   int geschw;   
   int client_nr;
   int zeige_sek;    
@@ -101,9 +102,14 @@ struct GLOBAL {
   int rgb1[10][5];
   int rgb2[10][5];
   int rgb3[10][5];  
-
 };
 GLOBAL G = { };
+
+// LDR 
+long waitUntilLDR = 0;
+int autoBrightnessEnabled = 1;
+int ldrVal = 50;
+int oneseconddelay = 1000;
 
 const char *ssid_ap = "Uhr";
 const char *password_ap = "12345678";

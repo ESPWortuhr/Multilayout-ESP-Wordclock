@@ -1,8 +1,21 @@
 #include <Arduino.h>
 
-
+//------------------------------------------------------------------------------
+// Helligkeitsregelung nach Uhrzeiten oder per LDR
+//------------------------------------------------------------------------------
 
 void led_set(uint16_t i) {
+  if (G.ldr == 1) {
+  unsigned int rr, gg, bb, zz;    
+  //Helligkeit
+  rr = (int)G.rgb[0][0] / ldrVal;
+  gg = (int)G.rgb[0][1] / ldrVal;
+  bb = (int)G.rgb[0][2] / ldrVal;  
+  RgbColor color = RgbColor(rr, gg, bb);
+  strip.SetPixelColor(i, color);  
+  }
+  else
+  {
   unsigned int rr, gg, bb, zz;    
   //Helligkeit
   rr = (int)G.rgb[0][0] * G.hh / 100;
@@ -10,6 +23,7 @@ void led_set(uint16_t i) {
   bb = (int)G.rgb[0][2] * G.hh / 100;  
   RgbColor color = RgbColor(rr, gg, bb);
   strip.SetPixelColor(i, color);  
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -180,6 +194,25 @@ void set_farbe() {
   }
   for( int i = 0; i < NUM_PIXELS;i++){ 
     led_set_pixel(rr, gg, bb, i);          
+  }
+}
+
+//------------------------------------------------------------------------------
+// Routine Helligkeitsregelung
+//------------------------------------------------------------------------------
+
+void doLDRLogic() {   
+  if(millis() >= waitUntilLDR) {
+     waitUntilLDR = millis();
+     int temp = analogRead(A0);
+     temp = temp - 30;                //Kalibrierung des LDR, damit der Wert bei voller Raumhelligkeit auf 0 geht.
+     if (temp >= 900 ) temp = 900;
+     
+//  #ifdef DEBUG     
+//      USE_SERIAL.print("LDR Wert : ");USE_SERIAL.println(temp);
+//  #endif 
+      ldrVal = map(temp, 0, 900, 5, 100);
+      waitUntilLDR += oneseconddelay;
   }
 }
 
