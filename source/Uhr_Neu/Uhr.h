@@ -22,7 +22,7 @@
 #define USE_SERIAL Serial
 
 #define SERNR 118             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
-//#define DEBUG                 //DEBUG ON|OFF
+#define DEBUG                 //DEBUG ON|OFF
 
 #ifdef UHR_114 
 #define NUM_PIXELS   114                
