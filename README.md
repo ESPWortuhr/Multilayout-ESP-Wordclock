@@ -16,9 +16,10 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * Optional: LDR, 10 KOhm Widerstand
 
 ## Anschluss WS2812 Stripe
-* RX = Data Bus (470 Ohm Widerstand in Reihe!)
+* RX = Data Bus
 * GND = Ground
 * VV = 5V
+* Pegelanpassung 3,3V zu 5V siehe docs
 
 ## Anschluss LDR (optional)
 ![LDR](pics/LDR.jpg)

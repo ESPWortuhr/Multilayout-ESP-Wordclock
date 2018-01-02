@@ -106,7 +106,7 @@ void setup()
   //-------------------------------------   
   // Start Serielle Schnittstelle
   //-------------------------------------   
-  #ifdef DEBUG  
+  #ifdef DEBUG
    USE_SERIAL.begin(38400);
    USE_SERIAL.println("");
   #endif    
@@ -323,7 +323,6 @@ void loop()
         if (G.zeige_sek == 1 || G.zeige_min == 2){
           rahmen_clear();
         }    
-        show_minuten();      
         if (G.zeige_sek > 0){    
           show_sekunde();
         }    
@@ -1147,6 +1146,7 @@ void WiFiStart_Client()
     #endif      
     
     // IP-Adresse als Laufschrift anzeigen
+  if (show_ip == true) {  
     char buf[16];
     sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3] );
     uint16_t StringLength = sizeof(buf)/ sizeof(buf[0]);
@@ -1155,6 +1155,7 @@ void WiFiStart_Client()
       zeigeip();
       delay(200);
     }
+  }
     // ---- ENDE Print the IP address   
     wlan_client = true;
   }

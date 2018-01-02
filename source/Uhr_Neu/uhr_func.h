@@ -412,7 +412,7 @@ void laufschrift() {
   if (i > 5) { 
     i = 0; 
     ii++;
-    if (ii > strlen(G.ltext)){ ii = 0; }   
+   if (ii > strlen(G.ltext)){ ii = 0; }    
   }  
 }
 
@@ -699,6 +699,13 @@ void show_minuten() {
 
 //------------------------------------------------------------------------------
 
+void the_matrix() {
+       
+}
+
+
+//------------------------------------------------------------------------------
+
 void show_zeit(int flag) {
 
   unsigned char m, s;
@@ -765,9 +772,9 @@ void show_zeit(int flag) {
  
     
 //  if (m > 0) {
-//    animation = 99;
+  uint8_t animation = 50;
 //  }
-#ifdef UHR_114                                                                        //aus169  110 gemacht
+#ifdef UHR_114                                                                        
   show_minuten();
 #endif
 
@@ -775,7 +782,8 @@ void show_zeit(int flag) {
   show_minuten();
 #endif
   led_show();  
-/*
+
+// Animation test
   switch (animation) {
   case 0: schieben(80, 0);  laufen(20, 1); break;
   case 1: wischen(100, 0, 0, 80);    break;
@@ -789,9 +797,12 @@ void show_zeit(int flag) {
   case 9: wischen(100, 0, 0, 50);    break;
   case 10:wischen(100, 0, 0, 50);    break;
   case 11:schieben(50, 0);  break;
+  case 50:the_matrix(); break;
   }
-*/    
+// Animation test
+
 }
+
 
 //------------------------------------------------------------------------------
 /*

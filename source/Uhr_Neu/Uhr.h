@@ -2,14 +2,18 @@
  * Hier Anpassungen der Hardware vornehmen.
  */
 
-#define VER "2.0.3"  // Software Version
+#define VER "2.0.5"  // Software Version
 
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED´s bzw. Reihen verwendet werden
  */
-#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
-//#define UHR_125                         // Uhr mit 11 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
-//#define UHR_169
+//#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
+#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
+//#define UHR_169                     // Uhr mit zusätzlichen LED´s um den Rahmen seitlich zu beleuchten
+
+#define SERNR 118             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+#define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
+uint8_t show_ip = false;      // Zeige IP Adresse beim Start 
 
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr Ändern!!!
@@ -20,9 +24,6 @@
 #define _UHR_H
 
 #define USE_SERIAL Serial
-
-#define SERNR 118             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
-#define DEBUG                 //DEBUG ON|OFF
 
 #ifdef UHR_114 
 #define NUM_PIXELS   114                
@@ -154,7 +155,7 @@ char s[3];
 int dim[20] = {30,50,70,90,110,130,140,160,200,255,255,200,160,100,80,60,40,20,10,0};
 int diff[20]= {-30,-20,-20,-20,-20,-20,-10,-20,-40,-55,0,55,40,60,20,20,20,20,10,10};
 
-const uint8_t PixelPin = 3;
+const uint8_t PixelPin = 2;  // WS2812 Data Port
 
 typedef RowMajorAlternatingLayout MyPanelLayout;
 const uint8_t PanelWidth = 13;  // 8 pixel x 8 pixel matrix of leds
