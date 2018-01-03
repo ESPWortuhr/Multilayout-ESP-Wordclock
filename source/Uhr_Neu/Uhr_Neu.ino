@@ -1147,9 +1147,10 @@ void WiFiStart_Client()
     
     // IP-Adresse als Laufschrift anzeigen
   if (show_ip == true) {  
-    char buf[16];
+    char buf[18];
     sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3] );
-    uint16_t StringLength = sizeof(buf)/ sizeof(buf[0]);
+    uint8_t StringLength = strlen(buf);
+    // USE_SERIAL.print("StringLenght: "); USE_SERIAL.print(StringLength);
     StringLength = StringLength * 6;
     for (int i=0; i <= StringLength; i++) {
       zeigeip();

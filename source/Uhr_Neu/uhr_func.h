@@ -311,7 +311,7 @@ void schweif_up(){
 void zeigeipap() {
     static int i = 0, ii = 0;
         
-    char buf[16];
+    char buf[18];
     sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3] );
 
   // Alle Pixes eins nach recht schieben 
@@ -348,7 +348,7 @@ void zeigeipap() {
 void zeigeip() {
     static int i = 0, ii = 0;
         
-    char buf[16];
+    char buf[18];
     sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3] );
 
   // Alle Pixes eins nach recht schieben 

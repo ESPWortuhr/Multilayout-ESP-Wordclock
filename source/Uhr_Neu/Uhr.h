@@ -7,13 +7,13 @@
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED´s bzw. Reihen verwendet werden
  */
-//#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
-#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
+#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
+//#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
 //#define UHR_169                     // Uhr mit zusätzlichen LED´s um den Rahmen seitlich zu beleuchten
 
 #define SERNR 118             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 #define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
-uint8_t show_ip = false;      // Zeige IP Adresse beim Start 
+uint8_t show_ip = true;      // Zeige IP Adresse beim Start 
 
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr Ändern!!!
