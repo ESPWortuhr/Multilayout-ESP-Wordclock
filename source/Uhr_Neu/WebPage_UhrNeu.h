@@ -38,7 +38,7 @@ return ad(e)?this.on(f,"|mouseover |mouseout",function(b,i){var d=b.relatedTarge
 return N[k]=function(a){m=m||a,i(l=a-m,n)},L++||j(f),n},off:function(b){aj(b.M),b.M=H}},function(d,c){S[d]=c}),document.addEventListener("DOMContentLoaded",function(){aj(P),P=H},!1),{$:S,$$:function(e,d,f){return Q(e,d,f)[0]},EE:function(e,d,f){return e=S(document.createElement(e)),ac(d)||!/^ob/.test(typeof d)?e.add(d):e.set(d).add(f)},M:J,getter:T,setter:V}});</script>
 <script>var MINI=require("minified");var _=MINI._,$=MINI.$,$$=MINI.$$,EE=MINI.EE,HTML=MINI.HTML;var ip_esp="ws://192.168.4.1";
 
-var debug=true; <!-- DEBUG AUSGABE -->
+var debug=false; <!-- DEBUG AUSGABE -->
 var command=1;
 var rgb=[[0,0,100],[0,10,0],[10,0,0],[5,5,5]];
 var sl_typ=0;
@@ -62,19 +62,23 @@ var zeige_sek=0;
 var zeige_min=0;
 var ldr=0;
 var ldrCal=0;
-var updateurlstring=0;
 
 function init_websocket(){var a=ip_esp;websocket=new WebSocket(a);
+
 websocket.onopen=function(b){$("#_websocket").fill("Online ");
 $("#_websocket").set("$backgroundColor","#4DED4D");
 $("#_websocket").set("$color","#000000");
 $("#_websocket").set("@value","1");
-send_data(301,0,0)};websocket.onclose=function(b){$("#_websocket").fill("Offline ");
+send_data(301,0,0)};
+
+websocket.onclose=function(b){$("#_websocket").fill("Offline ");
 $("#_websocket").set("$backgroundColor","#ED4D4D");
 $("#_websocket").set("$color","#ffffff");
 $("#_websocket").set("@value","0")};
+
 websocket.onmessage=function(c){if(debug==true){$("#output").fill("RESPONSE: "+c.data)}var b=JSON.parse(c.data);
-if(b.command=="config"){$("#_ssid").set("value",b.ssid);
+if(b.command=="config"){
+$("#_ssid").set("value",b.ssid);
 $("#_mm").set("value",b.minute);
 $("#_ss").set("value",b.sekunde);
 $("#_zs").set("value",b.zeitserver);
@@ -93,8 +97,11 @@ $("#_rg7").set("value",b.geschw);
 $("#_zeige_sek").set("value",b.zeige_sek);
 $("#_zeige_min").set("value",b.zeige_min);
 $("#_ldr").set("value",b.ldr);
-$("#_ldrCal").set("value",b.ldrCal)}if(b.command=="set"){rgb[0][0]=b.rgb00;rgb[0][1]=b.rgb01;
-$("#_updateurlstring").set("value",b.updateurlstring);
+$("#_ldrCal").set("value",b.ldrCal)}
+
+if(b.command=="set"){
+rgb[0][0]=b.rgb00;
+rgb[0][1]=b.rgb01;
 rgb[0][2]=b.rgb02;
 rgb[1][0]=b.rgb10;
 rgb[1][1]=b.rgb11;
@@ -293,8 +300,9 @@ var d="092000000"+c;
 for(var b=0;b<25;b++){if(d.length<25){d+=" "}}d+="999";
 websocket.send(d);
 $("#output").fill("Hostname wurde neu konfiguriert");
-
 if(debug==true){$("#output").fill(d)}return false});
+
+$("#_update").on("click",function(){var text = window.location.origin + ":81/update"; parent.open(text);});
 $("#_reset").on("click",function(){send_data(100,0,0)})});
 
 </script>
@@ -616,6 +624,11 @@ $("#_reset").on("click",function(){send_data(100,0,0)})});
 </tr>
 </table>
 </div>
+<br>
+<div class="config" align=center>
+<button class="button2" style="font-weight:bold;width:60%" id="_update">Over The Air Update</button>
+</div>
+<br>
 <div class="config" align=center>
 <button class="button2" style="font-weight:bold;width:60%" id="_reset">Reset</button>
 </div>

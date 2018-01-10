@@ -66,3 +66,6 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * (Eisbaeeer)
 * IP Adresse per Laufschrift ausgeben
 * LDR Kalibrierung über WebConfig
+### Version 2.0.6
+* (path83 & masju & Eisbaeeer)
+* Over The Air Update Link in Webconfig

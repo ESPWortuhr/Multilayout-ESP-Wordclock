@@ -2,7 +2,7 @@
  * Hier Anpassungen der Hardware vornehmen.
  */
 
-#define VER "2.0.5"  // Software Version
+#define VER "2.0.6"  // Software Version
 
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED´s bzw. Reihen verwendet werden
@@ -198,4 +198,4 @@ void eeprom_read();
 int split(int i, int j);
 void WiFiEvent(WiFiEvent_t event);
 
-#endif // #define _UHR_H
+#endif
