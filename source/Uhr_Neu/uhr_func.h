@@ -6,7 +6,7 @@
 
 void led_set(uint16_t i) {
   if (G.ldr == 1) {
-  unsigned int rr, gg, bb, zz;    
+  unsigned int rr, gg, bb;    
   //Helligkeit
   rr = (int)G.rgb[0][0] / ldrVal;
   gg = (int)G.rgb[0][1] / ldrVal;
@@ -16,7 +16,7 @@ void led_set(uint16_t i) {
   }
   else
   {
-  unsigned int rr, gg, bb, zz;    
+  unsigned int rr, gg, bb;    
   //Helligkeit
   rr = (int)G.rgb[0][0] * G.hh / 100;
   gg = (int)G.rgb[0][1] * G.hh / 100;
@@ -729,17 +729,19 @@ void show_zeit(int flag) {
   gg = G.rgb[1][1];
   bb = G.rgb[1][2];
   zz = rr + gg + bb;
-  if (zz > 160) {
-    zz = zz * 10 / 160;
-    rr = (int)rr * 10 / zz;
-    gg = (int)gg * 10 / zz;
-    bb = (int)bb * 10 / zz;
-  }  
-  //Helligkeit
+  
+    //Helligkeit Hintergrund einstellen / LDR
+  if (G.ldr == 1) {
+  //Helligkeit LDR
+  rr = (int)rr / ldrVal;
+  gg = (int)gg / ldrVal;
+  bb = (int)bb / ldrVal;    
+  } else {
   rr = (int)rr * G.hh / 100;
   gg = (int)gg * G.hh / 100;
-  bb = (int)bb * G.hh / 100;    
-
+  bb = (int)bb * G.hh / 100;      
+  }
+  
   //Hintergrund setzen
   for (int t = 0; t < ROWS_MATRIX; t++){
     for (int b = 0; b < 11; b++){

@@ -69,3 +69,6 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ### Version 2.0.6
 * (path83 & masju & Eisbaeeer)
 * Over The Air Update Link in Webconfig
+### Version 2.0.7
+* (Eisbaeeer)
+* LDR für Hintergrundhelligkeit

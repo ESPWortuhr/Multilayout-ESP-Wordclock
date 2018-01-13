@@ -220,14 +220,14 @@ command=203;
 send_data(command,0,0);
 set_slider()}});
 $('[id*="_fbutton"]').on("click",function(b){var c=$(this).get("id");
-if(c=="_fbutton1"){rgb[sl_typ][0]=255,rgb[sl_typ][1]=0;
-rgb[sl_typ][2]=0}if(c=="_fbutton2"){rgb[sl_typ][0]=0,rgb[sl_typ][1]=255;
-rgb[sl_typ][2]=0}if(c=="_fbutton3"){rgb[sl_typ][0]=0,rgb[sl_typ][1]=0;
-rgb[sl_typ][2]=255}if(c=="_fbutton4"){rgb[sl_typ][0]=255,rgb[sl_typ][1]=255;
-rgb[sl_typ][2]=0}if(c=="_fbutton5"){rgb[sl_typ][0]=0,rgb[sl_typ][1]=255;
-rgb[sl_typ][2]=255}if(c=="_fbutton6"){rgb[sl_typ][0]=90,rgb[sl_typ][1]=90;
-rgb[sl_typ][2]=90}if(c=="_fbutton7"){rgb[sl_typ][0]=0,rgb[sl_typ][1]=0;
-rgb[sl_typ][2]=0}hell=$("#_rg6").get("value");
+if(c=="_fbutton1"){rgb[sl_typ][0]=255,rgb[sl_typ][1]=0;rgb[sl_typ][2]=0}
+if(c=="_fbutton2"){rgb[sl_typ][0]=0,rgb[sl_typ][1]=255;rgb[sl_typ][2]=0}
+if(c=="_fbutton3"){rgb[sl_typ][0]=0,rgb[sl_typ][1]=0;rgb[sl_typ][2]=255}
+if(c=="_fbutton4"){rgb[sl_typ][0]=255,rgb[sl_typ][1]=255;rgb[sl_typ][2]=0}
+if(c=="_fbutton5"){rgb[sl_typ][0]=0,rgb[sl_typ][1]=255;rgb[sl_typ][2]=255}
+if(c=="_fbutton6"){rgb[sl_typ][0]=255,rgb[sl_typ][1]=255;rgb[sl_typ][2]=255}
+if(c=="_fbutton7"){rgb[sl_typ][0]=0,rgb[sl_typ][1]=0;rgb[sl_typ][2]=0}
+hell=$("#_rg6").get("value");
 geschw=$("#_rg7").get("value");
 anzahl=$("#_rg9").get("value");
 position=$("#_rg91").get("value");

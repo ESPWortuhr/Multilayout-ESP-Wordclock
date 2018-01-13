@@ -21,6 +21,11 @@ Version 2.0.4
 Version 2.0.5
 * IP Adresse per Laufschrift ausgeben
 * LDR Kalibrierung über WebConfig
+* Version 2.0.6
+* (path83 & masju & Eisbaeeer)
+* Over The Air Update Link in Webconfig
+Version 2.0.7
+* LDR Helligkeitsregelung Hintergrund
 
 Ideen / Todo
 - Zeitverlauf Farben konfigurierbar
@@ -29,6 +34,7 @@ Ideen / Todo
 - Server-IP eintragen
 - Überblenden
 - Tretis
+- MP3 Gong Geläut
 
 
 --------------------------------------------------*/

@@ -2,7 +2,7 @@
  * Hier Anpassungen der Hardware vornehmen.
  */
 
-#define VER "2.0.6"  // Software Version
+#define VER "2.0.7"  // Software Version
 
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED´s bzw. Reihen verwendet werden
