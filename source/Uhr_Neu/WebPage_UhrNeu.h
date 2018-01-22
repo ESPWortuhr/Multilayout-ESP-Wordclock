@@ -113,7 +113,10 @@ rgb[3][0]=b.rgb30;
 rgb[3][1]=b.rgb31;
 rgb[3][2]=b.rgb32;
 hell=b.hell;
-geschw=b.geschw;set_slider()}};
+geschw=b.geschw;set_slider()}
+                                
+if(b.command=="wlan"){document.getElementById("wlanlist").innerHTML = b.list}};
+
 websocket.onerror=function(b){if(debug==true){$("#output").fill("ERROR: "+b.data)}}}function clock(){var a=new Date();
 var c=a.getHours();
 var f=a.getMinutes();
@@ -241,6 +244,7 @@ if(d=="_rg1"){send_data(command,1,0)}if(d=="_rg2"){send_data(command,1,0)}if(d==
 sleep=1;
 sleeptime=20;
 var b=setTimeout(function(){sleep=0},sleeptime)}return false});
+                                                                           
 $("#_wlan").on("click",function(){var e=$(_ssid).get("value");
 var b=$(_passwd).get("value");
 var d="099000000"+e;
@@ -248,22 +252,27 @@ for(var c=0;c<25;c++){if(d.length<34){d+=" "}}d+=b;
 for(var c=0;c<25;c++){if(d.length<59){d+=" "}}d+="999";
 websocket.send(d);
 $("#output").fill("WLAN wurde neu konfiguriert");
-
 if(debug==true){$("#output").fill(d)}return false});
+
+$("#_wlanscan").on("click",function(){send_data(302,0,0);
+document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";return false});
+
+function wlanlists(SSID){$("#_ssid").set("value", SSID.innerText||SSID.textContent);document.getElementById("_passwd").focus();}
+
 $("#_zeitserver").on("click",function(){var d=$(_zs).get("value");
 var c="097000000"+d;
 for(var b=0;b<25;b++){if(c.length<25){c+=" "}}c+="999";
 websocket.send(c);
 $("#output").fill("Zeitserver wurde neu konfiguriert");
-
 if(debug==true){$("#output").fill(c)}return false});
+
 $("#_ltext").on("click",function(){var b=$(_lt).get("value");
 var d="096000000"+b;
 for(var c=0;c<39;c++){if(d.length<39){d+=" "}}d+="999";
 websocket.send(d);
 $("#output").fill("Lauftext wurde neu konfiguriert");
-
 if(debug==true){$("#output").fill(d)}});
+
 $("#_helligkeit").on("click",function(){h6=$(_h6).get("value");
 h8=$(_h8).get("value");
 h12=$(_h12).get("value");
@@ -274,27 +283,27 @@ h22=$(_h22).get("value");
 h24=$(_h24).get("value");
 var b="095000000"+nstr(h6)+nstr(h8)+nstr(h12)+nstr(h16)+nstr(h18)+nstr(h20)+nstr(h22)+nstr(h24)+"999";
 websocket.send(b);$("#output").fill("Helligkeit wurde neu konfiguriert");
-
 if(debug==true){$("#output").fill(b)}});
+
 $("#_minute").on("click",function(){zeige_min=$(_zeige_min).get("value");
 var b="094000000"+zeige_min+"  999";
 websocket.send(b);
 $("#output").fill("Anzeige Minute wurde neu konfiguriert");
-
 if(debug==true){$("#output").fill(b)}return false});
+
 $("#_ldrsave").on("click",function(){ldr=$(_ldr).get("value");
 ldrCal=$(_ldrCal).get("value");
 var b="091000000"+ldr+"  "+ldrCal+"  999";
 websocket.send(b);
 $("#output").fill("LDR Einstellung wurde neu konfiguriert");
-
 if(debug==true){$("#output").fill(b)}return false});
+
 $("#_sekunde").on("click",function(){zeige_sek=$(_zeige_sek).get("value");
 var b="093000000"+zeige_sek+"  999";
 websocket.send(b);
 $("#output").fill("Anzeige Sekunde wurde neu konfiguriert");
-
 if(debug==true){$("#output").fill(b)}return false});
+
 $("#_host").on("click",function(){var c=$(_hn).get("value");
 var d="092000000"+c;
 for(var b=0;b<25;b++){if(d.length<25){d+=" "}}d+="999";
@@ -309,7 +318,7 @@ $("#_reset").on("click",function(){send_data(100,0,0)})});
 <!-- ENDE Variablenuebergabe -->
 
 
-<style type="text/css">.button{// color:#fff;display:inline-block;// font-size:2em;margin:1px;padding:1px;width:12%;min-width:30px;height:50px;border:1px solid #AAA;text-decoration:none}.button2{color:#000;background-color:#e9e9e9;display:inline-block;font-size:1em;margin:1px;padding:1px;width:30%;min-width:90px;height:40px;border:1px solid #aaa;text-decoration:none}.button3{color:#000;background-color:#b9b9b9;display:inline-block;font-size:1em;margin:1px;padding:1px;width:30%;min-width:90px;height:40px;border:1px solid #000;text-decoration:none}.config{background-color:#fff;border:1px solid #000}.rglabel{-webkit-appearance:none!important;width:5%;align:right;display:inline-block}.rglinfo{-webkit-appearance:none!important;width:5%;align:left;vertical-align:50%;display:inline-block}input[type=range]{-webkit-appearance:none;width:75%;margin:10px 0}input[type=range]:focus{outline:0}input[type=range]::-webkit-slider-runnable-track{width:100%;height:32px;cursor:pointer;box-shadow:.1px .1px 0 #000000,0px 0 .1px #0d0d0d;border-radius:0;border:0 solid #010101}input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 rgba(0,0,0,0),0px 0 0 rgba(13,13,13,0);border:2px solid #000;height:35px;width:35px;border-radius:5px;cursor:pointer;-webkit-appearance:none;margin-top:-1.5px}input[type=range]:focus::-webkit-slider-runnable-track{background:#ff8080}input[type=range]::-moz-range-track{width:100%;height:32px;cursor:pointer;box-shadow:.1px .1px 0 #000000,0px 0 .1px #0d0d0d;border-radius:0;border:0 solid #010101}input[type=range]::-moz-range-thumb{box-shadow:0 0 0 rgba(0,0,0,0),0px 0 0 rgba(13,13,13,0);border:2px solid #000;height:35px;width:35px;border-radius:5px;background:#fff;cursor:pointer}input[type=range]::-ms-track{width:100%;height:32px;cursor:pointer;background:transparent;border-color:transparent;color:transparent}input[type=range]::-ms-fill-lower{border:0 solid #010101;border-radius:0;box-shadow:.1px .1px 0 #000000,0px 0 .1px #0d0d0d}input[type=range]::-ms-fill-upper{border:0 solid #010101;border-radius:0;box-shadow:.1px .1px 0 #000000,0px 0 .1px #0d0d0d}input[type=range]::-ms-thumb{box-shadow:0 0 0 rgba(0,0,0,0),0px 0 0 rgba(13,13,13,0);border:2px solid #000;height:35px;width:35px;border-radius:5px;background:#fff;cursor:pointer;height:32px}#_rg1::-webkit-slider-runnable-track{background:#f00}#_rg1::-moz-range-track{background:#f00}#_rg1::-ms-fill-lower{background:#f00}#_rg1::-ms-fill-upper{background:#f00}#_rg2::-webkit-slider-runnable-track{background:#0f0}#_rg2::-moz-range-track{background:#0f0}#_rg2::-ms-fill-lower{background:#0f0}#_rg2::-ms-fill-upper{background:#0f0}#_rg3::-webkit-slider-runnable-track{background:#00f}#_rg3::-moz-range-track{background:#00f}#_rg3::-ms-fill-lower{background:#00f}#_rg3::-ms-fill-upper{background:#00f}.cl_start{display:block}.cl_effekte{display:none}.cl_rgb1{display:block}.cl_rgb2{display:block}.cl_hell{display:none}.cl_geschw{display:none}.cl_anzahl{display:none}.cl_setup{display:none}.cl_schweif{display:none}.cl_lauflicht{display:none}</style>
+<style type="text/css">.button{// color:#fff;display:inline-block;// font-size:2em;margin:1px;padding:1px;width:12%;min-width:30px;height:50px;border:1px solid #AAA;text-decoration:none}.button2{color:#000;background-color:#e9e9e9;display:inline-block;font-size:1em;margin:1px;padding:1px;width:30%;min-width:90px;height:40px;border:1px solid #aaa;text-decoration:none}.button3{color:#000;background-color:#b9b9b9;display:inline-block;font-size:1em;margin:1px;padding:1px;width:30%;min-width:90px;height:40px;border:1px solid #000;text-decoration:none}.config{background-color:#fff;border:1px solid #000}.rglabel{-webkit-appearance:none!important;width:5%;align:right;display:inline-block}.rglinfo{-webkit-appearance:none!important;width:5%;align:left;vertical-align:50%;display:inline-block}input[type=range]{-webkit-appearance:none;width:75%;margin:10px 0}input[type=range]:focus{outline:0}input[type=range]::-webkit-slider-runnable-track{width:100%;height:32px;cursor:pointer;box-shadow:.1px .1px 0 #000000,0px 0 .1px #0d0d0d;border-radius:0;border:0 solid #010101}input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 rgba(0,0,0,0),0px 0 0 rgba(13,13,13,0);border:2px solid #000;height:35px;width:35px;border-radius:5px;cursor:pointer;-webkit-appearance:none;margin-top:-1.5px}input[type=range]:focus::-webkit-slider-runnable-track{background:#ff8080}input[type=range]::-moz-range-track{width:100%;height:32px;cursor:pointer;box-shadow:.1px .1px 0 #000000,0px 0 .1px #0d0d0d;border-radius:0;border:0 solid #010101}input[type=range]::-moz-range-thumb{box-shadow:0 0 0 rgba(0,0,0,0),0px 0 0 rgba(13,13,13,0);border:2px solid #000;height:35px;width:35px;border-radius:5px;background:#fff;cursor:pointer}input[type=range]::-ms-track{width:100%;height:32px;cursor:pointer;background:transparent;border-color:transparent;color:transparent}input[type=range]::-ms-fill-lower{border:0 solid #010101;border-radius:0;box-shadow:.1px .1px 0 #000000,0px 0 .1px #0d0d0d}input[type=range]::-ms-fill-upper{border:0 solid #010101;border-radius:0;box-shadow:.1px .1px 0 #000000,0px 0 .1px #0d0d0d}input[type=range]::-ms-thumb{box-shadow:0 0 0 rgba(0,0,0,0),0px 0 0 rgba(13,13,13,0);border:2px solid #000;height:35px;width:35px;border-radius:5px;background:#fff;cursor:pointer;height:32px}#_rg1::-webkit-slider-runnable-track{background:#f00}#_rg1::-moz-range-track{background:#f00}#_rg1::-ms-fill-lower{background:#f00}#_rg1::-ms-fill-upper{background:#f00}#_rg2::-webkit-slider-runnable-track{background:#0f0}#_rg2::-moz-range-track{background:#0f0}#_rg2::-ms-fill-lower{background:#0f0}#_rg2::-ms-fill-upper{background:#0f0}#_rg3::-webkit-slider-runnable-track{background:#00f}#_rg3::-moz-range-track{background:#00f}#_rg3::-ms-fill-lower{background:#00f}#_rg3::-ms-fill-upper{background:#00f}.cl_start{display:block}.cl_effekte{display:none}.cl_rgb1{display:block}.cl_rgb2{display:block}.cl_hell{display:none}.cl_geschw{display:none}.cl_anzahl{display:none}.cl_setup{display:none}.cl_schweif{display:none}.cl_lauflicht{display:none}.wlanlistr{float: right;width: 64px;text-align: right;}.wlanlistl{background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAALVBMVEX///8EBwfBwsLw8PAzNjaCg4NTVVUjJiZDRUUUFxdiZGSho6OSk5Pg4eFydHTCjaf3AAAAZElEQVQ4je2NSw7AIAhEBamKn97/uMXEGBvozkWb9C2Zx4xzWykBhFAeYp9gkLyZE0zIMno9n4g19hmdY39scwqVkOXaxph0ZCXQcqxSpgQpONa59wkRDOL93eAXvimwlbPbwwVAegLS1HGfZAAAAABJRU5ErkJggg==") no-repeat left center;background-size: 1em;}</style>
 </head>
 <body>
 <div align=center>
@@ -440,6 +449,11 @@ $("#_reset").on("click",function(){send_data(100,0,0)})});
 <td><input id="_passwd" type="text"></input></td>
 </tr>
 </table>
+<BR>
+<button class="button2" style="font-weight:bold;width:60%" id="_wlanscan">WLAN suchen</button>
+<BR>
+<div id="wlanlist" style="text-align:left;display:inline-block;min-width:100px;"></div>
+<BR>
 </div>
 <BR>
 <div class="config" align=center>
