@@ -1117,7 +1117,7 @@ String WiFiScan(bool html)
       for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
           if (WiFi.RSSI(indices[j]) > WiFi.RSSI(indices[i])) {
-            swap = indices[i]; indices[i] = indices[j]; indices[j] = swap;
+            swap = indices[i]; indices[i] = indices[j]; indices[j] = swap; //hab den Swap Befehl nicht gefunden
           }
         }
       }
@@ -1145,10 +1145,10 @@ String WiFiScan(bool html)
       #endif    
       if (html == true){
         if (indices[i] == -1) continue; // skip dups
-        linewlan = F("<div><a href='#' onclick='listwlans(this)'>{s}</a>&nbsp;<span class='listwlanr {l}'>{r}%</span></div>");
+        linewlan = F("<div><a href='#' onclick='wlanlists(this)'>{s}</a>&nbsp;<span class='wlanlistr {l}'>{r}%</span></div>");
         linewlan.replace("{s}", WiFi.SSID(indices[i]));
         if (WiFi.encryptionType(indices[i]) != ENC_TYPE_NONE){
-          linewlan.replace("{l}", "listwlanl");
+          linewlan.replace("{l}", "wlanlistl");
         }else{
           linewlan.replace("{l}", "");
         }
