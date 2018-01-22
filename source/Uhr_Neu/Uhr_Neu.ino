@@ -1091,7 +1091,7 @@ String WiFiScan(bool html)
   // Scan Network
   //-------------------------------------   
 
-  int n = WiFi.scanNetworks()
+  int n = WiFi.scanNetworks();
   String htmlwlan, linewlan, cssid;
   int indices[n], swap, quality;
   
