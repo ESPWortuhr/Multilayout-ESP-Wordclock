@@ -142,7 +142,8 @@ $("#_rg91").set("value",position);
 $("#rg1wert").fill(rgb[sl_typ][0]);
 $("#rg2wert").fill(rgb[sl_typ][1]);
 $("#rg3wert").fill(rgb[sl_typ][2])}function nstr(a){if(a<10){a="00"+a}else{if(a<100){a="0"+a}}return a}function send_data(d,c,b){var a=nstr(d)+nstr(c)+nstr(b)+nstr(rgb[0][0])+nstr(rgb[0][1])+nstr(rgb[0][2])+nstr(rgb[1][0])+nstr(rgb[1][1])+nstr(rgb[1][2])+nstr(rgb[2][0])+nstr(rgb[2][1])+nstr(rgb[2][2])+nstr(rgb[3][0])+nstr(rgb[3][1])+nstr(rgb[3][2])+nstr(hell)+nstr(geschw)+nstr(anzahl)+nstr(position)+"999";
-websocket.send(a);if(debug==true){$("#output").fill(a)}}$.ready(function(){var a=location.host;
+websocket.send(a);if(debug==true){$("#output").fill(a)}}function wlanlists(a){$("#_ssid").set("value", a.innerText||a.textContent);
+document.getElementById("_passwd").focus();}$.ready(function(){var a=location.host;
 if(a!=0){ip_esp="ws://"+a}set_slider();
 init_websocket();
 $("#_websocket").on("click",function(){var b=$(this).get("value");
@@ -256,8 +257,6 @@ if(debug==true){$("#output").fill(d)}return false});
 
 $("#_wlanscan").on("click",function(){send_data(302,0,0);
 document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";return false});
-
-function wlanlists(SSID){$("#_ssid").set("value", SSID.innerText||SSID.textContent);document.getElementById("_passwd").focus();}
 
 $("#_zeitserver").on("click",function(){var d=$(_zs).get("value");
 var c="097000000"+d;
