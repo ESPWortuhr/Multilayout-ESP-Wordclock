@@ -72,3 +72,6 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ### Version 2.0.7
 * (Eisbaeeer)
 * LDR für Hintergrundhelligkeit
+### Version 2.0.8
+* (Flo455)
+* WLAN Scan hinzugefügt
