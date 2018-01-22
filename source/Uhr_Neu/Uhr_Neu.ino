@@ -8,7 +8,7 @@ Version 2.0.0
 * inital version   
 Version 2.0.1
 * (Markus Aust)
-* Minuten LED´s
+* Minuten LED´stest
 Version 2.0.2
 * (Eisbaeeer)
 * Fix NTP issue
