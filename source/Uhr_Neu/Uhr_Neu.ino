@@ -8,7 +8,7 @@ Version 2.0.0
 * inital version   
 Version 2.0.1
 * (Markus Aust)
-* Minuten LED´stest
+* Minuten LED´s
 Version 2.0.2
 * (Eisbaeeer)
 * Fix NTP issue
@@ -804,6 +804,19 @@ void loop()
   }
   //------------------------------------------------
   
+  //------------------------------------------------
+  // Wlan Liste
+  //------------------------------------------------  
+  if (G.conf == 302) {
+    String strs = "{\"command\":\"wlan\"";
+    strs += ",\"list\":\"";
+    strs += WiFiScan(true);
+    strs += "\"}";
+    webSocket.sendTXT(G.client_nr, strs);   
+    G.conf = 0; 
+  }
+  //------------------------------------------------
+  
  
   if (count_delay > 10000){ count_delay = 0; }
 }
@@ -1044,7 +1057,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
           G.conf = 301;             
           G.client_nr = num;  
           break;          
-        }       
+        } 
+        if (cc == 302) {      // Wlan Liste anfordern
+          G.conf = 302;             
+          G.client_nr = num;  
+          break;          
+        }
         
         //--echo data back to browser
         //webSocket.sendTXT(num, payload, lenght);
@@ -1067,26 +1085,53 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
 
 //------------------------------------------------------------------------------
       
-void WiFiScan()
+String WiFiScan(bool html)
 {
   //-------------------------------------   
   // Scan Network
   //-------------------------------------   
 
-  WiFi.disconnect();
-  WiFi.mode(WIFI_STA);
-  delay(300);
-  int n = WiFi.scanNetworks();
+  int n = WiFi.scanNetworks()
+  String htmlwlan, linewlan, cssid;
+  int indices[n], swap, quality;
+  
   if (n == 0){
     #ifdef DEBUG    
      USE_SERIAL.println("no networks found");
     #endif    
-    delay(10);  
+    if (html == true){
+      htmlwlan += F("<div>Es wurden keine WLAN Netzwerke gefunden</div>");
+    }else{
+      delay(10);
+    }
   }else{
     #ifdef DEBUG       
      USE_SERIAL.print(n);
      USE_SERIAL.println(" networks found");
-    #endif      
+    #endif 
+    if (html == true){
+      //sort networks
+      for (int i = 0; i < n; i++) {
+        indices[i] = i;
+      }
+      for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+          if (WiFi.RSSI(indices[j]) > WiFi.RSSI(indices[i])) {
+            swap = indices[i]; indices[i] = indices[j]; indices[j] = swap;
+          }
+        }
+      }
+      // remove duplicates ( must be RSSI sorted )
+      for (int i = 0; i < n; i++) {
+        if (indices[i] == -1) continue;
+        cssid = WiFi.SSID(indices[i]);
+        for (int j = i + 1; j < n; j++) {
+          if (cssid == WiFi.SSID(indices[j])) {
+            indices[j] = -1; // set dup aps to index -1
+          }
+        }
+      }
+    }
     for (int i = 0; i < n; ++i){
       // Print SSID and RSSI for each network found
       #ifdef DEBUG       
@@ -1098,11 +1143,33 @@ void WiFiScan()
        USE_SERIAL.print(")");
        USE_SERIAL.println((WiFi.encryptionType(i) == ENC_TYPE_NONE)?" ":"*");
       #endif    
-      delay(100);
-      if (wlan_ssid == false){
-        wlan_ssid = true;
-        for (int k = 0 ; WiFi.SSID(i)[k] != '\0'; k++){
-          if (WiFi.SSID(i)[k] != G.ssid[k]){ wlan_ssid = false; }
+      if (html == true){
+        if (indices[i] == -1) continue; // skip dups
+        linewlan = F("<div><a href='#' onclick='listwlans(this)'>{s}</a>&nbsp;<span class='listwlanr {l}'>{r}%</span></div>");
+        linewlan.replace("{s}", WiFi.SSID(indices[i]));
+        if (WiFi.encryptionType(indices[i]) != ENC_TYPE_NONE){
+          linewlan.replace("{l}", "listwlanl");
+        }else{
+          linewlan.replace("{l}", "");
+        }
+        quality = WiFi.RSSI(indices[i]);
+        if (quality <= -100) {
+          quality = 0;
+        } else if (quality >= -50) {
+          quality = 100;
+        } else {
+          quality = 2 * (quality + 100);
+        }
+        linewlan.replace("{r}", String(quality));
+        htmlwlan += linewlan;
+      }else{
+        
+        delay(100);
+        if (wlan_ssid == false){
+          wlan_ssid = true;
+          for (int k = 0 ; WiFi.SSID(i)[k] != '\0'; k++){
+            if (WiFi.SSID(i)[k] != G.ssid[k]){ wlan_ssid = false; }
+          }
         }
       }
     } 
@@ -1112,6 +1179,7 @@ void WiFiScan()
    USE_SERIAL.printf("WLAN-Status: %s\n", wstatus[wlan_status]);  
    USE_SERIAL.printf("WLAN-SSID vorhanden: %d\n", wlan_ssid);  
   #endif    
+  return htmlwlan;
   //-------------------------------------   
 }
   
@@ -1229,7 +1297,10 @@ void WlanStart()
     USE_SERIAL.printf("\n-- Begin WlanStart -- \n"); 
   #endif   
 
-  WiFiScan();
+  WiFi.disconnect();
+  WiFi.mode(WIFI_STA);
+  delay(300);
+  WiFiScan(false);
   if (wlan_ssid == true){
     WiFiStart_Client();
   }  
