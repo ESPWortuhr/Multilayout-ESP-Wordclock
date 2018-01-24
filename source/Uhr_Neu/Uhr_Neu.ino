@@ -26,6 +26,12 @@ Version 2.0.5
 * Over The Air Update Link in Webconfig
 Version 2.0.7
 * LDR Helligkeitsregelung Hintergrund
+Version 2.0.8
+* (Flo455)
+* WLAN Scan hinzugefügt
+Version 2.0.9
+* (Eisbaeeer)
+* Telnet Server für Debugging
 
 Ideen / Todo
 - Zeitverlauf Farben konfigurierbar
@@ -124,6 +130,11 @@ void setup()
    USE_SERIAL.println ( "Begin Setup" );  
    USE_SERIAL.println("--------------------------------------");       
   #endif   
+
+  //-------------------------------------
+  USE_SERIAL.println("Starting Telnet server");
+  TelnetServer.begin();
+  TelnetServer.setNoDelay(true);
   
   //------------------------------------- 
   // EEPROM lesen / initialisieren
@@ -198,7 +209,8 @@ void setup()
   USE_SERIAL.printf("Free Sketch Size: %u Byte \n\n", ESP.getFreeSketchSpace());   
   
   USE_SERIAL.printf("SDK Version     : %s\n", ESP.getSdkVersion());    
-  USE_SERIAL.print("RESET Info      : "); USE_SERIAL.println(ESP.getResetInfo());      
+  USE_SERIAL.print("RESET Info      : "); USE_SERIAL.println(ESP.getResetInfo());   
+  USE_SERIAL.print("COMPILED        : "); USE_SERIAL.print(__DATE__); USE_SERIAL.print(" "); USE_SERIAL.println(__TIME__);      
   USE_SERIAL.println("--------------------------------------");    
   #endif   
     
@@ -310,6 +322,9 @@ void loop()
     }
   #endif   
 
+  //------------------------------------------------
+  Telnet();  // Handle telnet connections
+
   //------------------------------------------------  
   //--OTA--  
   //------------------------------------------------  
@@ -363,6 +378,7 @@ void loop()
   if (last_minute != _minute) {  
     #ifdef DEBUG     
       USE_SERIAL.println(">>>> Begin Minute <<<<");
+      TelnetMsg(">>>> Begin Minute <<<<");
     #endif     
     if (G.prog == 0 && G.conf == 0) {     
       show_zeit(1); // Anzeige Uhrzeit mit Config
@@ -372,6 +388,7 @@ void loop()
     wlan_status = WiFi.status();
     #ifdef DEBUG     
       USE_SERIAL.printf("WLAN-Status: %s\n", wstatus[wlan_status]);    
+      TelnetMsg("WLAN-Status: "); TelnetMsg(wstatus[wlan_status]);    
     #endif     
 //    if (wlan_status == 6 && wlan_client == true){
 //      WiFiReconnect();
@@ -379,9 +396,10 @@ void loop()
     _sekunde48 = 0;     
     last_minute = _minute;
 
-    USE_SERIAL.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime),  second(ltime));    
+    USE_SERIAL.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime),  second(ltime));     
     #ifdef DEBUG     
       USE_SERIAL.println(">>>> Ende  Minute <<<<");
+      TelnetMsg(">>>> Ende  Minute <<<<");
     #endif     
   }
   
@@ -392,11 +410,13 @@ void loop()
 
     #ifdef DEBUG     
       USE_SERIAL.println(">>>> Begin Stunde <<<<");
+      TelnetMsg(">>>> Begin Stunde <<<<");
     #endif   
     // WLAN testen
     wlan_status = WiFi.status();
     #ifdef DEBUG     
-      USE_SERIAL.printf("WLAN-Status: %s\n", wstatus[wlan_status]);    
+      USE_SERIAL.printf("WLAN-Status: %s\n", wstatus[wlan_status]);   
+      TelnetMsg("WLAN-Status: "); TelnetMsg(wstatus[wlan_status]);     
     #endif         
     if (wlan_client == false && wlan_ssid == true){
       WlanStart();
@@ -405,6 +425,7 @@ void loop()
     last_stunde = _stunde;
     #ifdef DEBUG     
       USE_SERIAL.println(">>>> Ende  Stunde <<<<");
+      TelnetMsg(">>>> Ende  Stunde <<<<");
     #endif      
   }
   
@@ -422,6 +443,7 @@ void loop()
   if (ntp_flag == true) {
     #ifdef DEBUG     
       USE_SERIAL.println("npt: Neue Zeit holen");
+      TelnetMsg("npt: Neue Zeit holen");
     #endif      
     ntp_flag = false;
     wlan_status = WiFi.status();

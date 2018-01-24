@@ -1,6 +1,95 @@
 #include <Arduino.h>
 
 //------------------------------------------------------------------------------
+// Telnet Server für Konsolen Ausgaben
+//------------------------------------------------------------------------------
+
+void Telnet()
+{
+  // Cleanup disconnected session
+  for(uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++)
+  {
+    if (TelnetClient[i] && !TelnetClient[i].connected())
+    {
+      Serial.print("Client disconnected ... terminate session "); Serial.println(i+1); 
+      TelnetClient[i].stop();
+    }
+  }
+  
+  // Check new client connections
+  if (TelnetServer.hasClient())
+  {
+    ConnectionEstablished = false; // Set to false
+    
+    for(uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++)
+    {
+      // Serial.print("Checking telnet session "); Serial.println(i+1);
+      
+      // find free socket
+      if (!TelnetClient[i])
+      {
+        TelnetClient[i] = TelnetServer.available(); 
+        
+        Serial.print("New Telnet client connected to session "); Serial.println(i+1);
+        
+        TelnetClient[i].flush();  // clear input buffer, else you get strange characters
+        TelnetClient[i].println("Welcome!");
+        
+        TelnetClient[i].print("Millis since start: ");
+        TelnetClient[i].println(millis());
+        
+        TelnetClient[i].print("Free Heap RAM: ");
+        TelnetClient[i].println(ESP.getFreeHeap());
+  
+        TelnetClient[i].println("----------------------------------------------------------------");
+        
+        ConnectionEstablished = true; 
+        
+        break;
+      }
+      else
+      {
+        // Serial.println("Session is in use");
+      }
+    }
+ 
+    if (ConnectionEstablished == false)
+    {
+      Serial.println("No free sessions ... drop connection");
+      TelnetServer.available().stop();
+      // TelnetMsg("An other user cannot connect ... MAX_TELNET_CLIENTS limit is reached!");
+    }
+  }
+ 
+  for(uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++)
+  {
+    if (TelnetClient[i] && TelnetClient[i].connected())
+    {
+      if(TelnetClient[i].available())
+      { 
+        //get data from the telnet client
+        while(TelnetClient[i].available())
+        {
+          Serial.write(TelnetClient[i].read());
+        }
+      }
+    }
+  }
+}
+
+void TelnetMsg(String text)
+{
+  for(uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++)
+  {
+    if (TelnetClient[i] || TelnetClient[i].connected())
+    {
+      TelnetClient[i].println(text);
+    }
+  }
+  delay(10);  // to avoid strange characters left in buffer
+}
+
+//------------------------------------------------------------------------------
 // Helligkeitsregelung nach Uhrzeiten oder per LDR
 //------------------------------------------------------------------------------
 
@@ -205,18 +294,11 @@ void doLDRLogic() {
   if(millis() >= waitUntilLDR) {
      waitUntilLDR = millis();
      int temp = analogRead(A0);
-  //  #ifdef DEBUG     
-  //    USE_SERIAL.print("LDR Wert : ");USE_SERIAL.println(temp);
-  //  #endif 
-
      temp = temp - G.ldrCal;                
      if (temp >= 900 ) temp = 900;
      if (temp <= 1 ) temp = 1;
       ldrVal = map(temp, 1, 900, 1, 100);
       waitUntilLDR += oneseconddelay;
-//      #ifdef DEBUG     
-//      USE_SERIAL.print("LDR Wert : ");USE_SERIAL.println(ldrVal);
-//      #endif
   }
 }
 
@@ -699,13 +781,6 @@ void show_minuten() {
 
 //------------------------------------------------------------------------------
 
-void the_matrix() {
-       
-}
-
-
-//------------------------------------------------------------------------------
-
 void show_zeit(int flag) {
 
   unsigned char m, s;
@@ -785,78 +860,6 @@ void show_zeit(int flag) {
 #endif
   led_show();  
 
-// Animation test
-  switch (animation) {
-  case 0: schieben(80, 0);  laufen(20, 1); break;
-  case 1: wischen(100, 0, 0, 80);    break;
-  case 2: schieben(50, 0);  break;
-  case 3: wischen(100, 0, 0, 50);    break;
-  case 4: schieben(50, 0);  break;
-  case 5: wischen(100, 0, 0, 50);    break;
-  case 6: schieben(50, 0);  break;
-  case 7: wischen(100, 0, 0, 50);    break;
-  case 8: schieben(50, 0);  break;
-  case 9: wischen(100, 0, 0, 50);    break;
-  case 10:wischen(100, 0, 0, 50);    break;
-  case 11:schieben(50, 0);  break;
-  case 50:the_matrix(); break;
-  }
-// Animation test
-
 }
 
 
-//------------------------------------------------------------------------------
-/*
-void set_farbe_uhr() {
-
-  unsigned int rr, gg, bb, zz;  
-  rr = G.rgb[2][0];
-  gg = G.rgb[2][1];
-  bb = G.rgb[2][2];
-  zz = rr + gg + bb;
-  if (zz > 150) {
-    zz = zz * 10 / 150;
-    rr = (int)rr * 10 / zz;
-    gg = (int)gg * 10 / zz;
-    bb = (int)bb * 10 / zz;
-  }  
-  G.rr = rr;
-  G.gg = gg;
-  G.bb = bb;
-  for( int i = 0; i < NUM_SMATRIX;i++){ 
-    led_set_pixel(G.rr, G.gg, G.bb, smatrix[i]);          
-  }
-}
-*/
-//------------------------------------------------------------------------------
-
-/*
-void test_uhr(uint16_t d) {
-
-  led_clear(); es_ist();   led_show();  delay(d);
-  led_clear(); fuenf();    led_show();  delay(d);
-  led_clear(); zehn();     led_show();  delay(d);
-  led_clear(); zwanzig();  led_show();  delay(d);
-  led_clear(); viertel();  led_show();  delay(d);
-  led_clear(); nach();     led_show();  delay(d);
-  led_clear(); vor();      led_show();  delay(d);
-  led_clear(); halb();     led_show();  delay(d);
-  led_clear(); h_zwoelf(); led_show();  delay(d);
-  led_clear(); h_zwei();   led_show();  delay(d);
-  led_clear(); eins();     led_show();  delay(d);
-  led_clear(); h_ein();    led_show();  delay(d);
-  led_clear(); h_sieben(); led_show();  delay(d);
-  led_clear(); h_drei();   led_show();  delay(d);
-  led_clear(); h_fuenf();  led_show();  delay(d);
-  led_clear(); h_elf();    led_show();  delay(d);
-  led_clear(); h_neun();   led_show();  delay(d);
-  led_clear(); h_vier();   led_show();  delay(d);
-  led_clear(); h_acht();   led_show();  delay(d);
-  led_clear(); h_zehn();   led_show();  delay(d);
-  led_clear(); h_sechs();  led_show();  delay(d);
-  led_clear(); uhr();      led_show();  delay(d);
-
-}
-*/
-//------------------------------------------------------------------------------

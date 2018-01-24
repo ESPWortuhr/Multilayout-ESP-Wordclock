@@ -2,7 +2,7 @@
  * Hier Anpassungen der Hardware vornehmen.
  */
 
-#define VER "2.0.8"  // Software Version
+#define VER "2.0.9"  // Software Version
 
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED´s bzw. Reihen verwendet werden
@@ -113,6 +113,12 @@ long waitUntilLDR = 0;
 int autoBrightnessEnabled = 1;
 int ldrVal = 50;
 int oneseconddelay = 1000;
+
+// Telnet vars
+bool ConnectionEstablished; // Flag for successfully handled connection
+#define MAX_TELNET_CLIENTS 2
+WiFiServer TelnetServer(23);
+WiFiClient TelnetClient[MAX_TELNET_CLIENTS];
 
 const char *ssid_ap = "Uhr";
 const char *password_ap = "12345678";
