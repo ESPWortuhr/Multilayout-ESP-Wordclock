@@ -16,7 +16,7 @@
 uint8_t show_ip = true;      // Zeige IP Adresse beim Start 
 
 /*--------------------------------------------------------------------------
- * ENDE Hardware Konfiguration. Ab hier nichts mehr Ändern!!!
+ * ENDE Hardware Konfiguration. Ab hier nichts mehr ändern!!!
 /*--------------------------------------------------------------------------
  */
 
@@ -26,7 +26,7 @@ uint8_t show_ip = true;      // Zeige IP Adresse beim Start
 #define USE_SERIAL Serial
 
 #ifdef UHR_114 
-#define NUM_PIXELS   114                
+#define NUM_PIXELS   150                //für Ambilight von 114 auf 150 geändert
 #define NUM_SMATRIX  114                
 #define ROWS_MATRIX   11                
 #endif  

@@ -824,6 +824,31 @@ void show_zeit(int flag) {
     }
   }
   
+  //Ambilight Farbwert und Helligkeit ermitteln (=Rahmenfarbe)
+  rr = G.rgb[2][0];
+  gg = G.rgb[2][1];
+  bb = G.rgb[2][2];
+  zz = (rr + gg + bb);
+
+  //Helligkeit Ambilight einstellen / LDR
+  if (G.ldr == 1) {
+  //Helligkeit LDR
+  rr = (int)rr / ldrVal;
+  gg = (int)gg / ldrVal;
+  bb = (int)bb / ldrVal;   
+  } else {
+  rr = (int)rr * G.hh / 100 * 0.2;     // ca. 20 % sollten ausreichen, um in etwa die selbe Helligkeit
+  gg = (int)gg * G.hh / 100 * 0.2;    // wie die Vordergrundbeleuchtung zu erhalten. Ansonsten
+  bb = (int)bb * G.hh / 100 * 0.2;    // Wert anpassen 
+  }
+
+  
+  //Ambilight setzen
+  for (int t = 0; t < 36; t++){
+      led_set_pixel(rr, gg, bb, rmatrix[t]);
+  }
+  
+  
   if (uhrzeit & ((uint32_t)1 << ESIST))   { es_ist();  }
   if (uhrzeit & ((uint32_t)1 << FUENF))   { fuenf();   }
   if (uhrzeit & ((uint32_t)1 << ZEHN))    { zehn();    }
