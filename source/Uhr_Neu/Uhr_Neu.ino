@@ -32,6 +32,10 @@ Version 2.0.8
 Version 2.0.9
 * (Eisbaeeer)
 * Telnet Server für Debugging
+Version 2.0.10
+* (masju)
+* Erweiterung Randbeleuchtung ("Ambilight") für die 114-LED-Version
+
 
 Ideen / Todo
 - Zeitverlauf Farben konfigurierbar
