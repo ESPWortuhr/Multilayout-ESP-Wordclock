@@ -1055,20 +1055,25 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
           G.zeitserver[ii] = '\0';    
           break;           
         }       
-        if (cc == 99) {       // WLAN-Daten speichern und neu starten
+         if (cc == 99) {       // WLAN-Daten speichern und neu starten
           G.conf = 99; 
           ii = 0;
-          for (int k=9;k<34;k++){
-            if (str[k]!=' '){ G.ssid[ii] = str[k]; ii++; }
+          for (int k=9;k<33;k++){
+            //if (str[k]!=' '){ G.ssid[ii] = str[k]; ii++; }      
+            G.ssid[ii] = str[k]; ii++;                                               // Array SSID vollständig von vorne füllen
           }
-          G.ssid[ii]='\0';
-          ii = 0;
-          for (int k=34;k<59;k++){ 
-            if (str[k]!=' '){ G.passwd[ii] = str[k]; ii++; }
-          } 
-          G.passwd[ii]='\0';         
-          break;
-        }       
+          G.ssid[ii]='\0';                                                           // Ende Array
+
+          // Leerstellen der SSID von hinten an entfernen
+          ii = 23;
+          for (int k=23;k>1;k--){
+            if (G.ssid[k]!=' '){
+              break;
+            } else {
+              G.ssid[ii] = '\0'; ii--;
+            }
+          }
+          // Bugfix Leerstelle in SSID ENDE   
         if (cc == 100) {      // Reset
           G.conf = 100;  
           break;
