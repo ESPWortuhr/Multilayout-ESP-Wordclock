@@ -35,7 +35,9 @@ Version 2.0.9
 Version 2.0.10
 * (masju)
 * Erweiterung Randbeleuchtung ("Ambilight") für die 114-LED-Version
-
+Version 2.0.11
+* (Eisbaeeer)
+* Bugfix issue #3 (Leerstelle in SSID)
 
 Ideen / Todo
 - Zeitverlauf Farben konfigurierbar
