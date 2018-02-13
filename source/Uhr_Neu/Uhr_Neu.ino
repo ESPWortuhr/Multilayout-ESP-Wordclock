@@ -1075,6 +1075,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
               G.ssid[ii] = '\0'; ii--;
             }
           }
+         }
           // Bugfix Leerstelle in SSID ENDE   
         if (cc == 100) {      // Reset
           G.conf = 100;  

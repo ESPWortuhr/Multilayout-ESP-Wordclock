@@ -78,3 +78,9 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ### Version 2.0.9
 * (Eisbaeeer)
 * Telnet Server für Debugging
+### Version 2.0.10
+* (masju)
+* Erweiterung Randbeleuchtung ("Ambilight") für die 114-LED-Version
+### Version 2.0.11
+* (Eisbaeeer)
+* Bugfix issue #3 (Leerstelle in SSID)
