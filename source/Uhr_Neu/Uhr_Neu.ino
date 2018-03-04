@@ -1075,6 +1075,22 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
               G.ssid[ii] = '\0'; ii--;
             }
           }
+          //-------------------Passwd-------------
+          ii = 0;
+          for (int k=34;k<58;k++){ 
+            G.passwd[ii] = str[k]; ii++;                                          // Array Passwort vollständig von vorne füllen
+          }
+          G.passwd[ii]='\0';                                                      // Ende Array
+          // Leerstellen des Passworts von hinten an entfernen
+          ii = 23;
+          for (int k=23;k>1;k--){
+            if (G.passwd[k]!=' '){
+              break;
+            } else {
+              G.passwd[ii] = '\0'; ii--;
+              }
+            }
+          //-------------------Passwort-------------
          }
           // Bugfix Leerstelle in SSID ENDE   
         if (cc == 100) {      // Reset
