@@ -38,6 +38,9 @@ Version 2.0.10
 Version 2.0.11
 * (Eisbaeeer)
 * Bugfix issue #3 (Leerstelle in SSID)
+Version 2.0.12
+* Elektron79
+* Bugfix Passwort speichern
 
 Ideen / Todo
 - Zeitverlauf Farben konfigurierbar

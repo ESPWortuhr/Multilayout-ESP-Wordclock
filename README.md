@@ -84,3 +84,6 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ### Version 2.0.11
 * (Eisbaeeer)
 * Bugfix issue #3 (Leerstelle in SSID)
+### Version 2.0.12
+* (Elektron79)
+* Bugfix Passwort speichern
