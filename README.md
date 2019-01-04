@@ -45,7 +45,7 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * Silvester Countdown
 
 ## ChangeLog                      
-### Version 1.1.0
+### Version 2.1.0
 * (Eisbaeeer)
 * Bugfix null pointer
 * Code weiter aufgeräumt
@@ -54,11 +54,6 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ### Version 2.0.12
 * (Elektron79)
 * Bugfix Passwort speichern
-### Version 2.0.1
-* (Markus Aust)
-* Minuten LED´s
-* (Eisbaeeer)
-* Versionierung
 ### Version 2.0.11
 * (Eisbaeeer)
 * Bugfix issue #3 (Leerstelle in SSID)
@@ -90,6 +85,11 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ### Version 2.0.2
 * (Eisbaeeer)
 * fix NTP DNS lookup (falsche IP im DNS lookup)
+### Version 2.0.1
+* (Markus Aust)
+* Minuten LED´s
+* (Eisbaeeer)
+* Versionierung
 ### Version 2.0.0 
 * (Ulrich Radig)
 * inital version   
