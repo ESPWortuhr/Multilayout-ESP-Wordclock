@@ -32,15 +32,8 @@ Version 2.0.8
 Version 2.0.9
 * (Eisbaeeer)
 * Telnet Server für Debugging
-Version 2.0.10
-* (masju)
-* Erweiterung Randbeleuchtung ("Ambilight") für die 114-LED-Version
-Version 2.0.11
-* (Eisbaeeer)
-* Bugfix issue #3 (Leerstelle in SSID)
-Version 2.0.12
-* Elektron79
-* Bugfix Passwort speichern
+Version 2.1.0
+* OpenWeatherMap für Uhr 242
 
 Ideen / Todo
 - Zeitverlauf Farben konfigurierbar
@@ -110,6 +103,8 @@ extern "C"{
 };
 #include "ntp_func.h"
 
+//--OpenWeatherMapOrg
+#include "openwmap.h"
 
 TimeChangeRule CEST = {"CEST", Last, Sun, Mar, 2, 120};     //Central European Summer Time
 TimeChangeRule CET = {"CET ", Last, Sun, Oct, 3, 60};       //Central European Standard Time
@@ -177,11 +172,11 @@ void setup()
     G.zeige_min = 1;
     G.ldr       = 0; 
     G.ldrCal    = 0;
-
+    strcpy(G.cityid, "");
+    strcpy(G.apikey, "");
     strcpy(G.zeitserver, "ptbtime1.ptb.de");
     strcpy(G.hostname, "uhr");     
-    strcpy(G.ltext, "HELLO WORLD "); 
-           
+    strcpy(G.ltext, "HELLO WORLD ");           
     G.hh        = 100;  
     G.h6        = 100;
     G.h8        = 100;
@@ -225,7 +220,8 @@ void setup()
     
   //-------------------------------------   
   // LEDs initialisieren
-  //-------------------------------------   
+  //-------------------------------------
+  USE_SERIAL.println("WS2812 LED Init");    
   strip.Begin(); 
   led_single(20);
   led_clear();
@@ -322,6 +318,11 @@ void loop()
     _minute  = minute(ltime);
     _stunde  = hour(ltime);   
     count_tag++;
+    // Wetteruhr
+    #ifdef UHR_242
+    weather_tag++;
+    #endif
+
   }
   #ifdef UHR_169   
     if (count_millis48 >= interval48) {
@@ -379,6 +380,24 @@ void loop()
       show_zeit(0); // Anzeige Uhrzeit ohne Config
     }
     last_sekunde = _sekunde;
+  
+  #ifdef UHR_242
+  
+if ((_sekunde == 30) | (_sekunde == 0))  {
+    wetterswitch ++;
+    if (wetterswitch > 4) {
+    wetterswitch = 1;
+    }
+    #ifdef DEBUG     
+      USE_SERIAL.print("Wetterswitch: ");
+      USE_SERIAL.println(wetterswitch);
+      USE_SERIAL.print("WStunde: ");
+      USE_SERIAL.println(wstunde);
+    #endif  
+  }
+
+   
+  #endif
   }
   
   //------------------------------------------------
@@ -445,6 +464,18 @@ void loop()
     count_tag = 0;
     ntp_flag = true;
   }      
+
+  //------------------------------------------------
+  // Wetterdaten abrufen
+  //------------------------------------------------    
+  #ifdef UHR_242
+  if (weather_tag >= 600) { 
+    weather_tag = 0;
+    if (wlan_client == true) {  
+      getweather();
+    }
+  }      
+  #endif
 
   //------------------------------------------------
   // NTP Zeit neu holen
@@ -568,6 +599,23 @@ void loop()
       USE_SERIAL.printf("LDR : %u\n\n", G.ldr);
       USE_SERIAL.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
     #endif  
+    G.conf = 0;     
+  }
+  //------------------------------------------------
+
+  //------------------------------------------------
+  // OpenWeathermap Einstellung speichern
+  //------------------------------------------------  
+  if (G.conf == 90) {
+    #ifdef DEBUG  
+      USE_SERIAL.println ("write EEPROM!");    
+      USE_SERIAL.print("CityID : ");
+      USE_SERIAL.println(G.cityid);
+      USE_SERIAL.print("APIkey : ");
+      USE_SERIAL.println(G.apikey);
+    #endif  
+    eeprom_write(); 
+    delay(100);  
     G.conf = 0;     
   }
   //------------------------------------------------
@@ -759,7 +807,7 @@ void loop()
     strcat(str, "\",\"hostname\":\"");  
     strcat(str, G.hostname);    
     strcat(str, "\",\"ltext\":\"");      
-    strcat(str, G.ltext);
+    strcat(str, G.ltext); 
     strcat(str, "\",\"h6\":\"");
     sprintf(s, "%d", G.h6);   
     strcat(str, s);    
@@ -798,7 +846,11 @@ void loop()
     strcat(str, s); 
     strcat(str, "\",\"ldrCal\":\"");
     sprintf(s, "%d", G.ldrCal);   
-    strcat(str, s);   
+    strcat(str, s);
+    strcat(str, "\",\"cityid\":\"");    
+    strcat(str, G.cityid);
+    strcat(str, "\",\"apikey\":\"");  
+    strcat(str, G.apikey);     
     strcat(str, "\"}");
     webSocket.sendTXT(G.client_nr, str, strlen(str));    
     G.conf = 0;   
@@ -869,7 +921,9 @@ int split(int i, int j) {
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght) {
     int cc = 0;
     int ii;
+    int jj;
     char tmp[30];    
+    payload = (payload == NULL) ? (uint8_t *)"" : payload;
     #ifdef DEBUG    
      USE_SERIAL.printf("Client-Nr.: [%u]  WStype: %u payload: %s\n", num, type, payload);
     #endif     
@@ -1020,6 +1074,27 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
           G.ldrCal = split(12,3);
           break;           
         }                 
+        if (cc == 90) {       // Openweathermap speichern 
+          G.conf = 90;
+          ii = 0;
+          for (int k=9;k<16;k++){
+            if (str[k]!=' '){ 
+              G.cityid[ii] = str[k];
+              ii++;
+              }
+          }
+          G.cityid[ii] = '\0';
+          //
+          jj = 0;
+          for (int l=17;l<49;l++){
+            if (str[l]!=' '){ 
+              G.apikey[jj] = str[l];
+              jj++;
+              }
+          }
+          G.apikey[jj] = '\0'; 
+          break; 
+        }
         if (cc == 95) {       // Helligkeit speichern 
           G.conf = 95;
           G.conf = 95;
@@ -1060,42 +1135,20 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
           G.zeitserver[ii] = '\0';    
           break;           
         }       
-         if (cc == 99) {       // WLAN-Daten speichern und neu starten
+        if (cc == 99) {       // WLAN-Daten speichern und neu starten
           G.conf = 99; 
           ii = 0;
-          for (int k=9;k<33;k++){
-            //if (str[k]!=' '){ G.ssid[ii] = str[k]; ii++; }      
-            G.ssid[ii] = str[k]; ii++;                                               // Array SSID vollständig von vorne füllen
+          for (int k=9;k<34;k++){
+            if (str[k]!=' '){ G.ssid[ii] = str[k]; ii++; }
           }
-          G.ssid[ii]='\0';                                                           // Ende Array
-
-          // Leerstellen der SSID von hinten an entfernen
-          ii = 23;
-          for (int k=23;k>1;k--){
-            if (G.ssid[k]!=' '){
-              break;
-            } else {
-              G.ssid[ii] = '\0'; ii--;
-            }
-          }
-          //-------------------Passwd-------------
+          G.ssid[ii]='\0';
           ii = 0;
-          for (int k=34;k<58;k++){ 
-            G.passwd[ii] = str[k]; ii++;                                          // Array Passwort vollständig von vorne füllen
-          }
-          G.passwd[ii]='\0';                                                      // Ende Array
-          // Leerstellen des Passworts von hinten an entfernen
-          ii = 23;
-          for (int k=23;k>1;k--){
-            if (G.passwd[k]!=' '){
-              break;
-            } else {
-              G.passwd[ii] = '\0'; ii--;
-              }
-            }
-          //-------------------Passwort-------------
-         }
-          // Bugfix Leerstelle in SSID ENDE   
+          for (int k=34;k<59;k++){ 
+            if (str[k]!=' '){ G.passwd[ii] = str[k]; ii++; }
+          } 
+          G.passwd[ii]='\0';         
+          break;
+        }       
         if (cc == 100) {      // Reset
           G.conf = 100;  
           break;
@@ -1402,7 +1455,8 @@ void eeprom_read()
 {
   EEPROM_readAnything( 0, G );  
   #ifdef DEBUG  
-   USE_SERIAL.println("Version 2.0.1");
+   USE_SERIAL.print("Version   : ");
+   USE_SERIAL.println(VER);
    USE_SERIAL.printf("Sernr     : %u\n",  G.sernr);
    USE_SERIAL.printf("SSID      : %s\n",  G.ssid);  
    USE_SERIAL.printf("Passwd    : %s\n",  G.passwd);
@@ -1431,6 +1485,10 @@ void eeprom_read()
    USE_SERIAL.printf("H24       : %u\n",  G.h24);
    USE_SERIAL.printf("LDR       : %u\n",  G.ldr);
    USE_SERIAL.printf("LDRCal    : %u\n",  G.ldrCal);
+   USE_SERIAL.print("OWM_apikey: ");
+   USE_SERIAL.println(G.apikey);
+   USE_SERIAL.print("OWM_city  : ");
+   USE_SERIAL.println(G.cityid);
    
   #endif  
   delay(100);

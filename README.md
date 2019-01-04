@@ -26,6 +26,7 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
       
 ## Verzeichnisstruktur
 * pics enthält Bilder
+* dxf enthält DXF Dateien
 * source enthält den Sketch für Arduino
 * libs enthält alle benötigten Libs
 * docs enthält Anleitungen  
@@ -44,46 +45,52 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * Silvester Countdown
 
 ## ChangeLog                      
-
-### Version 2.0.0 
-* (Ulrich Radig)
-* inital version   
+### Version 1.1.0
+* (Eisbaeeer)
+* Bugfix null pointer
+* Code weiter aufgeräumt
+* Minuten arrays gefixt
+* Neue Uhr Version 242 (Open Weather Map)
+### Version 2.0.12
+* (Elektron79)
+* Bugfix Passwort speichern
 ### Version 2.0.1
 * (Markus Aust)
 * Minuten LED´s
 * (Eisbaeeer)
 * Versionierung
-### Version 2.0.2
+### Version 2.0.11
 * (Eisbaeeer)
-* fix NTP DNS lookup (falsche IP im DNS lookup)
-### Version 2.0.3
+* Bugfix issue #3 (Leerstelle in SSID)
+### Version 2.0.10
+* (masju)
+* Erweiterung Randbeleuchtung ("Ambilight") für die 114-LED-Version
+### Version 2.0.9
 * (Eisbaeeer)
-* Neue Variante mit 11x11 Reihen LED´s hinzugefügt
-### Version 2.0.4
-* (path83 & Eisbaeeer)
-* LDR für automatische Helligkeitsregelung
+* Telnet Server für Debugging
+### Version 2.0.8
+* (Flo455)
+* WLAN Scan hinzugefügt
+### Version 2.0.7
+* (Eisbaeeer)
+* LDR für Hintergrundhelligkeit
+### Version 2.0.6
+* (path83 & masju & Eisbaeeer)
+* Over The Air Update Link in Webconfig
 ### Version 2.0.5
 * (Eisbaeeer)
 * IP Adresse per Laufschrift ausgeben
 * LDR Kalibrierung über WebConfig
-### Version 2.0.6
-* (path83 & masju & Eisbaeeer)
-* Over The Air Update Link in Webconfig
-### Version 2.0.7
+### Version 2.0.4
+* (path83 & Eisbaeeer)
+* LDR für automatische Helligkeitsregelung
+### Version 2.0.3
 * (Eisbaeeer)
-* LDR für Hintergrundhelligkeit
-### Version 2.0.8
-* (Flo455)
-* WLAN Scan hinzugefügt
-### Version 2.0.9
+* Neue Variante mit 11x11 Reihen LED´s hinzugefügt
+### Version 2.0.2
 * (Eisbaeeer)
-* Telnet Server für Debugging
-### Version 2.0.10
-* (masju)
-* Erweiterung Randbeleuchtung ("Ambilight") für die 114-LED-Version
-### Version 2.0.11
-* (Eisbaeeer)
-* Bugfix issue #3 (Leerstelle in SSID)
-### Version 2.0.12
-* (Elektron79)
-* Bugfix Passwort speichern
+* fix NTP DNS lookup (falsche IP im DNS lookup)
+### Version 2.0.0 
+* (Ulrich Radig)
+* inital version   
+

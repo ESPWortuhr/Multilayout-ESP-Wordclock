@@ -129,6 +129,10 @@ void led_set(uint16_t i) {
 #include "uhr_func_169.h"
 #endif 
 
+#ifdef UHR_242 
+#include "uhr_func_242.h"
+#endif 
+
 //------------------------------------------------------------------------------
 
 void led_show() {
@@ -741,7 +745,7 @@ void show_sekunde() {
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_114                                                                                        //vorher 169  markus 
+#ifdef UHR_114
 void show_minuten() {
   unsigned char m;
 
@@ -751,13 +755,13 @@ void show_minuten() {
     m = _minute;
     while (m > 4) { m -= 5; }
 
-    if (m > 0){ led_set(min_arr[G.zeige_min-1][114]); }                                             //vorher 0  
-    if (m > 1){ led_set(min_arr[G.zeige_min-1][115]); }                                             // vorher 1   Aber WARUM 114, 115 116 117 da nehmen muss, weiß ich net- 
-    if (m > 2){ led_set(min_arr[G.zeige_min-1][116]); }                                             //vorher 2    jedenfalls zeigte er mir die minuten bei der falschen LEDs an.
-    if (m > 3){ led_set(min_arr[G.zeige_min-1][117]); }                                             //vorher 3    Teste mal selber--
+    if (m > 0){ led_set(min_arr[G.zeige_min-1][0]); }                                             
+    if (m > 1){ led_set(min_arr[G.zeige_min-1][1]); }                                             
+    if (m > 2){ led_set(min_arr[G.zeige_min-1][2]); }                                             
+    if (m > 3){ led_set(min_arr[G.zeige_min-1][3]); }                                             
   }   
 }
-#endif   
+#endif
 
 //------------------------------------------------------------------------------
 
@@ -771,13 +775,181 @@ void show_minuten() {
     m = _minute;
     while (m > 4) { m -= 5; }
 
-    if (m > 0){ led_set(min_arr[G.zeige_min-1][128]); }                                               
-    if (m > 1){ led_set(min_arr[G.zeige_min-1][127]); }                                             
-    if (m > 2){ led_set(min_arr[G.zeige_min-1][126]); }                                             
-    if (m > 3){ led_set(min_arr[G.zeige_min-1][125]); }                                             
+    if (m > 0){ led_set(min_arr[G.zeige_min-1][0]); }                                               
+    if (m > 1){ led_set(min_arr[G.zeige_min-1][1]); }                                             
+    if (m > 2){ led_set(min_arr[G.zeige_min-1][2]); }                                             
+    if (m > 3){ led_set(min_arr[G.zeige_min-1][3]); }                                             
   }   
 }
 #endif   
+
+//------------------------------------------------------------------------------
+
+#ifdef UHR_242                                                                                        //vorher 169  markus 
+void show_minuten() {
+  unsigned char m;
+
+  if (G.zeige_min > 0){  
+    // Minuten / Sekunden-Animation
+    // Minute (1-4)  ermitteln
+    m = _minute;
+    while (m > 4) { m -= 5; }
+
+    if (m > 0){ led_set(min_arr[G.zeige_min-1][0]); }                                               
+    if (m > 1){ led_set(min_arr[G.zeige_min-1][1]); }                                             
+    if (m > 2){ led_set(min_arr[G.zeige_min-1][2]); }                                             
+    if (m > 3){ led_set(min_arr[G.zeige_min-1][3]); }                                             
+  }   
+}
+
+// Wetterdaten anzeigen
+void show_wetter() {
+
+   switch (wetterswitch) {
+   // +6h
+   case 1: {
+        switch (wstunde) {
+          case 1:   w_mittag(); break;
+          case 2:   w_abend(); break;
+          case 3:   w_nacht(); break;
+          case 4:   { w_morgen(); w_frueh(); } break;   
+          }
+        switch (wtemp_6) {
+          case 30:  { w_ueber(); w_dreissig(); w_grad(); } break;
+          case 25:  { w_ueber(); w_fuenf(); w_und(); w_zwanzig(); w_grad(); } break;
+          case 20:  { w_ueber(); w_zwanzig(); w_grad(); } break;
+          case 15:  { w_ueber(); w_fuenf(); w_zehn(); w_grad(); } break;
+          case 10:  { w_ueber(); w_zehn(); w_grad(); } break;
+          case 5:  { w_ueber(); w_fuenf(); w_grad(); } break;
+          case 1:  { w_ueber(); w_null(); w_grad(); } break;
+          case -1:  { w_unter(); w_minus(); w_null(); w_grad(); } break;
+          case -5:  { w_unter(); w_minus(); w_fuenf(); w_grad(); } break;
+          case -10:  { w_unter(); w_minus(); w_zehn(); w_grad(); } break;
+          case -15:  { w_unter(); w_minus(); w_fuenf(); w_zehn(); w_grad(); } break;
+          case -20:  { w_unter(); w_minus(); w_zwanzig(); w_grad(); } break;
+          case -25:  { w_unter(); w_minus(); w_fuenf(); w_und(); w_zwanzig(); w_grad(); } break;
+          }
+        switch (wwetter_6) {
+          case 200: w_gewitter(); break;
+          case 300: w_regen(); break;
+          case 500: w_regen(); break;
+          case 600: w_schnee(); break;
+          case 700: w_warnung(); break;
+          case 800: w_klar(); break;
+          case 801: w_wolken(); break;
+          }
+      }
+      break;
+   // +12h
+   case 2: {
+        switch (wstunde) {
+          case 1:   w_abend(); break;
+          case 2:   w_nacht(); break;
+          case 3:   { w_morgen(); w_frueh(); } break; 
+          case 4:   { w_morgen(); w_mittag(); } break;     
+          }
+        switch (wtemp_12) {
+          case 30:  { w_ueber(); w_dreissig(); w_grad(); } break;
+          case 25:  { w_ueber(); w_fuenf(); w_und(); w_zwanzig(); w_grad(); } break;
+          case 20:  { w_ueber(); w_zwanzig(); w_grad(); } break;
+          case 15:  { w_ueber(); w_fuenf(); w_zehn(); w_grad(); } break;
+          case 10:  { w_ueber(); w_zehn(); w_grad(); } break;
+          case 5:  { w_ueber(); w_fuenf(); w_grad(); } break;
+          case 1:  { w_ueber(); w_null(); w_grad(); } break;
+          case -1:  { w_unter(); w_minus(); w_null(); w_grad(); } break;
+          case -5:  { w_unter(); w_minus(); w_fuenf(); w_grad(); } break;
+          case -10:  { w_unter(); w_minus(); w_zehn(); w_grad(); } break;
+          case -15:  { w_unter(); w_minus(); w_fuenf(); w_zehn(); w_grad(); } break;
+          case -20:  { w_unter(); w_minus(); w_zwanzig(); w_grad(); } break;
+          case -25:  { w_unter(); w_minus(); w_fuenf(); w_und(); w_zwanzig(); w_grad(); } break;
+          }
+        switch (wwetter_12) {
+          case 200: w_gewitter(); break;
+          case 300: w_regen(); break;
+          case 500: w_regen(); break;
+          case 600: w_schnee(); break;
+          case 700: w_warnung(); break;
+          case 800: w_klar(); break;
+          case 801: w_wolken(); break;
+          }
+ 
+      }        
+      break;
+    // +18h    
+    case 3: {
+        switch (wstunde) {
+          case 1:   w_nacht(); break;
+          case 2:   { w_morgen(); w_frueh(); } break; 
+          case 3:   { w_morgen(); w_mittag(); } break; 
+          case 4:   { w_morgen(); w_abend(); } break;    
+          }
+        switch (wtemp_18) {
+          case 30:  { w_ueber(); w_dreissig(); w_grad(); } break;
+          case 25:  { w_ueber(); w_fuenf(); w_und(); w_zwanzig(); w_grad(); } break;
+          case 20:  { w_ueber(); w_zwanzig(); w_grad(); } break;
+          case 15:  { w_ueber(); w_fuenf(); w_zehn(); w_grad(); } break;
+          case 10:  { w_ueber(); w_zehn(); w_grad(); } break;
+          case 5:  { w_ueber(); w_fuenf(); w_grad(); } break;
+          case 1:  { w_ueber(); w_null(); w_grad(); } break;
+          case -1:  { w_unter(); w_minus(); w_null(); w_grad(); } break;
+          case -5:  { w_unter(); w_minus(); w_fuenf(); w_grad(); } break;
+          case -10:  { w_unter(); w_minus(); w_zehn(); w_grad(); } break;
+          case -15:  { w_unter(); w_minus(); w_fuenf(); w_zehn(); w_grad(); } break;
+          case -20:  { w_unter(); w_minus(); w_zwanzig(); w_grad(); } break;
+          case -25:  { w_unter(); w_minus(); w_fuenf(); w_und(); w_zwanzig(); w_grad(); } break;
+          }
+        switch (wwetter_18) {
+          case 200: w_gewitter(); break;
+          case 300: w_regen(); break;
+          case 500: w_regen(); break;
+          case 600: w_schnee(); break;
+          case 700: w_warnung(); break;
+          case 800: w_klar(); break;
+          case 801: w_wolken(); break;
+          }
+ 
+      }        
+      break;
+    // +24h
+    case 4: {
+        switch (wstunde) {
+          case 1:   { w_morgen(); w_frueh(); } break;
+          case 2:   { w_morgen(); w_mittag(); } break;
+          case 3:   { w_morgen(); w_abend(); } break;
+          case 4:   { w_morgen(); w_nacht(); } break;    
+          }
+        switch (wtemp_24) {
+          case 30:  { w_ueber(); w_dreissig(); w_grad(); } break;
+          case 25:  { w_ueber(); w_fuenf(); w_und(); w_zwanzig(); w_grad(); } break;
+          case 20:  { w_ueber(); w_zwanzig(); w_grad(); } break;
+          case 15:  { w_ueber(); w_fuenf(); w_zehn(); w_grad(); } break;
+          case 10:  { w_ueber(); w_zehn(); w_grad(); } break;
+          case 5:  { w_ueber(); w_fuenf(); w_grad(); } break;
+          case 1:  { w_ueber(); w_null(); w_grad(); } break;
+          case -1:  { w_unter(); w_minus(); w_null(); w_grad(); } break;
+          case -5:  { w_unter(); w_minus(); w_fuenf(); w_grad(); } break;
+          case -10:  { w_unter(); w_minus(); w_zehn(); w_grad(); } break;
+          case -15:  { w_unter(); w_minus(); w_fuenf(); w_zehn(); w_grad(); } break;
+          case -20:  { w_unter(); w_minus(); w_zwanzig(); w_grad(); } break;
+          case -25:  { w_unter(); w_minus(); w_fuenf(); w_und(); w_zwanzig(); w_grad(); } break;
+          }
+        switch (wwetter_24) {
+          case 200: w_gewitter(); break;
+          case 300: w_regen(); break;
+          case 500: w_regen(); break;
+          case 600: w_schnee(); break;
+          case 700: w_warnung(); break;
+          case 800: w_klar(); break;
+          case 801: w_wolken(); break;
+          }
+ 
+      }        
+      break;
+                
+   }      
+}
+#endif   
+
 
 //------------------------------------------------------------------------------
 
@@ -824,31 +996,6 @@ void show_zeit(int flag) {
     }
   }
   
-  //Ambilight Farbwert und Helligkeit ermitteln (=Rahmenfarbe)
-  rr = G.rgb[2][0];
-  gg = G.rgb[2][1];
-  bb = G.rgb[2][2];
-  zz = (rr + gg + bb);
-
-  //Helligkeit Ambilight einstellen / LDR
-  if (G.ldr == 1) {
-  //Helligkeit LDR
-  rr = (int)rr / ldrVal;
-  gg = (int)gg / ldrVal;
-  bb = (int)bb / ldrVal;   
-  } else {
-  rr = (int)rr * G.hh / 100 * 0.2;     // ca. 20 % sollten ausreichen, um in etwa die selbe Helligkeit
-  gg = (int)gg * G.hh / 100 * 0.2;    // wie die Vordergrundbeleuchtung zu erhalten. Ansonsten
-  bb = (int)bb * G.hh / 100 * 0.2;    // Wert anpassen 
-  }
-
-  
-  //Ambilight setzen
-  for (int t = 0; t < 36; t++){
-      led_set_pixel(rr, gg, bb, rmatrix[t]);
-  }
-  
-  
   if (uhrzeit & ((uint32_t)1 << ESIST))   { es_ist();  }
   if (uhrzeit & ((uint32_t)1 << FUENF))   { fuenf();   }
   if (uhrzeit & ((uint32_t)1 << ZEHN))    { zehn();    }
@@ -883,7 +1030,13 @@ void show_zeit(int flag) {
 #ifdef UHR_125
   show_minuten();
 #endif
-  led_show();  
+
+#ifdef UHR_242
+  show_minuten();
+  show_wetter();
+#endif
+
+led_show();  
 
 }
 

@@ -50,7 +50,6 @@ var sleeptime=1;
 var position=100;
 var anzahl=100;
 var color=0;
-var h6=100;
 var h8=100;
 var h12=100;
 var h16=100;
@@ -62,6 +61,8 @@ var zeige_sek=0;
 var zeige_min=0;
 var ldr=0;
 var ldrCal=0;
+var apikey=0;
+var cityid=0;
 
 function init_websocket(){var a=ip_esp;websocket=new WebSocket(a);
 
@@ -97,7 +98,9 @@ $("#_rg7").set("value",b.geschw);
 $("#_zeige_sek").set("value",b.zeige_sek);
 $("#_zeige_min").set("value",b.zeige_min);
 $("#_ldr").set("value",b.ldr);
-$("#_ldrCal").set("value",b.ldrCal)}
+$("#_ldrCal").set("value",b.ldrCal);
+$("#_cityid").set("value",b.cityid);
+$("#_apikey").set("value",b.apikey)}
 
 if(b.command=="set"){
 rgb[0][0]=b.rgb00;
@@ -295,6 +298,13 @@ ldrCal=$(_ldrCal).get("value");
 var b="091000000"+ldr+"  "+ldrCal+"  999";
 websocket.send(b);
 $("#output").fill("LDR Einstellung wurde neu konfiguriert");
+if(debug==true){$("#output").fill(b)}return false});
+
+$("#_weathersave").on("click",function(){var c=$(_cityid).get("value");
+var d=$(_apikey).get("value");
+var b="090000000"+c+" "+d+"  999";
+websocket.send(b);
+$("#output").fill("API Key wurde neu konfiguriert");
 if(debug==true){$("#output").fill(b)}return false});
 
 $("#_sekunde").on("click",function(){zeige_sek=$(_zeige_sek).get("value");
@@ -638,6 +648,22 @@ $("#_reset").on("click",function(){send_data(100,0,0)})});
 </table>
 </div>
 <br>
+<div class="config" align=center>
+<button class="button2" style="font-weight:bold;width:60%" id="_weathersave">Open Weathermap speichern</button>
+<table>
+<tr>
+<td>Open Weather Map API Key (32 Zeichen)</td>
+<td><input id="_apikey" minlength="32" maxlength="32" type="text"></input></td>
+</tr>
+</table>
+<table>
+<tr>
+<td>Open Weather Map City ID (7 Zeichen)</td>
+<td><input id="_cityid" minlength="7" maxlength="7" type="text"></input></td>
+</tr>
+</table>
+</div>
+<BR>
 <div class="config" align=center>
 <button class="button2" style="font-weight:bold;width:60%" id="_update">Over The Air Update</button>
 </div>

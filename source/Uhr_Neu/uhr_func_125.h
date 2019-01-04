@@ -35,8 +35,9 @@ unsigned int smatrix[125] = {
 
 //------------------------------------------------------------------------------
 
-unsigned int min_arr[2][4] = {                       
-  {121,  122,  123,  124},             
+unsigned int min_arr[2][4] = {                       //ergänzt aus "Uhr func 169"-datei
+  {110,  111,  112,  113},                           // LED für Minuten Anzeige Zeile
+  {121,  122,  123,  124}                            // LED für Minuten Anzeige Ecken 
 };
 
 //------------------------------------------------------------------------------
