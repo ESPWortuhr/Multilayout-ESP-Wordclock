@@ -6,23 +6,28 @@ https://github.com/Eisbaeeer/Ulrich-Radig_Wort_Uhr_Version_2
  * Hier Anpassungen der Hardware vornehmen.
  */
 
-const char* VER = "2.1.0";  // Software Version
+const char* VER = "2.1.1";  // Software Version
 
 /*--------------------------------------------------------------------------
- * Hier wird definiert, welche Anzahl von LEDÂ´s bzw. Reihen verwendet werden
+ * Hier wird definiert, welche Anzahl von LED´s bzw. Reihen verwendet werden
  */
-#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LEDÂ´s pro Reihe + 4 LEDÂ´s fÃ¼r Minuten
-//#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LEDÂ´s pro Reihe + 4 LEDÂ´s fÃ¼r Minuten
-//#define UHR_169                     // Uhr mit zusÃ¤tzlichen LEDÂ´s um den Rahmen seitlich zu beleuchten
-//#define UHR_242                       // Uhr mit Wettervorhersage 242 LEDÂ´s --> Bitte die Library "ArduinoJson" im Library Manager installieren!
+#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
+//#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
+//#define UHR_169                     // Uhr mit zusätzlichen LED´s um den Rahmen seitlich zu beleuchten
+//#define UHR_242                       // Uhr mit Wettervorhersage 242 LED´s --> Bitte die Library "ArduinoJson" im Library Manager installieren!
 
-#define SERNR 100              //um das eeprom zu lÃ¶schen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+#define SERNR 100              //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 #define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
 uint8_t show_ip = true;      // Zeige IP Adresse beim Start 
 
+// Wenn die Farben nicht passen können sie hier angepasst werden:
+//#define LED_STRIPE_TYP   NeoBrgFeature
+#define LED_STRIPE_TYP   NeoGrbFeature
+//#define LED_STRIPE_TYP   NeoRgbFeature
+//#define LED_STRIPE_TYP   NeoRbgFeature
 /*--------------------------------------------------------------------------
- * ENDE Hardware Konfiguration. Ab hier nichts mehr Ã„ndern!!!
-/*--------------------------------------------------------------------------
+ * ENDE Hardware Konfiguration. Ab hier nichts mehr Ändern!!!
+ *--------------------------------------------------------------------------
  */
 
 #ifndef _UHR_H
@@ -32,8 +37,8 @@ uint8_t show_ip = true;      // Zeige IP Adresse beim Start
 
 #ifdef UHR_114 
 #define NUM_PIXELS   114                
-#define NUM_SMATRIX  114                
-#define ROWS_MATRIX   11                
+#define NUM_SMATRIX   114
+#define ROWS_MATRIX    11
 #endif  
 
 #ifdef UHR_125 
@@ -117,8 +122,8 @@ struct GLOBAL {
   int h24;
   int rgb1[10][5];
   int rgb2[10][5];
-  int rgb3[10][5];
-  };
+  int rgb3[10][5];  
+};
 GLOBAL G = { };
 
 #ifdef UHR_242
@@ -129,7 +134,7 @@ char resource3[] = "&cnt=8"; // Openweather API forecast time
 char resource[90];
 char response[6000];       //fixed size buffer
 WiFiClient client;
-unsigned int weather_tag    = 600;    //counter fÃ¼r Wetterdaten abrufen
+unsigned int weather_tag    = 600;    //counter für Wetterdaten abrufen
 int wtemp_6;
 int wtemp_12;
 int wtemp_18;
@@ -201,10 +206,10 @@ const uint8_t PixelPin = 2;  // WS2812 Data Port
 typedef RowMajorAlternatingLayout MyPanelLayout;
 const uint8_t PanelWidth = 11;  // 11 pixel x 22 pixel matrix of leds
 const uint8_t PanelHeight = 22;
-const uint16_t PixelCount = PanelWidth * PanelHeight; 
+const uint16_t PixelCount = PanelWidth * PanelHeight;  
 NeoTopology<MyPanelLayout> topo(PanelWidth, PanelHeight);
   
-NeoPixelBus<NeoGrbFeature, NeoEsp8266Dma800KbpsMethod> strip(PixelCount, PixelPin);
+NeoPixelBus<LED_STRIPE_TYP, NeoEsp8266Dma800KbpsMethod> strip(PixelCount, PixelPin);
 
 //RgbColor red(128, 0, 0);
 //RgbColor green(0, 128, 0);
@@ -218,7 +223,7 @@ const uint16_t top = 0;
 const uint16_t bottom = PanelHeight - 1;
 
 //-- WebSocketserver
-WebSocketsServer webSocket = WebSocketsServer(80);
+WebPage_Adapter webSocket = WebPage_Adapter(80);
 
 //--OTA--
 ESP8266WebServer httpServer(81);
@@ -228,7 +233,7 @@ ESP8266HTTPUpdateServer httpUpdater;
 // A UDP instance to let us send and receive packets over UDP
 //WiFiUDP udp;
 
-void WiFiScan();
+String WiFiScan(bool html);
 void WiFiStart_Client();
 void WiFiStart_AP();
 void WiFiReconnect();

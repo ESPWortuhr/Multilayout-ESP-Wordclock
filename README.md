@@ -45,6 +45,13 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * Silvester Countdown
 
 ## ChangeLog                      
+### Version 2.1.1
+* (Atho95)
+* Neueste Version der WebSockets - Bugfix Nullpointer in Debug-Ausgabe (payload)
+     Im Directory Uhr_Neu befindet sich noch die alte Version (könnte gelöscht werden)
+* Buffer für IP Adressen auf 20 erhöht (sprintf hängt '\0' an)
+* uhr_func_114.h erweitert auf umgekehrt angeschlossene LED's
+* uhr.h erweitert, um auch RGB LED's konfigurieren zu können
 ### Version 2.1.0
 * (Eisbaeeer)
 * Bugfix null pointer

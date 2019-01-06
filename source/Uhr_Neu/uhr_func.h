@@ -93,6 +93,7 @@ void TelnetMsg(String text)
 // Helligkeitsregelung nach Uhrzeiten oder per LDR
 //------------------------------------------------------------------------------
 
+
 void led_set(uint16_t i) {
   if (G.ldr == 1) {
   unsigned int rr, gg, bb;    
@@ -101,7 +102,7 @@ void led_set(uint16_t i) {
   gg = (int)G.rgb[0][1] / ldrVal;
   bb = (int)G.rgb[0][2] / ldrVal;  
   RgbColor color = RgbColor(rr, gg, bb);
-  strip.SetPixelColor(i, color);  
+  strip.SetPixelColor(i, color);
   }
   else
   {
@@ -111,7 +112,7 @@ void led_set(uint16_t i) {
   gg = (int)G.rgb[0][1] * G.hh / 100;
   bb = (int)G.rgb[0][2] * G.hh / 100;  
   RgbColor color = RgbColor(rr, gg, bb);
-  strip.SetPixelColor(i, color);  
+  strip.SetPixelColor(i, color);
   }
 }
 
@@ -119,15 +120,15 @@ void led_set(uint16_t i) {
 
 #ifdef UHR_114
 #include "uhr_func_114.h"
-#endif  
+#endif
 
 #ifdef UHR_125
 #include "uhr_func_125.h"
-#endif  
+#endif
 
-#ifdef UHR_169 
+#ifdef UHR_169
 #include "uhr_func_169.h"
-#endif 
+#endif
 
 #ifdef UHR_242 
 #include "uhr_func_242.h"
@@ -193,7 +194,7 @@ void rahmen_clear() {
 byte *  hsv_to_rgb (unsigned int h,unsigned char s,unsigned char v)
 {   
     unsigned char diff;
-    unsigned int z, r, g ,b;
+    unsigned int r = 0, g = 0 ,b = 0;
     static byte c[3];
 
     //Winkel im Farbkeis 0 - 360 in 1 Grad Schritten
@@ -227,7 +228,7 @@ byte *  hsv_to_rgb (unsigned int h,unsigned char s,unsigned char v)
     }   
     
   //Berechnung der Farbsättigung
-  //s = (englisch saturation) Farbsättigung   
+  //s = (englisch saturation) Farbsättigung
   s = 255 - s; //Kehrwert berechnen
   diff = ((255 - r) * s)/255;
   r = r + diff;
@@ -298,7 +299,7 @@ void doLDRLogic() {
   if(millis() >= waitUntilLDR) {
      waitUntilLDR = millis();
      int temp = analogRead(A0);
-     temp = temp - G.ldrCal;                
+     temp = temp - G.ldrCal;
      if (temp >= 900 ) temp = 900;
      if (temp <= 1 ) temp = 1;
       ldrVal = map(temp, 1, 900, 1, 100);
@@ -397,7 +398,7 @@ void schweif_up(){
 void zeigeipap() {
     static int i = 0, ii = 0;
         
-    char buf[18];
+    char buf[20];
     sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3] );
 
   // Alle Pixes eins nach recht schieben 
@@ -434,7 +435,7 @@ void zeigeipap() {
 void zeigeip() {
     static int i = 0, ii = 0;
         
-    char buf[18];
+    char buf[20];
     sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3] );
 
   // Alle Pixes eins nach recht schieben 
@@ -755,13 +756,13 @@ void show_minuten() {
     m = _minute;
     while (m > 4) { m -= 5; }
 
-    if (m > 0){ led_set(min_arr[G.zeige_min-1][0]); }                                             
-    if (m > 1){ led_set(min_arr[G.zeige_min-1][1]); }                                             
-    if (m > 2){ led_set(min_arr[G.zeige_min-1][2]); }                                             
+    if (m > 0){ led_set(min_arr[G.zeige_min-1][0]); }
+    if (m > 1){ led_set(min_arr[G.zeige_min-1][1]); }
+    if (m > 2){ led_set(min_arr[G.zeige_min-1][2]); }
     if (m > 3){ led_set(min_arr[G.zeige_min-1][3]); }                                             
   }   
 }
-#endif
+#endif   
 
 //------------------------------------------------------------------------------
 
@@ -1036,7 +1037,7 @@ void show_zeit(int flag) {
   show_wetter();
 #endif
 
-led_show();  
+  led_show();  
 
 }
 
