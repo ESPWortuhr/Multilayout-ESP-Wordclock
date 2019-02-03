@@ -1,0 +1,294 @@
+body {
+	background: #f7f7f7;
+	font-size: 16px;
+}
+
+.content {
+	padding: 20px;
+	max-width: 1200px;
+	margin: auto;
+}
+
+.content > .pure-g {
+	margin-left: -10px;
+	margin-right: -10px;
+}
+
+p {
+	margin-bottom: 15px;
+	margin-top: 0;
+}
+
+a {
+	text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: rgba(0, 0, 0, 0.7);
+}
+
+h1 {
+	font-size: 1.4em;
+	margin-top: 0;
+	margin-bottom: 8px;
+}
+
+h2 {
+	font-size: 1.2em;
+	color: rgba(0, 0, 0, 0.6);
+}
+
+/**
+ * Menu
+ */
+
+.main-menu {
+	background: #5c5c5c;
+	box-shadow: inset 0 -10px 7px -10px rgba(0, 0, 0, 0.8);
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+
+.main-menu .content {
+	padding: 0;
+}
+
+.pure-menu-item {
+	height: auto;
+}
+
+.main-menu .pure-menu-link {
+	padding: 1.2em;
+	padding-bottom: 1.0em;
+	padding-top: 1em;
+	color: white;
+}
+
+.pure-menu-link:hover {
+	background: #898989;
+	color: white;
+}
+
+.pure-menu-link.active {
+	background: #f7f7f7;
+	color: #5c5c5c;
+}
+
+/**
+ * Misc.
+ */
+
+.color-area {
+	height: 40px;
+	width: 100%;
+	background: gray;
+	margin-bottom: 15px;
+	margin-top: 10px;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.button-xl {
+	font-size: 150%;
+}
+
+.pure-g.colors > div {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.pure-g.colors > div{
+	padding: 0.3em;
+}
+
+.pure-g.colors button {
+	width: 100%;
+	height: 40px;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+/**
+ * Forms / Radio
+ */
+
+label.pure-radio {
+	padding: 5px;
+	display: inline-block;
+}
+
+label.pure-radio input[type="radio"] {
+	margin-top: -14px;
+	display: inline-block;
+}
+
+/**
+ * Slider
+ */
+
+input[type="range"], 
+input[type="range"]:focus, 
+input[type="range"]:active, 
+input[type="range"]::-moz-focus-inner, 
+input[type="range"]:-moz-focusring,
+input[type="range"]::-moz-focus-outer{
+	border: 0;
+	outline: none;
+}
+
+
+input[type="range"] {
+	width: 100%;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	height: 20px;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+	height: 6px;
+	cursor: pointer;
+	background: #ddd;
+	border: none;
+	border-radius: 100px;
+	box-shadow: inset 0 1px 1px 0 rgba(0, 0, 0, 0.3);
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+	height: 28px;
+	width: 28px;
+	margin-top: -11px; /* ios Safari needs this to correctly position the thumb/knob */
+	border-radius: 200px;
+	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(235,235,235,1) 100%);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+input[type=range]::-moz-range-track {
+	height: 6px;
+	background: #ddd;
+	border: none;
+	border-radius: 100px;
+	box-shadow: inset 0 1px 1px 0 rgba(0, 0, 0, 0.3);
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+input[type=range]::-moz-range-thumb {
+	height: 28px;
+	width: 28px;
+	border-radius: 200px;
+	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(235,235,235,1) 100%);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+.slider-label {
+	margin-top: 11px;
+	margin-bottom: 4px;
+	display: inline-block;
+	width: 100%;
+}
+
+.slider-label .value {
+	float: right;
+	margin-right: 15px;
+}
+
+/**
+ * Sections 
+ */
+
+.section, .section-connection-lost{
+	display: none;
+}
+
+.section-connection-lost .box{
+	background: #ffe9e9;
+	color: #a94442;
+	border: 1px solid #e0b2b2;
+	box-shadow: none;
+}
+
+.section-connection-lost .status-button{
+	float: right;
+	color: #fff;
+	background-color: #d9534f;
+	border-color: #d9534f;
+	margin-left: 20px;
+}
+
+.section-main {
+	display: block;
+}
+
+.box-debug {
+	overflow: hidden;
+	overflow-wrap: break-word;
+}
+
+.box-debug > div{
+	font-family: monospace;
+}
+
+.brightness, .speed, .functions-settings, .leds, .position{
+	display: none;
+}
+
+/**
+ * Settings
+ */
+
+.section-settings > div, .section-settings .pure-u-1, .section-settings .box {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.section-settings .pure-u-1 {
+	padding-bottom: 20px;
+}
+
+.section-settings .box {
+	height: 100%;
+}
+
+.status.online {
+	color: green;
+}
+
+.status.offline {
+	color: red;
+}
+
+/**
+ * Box
+ */
+
+.box {
+	padding: 20px;
+	margin: 10px;
+	box-shadow: 0 1px 1px 0 rgba(60,64,67,.08),0 1px 3px 1px rgba(60,64,67,.16);
+	background: #fff;
+	border-radius: 3px;
+	color: #5f6368;
+}
+
+.box h2 {
+	margin-top: -5px;
+	border-bottom: 1px solid #f0f0f0;
+	padding-bottom: 10px;
+	margin-left: -20px;
+	margin-right: -20px;
+	padding-right: 15px;
+	padding-left: 15px;
+	font-weight: normal;
+	font-size: 1.1em;
+}
