@@ -118,6 +118,10 @@ void led_set(uint16_t i) {
 
 //------------------------------------------------------------------------------
 
+#ifdef UHR_114_Fraenkisch
+#include "uhr_func_114_Fraenkisch.h"
+#endif
+
 #ifdef UHR_114
 #include "uhr_func_114.h"
 #endif
@@ -744,6 +748,27 @@ void show_sekunde() {
 }
 #endif 
 
+
+//------------------------------------------------------------------------------
+
+#ifdef UHR_114_Fraenkisch
+void show_minuten() {
+  unsigned char m;
+
+  if (G.zeige_min > 0){  
+    // Minuten / Sekunden-Animation
+    // Minute (1-4)  ermitteln
+    m = _minute;
+    while (m > 4) { m -= 5; }
+
+    if (m > 0){ led_set(min_arr[G.zeige_min-1][0]); }
+    if (m > 1){ led_set(min_arr[G.zeige_min-1][1]); }
+    if (m > 2){ led_set(min_arr[G.zeige_min-1][2]); }
+    if (m > 3){ led_set(min_arr[G.zeige_min-1][3]); }                                             
+  }   
+}
+#endif  
+
 //------------------------------------------------------------------------------
 
 #ifdef UHR_114
@@ -1024,6 +1049,11 @@ void show_zeit(int flag) {
 //  if (m > 0) {
   uint8_t animation = 50;
 //  }
+
+#ifdef UHR_114_Fraenkisch                                                                        
+  show_minuten();
+#endif
+
 #ifdef UHR_114                                                                        
   show_minuten();
 #endif
@@ -1040,5 +1070,3 @@ void show_zeit(int flag) {
   led_show();  
 
 }
-
-

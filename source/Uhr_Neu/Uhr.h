@@ -9,24 +9,26 @@ https://github.com/Eisbaeeer/Ulrich-Radig_Wort_Uhr_Version_2
 const char* VER = "2.1.1";  // Software Version
 
 /*--------------------------------------------------------------------------
- * Hier wird definiert, welche Anzahl von LED´s bzw. Reihen verwendet werden
+ * Hier wird definiert, welche Anzahl von LEDï¿½s bzw. Reihen verwendet werden
  */
-#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
-//#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED´s pro Reihe + 4 LED´s für Minuten
-//#define UHR_169                     // Uhr mit zusätzlichen LED´s um den Rahmen seitlich zu beleuchten
-//#define UHR_242                       // Uhr mit Wettervorhersage 242 LED´s --> Bitte die Library "ArduinoJson" im Library Manager installieren!
+#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LEDï¿½s pro Reihe + 4 LEDï¿½s fï¿½r Minuten
+//#define UHR_114_Fraenkisch          // Uhr mit 10 Reihen, jeweils 11 LEDï¿½s pro Reihe + 4 LEDï¿½s fï¿½r Minuten, mit geÃ¤ndertem Layout fÃ¼r extra WÃ¶rter in der Matrix
+//#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LEDï¿½s pro Reihe + 4 LEDï¿½s fï¿½r Minuten
+//#define UHR_169                     // Uhr mit zusï¿½tzlichen LEDï¿½s um den Rahmen seitlich zu beleuchten
+//#define UHR_242                       // Uhr mit Wettervorhersage 242 LEDï¿½s --> Bitte die Library "ArduinoJson" im Library Manager installieren!
 
-#define SERNR 100              //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+#define SERNR 100              //um das eeprom zu lï¿½schen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 #define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
 uint8_t show_ip = true;      // Zeige IP Adresse beim Start 
 
-// Wenn die Farben nicht passen können sie hier angepasst werden:
-//#define LED_STRIPE_TYP   NeoBrgFeature
-#define LED_STRIPE_TYP   NeoGrbFeature
-//#define LED_STRIPE_TYP   NeoRgbFeature
-//#define LED_STRIPE_TYP   NeoRbgFeature
+// Wenn die Farben nicht passen kï¿½nnen sie hier angepasst werden:
+//#define LED_STRIPE_TYP   NeoBrgFeature    // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
+#define LED_STRIPE_TYP   NeoGrbFeature      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
+//#define LED_STRIPE_TYP   NeoRgbFeature    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rgb
+//#define LED_STRIPE_TYP   NeoRbgFeature    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
+//#define LED_STRIPE_TYP   NeoGrbwFeature   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
 /*--------------------------------------------------------------------------
- * ENDE Hardware Konfiguration. Ab hier nichts mehr Ändern!!!
+ * ENDE Hardware Konfiguration. Ab hier nichts mehr ï¿½ndern!!!
  *--------------------------------------------------------------------------
  */
 
@@ -34,6 +36,12 @@ uint8_t show_ip = true;      // Zeige IP Adresse beim Start
 #define _UHR_H
 
 #define USE_SERIAL Serial
+
+#ifdef UHR_114_Fraenkisch 
+#define NUM_PIXELS   114                
+#define NUM_SMATRIX   114
+#define ROWS_MATRIX    11
+#endif  
 
 #ifdef UHR_114 
 #define NUM_PIXELS   114                
@@ -134,7 +142,7 @@ char resource3[] = "&cnt=8"; // Openweather API forecast time
 char resource[90];
 char response[6000];       //fixed size buffer
 WiFiClient client;
-unsigned int weather_tag    = 600;    //counter für Wetterdaten abrufen
+unsigned int weather_tag    = 600;    //counter fï¿½r Wetterdaten abrufen
 int wtemp_6;
 int wtemp_12;
 int wtemp_18;
