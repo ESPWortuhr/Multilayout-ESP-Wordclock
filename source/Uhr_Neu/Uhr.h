@@ -83,8 +83,6 @@ uint8_t show_ip = true;      // Zeige IP Adresse beim Start
 #ifdef Grbw
 	#define LED_STRIPE_TYP   NeoGrbwFeature 
 #endif
-	
-#define LED_STRIPE_TYP   NeoGrbFeature      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
 
 #define ESIST 0
 #define VOR   1
@@ -121,7 +119,7 @@ struct GLOBAL {
   int param2;        
   int prog_init;  
   int conf;
-  int rgb[4][3];
+  int rgb[4][4];
   int rr;
   int gg;
   int bb;   
