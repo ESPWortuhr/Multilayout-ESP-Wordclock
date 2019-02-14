@@ -1,4 +1,4 @@
-2![Logo](pics/uhr.jpg)
+![Logo](pics/uhr.jpg)
 # Ulrich Radig Wort Uhr Version 2
 
 Hier findet man alle nötigen Informationen der Wort Uhr von Ulrichradig.de      
@@ -34,7 +34,7 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 
 ## Arduino IDE 1.8.8 vorbereiten
 * Datei --> Voreinstellungen --> Zusätzliche Boardverwalter-URLs --> "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
-* Werkzeuge --> Board --> Boardverwalter --> esp8266 Version 2.3.0 installieren
+* Werkzeuge --> Board --> Boardverwalter --> esp8266 Version 2.5.0 installieren
 * lib Verzeichnis in das Arduino library Verzeichnis kopieren bzw. ZIP importieren
 
 ## To DO & (Ideen):
@@ -44,7 +44,7 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * Minten Effekte
 * Silvester Countdown
 
-## ChangeLog                      
+## ChangeLog      
 ### Version 2.1.1
 * (Atho95)
 * Neueste Version der WebSockets - Bugfix Nullpointer in Debug-Ausgabe (payload)
