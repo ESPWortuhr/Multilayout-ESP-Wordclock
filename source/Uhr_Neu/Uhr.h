@@ -22,11 +22,11 @@ const char* VER = "2.1.1";  // Software Version
 uint8_t show_ip = true;      // Zeige IP Adresse beim Start 
 
 // Wenn die Farben nicht passen k�nnen sie hier angepasst werden:
-//#define LED_STRIPE_TYP   NeoBrgFeature    // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
-#define LED_STRIPE_TYP   NeoGrbFeature      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
-//#define LED_STRIPE_TYP   NeoRgbFeature    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rgb
-//#define LED_STRIPE_TYP   NeoRbgFeature    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
-//#define LED_STRIPE_TYP   NeoGrbwFeature   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
+//#define Brg   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
+#define Grb      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
+//#define Rgb    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rgb
+//#define Rbg    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
+//#define Grbw   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr �ndern!!!
  *--------------------------------------------------------------------------
@@ -67,6 +67,24 @@ uint8_t show_ip = true;      // Zeige IP Adresse beim Start
 #define NUM_SMATRIX  242                
 #define ROWS_MATRIX   22                
 #endif
+
+#ifdef Grb
+	#define LED_STRIPE_TYP   NeoGrbFeature
+#endif
+#ifdef Brg
+	#define LED_STRIPE_TYP   NeoBrgFeature
+#endif
+#ifdef Rgb
+	#define LED_STRIPE_TYP   NeoRgbFeature
+#endif 
+#ifdef Rbg
+	#define LED_STRIPE_TYP   NeoRbgFeature
+#endif
+#ifdef Grbw
+	#define LED_STRIPE_TYP   NeoGrbwFeature 
+#endif
+	
+#define LED_STRIPE_TYP   NeoGrbFeature      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
 
 #define ESIST 0
 #define VOR   1

@@ -95,6 +95,27 @@ void TelnetMsg(String text)
 
 
 void led_set(uint16_t i) {
+#ifdef Grbw
+    if (G.ldr == 1) {
+    unsigned int rr, gg, bb;    
+    //Helligkeit
+    rr = (int)G.rgb[0][0] / ldrVal;
+    gg = (int)G.rgb[0][1] / ldrVal;
+    bb = (int)G.rgb[0][2] / ldrVal;  
+    RgbwColor color = RgbwColor(rr, gg, bb, bb);
+    strip.SetPixelColor(i, color);
+    }
+    else
+    {
+    unsigned int rr, gg, bb;    
+    //Helligkeit
+    rr = (int)G.rgb[0][0] * G.hh / 100;
+    gg = (int)G.rgb[0][1] * G.hh / 100;
+    bb = (int)G.rgb[0][2] * G.hh / 100;  
+    RgbwColor color = RgbwColor(rr, gg, bb, bb);
+    strip.SetPixelColor(i, color);
+    }
+#else
   if (G.ldr == 1) {
   unsigned int rr, gg, bb;    
   //Helligkeit
@@ -114,6 +135,7 @@ void led_set(uint16_t i) {
   RgbColor color = RgbColor(rr, gg, bb);
   strip.SetPixelColor(i, color);
   }
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -153,10 +175,22 @@ void led_set_pixel(byte r, byte g, byte b, uint16_t i) {
 }
 
 //------------------------------------------------------------------------------
+#ifdef Grbw
+void led_set_pixel_rgbw(byte r, byte g, byte b, byte w, uint16_t i) {
+    
+  RgbwColor color = RgbwColor(r, g, b, w);
+  strip.SetPixelColor(i, color);      
+}
+#endif
+//------------------------------------------------------------------------------
 
 void led_clear() {
   uint8_t i;
+#ifdef Grbw
+  RgbwColor color = RgbwColor(0, 0, 0, 0);
+#else
   RgbColor color = RgbColor(0, 0, 0);
+#endif
   for(i=0; i<NUM_PIXELS; i++)
   {
     strip.SetPixelColor(i, color);         
@@ -167,7 +201,11 @@ void led_clear() {
 
 void uhr_clear() {
   uint8_t i;
+#ifdef Grbw
+  RgbwColor color = RgbwColor(0, 0, 0, 0);
+#else
   RgbColor color = RgbColor(0, 0, 0);
+#endif
   for(i=0; i<NUM_SMATRIX; i++)
   {
     strip.SetPixelColor(smatrix[i], color);
@@ -179,7 +217,11 @@ void uhr_clear() {
 #ifdef UHR_169 
 void rahmen_clear() {
   uint8_t i;
+#ifdef Grbw
+  RgbwColor color = RgbwColor(0, 0, 0, 0);
+#else
   RgbColor color = RgbColor(0, 0, 0);
+#endif
   for(i=0; i<NUM_RMATRIX; i++)
   {
     strip.SetPixelColor(rmatrix[i], color);
@@ -268,8 +310,12 @@ void led_single(uint8_t wait) {
     if(h>360) h-=360;    
     
     led_clear();
-    c = hsv_to_rgb(h,255,255);       
-    led_set_pixel(c[0], c[1], c[2], i);     
+    c = hsv_to_rgb(h,255,255);   
+#ifdef Grbw
+    led_set_pixel_rgbw(c[0], c[1], c[2], c[2], i);
+#else
+    led_set_pixel(c[0], c[1], c[2], i);
+#endif    
     led_show();
     delay(wait);
   }
@@ -291,7 +337,11 @@ void set_farbe() {
     bb = (int)bb * 10 / zz;
   }
   for( int i = 0; i < NUM_PIXELS;i++){ 
-    led_set_pixel(rr, gg, bb, i);          
+#ifdef Grbw
+    led_set_pixel_rgbw(rr, gg, bb, bb, i);
+#else
+    led_set_pixel(rr, gg, bb, i); 
+#endif         
   }
 }
 
@@ -328,7 +378,11 @@ void set_farbe_rahmen() {
     bb = (int)bb * 10 / zz;
   } 
   for( int i = 0; i < NUM_RMATRIX;i++){ 
-    led_set_pixel(rr, gg, bb, rmatrix[i]);          
+#ifdef Grbw
+    led_set_pixel_rgbw(rr, gg, bb, bb, rmatrix[i]);
+#else
+    led_set_pixel(rr, gg, bb, rmatrix[i]);   
+#endif       
   }
 }
 #endif   
@@ -342,7 +396,11 @@ void rainbow() {
   c = hsv_to_rgb(h, 255, G.hell*10);
     
   for( int i = 0; i < NUM_PIXELS;i++){     
-    led_set_pixel(c[0], c[1], c[2], i);  
+#ifdef Grbw
+    led_set_pixel_rgbw(c[0], c[1], c[2], c[2], i);
+#else
+    led_set_pixel(c[0], c[1], c[2], i); 
+#endif    
   }
   led_show();
   h++;
@@ -359,7 +417,11 @@ void rainbowCycle() {
   hh = h;
   for(i=0; i< NUM_SMATRIX; i++) {
     c = hsv_to_rgb(hh, 255, G.hell*10);
-    led_set_pixel(c[0], c[1], c[2], smatrix[i]);
+#ifdef Grbw
+    led_set_pixel_rgbw(c[0], c[1], c[2], c[2], smatrix[i]);
+#else
+    led_set_pixel(c[0], c[1], c[2], smatrix[i]);   
+#endif
     hh = hh + (360 / NUM_SMATRIX);
     if (hh > 360){ hh = 0; }      
   }
@@ -387,7 +449,11 @@ void schweif_up(){
     G.bb = (G.rgb[3][2] * c)/255;  
     j = t + i;
     if (j >= 48){ j = j -48; }
-    led_set_pixel(G.rr, G.gg, G.bb, rmatrix[j]); 
+#ifdef Grbw
+    led_set_pixel_rgbw(G.rr, G.gg, G.bb, G.bb, rmatrix[i]);
+#else
+    led_set_pixel(G.rr, G.gg, G.bb, rmatrix[i]);   
+#endif
   }  
   led_show();
   x++;
