@@ -122,7 +122,8 @@ struct GLOBAL {
   int rgb[4][4];
   int rr;
   int gg;
-  int bb;   
+  int bb;
+  int ww;   
   int hell;   
   int ldr;
   int ldrCal;
