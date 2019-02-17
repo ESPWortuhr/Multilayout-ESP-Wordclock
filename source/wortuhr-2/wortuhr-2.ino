@@ -41,6 +41,10 @@ Version 2.1.1
 * Buffer fuer IP Adressen auf 20 erhoeht (sprintf haengt '\0' an)
 * uhr_func_114.h erweitert auf umgekehrt angeschlossene LED's
 * uhr.h erweitert, um auch RGB LED's konfigurieren zu koennen
+* (Pascal Wagler)
+* Neues Webinterface hinzugefügt
+* Arduino-Projekt umbenannt
+* Alten lib-Ordner und die Datei 7x5 Font.xlsx gelöscht
 Version 2.2.0
 * (dbambus)
 * Bugfixes fuer Konfigseite #7
@@ -52,7 +56,7 @@ Ideen / Todo
   Sommer-Zeit: Letzter Sonntag Maerz um 2 Uhr
   Winter-Zeit: Letzter Sonntag Oktober um 3 Uhr
 - Server-IP eintragen
-- überblenden
+- ueberblenden
 - Tretis
 - MP3 Gong Gelaeut
 
