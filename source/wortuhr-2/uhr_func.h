@@ -95,6 +95,29 @@ void TelnetMsg(String text)
 
 
 void led_set(uint16_t i) {
+#ifdef Grbw
+    if (G.ldr == 1) {
+    unsigned int rr, gg, bb, ww;    
+    //Helligkeit
+    rr = (int)G.rgb[0][0] / ldrVal;
+    gg = (int)G.rgb[0][1] / ldrVal;
+    bb = (int)G.rgb[0][2] / ldrVal;
+	ww = (int)G.rgb[0][3] / ldrVal; 
+    RgbwColor color = RgbwColor(rr, gg, bb, ww);
+    strip.SetPixelColor(i, color);
+    }
+    else
+    {
+    unsigned int rr, gg, bb, ww;    
+    //Helligkeit
+    rr = (int)G.rgb[0][0] * G.hh / 100;
+    gg = (int)G.rgb[0][1] * G.hh / 100;
+    bb = (int)G.rgb[0][2] * G.hh / 100;
+	ww = (int)G.rgb[0][3] * G.hh / 100; 
+    RgbwColor color = RgbwColor(rr, gg, bb, ww);
+    strip.SetPixelColor(i, color);
+    }
+#else
   if (G.ldr == 1) {
   unsigned int rr, gg, bb;    
   //Helligkeit
@@ -114,9 +137,14 @@ void led_set(uint16_t i) {
   RgbColor color = RgbColor(rr, gg, bb);
   strip.SetPixelColor(i, color);
   }
+#endif
 }
 
 //------------------------------------------------------------------------------
+
+#ifdef UHR_114_Fraenkisch
+#include "uhr_func_114_Fraenkisch.h"
+#endif
 
 #ifdef UHR_114
 #include "uhr_func_114.h"
@@ -142,6 +170,17 @@ void led_show() {
 
 //------------------------------------------------------------------------------
 
+void led_clear_pixel(uint16_t i) {
+#ifdef Grbw
+  RgbwColor color = RgbwColor(0, 0, 0, 0);
+#else
+  RgbColor color = RgbColor(0, 0, 0);
+#endif
+  strip.SetPixelColor(i, color);      
+}
+
+//------------------------------------------------------------------------------
+
 void led_set_pixel(byte r, byte g, byte b, uint16_t i) {
     
   RgbColor color = RgbColor(r, g, b);
@@ -149,10 +188,22 @@ void led_set_pixel(byte r, byte g, byte b, uint16_t i) {
 }
 
 //------------------------------------------------------------------------------
+#ifdef Grbw
+void led_set_pixel_rgbw(byte r, byte g, byte b, byte w, uint16_t i) {
+    
+  RgbwColor color = RgbwColor(r, g, b, w);
+  strip.SetPixelColor(i, color);      
+}
+#endif
+//------------------------------------------------------------------------------
 
 void led_clear() {
   uint8_t i;
+#ifdef Grbw
+  RgbwColor color = RgbwColor(0, 0, 0, 0);
+#else
   RgbColor color = RgbColor(0, 0, 0);
+#endif
   for(i=0; i<NUM_PIXELS; i++)
   {
     strip.SetPixelColor(i, color);         
@@ -163,7 +214,11 @@ void led_clear() {
 
 void uhr_clear() {
   uint8_t i;
+#ifdef Grbw
+  RgbwColor color = RgbwColor(0, 0, 0, 0);
+#else
   RgbColor color = RgbColor(0, 0, 0);
+#endif
   for(i=0; i<NUM_SMATRIX; i++)
   {
     strip.SetPixelColor(smatrix[i], color);
@@ -175,7 +230,11 @@ void uhr_clear() {
 #ifdef UHR_169 
 void rahmen_clear() {
   uint8_t i;
+#ifdef Grbw
+  RgbwColor color = RgbwColor(0, 0, 0, 0);
+#else
   RgbColor color = RgbColor(0, 0, 0);
+#endif
   for(i=0; i<NUM_RMATRIX; i++)
   {
     strip.SetPixelColor(rmatrix[i], color);
@@ -194,8 +253,8 @@ void rahmen_clear() {
 byte *  hsv_to_rgb (unsigned int h,unsigned char s,unsigned char v)
 {   
     unsigned char diff;
-    unsigned int r = 0, g = 0 ,b = 0;
-    static byte c[3];
+    unsigned int r = 0, g = 0 ,b = 0, w = 0;
+    static byte c[4];
 
     //Winkel im Farbkeis 0 - 360 in 1 Grad Schritten
     //h = (englisch hue) Farbwert
@@ -241,11 +300,13 @@ byte *  hsv_to_rgb (unsigned int h,unsigned char s,unsigned char v)
   //v = (englisch value) Wert Dunkelstufe einfacher Dreisatz 0..100%
   r = (r * v)/255;   
   g = (g * v)/255;     
-  b = (b * v)/255;   
+  b = (b * v)/255;
+  w = (r + g + b)/3;   
 
   c[0] = r;
   c[1] = g;
-  c[2] = b;    
+  c[2] = b;
+  c[3] = w;    
   return c;  
 }
 
@@ -264,8 +325,12 @@ void led_single(uint8_t wait) {
     if(h>360) h-=360;    
     
     led_clear();
-    c = hsv_to_rgb(h,255,255);       
-    led_set_pixel(c[0], c[1], c[2], i);     
+    c = hsv_to_rgb(h,255,255);   
+#ifdef Grbw
+    led_set_pixel_rgbw(c[0], c[1], c[2], c[3], i);
+#else
+    led_set_pixel(c[0], c[1], c[2], i);
+#endif    
     led_show();
     delay(wait);
   }
@@ -275,19 +340,25 @@ void led_single(uint8_t wait) {
 
 void set_farbe() {
 
-  unsigned int rr, gg, bb, zz;  
+  unsigned int rr, gg, bb, ww, zz;  
   rr = G.rgb[3][0];
   gg = G.rgb[3][1];
   bb = G.rgb[3][2];
+  ww = G.rgb[3][3];
   zz = rr + gg + bb;
   if (zz > 150) {
     zz = zz * 10 / 150;
     rr = (int)rr * 10 / zz;
     gg = (int)gg * 10 / zz;
     bb = (int)bb * 10 / zz;
+	ww = (int)ww * 10 / zz;
   }
   for( int i = 0; i < NUM_PIXELS;i++){ 
-    led_set_pixel(rr, gg, bb, i);          
+#ifdef Grbw
+    led_set_pixel_rgbw(rr, gg, bb, ww, i);
+#else
+    led_set_pixel(rr, gg, bb, i); 
+#endif         
   }
 }
 
@@ -312,19 +383,25 @@ void doLDRLogic() {
 #ifdef UHR_169 
 void set_farbe_rahmen() {
 
-  unsigned int rr, gg, bb, zz;  
+  unsigned int rr, gg, bb, ww, zz;  
   rr = G.rgb[2][0];
   gg = G.rgb[2][1];
   bb = G.rgb[2][2];
+  ww = G.rgb[2][3];
   zz = rr + gg + bb;
   if (zz > 150) {
     zz = zz * 10 / 150;
     rr = (int)rr * 10 / zz;
     gg = (int)gg * 10 / zz;
     bb = (int)bb * 10 / zz;
+	ww = (int)ww * 10 / zz;
   } 
   for( int i = 0; i < NUM_RMATRIX;i++){ 
-    led_set_pixel(rr, gg, bb, rmatrix[i]);          
+#ifdef Grbw
+    led_set_pixel_rgbw(rr, gg, bb, ww, rmatrix[i]);
+#else
+    led_set_pixel(rr, gg, bb, rmatrix[i]);   
+#endif       
   }
 }
 #endif   
@@ -338,7 +415,11 @@ void rainbow() {
   c = hsv_to_rgb(h, 255, G.hell*10);
     
   for( int i = 0; i < NUM_PIXELS;i++){     
-    led_set_pixel(c[0], c[1], c[2], i);  
+#ifdef Grbw
+    led_set_pixel_rgbw(c[0], c[1], c[2], c[3], i);
+#else
+    led_set_pixel(c[0], c[1], c[2], i); 
+#endif    
   }
   led_show();
   h++;
@@ -355,7 +436,11 @@ void rainbowCycle() {
   hh = h;
   for(i=0; i< NUM_SMATRIX; i++) {
     c = hsv_to_rgb(hh, 255, G.hell*10);
-    led_set_pixel(c[0], c[1], c[2], smatrix[i]);
+#ifdef Grbw
+    led_set_pixel_rgbw(c[0], c[1], c[2], c[3], smatrix[i]);
+#else
+    led_set_pixel(c[0], c[1], c[2], smatrix[i]);   
+#endif
     hh = hh + (360 / NUM_SMATRIX);
     if (hh > 360){ hh = 0; }      
   }
@@ -380,10 +465,15 @@ void schweif_up(){
     
     G.rr = (G.rgb[3][0] * c)/255;   
     G.gg = (G.rgb[3][1] * c)/255;     
-    G.bb = (G.rgb[3][2] * c)/255;  
+    G.bb = (G.rgb[3][2] * c)/255;
+	G.ww = (G.rgb[3][3] * c)/255;  
     j = t + i;
     if (j >= 48){ j = j -48; }
-    led_set_pixel(G.rr, G.gg, G.bb, rmatrix[j]); 
+#ifdef Grbw
+    led_set_pixel_rgbw(G.rr, G.gg, G.bb, G.ww, rmatrix[i]);
+#else
+    led_set_pixel(G.rr, G.gg, G.bb, rmatrix[i]);   
+#endif
   }  
   led_show();
   x++;
@@ -411,14 +501,18 @@ void zeigeipap() {
   if (i < 5) {
     for(int h=0;h<8;h++){
       if (font_7x5[buf[ii]][i] & (1 << h)) {  
-        led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][10]);               
+		#ifdef Grbw
+        led_set_pixel_rgbw(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], G.rgb[3][3], matrix[h+1][10]);
+		#else
+		led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][10]);
+		#endif           
       }else{            
-        led_set_pixel(0, 0, 0, matrix[h+1][10]);  
+        led_clear_pixel(matrix[h+1][10]);  
       }        
     }
   }else{ 
     for(int h=0;h<8;h++){    
-      led_set_pixel(0, 0, 0, matrix[h+1][10]);          
+      led_clear_pixel(matrix[h+1][10]);          
     }
   }  
   led_show();
@@ -448,14 +542,18 @@ void zeigeip() {
   if (i < 5) {
     for(int h=0;h<8;h++){
       if (font_7x5[buf[ii]][i] & (1 << h)) {  
-        led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][10]);               
+		#ifdef Grbw
+		 led_set_pixel_rgbw(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], G.rgb[3][3], matrix[h+1][10]);
+		#else
+		 led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][10]);
+		#endif               
       }else{            
-        led_set_pixel(0, 0, 0, matrix[h+1][10]);  
+        led_clear_pixel(matrix[h+1][10]);  
       }        
     }
   }else{ 
     for(int h=0;h<8;h++){    
-      led_set_pixel(0, 0, 0, matrix[h+1][10]);          
+      led_clear_pixel(matrix[h+1][10]);          
     }
   }  
   led_show();
@@ -483,14 +581,18 @@ void laufschrift() {
   if (i < 5) {
     for(int h=0;h<8;h++){
       if (font_7x5[G.ltext[ii]][i] & (1 << h)) {  
-        led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][10]);               
+		#ifdef Grbw
+ 		 led_set_pixel_rgbw(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], G.rgb[3][3], matrix[h+1][10]);
+		#else
+ 		 led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][10]);
+		#endif                
       }else{            
-        led_set_pixel(0, 0, 0, matrix[h+1][10]);  
+        led_clear_pixel(matrix[h+1][10]);  
       }        
     }
   }else{ 
     for(int h=0;h<8;h++){    
-      led_set_pixel(0, 0, 0, matrix[h+1][10]);          
+      led_clear_pixel(matrix[h+1][10]);          
     }
   }  
   led_show();
@@ -515,11 +617,19 @@ void zahlen(char d1, char d2) {
     for(int h=0;h<8;h++){  
       // 1. Zahl
       if (font_7x5[d1][i] & (1 << h)) {       
-        led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][i]);         
+		#ifdef Grbw
+ 		 led_set_pixel_rgbw(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], G.rgb[3][3], matrix[h+1][i]);
+		#else
+ 		 led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][i]);
+		#endif          
       }
       // 2. Zahl
       if (font_7x5[d2][i] & (1 << h)) {   
-        led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][i+6]);      
+		#ifdef Grbw
+ 		 led_set_pixel_rgbw(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], G.rgb[3][3], matrix[h+1][i+6]);
+		#else
+ 		led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], matrix[h+1][i+6]);
+		#endif       
       }        
     }
   }
@@ -538,7 +648,11 @@ void laufen(unsigned int d, unsigned char aktion){
       {
         strip.SetPixelColor(smatrix[a-1], strip.GetPixelColor(smatrix[a-2]));           
       }
-      led_set_pixel(G.rr, G.gg, G.bb, smatrix[0]);   
+	  #ifdef Grbw
+      led_set_pixel_rgbw(G.rr, G.gg, G.bb, G.ww, smatrix[0]);
+	  #else
+	  led_set_pixel(G.rr, G.gg, G.bb, smatrix[0]);
+	  #endif   
       led_show();
       delay(d);
     }
@@ -571,7 +685,11 @@ void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned int d) 
     if (t > 0) {
       for (unsigned int v = 0; v < 11; v++)
       {
-        led_set_pixel(G.rr, G.gg, G.bb, matrix[t][v]); 
+		#ifdef Grbw
+        led_set_pixel_rgbw(G.rr, G.gg, G.bb, G.ww, matrix[t][v]);
+		#else
+		led_set_pixel(G.rr, G.gg, G.bb, matrix[t][v]);
+		#endif 
       }
     }
     led_show();
@@ -579,7 +697,11 @@ void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned int d) 
   }
   for (u = 0; u < 11; u++)
   {
-    led_set_pixel(G.rr, G.gg, G.bb, matrix[t-1][u]);   
+	#ifdef Grbw
+	  led_set_pixel_rgbw(G.rr, G.gg, G.bb, G.ww, matrix[t-1][u]);
+	#else
+	  led_set_pixel(G.rr, G.gg, G.bb, matrix[t-1][u]);
+	#endif    
   }
   led_show();
 }
@@ -602,7 +724,11 @@ void schieben(int d, unsigned char aktion){
       }
       for (b = 0;b<11;b++)
       {
-        led_set_pixel(G.rr, G.gg, G.bb, matrix[a][b]);  
+		#ifdef Grbw
+    led_set_pixel_rgbw(G.rr, G.gg, G.bb, G.ww, matrix[a][b]);
+		#else
+		led_set_pixel(G.rr, G.gg, G.bb, matrix[a][b]);
+		#endif  
       }
       led_show();
       delay(d);
@@ -743,6 +869,27 @@ void show_sekunde() {
   
 }
 #endif 
+
+
+//------------------------------------------------------------------------------
+
+#ifdef UHR_114_Fraenkisch
+void show_minuten() {
+  unsigned char m;
+
+  if (G.zeige_min > 0){  
+    // Minuten / Sekunden-Animation
+    // Minute (1-4)  ermitteln
+    m = _minute;
+    while (m > 4) { m -= 5; }
+
+    if (m > 0){ led_set(min_arr[G.zeige_min-1][0]); }
+    if (m > 1){ led_set(min_arr[G.zeige_min-1][1]); }
+    if (m > 2){ led_set(min_arr[G.zeige_min-1][2]); }
+    if (m > 3){ led_set(min_arr[G.zeige_min-1][3]); }                                             
+  }   
+}
+#endif  
 
 //------------------------------------------------------------------------------
 
@@ -957,7 +1104,7 @@ void show_wetter() {
 void show_zeit(int flag) {
 
   unsigned char m, s;
-  unsigned int r, g, b, rr, gg, bb, zz;  
+  unsigned int r, g, b, rr, gg, ww, bb, zz;  
   if (flag == 1) {
     set_uhrzeit();
   }
@@ -976,6 +1123,7 @@ void show_zeit(int flag) {
   rr = G.rgb[1][0];
   gg = G.rgb[1][1];
   bb = G.rgb[1][2];
+  ww = G.rgb[1][3];
   zz = rr + gg + bb;
   
     //Helligkeit Hintergrund einstellen / LDR
@@ -983,17 +1131,23 @@ void show_zeit(int flag) {
   //Helligkeit LDR
   rr = (int)rr / ldrVal;
   gg = (int)gg / ldrVal;
-  bb = (int)bb / ldrVal;    
+  bb = (int)bb / ldrVal;
+  ww = (int)ww / ldrVal;   
   } else {
   rr = (int)rr * G.hh / 100;
   gg = (int)gg * G.hh / 100;
-  bb = (int)bb * G.hh / 100;      
+  bb = (int)bb * G.hh / 100;
+  ww = (int)ww * G.hh / 100;      
   }
   
   //Hintergrund setzen
   for (int t = 0; t < ROWS_MATRIX; t++){
     for (int b = 0; b < 11; b++){
-      led_set_pixel(rr, gg, bb, matrix[t][b]);
+		#ifdef Grbw
+      led_set_pixel_rgbw(rr, gg, bb, ww, matrix[t][b]);
+		#else
+	  led_set_pixel(rr, gg, bb, matrix[t][b]);
+		#endif
     }
   }
   
@@ -1024,6 +1178,11 @@ void show_zeit(int flag) {
 //  if (m > 0) {
   uint8_t animation = 50;
 //  }
+
+#ifdef UHR_114_Fraenkisch                                                                        
+  show_minuten();
+#endif
+
 #ifdef UHR_114                                                                        
   show_minuten();
 #endif
@@ -1040,5 +1199,3 @@ void show_zeit(int flag) {
   led_show();  
 
 }
-
-
