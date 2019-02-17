@@ -40,6 +40,7 @@ var showMinutes = 0;
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
+var COMMAND_SET_WEATHER_DATA = 90;
 var COMMAND_SET_LDR = 91;
 var COMMAND_SET_HOSTNAME = 92;
 var COMMAND_SET_SETTING_SECOND = 93;
@@ -209,6 +210,9 @@ function initWebsocket() {
 			$("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
 			$("#showSeconds").set("value", data.zeige_sek);
 			$("#showMinutes").set("value", data.zeige_min);
+
+			$("#owm-api-key").set("value", data.apiKey);
+			$("#owm-city-id").set("value", data.cityid);
 		}
 		if (data.command === "set") {
 			rgb[0][0] = data.rgb00;
@@ -619,6 +623,16 @@ $.ready(function() {
 
 		websocket.send(data);
 		debugMessage("Helligkeit wurde neu konfiguriert", data);
+	});
+	$("#weather-button").on("click", function() {
+
+		var apiKey = $("#owm-api-key").get("value");
+		var cityId = $("#owm-city-id").get("value");
+
+		var data = "090000000" + cityId + " " + apiKey + "  999";
+
+		websocket.send(data);
+		debugMessage("OpenWeatherMap Zugangsdaten wurden konfiguriert", data);
 	});
 	$("#show-minutesbutton").on("click", function() {
 		var showMinutesValue = $("#show-minutes").get("value");
