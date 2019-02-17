@@ -46,6 +46,10 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 
 ## ChangeLog      
 ### Version 2.1.1
+* (Pascal Wagler)
+* Neues Webinterface hinzugefügt
+* Arduino-Projekt umbenannt
+* Alten `lib`-Ordner und die Datei `7x5 Font.xlsx` gelöscht
 * (Atho95)
 * Neueste Version der WebSockets - Bugfix Nullpointer in Debug-Ausgabe (payload)
      Im Directory Uhr_Neu befindet sich noch die alte Version (könnte gelöscht werden)
