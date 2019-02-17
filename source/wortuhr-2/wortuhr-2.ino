@@ -8,19 +8,19 @@ Version 2.0.0
 * inital version
 Version 2.0.1
 * (Markus Aust)
-* Minuten LED¥s
+* Minuten LED's
 Version 2.0.2
 * (Eisbaeeer)
 * Fix NTP issue
 Version 2.0.3
 * (Eisbaeeer)
-* Konfig f¸r 125 LED¥s (11 Reihen) hinzugef¸gt
+* Konfig fuer 125 LED's (11 Reihen) hinzugefuegt
 Version 2.0.4
 * (path83 & Eisbaeeer)
-* LDR f¸r automatische Helligkeitsregelung
+* LDR fuer automatische Helligkeitsregelung
 Version 2.0.5
 * IP Adresse per Laufschrift ausgeben
-* LDR Kalibrierung ¸ber WebConfig
+* LDR Kalibrierung ueber WebConfig
 * Version 2.0.6
 * (path83 & masju & Eisbaeeer)
 * Over The Air Update Link in Webconfig
@@ -28,31 +28,58 @@ Version 2.0.7
 * LDR Helligkeitsregelung Hintergrund
 Version 2.0.8
 * (Flo455)
-* WLAN Scan hinzugef¸gt
+* WLAN Scan hinzugefuegt
 Version 2.0.9
 * (Eisbaeeer)
-* Telnet Server f¸r Debugging
+* Telnet Server fuer Debugging
 Version 2.1.0
-* OpenWeatherMap f¸r Uhr 242
+* OpenWeatherMap fuer Uhr 242
 Version 2.1.1
 * (Atho95)
 * Neueste Version der WebSockets - Bugfix Nullpointer in Debug-Ausgabe (payload)
-     Im Directory Uhr_Neu befindet sich noch die alte Version (kˆnnte gelˆscht werden)
-* Buffer f¸r IP Adressen auf 20 erhˆht (sprintf h‰ngt '\0' an)
+     Im Directory Uhr_Neu befindet sich noch die alte Version (koennte geloescht werden)
+* Buffer fuer IP Adressen auf 20 erhoeht (sprintf haengt '\0' an)
 * uhr_func_114.h erweitert auf umgekehrt angeschlossene LED's
-* uhr.h erweitert, um auch RGB LED's konfigurieren zu kˆnnen
+* uhr.h erweitert, um auch RGB LED's konfigurieren zu koennen
+Version 2.2.0
+* (dbambus)
+* Bugfixes fuer Konfigseite #7
+* Support fuer SK6812 RGBW Stribes
+* Hinzuef√ºgen eines neunen Layouts UHR_114_Fraenkisch
 
 Ideen / Todo
 - Zeitverlauf Farben konfigurierbar
-  Sommer-Zeit: Letzter Sonntag M‰rz um 2 Uhr
+  Sommer-Zeit: Letzter Sonntag Maerz um 2 Uhr
   Winter-Zeit: Letzter Sonntag Oktober um 3 Uhr
 - Server-IP eintragen
-- ‹berblenden
+- √ºberblenden
 - Tretis
-- MP3 Gong Gel‰ut
+- MP3 Gong Gelaeut
 
 
 --------------------------------------------------*/
+
+/*--------------------------------------------------------------------------
+ * Hier wird definiert, welche Anzahl von LED's bzw. Reihen verwendet werden
+ */
+#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's f√ºr Minuten
+//#define UHR_114_Fraenkisch          // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's f√ºr Minuten, mit ge√§ndertem Layout f√ºr extra W√∂rter in der Matrix
+//#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's f√ºr Minuten
+//#define UHR_169                     // Uhr mit zus√§tzlichen LED's um den Rahmen seitlich zu beleuchten
+//#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
+
+#define SERNR 100              //um das eeprom zu l√∂schen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+
+// Wenn die Farben nicht passen k√∂nnen sie hier angepasst werden:
+#define Brg   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
+//#define Grb      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
+//#define Rgb    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rgb
+//#define Rbg    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
+//#define Grbw   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
+/*--------------------------------------------------------------------------
+ * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
+ *--------------------------------------------------------------------------
+ */
 
 //---------------------------------------------------------
 // WLAN-Status
@@ -103,7 +130,11 @@ char wstatus[7][25]=
 #include <EEPROM.h>
 #include "EEPROMAnything.h"
 #include "Uhr.h"
+#include "WebPage_Adapter.h"
 #include "font.h"
+
+#define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
+uint8_t show_ip = false;      // Zeige IP Adresse beim Start 
 
 extern "C"{
 #include "uhr_func.h"
@@ -166,12 +197,13 @@ void setup()
     G.param2    = 0;
     G.prog_init = 1;
     G.conf      = 0;
-    for( int i = 0; i < 4; i++ ){ for( int ii = 0; ii < 3; ii++ ){ G.rgb[i][ii] = 0; } }
+    for( int i = 0; i < 4; i++ ){ for( int ii = 0; ii < 4; ii++ ){ G.rgb[i][ii] = 0; } }
     G.rgb[0][2] = 100;
     G.rgb[3][1] = 100;
     G.rr        = 0;
     G.gg        = 0;
     G.bb        = 0;
+    G.ww        = 0;
     G.hell      = 2;
     G.geschw    = 10;
     G.client_nr = 0;
@@ -195,7 +227,7 @@ void setup()
     G.h22       = 100;
     G.h24       = 100;
 
-    for( int i = 0; i < 10; i++ ){ for( int ii = 0; ii < 5; ii++ ){ G.rgb1[i][ii] = 0; } }
+    for( int i = 0; i < 10; i++ ){ for( int ii = 0; ii < 5; ii++ ){ G.rgb1[i][ii] = 0; } }  //Kann das entfernt werden ?
     eeprom_write();
 
   #ifdef DEBUG
@@ -229,7 +261,11 @@ void setup()
   //-------------------------------------
   // LEDs initialisieren
   //-------------------------------------
-  USE_SERIAL.println("WS2812 LED Init");    
+  #ifdef Grbw
+  USE_SERIAL.println("SK6812 LED Init"); 
+  #else
+  USE_SERIAL.println("WS2812 LED Init");
+  #endif    
   strip.Begin();
   led_single(20);
   led_clear();
@@ -568,6 +604,7 @@ if ((_sekunde == 30) | (_sekunde == 0))  {
      USE_SERIAL.println(G.rgb[0][0]);
      USE_SERIAL.println(G.rgb[0][1]);
      USE_SERIAL.println(G.rgb[0][2]);
+	 USE_SERIAL.println(G.rgb[0][3]);
     #endif
     eeprom_write();
     delay(100);
@@ -873,7 +910,11 @@ if ((_sekunde == 30) | (_sekunde == 0))  {
   if (G.conf == 301) {
     strcpy(str, "{\"command\":\"set\"");
     for( int i = 0; i < 4; i++ ){
-      for( int ii = 0; ii < 3; ii++ ){
+        #ifdef Grbw
+        for( int ii = 0; ii < 4; ii++ ){
+        #else
+        for( int ii = 0; ii < 3; ii++ ){
+        #endif
         strcat(str, ",\"rgb");
         sprintf(s, "%d", i);
         strcat(str, s);
@@ -970,6 +1011,27 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
         G.param2 = split(6,3);
         if (cc == 1) {        // Uhrzeit Vordergrund Farbe einstellen
           G.prog = 1;
+		  #ifdef Grbw
+          G.rgb[0][0] = split(9,3);
+          G.rgb[0][1] = split(12,3);
+          G.rgb[0][2] = split(15,3);
+          G.rgb[0][3] = split(18,3);
+
+          G.rgb[1][0] = split(21,3);
+          G.rgb[1][1] = split(24,3);
+          G.rgb[1][2] = split(27,3);
+          G.rgb[1][3] = split(30,3);
+
+          G.rgb[2][0] = split(33,3);
+          G.rgb[2][1] = split(36,3);
+          G.rgb[2][2] = split(39,3);
+          G.rgb[2][3] = split(42,3);
+
+          G.rgb[3][0] = split(45,3);
+          G.rgb[3][1] = split(48,3);
+          G.rgb[3][2] = split(51,3);
+          G.rgb[3][3] = split(54,3);
+		  #else
           G.rgb[0][0] = split(9,3);
           G.rgb[0][1] = split(12,3);
           G.rgb[0][2] = split(15,3);
@@ -985,59 +1047,103 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
           G.rgb[3][0] = split(36,3);
           G.rgb[3][1] = split(39,3);
           G.rgb[3][2] = split(42,3);
+		  #endif
           break;
         }
 
         if (cc == 200) {      // Sekunden
           G.prog = 200;
           if (G.param1 == 0) { G.prog_init = 1; }
+		  #ifdef Grbw
+          G.rgb[3][0] = split(45,3);
+          G.rgb[3][1] = split(48,3);
+          G.rgb[3][2] = split(51,3);
+          G.rgb[3][3] = split(54,3);
+          G.hell=split(57,3);
+          G.geschw=split(60,3);
+          #else
           G.rgb[3][0] = split(36,3);
           G.rgb[3][1] = split(39,3);
           G.rgb[3][2] = split(42,3);
           G.hell=split(45,3);
           G.geschw=split(48,3);
+		  #endif
           break;
         }
 
         if (cc == 201) {      // Laufschrift
           G.prog = 201;
           if (G.param1 == 0) { G.prog_init = 1; }
-          G.rgb[3][0] = split(36,3);
-          G.rgb[3][1] = split(39,3);
-          G.rgb[3][2] = split(42,3);
-          G.hell=split(45,3);
-          G.geschw=split(48,3);
+		  #ifdef Grbw
+		  G.rgb[3][0] = split(45,3);
+		  G.rgb[3][1] = split(48,3);
+		  G.rgb[3][2] = split(51,3);
+		  G.rgb[3][3] = split(54,3);
+		  G.hell=split(57,3);
+		  G.geschw=split(60,3);
+		  #else
+		  G.rgb[3][0] = split(36,3);
+		  G.rgb[3][1] = split(39,3);
+		  G.rgb[3][2] = split(42,3);
+		  G.hell=split(45,3);
+		  G.geschw=split(48,3);
+		  #endif
           break;
         }
         if (cc == 202) {      // Regenbogen
           G.prog = 202;
           G.prog_init = 1;
+		  #ifdef Grbw
+          G.hell=split(57,3);
+          G.geschw=split(60,3);
+		  #else
           G.hell=split(45,3);
           G.geschw=split(48,3);
+		  #endif
           break;
         }
         if (cc == 203) {      // Farbwechsel
           G.prog = 203;
           G.prog_init = 1;
-          G.hell=split(45,3);
-          G.geschw=split(48,3);
+		  #ifdef Grbw
+		  G.hell=split(57,3);
+		  G.geschw=split(60,3);
+		  #else
+		  G.hell=split(45,3);
+		  G.geschw=split(48,3);
+          #endif
           break;
         }
         if (cc == 204) {      // Farbe
           G.prog = 204;
           G.prog_init = 1;
-          G.rgb[3][0] = split(36,3);
-          G.rgb[3][1] = split(39,3);
-          G.rgb[3][2] = split(42,3);
+		  #ifdef Grbw
+		  G.rgb[3][0] = split(45,3);
+		  G.rgb[3][1] = split(48,3);
+		  G.rgb[3][2] = split(51,3);
+		  G.rgb[3][3] = split(54,3);
+		  #else
+		  G.rgb[3][0] = split(36,3);
+		  G.rgb[3][1] = split(39,3);
+		  G.rgb[3][2] = split(42,3);
+		  #endif
           break;
         }
 
         if (cc == 251) {      // Helligkeit
+		  #ifdef Grbw
+	      G.hell=split(57,3);
+		  #else
           G.hell =split(45,3);
+		  #endif
           break;
         }
        if (cc == 252) {       // Geschwindigkeit
+		  #ifdef Grbw
+		  G.geschw=split(60,3);
+		  #else
           G.geschw=split(48,3);
+		  #endif
           break;
         }
         if (cc == 20) {       // Startwerte speichern
@@ -1476,15 +1582,19 @@ void eeprom_read()
    USE_SERIAL.printf("rgb.0.0   : %u\n",  G.rgb[0][0]);
    USE_SERIAL.printf("rgb.0.1   : %u\n",  G.rgb[0][1]);
    USE_SERIAL.printf("rgb.0.2   : %u\n",  G.rgb[0][2]);
-   USE_SERIAL.printf("rgb.0.0   : %u\n",  G.rgb[1][0]);
-   USE_SERIAL.printf("rgb.0.1   : %u\n",  G.rgb[1][1]);
-   USE_SERIAL.printf("rgb.0.2   : %u\n",  G.rgb[1][2]);
-   USE_SERIAL.printf("rgb.0.0   : %u\n",  G.rgb[2][0]);
-   USE_SERIAL.printf("rgb.0.1   : %u\n",  G.rgb[2][1]);
-   USE_SERIAL.printf("rgb.0.2   : %u\n",  G.rgb[2][2]);
-   USE_SERIAL.printf("rgb.0.0   : %u\n",  G.rgb[3][0]);
-   USE_SERIAL.printf("rgb.0.1   : %u\n",  G.rgb[3][1]);
-   USE_SERIAL.printf("rgb.0.2   : %u\n",  G.rgb[3][2]);
+   USE_SERIAL.printf("rgb.0.2   : %u\n",  G.rgb[0][3]);
+   USE_SERIAL.printf("rgb.1.0   : %u\n",  G.rgb[1][0]);
+   USE_SERIAL.printf("rgb.1.1   : %u\n",  G.rgb[1][1]);
+   USE_SERIAL.printf("rgb.1.2   : %u\n",  G.rgb[1][2]);
+   USE_SERIAL.printf("rgb.1.3   : %u\n",  G.rgb[1][3]);
+   USE_SERIAL.printf("rgb.2.0   : %u\n",  G.rgb[2][0]);
+   USE_SERIAL.printf("rgb.2.1   : %u\n",  G.rgb[2][1]);
+   USE_SERIAL.printf("rgb.2.2   : %u\n",  G.rgb[2][2]);
+   USE_SERIAL.printf("rgb.2.3   : %u\n",  G.rgb[2][3]);
+   USE_SERIAL.printf("rgb.3.0   : %u\n",  G.rgb[3][0]);
+   USE_SERIAL.printf("rgb.3.1   : %u\n",  G.rgb[3][1]);
+   USE_SERIAL.printf("rgb.3.2   : %u\n",  G.rgb[3][2]);
+   USE_SERIAL.printf("rgb.3.3   : %u\n",  G.rgb[3][3]);
    USE_SERIAL.printf("Zeitserver: %s\n",  G.zeitserver);
    USE_SERIAL.printf("Text      : %s\n",  G.ltext);
    USE_SERIAL.printf("H6        : %u\n",  G.h6);
