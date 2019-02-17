@@ -6,31 +6,7 @@ https://github.com/Eisbaeeer/Ulrich-Radig_Wort_Uhr_Version_2
  * Hier Anpassungen der Hardware vornehmen.
  */
 
-const char* VER = "2.1.1";  // Software Version
-
-/*--------------------------------------------------------------------------
- * Hier wird definiert, welche Anzahl von LED�s bzw. Reihen verwendet werden
- */
-#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED�s pro Reihe + 4 LED�s f�r Minuten
-//#define UHR_114_Fraenkisch          // Uhr mit 10 Reihen, jeweils 11 LED�s pro Reihe + 4 LED�s f�r Minuten, mit geändertem Layout für extra Wörter in der Matrix
-//#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED�s pro Reihe + 4 LED�s f�r Minuten
-//#define UHR_169                     // Uhr mit zus�tzlichen LED�s um den Rahmen seitlich zu beleuchten
-//#define UHR_242                       // Uhr mit Wettervorhersage 242 LED�s --> Bitte die Library "ArduinoJson" im Library Manager installieren!
-
-#define SERNR 100              //um das eeprom zu l�schen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
-#define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
-uint8_t show_ip = true;      // Zeige IP Adresse beim Start 
-
-// Wenn die Farben nicht passen k�nnen sie hier angepasst werden:
-//#define Brg   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
-#define Grb      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
-//#define Rgb    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rgb
-//#define Rbg    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
-//#define Grbw   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
-/*--------------------------------------------------------------------------
- * ENDE Hardware Konfiguration. Ab hier nichts mehr �ndern!!!
- *--------------------------------------------------------------------------
- */
+const char* VER = "2.2.0";  // Software Version
 
 #ifndef _UHR_H
 #define _UHR_H
