@@ -9,7 +9,7 @@
 #define WEBSOCKETSADAPTER_H_
 
 #include "WebSocketsServer.h"
-#ifdef
+#ifdef Grbw
 #include "WebPageWortuhr2_RGBW.h"
 #else
 #include "WebPageWortuhr2.h"
