@@ -44,7 +44,12 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * Minten Effekte
 * Silvester Countdown
 
-## ChangeLog      
+## ChangeLog  
+### Version 2.2.0
+* (dbambus)
+* Bugfixes für Konfigseite #7
+* Support für SK6812 RGBW Stribes
+* Hinzufügen eines neunen Layouts UHR_114_Fränkisch     
 ### Version 2.1.1
 * (Pascal Wagler)
 * Neues Webinterface hinzugefügt
