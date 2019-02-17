@@ -30,7 +30,7 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 * source enthält den Sketch für Arduino
 * libs enthält alle benötigten Libs
 * docs enthält Anleitungen  
-* bin enthält die Binary (Für die Uhrenvariante "UHR_114")
+* bin enthält die Binary (Für die Uhrenvariante "UHR_114" und LED Layout GRB)
 
 ## Arduino IDE 1.8.8 vorbereiten
 * Datei --> Voreinstellungen --> Zusätzliche Boardverwalter-URLs --> "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
