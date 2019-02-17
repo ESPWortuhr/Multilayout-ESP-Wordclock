@@ -9,7 +9,11 @@
 #define WEBSOCKETSADAPTER_H_
 
 #include "WebSocketsServer.h"
+#ifdef
+#include "WebPageWortuhr2_RGBW.h"
+#else
 #include "WebPageWortuhr2.h"
+#endif
 
 #define RESPONSE_SIZE	900
 
