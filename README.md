@@ -1,11 +1,11 @@
-![Logo](pics/uhr.jpg)
 # WordUhr v3
 
-Hier findet man alle nötigen Informationen der Wort Uhr von Ulrichradig.de      
+Hier findet man alle nötigen Informationen zur Worduhr.
+
+![](pics/wortuhr-3-screenshot.png)
 
 ### Einleitung 
-Es handelt sich hier um die Version 3 der Wort Uhr. 
-Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu   
+Es handelt sich hier um die Version 3 der Wort Uhr. Aufbauend auf dem Projekt von [Ulrich Radig] (https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
 
 ## Für den Nachbau wird folgende Hardware/Software benötigt:
 * NodeMCU (getestetes Board Lolin Version3)
@@ -25,14 +25,15 @@ Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-n
 ![LDR](pics/LDR.jpg)
       
 ## Verzeichnisstruktur
-* pics enthält Bilder
-* dxf enthält DXF Dateien
-* source enthält den Sketch für Arduino
-* libs enthält alle benötigten Libs
-* docs enthält Anleitungen  
-* bin enthält die Binary (Für die Uhrenvariante "UHR_114" und LED Layout GRB)
 
-## Arduino IDE 1.8.8 vorbereiten
+-   `pics` enthält Bilder
+-   `dxf` enthält DXF Dateien
+-   `src` enthält den Sketch für Arduino und das Webinterface
+-   `include` enthält die Header-Dateien für Arduino
+-   `docs` enthält Anleitungen
+-   `bin` enthält die Binary (Für die Uhrenvariante *UHR_114*)
+
+## Arduino IDE 1.8.13 vorbereiten
 * Datei --> Voreinstellungen --> Zusätzliche Boardverwalter-URLs --> "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
 * Werkzeuge --> Board --> Boardverwalter --> esp8266 Version 2.5.0 installieren
 * lib Verzeichnis in das Arduino library Verzeichnis kopieren bzw. ZIP importieren
