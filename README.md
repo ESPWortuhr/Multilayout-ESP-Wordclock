@@ -1,17 +1,17 @@
 ![Logo](pics/uhr.jpg)
-# Ulrich Radig Wort Uhr Version 2
+# WordUhr v3
 
 Hier findet man alle nötigen Informationen der Wort Uhr von Ulrichradig.de      
 
 ### Einleitung 
-Es handelt sich hier um die Version 2 der Wort Uhr. 
+Es handelt sich hier um die Version 3 der Wort Uhr. 
 Informationen unter http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu   
 
 ## Für den Nachbau wird folgende Hardware/Software benötigt:
 * NodeMCU (getestetes Board Lolin Version3)
 * WS2812B, WS2816 RGB LED Stripes oder SK6812 RGBW Stribes
 * Netzteil 5V 2A
-* Arduino Version 1.8.5
+* Arduino Version 1.8.13
 * 470 Ohm Widerstand
 * Optional: LDR, 10 KOhm Widerstand
 

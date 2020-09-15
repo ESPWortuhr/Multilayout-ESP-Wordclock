@@ -1,0 +1,97 @@
+# !!! WARNING !!! AUTO-GENERATED FILE, PLEASE DO NOT MODIFY IT AND USE
+# https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+#
+# If you need to override existing CMake configuration or add extra,
+# please create `CMakeListsUser.txt` in the root of project.
+# The `CMakeListsUser.txt` will not be overwritten by PlatformIO.
+
+
+
+set(CMAKE_CONFIGURATION_TYPES "nodemcuv2" CACHE STRING "Build Types reflect PlatformIO Environments" FORCE)
+
+
+SET(CMAKE_C_COMPILER "$ENV{HOME}/.platformio/packages/toolchain-xtensa/bin/xtensa-lx106-elf-gcc")
+SET(CMAKE_CXX_COMPILER "$ENV{HOME}/.platformio/packages/toolchain-xtensa/bin/xtensa-lx106-elf-g++")
+SET(CMAKE_CXX_FLAGS "-fno-rtti -std=c++11 -Os -mlongcalls -mtext-section-literals -falign-functions=4 -U__STRICT_ANSI__ -ffunction-sections -fdata-sections -fno-exceptions -Wall")
+SET(CMAKE_C_FLAGS "-std=gnu99 -Wpointer-arith -Wno-implicit-function-declaration -Wl,-EL -fno-inline-functions -nostdlib -Os -mlongcalls -mtext-section-literals -falign-functions=4 -U__STRICT_ANSI__ -ffunction-sections -fdata-sections -fno-exceptions -Wall")
+
+SET(CMAKE_C_STANDARD 99)
+set(CMAKE_CXX_STANDARD 11)
+
+if (CMAKE_BUILD_TYPE MATCHES "nodemcuv2")
+    add_definitions(-D'PLATFORMIO=50001')
+    add_definitions(-D'ESP8266')
+    add_definitions(-D'ARDUINO_ARCH_ESP8266')
+    add_definitions(-D'ARDUINO_ESP8266_NODEMCU')
+    add_definitions(-D'F_CPU=80000000L')
+    add_definitions(-D'__ets__')
+    add_definitions(-D'ICACHE_FLASH')
+    add_definitions(-D'ARDUINO=10805')
+    add_definitions(-D'ARDUINO_BOARD=\"PLATFORMIO_NODEMCUV2\"')
+    add_definitions(-D'FLASHMODE_DIO')
+    add_definitions(-D'LWIP_OPEN_SRC')
+    add_definitions(-D'NONOSDK22x_190703=1')
+    add_definitions(-D'TCP_MSS=536')
+    add_definitions(-D'LWIP_FEATURES=1')
+    add_definitions(-D'LWIP_IPV6=0')
+    add_definitions(-D'VTABLES_IN_FLASH')
+
+    include_directories("${CMAKE_CURRENT_LIST_DIR}/include")
+    include_directories("${CMAKE_CURRENT_LIST_DIR}/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/Ethernet/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266mDNS/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266HTTPUpdateServer/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WebServer/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFi/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/EEPROM")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/Hash/src")
+    include_directories("${CMAKE_CURRENT_LIST_DIR}/.pio/libdeps/nodemcuv2/ArduinoJson/src")
+    include_directories("${CMAKE_CURRENT_LIST_DIR}/.pio/libdeps/nodemcuv2/Timezone/src")
+    include_directories("${CMAKE_CURRENT_LIST_DIR}/.pio/libdeps/nodemcuv2/Time")
+    include_directories("${CMAKE_CURRENT_LIST_DIR}/.pio/libdeps/nodemcuv2/NeoPixelBus/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/SPI")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/tools/sdk/include")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/tools/sdk/libc/xtensa-lx106-elf/include")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/cores/esp8266")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/tools/sdk/lwip2/include")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/variants/nodemcu")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ArduinoOTA")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/DNSServer/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266AVRISP/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266HTTPClient/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266LLMNR")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266NetBIOS")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266SSDP")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266SdFat/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFiMesh/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266httpUpdate/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/GDBStub/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/LittleFS/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/SD/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/SDFS/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/SPISlave/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/Servo/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/SoftwareSerial/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/TFT_Touch_Shield_V2")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/Ticker/src")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/Wire")
+    include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/esp8266/src")
+    include_directories("$ENV{HOME}/.platformio/packages/toolchain-xtensa/xtensa-lx106-elf/include/c++/4.8.2")
+    include_directories("$ENV{HOME}/.platformio/packages/toolchain-xtensa/xtensa-lx106-elf/include/c++/4.8.2/xtensa-lx106-elf")
+    include_directories("$ENV{HOME}/.platformio/packages/toolchain-xtensa/lib/gcc/xtensa-lx106-elf/4.8.2/include")
+    include_directories("$ENV{HOME}/.platformio/packages/toolchain-xtensa/lib/gcc/xtensa-lx106-elf/4.8.2/include-fixed")
+    include_directories("$ENV{HOME}/.platformio/packages/toolchain-xtensa/xtensa-lx106-elf/include")
+    include_directories("$ENV{HOME}/.platformio/packages/tool-unity")
+
+    FILE(GLOB_RECURSE EXTRA_LIB_SOURCES
+        ${CMAKE_CURRENT_LIST_DIR}/.pio/libdeps/nodemcuv2/*.*
+    )
+endif()
+
+
+FILE(GLOB_RECURSE SRC_LIST
+    ${CMAKE_CURRENT_LIST_DIR}/src/*.*
+    ${CMAKE_CURRENT_LIST_DIR}/lib/*.*
+)
+
+list(APPEND SRC_LIST ${EXTRA_LIB_SOURCES})

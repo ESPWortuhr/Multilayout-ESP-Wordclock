@@ -9,6 +9,8 @@
 .DS_Store
 .AppleDouble
 .LSOverride
+.pio
+.idea
 
 # Icon must end with two \r
 Icon
@@ -57,6 +59,8 @@ $RECYCLE.BIN/
 *.msix
 *.msm
 *.msp
+*.pio
+*.idea
 
 # Windows shortcuts
 *.lnk
@@ -72,6 +76,8 @@ $RECYCLE.BIN/
 
 # KDE directory preferences
 .directory
+.pio
+.idea
 
 # Linux trash folder which might appear on any partition or disk
 .Trash-*
