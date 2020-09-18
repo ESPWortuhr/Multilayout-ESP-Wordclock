@@ -54,7 +54,7 @@ void getweather(){
         // wait
         }
          
-        client.readBytes(response, 6000);
+        client.readBytes(response, 3500);
         
          #ifdef DEBUG
          USE_SERIAL.println("Antwort: "); 
@@ -331,5 +331,5 @@ void getweather(){
      
      }
      client.stop(); // disconnect from server     
-}
+  }
 #endif
