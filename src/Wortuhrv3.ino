@@ -463,9 +463,10 @@ void loop()
 #ifdef UHR_242
 	if (weather_tag >= 600) {
 	  weather_tag = 0;
-	  if (wlan_client == true) {
+	  if (WiFi.status() == WL_CONNECTED)
+       {
 		getweather();
-	  }
+          }
 	}
 #endif
 

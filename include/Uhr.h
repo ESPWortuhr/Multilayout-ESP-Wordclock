@@ -6,7 +6,7 @@ https://github.com/Eisbaeeer/Ulrich-Radig_Wort_Uhr_Version_2
  * Hier Anpassungen der Hardware vornehmen.
  */
 
-const char* VER = "2.2.0";  // Software Version
+const char* VER = "2.2.1";  // Software Version
 
 #ifndef _UHR_H
 #define _UHR_H
@@ -129,13 +129,13 @@ GLOBAL G = { };
 
 #ifdef UHR_242
 const char* server = "api.openweathermap.org";  // Openweather server's address
-char resource1[] = "/data/2.5/forecast?id="; // Openweather API URL part 1
-char resource2[] = "&units=metric&APPID="; // Openweather API URL part 2
-char resource3[] = "&cnt=8"; // Openweather API forecast time
-char resource[90];
-char response[6000];       //fixed size buffer
+const char* resource1 = "/data/2.5/forecast?id="; // Openweather API URL part 1
+const char* resource2 = "&units=metric&APPID="; // Openweather API URL part 2
+const char* resource3 = "&cnt=8"; // Openweather API forecast time
+char resource[40];
+char response[3500];       //fixed size buffer
 WiFiClient client;
-unsigned int weather_tag    = 600;    //counter f�r Wetterdaten abrufen
+unsigned int weather_tag    = 600;    //counter fuer Wetterdaten abrufen
 int wtemp_6;
 int wtemp_12;
 int wtemp_18;

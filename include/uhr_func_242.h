@@ -72,6 +72,11 @@ void es_ist()
   led_set(3);
   led_set(4);
   led_set(5);
+
+#ifdef DEBUG
+USE_SERIAL.println("");
+USE_SERIAL.print("Es ist ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +89,11 @@ void viertel()
   led_set(29);
   led_set(30);
   led_set(31);
-  led_set(32);   
+  led_set(32);
+
+#ifdef DEBUG
+USE_SERIAL.print("viertel ");
+#endif     
 } 
 
 //------------------------------------------------------------------------------
@@ -94,7 +103,11 @@ void fuenf()
   led_set(7);
   led_set(8);
   led_set(9);
-  led_set(10);  
+  led_set(10); 
+
+#ifdef DEBUG
+USE_SERIAL.print("Fünf ");
+#endif 
 }
 
 //------------------------------------------------------------------------------
@@ -105,6 +118,10 @@ void zehn()
   led_set(19);
   led_set(20);
   led_set(21);
+
+#ifdef DEBUG
+USE_SERIAL.print("zehn ");
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -117,6 +134,10 @@ void zwanzig()
   led_set(15);  
   led_set(16);
   led_set(17);   
+
+#ifdef DEBUG
+USE_SERIAL.print("zwanzig ");
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -127,6 +148,10 @@ void halb()
   led_set(45);
   led_set(46);
   led_set(47); 
+
+#ifdef DEBUG
+USE_SERIAL.print("halb ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -137,6 +162,10 @@ void eins()
   led_set(61);
   led_set(62);
   led_set(63); 
+
+#ifdef DEBUG
+USE_SERIAL.print("Eins ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -147,6 +176,10 @@ void nach()
   led_set(39);
   led_set(40);
   led_set(41);
+
+#ifdef DEBUG
+USE_SERIAL.print("nach ");
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -156,6 +189,10 @@ void vor()
   led_set(35);
   led_set(36);
   led_set(37); 
+
+#ifdef DEBUG
+USE_SERIAL.print("vor ");
+#endif
 }
 //------------------------------------------------------------------------------
 
@@ -164,6 +201,10 @@ void uhr()
   led_set(100);
   led_set(101);
   led_set(102);
+
+#ifdef DEBUG
+USE_SERIAL.println("Uhr ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -173,6 +214,10 @@ void h_ein()
   led_set(61);
   led_set(62);
   led_set(63);
+
+#ifdef DEBUG
+USE_SERIAL.println("Eins ");
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -183,6 +228,10 @@ void h_zwei()
   led_set(63);
   led_set(64);
   led_set(65); 
+
+#ifdef DEBUG
+USE_SERIAL.println("Zwei ");
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -193,6 +242,10 @@ void h_drei()
   led_set(68);
   led_set(69);
   led_set(70);  
+
+#ifdef DEBUG
+USE_SERIAL.println("Drei ");
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -203,6 +256,10 @@ void h_vier()
   led_set(78);
   led_set(79);
   led_set(80);  
+
+#ifdef DEBUG
+USE_SERIAL.println("Vier ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -213,6 +270,10 @@ void h_fuenf()
   led_set(74);
   led_set(75);
   led_set(76);  
+
+#ifdef DEBUG
+USE_SERIAL.println("Fünf ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -224,6 +285,10 @@ void h_sechs()
   led_set(106);
   led_set(107);
   led_set(108);
+
+#ifdef DEBUG
+USE_SERIAL.println("Sechs ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -235,7 +300,11 @@ void h_sieben()
   led_set(57);
   led_set(58);
   led_set(59);   
-  led_set(60);     
+  led_set(60);
+
+#ifdef DEBUG
+USE_SERIAL.println("Sieben ");
+#endif       
 }
 
 //------------------------------------------------------------------------------
@@ -246,6 +315,10 @@ void h_acht()
   led_set(90);
   led_set(91);
   led_set(92);
+
+#ifdef DEBUG
+USE_SERIAL.println("Acht ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -256,6 +329,10 @@ void h_neun()
   led_set(82);
   led_set(83);
   led_set(84);  
+
+#ifdef DEBUG
+USE_SERIAL.println("Neun ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -266,6 +343,10 @@ void h_zehn()
   led_set(94);
   led_set(95);
   led_set(96); 
+
+#ifdef DEBUG
+USE_SERIAL.println("Zehn ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -275,6 +356,10 @@ void h_elf()
   led_set(85);
   led_set(86);
   led_set(87);
+
+#ifdef DEBUG
+USE_SERIAL.println("Elf ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -286,6 +371,10 @@ void h_zwoelf()
   led_set(51);
   led_set(52);
   led_set(53);
+
+#ifdef DEBUG
+USE_SERIAL.println("Zwölf ");
+#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -300,6 +389,10 @@ void w_morgen()
   led_set(128);
   led_set(127);
   led_set(126);
+
+#ifdef DEBUG
+USE_SERIAL.print("Morgen ");
+#endif  
   }
 
 void w_frueh()
@@ -308,6 +401,10 @@ void w_frueh()
   led_set(123);
   led_set(122);
   led_set(121);
+
+#ifdef DEBUG
+USE_SERIAL.print("Früh ");
+#endif  
   }
 void w_abend()
 {
@@ -316,6 +413,10 @@ void w_abend()
   led_set(134);
   led_set(135);
   led_set(136);
+
+#ifdef DEBUG
+USE_SERIAL.print("Abend ");
+#endif  
 }
 
 void w_mittag()
@@ -326,6 +427,10 @@ void w_mittag()
   led_set(140);
   led_set(141);
   led_set(142);
+
+#ifdef DEBUG
+USE_SERIAL.print("Mittag ");
+#endif  
 }
 
 void w_nacht()
@@ -335,6 +440,10 @@ void w_nacht()
   led_set(151);
   led_set(150);
   led_set(149);
+
+#ifdef DEBUG
+USE_SERIAL.print("Nacht ");
+#endif  
 }
 
 void w_schnee()
@@ -345,6 +454,10 @@ void w_schnee()
   led_set(145);
   led_set(144);
   led_set(143);
+
+#ifdef DEBUG
+USE_SERIAL.print("Schnee ");
+#endif  
 }
 
 void w_klar()
@@ -353,6 +466,10 @@ void w_klar()
   led_set(155);
   led_set(156);
   led_set(157);
+
+#ifdef DEBUG
+USE_SERIAL.print("klar ");
+#endif  
 }
 
 void w_warnung()
@@ -364,6 +481,10 @@ void w_warnung()
   led_set(162);
   led_set(163);
   led_set(164);
+
+#ifdef DEBUG
+USE_SERIAL.print("Warnung ");
+#endif  
 }
 
 void w_regen()
@@ -373,6 +494,10 @@ void w_regen()
   led_set(173);
   led_set(172);
   led_set(171);
+
+#ifdef DEBUG
+USE_SERIAL.print("Regen ");
+#endif  
 }
 
 void w_wolken()
@@ -383,6 +508,10 @@ void w_wolken()
   led_set(167);
   led_set(166);
   led_set(165);
+
+#ifdef DEBUG
+USE_SERIAL.print("Wolken ");
+#endif  
 }
 
 void w_gewitter()
@@ -395,6 +524,10 @@ void w_gewitter()
   led_set(182);
   led_set(183);
   led_set(184);
+
+#ifdef DEBUG
+USE_SERIAL.print("Gewitter ");
+#endif  
 }
 
 void w_unter()
@@ -404,6 +537,10 @@ void w_unter()
   led_set(195);
   led_set(194);
   led_set(193);
+
+#ifdef DEBUG
+USE_SERIAL.print("unter ");
+#endif  
 }
 
 void w_ueber()
@@ -412,6 +549,10 @@ void w_ueber()
   led_set(190);
   led_set(189);
   led_set(188);
+
+#ifdef DEBUG
+USE_SERIAL.print("über ");
+#endif  
 }
 
 void w_minus()
@@ -421,6 +562,10 @@ void w_minus()
   led_set(201);
   led_set(202);
   led_set(203);
+
+#ifdef DEBUG
+USE_SERIAL.print("minus ");
+#endif  
 }
 
 void w_null()
@@ -429,6 +574,10 @@ void w_null()
   led_set(206);
   led_set(207);
   led_set(208);
+
+#ifdef DEBUG
+USE_SERIAL.print("Null ");
+#endif  
 }
 
 void w_fuenf()
@@ -437,6 +586,10 @@ void w_fuenf()
   led_set(218);
   led_set(217);
   led_set(216);
+
+#ifdef DEBUG
+USE_SERIAL.print("Fünf ");
+#endif  
 }
 
 void w_zehn()
@@ -445,6 +598,10 @@ void w_zehn()
   led_set(214);
   led_set(213);
   led_set(212);
+
+#ifdef DEBUG
+USE_SERIAL.print("Zehn ");
+#endif  
 }
 
 void w_und()
@@ -452,6 +609,10 @@ void w_und()
   led_set(211);
   led_set(210);
   led_set(209);
+
+#ifdef DEBUG
+USE_SERIAL.print("und ");
+#endif  
 }
 
 void w_zwanzig()
@@ -463,6 +624,10 @@ void w_zwanzig()
   led_set(226);
   led_set(227);
   led_set(228);
+
+#ifdef DEBUG
+USE_SERIAL.print("Zwanzig ");
+#endif  
 }
 
 void w_dreissig()
@@ -474,11 +639,18 @@ void w_dreissig()
   led_set(237);
   led_set(236);
   led_set(235);
+
+#ifdef DEBUG
+USE_SERIAL.print("Dreißig ");
+#endif  
 }
 
 void w_grad()
 {
   led_set(233);
   led_set(232);
-}
 
+#ifdef DEBUG
+USE_SERIAL.println("°C ");
+#endif  
+}
