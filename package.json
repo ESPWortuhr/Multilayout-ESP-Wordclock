@@ -1,0 +1,59 @@
+{
+	"name": "Wortuhr-2",
+	"version": "2.2.0",
+	"description": "For building a wordclock with an esp8266 module.",
+	"author": {
+		"name": "Ulrich Radig",
+		"url": "https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu"
+	},
+	"contributors": [
+		{
+			"name": "Lars Weimar",
+			"url": "https://github.com/Eisbaeeer"
+		},
+		{
+			"name": "Pascal Wagler",
+			"url": "https://github.com/Wandmalfarbe"
+		},
+		{
+			"name": "dbambus",
+			"url": "https://github.com/dbambus"
+		},
+		{
+			"name": "Flo455",
+			"url": "https://github.com/Flo455"
+		},
+		{
+			"name": "Elektron79",
+			"url": "https://github.com/Elektron79"
+		},
+		{
+			"name": "masju1",
+			"url": "https://github.com/masju1"
+		}
+	],
+	"keywords": [
+		"install",
+		"modules",
+		"package manager",
+		"package.json"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Eisbaeeer/Ulrich-Radig_Wort_Uhr_Version_2"
+	},
+	"private": false,
+	"devDependencies": {
+		"grunt": "^1.0.3",
+		"grunt-assets-inline": "^1.1.3",
+		"grunt-contrib-clean": "^2.0.0",
+		"grunt-contrib-copy": "^1.0.0",
+		"grunt-contrib-csslint": "^2.0.0",
+		"grunt-contrib-cssmin": "^3.0.0",
+		"grunt-contrib-htmlmin": "^3.0.0",
+		"grunt-contrib-jshint": "^2.0.0",
+		"grunt-contrib-uglify": "^4.0.0",
+		"grunt-eslint": "^21.0.0",
+		"grunt-htmllint": "^0.3.0"
+	}
+}
