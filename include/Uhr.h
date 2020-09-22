@@ -1,10 +1,4 @@
-/*--------------------------------------------------
-Dieses File gehoert zum Code von:
-https://github.com/Eisbaeeer/Ulrich-Radig_Wort_Uhr_Version_2
---------------------------------------------------*/
-/*--------------------------------------------------
- * Hier Anpassungen der Hardware vornehmen.
- */
+
 
 const char* VER = "2.2.1";  // Software Version
 

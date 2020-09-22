@@ -1,7 +1,3 @@
-/*--------------------------------------------------
-Dieses File gehoert zum Code von:
-https://github.com/Eisbaeeer/Ulrich-Radig_Wort_Uhr_Version_2
---------------------------------------------------*/
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #ifdef UHR_242

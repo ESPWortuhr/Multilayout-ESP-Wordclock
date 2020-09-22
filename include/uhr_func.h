@@ -4,7 +4,7 @@
 // Telnet Server für Konsolen Ausgaben
 //------------------------------------------------------------------------------
 
-void Telnet()
+static void Telnet()
 {
   // Cleanup disconnected session
   for(uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++)
@@ -77,7 +77,7 @@ void Telnet()
   }
 }
 
-void TelnetMsg(String text)
+static void TelnetMsg(String text)
 {
   for(uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++)
   {
@@ -86,7 +86,7 @@ void TelnetMsg(String text)
       TelnetClient[i].println(text);
     }
   }
-  delay(10);  // to avoid strange characters left in buffer
+  delay(10);  // to astatic void strange characters left in buffer
 }
 
 //------------------------------------------------------------------------------
@@ -94,50 +94,38 @@ void TelnetMsg(String text)
 //------------------------------------------------------------------------------
 
 
-void led_set(uint16_t i) {
+static void led_set(uint16_t i) {
+	unsigned int rr, gg, bb, ww;    
 #ifdef Grbw
     if (G.ldr == 1) {
-    unsigned int rr, gg, bb, ww;    
-    //Helligkeit
     rr = (int)G.rgb[0][0] / ldrVal;
     gg = (int)G.rgb[0][1] / ldrVal;
     bb = (int)G.rgb[0][2] / ldrVal;
-	ww = (int)G.rgb[0][3] / ldrVal; 
-    RgbwColor color = RgbwColor(rr, gg, bb, ww);
-    strip.SetPixelColor(i, color);
+	  ww = (int)G.rgb[0][3] / ldrVal; 
     }
     else
     {
-    unsigned int rr, gg, bb, ww;    
-    //Helligkeit
     rr = (int)G.rgb[0][0] * G.hh / 100;
     gg = (int)G.rgb[0][1] * G.hh / 100;
     bb = (int)G.rgb[0][2] * G.hh / 100;
-	ww = (int)G.rgb[0][3] * G.hh / 100; 
-    RgbwColor color = RgbwColor(rr, gg, bb, ww);
-    strip.SetPixelColor(i, color);
+	  ww = (int)G.rgb[0][3] * G.hh / 100; 
     }
+	RgbwColor color = RgbwColor(rr, gg, bb, ww);
 #else
   if (G.ldr == 1) {
-  unsigned int rr, gg, bb;    
-  //Helligkeit
-  rr = (int)G.rgb[0][0] / ldrVal;
-  gg = (int)G.rgb[0][1] / ldrVal;
-  bb = (int)G.rgb[0][2] / ldrVal;  
-  RgbColor color = RgbColor(rr, gg, bb);
-  strip.SetPixelColor(i, color);
+    rr = (int)G.rgb[0][0] / ldrVal;
+    gg = (int)G.rgb[0][1] / ldrVal;
+    bb = (int)G.rgb[0][2] / ldrVal;  
   }
   else
   {
-  unsigned int rr, gg, bb;    
-  //Helligkeit
-  rr = (int)G.rgb[0][0] * G.hh / 100;
-  gg = (int)G.rgb[0][1] * G.hh / 100;
-  bb = (int)G.rgb[0][2] * G.hh / 100;  
-  RgbColor color = RgbColor(rr, gg, bb);
-  strip.SetPixelColor(i, color);
+    rr = (int)G.rgb[0][0] * G.hh / 100;
+    gg = (int)G.rgb[0][1] * G.hh / 100;
+    bb = (int)G.rgb[0][2] * G.hh / 100;  
   }
+  RgbColor color = RgbColor(rr, gg, bb);
 #endif
+  strip.SetPixelColor(i, color);
 }
 
 //------------------------------------------------------------------------------
@@ -164,24 +152,19 @@ void led_set(uint16_t i) {
 
 //------------------------------------------------------------------------------
 
-void led_show() {
+static inline void led_show() {
   strip.Show();
 }
 
 //------------------------------------------------------------------------------
 
-void led_clear_pixel(uint16_t i) {
-#ifdef Grbw
-  RgbwColor color = RgbwColor(0, 0, 0, 0);
-#else
-  RgbColor color = RgbColor(0, 0, 0);
-#endif
-  strip.SetPixelColor(i, color);      
+static inline void led_clear_pixel(uint16_t i) {
+  strip.SetPixelColor(i, 0);      
 }
 
 //------------------------------------------------------------------------------
 
-void led_set_pixel(byte r, byte g, byte b, uint16_t i) {
+static inline void led_set_pixel(byte r, byte g, byte b, uint16_t i) {
     
   RgbColor color = RgbColor(r, g, b);
   strip.SetPixelColor(i, color);      
@@ -189,7 +172,7 @@ void led_set_pixel(byte r, byte g, byte b, uint16_t i) {
 
 //------------------------------------------------------------------------------
 #ifdef Grbw
-void led_set_pixel_rgbw(byte r, byte g, byte b, byte w, uint16_t i) {
+static inline void led_set_pixel_rgbw(byte r, byte g, byte b, byte w, uint16_t i) {
     
   RgbwColor color = RgbwColor(r, g, b, w);
   strip.SetPixelColor(i, color);      
@@ -197,47 +180,29 @@ void led_set_pixel_rgbw(byte r, byte g, byte b, byte w, uint16_t i) {
 #endif
 //------------------------------------------------------------------------------
 
-void led_clear() {
-  uint8_t i;
-#ifdef Grbw
-  RgbwColor color = RgbwColor(0, 0, 0, 0);
-#else
-  RgbColor color = RgbColor(0, 0, 0);
-#endif
-  for(i=0; i<NUM_PIXELS; i++)
+static inline void led_clear() {
+  for(uint8_t i=0; i<NUM_PIXELS; i++)
   {
-    strip.SetPixelColor(i, color);         
+    strip.SetPixelColor(i, 0);         
   }
 }
 
 //------------------------------------------------------------------------------
 
-void uhr_clear() {
-  uint8_t i;
-#ifdef Grbw
-  RgbwColor color = RgbwColor(0, 0, 0, 0);
-#else
-  RgbColor color = RgbColor(0, 0, 0);
-#endif
-  for(i=0; i<NUM_SMATRIX; i++)
+static inline void uhr_clear() {
+  for(uint8_t i=0; i<NUM_SMATRIX; i++)
   {
-    strip.SetPixelColor(smatrix[i], color);
+    strip.SetPixelColor(smatrix[i], 0);
   }
 }
 
 //------------------------------------------------------------------------------
 
 #ifdef UHR_169 
-void rahmen_clear() {
-  uint8_t i;
-#ifdef Grbw
-  RgbwColor color = RgbwColor(0, 0, 0, 0);
-#else
-  RgbColor color = RgbColor(0, 0, 0);
-#endif
-  for(i=0; i<NUM_RMATRIX; i++)
+static inline void rahmen_clear() {
+  for(uint8_t i=0; i<NUM_RMATRIX; i++)
   {
-    strip.SetPixelColor(rmatrix[i], color);
+    strip.SetPixelColor(rmatrix[i], 0);
   }
 }
 #endif   
@@ -312,7 +277,7 @@ byte *  hsv_to_rgb (unsigned int h,unsigned char s,unsigned char v)
 
 //------------------------------------------------------------------------------
 
-void led_single(uint8_t wait) {
+static void led_single(uint8_t wait) {
   
   uint8_t i;
   unsigned int h, a;
@@ -338,7 +303,7 @@ void led_single(uint8_t wait) {
 
 //------------------------------------------------------------------------------
 
-void set_farbe() {
+static void set_farbe() {
 
   unsigned int rr, gg, bb, ww, zz;  
   rr = G.rgb[3][0];
@@ -366,7 +331,7 @@ void set_farbe() {
 // Routine Helligkeitsregelung
 //------------------------------------------------------------------------------
 
-void doLDRLogic() {   
+static void doLDRLogic() {   
   if(millis() >= waitUntilLDR) {
      waitUntilLDR = millis();
      int temp = analogRead(A0);
@@ -381,7 +346,7 @@ void doLDRLogic() {
 //------------------------------------------------------------------------------
 
 #ifdef UHR_169 
-void set_farbe_rahmen() {
+static void set_farbe_rahmen() {
 
   unsigned int rr, gg, bb, ww, zz;  
   rr = G.rgb[2][0];
@@ -408,7 +373,7 @@ void set_farbe_rahmen() {
 
 //------------------------------------------------------------------------------
 
-void rainbow() {
+static void rainbow() {
 
   static int h=0;
   byte *c;
@@ -428,7 +393,7 @@ void rainbow() {
 
 //-----------------------------------------------------------------------------
 
-void rainbowCycle() {
+static void rainbowCycle() {
   static int h=0;  
   uint16_t i, hh;
   byte *c;
@@ -452,7 +417,7 @@ void rainbowCycle() {
 //------------------------------------------------------------------------------
 
 #ifdef UHR_169 
-void schweif_up(){
+static void schweif_up(){
   
   int l, i, c, j;
   static int t=0, x=0;
@@ -485,7 +450,7 @@ void schweif_up(){
 
 //------------------------------------------------------------------------------
 
-void zeigeipap() {
+static void zeigeipap() {
     static int i = 0, ii = 0;
         
     char buf[20];
@@ -526,7 +491,7 @@ void zeigeipap() {
 }
 //------------------------------------------------------------------------------
 
-void zeigeip() {
+static void zeigeip() {
     static int i = 0, ii = 0;
         
     char buf[20];
@@ -567,7 +532,7 @@ void zeigeip() {
 }
 //------------------------------------------------------------------------------
 
-void laufschrift() {
+static void laufschrift() {
 
   static int i = 0, ii = 0;
 
@@ -607,7 +572,7 @@ void laufschrift() {
 
 //------------------------------------------------------------------------------
 
-void zahlen(char d1, char d2) {
+static void zahlen(char d1, char d2) {
    #ifdef DEBUG 
 //    USE_SERIAL.printf("d1: %u %c \n", d1, d1);
 //    USE_SERIAL.printf("d2: %u %c \n", d2, d2);
@@ -638,7 +603,7 @@ void zahlen(char d1, char d2) {
 
 //------------------------------------------------------------------------------
 
-void laufen(unsigned int d, unsigned char aktion){
+static void laufen(unsigned int d, unsigned char aktion){
   
   unsigned int t, a;
   
@@ -672,7 +637,7 @@ void laufen(unsigned int d, unsigned char aktion){
 
 //------------------------------------------------------------------------------
 
-void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned int d) {
+static void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned int d) {
 
   unsigned int t, u;
 
@@ -708,7 +673,7 @@ void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned int d) 
 
 //------------------------------------------------------------------------------
 
-void schieben(int d, unsigned char aktion){
+static void schieben(int d, unsigned char aktion){
   
   unsigned int t, a, b;
 
@@ -739,7 +704,7 @@ void schieben(int d, unsigned char aktion){
 
 //------------------------------------------------------------------------------
 
-void set_stunde(unsigned char std, unsigned char voll) {
+static void set_stunde(unsigned char std, unsigned char voll) {
 
   switch (std) {
     case 0:  uhrzeit |= ((uint32_t)1 << H_ZWOELF);  break;
@@ -778,7 +743,7 @@ void set_stunde(unsigned char std, unsigned char voll) {
 
 //------------------------------------------------------------------------------
 
-void set_uhrzeit() {
+static void set_uhrzeit() {
 
   unsigned int m = 0;
   uhrzeit = 0;
@@ -852,7 +817,7 @@ void set_uhrzeit() {
 //------------------------------------------------------------------------------
 
 #ifdef UHR_169 
-void show_sekunde() {
+static void show_sekunde() {
   unsigned int rr, gg, bb, zz;  
 
   rr = G.rgb[2][0];
@@ -874,7 +839,7 @@ void show_sekunde() {
 //------------------------------------------------------------------------------
 
 #ifdef UHR_114_Fraenkisch
-void show_minuten() {
+static void show_minuten() {
   unsigned char m;
 
   if (G.zeige_min > 0){  
@@ -894,7 +859,7 @@ void show_minuten() {
 //------------------------------------------------------------------------------
 
 #ifdef UHR_114
-void show_minuten() {
+static void show_minuten() {
   unsigned char m;
 
   if (G.zeige_min > 0){  
@@ -914,7 +879,7 @@ void show_minuten() {
 //------------------------------------------------------------------------------
 
 #ifdef UHR_125                                                                                        //vorher 169  markus 
-void show_minuten() {
+static void show_minuten() {
   unsigned char m;
 
   if (G.zeige_min > 0){  
@@ -934,7 +899,7 @@ void show_minuten() {
 //------------------------------------------------------------------------------
 
 #ifdef UHR_242                                                                                        //vorher 169  markus 
-void show_minuten() {
+static void show_minuten() {
   unsigned char m;
 
   if (G.zeige_min > 0){  
@@ -951,7 +916,7 @@ void show_minuten() {
 }
 
 // Wetterdaten anzeigen
-void show_wetter() {
+static void show_wetter() {
 
    switch (wetterswitch) {
    // +6h
@@ -1101,7 +1066,7 @@ void show_wetter() {
 
 //------------------------------------------------------------------------------
 
-void show_zeit(int flag) {
+static void show_zeit(int flag) {
 
   unsigned char m, s;
   unsigned int r, g, b, rr, gg, ww, bb, zz;  

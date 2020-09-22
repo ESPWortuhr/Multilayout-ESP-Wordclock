@@ -27,7 +27,7 @@ Es handelt sich hier um die Version 3 der Wort Uhr. Aufbauend auf dem Projekt vo
 ## Verzeichnisstruktur
 
 -   `pics` enthält Bilder
--   `dxf` enthält DXF Dateien
+-   `svg` enthält SVG Dateien
 -   `src` enthält den Sketch für Arduino und das Webinterface
 -   `include` enthält die Header-Dateien für Arduino
 -   `docs` enthält Anleitungen
@@ -51,7 +51,6 @@ Es handelt sich hier um die Version 3 der Wort Uhr. Aufbauend auf dem Projekt vo
 * Bugfix Openweathermap (freeze without Wifi connection)
 * Enhanced DEBUG uhr_242
 * Correction global vars Openweathermap json parser
-  
 ### Version 2.2.0
 * (dbambus)
 * Bugfixes für Konfigseite #7
