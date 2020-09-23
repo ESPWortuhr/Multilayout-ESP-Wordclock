@@ -634,7 +634,7 @@ $.ready(function() {
 		websocket.send(data);
 		debugMessage("OpenWeatherMap Zugangsdaten wurden konfiguriert", data);
 	});
-	$("#show-minutesbutton").on("click", function() {
+	$("#show-minutes-button").on("click", function() {
 		var showMinutesValue = $("#show-minutes").get("value");
 		var data = "094000000" + showMinutesValue + "  999";
 		websocket.send(data);
@@ -647,8 +647,8 @@ $.ready(function() {
 		websocket.send(data);
 		debugMessage("Sekundenanzeige wurde neu konfiguriert", data);
 	});
-	$("#host-button").on("click", function() {
-		var hostValue = $("#host").get("value");
+	$("#hostname-button").on("click", function() {
+		var hostValue = $("#hostname").get("value");
 
 		var data = "092000000";
 		data += getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH);
