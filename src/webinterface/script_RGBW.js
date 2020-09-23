@@ -260,7 +260,7 @@ function getSliders() {
 }
 
 /**
- * Sets all sliders (the values) and their corresponsding labels to 
+ * Sets all sliders (the values) and their corresponsding labels to
  * the currently stored config values.
  *
  * This function also updated the color area with the current rgb values.
@@ -297,9 +297,9 @@ function setSliders() {
 }
 
 /**
- * Add '0' as a padding in front of the number to make it 
+ * Add '0' as a padding in front of the number to make it
  * a 3 character string.
- * 
+ *
  * @param  {int} number - The number to be padded.
  * @return {string} The padded number.
  */
@@ -341,15 +341,15 @@ function sendData(command, unknown2, unknown3) {
 	var data = nstr(command) +
 		nstr(unknown2) +
 		nstr(unknown3) +
-		nstr(rgb[COLOR_FOREGROUND][0]) +
-		nstr(rgb[COLOR_FOREGROUND][1]) +
-		nstr(rgb[COLOR_FOREGROUND][2]) +
-		nstr(rgb[COLOR_FOREGROUND][3]) +
-		nstr(rgb[COLOR_BACKGROUND][0]) +
-		nstr(rgb[COLOR_BACKGROUND][1]) +
-		nstr(rgb[COLOR_BACKGROUND][2]) +
-		nstr(rgb[COLOR_BACKGROUND][3]) +
-		nstr(rgb[COLOR_FOREGROUND][0]) + // 2 Removed the other colors because the were just confusing as hell
+        nstr(parseInt(rgb[COLOR_FOREGROUND][0] * 0.2, 10)) +
+        nstr(parseInt(rgb[COLOR_FOREGROUND][1] * 0.2, 10)) +
+        nstr(parseInt(rgb[COLOR_FOREGROUND][2] * 0.2, 10)) +
+        nstr(parseInt(rgb[COLOR_FOREGROUND][3] * 0.2, 10)) +
+        nstr(parseInt(rgb[COLOR_BACKGROUND][0] * 0.05, 10)) +
+        nstr(parseInt(rgb[COLOR_BACKGROUND][1] * 0.05, 10)) +
+        nstr(parseInt(rgb[COLOR_BACKGROUND][2] * 0.05, 10)) +
+        nstr(parseInt(rgb[COLOR_BACKGROUND][3] * 0.05, 10)) +
+        nstr(rgb[COLOR_FOREGROUND][0]) + // 2 Removed the other colors because they were just confusing as hell
 		nstr(rgb[COLOR_FOREGROUND][1]) + // 2
 		nstr(rgb[COLOR_FOREGROUND][2]) + // 2
 		nstr(rgb[COLOR_FOREGROUND][3]) + // 2
@@ -405,9 +405,9 @@ $.ready(function() {
 
 	/**
 	 * The color mode has been changed.
-	 * 
-	 * There are a total of four different color modes that can 
-	 * be changed (foreground, background, border and effect). 
+	 *
+	 * There are a total of four different color modes that can
+	 * be changed (foreground, background, border and effect).
 	 * I disabled the last two because they were just confusing.
 	 */
 	$("input[name='color-mode']").on("change", function() {
