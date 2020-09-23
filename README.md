@@ -36,10 +36,10 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 -   `bin` enthält die Binary (Für die Uhrenvariante *UHR_114*)
 
 ## Arduino IDE vorbereiten
-* Datei --> Voreinstellungen --> Zusätzliche Boardverwalter-URLs --> "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
-* Werkzeuge --> Board --> Boardverwalter --> esp8266 Board installieren
+* Datei \> Voreinstellungen \> Zusätzliche Boardverwalter-URLs \> "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
+* Werkzeuge \>  Board \> Boardverwalter \> esp8266 Board installieren
     * Weitere Informationen sind auf der [Github Seite des Entwicklers zu finden](https://github.com/esp8266/Arduino)
-* Unter Datei --> Sketch --> Include Libraries folgende Bibliotheken hinzufügen:
+* Unter Datei \> Sketch \> Include Libraries folgende Bibliotheken hinzufügen:
     * '[NeoPixelBus](https://github.com/Makuna/NeoPixelBus)' von Mankuna
     * '[Time](https://github.com/PaulStoffregen/Time)' von PaulStoffregen
     * '[ArduinoJson](https://github.com/bblanchon/ArduinoJson)' von BBlanchon
@@ -126,4 +126,3 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 ### Version 2.0.0 
 * (Ulrich Radig)
 * inital version   
-
