@@ -1,19 +1,21 @@
-# WordUhr v3
+# Wortuhr v3 (Beta)
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
 ![](pics/wortuhr-3-screenshot.png)
 
 ### Einleitung 
-Es handelt sich hier um die Version 3 der Wort Uhr. Aufbauend auf dem Projekt von [Ulrich Radig](https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
+Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem Projekt von [Ulrich Radig](https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
 
 ## Für den Nachbau wird folgende Hardware/Software benötigt:
-* NodeMCU (getestetes Board Lolin Version3)
-* WS2812B, WS2816 RGB LED Stripes oder SK6812 RGBW Stribes
-* Netzteil 5V 2A
-* Arduino Version 1.8.13
-* 470 Ohm Widerstand
-* Optional: LDR, 10 KOhm Widerstand
+* Hardware
+    * NodeMCU (getestetes Board Lolin Version3) oder vergleichbares Board mit einem ESP8266 
+    * WS2812B, WS2816 RGB LED Stripes oder SK6812 RGBW Stribes
+    * Netzteil 5V 2A
+    * 470 Ohm Widerstand
+    * Optional: LDR, 10 KOhm Widerstand
+* Software
+    * Arduio IDE oder Platformio IDE
 
 ## Anschluss WS2812 oder SK6812 Stripe
 * RX = Data Bus
@@ -33,10 +35,16 @@ Es handelt sich hier um die Version 3 der Wort Uhr. Aufbauend auf dem Projekt vo
 -   `docs` enthält Anleitungen
 -   `bin` enthält die Binary (Für die Uhrenvariante *UHR_114*)
 
-## Arduino IDE 1.8.13 vorbereiten
+## Arduino IDE vorbereiten
 * Datei --> Voreinstellungen --> Zusätzliche Boardverwalter-URLs --> "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
-* Werkzeuge --> Board --> Boardverwalter --> esp8266 Version 2.5.0 installieren
-* lib Verzeichnis in das Arduino library Verzeichnis kopieren bzw. ZIP importieren
+* Werkzeuge --> Board --> Boardverwalter --> esp8266 Board installieren
+    * Weitere Informationen sind auf der [Github Seite des Entwicklers zu finden](https://github.com/esp8266/Arduino)
+* Unter Datei --> Sketch --> Include Libraries folgende Bibliotheken hinzufügen:
+    * '[NeoPixelBus](https://github.com/Makuna/NeoPixelBus)' von Mankuna
+    * '[Time](https://github.com/PaulStoffregen/Time)' von PaulStoffregen
+    * '[ArduinoJson](https://github.com/bblanchon/ArduinoJson)' von BBlanchon
+    * '[Timezone](https://github.com/JChristensen/Timezone)' von JChristensen
+    * '[WebSockets](https://www.arduino.cc/reference/en/libraries/websockets/)' von Arduino
 
 ## To DO & (Ideen):
 * Symbol zu einem bestimmten Datum/Uhrzeit
@@ -44,6 +52,9 @@ Es handelt sich hier um die Version 3 der Wort Uhr. Aufbauend auf dem Projekt vo
 * "The Matrix" effekt
 * Minten Effekte
 * Silvester Countdown
+* HomeKit Support
+* Alexa/GoogleHome Support
+* HSI Farb Selektor auf der Website
 
 ## ChangeLog
 ### Version 2.2.1
@@ -53,7 +64,7 @@ Es handelt sich hier um die Version 3 der Wort Uhr. Aufbauend auf dem Projekt vo
 * Correction global vars Openweathermap json parser
 ### Version 2.2.0
 * (dbambus)
-* Bugfixes für Konfigseite #7
+* Bugfixes für Kohttps://www.arduino.cc/reference/en/libraries/websockets/nfigseite #7
 * Support für SK6812 RGBW Stribes
 * Hinzufügen eines neunen Layouts UHR_114_Fränkisch     
 ### Version 2.1.1
