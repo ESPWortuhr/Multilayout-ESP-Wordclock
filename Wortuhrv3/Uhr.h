@@ -104,7 +104,7 @@ struct GLOBAL {
   int zeige_min;
   char zeitserver[30];   
   char hostname[30];  
-  char ltext[30];   
+  char ltext[30];
   int hh;  
   int h6;
   int h8;
@@ -143,7 +143,7 @@ int wetterswitch;
 
 
 // LDR 
-long waitUntilLDR = 0;
+unsigned long waitUntilLDR = 0;
 int autoBrightnessEnabled = 1;
 int ldrVal = 50;
 int oneseconddelay = 1000;

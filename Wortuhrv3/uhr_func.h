@@ -1,5 +1,4 @@
 #include <Arduino.h>
-//#include "Uhr.h"
 
 //------------------------------------------------------------------------------
 // Telnet Server für Konsolen Ausgaben
@@ -302,7 +301,7 @@ byte *hsv_to_rgb(unsigned int h, unsigned char s, unsigned char v)
 static void led_single(uint8_t wait)
 {
 
-	unsigned int h, a;
+	unsigned int h;
 	byte *c;
 
 	for (uint16_t i = 0; i < NUM_PIXELS; i++)
@@ -431,153 +430,87 @@ static void schweif_up(){
 
 //------------------------------------------------------------------------------
 
+void shift_all_pixels_to_right() {
+    for (uint8_t b = 0; b < 10; b++)
+    {
+        for (uint8_t a = 0; a < ROWS_MATRIX; a++)
+        {
+            strip.SetPixelColor(matrix[a][b], strip.GetPixelColor(matrix[a][b + 1]));
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+static void laufschrift(const char *buf) {
+    static unsigned int i = 0, ii = 0;
+
+    // Alle Pixes eins nach rechts schieben
+    shift_all_pixels_to_right();
+
+    if (i < 5)
+    {
+        for (uint8_t h = 0; h < 8; h++)
+        {
+            unsigned char* unsigned_buf = reinterpret_cast<unsigned char *>( *buf);
+            if (font_7x5[unsigned_buf[ii]][i] & (1u << h))
+            {
+                led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][10]);
+            }
+            else
+            {
+                led_clear_pixel(matrix[h + 1][10]);
+            }
+        }
+    }
+    else
+    {
+        for (uint8_t h = 0; h < 8; h++)
+        {
+            led_clear_pixel(matrix[h + 1][10]);
+        }
+    }
+    led_show();
+
+    i++;
+    if (i > 5)
+    {
+        i = 0;
+        ii++;
+        if (ii > strlen(buf)) { ii = 0; }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 static void zeigeipap()
 {
-	static uint16_t i = 0, ii = 0;
 
 	char buf[20];
 	sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
 
-	// Alle Pixes eins nach rechts schieben
-	for (uint8_t b = 0; b < 10; b++)
-	{
-		for (uint8_t a = 0; a < ROWS_MATRIX; a++)
-		{
-			strip.SetPixelColor(matrix[a][b], strip.GetPixelColor(matrix[a][b + 1]));
-		}
-	}
-
-	if (i < 5)
-	{
-		for (uint8_t h = 0; h < 8; h++)
-		{
-			if (font_7x5[buf[ii]][i] & (1 << h))
-			{
-				led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][10]);
-			}
-			else
-			{
-				led_clear_pixel(matrix[h + 1][10]);
-			}
-		}
-	}
-	else
-	{
-		for (uint8_t h = 0; h < 8; h++)
-		{
-			led_clear_pixel(matrix[h + 1][10]);
-		}
-	}
-	led_show();
-
-	i++;
-	if (i > 5)
-	{
-		i = 0;
-		ii++;
-		if (ii > strlen(buf)) { ii = 0; }
-	}
+    laufschrift(buf);
 }
 //------------------------------------------------------------------------------
 
 static void zeigeip()
 {
-	static int i = 0, ii = 0;
-
 	char buf[20];
 	sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
 
-	// Alle Pixes eins nach recht schieben
-	for (uint8_t b = 0; b < 10; b++)
-	{
-		for (uint8_t a = 0; a < ROWS_MATRIX; a++)
-		{
-			strip.SetPixelColor(matrix[a][b], strip.GetPixelColor(matrix[a][b + 1]));
-		}
-	}
-
-	if (i < 5)
-	{
-		for (uint8_t h = 0; h < 8; h++)
-		{
-			if (font_7x5[buf[ii]][i] & (1 << h))
-			{
-				led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][10]);
-			}
-			else
-			{
-				led_clear_pixel(matrix[h + 1][10]);
-			}
-		}
-	}
-	else
-	{
-		for (uint8_t h = 0; h < 8; h++)
-		{
-			led_clear_pixel(matrix[h + 1][10]);
-		}
-	}
-	led_show();
-
-	i++;
-	if (i > 5)
-	{
-		i = 0;
-		ii++;
-		if (ii > strlen(buf)) { ii = 0; }
-	}
-}
-//------------------------------------------------------------------------------
-
-static void laufschrift()
-{
-
-	static int i = 0, ii = 0;
-
-	// Alle Pixes eins nach recht schieben
-	for (uint8_t b = 0; b < 10; b++)
-	{
-		for (uint8_t a = 0; a < ROWS_MATRIX; a++)
-		{
-			strip.SetPixelColor(matrix[a][b], strip.GetPixelColor(matrix[a][b + 1]));
-		}
-	}
-
-	if (i < 5)
-	{
-		for (uint8_t h = 0; h < 8; h++)
-		{
-			if (font_7x5[G.ltext[ii]][i] & (1 << h))
-			{
-				led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][10]);
-			}
-			else
-			{
-				led_clear_pixel(matrix[h + 1][10]);
-			}
-		}
-	}
-	else
-	{
-		for (uint8_t h = 0; h < 8; h++)
-		{
-			led_clear_pixel(matrix[h + 1][10]);
-		}
-	}
-	led_show();
-
-	i++;
-	if (i > 5)
-	{
-		i = 0;
-		ii++;
-		if (ii > strlen(G.ltext)) { ii = 0; }
-	}
+    laufschrift(buf);
 }
 
 //------------------------------------------------------------------------------
 
-static void zahlen(char d1, char d2)
+void set_pixel_for_char(uint8_t i, uint8_t h, unsigned char unsigned_d1) {
+    if (font_7x5[unsigned_d1][i] & (1u << h))
+    {
+        led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][i]);
+    }
+}
+
+static void zahlen(const char d1, const char d2)
 {
 #ifdef DEBUG
 	//    USE_SERIAL.printf("d1: %u %c \n", d1, d1);
@@ -589,15 +522,9 @@ static void zahlen(char d1, char d2)
 		for (uint8_t h = 0; h < 8; h++)
 		{
 			// 1. Zahl
-			if (font_7x5[d1][i] & (1 << h))
-			{
-				led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][i]);
-			}
-			// 2. Zahl
-			if (font_7x5[d2][i] & (1 << h))
-			{
-				led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][i + 6]);
-			}
+            set_pixel_for_char(i, h, static_cast<unsigned char>(d1));
+            // 2. Zahl
+            set_pixel_for_char(i, h, static_cast<unsigned char>(d2));
 		}
 	}
 	led_show();
@@ -691,7 +618,6 @@ static void schieben(int d, unsigned char aktion)
 		}
 	}
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -1096,8 +1022,7 @@ static void show_wetter() {
 
 static void show_zeit(int flag)
 {
-	uint8_t m, s;
-	uint8_t r, g, b, rr, gg, ww, bb;
+	uint8_t rr, gg, bb, ww;
 	if (flag == 1)
 	{
 		set_uhrzeit();
@@ -1147,28 +1072,11 @@ static void show_zeit(int flag)
 	if (uhrzeit & ((uint32_t) 1 << H_ZWOELF)) { h_zwoelf(); }
 	if (uhrzeit & ((uint32_t) 1 << UHR)) { uhr(); }
 
-
-//  if (m > 0) {
-	uint8_t animation = 50;
-//  }
-
-#ifdef UHR_114_Fraenkisch
-	show_minuten();
-#endif
-
-#ifdef UHR_114
-	show_minuten();
-#endif
-
-#ifdef UHR_125
-	show_minuten();
-#endif
+    show_minuten();
 
 #ifdef UHR_242
-	show_minuten();
 	show_wetter();
 #endif
 
 	led_show();
-
 }

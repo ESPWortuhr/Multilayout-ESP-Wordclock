@@ -2,19 +2,19 @@
  * Hier wird definiert, welche Anzahl von LED's bzw. Reihen verwendet werden
  */
 //#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-//#define UHR_114_Fraenkisch          // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
+#define UHR_114_Fraenkisch          // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
 //#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-#define UHR_169                     // Uhr mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
+//#define UHR_169                     // Uhr mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
 //#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
 
 #define SERNR 233             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 
 // Wenn die Farben nicht passen können sie hier angepasst werden:
-#define Brg   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
+//#define Brg   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
 //#define Grb      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
 //#define Rgb    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rgb
 //#define Rbg    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
-//#define Grbw   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
+#define Grbw   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
  *--------------------------------------------------------------------------
@@ -120,8 +120,8 @@ void setup()
 		EEPROM.commit();
 
 		G.sernr = SERNR;
-		strcpy(G.ssid, "WLAN");
-		strcpy(G.passwd, "12345678");
+        strcpy(G.ssid, "test");
+        strcpy(G.passwd, "test");
 		G.prog = 1;
 		G.param1 = 0;
 		G.param2 = 0;
@@ -712,9 +712,9 @@ void loop()
 			led_clear();
 			count_delay = (G.geschw + 1) * 20;
 		}
-		if (count_delay >= (G.geschw + 1) * 20)
+		if (count_delay >= (G.geschw + 1u) * 20u)
 		{
-			laufschrift();
+			laufschrift(G.ltext);
 			count_delay = 0;
 		}
 	}
@@ -732,7 +732,7 @@ void loop()
 			uhr_clear();
 			count_delay = G.geschw * 7 + 1;
 		}
-		if (count_delay >= G.geschw * 7 + 1)
+		if (count_delay >= G.geschw * 7u + 1u)
 		{
 			rainbowCycle();
 			count_delay = 0;
@@ -752,7 +752,7 @@ void loop()
 			led_clear();
 			count_delay = G.geschw * 7 + 1;
 		}
-		if (count_delay >= G.geschw * 7 + 1)
+		if (count_delay >= G.geschw * 7u + 1u)
 		{
 			rainbow();
 			count_delay = 0;
@@ -983,7 +983,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 #ifdef DEBUG
 			USE_SERIAL.printf("[%u] get Text: %s\n", lenght, payload);
 #endif
-			for (int k = 0; k < lenght; k++)
+			for (unsigned int k = 0; k < lenght; k++)
 			{
 				str[k] = payload[k];  //does this "copy" is buggy code?
 			}
@@ -1337,6 +1337,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			//webSocket.sendBIN(num, payload, lenght);
 			break;
 		}
+        default:
+            break;
 	}
 }
 
@@ -1707,12 +1709,7 @@ void WiFiEvent(WiFiEvent_t event)
 		case WIFI_EVENT_STAMODE_DISCONNECTED:
 			USE_SERIAL.println("WiFi lost connection");
 			break;
+        default:
+            break;
 	}
 }
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-
-
-
-#pragma clang diagnostic pop
