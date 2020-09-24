@@ -107,25 +107,49 @@ static inline void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww,
 //------------------------------------------------------------------------------
 // Helligkeitsregelung nach Uhrzeiten oder per LDR
 //------------------------------------------------------------------------------
+static void set_helligkeit_ldr(uint8_t& rr, uint8_t& gg, uint8_t& bb, uint8_t& ww, uint8_t position)
+{
+	if (G.ldr == 1)
+	{
+		rr = G.rgb[position][0] / ldrVal;
+		gg = G.rgb[position][1] / ldrVal;
+		bb = G.rgb[position][2] / ldrVal;
+		ww = G.rgb[position][3] / ldrVal;
+	}
+	else
+	{
+		rr = G.rgb[position][0] * G.hh / 100;
+		gg = G.rgb[position][1] * G.hh / 100;
+		bb = G.rgb[position][2] * G.hh / 100;
+		ww = G.rgb[position][3] * G.hh / 100;
+	}
+}
 
+//------------------------------------------------------------------------------
+
+static void set_helligkeit(uint8_t& rr, uint8_t& gg, uint8_t& bb, uint8_t& ww, uint8_t position)
+{
+	rr = G.rgb[position][0];
+	gg = G.rgb[position][1];
+	bb = G.rgb[position][2];
+	ww = G.rgb[position][3];
+	uint16_t zz = rr + gg + bb;
+	if (zz > 150)
+	{
+		zz = zz * 10 / 150;
+		rr = rr * 10 / zz;
+		gg = gg * 10 / zz;
+		bb = bb * 10 / zz;
+		ww = ww * 10 / zz;
+	}
+}
+
+//------------------------------------------------------------------------------
 
 static void led_set(uint16_t i)
 {
 	uint8_t rr, gg, bb, ww;
-	if (G.ldr == 1)
-	{
-		rr = (int) G.rgb[0][0] / ldrVal;
-		gg = (int) G.rgb[0][1] / ldrVal;
-		bb = (int) G.rgb[0][2] / ldrVal;
-		ww = (int) G.rgb[0][3] / ldrVal;
-	}
-	else
-	{
-		rr = (int) G.rgb[0][0] * G.hh / 100;
-		gg = (int) G.rgb[0][1] * G.hh / 100;
-		bb = (int) G.rgb[0][2] * G.hh / 100;
-		ww = (int) G.rgb[0][3] * G.hh / 100;
-	}
+	set_helligkeit_ldr(rr,gg,bb,ww,Foreground);
 	led_set_pixel(rr, gg, bb, ww, i);
 }
 
@@ -298,29 +322,10 @@ static void led_single(uint8_t wait)
 
 //------------------------------------------------------------------------------
 
-static void set_helligkeit(uint8_t& rr, uint8_t& gg, uint8_t& bb, uint8_t& ww, uint8_t zeile)
-{
-	rr = G.rgb[zeile][0];
-	gg = G.rgb[zeile][1];
-	bb = G.rgb[zeile][2];
-	ww = G.rgb[zeile][3];
-	uint16_t zz = rr + gg + bb;
-	if (zz > 150)
-	{
-		zz = zz * 10 / 150;
-		rr = rr * 10 / zz;
-		gg = gg * 10 / zz;
-		bb = bb * 10 / zz;
-		ww = ww * 10 / zz;
-	}
-}
-
-//------------------------------------------------------------------------------
-
 static void set_farbe()
 {
 	uint8_t rr, gg, bb, ww;
-	set_helligkeit(rr,gg,bb,ww,3);
+	set_helligkeit(rr,gg,bb,ww,SpecialFunction);
 
 	for (uint16_t i = 0; i < NUM_PIXELS; i++)
 	{
@@ -350,7 +355,7 @@ static void doLDRLogic()
 
 static void set_farbe_rahmen() {
   uint8_t rr, gg, bb, ww;
-  set_helligkeit(rr,gg,bb,ww,2);
+  set_helligkeit(rr,gg,bb,ww,Frame);
 
   for(uint16_t i = 0; i < NUM_RMATRIX;i++){
 	led_set_pixel(rr, gg, bb, ww, rmatrix[i]);
@@ -409,10 +414,10 @@ static void schweif_up(){
 	if (c > 255){ c = 255; }
 	if (c < 0)  { c = 0;   }
 
-	G.rr = (G.rgb[3][0] * c)/255;
-	G.gg = (G.rgb[3][1] * c)/255;
-	G.bb = (G.rgb[3][2] * c)/255;
-	G.ww = (G.rgb[3][3] * c)/255;
+	G.rr = (G.rgb[SpecialFunction][0] * c)/255;
+	G.gg = (G.rgb[SpecialFunction][1] * c)/255;
+	G.bb = (G.rgb[SpecialFunction][2] * c)/255;
+	G.ww = (G.rgb[SpecialFunction][3] * c)/255;
 	j = t + i;
 	if (j >= 48){ j = j -48; }
 	led_set_pixel(G.rr, G.gg, G.bb, G.ww, rmatrix[i]);
@@ -448,7 +453,7 @@ static void zeigeipap()
 		{
 			if (font_7x5[buf[ii]][i] & (1 << h))
 			{
-				led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], G.rgb[3][3], matrix[h + 1][10]);
+				led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][10]);
 			}
 			else
 			{
@@ -497,7 +502,7 @@ static void zeigeip()
 		{
 			if (font_7x5[buf[ii]][i] & (1 << h))
 			{
-				led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], G.rgb[3][3], matrix[h + 1][10]);
+				led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][10]);
 			}
 			else
 			{
@@ -544,7 +549,7 @@ static void laufschrift()
 		{
 			if (font_7x5[G.ltext[ii]][i] & (1 << h))
 			{
-				led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], G.rgb[3][3], matrix[h + 1][10]);
+				led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][10]);
 			}
 			else
 			{
@@ -586,12 +591,12 @@ static void zahlen(char d1, char d2)
 			// 1. Zahl
 			if (font_7x5[d1][i] & (1 << h))
 			{
-				led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], G.rgb[3][3], matrix[h + 1][i]);
+				led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][i]);
 			}
 			// 2. Zahl
 			if (font_7x5[d2][i] & (1 << h))
 			{
-				led_set_pixel(G.rgb[3][0], G.rgb[3][1], G.rgb[3][2], G.rgb[3][3], matrix[h + 1][i + 6]);
+				led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][i + 6]);
 			}
 		}
 	}
@@ -854,7 +859,7 @@ static void set_uhrzeit()
 
 static void show_sekunde() {
   uint8_t rr, gg, bb, ww;
-  set_helligkeit(rr,gg,bb,ww,3);
+  set_helligkeit(rr,gg,bb,ww,SpecialFunction);
 
   led_set_pixel(rr, gg, bb, ww, rmatrix[_sekunde48]);
 }
@@ -1108,28 +1113,7 @@ static void show_zeit(int flag)
 	else if (_stunde < 22) { G.hh = G.h20; }
 	else if (_stunde < 24) { G.hh = G.h22; }
 
-	//Hintergrund Helligkeit ermitteln
-	rr = G.rgb[1][0];
-	gg = G.rgb[1][1];
-	bb = G.rgb[1][2];
-	ww = G.rgb[1][3];
-
-	//Helligkeit Hintergrund einstellen / LDR
-	if (G.ldr == 1)
-	{
-		//Helligkeit LDR
-		rr = (int) rr / ldrVal;
-		gg = (int) gg / ldrVal;
-		bb = (int) bb / ldrVal;
-		ww = (int) ww / ldrVal;
-	}
-	else
-	{
-		rr = (int) rr * G.hh / 100;
-		gg = (int) gg * G.hh / 100;
-		bb = (int) bb * G.hh / 100;
-		ww = (int) ww * G.hh / 100;
-	}
+	set_helligkeit_ldr(rr,gg,bb,ww,Background);
 
 	//Hintergrund setzen
 	for (uint8_t t = 0; t < ROWS_MATRIX; t++)

@@ -128,8 +128,8 @@ void setup()
 		G.prog_init = 1;
 		G.conf = 0;
 		for (int i = 0; i < 4; i++) { for (int ii = 0; ii < 4; ii++) { G.rgb[i][ii] = 0; }}
-		G.rgb[0][2] = 100;
-		G.rgb[3][1] = 100;
+		G.rgb[Foreground][2] = 100;
+		G.rgb[SpecialFunction][1] = 100;
 		G.rr = 0;
 		G.gg = 0;
 		G.bb = 0;
@@ -552,10 +552,10 @@ void loop()
 	{
 #ifdef DEBUG
 		USE_SERIAL.println("Startwerte gespeichert");
-		USE_SERIAL.println(G.rgb[0][0]);
-		USE_SERIAL.println(G.rgb[0][1]);
-		USE_SERIAL.println(G.rgb[0][2]);
-		USE_SERIAL.println(G.rgb[0][3]);
+		USE_SERIAL.println(G.rgb[Foreground][0]);
+		USE_SERIAL.println(G.rgb[Foreground][1]);
+		USE_SERIAL.println(G.rgb[Foreground][2]);
+		USE_SERIAL.println(G.rgb[Foreground][3]);
 #endif
 		eeprom_write();
 		delay(100);
@@ -1000,41 +1000,41 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			{        // Uhrzeit Vordergrund Farbe einstellen
 				G.prog = 1;
 #ifdef Grbw
-				G.rgb[0][0] = split(9,3);
-				G.rgb[0][1] = split(12,3);
-				G.rgb[0][2] = split(15,3);
-				G.rgb[0][3] = split(18,3);
+				G.rgb[Foreground][0] = split(9,3);
+				G.rgb[Foreground][1] = split(12,3);
+				G.rgb[Foreground][2] = split(15,3);
+				G.rgb[Foreground][3] = split(18,3);
 
-				G.rgb[1][0] = split(21,3);
-				G.rgb[1][1] = split(24,3);
-				G.rgb[1][2] = split(27,3);
-				G.rgb[1][3] = split(30,3);
+				G.rgb[Background][0] = split(21,3);
+				G.rgb[Background][1] = split(24,3);
+				G.rgb[Background][2] = split(27,3);
+				G.rgb[Background][3] = split(30,3);
 
-				G.rgb[2][0] = split(33,3);
-				G.rgb[2][1] = split(36,3);
-				G.rgb[2][2] = split(39,3);
-				G.rgb[2][3] = split(42,3);
+				G.rgb[Frame][0] = split(33,3);
+				G.rgb[Frame][1] = split(36,3);
+				G.rgb[Frame][2] = split(39,3);
+				G.rgb[Frame][3] = split(42,3);
 
-				G.rgb[3][0] = split(45,3);
-				G.rgb[3][1] = split(48,3);
-				G.rgb[3][2] = split(51,3);
-				G.rgb[3][3] = split(54,3);
+				G.rgb[SpecialFunction][0] = split(45,3);
+				G.rgb[SpecialFunction][1] = split(48,3);
+				G.rgb[SpecialFunction][2] = split(51,3);
+				G.rgb[SpecialFunction][3] = split(54,3);
 #else
-				G.rgb[0][0] = split(9, 3);
-				G.rgb[0][1] = split(12, 3);
-				G.rgb[0][2] = split(15, 3);
+				G.rgb[Foreground][0] = split(9, 3);
+				G.rgb[Foreground][1] = split(12, 3);
+				G.rgb[Foreground][2] = split(15, 3);
 
-				G.rgb[1][0] = split(18, 3);
-				G.rgb[1][1] = split(21, 3);
-				G.rgb[1][2] = split(24, 3);
+				G.rgb[Background][0] = split(18, 3);
+				G.rgb[Background][1] = split(21, 3);
+				G.rgb[Background][2] = split(24, 3);
 
-				G.rgb[2][0] = split(27, 3);
-				G.rgb[2][1] = split(30, 3);
-				G.rgb[2][2] = split(33, 3);
+				G.rgb[Frame][0] = split(27, 3);
+				G.rgb[Frame][1] = split(30, 3);
+				G.rgb[Frame][2] = split(33, 3);
 
-				G.rgb[3][0] = split(36, 3);
-				G.rgb[3][1] = split(39, 3);
-				G.rgb[3][2] = split(42, 3);
+				G.rgb[SpecialFunction][0] = split(36, 3);
+				G.rgb[SpecialFunction][1] = split(39, 3);
+				G.rgb[SpecialFunction][2] = split(42, 3);
 #endif
 				break;
 			}
@@ -1044,16 +1044,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 200;
 				if (G.param1 == 0) { G.prog_init = 1; }
 #ifdef Grbw
-				G.rgb[3][0] = split(45,3);
-				G.rgb[3][1] = split(48,3);
-				G.rgb[3][2] = split(51,3);
-				G.rgb[3][3] = split(54,3);
+				G.rgb[SpecialFunction][0] = split(45,3);
+				G.rgb[SpecialFunction][1] = split(48,3);
+				G.rgb[SpecialFunction][2] = split(51,3);
+				G.rgb[SpecialFunction][3] = split(54,3);
 				G.hell=split(57,3);
 				G.geschw=split(60,3);
 #else
-				G.rgb[3][0] = split(36, 3);
-				G.rgb[3][1] = split(39, 3);
-				G.rgb[3][2] = split(42, 3);
+				G.rgb[SpecialFunction][0] = split(36, 3);
+				G.rgb[SpecialFunction][1] = split(39, 3);
+				G.rgb[SpecialFunction][2] = split(42, 3);
 				G.hell = split(45, 3);
 				G.geschw = split(48, 3);
 #endif
@@ -1065,16 +1065,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 201;
 				if (G.param1 == 0) { G.prog_init = 1; }
 #ifdef Grbw
-				G.rgb[3][0] = split(45,3);
-				G.rgb[3][1] = split(48,3);
-				G.rgb[3][2] = split(51,3);
-				G.rgb[3][3] = split(54,3);
+				G.rgb[SpecialFunction][0] = split(45,3);
+				G.rgb[SpecialFunction][1] = split(48,3);
+				G.rgb[SpecialFunction][2] = split(51,3);
+				G.rgb[SpecialFunction][3] = split(54,3);
 				G.hell=split(57,3);
 				G.geschw=split(60,3);
 #else
-				G.rgb[3][0] = split(36, 3);
-				G.rgb[3][1] = split(39, 3);
-				G.rgb[3][2] = split(42, 3);
+				G.rgb[SpecialFunction][0] = split(36, 3);
+				G.rgb[SpecialFunction][1] = split(39, 3);
+				G.rgb[SpecialFunction][2] = split(42, 3);
 				G.hell = split(45, 3);
 				G.geschw = split(48, 3);
 #endif
@@ -1111,14 +1111,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 204;
 				G.prog_init = 1;
 #ifdef Grbw
-				G.rgb[3][0] = split(45,3);
-				G.rgb[3][1] = split(48,3);
-				G.rgb[3][2] = split(51,3);
-				G.rgb[3][3] = split(54,3);
+				G.rgb[SpecialFunction][0] = split(45,3);
+				G.rgb[SpecialFunction][1] = split(48,3);
+				G.rgb[SpecialFunction][2] = split(51,3);
+				G.rgb[SpecialFunction][3] = split(54,3);
 #else
-				G.rgb[3][0] = split(36, 3);
-				G.rgb[3][1] = split(39, 3);
-				G.rgb[3][2] = split(42, 3);
+				G.rgb[SpecialFunction][0] = split(36, 3);
+				G.rgb[SpecialFunction][1] = split(39, 3);
+				G.rgb[SpecialFunction][2] = split(42, 3);
 #endif
 				break;
 			}
@@ -1660,22 +1660,22 @@ void eeprom_read()
 	USE_SERIAL.printf("Passwd    : %s\n", G.passwd);
 	USE_SERIAL.printf("Programm  : %u\n", G.prog);
 	USE_SERIAL.printf("Conf      : %u\n", G.conf);
-	USE_SERIAL.printf("rgb.0.0   : %u\n", G.rgb[0][0]);
-	USE_SERIAL.printf("rgb.0.1   : %u\n", G.rgb[0][1]);
-	USE_SERIAL.printf("rgb.0.2   : %u\n", G.rgb[0][2]);
-	USE_SERIAL.printf("rgb.0.2   : %u\n", G.rgb[0][3]);
-	USE_SERIAL.printf("rgb.1.0   : %u\n", G.rgb[1][0]);
-	USE_SERIAL.printf("rgb.1.1   : %u\n", G.rgb[1][1]);
-	USE_SERIAL.printf("rgb.1.2   : %u\n", G.rgb[1][2]);
-	USE_SERIAL.printf("rgb.1.3   : %u\n", G.rgb[1][3]);
-	USE_SERIAL.printf("rgb.2.0   : %u\n", G.rgb[2][0]);
-	USE_SERIAL.printf("rgb.2.1   : %u\n", G.rgb[2][1]);
-	USE_SERIAL.printf("rgb.2.2   : %u\n", G.rgb[2][2]);
-	USE_SERIAL.printf("rgb.2.3   : %u\n", G.rgb[2][3]);
-	USE_SERIAL.printf("rgb.3.0   : %u\n", G.rgb[3][0]);
-	USE_SERIAL.printf("rgb.3.1   : %u\n", G.rgb[3][1]);
-	USE_SERIAL.printf("rgb.3.2   : %u\n", G.rgb[3][2]);
-	USE_SERIAL.printf("rgb.3.3   : %u\n", G.rgb[3][3]);
+	USE_SERIAL.printf("rgb.0.0   : %u\n", G.rgb[Foreground][0]);
+	USE_SERIAL.printf("rgb.0.1   : %u\n", G.rgb[Foreground][1]);
+	USE_SERIAL.printf("rgb.0.2   : %u\n", G.rgb[Foreground][2]);
+	USE_SERIAL.printf("rgb.0.2   : %u\n", G.rgb[Foreground][3]);
+	USE_SERIAL.printf("rgb.1.0   : %u\n", G.rgb[Background][0]);
+	USE_SERIAL.printf("rgb.1.1   : %u\n", G.rgb[Background][1]);
+	USE_SERIAL.printf("rgb.1.2   : %u\n", G.rgb[Background][2]);
+	USE_SERIAL.printf("rgb.1.3   : %u\n", G.rgb[Background][3]);
+	USE_SERIAL.printf("rgb.2.0   : %u\n", G.rgb[Frame][0]);
+	USE_SERIAL.printf("rgb.2.1   : %u\n", G.rgb[Frame][1]);
+	USE_SERIAL.printf("rgb.2.2   : %u\n", G.rgb[Frame][2]);
+	USE_SERIAL.printf("rgb.2.3   : %u\n", G.rgb[Frame][3]);
+	USE_SERIAL.printf("rgb.3.0   : %u\n", G.rgb[SpecialFunction][0]);
+	USE_SERIAL.printf("rgb.3.1   : %u\n", G.rgb[SpecialFunction][1]);
+	USE_SERIAL.printf("rgb.3.2   : %u\n", G.rgb[SpecialFunction][2]);
+	USE_SERIAL.printf("rgb.3.3   : %u\n", G.rgb[SpecialFunction][3]);
 	USE_SERIAL.printf("Zeitserver: %s\n", G.zeitserver);
 	USE_SERIAL.printf("Text      : %s\n", G.ltext);
 	USE_SERIAL.printf("H6        : %u\n", G.h6);
