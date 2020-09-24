@@ -189,7 +189,10 @@ const long interval = 1000;   // 1 Sekunde
 
 uint32_t uhrzeit;
 
-int rmatrix[]{};
+#ifndef UHR_169
+unsigned int rmatrix[]{};
+#endif
+
 char str[300];
 char s[5];
 enum ledPositions{
