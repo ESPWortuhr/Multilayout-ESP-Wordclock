@@ -1,6 +1,5 @@
 
-
-const char* VER = "2.2.1";  // Software Version
+const char* VER = "2.2.2";  // Software Version
 
 #ifndef _UHR_H
 #define _UHR_H
@@ -194,16 +193,16 @@ int rmatrix[]{};
 char str[300];
 char s[5];
 enum ledPositions{
-	Foreground,
-	Background,
-	Frame,
-	SpecialFunction
+	Foreground = 0,
+	Background = 1,
+	Frame = 2,
+	SpecialFunction = 3
 };
 
 int dim[20] = {30,50,70,90,110,130,140,160,200,255,255,200,160,100,80,60,40,20,10,0};
 int diff[20]= {-30,-20,-20,-20,-20,-20,-10,-20,-40,-55,0,55,40,60,20,20,20,20,10,10};
 
-const uint8_t PixelPin = 2;  // WS2812 Data Port
+const uint8_t PixelPin = 2;  // Led Stripe Data Port
 
 typedef RowMajorAlternatingLayout MyPanelLayout;
 const uint8_t PanelWidth = 11;  // 11 pixel x 22 pixel matrix of leds

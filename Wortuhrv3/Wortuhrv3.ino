@@ -261,10 +261,6 @@ void setup()
 
 #ifdef DEBUG
 	USE_SERIAL.println("Websockest started");
-#endif
-	//-------------------------------------
-
-#ifdef DEBUG
 	USE_SERIAL.println("--------------------------------------");
 	USE_SERIAL.println("Ende Setup");
 	USE_SERIAL.println("--------------------------------------");
