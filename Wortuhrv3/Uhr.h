@@ -5,6 +5,7 @@ const char* VER = "2.2.1";  // Software Version
 #ifndef _UHR_H
 #define _UHR_H
 
+#define NUM_RMATRIX  48
 #define USE_SERIAL Serial
 
 #ifdef UHR_114_Fraenkisch 
@@ -29,7 +30,6 @@ const char* VER = "2.2.1";  // Software Version
 #define NUM_PIXELS  169
 #define NUM_SMATRIX 121
 #define ROWS_MATRIX  11
-#define NUM_RMATRIX  48
 #endif 
 
 #ifdef UHR_242 
@@ -190,8 +190,9 @@ const long interval = 1000;   // 1 Sekunde
 
 uint32_t uhrzeit;
 
+int rmatrix[]{};
 char str[300];
-char s[5]; 
+char s[5];
 
 int dim[20] = {30,50,70,90,110,130,140,160,200,255,255,200,160,100,80,60,40,20,10,0};
 int diff[20]= {-30,-20,-20,-20,-20,-20,-10,-20,-40,-55,0,55,40,60,20,20,20,20,10,10};

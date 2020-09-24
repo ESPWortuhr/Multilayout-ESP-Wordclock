@@ -1,4 +1,5 @@
 #include <Arduino.h>
+//#include "Uhr.h"
 
 //------------------------------------------------------------------------------
 // Telnet Server für Konsolen Ausgaben
@@ -186,14 +187,12 @@ static inline void uhr_clear()
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_169
 static inline void rahmen_clear() {
   for(uint16_t i=0; i<NUM_RMATRIX; i++)
   {
 	strip.SetPixelColor(rmatrix[i], 0);
   }
 }
-#endif
 
 //------------------------------------------------------------------------------
 //HSV to RGB 8Bit
@@ -299,23 +298,30 @@ static void led_single(uint8_t wait)
 
 //------------------------------------------------------------------------------
 
-static void set_farbe()
+static void set_helligkeit(uint8_t& rr, uint8_t& gg, uint8_t& bb, uint8_t& ww, uint8_t zeile)
 {
-
-	unsigned int rr, gg, bb, ww, zz;
-	rr = G.rgb[3][0];
-	gg = G.rgb[3][1];
-	bb = G.rgb[3][2];
-	ww = G.rgb[3][3];
-	zz = rr + gg + bb;
+	rr = G.rgb[zeile][0];
+	gg = G.rgb[zeile][1];
+	bb = G.rgb[zeile][2];
+	ww = G.rgb[zeile][3];
+	uint16_t zz = rr + gg + bb;
 	if (zz > 150)
 	{
 		zz = zz * 10 / 150;
-		rr = (int) rr * 10 / zz;
-		gg = (int) gg * 10 / zz;
-		bb = (int) bb * 10 / zz;
-		ww = (int) ww * 10 / zz;
+		rr = rr * 10 / zz;
+		gg = gg * 10 / zz;
+		bb = bb * 10 / zz;
+		ww = ww * 10 / zz;
 	}
+}
+
+//------------------------------------------------------------------------------
+
+static void set_farbe()
+{
+	uint8_t rr, gg, bb, ww;
+	set_helligkeit(rr,gg,bb,ww,3);
+
 	for (uint16_t i = 0; i < NUM_PIXELS; i++)
 	{
 		led_set_pixel(rr, gg, bb, ww, i);
@@ -342,27 +348,14 @@ static void doLDRLogic()
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_169
 static void set_farbe_rahmen() {
+  uint8_t rr, gg, bb, ww;
+  set_helligkeit(rr,gg,bb,ww,2);
 
-  unsigned int rr, gg, bb, ww, zz;  
-  rr = G.rgb[2][0];
-  gg = G.rgb[2][1];
-  bb = G.rgb[2][2];
-  ww = G.rgb[2][3];
-  zz = rr + gg + bb;
-  if (zz > 150) {
-	zz = zz * 10 / 150;
-	rr = (int)rr * 10 / zz;
-	gg = (int)gg * 10 / zz;
-	bb = (int)bb * 10 / zz;
-	ww = (int)ww * 10 / zz;
-  }
   for(uint16_t i = 0; i < NUM_RMATRIX;i++){
 	led_set_pixel(rr, gg, bb, ww, rmatrix[i]);
   }
 }
-#endif
 
 //------------------------------------------------------------------------------
 
@@ -405,7 +398,6 @@ static void rainbowCycle()
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_169
 static void schweif_up(){
   
   int l, c, j;
@@ -431,7 +423,6 @@ static void schweif_up(){
   if (t >= 48){ t = 0;  }  
 
 }
-#endif
 
 //------------------------------------------------------------------------------
 
@@ -861,27 +852,12 @@ static void set_uhrzeit()
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_169
 static void show_sekunde() {
-  uint8_t rr, gg, bb, ww, zz;
+  uint8_t rr, gg, bb, ww;
+  set_helligkeit(rr,gg,bb,ww,3);
 
-  rr = G.rgb[2][0];
-  gg = G.rgb[2][1];
-  bb = G.rgb[2][2];
-  ww = G.rgb[2][3];
-  zz = rr + gg + bb;
-  if (zz > 150) {
-	zz = zz * 10 / 150;
-	rr = (int)rr * 10 / zz;
-	gg = (int)gg * 10 / zz;
-	bb = (int)bb * 10 / zz;
-	ww = (int)ww * 10 / zz;
-  }  
   led_set_pixel(rr, gg, bb, ww, rmatrix[_sekunde48]);
-  
 }
-#endif
-
 
 //------------------------------------------------------------------------------
 
@@ -925,7 +901,7 @@ static void show_minuten() {
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_125                                                                                        //vorher 169  markus 
+#ifdef UHR_125
 static void show_minuten() {
   uint8_t m;
 
@@ -945,7 +921,7 @@ static void show_minuten() {
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_242                                                                                        //vorher 169  markus 
+#ifdef UHR_242
 static void show_minuten() {
   uint8_t m;
 
@@ -1115,9 +1091,8 @@ static void show_wetter() {
 
 static void show_zeit(int flag)
 {
-
 	uint8_t m, s;
-	uint8_t r, g, b, rr, gg, ww, bb, zz;
+	uint8_t r, g, b, rr, gg, ww, bb;
 	if (flag == 1)
 	{
 		set_uhrzeit();
@@ -1138,7 +1113,6 @@ static void show_zeit(int flag)
 	gg = G.rgb[1][1];
 	bb = G.rgb[1][2];
 	ww = G.rgb[1][3];
-	zz = rr + gg + bb;
 
 	//Helligkeit Hintergrund einstellen / LDR
 	if (G.ldr == 1)

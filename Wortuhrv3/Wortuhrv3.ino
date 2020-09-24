@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "modernize-raw-string-literal"
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED's bzw. Reihen verwendet werden
  */
