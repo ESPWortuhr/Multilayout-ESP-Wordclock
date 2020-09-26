@@ -1,10 +1,10 @@
 
-
-const char* VER = "2.2.1";  // Software Version
+const char* VER = "2.2.2";  // Software Version
 
 #ifndef _UHR_H
 #define _UHR_H
 
+#define NUM_RMATRIX  48
 #define USE_SERIAL Serial
 
 #ifdef UHR_114_Fraenkisch 
@@ -29,7 +29,6 @@ const char* VER = "2.2.1";  // Software Version
 #define NUM_PIXELS  169
 #define NUM_SMATRIX 121
 #define ROWS_MATRIX  11
-#define NUM_RMATRIX  48
 #endif 
 
 #ifdef UHR_242 
@@ -105,7 +104,7 @@ struct GLOBAL {
   int zeige_min;
   char zeitserver[30];   
   char hostname[30];  
-  char ltext[30];   
+  char ltext[30];
   int hh;  
   int h6;
   int h8;
@@ -144,7 +143,7 @@ int wetterswitch;
 
 
 // LDR 
-long waitUntilLDR = 0;
+unsigned long waitUntilLDR = 0;
 int autoBrightnessEnabled = 1;
 int ldrVal = 50;
 int oneseconddelay = 1000;
@@ -190,13 +189,23 @@ const long interval = 1000;   // 1 Sekunde
 
 uint32_t uhrzeit;
 
+#ifndef UHR_169
+unsigned int rmatrix[]{};
+#endif
+
 char str[300];
-char s[5]; 
+char s[5];
+enum ledPositions{
+	Foreground = 0,
+	Background = 1,
+	Frame = 2,
+	SpecialFunction = 3
+};
 
 int dim[20] = {30,50,70,90,110,130,140,160,200,255,255,200,160,100,80,60,40,20,10,0};
 int diff[20]= {-30,-20,-20,-20,-20,-20,-10,-20,-40,-55,0,55,40,60,20,20,20,20,10,10};
 
-const uint8_t PixelPin = 2;  // WS2812 Data Port
+const uint8_t PixelPin = 2;  // Led Stripe Data Port
 
 typedef RowMajorAlternatingLayout MyPanelLayout;
 const uint8_t PanelWidth = 11;  // 11 pixel x 22 pixel matrix of leds

@@ -14,7 +14,7 @@ byte packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing pack
 WiFiUDP udp;
 
 // send an NTP request to the time server at the given address
-unsigned long sendNTPpacket(IPAddress& address)
+void sendNTPpacket(IPAddress& address)
 {
   #ifdef DEBUG     
    USE_SERIAL.println("sending NTP packet...");

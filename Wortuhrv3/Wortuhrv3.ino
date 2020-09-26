@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "modernize-raw-string-literal"
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED's bzw. Reihen verwendet werden
  */
@@ -64,7 +62,7 @@ char wstatus[7][25] = {
 #include "font.h"
 
 #define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
-uint8_t show_ip = false;      // Zeige IP Adresse beim Start 
+uint8_t show_ip = true;      // Zeige IP Adresse beim Start 
 
 extern "C" {
 #include "uhr_func.h"
@@ -122,16 +120,16 @@ void setup()
 		EEPROM.commit();
 
 		G.sernr = SERNR;
-		strcpy(G.ssid, "WLAN");
-		strcpy(G.passwd, "12345678");
+        strcpy(G.ssid, "test");
+        strcpy(G.passwd, "test");
 		G.prog = 1;
 		G.param1 = 0;
 		G.param2 = 0;
 		G.prog_init = 1;
 		G.conf = 0;
 		for (int i = 0; i < 4; i++) { for (int ii = 0; ii < 4; ii++) { G.rgb[i][ii] = 0; }}
-		G.rgb[0][2] = 100;
-		G.rgb[3][1] = 100;
+		G.rgb[Foreground][2] = 100;
+		G.rgb[SpecialFunction][1] = 100;
 		G.rr = 0;
 		G.gg = 0;
 		G.bb = 0;
@@ -159,7 +157,6 @@ void setup()
 		G.h22 = 100;
 		G.h24 = 100;
 
-		for (int i = 0; i < 10; i++) { for (int ii = 0; ii < 5; ii++) { G.rgb1[i][ii] = 0; }}  //Kann das entfernt werden ?
 		eeprom_write();
 
 #ifdef DEBUG
@@ -263,10 +260,6 @@ void setup()
 
 #ifdef DEBUG
 	USE_SERIAL.println("Websockest started");
-#endif
-	//-------------------------------------
-
-#ifdef DEBUG
 	USE_SERIAL.println("--------------------------------------");
 	USE_SERIAL.println("Ende Setup");
 	USE_SERIAL.println("--------------------------------------");
@@ -554,10 +547,10 @@ void loop()
 	{
 #ifdef DEBUG
 		USE_SERIAL.println("Startwerte gespeichert");
-		USE_SERIAL.println(G.rgb[0][0]);
-		USE_SERIAL.println(G.rgb[0][1]);
-		USE_SERIAL.println(G.rgb[0][2]);
-		USE_SERIAL.println(G.rgb[0][3]);
+		USE_SERIAL.println(G.rgb[Foreground][0]);
+		USE_SERIAL.println(G.rgb[Foreground][1]);
+		USE_SERIAL.println(G.rgb[Foreground][2]);
+		USE_SERIAL.println(G.rgb[Foreground][3]);
 #endif
 		eeprom_write();
 		delay(100);
@@ -719,9 +712,9 @@ void loop()
 			led_clear();
 			count_delay = (G.geschw + 1) * 20;
 		}
-		if (count_delay >= (G.geschw + 1) * 20)
+		if (count_delay >= (G.geschw + 1u) * 20u)
 		{
-			laufschrift();
+			laufschrift(G.ltext);
 			count_delay = 0;
 		}
 	}
@@ -739,7 +732,7 @@ void loop()
 			uhr_clear();
 			count_delay = G.geschw * 7 + 1;
 		}
-		if (count_delay >= G.geschw * 7 + 1)
+		if (count_delay >= G.geschw * 7u + 1u)
 		{
 			rainbowCycle();
 			count_delay = 0;
@@ -759,7 +752,7 @@ void loop()
 			led_clear();
 			count_delay = G.geschw * 7 + 1;
 		}
-		if (count_delay >= G.geschw * 7 + 1)
+		if (count_delay >= G.geschw * 7u + 1u)
 		{
 			rainbow();
 			count_delay = 0;
@@ -990,7 +983,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 #ifdef DEBUG
 			USE_SERIAL.printf("[%u] get Text: %s\n", lenght, payload);
 #endif
-			for (int k = 0; k < lenght; k++)
+			for (unsigned int k = 0; k < lenght; k++)
 			{
 				str[k] = payload[k];  //does this "copy" is buggy code?
 			}
@@ -1002,41 +995,41 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			{        // Uhrzeit Vordergrund Farbe einstellen
 				G.prog = 1;
 #ifdef Grbw
-				G.rgb[0][0] = split(9,3);
-				G.rgb[0][1] = split(12,3);
-				G.rgb[0][2] = split(15,3);
-				G.rgb[0][3] = split(18,3);
+				G.rgb[Foreground][0] = split(9,3);
+				G.rgb[Foreground][1] = split(12,3);
+				G.rgb[Foreground][2] = split(15,3);
+				G.rgb[Foreground][3] = split(18,3);
 
-				G.rgb[1][0] = split(21,3);
-				G.rgb[1][1] = split(24,3);
-				G.rgb[1][2] = split(27,3);
-				G.rgb[1][3] = split(30,3);
+				G.rgb[Background][0] = split(21,3);
+				G.rgb[Background][1] = split(24,3);
+				G.rgb[Background][2] = split(27,3);
+				G.rgb[Background][3] = split(30,3);
 
-				G.rgb[2][0] = split(33,3);
-				G.rgb[2][1] = split(36,3);
-				G.rgb[2][2] = split(39,3);
-				G.rgb[2][3] = split(42,3);
+				G.rgb[Frame][0] = split(33,3);
+				G.rgb[Frame][1] = split(36,3);
+				G.rgb[Frame][2] = split(39,3);
+				G.rgb[Frame][3] = split(42,3);
 
-				G.rgb[3][0] = split(45,3);
-				G.rgb[3][1] = split(48,3);
-				G.rgb[3][2] = split(51,3);
-				G.rgb[3][3] = split(54,3);
+				G.rgb[SpecialFunction][0] = split(45,3);
+				G.rgb[SpecialFunction][1] = split(48,3);
+				G.rgb[SpecialFunction][2] = split(51,3);
+				G.rgb[SpecialFunction][3] = split(54,3);
 #else
-				G.rgb[0][0] = split(9, 3);
-				G.rgb[0][1] = split(12, 3);
-				G.rgb[0][2] = split(15, 3);
+				G.rgb[Foreground][0] = split(9, 3);
+				G.rgb[Foreground][1] = split(12, 3);
+				G.rgb[Foreground][2] = split(15, 3);
 
-				G.rgb[1][0] = split(18, 3);
-				G.rgb[1][1] = split(21, 3);
-				G.rgb[1][2] = split(24, 3);
+				G.rgb[Background][0] = split(18, 3);
+				G.rgb[Background][1] = split(21, 3);
+				G.rgb[Background][2] = split(24, 3);
 
-				G.rgb[2][0] = split(27, 3);
-				G.rgb[2][1] = split(30, 3);
-				G.rgb[2][2] = split(33, 3);
+				G.rgb[Frame][0] = split(27, 3);
+				G.rgb[Frame][1] = split(30, 3);
+				G.rgb[Frame][2] = split(33, 3);
 
-				G.rgb[3][0] = split(36, 3);
-				G.rgb[3][1] = split(39, 3);
-				G.rgb[3][2] = split(42, 3);
+				G.rgb[SpecialFunction][0] = split(36, 3);
+				G.rgb[SpecialFunction][1] = split(39, 3);
+				G.rgb[SpecialFunction][2] = split(42, 3);
 #endif
 				break;
 			}
@@ -1046,16 +1039,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 200;
 				if (G.param1 == 0) { G.prog_init = 1; }
 #ifdef Grbw
-				G.rgb[3][0] = split(45,3);
-				G.rgb[3][1] = split(48,3);
-				G.rgb[3][2] = split(51,3);
-				G.rgb[3][3] = split(54,3);
+				G.rgb[SpecialFunction][0] = split(45,3);
+				G.rgb[SpecialFunction][1] = split(48,3);
+				G.rgb[SpecialFunction][2] = split(51,3);
+				G.rgb[SpecialFunction][3] = split(54,3);
 				G.hell=split(57,3);
 				G.geschw=split(60,3);
 #else
-				G.rgb[3][0] = split(36, 3);
-				G.rgb[3][1] = split(39, 3);
-				G.rgb[3][2] = split(42, 3);
+				G.rgb[SpecialFunction][0] = split(36, 3);
+				G.rgb[SpecialFunction][1] = split(39, 3);
+				G.rgb[SpecialFunction][2] = split(42, 3);
 				G.hell = split(45, 3);
 				G.geschw = split(48, 3);
 #endif
@@ -1067,16 +1060,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 201;
 				if (G.param1 == 0) { G.prog_init = 1; }
 #ifdef Grbw
-				G.rgb[3][0] = split(45,3);
-				G.rgb[3][1] = split(48,3);
-				G.rgb[3][2] = split(51,3);
-				G.rgb[3][3] = split(54,3);
+				G.rgb[SpecialFunction][0] = split(45,3);
+				G.rgb[SpecialFunction][1] = split(48,3);
+				G.rgb[SpecialFunction][2] = split(51,3);
+				G.rgb[SpecialFunction][3] = split(54,3);
 				G.hell=split(57,3);
 				G.geschw=split(60,3);
 #else
-				G.rgb[3][0] = split(36, 3);
-				G.rgb[3][1] = split(39, 3);
-				G.rgb[3][2] = split(42, 3);
+				G.rgb[SpecialFunction][0] = split(36, 3);
+				G.rgb[SpecialFunction][1] = split(39, 3);
+				G.rgb[SpecialFunction][2] = split(42, 3);
 				G.hell = split(45, 3);
 				G.geschw = split(48, 3);
 #endif
@@ -1113,14 +1106,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 204;
 				G.prog_init = 1;
 #ifdef Grbw
-				G.rgb[3][0] = split(45,3);
-				G.rgb[3][1] = split(48,3);
-				G.rgb[3][2] = split(51,3);
-				G.rgb[3][3] = split(54,3);
+				G.rgb[SpecialFunction][0] = split(45,3);
+				G.rgb[SpecialFunction][1] = split(48,3);
+				G.rgb[SpecialFunction][2] = split(51,3);
+				G.rgb[SpecialFunction][3] = split(54,3);
 #else
-				G.rgb[3][0] = split(36, 3);
-				G.rgb[3][1] = split(39, 3);
-				G.rgb[3][2] = split(42, 3);
+				G.rgb[SpecialFunction][0] = split(36, 3);
+				G.rgb[SpecialFunction][1] = split(39, 3);
+				G.rgb[SpecialFunction][2] = split(42, 3);
 #endif
 				break;
 			}
@@ -1344,6 +1337,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			//webSocket.sendBIN(num, payload, lenght);
 			break;
 		}
+        default:
+            break;
 	}
 }
 
@@ -1521,17 +1516,12 @@ void WiFiStart_Client()
 		// IP-Adresse als Laufschrift anzeigen
 		if (show_ip == true)
 		{
-			char buf[20];
-			sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
-			uint8_t StringLength = strlen(buf);
-			// USE_SERIAL.print("StringLenght: "); USE_SERIAL.print(StringLength);
-			StringLength = StringLength * 6;
-			for (int i = 0; i <= StringLength; i++)
-			{
-				zeigeip();
-				delay(200);
-			}
+            char buf[20];
+            sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
+
+            zeigeip(buf);
 		}
+
 		// ---- ENDE Print the IP address
 		wlan_client = true;
 	}
@@ -1556,17 +1546,11 @@ void WiFiStart_AP()
 	USE_SERIAL.print("AP IP address: ");
 	USE_SERIAL.println(myIP);
 #endif
-	// IP-Adresse als Laufschrift anzeigen
-	char buf[20];
-	sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
-	uint16_t StringLength = sizeof(buf) / sizeof(buf[0]);
-	StringLength = StringLength * 6;
-	for (int i = 0; i <= StringLength; i++)
-	{
-		zeigeipap();
-		delay(200);
-	}
-	// ---- ENDE Print the IP address
+    char buf[20];
+    sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
+
+    zeigeip(buf);
+    delay(200);
 	wlan_client = false;
 
 }
@@ -1662,22 +1646,22 @@ void eeprom_read()
 	USE_SERIAL.printf("Passwd    : %s\n", G.passwd);
 	USE_SERIAL.printf("Programm  : %u\n", G.prog);
 	USE_SERIAL.printf("Conf      : %u\n", G.conf);
-	USE_SERIAL.printf("rgb.0.0   : %u\n", G.rgb[0][0]);
-	USE_SERIAL.printf("rgb.0.1   : %u\n", G.rgb[0][1]);
-	USE_SERIAL.printf("rgb.0.2   : %u\n", G.rgb[0][2]);
-	USE_SERIAL.printf("rgb.0.2   : %u\n", G.rgb[0][3]);
-	USE_SERIAL.printf("rgb.1.0   : %u\n", G.rgb[1][0]);
-	USE_SERIAL.printf("rgb.1.1   : %u\n", G.rgb[1][1]);
-	USE_SERIAL.printf("rgb.1.2   : %u\n", G.rgb[1][2]);
-	USE_SERIAL.printf("rgb.1.3   : %u\n", G.rgb[1][3]);
-	USE_SERIAL.printf("rgb.2.0   : %u\n", G.rgb[2][0]);
-	USE_SERIAL.printf("rgb.2.1   : %u\n", G.rgb[2][1]);
-	USE_SERIAL.printf("rgb.2.2   : %u\n", G.rgb[2][2]);
-	USE_SERIAL.printf("rgb.2.3   : %u\n", G.rgb[2][3]);
-	USE_SERIAL.printf("rgb.3.0   : %u\n", G.rgb[3][0]);
-	USE_SERIAL.printf("rgb.3.1   : %u\n", G.rgb[3][1]);
-	USE_SERIAL.printf("rgb.3.2   : %u\n", G.rgb[3][2]);
-	USE_SERIAL.printf("rgb.3.3   : %u\n", G.rgb[3][3]);
+	USE_SERIAL.printf("rgb.0.0   : %u\n", G.rgb[Foreground][0]);
+	USE_SERIAL.printf("rgb.0.1   : %u\n", G.rgb[Foreground][1]);
+	USE_SERIAL.printf("rgb.0.2   : %u\n", G.rgb[Foreground][2]);
+	USE_SERIAL.printf("rgb.0.2   : %u\n", G.rgb[Foreground][3]);
+	USE_SERIAL.printf("rgb.1.0   : %u\n", G.rgb[Background][0]);
+	USE_SERIAL.printf("rgb.1.1   : %u\n", G.rgb[Background][1]);
+	USE_SERIAL.printf("rgb.1.2   : %u\n", G.rgb[Background][2]);
+	USE_SERIAL.printf("rgb.1.3   : %u\n", G.rgb[Background][3]);
+	USE_SERIAL.printf("rgb.2.0   : %u\n", G.rgb[Frame][0]);
+	USE_SERIAL.printf("rgb.2.1   : %u\n", G.rgb[Frame][1]);
+	USE_SERIAL.printf("rgb.2.2   : %u\n", G.rgb[Frame][2]);
+	USE_SERIAL.printf("rgb.2.3   : %u\n", G.rgb[Frame][3]);
+	USE_SERIAL.printf("rgb.3.0   : %u\n", G.rgb[SpecialFunction][0]);
+	USE_SERIAL.printf("rgb.3.1   : %u\n", G.rgb[SpecialFunction][1]);
+	USE_SERIAL.printf("rgb.3.2   : %u\n", G.rgb[SpecialFunction][2]);
+	USE_SERIAL.printf("rgb.3.3   : %u\n", G.rgb[SpecialFunction][3]);
 	USE_SERIAL.printf("Zeitserver: %s\n", G.zeitserver);
 	USE_SERIAL.printf("Text      : %s\n", G.ltext);
 	USE_SERIAL.printf("H6        : %u\n", G.h6);
@@ -1714,12 +1698,7 @@ void WiFiEvent(WiFiEvent_t event)
 		case WIFI_EVENT_STAMODE_DISCONNECTED:
 			USE_SERIAL.println("WiFi lost connection");
 			break;
+        default:
+            break;
 	}
 }
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-
-
-
-#pragma clang diagnostic pop
