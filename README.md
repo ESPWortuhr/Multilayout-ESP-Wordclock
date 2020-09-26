@@ -1,4 +1,4 @@
-# Wortuhr v3 (Beta)
+# Wortuhr v3
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
@@ -24,7 +24,7 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * Pegelanpassung 3,3V zu 5V siehe docs
 
 ## Anschluss LDR (optional)
-![LDR](pics/LDR.jpg)
+![](pics/old/LDR.jpg)
       
 ## Verzeichnisstruktur
 
@@ -55,8 +55,18 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * HomeKit Support
 * Alexa/GoogleHome Support
 * HSI Farb Selektor auf der Website
+* Finaler Release wäre eine unified Binary mit selektor auf der Webseite
 
 ## ChangeLog
+### Version 2.2.2
+* (dbambus)
+* Aufräumen der Uhr_func.h für die Übersichtlichkeit
+* Entfernen der nicht relevanten IfDefs in Uhr_func.h für bessere Lesbarkeit
+* Habe die Commits von Wandmalffarbes Branche hinzugefügt (Website betreffend)
+* Fixes für ein Großteil der Compiler-Warnungen 
+* Umstellung auf eine neue HSV-to-RGB Conversion
+* Entfernen der Websockets Header Dateien aus dem Repo, hier ein neuer Verweis auf neue Libs in der Readme
+* Ordnerstruktur angepasst für cross-kompatiblität Platformio/Arduino
 ### Version 2.2.1
 * (Eisbaeeer)
 * Bugfix Openweathermap (freeze without Wifi connection)
