@@ -219,81 +219,71 @@ static inline void rahmen_clear() {
 
 //------------------------------------------------------------------------------
 //HSV to RGB 8Bit
-//Farbkreis h = 0 bis 360 (Farbwert)
-//          s = 0 bis 100 (Dunkelstufe)
-//          v = 0 bis 100 (Farbsättigung)
-//Rückgabewert r,g,b als Pointer
+//Farbkreis hue = 0 bis 360 (Farbwert)
+//          bri = 0 bis 255 (Dunkelstufe)
+//          sat = 0 bis 255 (Farbsättigung)
 //------------------------------------------------------------------------------
 
-byte *hsv_to_rgb(unsigned int h, unsigned char s, unsigned char v)
+void hsv_to_rgb(double hue, float sat, float bri, uint8_t* c)
 {
-	unsigned char diff;
-	unsigned int r = 0, g = 0, b = 0, w = 0;
-	static byte c[4];
+    hue = 3.14159F * hue / 180.0F;          // convert to radians.
+    sat /= 255.0F;                        // from percentage to ratio
+    bri /= 255.0F;                        // from percentage to ratio
+    sat = sat > 0 ? (sat < 1 ? sat : 1) : 0;    // clamp s and i to interval [0,1]
+    bri = bri > 0 ? (bri < 1 ? bri : 1) : 0;    // clamp s and i to interval [0,1]
+    bri = bri * std::sqrt(bri);                    // shape intensity to have finer granularity near 0
 
-	//Winkel im Farbkeis 0 - 360 in 1 Grad Schritten
-	//h = (englisch hue) Farbwert
-	//1 Grad Schrittweite, 4.25 Steigung pro Schritt bei 60 Grad
-
-	if (h < 61)
+#ifdef Grbw
+    if (hue < 2.09439)
 	{
-		r = 255;
-		b = 0;
-		g = (425 * h) / 100;
+		c[0] = sat * 255.0 * bri / 3.0 * (1 + std::cos(hue) / std::cos(1.047196667 - hue));
+		c[1] = sat * 255.0 * bri / 3.0 * (1 + (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
+		c[2] = 0;
+		c[3] = 255.0 * (1.0 - sat) * bri;
 	}
-	else if (h < 121)
+	else if (hue < 4.188787)
 	{
-		g = 255;
-		b = 0;
-		r = 255 - ((425 * (h - 60)) / 100);
+		hue = hue - 2.09439;
+		c[1] = sat * 255.0 * bri / 3.0 * (1 + std::cos(hue) / std::cos(1.047196667 - hue));
+		c[2] = sat * 255.0 * bri / 3.0 * (1 + (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
+		c[0] = 0;
+		c[3] = 255.0 * (1.0 - sat) * bri;
 	}
-	else if (h < 181)
+	else
 	{
-		r = 0;
-		g = 255;
-		b = (425 * (h - 120)) / 100;
-	}
-	else if (h < 241)
-	{
-		r = 0;
-		b = 255;
-		g = 255 - ((425 * (h - 180)) / 100);
-	}
-	else if (h < 301)
-	{
-		g = 0;
-		b = 255;
-		r = (425 * (h - 240)) / 100;
-	}
-	else if (h < 361)
-	{
-		r = 255;
-		g = 0;
-		b = 255 - ((425 * (h - 300)) / 100);
+		hue = hue - 4.188787;
+		c[2] = sat * 255.0 * bri / 3.0 * (1 + std::cos(hue) / std::cos(1.047196667 - hue));
+		c[0] = sat * 255.0 * bri / 3.0 * (1 + (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
+		c[1] = 0;
+		c[3] = 255.0 * (1 - sat) * bri;
 	}
 
-	//Berechnung der Farbsättigung
-	//s = (englisch saturation) Farbsättigung
-	s = 255 - s; //Kehrwert berechnen
-	diff = ((255 - r) * s) / 255;
-	r = r + diff;
-	diff = ((255 - g) * s) / 255;
-	g = g + diff;
-	diff = ((255 - b) * s) / 255;
-	b = b + diff;
+#else
+    while (hue < 0){hue += 360.0F;};     // cycle h around to 0-360 degrees
+    while (hue >= 360){hue -= 360.0F;};
 
-	//Berechnung der Dunkelstufe
-	//v = (englisch value) Wert Dunkelstufe einfacher Dreisatz 0..100%
-	r = (r * v) / 255;
-	g = (g * v) / 255;
-	b = (b * v) / 255;
-	w = (r + g + b) / 3;
-
-	c[0] = r;
-	c[1] = g;
-	c[2] = b;
-	c[3] = w;
-	return c;
+    if (hue < 2.09439)
+    {
+        c[0] = 255 * bri / 3 * (1 + sat * std::cos(hue) / std::cos(1.047196667 - hue));
+        c[1] = 255 * bri / 3 * (1 + sat * (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
+        c[2] = 255 * bri / 3 * (1 - sat);
+    }
+    else if (hue < 4.188787)
+    {
+        hue = hue - 2.09439;
+        c[1] = 255 * bri / 3 * (1 + sat * std::cos(hue) / std::cos(1.047196667 - hue));
+        c[2] = 255 * bri / 3 * (1 + sat * (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
+        c[0] = 255 * bri / 3 * (1 - sat);
+    }
+    else
+    {
+        hue = hue - 4.188787;
+        c[2] = 255 * bri / 3 * (1 + sat * cos(hue) / cos(1.047196667 - hue));
+        c[0] = 255 * bri / 3 * (1 + sat * (1 - cos(hue) / cos(1.047196667 - hue)));
+        c[1] = 255 * bri / 3 * (1 - sat);
+    }
+    c[3] = 0;
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -301,18 +291,18 @@ byte *hsv_to_rgb(unsigned int h, unsigned char s, unsigned char v)
 static void led_single(uint8_t wait)
 {
 
-	unsigned int h;
-	byte *c;
+	float h;
+	uint8_t c[4];
 
 	for (uint16_t i = 0; i < NUM_PIXELS; i++)
 	{
 
-		h = 360 * i / (NUM_PIXELS - 1);
-		h += ((360 / (NUM_PIXELS)));
-		if (h > 360) { h -= 360; }
+		h = 360.0 * i / (NUM_PIXELS - 1);
+		h = h + 360.0 / NUM_PIXELS;
+		if (h > 360) { h = 0; }
 
 		led_clear();
-		c = hsv_to_rgb(h, 255, 255);
+		hsv_to_rgb(h, 255, 255, c);
 		led_set_pixel(c[0], c[1], c[2], c[3], i);
 		led_show();
 		delay(wait);
@@ -366,9 +356,9 @@ static void set_farbe_rahmen() {
 static void rainbow()
 {
 
-	static int h = 0;
-	byte *c;
-	c = hsv_to_rgb(h, 255, G.hell * 10);
+	static float h = 0.0;
+	uint8_t c[4];
+	hsv_to_rgb(h, 255, G.hell * 10, c);
 
 	for (uint16_t i = 0; i < NUM_PIXELS; i++)
 	{
@@ -376,28 +366,28 @@ static void rainbow()
 	}
 	led_show();
 	h++;
-	if (h > 359) { h = 0; }
+	if (h > 359) { h = 0.0; }
 }
 
 //-----------------------------------------------------------------------------
 
 static void rainbowCycle()
 {
-	static int h = 0;
-	uint16_t hh;
-	byte *c;
+	static float h = 0;
+	float hh;
+  uint8_t c[4];
 
 	hh = h;
 	for (uint16_t i = 0; i < NUM_SMATRIX; i++)
 	{
-		c = hsv_to_rgb(hh, 255, G.hell * 10);
+		hsv_to_rgb(hh, 255, G.hell * 10, c);
 		led_set_pixel(c[0], c[1], c[2], c[3], smatrix[i]);
-		hh = hh + (360 / NUM_SMATRIX);
-		if (hh > 360) { hh = 0; }
+		hh = hh + 360.0/NUM_SMATRIX;
+  if (hh > 360) { hh = 0; }
 	}
 	led_show();
 	h++;
-	if (h > 360) { h = 0; }
+	if (h > 360) { h = 0.0; }
 }
 
 //------------------------------------------------------------------------------
@@ -784,67 +774,6 @@ static void show_sekunde() {
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_114_Fraenkisch
-static void show_minuten() {
-  uint8_t m;
-
-  if (G.zeige_min > 0){  
-	// Minuten / Sekunden-Animation
-	// Minute (1-4)  ermitteln
-	m = _minute;
-	while (m > 4) { m -= 5; }
-
-	if (m > 0){ led_set(min_arr[G.zeige_min-1][0]); }
-	if (m > 1){ led_set(min_arr[G.zeige_min-1][1]); }
-	if (m > 2){ led_set(min_arr[G.zeige_min-1][2]); }
-	if (m > 3){ led_set(min_arr[G.zeige_min-1][3]); }
-  }   
-}
-#endif
-
-//------------------------------------------------------------------------------
-
-#ifdef UHR_114
-static void show_minuten() {
-  uint8_t m;
-
-  if (G.zeige_min > 0){  
-	// Minuten / Sekunden-Animation
-	// Minute (1-4)  ermitteln
-	m = _minute;
-	while (m > 4) { m -= 5; }
-
-	if (m > 0){ led_set(min_arr[G.zeige_min-1][0]); }
-	if (m > 1){ led_set(min_arr[G.zeige_min-1][1]); }
-	if (m > 2){ led_set(min_arr[G.zeige_min-1][2]); }
-	if (m > 3){ led_set(min_arr[G.zeige_min-1][3]); }
-  }   
-}
-#endif
-
-//------------------------------------------------------------------------------
-
-#ifdef UHR_125
-static void show_minuten() {
-  uint8_t m;
-
-  if (G.zeige_min > 0){  
-	// Minuten / Sekunden-Animation
-	// Minute (1-4)  ermitteln
-	m = _minute;
-	while (m > 4) { m -= 5; }
-
-	if (m > 0){ led_set(min_arr[G.zeige_min-1][0]); }
-	if (m > 1){ led_set(min_arr[G.zeige_min-1][1]); }
-	if (m > 2){ led_set(min_arr[G.zeige_min-1][2]); }
-	if (m > 3){ led_set(min_arr[G.zeige_min-1][3]); }
-  }   
-}
-#endif
-
-//------------------------------------------------------------------------------
-
-#ifdef UHR_242
 static void show_minuten() {
   uint8_t m;
 
@@ -861,6 +790,7 @@ static void show_minuten() {
   }
 }
 
+#ifdef UHR_242
 // Wetterdaten anzeigen
 static void show_wetter() {
 

@@ -62,7 +62,7 @@ char wstatus[7][25] = {
 #include "font.h"
 
 #define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
-uint8_t show_ip = true;      // Zeige IP Adresse beim Start 
+uint8_t show_ip = false;      // Zeige IP Adresse beim Start 
 
 extern "C" {
 #include "uhr_func.h"
@@ -120,8 +120,8 @@ void setup()
 		EEPROM.commit();
 
 		G.sernr = SERNR;
-        strcpy(G.ssid, "test");
-        strcpy(G.passwd, "test");
+    strcpy(G.ssid, "Enter_Your_SSID");
+    strcpy(G.passwd, "Enter_Your_PASSWORD");
 		G.prog = 1;
 		G.param1 = 0;
 		G.param2 = 0;
