@@ -482,29 +482,10 @@ static void laufschrift(const char *buf) {
 
 //------------------------------------------------------------------------------
 
-static void zeigeipap()
+static void zeigeip(const char *buf)
 {
-
-	char buf[20];
-	sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
-
     uint8_t StringLength = strlen(buf);
-    StringLength = StringLength * 6;
-    for (int i = 0; i <= StringLength; i++)
-      {
-        laufschrift(buf);
-        delay(200);
-      }
-}
-//------------------------------------------------------------------------------
-
-static void zeigeip()
-{
-	char buf[20];
-	sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
-
-    uint8_t StringLength = strlen(buf);
-    StringLength = StringLength * 6;
+    StringLength = StringLength * 6;  // Times 6, because thats the length of a char in the 7x5 font plus spacing
     for (int i = 0; i <= StringLength; i++)
       {
         laufschrift(buf);

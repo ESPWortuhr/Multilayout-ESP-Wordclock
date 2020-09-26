@@ -156,7 +156,7 @@ void setup()
 		G.h20 = 100;
 		G.h22 = 100;
 		G.h24 = 100;
-		
+
 		eeprom_write();
 
 #ifdef DEBUG
@@ -1515,8 +1515,13 @@ void WiFiStart_Client()
 
 		// IP-Adresse als Laufschrift anzeigen
 		if (show_ip == true)
-		{zeigeip();}
-		
+		{
+            char buf[20];
+            sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
+
+            zeigeip(buf);
+		}
+
 		// ---- ENDE Print the IP address
 		wlan_client = true;
 	}
@@ -1541,8 +1546,11 @@ void WiFiStart_AP()
 	USE_SERIAL.print("AP IP address: ");
 	USE_SERIAL.println(myIP);
 #endif
-		zeigeipap();
-		delay(200);
+    char buf[20];
+    sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
+
+    zeigeip(buf);
+    delay(200);
 	wlan_client = false;
 
 }
