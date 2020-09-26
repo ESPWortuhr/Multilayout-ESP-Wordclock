@@ -62,7 +62,7 @@ char wstatus[7][25] = {
 #include "font.h"
 
 #define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
-uint8_t show_ip = false;      // Zeige IP Adresse beim Start 
+uint8_t show_ip = true;      // Zeige IP Adresse beim Start 
 
 extern "C" {
 #include "uhr_func.h"
@@ -1515,18 +1515,8 @@ void WiFiStart_Client()
 
 		// IP-Adresse als Laufschrift anzeigen
 		if (show_ip == true)
-		{
-			char buf[20];
-			sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
-			uint8_t StringLength = strlen(buf);
-			// USE_SERIAL.print("StringLenght: "); USE_SERIAL.print(StringLength);
-			StringLength = StringLength * 6;
-			for (int i = 0; i <= StringLength; i++)
-			{
-				zeigeip();
-				delay(200);
-			}
-		}
+		{zeigeip();}
+		
 		// ---- ENDE Print the IP address
 		wlan_client = true;
 	}
@@ -1551,17 +1541,8 @@ void WiFiStart_AP()
 	USE_SERIAL.print("AP IP address: ");
 	USE_SERIAL.println(myIP);
 #endif
-	// IP-Adresse als Laufschrift anzeigen
-	char buf[20];
-	sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
-	uint16_t StringLength = sizeof(buf) / sizeof(buf[0]);
-	StringLength = StringLength * 6;
-	for (int i = 0; i <= StringLength; i++)
-	{
 		zeigeipap();
 		delay(200);
-	}
-	// ---- ENDE Print the IP address
 	wlan_client = false;
 
 }

@@ -452,8 +452,7 @@ static void laufschrift(const char *buf) {
     {
         for (uint8_t h = 0; h < 8; h++)
         {
-            unsigned char* unsigned_buf = reinterpret_cast<unsigned char *>( *buf);
-            if (font_7x5[unsigned_buf[ii]][i] & (1u << h))
+            if (font_7x5[buf[ii]][i] & (1u << h))
             {
                 led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][10]);
             }
@@ -489,7 +488,13 @@ static void zeigeipap()
 	char buf[20];
 	sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
 
-    laufschrift(buf);
+    uint8_t StringLength = strlen(buf);
+    StringLength = StringLength * 6;
+    for (int i = 0; i <= StringLength; i++)
+      {
+        laufschrift(buf);
+        delay(200);
+      }
 }
 //------------------------------------------------------------------------------
 
@@ -498,15 +503,21 @@ static void zeigeip()
 	char buf[20];
 	sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
 
-    laufschrift(buf);
+    uint8_t StringLength = strlen(buf);
+    StringLength = StringLength * 6;
+    for (int i = 0; i <= StringLength; i++)
+      {
+        laufschrift(buf);
+        delay(200);
+      }
 }
 
 //------------------------------------------------------------------------------
 
-void set_pixel_for_char(uint8_t i, uint8_t h, unsigned char unsigned_d1) {
+void set_pixel_for_char(uint8_t i, uint8_t h, uint8_t offset, unsigned char unsigned_d1) {
     if (font_7x5[unsigned_d1][i] & (1u << h))
     {
-        led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][i]);
+        led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][i + offset]);
     }
 }
 
@@ -521,10 +532,10 @@ static void zahlen(const char d1, const char d2)
 	{
 		for (uint8_t h = 0; h < 8; h++)
 		{
-			// 1. Zahl
-            set_pixel_for_char(i, h, static_cast<unsigned char>(d1));
-            // 2. Zahl
-            set_pixel_for_char(i, h, static_cast<unsigned char>(d2));
+			// 1. Zahl ohne Offset
+            set_pixel_for_char(i, h, 0, static_cast<unsigned char>(d1));
+            // 2. Zahl mit Offset
+            set_pixel_for_char(i, h, 6, static_cast<unsigned char>(d2));
 		}
 	}
 	led_show();
