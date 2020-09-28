@@ -62,7 +62,7 @@ char wstatus[7][25] = {
 #include "font.h"
 
 #define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
-uint8_t show_ip = false;      // Zeige IP Adresse beim Start 
+bool show_ip = false;      // Zeige IP Adresse beim Start 
 
 extern "C" {
 #include "uhr_func.h"
@@ -90,20 +90,20 @@ void setup()
 	// Start Serielle Schnittstelle
 	//-------------------------------------
 #ifdef DEBUG
-	USE_SERIAL.begin(38400);
-	USE_SERIAL.println("");
+	Serial.begin(38400);
+	Serial.println("");
 #endif
 	delay(100);
 	//-------------------------------------
 #ifdef DEBUG
-	USE_SERIAL.println("");
-	USE_SERIAL.println("--------------------------------------");
-	USE_SERIAL.println("Begin Setup");
-	USE_SERIAL.println("--------------------------------------");
+	Serial.println("");
+	Serial.println("--------------------------------------");
+	Serial.println("Begin Setup");
+	Serial.println("--------------------------------------");
 #endif
 
 	//-------------------------------------
-	USE_SERIAL.println("Starting Telnet server");
+	Serial.println("Starting Telnet server");
 	TelnetServer.begin();
 	TelnetServer.setNoDelay(true);
 
@@ -160,44 +160,44 @@ void setup()
 		eeprom_write();
 
 #ifdef DEBUG
-		USE_SERIAL.println("eeprom schreiben");
+		Serial.println("eeprom schreiben");
 #endif
 	}
 
 		//-------------------------------------
 #ifdef DEBUG
-	USE_SERIAL.println("--------------------------------------");
-	USE_SERIAL.println("ESP Uhr");
-	USE_SERIAL.print("Version         : "), USE_SERIAL.println(VER);
-	USE_SERIAL.printf("Chip ID         : %08X\n", ESP.getChipId());
-	USE_SERIAL.printf("Flash ID        : %08X\n\n", ESP.getFlashChipId());
-	USE_SERIAL.printf("CPU Speed       : %u MHz \n\n", ESP.getCpuFreqMHz());
+	Serial.println("--------------------------------------");
+	Serial.println("ESP Uhr");
+	Serial.print("Version         : "), Serial.println(VER);
+	Serial.printf("Chip ID         : %08X\n", ESP.getChipId());
+	Serial.printf("Flash ID        : %08X\n\n", ESP.getFlashChipId());
+	Serial.printf("CPU Speed       : %u MHz \n\n", ESP.getCpuFreqMHz());
 
-	USE_SERIAL.printf("Flash real Size : %u KByte\n", ESP.getFlashChipRealSize() / 1024);
-	USE_SERIAL.printf("Flash ide  Size : %u KByte\n", ESP.getFlashChipSize() / 1024);
-	USE_SERIAL.printf("Flash ide Speed : %u\n\n", ESP.getFlashChipSpeed());
+	Serial.printf("Flash real Size : %u KByte\n", ESP.getFlashChipRealSize() / 1024);
+	Serial.printf("Flash ide  Size : %u KByte\n", ESP.getFlashChipSize() / 1024);
+	Serial.printf("Flash ide Speed : %u\n\n", ESP.getFlashChipSpeed());
 
-	USE_SERIAL.printf("Free Heap Size  : %u Byte\n", ESP.getFreeHeap());
-	USE_SERIAL.printf("Sketch Size     : %u Byte \n", ESP.getSketchSize());
-	USE_SERIAL.printf("Free Sketch Size: %u Byte \n\n", ESP.getFreeSketchSpace());
+	Serial.printf("Free Heap Size  : %u Byte\n", ESP.getFreeHeap());
+	Serial.printf("Sketch Size     : %u Byte \n", ESP.getSketchSize());
+	Serial.printf("Free Sketch Size: %u Byte \n\n", ESP.getFreeSketchSpace());
 
-	USE_SERIAL.printf("SDK Version     : %s\n", ESP.getSdkVersion());
-	USE_SERIAL.print("RESET Info      : ");
-	USE_SERIAL.println(ESP.getResetInfo());
-	USE_SERIAL.print("COMPILED        : ");
-	USE_SERIAL.print(__DATE__);
-	USE_SERIAL.print(" ");
-	USE_SERIAL.println(__TIME__);
-	USE_SERIAL.println("--------------------------------------");
+	Serial.printf("SDK Version     : %s\n", ESP.getSdkVersion());
+	Serial.print("RESET Info      : ");
+	Serial.println(ESP.getResetInfo());
+	Serial.print("COMPILED        : ");
+	Serial.print(__DATE__);
+	Serial.print(" ");
+	Serial.println(__TIME__);
+	Serial.println("--------------------------------------");
 #endif
 
 	//-------------------------------------
 	// LEDs initialisieren
 	//-------------------------------------
 #ifdef Grbw
-	USE_SERIAL.println("SK6812 LED Init");
+	Serial.println("SK6812 LED Init");
 #else
-	USE_SERIAL.println("WS2812 LED Init");
+	Serial.println("WS2812 LED Init");
 #endif
 	strip.Begin();
 	led_single(20);
@@ -259,11 +259,11 @@ void setup()
 	webSocket.onEvent(webSocketEvent);
 
 #ifdef DEBUG
-	USE_SERIAL.println("Websockest started");
-	USE_SERIAL.println("--------------------------------------");
-	USE_SERIAL.println("Ende Setup");
-	USE_SERIAL.println("--------------------------------------");
-	USE_SERIAL.println("");
+	Serial.println("Websockest started");
+	Serial.println("--------------------------------------");
+	Serial.println("Ende Setup");
+	Serial.println("--------------------------------------");
+	Serial.println("");
 #endif
 
 }
@@ -367,10 +367,10 @@ void loop()
 			wetterswitch = 1;
 			}
 #ifdef DEBUG
-			  USE_SERIAL.print("Wetterswitch: ");
-			  USE_SERIAL.println(wetterswitch);
-			  USE_SERIAL.print("WStunde: ");
-			  USE_SERIAL.println(wstunde);
+			  Serial.print("Wetterswitch: ");
+			  Serial.println(wetterswitch);
+			  Serial.print("WStunde: ");
+			  Serial.println(wstunde);
 #endif
 		  }
 
@@ -384,7 +384,7 @@ void loop()
 	if (last_minute != _minute)
 	{
 #ifdef DEBUG
-		USE_SERIAL.println(">>>> Begin Minute <<<<");
+		Serial.println(">>>> Begin Minute <<<<");
 		TelnetMsg(">>>> Begin Minute <<<<");
 #endif
 		if (G.prog == 0 && G.conf == 0)
@@ -395,7 +395,7 @@ void loop()
 		// WLAN reconnect
 		wlan_status = WiFi.status();
 #ifdef DEBUG
-		USE_SERIAL.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
+		Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
 		TelnetMsg("WLAN-Status: ");
 		TelnetMsg(wstatus[wlan_status]);
 #endif
@@ -405,9 +405,9 @@ void loop()
 		_sekunde48 = 0;
 		last_minute = _minute;
 
-		USE_SERIAL.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
+		Serial.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
 #ifdef DEBUG
-		USE_SERIAL.println(">>>> Ende  Minute <<<<");
+		Serial.println(">>>> Ende  Minute <<<<");
 		TelnetMsg(">>>> Ende  Minute <<<<");
 #endif
 	}
@@ -419,13 +419,13 @@ void loop()
 	{
 
 #ifdef DEBUG
-		USE_SERIAL.println(">>>> Begin Stunde <<<<");
+		Serial.println(">>>> Begin Stunde <<<<");
 		TelnetMsg(">>>> Begin Stunde <<<<");
 #endif
 		// WLAN testen
 		wlan_status = WiFi.status();
 #ifdef DEBUG
-		USE_SERIAL.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
+		Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
 		TelnetMsg("WLAN-Status: ");
 		TelnetMsg(wstatus[wlan_status]);
 #endif
@@ -436,7 +436,7 @@ void loop()
 
 		last_stunde = _stunde;
 #ifdef DEBUG
-		USE_SERIAL.println(">>>> Ende  Stunde <<<<");
+		Serial.println(">>>> Ende  Stunde <<<<");
 		TelnetMsg(">>>> Ende  Stunde <<<<");
 #endif
 	}
@@ -469,7 +469,7 @@ void loop()
 	if (ntp_flag == true)
 	{
 #ifdef DEBUG
-		USE_SERIAL.println("npt: Neue Zeit holen");
+		Serial.println("npt: Neue Zeit holen");
 		TelnetMsg("npt: Neue Zeit holen");
 #endif
 		ntp_flag = false;
@@ -481,20 +481,20 @@ void loop()
 			{
 				setTime(unix_time);
 #ifdef DEBUG
-				USE_SERIAL.println(unix_time);
+				Serial.println(unix_time);
 				utc = now();    //current time from the Time Library
 				ltime = tzc.toLocal(utc, &tcr);
-				USE_SERIAL.print(hour(ltime));
-				USE_SERIAL.print(":");
-				USE_SERIAL.print(minute(ltime));
-				USE_SERIAL.print(":");
-				USE_SERIAL.print(second(ltime));
-				USE_SERIAL.print(" - ");
-				USE_SERIAL.print(day(ltime));
-				USE_SERIAL.print(".");
-				USE_SERIAL.print(month(ltime));
-				USE_SERIAL.print(".");
-				USE_SERIAL.println(year(ltime));
+				Serial.print(hour(ltime));
+				Serial.print(":");
+				Serial.print(minute(ltime));
+				Serial.print(":");
+				Serial.print(second(ltime));
+				Serial.print(" - ");
+				Serial.print(day(ltime));
+				Serial.print(".");
+				Serial.print(month(ltime));
+				Serial.print(".");
+				Serial.println(year(ltime));
 #endif
 			}
 		}
@@ -546,11 +546,11 @@ void loop()
 	if (G.conf == 20)
 	{
 #ifdef DEBUG
-		USE_SERIAL.println("Startwerte gespeichert");
-		USE_SERIAL.println(G.rgb[Foreground][0]);
-		USE_SERIAL.println(G.rgb[Foreground][1]);
-		USE_SERIAL.println(G.rgb[Foreground][2]);
-		USE_SERIAL.println(G.rgb[Foreground][3]);
+		Serial.println("Startwerte gespeichert");
+		Serial.println(G.rgb[Foreground][0]);
+		Serial.println(G.rgb[Foreground][1]);
+		Serial.println(G.rgb[Foreground][2]);
+		Serial.println(G.rgb[Foreground][3]);
 #endif
 		eeprom_write();
 		delay(100);
@@ -592,8 +592,8 @@ void loop()
 		eeprom_write();
 		delay(100);
 #ifdef DEBUG
-		USE_SERIAL.printf("LDR : %u\n\n", G.ldr);
-		USE_SERIAL.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
+		Serial.printf("LDR : %u\n\n", G.ldr);
+		Serial.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
 #endif
 		G.conf = 0;
 	}
@@ -605,11 +605,11 @@ void loop()
 	if (G.conf == 90)
 	{
 #ifdef DEBUG
-		USE_SERIAL.println("write EEPROM!");
-		USE_SERIAL.print("CityID : ");
-		USE_SERIAL.println(G.cityid);
-		USE_SERIAL.print("APIkey : ");
-		USE_SERIAL.println(G.apikey);
+		Serial.println("write EEPROM!");
+		Serial.print("CityID : ");
+		Serial.println(G.cityid);
+		Serial.print("APIkey : ");
+		Serial.println(G.apikey);
 #endif
 		eeprom_write();
 		delay(100);
@@ -673,7 +673,7 @@ void loop()
 		eeprom_write();
 		delay(1000);
 #ifdef DEBUG
-		USE_SERIAL.println("Conf: WLAN neu konfiguriert");
+		Serial.println("Conf: WLAN neu konfiguriert");
 #endif
 		WlanStart();
 		G.conf = 0;
@@ -957,7 +957,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 	char tmp[30];
 	payload = (payload == NULL) ? (uint8_t *) "" : payload;
 #ifdef DEBUG
-	USE_SERIAL.printf("Client-Nr.: [%u]  WStype: %u payload: %s\n", num, type, payload);
+	Serial.printf("Client-Nr.: [%u]  WStype: %u payload: %s\n", num, type, payload);
 #endif
 
 	switch (type)
@@ -965,7 +965,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 		case WStype_DISCONNECTED:
 		{
 #ifdef DEBUG
-			USE_SERIAL.printf("[%u] Disconnected!\n", num);
+			Serial.printf("[%u] Disconnected!\n", num);
 #endif
 			break;
 		}
@@ -973,7 +973,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 		{
 			IPAddress ip = webSocket.remoteIP(num);
 #ifdef DEBUG
-			USE_SERIAL.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+			Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
 #endif
 
 			break;
@@ -981,7 +981,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 		case WStype_TEXT:
 		{
 #ifdef DEBUG
-			USE_SERIAL.printf("[%u] get Text: %s\n", lenght, payload);
+			Serial.printf("[%u] get Text: %s\n", lenght, payload);
 #endif
 			for (unsigned int k = 0; k < lenght; k++)
 			{
@@ -1154,7 +1154,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				}
 				uint32_t tt = atoi(tmp);
 #ifdef DEBUG
-				USE_SERIAL.printf("Conf: Time: %d\n", tt);
+				Serial.printf("Conf: Time: %d\n", tt);
 #endif
 				setTime(tt);
 				break;
@@ -1330,7 +1330,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 		case WStype_BIN:
 		{
 #ifdef DEBUG
-			USE_SERIAL.printf("[%u] get binary lenght: %u\n", num, lenght);
+			Serial.printf("[%u] get binary lenght: %u\n", num, lenght);
 #endif
 			hexdump(payload, lenght);
 			//--echo data back to browser
@@ -1357,7 +1357,7 @@ String WiFiScan(bool html)
 	if (n == 0)
 	{
 #ifdef DEBUG
-		USE_SERIAL.println("no networks found");
+		Serial.println("no networks found");
 #endif
 		if (html == true)
 		{
@@ -1371,8 +1371,8 @@ String WiFiScan(bool html)
 	else
 	{
 #ifdef DEBUG
-		USE_SERIAL.print(n);
-		USE_SERIAL.println(" networks found");
+		Serial.print(n);
+		Serial.println(" networks found");
 #endif
 		if (html == true)
 		{
@@ -1411,13 +1411,13 @@ String WiFiScan(bool html)
 		{
 			// Print SSID and RSSI for each network found
 #ifdef DEBUG
-			USE_SERIAL.print(i + 1);
-			USE_SERIAL.print(": ");
-			USE_SERIAL.print(WiFi.SSID(i));
-			USE_SERIAL.print(" (");
-			USE_SERIAL.print(WiFi.RSSI(i));
-			USE_SERIAL.print(")");
-			USE_SERIAL.println((WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*");
+			Serial.print(i + 1);
+			Serial.print(": ");
+			Serial.print(WiFi.SSID(i));
+			Serial.print(" (");
+			Serial.print(WiFi.RSSI(i));
+			Serial.print(")");
+			Serial.println((WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*");
 #endif
 			if (html == true)
 			{
@@ -1465,8 +1465,8 @@ String WiFiScan(bool html)
 	}
 #ifdef DEBUG
 	wlan_status = WiFi.status();
-	USE_SERIAL.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
-	USE_SERIAL.printf("WLAN-SSID vorhanden: %d\n", wlan_ssid);
+	Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
+	Serial.printf("WLAN-SSID vorhanden: %d\n", wlan_ssid);
 #endif
 	return htmlwlan;
 	//-------------------------------------
@@ -1479,10 +1479,10 @@ void WiFiStart_Client()
 	unsigned int count = 0;
 	// Connect to WiFi network
 #ifdef DEBUG
-	USE_SERIAL.println();
-	USE_SERIAL.print("Connecting to ");
-	USE_SERIAL.println(G.ssid);
-	USE_SERIAL.println(G.passwd);
+	Serial.println();
+	Serial.print("Connecting to ");
+	Serial.println(G.ssid);
+	Serial.println(G.passwd);
 #endif
 	WiFi.disconnect();
 	// WLAN-Mode Clinet stetzen
@@ -1495,7 +1495,7 @@ void WiFiStart_Client()
 			count++;
 			delay(500);
 #ifdef DEBUG
-			USE_SERIAL.print(".");
+			Serial.print(".");
 #endif
 		}
 		else
@@ -1506,11 +1506,11 @@ void WiFiStart_Client()
 	if (WiFi.status() == WL_CONNECTED)
 	{  // Als Clinet connected
 #ifdef DEBUG
-		USE_SERIAL.println("");
-		USE_SERIAL.println("WiFi-Client connected");
+		Serial.println("");
+		Serial.println("WiFi-Client connected");
 
 		// Print the IP address
-		USE_SERIAL.println(WiFi.localIP());
+		Serial.println(WiFi.localIP());
 #endif
 
 		// IP-Adresse als Laufschrift anzeigen
@@ -1534,8 +1534,8 @@ void WiFiStart_AP()
 {
 	// WLAN-Mode AccessPoint stetzen
 #ifdef DEBUG
-	USE_SERIAL.println("");
-	USE_SERIAL.println("Setup WiFi Access-Point");
+	Serial.println("");
+	Serial.println("Setup WiFi Access-Point");
 #endif
 	WiFi.disconnect();
 	delay(300);
@@ -1543,8 +1543,8 @@ void WiFiStart_AP()
 	WiFi.softAP(ssid_ap, password_ap);
 	IPAddress myIP = WiFi.softAPIP();
 #ifdef DEBUG
-	USE_SERIAL.print("AP IP address: ");
-	USE_SERIAL.println(myIP);
+	Serial.print("AP IP address: ");
+	Serial.println(myIP);
 #endif
     char buf[20];
     sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
@@ -1562,7 +1562,7 @@ void WiFiReconnect()
 	// WLAN reconnect
 	wlan_status = WiFi.status();
 #ifdef DEBUG
-	USE_SERIAL.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
+	Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
 #endif
 	//WiFi.reconnect();
 	WiFi.disconnect();
@@ -1571,7 +1571,7 @@ void WiFiReconnect()
 	WiFi.begin((const char *) G.ssid, (const char *) G.passwd);
 	delay(300);
 #ifdef DEBUG
-	USE_SERIAL.printf("WLAN-Restart-Status: %s\n", wstatus[wlan_status]);
+	Serial.printf("WLAN-Restart-Status: %s\n", wstatus[wlan_status]);
 #endif
 }
 
@@ -1580,7 +1580,7 @@ void WiFiReconnect()
 void WlanStart()
 {
 #ifdef DEBUG
-	USE_SERIAL.printf("\n-- Begin WlanStart -- \n");
+	Serial.printf("\n-- Begin WlanStart -- \n");
 #endif
 
 	WiFi.disconnect();
@@ -1602,12 +1602,12 @@ void WlanStart()
 	if (wlan_client == true)
 	{
 #ifdef DEBUG
-		USE_SERIAL.println("Start UDP");
+		Serial.println("Start UDP");
 #endif
 		udp.begin(localPort);
 #ifdef DEBUG
-		USE_SERIAL.print("Local port: ");
-		USE_SERIAL.println(udp.localPort());
+		Serial.print("Local port: ");
+		Serial.println(udp.localPort());
 #endif
 	}
 
@@ -1621,7 +1621,7 @@ void WlanStart()
 		setTime(unix_time);
 	}
 #ifdef DEBUG
-	USE_SERIAL.printf("-- Ende  WlanStart -- \n\n");
+	Serial.printf("-- Ende  WlanStart -- \n\n");
 #endif
 }
 
@@ -1639,44 +1639,44 @@ void eeprom_read()
 {
 	EEPROM_readAnything(0, G);
 #ifdef DEBUG
-	USE_SERIAL.print("Version   : ");
-	USE_SERIAL.println(VER);
-	USE_SERIAL.printf("Sernr     : %u\n", G.sernr);
-	USE_SERIAL.printf("SSID      : %s\n", G.ssid);
-	USE_SERIAL.printf("Passwd    : %s\n", G.passwd);
-	USE_SERIAL.printf("Programm  : %u\n", G.prog);
-	USE_SERIAL.printf("Conf      : %u\n", G.conf);
-	USE_SERIAL.printf("rgb.0.0   : %u\n", G.rgb[Foreground][0]);
-	USE_SERIAL.printf("rgb.0.1   : %u\n", G.rgb[Foreground][1]);
-	USE_SERIAL.printf("rgb.0.2   : %u\n", G.rgb[Foreground][2]);
-	USE_SERIAL.printf("rgb.0.2   : %u\n", G.rgb[Foreground][3]);
-	USE_SERIAL.printf("rgb.1.0   : %u\n", G.rgb[Background][0]);
-	USE_SERIAL.printf("rgb.1.1   : %u\n", G.rgb[Background][1]);
-	USE_SERIAL.printf("rgb.1.2   : %u\n", G.rgb[Background][2]);
-	USE_SERIAL.printf("rgb.1.3   : %u\n", G.rgb[Background][3]);
-	USE_SERIAL.printf("rgb.2.0   : %u\n", G.rgb[Frame][0]);
-	USE_SERIAL.printf("rgb.2.1   : %u\n", G.rgb[Frame][1]);
-	USE_SERIAL.printf("rgb.2.2   : %u\n", G.rgb[Frame][2]);
-	USE_SERIAL.printf("rgb.2.3   : %u\n", G.rgb[Frame][3]);
-	USE_SERIAL.printf("rgb.3.0   : %u\n", G.rgb[SpecialFunction][0]);
-	USE_SERIAL.printf("rgb.3.1   : %u\n", G.rgb[SpecialFunction][1]);
-	USE_SERIAL.printf("rgb.3.2   : %u\n", G.rgb[SpecialFunction][2]);
-	USE_SERIAL.printf("rgb.3.3   : %u\n", G.rgb[SpecialFunction][3]);
-	USE_SERIAL.printf("Zeitserver: %s\n", G.zeitserver);
-	USE_SERIAL.printf("Text      : %s\n", G.ltext);
-	USE_SERIAL.printf("H6        : %u\n", G.h6);
-	USE_SERIAL.printf("H8        : %u\n", G.h8);
-	USE_SERIAL.printf("H12       : %u\n", G.h12);
-	USE_SERIAL.printf("H16       : %u\n", G.h16);
-	USE_SERIAL.printf("H18       : %u\n", G.h18);
-	USE_SERIAL.printf("H22       : %u\n", G.h22);
-	USE_SERIAL.printf("H24       : %u\n", G.h24);
-	USE_SERIAL.printf("LDR       : %u\n", G.ldr);
-	USE_SERIAL.printf("LDRCal    : %u\n", G.ldrCal);
-	USE_SERIAL.print("OWM_apikey: ");
-	USE_SERIAL.println(G.apikey);
-	USE_SERIAL.print("OWM_city  : ");
-	USE_SERIAL.println(G.cityid);
+	Serial.print("Version   : ");
+	Serial.println(VER);
+	Serial.printf("Sernr     : %u\n", G.sernr);
+	Serial.printf("SSID      : %s\n", G.ssid);
+	Serial.printf("Passwd    : %s\n", G.passwd);
+	Serial.printf("Programm  : %u\n", G.prog);
+	Serial.printf("Conf      : %u\n", G.conf);
+	Serial.printf("rgb.0.0   : %u\n", G.rgb[Foreground][0]);
+	Serial.printf("rgb.0.1   : %u\n", G.rgb[Foreground][1]);
+	Serial.printf("rgb.0.2   : %u\n", G.rgb[Foreground][2]);
+	Serial.printf("rgb.0.2   : %u\n", G.rgb[Foreground][3]);
+	Serial.printf("rgb.1.0   : %u\n", G.rgb[Background][0]);
+	Serial.printf("rgb.1.1   : %u\n", G.rgb[Background][1]);
+	Serial.printf("rgb.1.2   : %u\n", G.rgb[Background][2]);
+	Serial.printf("rgb.1.3   : %u\n", G.rgb[Background][3]);
+	Serial.printf("rgb.2.0   : %u\n", G.rgb[Frame][0]);
+	Serial.printf("rgb.2.1   : %u\n", G.rgb[Frame][1]);
+	Serial.printf("rgb.2.2   : %u\n", G.rgb[Frame][2]);
+	Serial.printf("rgb.2.3   : %u\n", G.rgb[Frame][3]);
+	Serial.printf("rgb.3.0   : %u\n", G.rgb[SpecialFunction][0]);
+	Serial.printf("rgb.3.1   : %u\n", G.rgb[SpecialFunction][1]);
+	Serial.printf("rgb.3.2   : %u\n", G.rgb[SpecialFunction][2]);
+	Serial.printf("rgb.3.3   : %u\n", G.rgb[SpecialFunction][3]);
+	Serial.printf("Zeitserver: %s\n", G.zeitserver);
+	Serial.printf("Text      : %s\n", G.ltext);
+	Serial.printf("H6        : %u\n", G.h6);
+	Serial.printf("H8        : %u\n", G.h8);
+	Serial.printf("H12       : %u\n", G.h12);
+	Serial.printf("H16       : %u\n", G.h16);
+	Serial.printf("H18       : %u\n", G.h18);
+	Serial.printf("H22       : %u\n", G.h22);
+	Serial.printf("H24       : %u\n", G.h24);
+	Serial.printf("LDR       : %u\n", G.ldr);
+	Serial.printf("LDRCal    : %u\n", G.ldrCal);
+	Serial.print("OWM_apikey: ");
+	Serial.println(G.apikey);
+	Serial.print("OWM_city  : ");
+	Serial.println(G.cityid);
 
 #endif
 	delay(100);
@@ -1686,17 +1686,17 @@ void eeprom_read()
 
 void WiFiEvent(WiFiEvent_t event)
 {
-	USE_SERIAL.printf("[WiFi-event] event: %d\n", event);
+	Serial.printf("[WiFi-event] event: %d\n", event);
 
 	switch (event)
 	{
 		case WIFI_EVENT_STAMODE_GOT_IP:
-			USE_SERIAL.println("WiFi connected");
-			USE_SERIAL.println("IP address: ");
-			USE_SERIAL.println(WiFi.localIP());
+			Serial.println("WiFi connected");
+			Serial.println("IP address: ");
+			Serial.println(WiFi.localIP());
 			break;
 		case WIFI_EVENT_STAMODE_DISCONNECTED:
-			USE_SERIAL.println("WiFi lost connection");
+			Serial.println("WiFi lost connection");
 			break;
         default:
             break;

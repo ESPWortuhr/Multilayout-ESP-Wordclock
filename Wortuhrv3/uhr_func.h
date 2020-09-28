@@ -1,4 +1,5 @@
 #include <Arduino.h>
+//#include "Uhr.h"
 
 //------------------------------------------------------------------------------
 // Telnet Server für Konsolen Ausgaben
@@ -79,7 +80,7 @@ static void Telnet()
 	}
 }
 
-static void TelnetMsg(String text)
+static void TelnetMsg(const String& text)
 {
 	for (uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++)
 	{
@@ -192,7 +193,7 @@ static inline void led_clear_pixel(uint16_t i)
 
 static inline void led_clear()
 {
-	for (uint16_t i = 0; i < NUM_PIXELS; i++)
+	for (uint16_t i = 0; i < Uhrtype.NUM_PIXELS; i++)
 	{
 		led_clear_pixel(i);
 	}
@@ -202,7 +203,7 @@ static inline void led_clear()
 
 static inline void uhr_clear()
 {
-	for (uint16_t i = 0; i < NUM_SMATRIX; i++)
+	for (uint16_t i = 0; i < Uhrtype.NUM_SMATRIX; i++)
 	{
 		strip.SetPixelColor(smatrix[i], 0);
 	}
@@ -211,7 +212,7 @@ static inline void uhr_clear()
 //------------------------------------------------------------------------------
 
 static inline void rahmen_clear() {
-  for(uint16_t i=0; i<NUM_RMATRIX; i++)
+  for(uint16_t i=0; i<Uhrtype.NUM_RMATRIX; i++)
   {
 	strip.SetPixelColor(rmatrix[i], 0);
   }
@@ -259,8 +260,8 @@ void hsv_to_rgb(double hue, float sat, float bri, uint8_t* c)
 	}
 
 #else
-    while (hue < 0){hue += 360.0F;};     // cycle h around to 0-360 degrees
-    while (hue >= 360){hue -= 360.0F;};
+    while (hue < 0){hue += 360.0F;}     // cycle h around to 0-360 degrees
+    while (hue >= 360){hue -= 360.0F;}
 
     if (hue < 2.09439)
     {
@@ -294,11 +295,11 @@ static void led_single(uint8_t wait)
 	float h;
 	uint8_t c[4];
 
-	for (uint16_t i = 0; i < NUM_PIXELS; i++)
+	for (uint16_t i = 0; i < Uhrtype.NUM_PIXELS; i++)
 	{
 
-		h = 360.0 * i / (NUM_PIXELS - 1);
-		h = h + 360.0 / NUM_PIXELS;
+		h = 360.0 * i / (Uhrtype.NUM_PIXELS - 1);
+		h = h + 360.0 / Uhrtype.NUM_PIXELS;
 		if (h > 360) { h = 0; }
 
 		led_clear();
@@ -316,7 +317,7 @@ static void set_farbe()
 	uint8_t rr, gg, bb, ww;
 	set_helligkeit(rr,gg,bb,ww,SpecialFunction);
 
-	for (uint16_t i = 0; i < NUM_PIXELS; i++)
+	for (uint16_t i = 0; i < Uhrtype.NUM_PIXELS; i++)
 	{
 		led_set_pixel(rr, gg, bb, ww, i);
 	}
@@ -346,7 +347,7 @@ static void set_farbe_rahmen() {
   uint8_t rr, gg, bb, ww;
   set_helligkeit(rr,gg,bb,ww,Frame);
 
-  for(uint16_t i = 0; i < NUM_RMATRIX;i++){
+  for(uint16_t i = 0; i < Uhrtype.NUM_RMATRIX;i++){
 	led_set_pixel(rr, gg, bb, ww, rmatrix[i]);
   }
 }
@@ -360,7 +361,7 @@ static void rainbow()
 	uint8_t c[4];
 	hsv_to_rgb(h, 255, G.hell * 10, c);
 
-	for (uint16_t i = 0; i < NUM_PIXELS; i++)
+	for (uint16_t i = 0; i < Uhrtype.NUM_PIXELS; i++)
 	{
 		led_set_pixel(c[0], c[1], c[2], c[3], i);
 	}
@@ -378,11 +379,11 @@ static void rainbowCycle()
   uint8_t c[4];
 
 	hh = h;
-	for (uint16_t i = 0; i < NUM_SMATRIX; i++)
+	for (uint16_t i = 0; i < Uhrtype.NUM_SMATRIX; i++)
 	{
 		hsv_to_rgb(hh, 255, G.hell * 10, c);
 		led_set_pixel(c[0], c[1], c[2], c[3], smatrix[i]);
-		hh = hh + 360.0/NUM_SMATRIX;
+		hh = hh + 360.0/Uhrtype.NUM_SMATRIX;
   if (hh > 360) { hh = 0; }
 	}
 	led_show();
@@ -400,22 +401,21 @@ static void schweif_up(){
   for (uint16_t i = 0;i<10;i++){
 	l=diff[i]*x/(G.geschw+1);
 	c=dim[i]+l;
-	if (c > 255){ c = 255; }
-	if (c < 0)  { c = 0;   }
+	if (c > 255){ c = 255;}
+	if (c < 0)  { c = 0;}
 
 	G.rr = (G.rgb[SpecialFunction][0] * c)/255;
 	G.gg = (G.rgb[SpecialFunction][1] * c)/255;
 	G.bb = (G.rgb[SpecialFunction][2] * c)/255;
 	G.ww = (G.rgb[SpecialFunction][3] * c)/255;
-	j = t + i;
-	if (j >= 48){ j = j -48; }
+	j = i + t;
+	if (j >= 48){ j -= 48;}
 	led_set_pixel(G.rr, G.gg, G.bb, G.ww, rmatrix[i]);
   }  
   led_show();
   x++;
   if (x >(G.geschw+1)){ x=0; t++; }
-  if (t >= 48){ t = 0;  }  
-
+  if (t >= 48){ t = 0;}
 }
 
 //------------------------------------------------------------------------------
@@ -423,7 +423,7 @@ static void schweif_up(){
 void shift_all_pixels_to_right() {
     for (uint8_t b = 0; b < 10; b++)
     {
-        for (uint8_t a = 0; a < ROWS_MATRIX; a++)
+        for (uint8_t a = 0; a < Uhrtype.ROWS_MATRIX; a++)
         {
             strip.SetPixelColor(matrix[a][b], strip.GetPixelColor(matrix[a][b + 1]));
         }
@@ -494,10 +494,6 @@ void set_pixel_for_char(uint8_t i, uint8_t h, uint8_t offset, unsigned char unsi
 
 static void zahlen(const char d1, const char d2)
 {
-#ifdef DEBUG
-	//    USE_SERIAL.printf("d1: %u %c \n", d1, d1);
-	//    USE_SERIAL.printf("d2: %u %c \n", d2, d2);
-#endif
 	uhr_clear();
 	for (uint8_t i = 0; i < 5; i++)
 	{
@@ -516,12 +512,11 @@ static void zahlen(const char d1, const char d2)
 
 static void laufen(unsigned int d, unsigned char aktion)
 {
-
 	if (aktion == 0)
 	{
-		for (uint8_t t = 0; t < NUM_SMATRIX; t++)
+		for (uint8_t t = 0; t < Uhrtype.NUM_SMATRIX; t++)
 		{
-			for (uint8_t a = NUM_SMATRIX; a > 1; a--)
+			for (uint8_t a = Uhrtype.NUM_SMATRIX; a > 1; a--)
 			{
 				strip.SetPixelColor(smatrix[a - 1], strip.GetPixelColor(smatrix[a - 2]));
 			}
@@ -532,9 +527,9 @@ static void laufen(unsigned int d, unsigned char aktion)
 	}
 	if (aktion == 1)
 	{
-		for (uint8_t t = 0; t < NUM_SMATRIX; t++)
+		for (uint8_t t = 0; t < Uhrtype.NUM_SMATRIX; t++)
 		{
-			for (uint8_t a = NUM_SMATRIX; a > 1; a--)
+			for (uint8_t a = Uhrtype.NUM_SMATRIX; a > 1; a--)
 			{
 				//led1[a-1].r= led1[a-2].r;
 			}
@@ -551,15 +546,15 @@ static void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned 
 {
 	uint8_t t;
 
-	for (t = 0; t < NUM_SMATRIX; t++)
+	for (t = 0; t < Uhrtype.NUM_SMATRIX; t++)
 	{
-		for (uint8_t u = 0; u < 11; u++)
+		for (uint8_t u = 0; u < Uhrtype.ROWS_MATRIX; u++)
 		{
 //      led_set_pixel(r, g, b, matrix[t][u]);   
 		}
 		if (t > 0)
 		{
-			for (uint8_t v = 0; v < 11; v++)
+			for (uint8_t v = 0; v < Uhrtype.ROWS_MATRIX; v++)
 			{
 				led_set_pixel(G.rr, G.gg, G.bb, G.ww, matrix[t][v]);
 			}
@@ -567,7 +562,7 @@ static void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned 
 		led_show();
 		delay(d);
 	}
-	for (uint8_t u = 0; u < 11; u++)
+	for (uint8_t u = 0; u < Uhrtype.ROWS_MATRIX; u++)
 	{
 		led_set_pixel(G.rr, G.gg, G.bb, G.ww, matrix[t - 1][u]);
 	}
@@ -578,20 +573,19 @@ static void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned 
 
 static void schieben(int d, unsigned char aktion)
 {
-	uint8_t a;
-
 	if (aktion == 0)
 	{
-		for (uint8_t t = 0; t < NUM_SMATRIX; t++)
+		uint8_t a;
+		for (uint8_t t = 0; t < Uhrtype.NUM_SMATRIX; t++)
 		{
-			for (a = NUM_SMATRIX - 1; a > 0; a--)
+			for (a = Uhrtype.NUM_SMATRIX - 1; a > 0; a--)
 			{
-				for (uint8_t b = 0; b < 11; b++)
+				for (uint8_t b = 0; b < Uhrtype.ROWS_MATRIX; b++)
 				{
 					strip.SetPixelColor(matrix[a][b], strip.GetPixelColor(matrix[a - 1][b]));
 				}
 			}
-			for (uint8_t b = 0; b < 11; b++)
+			for (uint8_t b = 0; b < Uhrtype.ROWS_MATRIX; b++)
 			{
 				led_set_pixel(G.rr, G.gg, G.bb, G.ww, matrix[a][b]);
 			}
@@ -603,9 +597,8 @@ static void schieben(int d, unsigned char aktion)
 
 //------------------------------------------------------------------------------
 
-static void set_stunde(unsigned char std, unsigned char voll)
+static void set_stunde(uint8_t std, uint8_t voll)
 {
-
 	switch (std)
 	{
 		case 0:
@@ -685,6 +678,8 @@ static void set_stunde(unsigned char std, unsigned char voll)
 		case 24:
 			uhrzeit |= ((uint32_t) 1 << H_ZWOELF);
 			break;
+		default:
+			break;
 	}
 }
 
@@ -692,12 +687,10 @@ static void set_stunde(unsigned char std, unsigned char voll)
 
 static void set_uhrzeit()
 {
-
-	unsigned int m = 0;
 	uhrzeit = 0;
 	uhrzeit |= ((uint32_t) 1 << ESIST);
 
-	m = _minute / 5;
+	uint8_t m = _minute / 5;
 	switch (m)
 	{
 		case 0: // volle Stunde
@@ -759,6 +752,8 @@ static void set_uhrzeit()
 			uhrzeit |= ((uint32_t) 1 << FUENF);
 			uhrzeit |= ((uint32_t) 1 << VOR);
 			set_stunde(_stunde + 1, 0);
+			break;
+		default:
 			break;
 	}
 }
@@ -963,7 +958,7 @@ static void show_zeit(int flag)
 	set_helligkeit_ldr(rr,gg,bb,ww,Background);
 
 	//Hintergrund setzen
-	for (uint8_t t = 0; t < ROWS_MATRIX; t++)
+	for (uint8_t t = 0; t < Uhrtype.ROWS_MATRIX; t++)
 	{
 		for (uint8_t b = 0; b < 11; b++)
 		{

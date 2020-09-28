@@ -1,41 +1,10 @@
+#include "Arduino.h"
 
 const char* VER = "2.2.2";  // Software Version
 
-#ifndef _UHR_H
-#define _UHR_H
+#pragma once
 
-#define NUM_RMATRIX  48
-#define USE_SERIAL Serial
-
-#ifdef UHR_114_Fraenkisch 
-#define NUM_PIXELS   114                
-#define NUM_SMATRIX   114
-#define ROWS_MATRIX    11
-#endif  
-
-#ifdef UHR_114 
-#define NUM_PIXELS   114                
-#define NUM_SMATRIX   114
-#define ROWS_MATRIX    11
-#endif  
-
-#ifdef UHR_125 
-#define NUM_PIXELS   125                
-#define NUM_SMATRIX  125                
-#define ROWS_MATRIX   12                
-#endif  
-
-#ifdef UHR_169 
-#define NUM_PIXELS  169
-#define NUM_SMATRIX 121
-#define ROWS_MATRIX  11
-#endif 
-
-#ifdef UHR_242 
-#define NUM_PIXELS   242                
-#define NUM_SMATRIX  242                
-#define ROWS_MATRIX   22                
-#endif
+#define UHR_Type UHR_114_Alternative
 
 #ifdef Grb
 	#define LED_STRIPE_TYP   NeoGrbFeature
@@ -53,31 +22,32 @@ const char* VER = "2.2.2";  // Software Version
 	#define LED_STRIPE_TYP   NeoGrbwFeature 
 #endif
 
-#define ESIST 0
-#define VOR   1
-#define NACH  2
-#define UHR   3
+enum uhrzeit_t{
+ ESIST = 0,
+ VOR  = 1,
+ NACH = 2,
+ UHR  = 3,
 
-#define FUENF   4
-#define ZEHN    5 
-#define VIERTEL 6
-#define ZWANZIG 7
-#define HALB    8
-#define EINS    9
+ FUENF =  4,
+ ZEHN = 5,
+ VIERTEL = 6,
+ ZWANZIG = 7,
+ HALB    = 8,
+ EINS    = 9,
 
-#define H_EIN    10
-#define H_ZWEI   11
-#define H_DREI   12
-#define H_VIER   13      
-#define H_FUENF  14
-#define H_SECHS  15
-#define H_SIEBEN 16
-#define H_ACHT   17
-#define H_NEUN   18
-#define H_ZEHN   19
-#define H_ELF    20
-#define H_ZWOELF 21
-
+ H_EIN = 10,
+ H_ZWEI = 11,
+ H_DREI = 12,
+ H_VIER = 13,
+ H_FUENF = 14,
+ H_SECHS = 15,
+ H_SIEBEN = 16,
+ H_ACHT = 17,
+ H_NEUN = 18,
+ H_ZEHN = 19,
+ H_ELF = 20,
+ H_ZWOELF = 21
+};
 
 struct GLOBAL {
   int sernr;
@@ -141,7 +111,42 @@ int wstunde;
 int wetterswitch;      
 #endif
 
+struct UHR_114_Alternative{
+	uint8_t NUM_PIXELS = 114;
+	uint8_t NUM_SMATRIX = 114;
+	uint8_t ROWS_MATRIX = 11;
+	uint8_t NUM_RMATRIX = 0;
+};
 
+struct UHR_114{
+	uint8_t NUM_PIXELS = 114;
+	uint8_t NUM_SMATRIX = 114;
+	uint8_t ROWS_MATRIX = 11;
+	uint8_t NUM_RMATRIX = 0;
+};
+
+struct UHR_125{
+	uint8_t NUM_PIXELS = 125;
+	uint8_t NUM_SMATRIX = 125;
+	uint8_t ROWS_MATRIX = 12;
+	uint8_t NUM_RMATRIX = 0;
+};
+
+struct UHR_169{
+	uint8_t NUM_PIXELS = 169;
+	uint8_t NUM_SMATRIX = 121;
+	uint8_t ROWS_MATRIX = 11;
+	uint8_t NUM_RMATRIX = 48;
+};
+
+struct UHR_242{
+	uint8_t NUM_PIXELS = 242;
+	uint8_t NUM_SMATRIX = 242;
+	uint8_t ROWS_MATRIX = 22;
+	uint8_t NUM_RMATRIX = 0;
+};
+
+UHR_Type Uhrtype;
 // LDR 
 unsigned long waitUntilLDR = 0;
 int autoBrightnessEnabled = 1;
@@ -195,6 +200,7 @@ unsigned int rmatrix[]{};
 
 char str[300];
 char s[5];
+
 enum ledPositions{
 	Foreground = 0,
 	Background = 1,
@@ -210,16 +216,10 @@ const uint8_t PixelPin = 2;  // Led Stripe Data Port
 typedef RowMajorAlternatingLayout MyPanelLayout;
 const uint8_t PanelWidth = 11;  // 11 pixel x 22 pixel matrix of leds
 const uint8_t PanelHeight = 22;
-const uint16_t PixelCount = PanelWidth * PanelHeight;  
+
 NeoTopology<MyPanelLayout> topo(PanelWidth, PanelHeight);
   
-NeoPixelBus<LED_STRIPE_TYP, NeoEsp8266Dma800KbpsMethod> strip(PixelCount, PixelPin);
-
-//RgbColor red(128, 0, 0);
-//RgbColor green(0, 128, 0);
-//RgbColor blue(0, 0, 128);
-//RgbColor white(128);
-//RgbColor black(0);
+NeoPixelBus<LED_STRIPE_TYP, NeoEsp8266Dma800KbpsMethod> strip(Uhrtype.NUM_PIXELS, PixelPin);
 
 const uint16_t left = 0;
 const uint16_t right = PanelWidth - 1;
@@ -247,5 +247,3 @@ void eeprom_write();
 void eeprom_read();
 int split(int i, int j);
 void WiFiEvent(WiFiEvent_t event);
-
-#endif
