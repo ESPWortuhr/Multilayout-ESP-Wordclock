@@ -14,12 +14,12 @@ const char* VER = "2.2.2";  // Software Version
 #endif
 #ifdef Rgb
 	#define LED_STRIPE_TYP   NeoRgbFeature
-#endif 
+#endif
 #ifdef Rbg
 	#define LED_STRIPE_TYP   NeoRbgFeature
 #endif
 #ifdef Grbw
-	#define LED_STRIPE_TYP   NeoGrbwFeature 
+	#define LED_STRIPE_TYP   NeoGrbwFeature
 #endif
 
 enum uhrzeit_t{
@@ -50,43 +50,40 @@ enum uhrzeit_t{
 };
 
 struct GLOBAL {
-  int sernr;
-  char ssid[25];    
-  char passwd[25];
-  int prog;  
-  int param1;  
-  int param2;        
-  int prog_init;  
-  int conf;
-  int rgb[4][4];
-  int rr;
-  int gg;
-  int bb;
-  int ww;   
-  int hell;   
-  int ldr;
-  int ldrCal;
-  char apikey[33];
-  char cityid[8];  
-  int geschw;   
-  int client_nr;
-  int zeige_sek;    
-  int zeige_min;
-  char zeitserver[30];   
-  char hostname[30];  
-  char ltext[30];
-  int hh;  
-  int h6;
-  int h8;
-  int h12;
-  int h16;      
-  int h18;     
-  int h20;
-  int h22;
-  int h24;
-  int rgb1[10][5];
-  int rgb2[10][5];
-  int rgb3[10][5];  
+  	uint8_t sernr;
+  	char ssid[25];
+  	char passwd[25];
+  	int prog;
+	uint8_t param1;
+	uint8_t param2;
+	uint8_t prog_init;
+	uint16_t conf;
+	uint8_t rgb[4][4];
+	uint8_t rr;
+	uint8_t gg;
+	uint8_t bb;
+	uint8_t ww;
+	uint8_t hell;
+	int ldr;
+	int ldrCal;
+	char apikey[33];
+	char cityid[8];
+	int geschw;
+	uint8_t client_nr;
+	uint8_t zeige_sek;
+	uint8_t zeige_min;
+	char zeitserver[30];
+	char hostname[30];
+	char ltext[30];
+	uint8_t hh;
+	uint8_t h6;
+	uint8_t h8;
+	uint8_t h12;
+	uint8_t h16;
+	uint8_t h18;
+	uint8_t h20;
+	uint8_t h22;
+	uint8_t h24;
 };
 GLOBAL G = { };
 
@@ -108,7 +105,7 @@ int wwetter_12;
 int wwetter_18;
 int wwetter_24;
 int wstunde;
-int wetterswitch;      
+int wetterswitch;
 #endif
 
 struct UHR_114_Alternative{
@@ -147,6 +144,7 @@ struct UHR_242{
 };
 
 UHR_Type Uhrtype;
+
 // LDR 
 unsigned long waitUntilLDR = 0;
 int autoBrightnessEnabled = 1;
@@ -178,7 +176,7 @@ unsigned int last_stunde = 100;
 
 unsigned int count_millis48 = 0;
 unsigned long previous48    = 0;
-const long interval48       = 1250;   
+const long interval48       = 1250;
 unsigned int _sekunde48     = 0;
 unsigned int last_sekunde48 = 100;
 
@@ -213,18 +211,7 @@ int diff[20]= {-30,-20,-20,-20,-20,-20,-10,-20,-40,-55,0,55,40,60,20,20,20,20,10
 
 const uint8_t PixelPin = 2;  // Led Stripe Data Port
 
-typedef RowMajorAlternatingLayout MyPanelLayout;
-const uint8_t PanelWidth = 11;  // 11 pixel x 22 pixel matrix of leds
-const uint8_t PanelHeight = 22;
-
-NeoTopology<MyPanelLayout> topo(PanelWidth, PanelHeight);
-  
 NeoPixelBus<LED_STRIPE_TYP, NeoEsp8266Dma800KbpsMethod> strip(Uhrtype.NUM_PIXELS, PixelPin);
-
-const uint16_t left = 0;
-const uint16_t right = PanelWidth - 1;
-const uint16_t top = 0;
-const uint16_t bottom = PanelHeight - 1;
 
 //-- WebSocketserver
 WebPage_Adapter webSocket = WebPage_Adapter(80);
@@ -233,17 +220,3 @@ WebPage_Adapter webSocket = WebPage_Adapter(80);
 ESP8266WebServer httpServer(81);
 ESP8266HTTPUpdateServer httpUpdater;
 //--OTA--
-
-// A UDP instance to let us send and receive packets over UDP
-//WiFiUDP udp;
-
-String WiFiScan(bool html);
-void WiFiStart_Client();
-void WiFiStart_AP();
-void WiFiReconnect();
-void WlanStart();
-void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght);
-void eeprom_write();
-void eeprom_read();
-int split(int i, int j);
-void WiFiEvent(WiFiEvent_t event);

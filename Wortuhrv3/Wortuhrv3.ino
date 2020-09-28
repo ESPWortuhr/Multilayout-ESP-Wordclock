@@ -80,871 +80,17 @@ Timezone tzc(CEST, CET);
 time_t ltime, utc;
 TimeChangeRule *tcr;
 
-//------------------------------------------------------------------------------
-// Start setup()
-//------------------------------------------------------------------------------
 
-void setup()
-{
-	//-------------------------------------
-	// Start Serielle Schnittstelle
-	//-------------------------------------
-#ifdef DEBUG
-	Serial.begin(38400);
-	Serial.println("");
-#endif
-	delay(100);
-	//-------------------------------------
-#ifdef DEBUG
-	Serial.println("");
-	Serial.println("--------------------------------------");
-	Serial.println("Begin Setup");
-	Serial.println("--------------------------------------");
-#endif
-
-	//-------------------------------------
-	Serial.println("Starting Telnet server");
-	TelnetServer.begin();
-	TelnetServer.setNoDelay(true);
-
-	//-------------------------------------
-	// EEPROM lesen / initialisieren
-	//-------------------------------------
-	EEPROM.begin(512);
-
-	eeprom_read();
-
-	if (G.sernr != SERNR)
-	{
-		for (int i = 0; i < 512; i++) { EEPROM.write(i, i); }
-		EEPROM.commit();
-
-		G.sernr = SERNR;
-    strcpy(G.ssid, "Enter_Your_SSID");
-    strcpy(G.passwd, "Enter_Your_PASSWORD");
-		G.prog = 1;
-		G.param1 = 0;
-		G.param2 = 0;
-		G.prog_init = 1;
-		G.conf = 0;
-		for (int i = 0; i < 4; i++) { for (int ii = 0; ii < 4; ii++) { G.rgb[i][ii] = 0; }}
-		G.rgb[Foreground][2] = 100;
-		G.rgb[SpecialFunction][1] = 100;
-		G.rr = 0;
-		G.gg = 0;
-		G.bb = 0;
-		G.ww = 0;
-		G.hell = 2;
-		G.geschw = 10;
-		G.client_nr = 0;
-		G.zeige_sek = 0;
-		G.zeige_min = 1;
-		G.ldr = 0;
-		G.ldrCal = 0;
-		strcpy(G.cityid, "");
-		strcpy(G.apikey, "");
-		strcpy(G.zeitserver, "ptbtime1.ptb.de");
-		strcpy(G.hostname, "uhr");
-		strcpy(G.ltext, "HELLO WORLD ");
-
-		G.hh = 100;
-		G.h6 = 100;
-		G.h8 = 100;
-		G.h12 = 100;
-		G.h16 = 100;
-		G.h18 = 100;
-		G.h20 = 100;
-		G.h22 = 100;
-		G.h24 = 100;
-
-		eeprom_write();
-
-#ifdef DEBUG
-		Serial.println("eeprom schreiben");
-#endif
-	}
-
-		//-------------------------------------
-#ifdef DEBUG
-	Serial.println("--------------------------------------");
-	Serial.println("ESP Uhr");
-	Serial.print("Version         : "), Serial.println(VER);
-	Serial.printf("Chip ID         : %08X\n", ESP.getChipId());
-	Serial.printf("Flash ID        : %08X\n\n", ESP.getFlashChipId());
-	Serial.printf("CPU Speed       : %u MHz \n\n", ESP.getCpuFreqMHz());
-
-	Serial.printf("Flash real Size : %u KByte\n", ESP.getFlashChipRealSize() / 1024);
-	Serial.printf("Flash ide  Size : %u KByte\n", ESP.getFlashChipSize() / 1024);
-	Serial.printf("Flash ide Speed : %u\n\n", ESP.getFlashChipSpeed());
-
-	Serial.printf("Free Heap Size  : %u Byte\n", ESP.getFreeHeap());
-	Serial.printf("Sketch Size     : %u Byte \n", ESP.getSketchSize());
-	Serial.printf("Free Sketch Size: %u Byte \n\n", ESP.getFreeSketchSpace());
-
-	Serial.printf("SDK Version     : %s\n", ESP.getSdkVersion());
-	Serial.print("RESET Info      : ");
-	Serial.println(ESP.getResetInfo());
-	Serial.print("COMPILED        : ");
-	Serial.print(__DATE__);
-	Serial.print(" ");
-	Serial.println(__TIME__);
-	Serial.println("--------------------------------------");
-#endif
-
-	//-------------------------------------
-	// LEDs initialisieren
-	//-------------------------------------
-#ifdef Grbw
-	Serial.println("SK6812 LED Init");
-#else
-	Serial.println("WS2812 LED Init");
-#endif
-	strip.Begin();
-	led_single(20);
-	led_clear();
-	led_show();
-
-	G.conf = 0;
-	//-------------------------------------
-
-	//-------------------------------------
-	// Start WiFi
-	//-------------------------------------
-	WlanStart();
-
-	//-------------------------------------
-
-
-	//-------------------------------------
-	// Zeit setzen
-	//-------------------------------------
-	utc = now();    //current time from the Time Library
-	ltime = tzc.toLocal(utc, &tcr);
-	_sekunde = second(ltime);
-	_minute = minute(ltime);
-	_stunde = hour(ltime);
-#ifdef UHR_169
-	_sekunde48 = _sekunde * 48 / 60;
-#endif
-	show_zeit(1);
-#ifdef UHR_169
-	if (G.zeige_sek <1 && G.zeige_min < 2){
-	  set_farbe_rahmen();
-	}
-#endif
-	//-------------------------------------
-
-
-	//-------------------------------------
-	// mDNS--
-	//-------------------------------------
-	MDNS.begin((const char *) G.hostname);
-	MDNS.addService("http", "tcp", 80);
-	MDNS.addService("http", "tcp", 81);
-	//-------------------------------------
-
-
-	//-------------------------------------
-	// OTA--
-	//-------------------------------------
-	httpUpdater.setup(&httpServer);
-	httpServer.begin();
-	//-------------------------------------
-
-
-	//-------------------------------------
-	// Start Websocket
-	//-------------------------------------
-	webSocket.begin();
-	webSocket.onEvent(webSocketEvent);
-
-#ifdef DEBUG
-	Serial.println("Websockest started");
-	Serial.println("--------------------------------------");
-	Serial.println("Ende Setup");
-	Serial.println("--------------------------------------");
-	Serial.println("");
-#endif
-
-}
-//------------------------------------------------------------------------------
-// Ende setup()
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-// Start loop()
-//------------------------------------------------------------------------------
-
-void loop()
-{
-
-	unsigned long currentMillis = millis();
-	count_millis += currentMillis - previousMillis;
-	count_delay += currentMillis - previousMillis;
-#ifdef UHR_169
-	count_millis48 += currentMillis - previousMillis;
-#endif
-	previousMillis = currentMillis;
-	if (count_millis >= interval)
-	{
-		count_millis = 0;
-		utc = now();    //current time from the Time Library
-		ltime = tzc.toLocal(utc, &tcr);
-		_sekunde = second(ltime);
-		_minute = minute(ltime);
-		_stunde = hour(ltime);
-		count_tag++;
-		// Wetteruhr
-#ifdef UHR_242
-		weather_tag++;
-#endif
-
-	}
-#ifdef UHR_169
-	if (count_millis48 >= interval48) {
-	  count_millis48 = 0;
-	  _sekunde48++;
-	  if (_sekunde48 >47){ _sekunde48 = 0; }
-	}
-#endif
-
-	//------------------------------------------------
-	Telnet();  // Handle telnet connections
-
-	//------------------------------------------------
-	//--OTA--
-	//------------------------------------------------
-	//  if (G.prog == 0 && G.conf == 0) {
-	httpServer.handleClient();
-	//  }
-	//------------------------------------------------
-
-	webSocket.loop();
-
-	//------------------------------------------------
-	// Sekunde48
-	//------------------------------------------------
-#ifdef UHR_169
-	if (last_sekunde48 != _sekunde48) {
-	  if (G.prog == 0 && G.conf == 0) {
-		if (G.zeige_sek == 1 || G.zeige_min == 2){
-		  rahmen_clear();
-		}
-		if (G.zeige_sek > 0){
-		  show_sekunde();
-		}
-		led_show();
-	  }
-	  last_sekunde48 = _sekunde48;
-	}
-#endif
-
-	//------------------------------------------------
-	// Sekunde und LDR Regelung
-	//------------------------------------------------
-	if (last_sekunde != _sekunde)
-	{
-
-		//--- LDR Regelung
-		//
-		if (G.ldr == 1)
-		{
-			doLDRLogic();
-		}
-		//--- LDR Regelung
-
-		if (G.prog == 0 && G.conf == 0)
-		{
-			show_zeit(0); // Anzeige Uhrzeit ohne Config
-		}
-		last_sekunde = _sekunde;
-
-#ifdef UHR_242
-
-		if ((_sekunde == 30) | (_sekunde == 0))  {
-			wetterswitch ++;
-			if (wetterswitch > 4) {
-			wetterswitch = 1;
-			}
-#ifdef DEBUG
-			  Serial.print("Wetterswitch: ");
-			  Serial.println(wetterswitch);
-			  Serial.print("WStunde: ");
-			  Serial.println(wstunde);
-#endif
-		  }
-
-
-#endif
-	}
-
-	//------------------------------------------------
-	// Minute
-	//------------------------------------------------
-	if (last_minute != _minute)
-	{
-#ifdef DEBUG
-		Serial.println(">>>> Begin Minute <<<<");
-		TelnetMsg(">>>> Begin Minute <<<<");
-#endif
-		if (G.prog == 0 && G.conf == 0)
-		{
-			show_zeit(1); // Anzeige Uhrzeit mit Config
-		}
-
-		// WLAN reconnect
-		wlan_status = WiFi.status();
-#ifdef DEBUG
-		Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
-		TelnetMsg("WLAN-Status: ");
-		TelnetMsg(wstatus[wlan_status]);
-#endif
-//    if (wlan_status == 6 && wlan_client == true){
-//      WiFiReconnect();
-//    }
-		_sekunde48 = 0;
-		last_minute = _minute;
-
-		Serial.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
-#ifdef DEBUG
-		Serial.println(">>>> Ende  Minute <<<<");
-		TelnetMsg(">>>> Ende  Minute <<<<");
-#endif
-	}
-
-	//------------------------------------------------
-	// Stunde
-	//------------------------------------------------
-	if (last_stunde != _stunde)
-	{
-
-#ifdef DEBUG
-		Serial.println(">>>> Begin Stunde <<<<");
-		TelnetMsg(">>>> Begin Stunde <<<<");
-#endif
-		// WLAN testen
-		wlan_status = WiFi.status();
-#ifdef DEBUG
-		Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
-		TelnetMsg("WLAN-Status: ");
-		TelnetMsg(wstatus[wlan_status]);
-#endif
-		if (wlan_client == false && wlan_ssid == true)
-		{
-			WlanStart();
-		}
-
-		last_stunde = _stunde;
-#ifdef DEBUG
-		Serial.println(">>>> Ende  Stunde <<<<");
-		TelnetMsg(">>>> Ende  Stunde <<<<");
-#endif
-	}
-
-	//------------------------------------------------
-	// Tag
-	//------------------------------------------------
-	if (count_tag >= 86400)
-	{
-		count_tag = 0;
-		ntp_flag = true;
-	}
-
-	//------------------------------------------------
-	// Wetterdaten abrufen
-	//------------------------------------------------
-#ifdef UHR_242
-	if (weather_tag >= 600) {
-	  weather_tag = 0;
-	  if (WiFi.status() == WL_CONNECTED)
-       {
-		getweather();
-          }
-	}
-#endif
-
-	//------------------------------------------------
-	// NTP Zeit neu holen
-	//------------------------------------------------
-	if (ntp_flag == true)
-	{
-#ifdef DEBUG
-		Serial.println("npt: Neue Zeit holen");
-		TelnetMsg("npt: Neue Zeit holen");
-#endif
-		ntp_flag = false;
-		wlan_status = WiFi.status();
-		if (wlan_status == 3)
-		{
-			set_ntp_zeit();
-			if (unix_time > 0)
-			{
-				setTime(unix_time);
-#ifdef DEBUG
-				Serial.println(unix_time);
-				utc = now();    //current time from the Time Library
-				ltime = tzc.toLocal(utc, &tcr);
-				Serial.print(hour(ltime));
-				Serial.print(":");
-				Serial.print(minute(ltime));
-				Serial.print(":");
-				Serial.print(second(ltime));
-				Serial.print(" - ");
-				Serial.print(day(ltime));
-				Serial.print(".");
-				Serial.print(month(ltime));
-				Serial.print(".");
-				Serial.println(year(ltime));
-#endif
-			}
-		}
-	}
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Farbe Uhr / Hintergrund / Rahmen einstellen
-	//------------------------------------------------
-	if (G.prog == 1)
-	{
-		//uhr_clear();;
-		show_zeit(0); // Anzeige Uhrzeit ohne Config
-#ifdef UHR_169
-		if (G.zeige_sek <1 && G.zeige_min < 2){
-		  set_farbe_rahmen();
-		}
-#endif
-		G.prog = 0;
-	}
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Uhrzeit setzen
-	//------------------------------------------------
-	if (G.conf == 30)
-	{
-		utc = now();    //current time from the Time Library
-		ltime = tzc.toLocal(utc, &tcr);
-		_sekunde = second(ltime);
-		_minute = minute(ltime);
-		_stunde = hour(ltime);
-#ifdef UHR_169
-		_sekunde48 = _sekunde * 48 / 60;
-#endif
-		show_zeit(1); // Anzeige Uhrzeit mit Config
-		eeprom_write();
-		delay(100);
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Startwerte speichern
-	//------------------------------------------------
-	if (G.conf == 20)
-	{
-#ifdef DEBUG
-		Serial.println("Startwerte gespeichert");
-		Serial.println(G.rgb[Foreground][0]);
-		Serial.println(G.rgb[Foreground][1]);
-		Serial.println(G.rgb[Foreground][2]);
-		Serial.println(G.rgb[Foreground][3]);
-#endif
-		eeprom_write();
-		delay(100);
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Helligkeit speichern
-	//------------------------------------------------
-	if (G.conf == 95)
-	{
-		show_zeit(1); // Anzeige Uhrzeit mit Config
-		eeprom_write();
-		delay(100);
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Anzeige Minuten speichern
-	//------------------------------------------------
-	if (G.conf == 94)
-	{
-		show_zeit(1); // Anzeige Uhrzeit mit Config
-		eeprom_write();
-		delay(100);
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-	//------------------------------------------------
-	// LDR Einstellung speichern
-	//------------------------------------------------
-	if (G.conf == 91)
-	{
-		eeprom_write();
-		delay(100);
-#ifdef DEBUG
-		Serial.printf("LDR : %u\n\n", G.ldr);
-		Serial.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
-#endif
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-	//------------------------------------------------
-	// OpenWeathermap Einstellung speichern
-	//------------------------------------------------
-	if (G.conf == 90)
-	{
-#ifdef DEBUG
-		Serial.println("write EEPROM!");
-		Serial.print("CityID : ");
-		Serial.println(G.cityid);
-		Serial.print("APIkey : ");
-		Serial.println(G.apikey);
-#endif
-		eeprom_write();
-		delay(100);
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-	//------------------------------------------------
-	// Hostname speichern
-	//------------------------------------------------
-	if (G.conf == 92)
-	{
-		eeprom_write();
-		delay(100);
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-	//------------------------------------------------
-	// Anzeige Sekunde speichern
-	//------------------------------------------------
-	if (G.conf == 93)
-	{
-		show_zeit(1); // Anzeige Uhrzeit mit Config
-		eeprom_write();
-		delay(100);
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Lauftext speichern
-	//------------------------------------------------
-	if (G.conf == 96)
-	{
-		eeprom_write();
-		delay(100);
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-	//------------------------------------------------
-	// Zeitserver speichern
-	//------------------------------------------------
-	if (G.conf == 97)
-	{
-		eeprom_write();
-		delay(100);
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-
-
-	//------------------------------------------------
-	// WLAN-Daten speichern und neu starten
-	//------------------------------------------------
-	if (G.conf == 99)
-	{
-		eeprom_write();
-		delay(1000);
-#ifdef DEBUG
-		Serial.println("Conf: WLAN neu konfiguriert");
-#endif
-		WlanStart();
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-
-
-	//------------------------------------------------
-	// Sekunden
-	//------------------------------------------------
-	if (G.prog == 200)
-	{
-		if (G.prog_init == 1)
-		{
-			led_clear();
-			G.prog_init = 0;
-		}
-		char d1[5];
-		char d2[5];
-		sprintf(d1, "%d", (int) (_sekunde / 10));
-		sprintf(d2, "%d", (int) (_sekunde % 10));
-		zahlen(d1[0], d2[0]);
-	}
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Laufschrift
-	//------------------------------------------------
-	if (G.prog == 201)
-	{
-		if (G.prog_init == 1)
-		{
-			G.prog_init = 0;
-			led_clear();
-			count_delay = (G.geschw + 1) * 20;
-		}
-		if (count_delay >= (G.geschw + 1u) * 20u)
-		{
-			laufschrift(G.ltext);
-			count_delay = 0;
-		}
-	}
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Regenbogen
-	//------------------------------------------------
-	if (G.prog == 202)
-	{
-		if (G.prog_init == 1)
-		{
-			G.prog_init = 0;
-			uhr_clear();
-			count_delay = G.geschw * 7 + 1;
-		}
-		if (count_delay >= G.geschw * 7u + 1u)
-		{
-			rainbowCycle();
-			count_delay = 0;
-		}
-	}
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Farbwechsel
-	//------------------------------------------------
-	if (G.prog == 203)
-	{
-		if (G.prog_init == 1)
-		{
-			G.prog_init = 0;
-			led_clear();
-			count_delay = G.geschw * 7 + 1;
-		}
-		if (count_delay >= G.geschw * 7u + 1u)
-		{
-			rainbow();
-			count_delay = 0;
-		}
-
-	}
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Farbe Rahmen
-	//------------------------------------------------
-
-	if (G.prog == 204)
-	{
-		if (G.prog_init == 1)
-		{
-			G.prog_init = 0;
-			set_farbe();
-			led_show();
-		}
-
-	}
-	/*
-	if (G.prog == 204) {
-	  if (G.prog_init == 1){
-		G.last_prog = G.prog;
-		G.prog_init = 0;
-		led_clear();
-		count_delay = 100;
-	  }
-
-	  if (count_delay >= 100){
-		int s = _sekunde48;
-		int b = 255 * count_millis / 1000;
-		rahmen_clear();
-		led_set_pixel(0, 0, b, rmatrix[s]);
-		led_show();
-		count_delay = 0;
-	  }
-	}
-	*/
-	//------------------------------------------------
-
-
-	//------------------------------------------------
-	// Reset
-	//------------------------------------------------
-	if (G.conf == 100)
-	{
-		delay(1000);
-		ESP.reset();
-		ESP.restart();
-		while (1) { delay(1); };
-	}
-	//------------------------------------------------
-
-	//------------------------------------------------
-	// Config Senden
-	//------------------------------------------------
-	if (G.conf == 300)
-	{
-		strcpy(str, "{\"command\":\"config\"");
-		strcat(str, ",\"ssid\":");
-		strcat(str, "\"");
-		strcat(str, G.ssid);
-		strcat(str, "\",\"zeitserver\":\"");
-		strcat(str, G.zeitserver);
-		strcat(str, "\",\"hostname\":\"");
-		strcat(str, G.hostname);
-		strcat(str, "\",\"ltext\":\"");
-		strcat(str, G.ltext);
-		strcat(str, "\",\"h6\":\"");
-		sprintf(s, "%d", G.h6);
-		strcat(str, s);
-		strcat(str, "\",\"h8\":\"");
-		sprintf(s, "%d", G.h8);
-		strcat(str, s);
-		strcat(str, "\",\"h12\":\"");
-		sprintf(s, "%d", G.h12);
-		strcat(str, s);
-		strcat(str, "\",\"h16\":\"");
-		sprintf(s, "%d", G.h16);
-		strcat(str, s);
-		strcat(str, "\",\"h18\":\"");
-		sprintf(s, "%d", G.h18);
-		strcat(str, s);
-		strcat(str, "\",\"h20\":\"");
-		sprintf(s, "%d", G.h20);
-		strcat(str, s);
-		strcat(str, "\",\"h22\":\"");
-		sprintf(s, "%d", G.h22);
-		strcat(str, s);
-		strcat(str, "\",\"h24\":\"");
-		sprintf(s, "%d", G.h24);
-		strcat(str, s);
-		strcat(str, "\",\"hell\":\"");
-		sprintf(s, "%d", G.hell);
-		strcat(str, s);
-		strcat(str, "\",\"zeige_sek\":\"");
-		sprintf(s, "%d", G.zeige_sek);
-		strcat(str, s);
-		strcat(str, "\",\"zeige_min\":\"");
-		sprintf(s, "%d", G.zeige_min);
-		strcat(str, s);
-		strcat(str, "\",\"ldr\":\"");
-		sprintf(s, "%d", G.ldr);
-		strcat(str, s);
-		strcat(str, "\",\"ldrCal\":\"");
-		sprintf(s, "%d", G.ldrCal);
-		strcat(str, s);
-		strcat(str, "\",\"cityid\":\"");
-		strcat(str, G.cityid);
-		strcat(str, "\",\"apikey\":\"");
-		strcat(str, G.apikey);
-		strcat(str, "\"}");
-		webSocket.sendTXT(G.client_nr, str, strlen(str));
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-	//------------------------------------------------
-	// conf Farbwerte senden
-	//------------------------------------------------
-	if (G.conf == 301)
-	{
-		strcpy(str, "{\"command\":\"set\"");
-		for (int i = 0; i < 4; i++)
-		{
-#ifdef Grbw
-			for( int ii = 0; ii < 4; ii++ ){
-#else
-			for (int ii = 0; ii < 3; ii++)
-			{
-#endif
-				strcat(str, ",\"rgb");
-				sprintf(s, "%d", i);
-				strcat(str, s);
-				sprintf(s, "%d", ii);
-				strcat(str, s);
-				strcat(str, "\":\"");
-				sprintf(s, "%d", G.rgb[i][ii]);
-				strcat(str, s);
-				strcat(str, "\"");
-			}
-		}
-		strcat(str, ",\"hell\":\"");
-		sprintf(s, "%d", G.hell);
-		strcat(str, s);
-		strcat(str, "\",\"geschw\":\"");
-		sprintf(s, "%d", G.geschw);
-		strcat(str, s);
-		strcat(str, "\"}");
-		webSocket.sendTXT(G.client_nr, str, strlen(str));
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-	//------------------------------------------------
-	// Wlan Liste
-	//------------------------------------------------
-	if (G.conf == 302)
-	{
-		String strs = "{\"command\":\"wlan\"";
-		strs += ",\"list\":\"";
-		strs += WiFiScan(true);
-		strs += "\"}";
-		webSocket.sendTXT(G.client_nr, strs);
-		G.conf = 0;
-	}
-	//------------------------------------------------
-
-
-	if (count_delay > 10000) { count_delay = 0; }
-
-}
-//------------------------------------------------------------------------------
-// Ende loop()
-//------------------------------------------------------------------------------
-
-
-int split(int i, int j)
+uint32_t split(uint8_t i, uint8_t j)
 {
 	char dest[3];
-	int m;
-	m = 0;
-	for (int k = i; k < (i + j); k++)
+	uint16_t m = 0;
+	for (uint16_t k = i; k < (i + j); k++)
 	{
 		dest[m] = str[k];
 		m++;
 	}
-	return atoi(dest);
+	return strtol(dest, nullptr, 32);
 }
 
 //------------------------------------------------------------------------------
@@ -956,33 +102,24 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 	int jj;
 	char tmp[30];
 	payload = (payload == NULL) ? (uint8_t *) "" : payload;
-#ifdef DEBUG
 	Serial.printf("Client-Nr.: [%u]  WStype: %u payload: %s\n", num, type, payload);
-#endif
 
 	switch (type)
 	{
 		case WStype_DISCONNECTED:
 		{
-#ifdef DEBUG
 			Serial.printf("[%u] Disconnected!\n", num);
-#endif
 			break;
 		}
 		case WStype_CONNECTED:
 		{
 			IPAddress ip = webSocket.remoteIP(num);
-#ifdef DEBUG
 			Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
-#endif
-
 			break;
 		}
 		case WStype_TEXT:
 		{
-#ifdef DEBUG
 			Serial.printf("[%u] get Text: %s\n", lenght, payload);
-#endif
 			for (unsigned int k = 0; k < lenght; k++)
 			{
 				str[k] = payload[k];  //does this "copy" is buggy code?
@@ -1130,7 +267,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			if (cc == 252)
 			{       // Geschwindigkeit
 #ifdef Grbw
-				G.geschw=split(60,3);
+				G.geschw = split(60,3);
 #else
 				G.geschw = split(48, 3);
 #endif
@@ -1153,9 +290,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 					ii++;
 				}
 				uint32_t tt = atoi(tmp);
-#ifdef DEBUG
 				Serial.printf("Conf: Time: %d\n", tt);
-#endif
 				setTime(tt);
 				break;
 			}
@@ -1232,17 +367,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.h22 = split(27, 3);
 				G.h24 = split(30, 3);
 				break;
-/*
-          int k = 6;
-          for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-              k=k+3;
-              G.rgb1[i][j] = split(k,3);
-              if (G.rgb1[i][j] == -99){ G.rgb1[i][j] = 0; }
-            }
-          }
-          break;
-*/
 			}
 			if (cc == 96)
 			{       // Lauftext speichern
@@ -1329,16 +453,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 		}
 		case WStype_BIN:
 		{
-#ifdef DEBUG
 			Serial.printf("[%u] get binary lenght: %u\n", num, lenght);
-#endif
 			hexdump(payload, lenght);
 			//--echo data back to browser
 			//webSocket.sendBIN(num, payload, lenght);
 			break;
 		}
-        default:
-            break;
+		default:
+			break;
 	}
 }
 
@@ -1350,15 +472,13 @@ String WiFiScan(bool html)
 	// Scan Network
 	//-------------------------------------
 
-	int n = WiFi.scanNetworks();
+	uint8_t n = WiFi.scanNetworks();
 	String htmlwlan, linewlan, cssid;
 	int indices[n], swap, quality;
 
 	if (n == 0)
 	{
-#ifdef DEBUG
 		Serial.println("no networks found");
-#endif
 		if (html == true)
 		{
 			htmlwlan += F("<div>Es wurden keine WLAN Netzwerke gefunden</div>");
@@ -1370,20 +490,18 @@ String WiFiScan(bool html)
 	}
 	else
 	{
-#ifdef DEBUG
 		Serial.print(n);
 		Serial.println(" networks found");
-#endif
 		if (html == true)
 		{
 			//sort networks
-			for (int i = 0; i < n; i++)
+			for (uint8_t i = 0; i < n; i++)
 			{
 				indices[i] = i;
 			}
-			for (int i = 0; i < n; i++)
+			for (uint8_t i = 0; i < n; i++)
 			{
-				for (int j = i + 1; j < n; j++)
+				for (uint8_t j = i + 1; j < n; j++)
 				{
 					if (WiFi.RSSI(indices[j]) > WiFi.RSSI(indices[i]))
 					{
@@ -1394,7 +512,7 @@ String WiFiScan(bool html)
 				}
 			}
 			// remove duplicates ( must be RSSI sorted )
-			for (int i = 0; i < n; i++)
+			for (uint8_t i = 0; i < n; i++)
 			{
 				if (indices[i] == -1) { continue; }
 				cssid = WiFi.SSID(indices[i]);
@@ -1407,10 +525,9 @@ String WiFiScan(bool html)
 				}
 			}
 		}
-		for (int i = 0; i < n; ++i)
+		for (uint8_t i = 0; i < n; ++i)
 		{
 			// Print SSID and RSSI for each network found
-#ifdef DEBUG
 			Serial.print(i + 1);
 			Serial.print(": ");
 			Serial.print(WiFi.SSID(i));
@@ -1418,7 +535,6 @@ String WiFiScan(bool html)
 			Serial.print(WiFi.RSSI(i));
 			Serial.print(")");
 			Serial.println((WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*");
-#endif
 			if (html == true)
 			{
 				if (indices[i] == -1) { continue; } // skip dups
@@ -1463,11 +579,9 @@ String WiFiScan(bool html)
 			}
 		}
 	}
-#ifdef DEBUG
 	wlan_status = WiFi.status();
 	Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
 	Serial.printf("WLAN-SSID vorhanden: %d\n", wlan_ssid);
-#endif
 	return htmlwlan;
 	//-------------------------------------
 }
@@ -1478,12 +592,11 @@ void WiFiStart_Client()
 {
 	unsigned int count = 0;
 	// Connect to WiFi network
-#ifdef DEBUG
 	Serial.println();
 	Serial.print("Connecting to ");
 	Serial.println(G.ssid);
 	Serial.println(G.passwd);
-#endif
+
 	WiFi.disconnect();
 	// WLAN-Mode Clinet stetzen
 	WiFi.mode(WIFI_STA);
@@ -1494,9 +607,7 @@ void WiFiStart_Client()
 		{
 			count++;
 			delay(500);
-#ifdef DEBUG
 			Serial.print(".");
-#endif
 		}
 		else
 		{
@@ -1505,24 +616,16 @@ void WiFiStart_Client()
 	}
 	if (WiFi.status() == WL_CONNECTED)
 	{  // Als Clinet connected
-#ifdef DEBUG
 		Serial.println("");
 		Serial.println("WiFi-Client connected");
 
-		// Print the IP address
-		Serial.println(WiFi.localIP());
-#endif
-
+		char ip_adress[20];
+		sprintf(ip_adress, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
+		Serial.println(ip_adress);
+		Serial.println("");
 		// IP-Adresse als Laufschrift anzeigen
-		if (show_ip == true)
-		{
-            char buf[20];
-            sprintf(buf, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
+		if (show_ip == true){zeigeip(ip_adress);}
 
-            zeigeip(buf);
-		}
-
-		// ---- ENDE Print the IP address
 		wlan_client = true;
 	}
 
@@ -1533,26 +636,22 @@ void WiFiStart_Client()
 void WiFiStart_AP()
 {
 	// WLAN-Mode AccessPoint stetzen
-#ifdef DEBUG
 	Serial.println("");
 	Serial.println("Setup WiFi Access-Point");
-#endif
+
 	WiFi.disconnect();
 	delay(300);
 	WiFi.mode(WIFI_AP);
 	WiFi.softAP(ssid_ap, password_ap);
-	IPAddress myIP = WiFi.softAPIP();
-#ifdef DEBUG
-	Serial.print("AP IP address: ");
-	Serial.println(myIP);
-#endif
-    char buf[20];
-    sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
 
-    zeigeip(buf);
-    delay(200);
+	char buf[20];
+	sprintf(buf, "IP:%d.%d.%d.%d", WiFi.softAPIP()[0], WiFi.softAPIP()[1], WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
+	Serial.print("AccessPoint ");
+	Serial.println(buf);
+	Serial.println("");
+	zeigeip(buf);
+
 	wlan_client = false;
-
 }
 
 //------------------------------------------------------------------------------
@@ -1561,27 +660,22 @@ void WiFiReconnect()
 {
 	// WLAN reconnect
 	wlan_status = WiFi.status();
-#ifdef DEBUG
 	Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
-#endif
 	//WiFi.reconnect();
 	WiFi.disconnect();
 	delay(300);
 	WiFi.mode(WIFI_STA);
 	WiFi.begin((const char *) G.ssid, (const char *) G.passwd);
 	delay(300);
-#ifdef DEBUG
+
 	Serial.printf("WLAN-Restart-Status: %s\n", wstatus[wlan_status]);
-#endif
 }
 
 //------------------------------------------------------------------------------
 
 void WlanStart()
 {
-#ifdef DEBUG
 	Serial.printf("\n-- Begin WlanStart -- \n");
-#endif
 
 	WiFi.disconnect();
 	WiFi.mode(WIFI_STA);
@@ -1601,14 +695,10 @@ void WlanStart()
 	//-------------------------------------
 	if (wlan_client == true)
 	{
-#ifdef DEBUG
 		Serial.println("Start UDP");
-#endif
 		udp.begin(localPort);
-#ifdef DEBUG
 		Serial.print("Local port: ");
 		Serial.println(udp.localPort());
-#endif
 	}
 
 	//-------------------------------------
@@ -1620,9 +710,7 @@ void WlanStart()
 		// Zeit setzen
 		setTime(unix_time);
 	}
-#ifdef DEBUG
 	Serial.printf("-- Ende  WlanStart -- \n\n");
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -1638,7 +726,7 @@ void eeprom_write()
 void eeprom_read()
 {
 	EEPROM_readAnything(0, G);
-#ifdef DEBUG
+
 	Serial.print("Version   : ");
 	Serial.println(VER);
 	Serial.printf("Sernr     : %u\n", G.sernr);
@@ -1678,7 +766,6 @@ void eeprom_read()
 	Serial.print("OWM_city  : ");
 	Serial.println(G.cityid);
 
-#endif
 	delay(100);
 }
 
@@ -1698,7 +785,757 @@ void WiFiEvent(WiFiEvent_t event)
 		case WIFI_EVENT_STAMODE_DISCONNECTED:
 			Serial.println("WiFi lost connection");
 			break;
-        default:
-            break;
+		default:
+			break;
 	}
 }
+
+//------------------------------------------------------------------------------
+// Start setup()
+//------------------------------------------------------------------------------
+
+void setup()
+{
+	//-------------------------------------
+	// Start Serielle Schnittstelle bei Bedarf
+	//-------------------------------------
+#ifdef DEBUG
+	Serial.begin(38400);
+	Serial.println("");
+	Serial.println("--------------------------------------");
+	Serial.println("Begin Setup");
+	Serial.println("--------------------------------------");
+#endif
+
+	//-------------------------------------
+	Serial.println("Starting Telnet server");
+	TelnetServer.begin();
+	TelnetServer.setNoDelay(true);
+
+	//-------------------------------------
+	// EEPROM lesen / initialisieren
+	//-------------------------------------
+	EEPROM.begin(512);
+
+	eeprom_read();
+
+	if (G.sernr != SERNR)
+	{
+		for (int i = 0; i < 512; i++) { EEPROM.write(i, i); }
+		EEPROM.commit();
+
+		G.sernr = SERNR;
+    	strcpy(G.ssid, "Enter_Your_SSID");
+    	strcpy(G.passwd, "Enter_Your_PASSWORD");
+		G.prog = 1;
+		G.param1 = 0;
+		G.param2 = 0;
+		G.prog_init = 1;
+		G.conf = 0;
+		for (int i = 0; i < 4; i++) { for (int ii = 0; ii < 4; ii++) { G.rgb[i][ii] = 0; }}
+		G.rgb[Foreground][2] = 100;
+		G.rgb[SpecialFunction][1] = 100;
+		G.rr = 0;
+		G.gg = 0;
+		G.bb = 0;
+		G.ww = 0;
+		G.hell = 2;
+		G.geschw = 10;
+		G.client_nr = 0;
+		G.zeige_sek = 0;
+		G.zeige_min = 1;
+		G.ldr = 0;
+		G.ldrCal = 0;
+		strcpy(G.cityid, "");
+		strcpy(G.apikey, "");
+		strcpy(G.zeitserver, "ptbtime1.ptb.de");
+		strcpy(G.hostname, "uhr");
+		strcpy(G.ltext, "HELLO WORLD ");
+
+		G.hh = 100;
+		G.h6 = 100;
+		G.h8 = 100;
+		G.h12 = 100;
+		G.h16 = 100;
+		G.h18 = 100;
+		G.h20 = 100;
+		G.h22 = 100;
+		G.h24 = 100;
+
+		eeprom_write();
+		Serial.println("eeprom schreiben");
+	}
+
+		//-------------------------------------
+	Serial.println("--------------------------------------");
+	Serial.println("ESP Uhr");
+	Serial.print("Version         : "), Serial.println(VER);
+	Serial.printf("Chip ID         : %08X\n", ESP.getChipId());
+	Serial.printf("Flash ID        : %08X\n\n", ESP.getFlashChipId());
+	Serial.printf("CPU Speed       : %u MHz \n\n", ESP.getCpuFreqMHz());
+
+	Serial.printf("Flash real Size : %u KByte\n", ESP.getFlashChipRealSize() / 1024);
+	Serial.printf("Flash ide  Size : %u KByte\n", ESP.getFlashChipSize() / 1024);
+	Serial.printf("Flash ide Speed : %u\n\n", ESP.getFlashChipSpeed());
+
+	Serial.printf("Free Heap Size  : %u Byte\n", ESP.getFreeHeap());
+	Serial.printf("Sketch Size     : %u Byte \n", ESP.getSketchSize());
+	Serial.printf("Free Sketch Size: %u Byte \n\n", ESP.getFreeSketchSpace());
+
+	Serial.printf("SDK Version     : %s\n", ESP.getSdkVersion());
+	Serial.print("RESET Info      : ");
+	Serial.println(ESP.getResetInfo());
+	Serial.print("COMPILED        : ");
+	Serial.print(__DATE__);
+	Serial.print(" ");
+	Serial.println(__TIME__);
+
+	//-------------------------------------
+	// LEDs initialisieren
+	//-------------------------------------
+#ifdef Grbw
+	Serial.println("SK6812 LED Init");
+#else
+	Serial.println("WS2812 LED Init");
+#endif
+	strip.Begin();
+	led_single(20);
+	led_clear();
+	led_show();
+
+	G.conf = 0;
+	//-------------------------------------
+
+	//-------------------------------------
+	// Start WiFi
+	//-------------------------------------
+	WlanStart();
+
+	//-------------------------------------
+
+
+	//-------------------------------------
+	// Zeit setzen
+	//-------------------------------------
+	utc = now();    //current time from the Time Library
+	ltime = tzc.toLocal(utc, &tcr);
+	_sekunde = second(ltime);
+	_minute = minute(ltime);
+	_stunde = hour(ltime);
+#ifdef UHR_169
+	_sekunde48 = _sekunde * 48 / 60;
+#endif
+	show_zeit(1);
+#ifdef UHR_169
+	if (G.zeige_sek <1 && G.zeige_min < 2){
+	  set_farbe_rahmen();
+	}
+#endif
+	//-------------------------------------
+
+
+	//-------------------------------------
+	// mDNS--
+	//-------------------------------------
+	MDNS.begin((const char *) G.hostname);
+	MDNS.addService("http", "tcp", 80);
+	MDNS.addService("http", "tcp", 81);
+	//-------------------------------------
+
+
+	//-------------------------------------
+	// OTA--
+	//-------------------------------------
+	httpUpdater.setup(&httpServer);
+	httpServer.begin();
+	//-------------------------------------
+
+
+	//-------------------------------------
+	// Start Websocket
+	//-------------------------------------
+	webSocket.begin();
+	webSocket.onEvent(webSocketEvent);
+
+	Serial.println("Websockest started");
+	Serial.println("--------------------------------------");
+	Serial.println("Ende Setup");
+	Serial.println("--------------------------------------");
+	Serial.println("");
+}
+//------------------------------------------------------------------------------
+// Ende setup()
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// Start loop()
+//------------------------------------------------------------------------------
+
+void loop()
+{
+	unsigned long currentMillis = millis();
+	count_millis += currentMillis - previousMillis;
+	count_delay += currentMillis - previousMillis;
+#ifdef UHR_169
+	count_millis48 += currentMillis - previousMillis;
+#endif
+	previousMillis = currentMillis;
+	if (count_millis >= interval)
+	{
+		count_millis = 0;
+		utc = now();    //current time from the Time Library
+		ltime = tzc.toLocal(utc, &tcr);
+		_sekunde = second(ltime);
+		_minute = minute(ltime);
+		_stunde = hour(ltime);
+		count_tag++;
+		// Wetteruhr
+#ifdef UHR_242
+		weather_tag++;
+#endif
+
+	}
+#ifdef UHR_169
+	if (count_millis48 >= interval48) {
+	  count_millis48 = 0;
+	  _sekunde48++;
+	  if (_sekunde48 >47){ _sekunde48 = 0; }
+	}
+#endif
+
+	//------------------------------------------------
+	Telnet();  // Handle telnet connections
+
+	//------------------------------------------------
+	//--OTA--
+	//------------------------------------------------
+	//  if (G.prog == 0 && G.conf == 0) {
+	httpServer.handleClient();
+	//  }
+	//------------------------------------------------
+
+	webSocket.loop();
+
+	//------------------------------------------------
+	// Sekunde48
+	//------------------------------------------------
+#ifdef UHR_169
+	if (last_sekunde48 != _sekunde48) {
+	  if (G.prog == 0 && G.conf == 0) {
+		if (G.zeige_sek == 1 || G.zeige_min == 2){
+		  rahmen_clear();
+		}
+		if (G.zeige_sek > 0){
+		  show_sekunde();
+		}
+		led_show();
+	  }
+	  last_sekunde48 = _sekunde48;
+	}
+#endif
+
+	//------------------------------------------------
+	// Sekunde und LDR Regelung
+	//------------------------------------------------
+	if (last_sekunde != _sekunde)
+	{
+
+		//--- LDR Regelung
+		//
+		if (G.ldr == 1)
+		{
+			doLDRLogic();
+		}
+		//--- LDR Regelung
+
+		if (G.prog == 0 && G.conf == 0)
+		{
+			show_zeit(0); // Anzeige Uhrzeit ohne Config
+		}
+		last_sekunde = _sekunde;
+
+#ifdef UHR_242
+		if ((_sekunde == 30) | (_sekunde == 0))  {
+			wetterswitch ++;
+			if (wetterswitch > 4) {
+			wetterswitch = 1;
+			}
+			  Serial.print("Wetterswitch: ");
+			  Serial.println(wetterswitch);
+			  Serial.print("WStunde: ");
+			  Serial.println(wstunde);
+		  }
+#endif
+	}
+
+	//------------------------------------------------
+	// Minute
+	//------------------------------------------------
+	if (last_minute != _minute)
+	{
+		Serial.println(">>>> Begin Minute <<<<");
+		TelnetMsg(">>>> Begin Minute <<<<");
+
+		if (G.prog == 0 && G.conf == 0)
+		{
+			show_zeit(1); // Anzeige Uhrzeit mit Config
+		}
+
+		// WLAN reconnect
+		wlan_status = WiFi.status();
+		Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
+		TelnetMsg("WLAN-Status: ");
+		TelnetMsg(wstatus[wlan_status]);
+
+		_sekunde48 = 0;
+		last_minute = _minute;
+
+		Serial.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
+		Serial.println(">>>> Ende  Minute <<<<");
+		TelnetMsg(">>>> Ende  Minute <<<<");
+	}
+
+	//------------------------------------------------
+	// Stunde
+	//------------------------------------------------
+	if (last_stunde != _stunde)
+	{
+		Serial.println(">>>> Begin Stunde <<<<");
+		TelnetMsg(">>>> Begin Stunde <<<<");
+		// WLAN testen
+		wlan_status = WiFi.status();
+		Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
+		TelnetMsg("WLAN-Status: ");
+		TelnetMsg(wstatus[wlan_status]);
+		if (wlan_client == false && wlan_ssid == true)
+		{
+			WlanStart();
+		}
+
+		last_stunde = _stunde;
+		Serial.println(">>>> Ende  Stunde <<<<");
+		TelnetMsg(">>>> Ende  Stunde <<<<");
+	}
+
+	//------------------------------------------------
+	// Tag
+	//------------------------------------------------
+	if (count_tag >= 86400)
+	{
+		count_tag = 0;
+		ntp_flag = true;
+	}
+
+	//------------------------------------------------
+	// Wetterdaten abrufen
+	//------------------------------------------------
+#ifdef UHR_242
+	if (weather_tag >= 600) {
+	  weather_tag = 0;
+	  if (WiFi.status() == WL_CONNECTED)
+       {
+		getweather();
+          }
+	}
+#endif
+
+	//------------------------------------------------
+	// NTP Zeit neu holen
+	//------------------------------------------------
+	if (ntp_flag == true)
+	{
+		Serial.println("npt: Neue Zeit holen");
+		TelnetMsg("npt: Neue Zeit holen");
+		ntp_flag = false;
+		wlan_status = WiFi.status();
+		if (wlan_status == 3)
+		{
+			set_ntp_zeit();
+			if (unix_time > 0)
+			{
+				setTime(unix_time);
+				Serial.println(unix_time);
+				utc = now();    //current time from the Time Library
+				ltime = tzc.toLocal(utc, &tcr);
+				Serial.print(hour(ltime));
+				Serial.print(":");
+				Serial.print(minute(ltime));
+				Serial.print(":");
+				Serial.print(second(ltime));
+				Serial.print(" - ");
+				Serial.print(day(ltime));
+				Serial.print(".");
+				Serial.print(month(ltime));
+				Serial.print(".");
+				Serial.println(year(ltime));
+			}
+		}
+	}
+
+	//------------------------------------------------
+	// Farbe Uhr / Hintergrund / Rahmen einstellen
+	//------------------------------------------------
+	if (G.prog == 1)
+	{
+		//uhr_clear();;
+		show_zeit(0); // Anzeige Uhrzeit ohne Config
+#ifdef UHR_169
+		if (G.zeige_sek <1 && G.zeige_min < 2){
+		  set_farbe_rahmen();
+		}
+#endif
+		G.prog = 0;
+	}
+
+	//------------------------------------------------
+	// Uhrzeit setzen
+	//------------------------------------------------
+	if (G.conf == 30)
+	{
+		utc = now();    //current time from the Time Library
+		ltime = tzc.toLocal(utc, &tcr);
+		_sekunde = second(ltime);
+		_minute = minute(ltime);
+		_stunde = hour(ltime);
+#ifdef UHR_169
+		_sekunde48 = _sekunde * 48 / 60;
+#endif
+		show_zeit(1); // Anzeige Uhrzeit mit Config
+		eeprom_write();
+		delay(100);
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// Startwerte speichern
+	//------------------------------------------------
+	if (G.conf == 20)
+	{
+		Serial.println("Startwerte gespeichert");
+		Serial.println(G.rgb[Foreground][0]);
+		Serial.println(G.rgb[Foreground][1]);
+		Serial.println(G.rgb[Foreground][2]);
+		Serial.println(G.rgb[Foreground][3]);
+		eeprom_write();
+		delay(100);
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// Helligkeit speichern
+	//------------------------------------------------
+	if (G.conf == 95)
+	{
+		show_zeit(1); // Anzeige Uhrzeit mit Config
+		eeprom_write();
+		delay(100);
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// Anzeige Minuten speichern
+	//------------------------------------------------
+	if (G.conf == 94)
+	{
+		show_zeit(1); // Anzeige Uhrzeit mit Config
+		eeprom_write();
+		delay(100);
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// LDR Einstellung speichern
+	//------------------------------------------------
+	if (G.conf == 91)
+	{
+		eeprom_write();
+		delay(100);
+		Serial.printf("LDR : %u\n\n", G.ldr);
+		Serial.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// OpenWeathermap Einstellung speichern
+	//------------------------------------------------
+	if (G.conf == 90)
+	{
+		Serial.println("write EEPROM!");
+		Serial.print("CityID : ");
+		Serial.println(G.cityid);
+		Serial.print("APIkey : ");
+		Serial.println(G.apikey);
+		eeprom_write();
+		delay(100);
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// Hostname speichern
+	//------------------------------------------------
+	if (G.conf == 92)
+	{
+		eeprom_write();
+		delay(100);
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// Anzeige Sekunde speichern
+	//------------------------------------------------
+	if (G.conf == 93)
+	{
+		show_zeit(1); // Anzeige Uhrzeit mit Config
+		eeprom_write();
+		delay(100);
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// Lauftext speichern
+	//------------------------------------------------
+	if (G.conf == 96)
+	{
+		eeprom_write();
+		delay(100);
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// Zeitserver speichern
+	//------------------------------------------------
+	if (G.conf == 97)
+	{
+		eeprom_write();
+		delay(100);
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// WLAN-Daten speichern und neu starten
+	//------------------------------------------------
+	if (G.conf == 99)
+	{
+		eeprom_write();
+		delay(1000);
+		Serial.println("Conf: WLAN neu konfiguriert");
+		WlanStart();
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// Sekunden
+	//------------------------------------------------
+	if (G.prog == 200)
+	{
+		if (G.prog_init == 1)
+		{
+			led_clear();
+			G.prog_init = 0;
+		}
+		char d1[5];
+		char d2[5];
+		sprintf(d1, "%d", (int) (_sekunde / 10));
+		sprintf(d2, "%d", (int) (_sekunde % 10));
+		zahlen(d1[0], d2[0]);
+	}
+
+	//------------------------------------------------
+	// Laufschrift
+	//------------------------------------------------
+	if (G.prog == 201)
+	{
+		if (G.prog_init == 1)
+		{
+			G.prog_init = 0;
+			led_clear();
+			count_delay = (G.geschw + 1) * 20;
+		}
+		if (count_delay >= (G.geschw + 1u) * 20u)
+		{
+			laufschrift(G.ltext);
+			count_delay = 0;
+		}
+	}
+
+	//------------------------------------------------
+	// Regenbogen
+	//------------------------------------------------
+	if (G.prog == 202)
+	{
+		if (G.prog_init == 1)
+		{
+			G.prog_init = 0;
+			uhr_clear();
+			count_delay = G.geschw * 7 + 1;
+		}
+		if (count_delay >= G.geschw * 7u + 1u)
+		{
+			rainbowCycle();
+			count_delay = 0;
+		}
+	}
+
+	//------------------------------------------------
+	// Farbwechsel
+	//------------------------------------------------
+	if (G.prog == 203)
+	{
+		if (G.prog_init == 1)
+		{
+			G.prog_init = 0;
+			led_clear();
+			count_delay = G.geschw * 7 + 1;
+		}
+		if (count_delay >= G.geschw * 7u + 1u)
+		{
+			rainbow();
+			count_delay = 0;
+		}
+
+	}
+
+	//------------------------------------------------
+	// Farbe Rahmen
+	//------------------------------------------------
+
+	if (G.prog == 204)
+	{
+		if (G.prog_init == 1)
+		{
+			G.prog_init = 0;
+			set_farbe();
+			led_show();
+		}
+
+	}
+
+	//------------------------------------------------
+	// Reset
+	//------------------------------------------------
+	if (G.conf == 100)
+	{
+		delay(1000);
+		ESP.reset();
+		ESP.restart();
+		while (true) {}
+	}
+
+	//------------------------------------------------
+	// Config Senden
+	//------------------------------------------------
+	if (G.conf == 300)
+	{
+		strcpy(str, R"({"command":"config")");
+		strcat(str, ",\"ssid\":");
+		strcat(str, "\"");
+		strcat(str, G.ssid);
+		strcat(str, R"(","zeitserver":")");
+		strcat(str, G.zeitserver);
+		strcat(str, R"(","hostname":")");
+		strcat(str, G.hostname);
+		strcat(str, R"(","ltext":")");
+		strcat(str, G.ltext);
+		strcat(str, R"(","h6":")");
+		sprintf(s, "%d", G.h6);
+		strcat(str, s);
+		strcat(str, R"(","h8":")");
+		sprintf(s, "%d", G.h8);
+		strcat(str, s);
+		strcat(str, R"(","h12":")");
+		sprintf(s, "%d", G.h12);
+		strcat(str, s);
+		strcat(str, R"(","h16":")");
+		sprintf(s, "%d", G.h16);
+		strcat(str, s);
+		strcat(str, R"(","h18":")");
+		sprintf(s, "%d", G.h18);
+		strcat(str, s);
+		strcat(str, R"(","h20":")");
+		sprintf(s, "%d", G.h20);
+		strcat(str, s);
+		strcat(str, R"(","h22":")");
+		sprintf(s, "%d", G.h22);
+		strcat(str, s);
+		strcat(str, R"(","h24":")");
+		sprintf(s, "%d", G.h24);
+		strcat(str, s);
+		strcat(str, R"(","hell":")");
+		sprintf(s, "%d", G.hell);
+		strcat(str, s);
+		strcat(str, R"(","zeige_sek":")");
+		sprintf(s, "%d", G.zeige_sek);
+		strcat(str, s);
+		strcat(str, R"(","zeige_min":")");
+		sprintf(s, "%d", G.zeige_min);
+		strcat(str, s);
+		strcat(str, R"(","ldr":")");
+		sprintf(s, "%d", G.ldr);
+		strcat(str, s);
+		strcat(str, R"(","ldrCal":")");
+		sprintf(s, "%d", G.ldrCal);
+		strcat(str, s);
+		strcat(str, R"(","cityid":")");
+		strcat(str, G.cityid);
+		strcat(str, R"(","apikey":")");
+		strcat(str, G.apikey);
+		strcat(str, "\"}");
+		webSocket.sendTXT(G.client_nr, str, strlen(str));
+		G.conf = 0;
+	}
+
+	//------------------------------------------------
+	// conf Farbwerte senden
+	//------------------------------------------------
+	if (G.conf == 301)
+	{
+		strcpy(str, R"({"command":"set")");
+		for (uint8_t i = 0; i < 4; i++)
+		{
+#ifdef Grbw
+			for(uint8_t ii = 0; ii < 4; ii++ ){
+#else
+			for(uint8_t ii = 0; ii < 3; ii++){
+#endif
+				strcat(str, ",\"rgb");
+				sprintf(s, "%d", i);
+				strcat(str, s);
+				sprintf(s, "%d", ii);
+				strcat(str, s);
+				strcat(str, "\":\"");
+				sprintf(s, "%d", G.rgb[i][ii]);
+				strcat(str, s);
+				strcat(str, "\"");
+			}
+		}
+		strcat(str, R"(,"hell":")");
+		sprintf(s, "%d", G.hell);
+		strcat(str, s);
+		strcat(str, R"(","geschw":")");
+		sprintf(s, "%d", G.geschw);
+		strcat(str, s);
+		strcat(str, "\"}");
+		webSocket.sendTXT(G.client_nr, str, strlen(str));
+		G.conf = 0;
+	}
+	//------------------------------------------------
+
+	//------------------------------------------------
+	// Wlan Liste
+	//------------------------------------------------
+	if (G.conf == 302)
+	{
+		String strs = R"({"command":"wlan")";
+		strs += R"(,"list":")";
+		strs += WiFiScan(true);
+		strs += "\"}";
+		webSocket.sendTXT(G.client_nr, strs);
+		G.conf = 0;
+	}
+	//------------------------------------------------
+
+	if (count_delay > 10000) { count_delay = 0; }
+}
+//------------------------------------------------------------------------------
+// Ende loop()
+//------------------------------------------------------------------------------
