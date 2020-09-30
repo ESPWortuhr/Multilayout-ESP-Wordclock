@@ -1,5 +1,5 @@
 #include <Arduino.h>
-//#include "Uhr.h"
+#include "Uhr.h"
 
 //------------------------------------------------------------------------------
 // Telnet Server für Konsolen Ausgaben
@@ -155,24 +155,24 @@ static void led_set(uint16_t i)
 
 //------------------------------------------------------------------------------
 
-#ifdef UHR_114_Fraenkisch
-#include "uhr_func_114_Fraenkisch.h"
+#ifdef UHR_114_Alternative
+#include "uhr_func_114_Alternative.hpp"
 #endif
 
 #ifdef UHR_114
-#include "uhr_func_114.h"
+#include "uhr_func_114.hpp"
 #endif
 
 #ifdef UHR_125
-#include "uhr_func_125.h"
+#include "uhr_func_125.hpp"
 #endif
 
 #ifdef UHR_169
-#include "uhr_func_169.h"
+#include "uhr_func_169.hpp"
 #endif
 
 #ifdef UHR_242
-#include "uhr_func_242.h"
+#include "uhr_func_242.hpp"
 #endif
 
 //------------------------------------------------------------------------------

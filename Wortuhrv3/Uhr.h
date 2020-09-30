@@ -4,7 +4,26 @@ const char* VER = "2.2.2";  // Software Version
 
 #pragma once
 
-#define UHR_Type UHR_114_Alternative
+#ifdef UHR_114_Alternative
+#define UHR_Type UHR_114_Alternative_t
+#endif
+
+#ifdef UHR_114
+#define UHR_Type UHR_114_t
+#endif
+
+#ifdef UHR_125
+#define UHR_Type UHR_125_t
+#endif
+
+#ifdef UHR_169
+#define UHR_Type UHR_169_t
+#endif
+
+#ifdef UHR_242
+#define UHR_Type UHR_242_t
+#endif
+
 
 #ifdef Grb
 	#define LED_STRIPE_TYP   NeoGrbFeature
@@ -108,35 +127,35 @@ int wstunde;
 int wetterswitch;
 #endif
 
-struct UHR_114_Alternative{
+struct UHR_114_Alternative_t{
 	uint8_t NUM_PIXELS = 114;
 	uint8_t NUM_SMATRIX = 114;
 	uint8_t ROWS_MATRIX = 11;
 	uint8_t NUM_RMATRIX = 0;
 };
 
-struct UHR_114{
+struct UHR_114_t{
 	uint8_t NUM_PIXELS = 114;
 	uint8_t NUM_SMATRIX = 114;
 	uint8_t ROWS_MATRIX = 11;
 	uint8_t NUM_RMATRIX = 0;
 };
 
-struct UHR_125{
+struct UHR_125_t{
 	uint8_t NUM_PIXELS = 125;
 	uint8_t NUM_SMATRIX = 125;
 	uint8_t ROWS_MATRIX = 12;
 	uint8_t NUM_RMATRIX = 0;
 };
 
-struct UHR_169{
+struct UHR_169_t{
 	uint8_t NUM_PIXELS = 169;
 	uint8_t NUM_SMATRIX = 121;
 	uint8_t ROWS_MATRIX = 11;
 	uint8_t NUM_RMATRIX = 48;
 };
 
-struct UHR_242{
+struct UHR_242_t{
 	uint8_t NUM_PIXELS = 242;
 	uint8_t NUM_SMATRIX = 242;
 	uint8_t ROWS_MATRIX = 22;
@@ -209,9 +228,7 @@ enum ledPositions{
 int dim[20] = {30,50,70,90,110,130,140,160,200,255,255,200,160,100,80,60,40,20,10,0};
 int diff[20]= {-30,-20,-20,-20,-20,-20,-10,-20,-40,-55,0,55,40,60,20,20,20,20,10,10};
 
-const uint8_t PixelPin = 2;  // Led Stripe Data Port
-
-NeoPixelBus<LED_STRIPE_TYP, NeoEsp8266Dma800KbpsMethod> strip(Uhrtype.NUM_PIXELS, PixelPin);
+NeoPixelBus<LED_STRIPE_TYP, NeoEsp8266Dma800KbpsMethod> strip(114, 2 /* LED Data PIN, FIX durch die Liebary für den ESP8266 */);
 
 //-- WebSocketserver
 WebPage_Adapter webSocket = WebPage_Adapter(80);

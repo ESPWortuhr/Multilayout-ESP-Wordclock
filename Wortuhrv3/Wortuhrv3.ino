@@ -2,19 +2,22 @@
  * Hier wird definiert, welche Anzahl von LED's bzw. Reihen verwendet werden
  */
 //#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-#define UHR_114_Fraenkisch          // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
+//#define UHR_114_Alternative         // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
 //#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 //#define UHR_169                     // Uhr mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
-//#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
+#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
 
-#define SERNR 233             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+#define SERNR 100             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 
 // Wenn die Farben nicht passen können sie hier angepasst werden:
 //#define Brg   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
-//#define Grb      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
+#define Grb      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
 //#define Rgb    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rgb
 //#define Rbg    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
-#define Grbw   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
+//#define Grbw   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
+
+bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
+bool show_ip = true;      // Zeige IP Adresse beim Start
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
  *--------------------------------------------------------------------------
@@ -61,13 +64,7 @@ char wstatus[7][25] = {
 #include "WebPage_Adapter.h"
 #include "font.h"
 
-#define DEBUG                 //DEBUG ON|OFF wenn auskommentiert
-bool show_ip = false;      // Zeige IP Adresse beim Start 
-
-extern "C" {
-#include "uhr_func.h"
-};
-
+#include "uhr_func.hpp"
 #include "ntp_func.h"
 
 //--OpenWeatherMapOrg
@@ -132,25 +129,25 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			{        // Uhrzeit Vordergrund Farbe einstellen
 				G.prog = 1;
 #ifdef Grbw
-				G.rgb[Foreground][0] = split(9,3);
-				G.rgb[Foreground][1] = split(12,3);
-				G.rgb[Foreground][2] = split(15,3);
-				G.rgb[Foreground][3] = split(18,3);
+				G.rgb[Foreground][0] = split(9, 3);
+				G.rgb[Foreground][1] = split(12, 3);
+				G.rgb[Foreground][2] = split(15, 3);
+				G.rgb[Foreground][3] = split(18, 3);
 
-				G.rgb[Background][0] = split(21,3);
-				G.rgb[Background][1] = split(24,3);
-				G.rgb[Background][2] = split(27,3);
-				G.rgb[Background][3] = split(30,3);
+				G.rgb[Background][0] = split(21, 3);
+				G.rgb[Background][1] = split(24, 3);
+				G.rgb[Background][2] = split(27, 3);
+				G.rgb[Background][3] = split(30, 3);
 
-				G.rgb[Frame][0] = split(33,3);
-				G.rgb[Frame][1] = split(36,3);
-				G.rgb[Frame][2] = split(39,3);
-				G.rgb[Frame][3] = split(42,3);
+				G.rgb[Frame][0] = split(33, 3);
+				G.rgb[Frame][1] = split(36, 3);
+				G.rgb[Frame][2] = split(39, 3);
+				G.rgb[Frame][3] = split(42, 3);
 
-				G.rgb[SpecialFunction][0] = split(45,3);
-				G.rgb[SpecialFunction][1] = split(48,3);
-				G.rgb[SpecialFunction][2] = split(51,3);
-				G.rgb[SpecialFunction][3] = split(54,3);
+				G.rgb[SpecialFunction][0] = split(45, 3);
+				G.rgb[SpecialFunction][1] = split(48, 3);
+				G.rgb[SpecialFunction][2] = split(51, 3);
+				G.rgb[SpecialFunction][3] = split(54, 3);
 #else
 				G.rgb[Foreground][0] = split(9, 3);
 				G.rgb[Foreground][1] = split(12, 3);
@@ -176,12 +173,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 200;
 				if (G.param1 == 0) { G.prog_init = 1; }
 #ifdef Grbw
-				G.rgb[SpecialFunction][0] = split(45,3);
-				G.rgb[SpecialFunction][1] = split(48,3);
-				G.rgb[SpecialFunction][2] = split(51,3);
-				G.rgb[SpecialFunction][3] = split(54,3);
-				G.hell=split(57,3);
-				G.geschw=split(60,3);
+				G.rgb[SpecialFunction][0] = split(45, 3);
+				G.rgb[SpecialFunction][1] = split(48, 3);
+				G.rgb[SpecialFunction][2] = split(51, 3);
+				G.rgb[SpecialFunction][3] = split(54, 3);
+				G.hell = split(57, 3);
+				G.geschw = split(60, 3);
 #else
 				G.rgb[SpecialFunction][0] = split(36, 3);
 				G.rgb[SpecialFunction][1] = split(39, 3);
@@ -197,12 +194,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 201;
 				if (G.param1 == 0) { G.prog_init = 1; }
 #ifdef Grbw
-				G.rgb[SpecialFunction][0] = split(45,3);
-				G.rgb[SpecialFunction][1] = split(48,3);
-				G.rgb[SpecialFunction][2] = split(51,3);
-				G.rgb[SpecialFunction][3] = split(54,3);
-				G.hell=split(57,3);
-				G.geschw=split(60,3);
+				G.rgb[SpecialFunction][0] = split(45, 3);
+				G.rgb[SpecialFunction][1] = split(48, 3);
+				G.rgb[SpecialFunction][2] = split(51, 3);
+				G.rgb[SpecialFunction][3] = split(54, 3);
+				G.hell = split(57, 3);
+				G.geschw = split(60, 3);
 #else
 				G.rgb[SpecialFunction][0] = split(36, 3);
 				G.rgb[SpecialFunction][1] = split(39, 3);
@@ -217,8 +214,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 202;
 				G.prog_init = 1;
 #ifdef Grbw
-				G.hell=split(57,3);
-				G.geschw=split(60,3);
+				G.hell = split(57, 3);
+				G.geschw = split(60, 3);
 #else
 				G.hell = split(45, 3);
 				G.geschw = split(48, 3);
@@ -230,8 +227,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 203;
 				G.prog_init = 1;
 #ifdef Grbw
-				G.hell=split(57,3);
-				G.geschw=split(60,3);
+				G.hell = split(57, 3);
+				G.geschw = split(60, 3);
 #else
 				G.hell = split(45, 3);
 				G.geschw = split(48, 3);
@@ -243,10 +240,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.prog = 204;
 				G.prog_init = 1;
 #ifdef Grbw
-				G.rgb[SpecialFunction][0] = split(45,3);
-				G.rgb[SpecialFunction][1] = split(48,3);
-				G.rgb[SpecialFunction][2] = split(51,3);
-				G.rgb[SpecialFunction][3] = split(54,3);
+				G.rgb[SpecialFunction][0] = split(45, 3);
+				G.rgb[SpecialFunction][1] = split(48, 3);
+				G.rgb[SpecialFunction][2] = split(51, 3);
+				G.rgb[SpecialFunction][3] = split(54, 3);
 #else
 				G.rgb[SpecialFunction][0] = split(36, 3);
 				G.rgb[SpecialFunction][1] = split(39, 3);
@@ -258,7 +255,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			if (cc == 251)
 			{      // Helligkeit
 #ifdef Grbw
-				G.hell=split(57,3);
+				G.hell = split(57, 3);
 #else
 				G.hell = split(45, 3);
 #endif
@@ -267,7 +264,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			if (cc == 252)
 			{       // Geschwindigkeit
 #ifdef Grbw
-				G.geschw = split(60,3);
+				G.geschw = split(60, 3);
 #else
 				G.geschw = split(48, 3);
 #endif
@@ -624,7 +621,7 @@ void WiFiStart_Client()
 		Serial.println(ip_adress);
 		Serial.println("");
 		// IP-Adresse als Laufschrift anzeigen
-		if (show_ip == true){zeigeip(ip_adress);}
+		if (show_ip == true) { zeigeip(ip_adress); }
 
 		wlan_client = true;
 	}
@@ -797,22 +794,6 @@ void WiFiEvent(WiFiEvent_t event)
 void setup()
 {
 	//-------------------------------------
-	// Start Serielle Schnittstelle bei Bedarf
-	//-------------------------------------
-#ifdef DEBUG
-	Serial.begin(38400);
-	Serial.println("");
-	Serial.println("--------------------------------------");
-	Serial.println("Begin Setup");
-	Serial.println("--------------------------------------");
-#endif
-
-	//-------------------------------------
-	Serial.println("Starting Telnet server");
-	TelnetServer.begin();
-	TelnetServer.setNoDelay(true);
-
-	//-------------------------------------
 	// EEPROM lesen / initialisieren
 	//-------------------------------------
 	EEPROM.begin(512);
@@ -825,8 +806,8 @@ void setup()
 		EEPROM.commit();
 
 		G.sernr = SERNR;
-    	strcpy(G.ssid, "Enter_Your_SSID");
-    	strcpy(G.passwd, "Enter_Your_PASSWORD");
+		strcpy(G.ssid, "Enter_Your_SSID");
+		strcpy(G.passwd, "Enter_Your_PASSWORD");
 		G.prog = 1;
 		G.param1 = 0;
 		G.param2 = 0;
@@ -865,8 +846,25 @@ void setup()
 		eeprom_write();
 		Serial.println("eeprom schreiben");
 	}
+	//-------------------------------------
+	// Start Serielle Schnittstelle bei Bedarf
+	//-------------------------------------
+	if (DEBUG == true)
+	{
+		Serial.begin(38400);
+		Serial.println("");
+		Serial.println("--------------------------------------");
+		Serial.println("Begin Setup");
+		Serial.println("--------------------------------------");
+	}
 
-		//-------------------------------------
+	//-------------------------------------
+	Serial.println("Starting Telnet server");
+	TelnetServer.begin();
+	TelnetServer.setNoDelay(true);
+
+
+	//-------------------------------------
 	Serial.println("--------------------------------------");
 	Serial.println("ESP Uhr");
 	Serial.print("Version         : "), Serial.println(VER);
@@ -963,9 +961,6 @@ void setup()
 	Serial.println("--------------------------------------");
 	Serial.println("");
 }
-//------------------------------------------------------------------------------
-// Ende setup()
-//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 // Start loop()
@@ -1133,9 +1128,9 @@ void loop()
 	if (weather_tag >= 600) {
 	  weather_tag = 0;
 	  if (WiFi.status() == WL_CONNECTED)
-       {
+	   {
 		getweather();
-          }
+		  }
 	}
 #endif
 
@@ -1493,9 +1488,10 @@ void loop()
 		for (uint8_t i = 0; i < 4; i++)
 		{
 #ifdef Grbw
-			for(uint8_t ii = 0; ii < 4; ii++ ){
+			for (uint8_t ii = 0; ii < 4; ii++)
+			{
 #else
-			for(uint8_t ii = 0; ii < 3; ii++){
+				for(uint8_t ii = 0; ii < 3; ii++){
 #endif
 				strcat(str, ",\"rgb");
 				sprintf(s, "%d", i);
@@ -1536,6 +1532,3 @@ void loop()
 
 	if (count_delay > 10000) { count_delay = 0; }
 }
-//------------------------------------------------------------------------------
-// Ende loop()
-//------------------------------------------------------------------------------
