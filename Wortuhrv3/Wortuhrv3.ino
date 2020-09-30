@@ -19,8 +19,8 @@
 #define RTC_Type RTC_DS3231    	// External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
 
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
-bool show_ip = true;      // Zeige IP Adresse beim Start
-unsigned int NTP_port = 1337;  // Standartport für den NTP Server
+bool show_ip = false;      // Zeige IP Adresse beim Start
+unsigned int NTP_port = 123;  // Standartport für den NTP Server
 const char *NtpServerName = "europe.pool.ntp.org";  // NTP Zeitserver
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
@@ -88,20 +88,21 @@ WiFiUDP ntpUDP;
 	RTC_Type RTC;
 #endif
 
-NTPClient timeClient(ntpUDP, NtpServerName);
+NTPClient timeClient(ntpUDP);
 
 bool externalRTC = false;
 
 uint32_t split(uint8_t i, uint8_t j)
 {
 	char dest[3];
-	uint16_t m = 0;
-	for (uint16_t k = i; k < (i + j); k++)
-	{
-		dest[m] = str[k];
-		m++;
-	}
-	return strtol(dest, nullptr, 32);
+  int m;
+  m = 0;
+  for (int k = i; k < (i + j); k++)
+  {
+    dest[m] = str[k];
+    m++;
+  }
+  return atoi(dest);
 }
 
 //------------------------------------------------------------------------------
@@ -701,35 +702,24 @@ void WlanStart()
 	//-------------------------------------
 	if (wlan_client == true)
 	{
-		timeClient.begin(NTP_port);
+		timeClient.begin();
+    delay(100);
+    timeClient.update();
+    delay(100);
+    Serial.println(timeClient.getFormattedTime());
+
 		unix_time = timeClient.getEpochTime();
-		if(externalRTC == true){
-			RTC.adjust(DateTime(unix_time));
-      Serial.println("Updated Time on RTC");
-      ltime = tzc.toLocal(unix_time, &tcr);
-        Serial.print(hour(ltime));
-        Serial.print(":");
-        Serial.print(minute(ltime));
-        Serial.print(":");
-        Serial.print(second(ltime));
-        Serial.print(" - ");
-        Serial.print(day(ltime));
-        Serial.print(".");
-        Serial.print(month(ltime));
-        Serial.print(".");
-        Serial.println(year(ltime));
-		}
+		if(externalRTC == true){RTC.adjust(DateTime(unix_time));}
 	}
 	else if (wlan_client == false)
 	{
 		if(externalRTC == true){
 			unix_time = RTC.now().unixtime();
 		}
-		setTime(unix_time);
     WiFiStart_AP();
 	}
 	// Zeit setzen
-
+  setTime(unix_time);
 	Serial.printf("-- Ende  WlanStart -- \n\n");
 }
 
@@ -829,8 +819,8 @@ void setup()
 		EEPROM.commit();
 
 		G.sernr = SERNR;
-		strcpy(G.ssid, "Enter_Your_SSID");
-		strcpy(G.passwd, "Enter_Your_PASSWORD");
+    strcpy(G.ssid, "Enter_Your_SSID");
+    strcpy(G.passwd, "Enter_Your_PASSWORD");
 		G.prog = 1;
 		G.param1 = 0;
 		G.param2 = 0;
