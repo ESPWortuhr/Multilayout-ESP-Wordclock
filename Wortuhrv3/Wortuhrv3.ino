@@ -16,6 +16,8 @@
 //#define Rbg    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
 //#define Grbw   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
 
+//#define RTC_Type RTC_DS3231    	// External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
+
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 bool show_ip = true;      // Zeige IP Adresse beim Start
 unsigned int NTP_port = 1337;  // Standartport für den NTP Server
@@ -60,6 +62,9 @@ char wstatus[7][25] = {
 #include <Hash.h>
 #include <TimeLib.h>
 #include <Timezone.h>
+#include <Wire.h>
+#include <RTClib.h>
+
 #include "EEPROMAnything.h"
 #include "WebPage_Adapter.h"
 #include "Uhr.h"
@@ -77,7 +82,15 @@ time_t ltime, utc;
 TimeChangeRule *tcr;
 WiFiUDP ntpUDP;
 
+#ifndef RTC_Type
+	RTC_DS3231 RTC;
+#else
+	RTC_Type RTC;
+#endif
+
 NTPClient timeClient(ntpUDP, NtpServerName);
+
+bool externalRTC = false;
 
 uint32_t split(uint8_t i, uint8_t j)
 {
@@ -683,11 +696,6 @@ void WlanStart()
 	{
 		WiFiStart_Client();
 	}
-	if (wlan_client == false)
-	{
-		WiFiStart_AP();
-	}
-
 	//-------------------------------------
 	// Zeitanfrage beim NTP-Server
 	//-------------------------------------
@@ -695,9 +703,19 @@ void WlanStart()
 	{
 		timeClient.begin(NTP_port);
 		unix_time = timeClient.getEpochTime();
-		// Zeit setzen
+		if(externalRTC == true){
+			RTC.adjust(DateTime(unix_time));
+		}
+	}
+	else if (wlan_client == false)
+	{
+		if(externalRTC == true){
+			unix_time = RTC.now().unixtime();
+		}
 		setTime(unix_time);
 	}
+	// Zeit setzen
+
 	Serial.printf("-- Ende  WlanStart -- \n\n");
 }
 
@@ -893,15 +911,24 @@ void setup()
 	led_show();
 
 	G.conf = 0;
+
 	//-------------------------------------
+	// Start External RealtimeClock
+	//-------------------------------------
+
+	if (RTC.begin() == true ) {
+		Serial.println("External RealtimeClock found");
+		externalRTC = true;
+	}
+	else {
+		Serial.println("No external RealtimeClock found");
+		externalRTC = false;
+	}
 
 	//-------------------------------------
 	// Start WiFi
 	//-------------------------------------
 	WlanStart();
-
-	//-------------------------------------
-
 
 	//-------------------------------------
 	// Zeit setzen
@@ -920,8 +947,6 @@ void setup()
 	  set_farbe_rahmen();
 	}
 #endif
-	//-------------------------------------
-
 
 	//-------------------------------------
 	// mDNS--
@@ -929,8 +954,6 @@ void setup()
 	MDNS.begin((const char *) G.hostname);
 	MDNS.addService("http", "tcp", 80);
 	MDNS.addService("http", "tcp", 81);
-	//-------------------------------------
-
 
 	//-------------------------------------
 	// OTA--

@@ -46,6 +46,7 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
     * '[Timezone](https://github.com/JChristensen/Timezone)' von JChristensen
     * '[WebSockets](https://www.arduino.cc/reference/en/libraries/websockets/)' von Arduino
     * '[NTPClient](https://github.com/arduino-libraries/NTPClient)' von arduino-libraries
+    * '[RTClib](https://github.com/adafruit/RTClib)' von adafruit
     
 ## To DO & (Ideen):
 * Symbol zu einem bestimmten Datum/Uhrzeit
@@ -66,9 +67,9 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * Weiteres Entfernen von nicht benötigten #IfDefs im Code
 * Weitere Enums und Structs für UHR_Typen hinzugefügt
 * Umstellung der NTP Funktion der Uhr auf eine externe Library NTPClient
+* Support von RTCs zum Beispiel `DS1307`, `DS3231` und `PCF8523`
 ### Gelpant
 * Hinzufügen eine OfflineModus durch Abschalten der WLAN Kommunikation.
-* Support von RTCs zum Beispiel `DS3231`
 * Support von ArduinoJson Version 6.xx
 ### Version 2.2.2
 * (dbambus)
