@@ -1,4 +1,4 @@
-# Wortuhr v3
+# Wortuhr - Version 2.3.0
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
@@ -42,10 +42,11 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * Unter Datei \> Sketch \> Include Libraries folgende Bibliotheken hinzufügen:
     * '[NeoPixelBus](https://github.com/Makuna/NeoPixelBus)' von Mankuna
     * '[Time](https://github.com/PaulStoffregen/Time)' von PaulStoffregen
-    * '[ArduinoJson](https://github.com/bblanchon/ArduinoJson)' von BBlanchon
+    * '[ArduinoJson](https://github.com/bblanchon/ArduinoJson)' von BBlanchon (Version 5.13.4)
     * '[Timezone](https://github.com/JChristensen/Timezone)' von JChristensen
     * '[WebSockets](https://www.arduino.cc/reference/en/libraries/websockets/)' von Arduino
-
+    * '[NTPClient](https://github.com/arduino-libraries/NTPClient)' von arduino-libraries
+    
 ## To DO & (Ideen):
 * Symbol zu einem bestimmten Datum/Uhrzeit
 * Getrennte Helligkeitsregelung Hintergrundbeleuchtung/Anzeige 
@@ -58,6 +59,17 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * Finaler Release wäre eine unified Binary mit selektor auf der Webseite
 
 ## ChangeLog
+### Version 2.3.0 WORK_IN_PROGRESS
+* (dbambus)
+* Aufräumen der Uhr.h für die Übersichtlichkeit
+* Restrukturierung der Worduhr.ino um IDE Clang gerecht zu werden
+* Weiteres Entfernen von nicht benötigten #IfDefs im Code
+* Weitere Enums und Structs für UHR_Typen hinzugefügt
+* Umstellung der NTP Funktion der Uhr auf eine externe Library NTPClient
+### Gelpant
+* Hinzufügen eine OfflineModus durch Abschalten der WLAN Kommunikation.
+* Support von RTCs zum Beispiel `DS3231`
+* Support von ArduinoJson Version 6.xx
 ### Version 2.2.2
 * (dbambus)
 * Aufräumen der Uhr_func.h für die Übersichtlichkeit

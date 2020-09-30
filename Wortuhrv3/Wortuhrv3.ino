@@ -1,11 +1,11 @@
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED's bzw. Reihen verwendet werden
  */
-//#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
+#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 //#define UHR_114_Alternative         // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
 //#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 //#define UHR_169                     // Uhr mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
-#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
+//#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
 
 #define SERNR 100             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 
@@ -18,6 +18,8 @@
 
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 bool show_ip = true;      // Zeige IP Adresse beim Start
+unsigned int NTP_port = 1337;  // Standartport für den NTP Server
+const char *NtpServerName = "europe.pool.ntp.org";  // NTP Zeitserver
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
  *--------------------------------------------------------------------------
@@ -49,23 +51,20 @@ char wstatus[7][25] = {
 #include <Arduino.h>
 #include <NeoPixelBus.h>
 #include <ESP8266WiFi.h>
-#include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
+#include <WiFiClient.h>
 #include <WiFiUdp.h>
-#include "WebPage_Adapter.h"
+#include <NTPClient.h>
 #include <Hash.h>
 #include <TimeLib.h>
 #include <Timezone.h>
-#include <EEPROM.h>
 #include "EEPROMAnything.h"
-#include "Uhr.h"
 #include "WebPage_Adapter.h"
+#include "Uhr.h"
 #include "font.h"
-
 #include "uhr_func.hpp"
-#include "ntp_func.h"
 
 //--OpenWeatherMapOrg
 #include "openwmap.h"
@@ -76,7 +75,9 @@ Timezone tzc(CEST, CET);
 
 time_t ltime, utc;
 TimeChangeRule *tcr;
+WiFiUDP ntpUDP;
 
+NTPClient timeClient(ntpUDP, NtpServerName);
 
 uint32_t split(uint8_t i, uint8_t j)
 {
@@ -688,22 +689,12 @@ void WlanStart()
 	}
 
 	//-------------------------------------
-	// Start udp
-	//-------------------------------------
-	if (wlan_client == true)
-	{
-		Serial.println("Start UDP");
-		udp.begin(localPort);
-		Serial.print("Local port: ");
-		Serial.println(udp.localPort());
-	}
-
-	//-------------------------------------
 	// Zeitanfrage beim NTP-Server
 	//-------------------------------------
 	if (wlan_client == true)
 	{
-		set_ntp_zeit();
+		timeClient.begin(NTP_port);
+		unix_time = timeClient.getEpochTime();
 		// Zeit setzen
 		setTime(unix_time);
 	}
@@ -1145,7 +1136,8 @@ void loop()
 		wlan_status = WiFi.status();
 		if (wlan_status == 3)
 		{
-			set_ntp_zeit();
+			timeClient.update();
+			unix_time = timeClient.getEpochTime();
 			if (unix_time > 0)
 			{
 				setTime(unix_time);
@@ -1491,7 +1483,8 @@ void loop()
 			for (uint8_t ii = 0; ii < 4; ii++)
 			{
 #else
-				for(uint8_t ii = 0; ii < 3; ii++){
+			for (uint8_t ii = 0; ii < 3; ii++)
+			{
 #endif
 				strcat(str, ",\"rgb");
 				sprintf(s, "%d", i);
