@@ -66,7 +66,7 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * Weiteres Entfernen von nicht benötigten #IfDefs im Code
 * Weitere Enums und Structs für UHR_Typen hinzugefügt
 * Umstellung der NTP Funktion der Uhr auf eine externe Library NTPClient
-### Gelpant
+### Geplant
 * Hinzufügen eine OfflineModus durch Abschalten der WLAN Kommunikation.
 * Support von RTCs zum Beispiel `DS3231`
 * Support von ArduinoJson Version 6.xx
