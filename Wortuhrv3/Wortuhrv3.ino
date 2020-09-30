@@ -1,8 +1,8 @@
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED's bzw. Reihen verwendet werden
  */
-#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-//#define UHR_114_Alternative         // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
+//#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
+#define UHR_114_Alternative         // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
 //#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 //#define UHR_169                     // Uhr mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
 //#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
@@ -16,7 +16,7 @@
 //#define Rbg    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
 //#define Grbw   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
 
-//#define RTC_Type RTC_DS3231    	// External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
+#define RTC_Type RTC_DS3231    	// External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
 
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 bool show_ip = true;      // Zeige IP Adresse beim Start
@@ -705,6 +705,19 @@ void WlanStart()
 		unix_time = timeClient.getEpochTime();
 		if(externalRTC == true){
 			RTC.adjust(DateTime(unix_time));
+      Serial.println("Updated Time on RTC");
+      ltime = tzc.toLocal(unix_time, &tcr);
+        Serial.print(hour(ltime));
+        Serial.print(":");
+        Serial.print(minute(ltime));
+        Serial.print(":");
+        Serial.print(second(ltime));
+        Serial.print(" - ");
+        Serial.print(day(ltime));
+        Serial.print(".");
+        Serial.print(month(ltime));
+        Serial.print(".");
+        Serial.println(year(ltime));
 		}
 	}
 	else if (wlan_client == false)
@@ -713,6 +726,7 @@ void WlanStart()
 			unix_time = RTC.now().unixtime();
 		}
 		setTime(unix_time);
+    WiFiStart_AP();
 	}
 	// Zeit setzen
 
