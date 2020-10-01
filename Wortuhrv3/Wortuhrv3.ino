@@ -21,7 +21,7 @@
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 bool show_ip = false;      // Zeige IP Adresse beim Start
 unsigned int NTP_port = 123;  // Standartport für den NTP Server
-const char *NtpServerName = "europe.pool.ntp.org";  // NTP Zeitserver
+const char NtpServerName[30] = "europe.pool.ntp.org";  // NTP Zeitserver
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
  *--------------------------------------------------------------------------
@@ -109,7 +109,6 @@ uint32_t split(uint8_t i, uint8_t j)
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 {
-	int cc = 0;
 	int ii;
 	int jj;
 	char tmp[30];
@@ -137,12 +136,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				str[k] = payload[k];  //does this "copy" is buggy code?
 			}
 
-			cc = split(0, 3);
+			int cc = split(0, 3);
 			G.param1 = split(3, 3);
 			G.param2 = split(6, 3);
-			if (cc == 1)
+			
+			if (cc == COMMAND_MODE_WORD_CLOCK)
 			{        // Uhrzeit Vordergrund Farbe einstellen
-				G.prog = 1;
+				G.prog = COMMAND_MODE_WORD_CLOCK;
 #ifdef Grbw
 				G.rgb[Foreground][0] = split(9, 3);
 				G.rgb[Foreground][1] = split(12, 3);
@@ -159,10 +159,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.rgb[Frame][2] = split(39, 3);
 				G.rgb[Frame][3] = split(42, 3);
 
-				G.rgb[SpecialFunction][0] = split(45, 3);
-				G.rgb[SpecialFunction][1] = split(48, 3);
-				G.rgb[SpecialFunction][2] = split(51, 3);
-				G.rgb[SpecialFunction][3] = split(54, 3);
+				G.rgb[Effect][0] = split(45, 3);
+				G.rgb[Effect][1] = split(48, 3);
+				G.rgb[Effect][2] = split(51, 3);
+				G.rgb[Effect][3] = split(54, 3);
 #else
 				G.rgb[Foreground][0] = split(9, 3);
 				G.rgb[Foreground][1] = split(12, 3);
@@ -176,57 +176,60 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.rgb[Frame][1] = split(30, 3);
 				G.rgb[Frame][2] = split(33, 3);
 
-				G.rgb[SpecialFunction][0] = split(36, 3);
-				G.rgb[SpecialFunction][1] = split(39, 3);
-				G.rgb[SpecialFunction][2] = split(42, 3);
+				G.rgb[Effect][0] = split(36, 3);
+				G.rgb[Effect][1] = split(39, 3);
+				G.rgb[Effect][2] = split(42, 3);
 #endif
 				break;
 			}
 
-			if (cc == 200)
+			//------------------------------------------------------------------------------
+			
+			if (cc == COMMAND_MODE_SECONDS)
 			{      // Sekunden
-				G.prog = 200;
+				G.prog = COMMAND_MODE_SECONDS;
 				if (G.param1 == 0) { G.prog_init = 1; }
 #ifdef Grbw
-				G.rgb[SpecialFunction][0] = split(45, 3);
-				G.rgb[SpecialFunction][1] = split(48, 3);
-				G.rgb[SpecialFunction][2] = split(51, 3);
-				G.rgb[SpecialFunction][3] = split(54, 3);
+				G.rgb[Effect][0] = split(45, 3);
+				G.rgb[Effect][1] = split(48, 3);
+				G.rgb[Effect][2] = split(51, 3);
+				G.rgb[Effect][3] = split(54, 3);
 				G.hell = split(57, 3);
 				G.geschw = split(60, 3);
 #else
-				G.rgb[SpecialFunction][0] = split(36, 3);
-				G.rgb[SpecialFunction][1] = split(39, 3);
-				G.rgb[SpecialFunction][2] = split(42, 3);
+				G.rgb[Effect][0] = split(36, 3);
+				G.rgb[Effect][1] = split(39, 3);
+				G.rgb[Effect][2] = split(42, 3);
 				G.hell = split(45, 3);
 				G.geschw = split(48, 3);
 #endif
 				break;
 			}
 
-			if (cc == 201)
+			if (cc == COMMAND_MODE_MARQUEE)
 			{      // Laufschrift
-				G.prog = 201;
+				G.prog = COMMAND_MODE_MARQUEE;
 				if (G.param1 == 0) { G.prog_init = 1; }
 #ifdef Grbw
-				G.rgb[SpecialFunction][0] = split(45, 3);
-				G.rgb[SpecialFunction][1] = split(48, 3);
-				G.rgb[SpecialFunction][2] = split(51, 3);
-				G.rgb[SpecialFunction][3] = split(54, 3);
+				G.rgb[Effect][0] = split(45, 3);
+				G.rgb[Effect][1] = split(48, 3);
+				G.rgb[Effect][2] = split(51, 3);
+				G.rgb[Effect][3] = split(54, 3);
 				G.hell = split(57, 3);
 				G.geschw = split(60, 3);
 #else
-				G.rgb[SpecialFunction][0] = split(36, 3);
-				G.rgb[SpecialFunction][1] = split(39, 3);
-				G.rgb[SpecialFunction][2] = split(42, 3);
+				G.rgb[Effect][0] = split(36, 3);
+				G.rgb[Effect][1] = split(39, 3);
+				G.rgb[Effect][2] = split(42, 3);
 				G.hell = split(45, 3);
 				G.geschw = split(48, 3);
 #endif
 				break;
 			}
-			if (cc == 202)
+			
+			if (cc == COMMAND_MODE_RAINBOW)
 			{      // Regenbogen
-				G.prog = 202;
+				G.prog = COMMAND_MODE_RAINBOW;
 				G.prog_init = 1;
 #ifdef Grbw
 				G.hell = split(57, 3);
@@ -237,9 +240,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 #endif
 				break;
 			}
-			if (cc == 203)
+			
+			if (cc == COMMAND_MODE_CHANGE)
 			{      // Farbwechsel
-				G.prog = 203;
+				G.prog = COMMAND_MODE_CHANGE;
 				G.prog_init = 1;
 #ifdef Grbw
 				G.hell = split(57, 3);
@@ -250,24 +254,27 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 #endif
 				break;
 			}
-			if (cc == 204)
+			
+			if (cc == COMMAND_MODE_COLOR)
 			{      // Farbe
-				G.prog = 204;
+				G.prog = COMMAND_MODE_COLOR;
 				G.prog_init = 1;
 #ifdef Grbw
-				G.rgb[SpecialFunction][0] = split(45, 3);
-				G.rgb[SpecialFunction][1] = split(48, 3);
-				G.rgb[SpecialFunction][2] = split(51, 3);
-				G.rgb[SpecialFunction][3] = split(54, 3);
+				G.rgb[Effect][0] = split(45, 3);
+				G.rgb[Effect][1] = split(48, 3);
+				G.rgb[Effect][2] = split(51, 3);
+				G.rgb[Effect][3] = split(54, 3);
 #else
-				G.rgb[SpecialFunction][0] = split(36, 3);
-				G.rgb[SpecialFunction][1] = split(39, 3);
-				G.rgb[SpecialFunction][2] = split(42, 3);
+				G.rgb[Effect][0] = split(36, 3);
+				G.rgb[Effect][1] = split(39, 3);
+				G.rgb[Effect][2] = split(42, 3);
 #endif
 				break;
 			}
-
-			if (cc == 251)
+			
+			//------------------------------------------------------------------------------
+			
+			if (cc == COMMAND_BRIGHTNESS)
 			{      // Helligkeit
 #ifdef Grbw
 				G.hell = split(57, 3);
@@ -276,7 +283,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 #endif
 				break;
 			}
-			if (cc == 252)
+			
+			if (cc == COMMAND_SPEED)
 			{       // Geschwindigkeit
 #ifdef Grbw
 				G.geschw = split(60, 3);
@@ -285,18 +293,21 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 #endif
 				break;
 			}
-			if (cc == 20)
+
+			//------------------------------------------------------------------------------
+			
+			if (cc == COMMAND_SET_INITIAL_VALUES)
 			{       // Startwerte speichern
-				G.conf = 20;
+				G.conf = COMMAND_SET_INITIAL_VALUES;
 				break;
 			}
 
-			if (cc == 30)
+			if (cc == COMMAND_SET_TIME)
 			{       // Uhrzeit setzen
-				G.conf = 30;
+				G.conf = COMMAND_SET_TIME;
 				ii = 0;
 				tmp[0] = '\0';
-				for (int k = 12; k < 28; k++)
+				for (uint8_t k = 12; k < 28; k++)
 				{
 					tmp[ii] = str[k];
 					ii++;
@@ -306,11 +317,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				setTime(tt);
 				break;
 			}
-			if (cc == 92)
+			
+			if (cc == COMMAND_SET_HOSTNAME)
 			{         // Hostname speichern
-				G.conf = 92;
+				G.conf = COMMAND_SET_HOSTNAME;
 				ii = 0;
-				for (int k = 9; k < 25; k++)
+				for (uint8_t k = 9; k < 25; k++)
 				{
 					if (str[k] != ' ')
 					{
@@ -321,30 +333,34 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.hostname[ii] = '\0';
 				break;
 			}
-			if (cc == 93)
+			
+			if (cc == COMMAND_SET_SETTING_SECOND)
 			{       // Anzeige Sekunden speichern
-				G.conf = 93;
+				G.conf = COMMAND_SET_SETTING_SECOND;
 				G.zeige_sek = split(9, 3);
 				break;
 			}
-			if (cc == 94)
+			
+			if (cc == COMMAND_SET_MINUTE)
 			{       // Anzeige Minuten speichern
-				G.conf = 94;
+				G.conf = COMMAND_SET_MINUTE;
 				G.zeige_min = split(9, 3);
 				break;
 			}
-			if (cc == 91)
+			
+			if (cc == COMMAND_SET_LDR)
 			{       // LDR speichern
-				G.conf = 91;
+				G.conf = COMMAND_SET_LDR;
 				G.ldr = split(9, 3);
 				G.ldrCal = split(12, 3);
 				break;
 			}
-			if (cc == 90)
+			
+			if (cc == COMMAND_SET_WEATHER_DATA)
 			{       // Openweathermap speichern
-				G.conf = 90;
+				G.conf = COMMAND_SET_WEATHER_DATA;
 				ii = 0;
-				for (int k = 9; k < 16; k++)
+				for (uint8_t k = 9; k < 16; k++)
 				{
 					if (str[k] != ' ')
 					{
@@ -355,7 +371,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.cityid[ii] = '\0';
 				//
 				jj = 0;
-				for (int l = 17; l < 49; l++)
+				for (uint8_t l = 17; l < 49; l++)
 				{
 					if (str[l] != ' ')
 					{
@@ -366,10 +382,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.apikey[jj] = '\0';
 				break;
 			}
-			if (cc == 95)
+			
+			if (cc == COMMAND_SET_BRIGHTNESS)
 			{       // Helligkeit speichern
-				G.conf = 95;
-				G.conf = 95;
+				G.conf = COMMAND_SET_BRIGHTNESS;
 				G.h6 = split(9, 3);
 				G.h8 = split(12, 3);
 				G.h12 = split(15, 3);
@@ -380,11 +396,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.h24 = split(30, 3);
 				break;
 			}
-			if (cc == 96)
+			
+			if (cc == COMMAND_SET_MARQUEE_TEXT)
 			{       // Lauftext speichern
-				G.conf = 96;
+				G.conf = COMMAND_SET_MARQUEE_TEXT;
 				ii = 0;
-				for (int k = 9; k < 39; k++)
+				for (uint8_t k = 9; k < 39; k++)
 				{
 					if (str[k] != ' ')
 					{
@@ -395,9 +412,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.ltext[ii] = '\0';
 				break;
 			}
-			if (cc == 97)
+			
+			if (cc == COMMAND_SET_TIMESERVER)
 			{       // Zeitserver speichern
-				G.conf = 97;
+				G.conf = COMMAND_SET_TIMESERVER;
 				ii = 0;
 				for (int k = 9; k < 24; k++)
 				{
@@ -407,9 +425,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.zeitserver[ii] = '\0';
 				break;
 			}
-			if (cc == 99)
+			
+			if (cc == COMMAND_SET_WIFI_AND_RESTART)
 			{       // WLAN-Daten speichern und neu starten
-				G.conf = 99;
+				G.conf = COMMAND_SET_WIFI_AND_RESTART;
 				ii = 0;
 				for (int k = 9; k < 34; k++)
 				{
@@ -432,27 +451,32 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.passwd[ii] = '\0';
 				break;
 			}
-			if (cc == 100)
+			
+			if (cc == COMMAND_RESET)
 			{      // Reset
-				G.conf = 100;
+				G.conf = COMMAND_RESET;
 				break;
 			}
-
-			if (cc == 300)
+			
+			//------------------------------------------------------------------------------
+			
+			if (cc == COMMAND_REQUEST_CONFIG_VALUES)
 			{      // Config anfordern
-				G.conf = 300;
+				G.conf = COMMAND_REQUEST_CONFIG_VALUES;
 				G.client_nr = num;
 				break;
 			}
-			if (cc == 301)
+			
+			if (cc == COMMAND_REQUEST_COLOR_VALUES)
 			{      // Farbwerte anfordern
-				G.conf = 301;
+				G.conf = COMMAND_REQUEST_COLOR_VALUES;
 				G.client_nr = num;
 				break;
 			}
-			if (cc == 302)
+			
+			if (cc == COMMAND_REQUEST_WIFI_LIST)
 			{      // Wlan Liste anfordern
-				G.conf = 302;
+				G.conf = COMMAND_REQUEST_WIFI_LIST;
 				G.client_nr = num;
 				break;
 			}
@@ -756,10 +780,10 @@ void eeprom_read()
 	Serial.printf("rgb.2.1   : %u\n", G.rgb[Frame][1]);
 	Serial.printf("rgb.2.2   : %u\n", G.rgb[Frame][2]);
 	Serial.printf("rgb.2.3   : %u\n", G.rgb[Frame][3]);
-	Serial.printf("rgb.3.0   : %u\n", G.rgb[SpecialFunction][0]);
-	Serial.printf("rgb.3.1   : %u\n", G.rgb[SpecialFunction][1]);
-	Serial.printf("rgb.3.2   : %u\n", G.rgb[SpecialFunction][2]);
-	Serial.printf("rgb.3.3   : %u\n", G.rgb[SpecialFunction][3]);
+	Serial.printf("rgb.3.0   : %u\n", G.rgb[Effect][0]);
+	Serial.printf("rgb.3.1   : %u\n", G.rgb[Effect][1]);
+	Serial.printf("rgb.3.2   : %u\n", G.rgb[Effect][2]);
+	Serial.printf("rgb.3.3   : %u\n", G.rgb[Effect][3]);
 	Serial.printf("Zeitserver: %s\n", G.zeitserver);
 	Serial.printf("Text      : %s\n", G.ltext);
 	Serial.printf("H6        : %u\n", G.h6);
@@ -825,10 +849,10 @@ void setup()
 		G.param1 = 0;
 		G.param2 = 0;
 		G.prog_init = 1;
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 		for (int i = 0; i < 4; i++) { for (int ii = 0; ii < 4; ii++) { G.rgb[i][ii] = 0; }}
 		G.rgb[Foreground][2] = 100;
-		G.rgb[SpecialFunction][1] = 100;
+		G.rgb[Effect][1] = 100;
 		G.rr = 0;
 		G.gg = 0;
 		G.bb = 0;
@@ -914,7 +938,7 @@ void setup()
 	led_clear();
 	led_show();
 
-	G.conf = 0;
+	G.conf = COMMAND_IDLE;
 
 	//-------------------------------------
 	// Start External RealtimeClock
@@ -1018,14 +1042,8 @@ void loop()
 
 	//------------------------------------------------
 	Telnet();  // Handle telnet connections
-
-	//------------------------------------------------
-	//--OTA--
-	//------------------------------------------------
-	//  if (G.prog == 0 && G.conf == 0) {
+	
 	httpServer.handleClient();
-	//  }
-	//------------------------------------------------
 
 	webSocket.loop();
 
@@ -1189,22 +1207,21 @@ void loop()
 	//------------------------------------------------
 	// Farbe Uhr / Hintergrund / Rahmen einstellen
 	//------------------------------------------------
-	if (G.prog == 1)
+	if (G.prog == COMMAND_MODE_WORD_CLOCK)
 	{
-		//uhr_clear();;
 		show_zeit(0); // Anzeige Uhrzeit ohne Config
 #ifdef UHR_169
 		if (G.zeige_sek <1 && G.zeige_min < 2){
 		  set_farbe_rahmen();
 		}
 #endif
-		G.prog = 0;
+		G.prog = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// Uhrzeit setzen
 	//------------------------------------------------
-	if (G.conf == 30)
+	if (G.conf == COMMAND_SET_TIME)
 	{
 		utc = now();    //current time from the Time Library
 		ltime = tzc.toLocal(utc, &tcr);
@@ -1217,13 +1234,13 @@ void loop()
 		show_zeit(1); // Anzeige Uhrzeit mit Config
 		eeprom_write();
 		delay(100);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// Startwerte speichern
 	//------------------------------------------------
-	if (G.conf == 20)
+	if (G.conf == COMMAND_SET_INITIAL_VALUES)
 	{
 		Serial.println("Startwerte gespeichert");
 		Serial.println(G.rgb[Foreground][0]);
@@ -1232,47 +1249,47 @@ void loop()
 		Serial.println(G.rgb[Foreground][3]);
 		eeprom_write();
 		delay(100);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// Helligkeit speichern
 	//------------------------------------------------
-	if (G.conf == 95)
+	if (G.conf == COMMAND_SET_BRIGHTNESS)
 	{
 		show_zeit(1); // Anzeige Uhrzeit mit Config
 		eeprom_write();
 		delay(100);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// Anzeige Minuten speichern
 	//------------------------------------------------
-	if (G.conf == 94)
+	if (G.conf == COMMAND_SET_MINUTE)
 	{
 		show_zeit(1); // Anzeige Uhrzeit mit Config
 		eeprom_write();
 		delay(100);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// LDR Einstellung speichern
 	//------------------------------------------------
-	if (G.conf == 91)
+	if (G.conf == COMMAND_SET_LDR)
 	{
 		eeprom_write();
 		delay(100);
 		Serial.printf("LDR : %u\n\n", G.ldr);
 		Serial.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// OpenWeathermap Einstellung speichern
 	//------------------------------------------------
-	if (G.conf == 90)
+	if (G.conf == COMMAND_SET_WEATHER_DATA)
 	{
 		Serial.println("write EEPROM!");
 		Serial.print("CityID : ");
@@ -1281,66 +1298,66 @@ void loop()
 		Serial.println(G.apikey);
 		eeprom_write();
 		delay(100);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// Hostname speichern
 	//------------------------------------------------
-	if (G.conf == 92)
+	if (G.conf == COMMAND_SET_HOSTNAME)
 	{
 		eeprom_write();
 		delay(100);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// Anzeige Sekunde speichern
 	//------------------------------------------------
-	if (G.conf == 93)
+	if (G.conf == COMMAND_SET_SETTING_SECOND)
 	{
 		show_zeit(1); // Anzeige Uhrzeit mit Config
 		eeprom_write();
 		delay(100);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// Lauftext speichern
 	//------------------------------------------------
-	if (G.conf == 96)
+	if (G.conf == COMMAND_SET_MARQUEE_TEXT)
 	{
 		eeprom_write();
 		delay(100);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// Zeitserver speichern
 	//------------------------------------------------
-	if (G.conf == 97)
+	if (G.conf == COMMAND_SET_TIMESERVER)
 	{
 		eeprom_write();
 		delay(100);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// WLAN-Daten speichern und neu starten
 	//------------------------------------------------
-	if (G.conf == 99)
+	if (G.conf == COMMAND_SET_WIFI_AND_RESTART)
 	{
 		eeprom_write();
 		delay(1000);
 		Serial.println("Conf: WLAN neu konfiguriert");
 		WlanStart();
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// Sekunden
 	//------------------------------------------------
-	if (G.prog == 200)
+	if (G.prog == COMMAND_MODE_SECONDS)
 	{
 		if (G.prog_init == 1)
 		{
@@ -1357,7 +1374,7 @@ void loop()
 	//------------------------------------------------
 	// Laufschrift
 	//------------------------------------------------
-	if (G.prog == 201)
+	if (G.prog == COMMAND_MODE_MARQUEE)
 	{
 		if (G.prog_init == 1)
 		{
@@ -1375,7 +1392,7 @@ void loop()
 	//------------------------------------------------
 	// Regenbogen
 	//------------------------------------------------
-	if (G.prog == 202)
+	if (G.prog == COMMAND_MODE_RAINBOW)
 	{
 		if (G.prog_init == 1)
 		{
@@ -1393,7 +1410,7 @@ void loop()
 	//------------------------------------------------
 	// Farbwechsel
 	//------------------------------------------------
-	if (G.prog == 203)
+	if (G.prog == COMMAND_MODE_CHANGE)
 	{
 		if (G.prog_init == 1)
 		{
@@ -1413,7 +1430,7 @@ void loop()
 	// Farbe Rahmen
 	//------------------------------------------------
 
-	if (G.prog == 204)
+	if (G.prog == COMMAND_MODE_COLOR)
 	{
 		if (G.prog_init == 1)
 		{
@@ -1427,7 +1444,7 @@ void loop()
 	//------------------------------------------------
 	// Reset
 	//------------------------------------------------
-	if (G.conf == 100)
+	if (G.conf == COMMAND_RESET)
 	{
 		delay(1000);
 		ESP.reset();
@@ -1438,7 +1455,7 @@ void loop()
 	//------------------------------------------------
 	// Config Senden
 	//------------------------------------------------
-	if (G.conf == 300)
+	if (G.conf == COMMAND_REQUEST_CONFIG_VALUES)
 	{
 		strcpy(str, R"({"command":"config")");
 		strcat(str, ",\"ssid\":");
@@ -1495,13 +1512,13 @@ void loop()
 		strcat(str, G.apikey);
 		strcat(str, "\"}");
 		webSocket.sendTXT(G.client_nr, str, strlen(str));
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 
 	//------------------------------------------------
 	// conf Farbwerte senden
 	//------------------------------------------------
-	if (G.conf == 301)
+	if (G.conf == COMMAND_REQUEST_COLOR_VALUES)
 	{
 		strcpy(str, R"({"command":"set")");
 		for (uint8_t i = 0; i < 4; i++)
@@ -1532,21 +1549,21 @@ void loop()
 		strcat(str, s);
 		strcat(str, "\"}");
 		webSocket.sendTXT(G.client_nr, str, strlen(str));
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 	//------------------------------------------------
 
 	//------------------------------------------------
 	// Wlan Liste
 	//------------------------------------------------
-	if (G.conf == 302)
+	if (G.conf == COMMAND_REQUEST_WIFI_LIST)
 	{
 		String strs = R"({"command":"wlan")";
 		strs += R"(,"list":")";
 		strs += WiFiScan(true);
 		strs += "\"}";
 		webSocket.sendTXT(G.client_nr, strs);
-		G.conf = 0;
+		G.conf = COMMAND_IDLE;
 	}
 	//------------------------------------------------
 

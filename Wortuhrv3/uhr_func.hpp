@@ -315,7 +315,7 @@ static void led_single(uint8_t wait)
 static void set_farbe()
 {
 	uint8_t rr, gg, bb, ww;
-	set_helligkeit(rr,gg,bb,ww,SpecialFunction);
+	set_helligkeit(rr,gg,bb,ww,Effect);
 
 	for (uint16_t i = 0; i < Uhrtype.NUM_PIXELS; i++)
 	{
@@ -404,10 +404,10 @@ static void schweif_up(){
 	if (c > 255){ c = 255;}
 	if (c < 0)  { c = 0;}
 
-	G.rr = (G.rgb[SpecialFunction][0] * c)/255;
-	G.gg = (G.rgb[SpecialFunction][1] * c)/255;
-	G.bb = (G.rgb[SpecialFunction][2] * c)/255;
-	G.ww = (G.rgb[SpecialFunction][3] * c)/255;
+	G.rr = (G.rgb[Effect][0] * c)/255;
+	G.gg = (G.rgb[Effect][1] * c)/255;
+	G.bb = (G.rgb[Effect][2] * c)/255;
+	G.ww = (G.rgb[Effect][3] * c)/255;
 	j = i + t;
 	if (j >= 48){ j -= 48;}
 	led_set_pixel(G.rr, G.gg, G.bb, G.ww, rmatrix[i]);
@@ -444,7 +444,7 @@ static void laufschrift(const char *buf) {
         {
             if (font_7x5[buf[ii]][i] & (1u << h))
             {
-                led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][10]);
+                led_set_pixel(G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2], G.rgb[Effect][3], matrix[h + 1][10]);
             }
             else
             {
@@ -488,7 +488,7 @@ static void zeigeip(const char *buf)
 void set_pixel_for_char(uint8_t i, uint8_t h, uint8_t offset, unsigned char unsigned_d1) {
     if (font_7x5[unsigned_d1][i] & (1u << h))
     {
-        led_set_pixel(G.rgb[SpecialFunction][0], G.rgb[SpecialFunction][1], G.rgb[SpecialFunction][2], G.rgb[SpecialFunction][3], matrix[h + 1][i + offset]);
+        led_set_pixel(G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2], G.rgb[Effect][3], matrix[h + 1][i + offset]);
     }
 }
 
@@ -762,7 +762,7 @@ static void set_uhrzeit()
 
 static void show_sekunde() {
   uint8_t rr, gg, bb, ww;
-  set_helligkeit(rr,gg,bb,ww,SpecialFunction);
+  set_helligkeit(rr,gg,bb,ww,Effect);
 
   led_set_pixel(rr, gg, bb, ww, rmatrix[_sekunde48]);
 }
