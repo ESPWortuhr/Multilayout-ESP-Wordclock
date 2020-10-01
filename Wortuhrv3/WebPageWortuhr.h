@@ -26,10 +26,10 @@ var ipEsp = "ws://192.168.4.1";
 var debug = true;
 var command = 1;
 var rgb = [
-  [0, 0, 100],
-  [0, 10, 0],
-  [10, 0, 0],
-  [5, 5, 5]
+  [0, 0, 100, 0],
+  [0, 10, 0, 0],
+  [10, 0, 0, 0],
+  [5, 5, 5, 0]
 ];
 var sliderType = 0; // 0: foreground, 1 background
 var hell = 2;
@@ -106,10 +106,10 @@ function initConfigValues() {
   debug = true;
   command = 1;
   rgb = [
-    [0, 0, 100],
-    [0, 10, 0],
-    [10, 0, 0],
-    [5, 5, 5]
+    [0, 0, 100, 0],
+    [0, 10, 0, 0],
+    [10, 0, 0, 0],
+    [5, 5, 5, 0]
   ];
   sliderType = 0;
   hell = 2;
@@ -231,15 +231,19 @@ function initWebsocket() {
       rgb[0][0] = data.rgb00;
       rgb[0][1] = data.rgb01;
       rgb[0][2] = data.rgb02;
+      rgb[0][3] = data.rgb03;
       rgb[1][0] = data.rgb10;
       rgb[1][1] = data.rgb11;
       rgb[1][2] = data.rgb12;
+      rgb[1][3] = data.rgb13;
       rgb[2][0] = data.rgb20;
       rgb[2][1] = data.rgb21;
       rgb[2][2] = data.rgb22;
+      rgb[2][3] = data.rgb23;
       rgb[3][0] = data.rgb30;
       rgb[3][1] = data.rgb31;
       rgb[3][2] = data.rgb32;
+      rgb[3][3] = data.rgb33;
       hell = data.hell;
       geschw = data.geschw;
       setSliders();
@@ -350,15 +354,19 @@ function sendData(command, unknown2, unknown3) {
     nstr(rgb[COLOR_FOREGROUND][0]) +
     nstr(rgb[COLOR_FOREGROUND][1]) +
     nstr(rgb[COLOR_FOREGROUND][2]) +
+    nstr(rgb[COLOR_FOREGROUND][3]) +
     nstr(rgb[COLOR_BACKGROUND][0]) +
     nstr(rgb[COLOR_BACKGROUND][1]) +
     nstr(rgb[COLOR_BACKGROUND][2]) +
+    nstr(rgb[COLOR_BACKGROUND][3]) +
     nstr(rgb[COLOR_FOREGROUND][0]) + // 2 Removed the other colors because the were just confusing as hell
     nstr(rgb[COLOR_FOREGROUND][1]) + // 2
     nstr(rgb[COLOR_FOREGROUND][2]) + // 2
+    nstr(rgb[COLOR_FOREGROUND][3]) + // 2
     nstr(rgb[COLOR_FOREGROUND][0]) + // 3
     nstr(rgb[COLOR_FOREGROUND][1]) + // 3
     nstr(rgb[COLOR_FOREGROUND][2]) + // 3
+    nstr(rgb[COLOR_FOREGROUND][3]) + // 3
     nstr(hell) +
     nstr(geschw) +
     nstr(anzahl) +

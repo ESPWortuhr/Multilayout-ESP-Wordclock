@@ -143,7 +143,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			if (cc == COMMAND_MODE_WORD_CLOCK)
 			{        // Uhrzeit Vordergrund Farbe einstellen
 				G.prog = COMMAND_MODE_WORD_CLOCK;
-#ifdef Grbw
 				G.rgb[Foreground][0] = split(9, 3);
 				G.rgb[Foreground][1] = split(12, 3);
 				G.rgb[Foreground][2] = split(15, 3);
@@ -163,23 +162,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.rgb[Effect][1] = split(48, 3);
 				G.rgb[Effect][2] = split(51, 3);
 				G.rgb[Effect][3] = split(54, 3);
-#else
-				G.rgb[Foreground][0] = split(9, 3);
-				G.rgb[Foreground][1] = split(12, 3);
-				G.rgb[Foreground][2] = split(15, 3);
-
-				G.rgb[Background][0] = split(18, 3);
-				G.rgb[Background][1] = split(21, 3);
-				G.rgb[Background][2] = split(24, 3);
-
-				G.rgb[Frame][0] = split(27, 3);
-				G.rgb[Frame][1] = split(30, 3);
-				G.rgb[Frame][2] = split(33, 3);
-
-				G.rgb[Effect][0] = split(36, 3);
-				G.rgb[Effect][1] = split(39, 3);
-				G.rgb[Effect][2] = split(42, 3);
-#endif
 				break;
 			}
 
@@ -189,20 +171,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			{      // Sekunden
 				G.prog = COMMAND_MODE_SECONDS;
 				if (G.param1 == 0) { G.prog_init = 1; }
-#ifdef Grbw
+
 				G.rgb[Effect][0] = split(45, 3);
 				G.rgb[Effect][1] = split(48, 3);
 				G.rgb[Effect][2] = split(51, 3);
 				G.rgb[Effect][3] = split(54, 3);
 				G.hell = split(57, 3);
 				G.geschw = split(60, 3);
-#else
-				G.rgb[Effect][0] = split(36, 3);
-				G.rgb[Effect][1] = split(39, 3);
-				G.rgb[Effect][2] = split(42, 3);
-				G.hell = split(45, 3);
-				G.geschw = split(48, 3);
-#endif
 				break;
 			}
 
@@ -210,20 +185,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			{      // Laufschrift
 				G.prog = COMMAND_MODE_MARQUEE;
 				if (G.param1 == 0) { G.prog_init = 1; }
-#ifdef Grbw
+
 				G.rgb[Effect][0] = split(45, 3);
 				G.rgb[Effect][1] = split(48, 3);
 				G.rgb[Effect][2] = split(51, 3);
 				G.rgb[Effect][3] = split(54, 3);
 				G.hell = split(57, 3);
 				G.geschw = split(60, 3);
-#else
-				G.rgb[Effect][0] = split(36, 3);
-				G.rgb[Effect][1] = split(39, 3);
-				G.rgb[Effect][2] = split(42, 3);
-				G.hell = split(45, 3);
-				G.geschw = split(48, 3);
-#endif
 				break;
 			}
 			
@@ -231,13 +199,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			{      // Regenbogen
 				G.prog = COMMAND_MODE_RAINBOW;
 				G.prog_init = 1;
-#ifdef Grbw
+
 				G.hell = split(57, 3);
 				G.geschw = split(60, 3);
-#else
-				G.hell = split(45, 3);
-				G.geschw = split(48, 3);
-#endif
 				break;
 			}
 			
@@ -245,13 +209,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			{      // Farbwechsel
 				G.prog = COMMAND_MODE_CHANGE;
 				G.prog_init = 1;
-#ifdef Grbw
+
 				G.hell = split(57, 3);
 				G.geschw = split(60, 3);
-#else
-				G.hell = split(45, 3);
-				G.geschw = split(48, 3);
-#endif
 				break;
 			}
 			
@@ -259,16 +219,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			{      // Farbe
 				G.prog = COMMAND_MODE_COLOR;
 				G.prog_init = 1;
-#ifdef Grbw
+
 				G.rgb[Effect][0] = split(45, 3);
 				G.rgb[Effect][1] = split(48, 3);
 				G.rgb[Effect][2] = split(51, 3);
 				G.rgb[Effect][3] = split(54, 3);
-#else
-				G.rgb[Effect][0] = split(36, 3);
-				G.rgb[Effect][1] = split(39, 3);
-				G.rgb[Effect][2] = split(42, 3);
-#endif
 				break;
 			}
 			
@@ -276,21 +231,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			
 			if (cc == COMMAND_BRIGHTNESS)
 			{      // Helligkeit
-#ifdef Grbw
 				G.hell = split(57, 3);
-#else
-				G.hell = split(45, 3);
-#endif
 				break;
 			}
 			
 			if (cc == COMMAND_SPEED)
 			{       // Geschwindigkeit
-#ifdef Grbw
 				G.geschw = split(60, 3);
-#else
-				G.geschw = split(48, 3);
-#endif
 				break;
 			}
 
@@ -928,11 +875,7 @@ void setup()
 	//-------------------------------------
 	// LEDs initialisieren
 	//-------------------------------------
-#ifdef Grbw
-	Serial.println("SK6812 LED Init");
-#else
-	Serial.println("WS2812 LED Init");
-#endif
+	Serial.println("LED Init");
 	strip.Begin();
 	led_single(20);
 	led_clear();
@@ -1523,13 +1466,8 @@ void loop()
 		strcpy(str, R"({"command":"set")");
 		for (uint8_t i = 0; i < 4; i++)
 		{
-#ifdef Grbw
 			for (uint8_t ii = 0; ii < 4; ii++)
 			{
-#else
-			for (uint8_t ii = 0; ii < 3; ii++)
-			{
-#endif
 				strcat(str, ",\"rgb");
 				sprintf(s, "%d", i);
 				strcat(str, s);
