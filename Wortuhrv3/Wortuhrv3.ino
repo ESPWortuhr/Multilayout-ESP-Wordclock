@@ -383,7 +383,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 					ii++;
 				}
 				uint8_t index = 0;
-				for (int8_t counter = sizeof(G.ssid)/sizeof(G.ssid[0]); counter > -1; counter--){
+				for (int8_t counter = sizeof(G.ssid)/sizeof(G.ssid[0])-1; counter > -1; counter--){
 					if(!isSpace(G.ssid[counter])){
 						index = counter;
 						break;
