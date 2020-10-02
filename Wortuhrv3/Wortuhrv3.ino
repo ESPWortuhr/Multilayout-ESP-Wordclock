@@ -377,15 +377,20 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 			{       // WLAN-Daten speichern und neu starten
 				G.conf = COMMAND_SET_WIFI_AND_RESTART;
 				ii = 0;
-				for (int k = 9; k < 34; k++)
+				for (uint8_t k = 9; k < 34; k++)
 				{
-					if (str[k] != ' ')
-					{
-						G.ssid[ii] = str[k];
-						ii++;
+					G.ssid[ii] = str[k];
+					ii++;
+				}
+				uint8_t index = 0;
+				for (int8_t counter = sizeof(G.ssid)/sizeof(G.ssid[0])-1; counter > -1; counter--){
+					if(!isSpace(G.ssid[counter])){
+						index = counter;
+						break;
 					}
 				}
-				G.ssid[ii] = '\0';
+				G.ssid[index +1] = '\0';
+
 				ii = 0;
 				for (int k = 34; k < 59; k++)
 				{
@@ -790,8 +795,8 @@ void setup()
 		EEPROM.commit();
 
 		G.sernr = SERNR;
-    strcpy(G.ssid, "Enter_Your_SSID");
-    strcpy(G.passwd, "Enter_Your_PASSWORD");
+    	strcpy(G.ssid, "Enter_Your_SSID");
+    	strcpy(G.passwd, "Enter_Your_PASSWORD");
 		G.prog = 1;
 		G.param1 = 0;
 		G.param2 = 0;
