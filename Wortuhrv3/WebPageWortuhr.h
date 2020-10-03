@@ -26,10 +26,10 @@ var ipEsp = "ws://192.168.4.1";
 var debug = true;
 var command = 1;
 var rgb = [
-  [0, 0, 100],
-  [0, 10, 0],
-  [10, 0, 0],
-  [5, 5, 5]
+  [0, 0, 100, 0],
+  [0, 10, 0, 0],
+  [10, 0, 0, 0],
+  [5, 5, 5, 0]
 ];
 var sliderType = 0; // 0: foreground, 1 background
 var hell = 2;
@@ -61,6 +61,7 @@ var COMMAND_SET_MINUTE = 94;
 var COMMAND_SET_BRIGHTNESS = 95;
 var COMMAND_SET_MARQUEE_TEXT = 96;
 var COMMAND_SET_TIMESERVER = 97;
+var COMMAND_SET_WIFI_DISABLED = 98;
 var COMMAND_SET_WIFI_AND_RESTART = 99;
 
 var COMMAND_RESET = 100;
@@ -106,10 +107,10 @@ function initConfigValues() {
   debug = true;
   command = 1;
   rgb = [
-    [0, 0, 100],
-    [0, 10, 0],
-    [10, 0, 0],
-    [5, 5, 5]
+    [0, 0, 100, 0],
+    [0, 10, 0, 0],
+    [10, 0, 0, 0],
+    [5, 5, 5, 0]
   ];
   sliderType = 0;
   hell = 2;
@@ -231,15 +232,19 @@ function initWebsocket() {
       rgb[0][0] = data.rgb00;
       rgb[0][1] = data.rgb01;
       rgb[0][2] = data.rgb02;
+      rgb[0][3] = data.rgb03;
       rgb[1][0] = data.rgb10;
       rgb[1][1] = data.rgb11;
       rgb[1][2] = data.rgb12;
+      rgb[1][3] = data.rgb13;
       rgb[2][0] = data.rgb20;
       rgb[2][1] = data.rgb21;
       rgb[2][2] = data.rgb22;
+      rgb[2][3] = data.rgb23;
       rgb[3][0] = data.rgb30;
       rgb[3][1] = data.rgb31;
       rgb[3][2] = data.rgb32;
+      rgb[3][3] = data.rgb33;
       hell = data.hell;
       geschw = data.geschw;
       setSliders();
@@ -268,7 +273,7 @@ function getSliders() {
 }
 
 /**
- * Sets all sliders (the values) and their corresponsding labels to 
+ * Sets all sliders (the values) and their corresponsding labels to
  * the currently stored config values.
  *
  * This function also updated the color area with the current rgb values.
@@ -303,9 +308,9 @@ function setSliders() {
 }
 
 /**
- * Add '0' as a padding in front of the number to make it 
+ * Add '0' as a padding in front of the number to make it
  * a 3 character string.
- * 
+ *
  * @param  {int} number - The number to be padded.
  * @return {string} The padded number.
  */
@@ -323,7 +328,7 @@ function nstr(number) {
 /**
  * Returns the padding for the string that is send to the esp.
  * The string is padded until it has a length of exactly maxStringLength.
- * 
+ *
  * @param  {string} string - The string that is padded with spaces.
  * @param  {int}    maxStringLength - The resulting length of the padded string.
  * @return {string} The padded string.
@@ -338,7 +343,7 @@ function getPaddedString(string, maxStringLength) {
 
 /**
  * Sends data to the esp via a websocket connection.
- * 
+ *
  * @param  {int} The command that specifies what to do on the esp.
  * @param  {int} An unknown parameter.
  * @param  {int} An unknown parameter.
@@ -350,15 +355,19 @@ function sendData(command, unknown2, unknown3) {
     nstr(rgb[COLOR_FOREGROUND][0]) +
     nstr(rgb[COLOR_FOREGROUND][1]) +
     nstr(rgb[COLOR_FOREGROUND][2]) +
+    nstr(rgb[COLOR_FOREGROUND][3]) +
     nstr(rgb[COLOR_BACKGROUND][0]) +
     nstr(rgb[COLOR_BACKGROUND][1]) +
     nstr(rgb[COLOR_BACKGROUND][2]) +
+    nstr(rgb[COLOR_BACKGROUND][3]) +
     nstr(rgb[COLOR_FOREGROUND][0]) + // 2 Removed the other colors because the were just confusing as hell
     nstr(rgb[COLOR_FOREGROUND][1]) + // 2
     nstr(rgb[COLOR_FOREGROUND][2]) + // 2
+    nstr(rgb[COLOR_FOREGROUND][3]) + // 2
     nstr(rgb[COLOR_FOREGROUND][0]) + // 3
     nstr(rgb[COLOR_FOREGROUND][1]) + // 3
     nstr(rgb[COLOR_FOREGROUND][2]) + // 3
+    nstr(rgb[COLOR_FOREGROUND][3]) + // 3
     nstr(hell) +
     nstr(geschw) +
     nstr(anzahl) +
@@ -407,9 +416,9 @@ $.ready(function() {
 
   /**
    * The color mode has been changed.
-   * 
-   * There are a total of four different color modes that can 
-   * be changed (foreground, background, border and effect). 
+   *
+   * There are a total of four different color modes that can
+   * be changed (foreground, background, border and effect).
    * I disabled the last two because they were just confusing.
    */
   $("input[name='color-mode']").on("change", function() {
@@ -670,6 +679,9 @@ $.ready(function() {
     websocket.send(data);
     debugMessage("Hostname wurde neu konfiguriert", data);
   });
+    $("#disable-button").on("click", function() {
+		sendData(COMMAND_SET_WIFI_DISABLED, 0, 0);
+	});
   $("#reset-button").on("click", function() {
     sendData(COMMAND_RESET, 0, 0);
   });
@@ -1103,7 +1115,7 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 						<form class="pure-form pure-form-aligned">
 							<fieldset>
 								<div class="pure-control-group">
-									<label for="show-minutes">Minuten anzeigen?</label><select name="show-minutes" id="show-minutes" size="1">
+									<label for="show-minutes">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Minuten angezeigt werden ?</label><select name="show-minutes" id="show-minutes" size="1">
 										<option value="0" selected>Nein</option>
 										<option value="1">als Zeile</option>
 										<option value="2">in den Ecken</option>
@@ -1124,7 +1136,7 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 						<form class="pure-form pure-form-aligned">
 							<fieldset>
 								<div class="pure-control-group">
-									<label for="show-seconds">Sekunden anzeigen?</label><select name="show-seconds" id="show-seconds" size="1">
+									<label for="show-seconds">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden ?</label><select name="show-seconds" id="show-seconds" size="1">
 										<option value="0" selected>Nein</option>
 										<option value="1">Ja</option>
 									</select>
@@ -1134,6 +1146,20 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 								</div>
 							</fieldset>
 						</form>
+						</div>
+
+					</div>
+					<div class="pure-u-1 pure-u-md-1-2">
+
+						<div class="box">
+							<h2>WLAN Ausschalten</h2>
+							<form class="pure-form pure-form-aligned">
+								<fieldset>
+									<div class="pure-controls">
+										<button id="disable-button" class="pure-button">WLAN Ausschalten</button>
+									</div>
+								</fieldset>
+							</form>
 						</div>
 
 					</div>

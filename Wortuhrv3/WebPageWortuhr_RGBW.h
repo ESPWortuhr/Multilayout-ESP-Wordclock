@@ -61,6 +61,7 @@ var COMMAND_SET_MINUTE = 94;
 var COMMAND_SET_BRIGHTNESS = 95;
 var COMMAND_SET_MARQUEE_TEXT = 96;
 var COMMAND_SET_TIMESERVER = 97;
+var COMMAND_SET_WIFI_DISABLED = 98;
 var COMMAND_SET_WIFI_AND_RESTART = 99;
 
 var COMMAND_RESET = 100;
@@ -685,6 +686,9 @@ $.ready(function() {
     websocket.send(data);
     debugMessage("Hostname wurde neu konfiguriert", data);
   });
+  $("#disable-button").on("click", function() {
+    sendData(COMMAND_SET_WIFI_DISABLED, 0, 0);
+  });
   $("#reset-button").on("click", function() {
     sendData(COMMAND_RESET, 0, 0);
   });
@@ -1122,7 +1126,7 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
             <form class="pure-form pure-form-aligned">
               <fieldset>
                 <div class="pure-control-group">
-                  <label for="show-minutes">Minuten anzeigen?</label><select name="show-minutes" id="show-minutes" size="1">
+				<label for="show-minutes">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Minuten angezeigt werden ?</label><select name="show-minutes" id="show-minutes" size="1">
                     <option value="0" selected>Nein</option>
                     <option value="1">als Zeile</option>
                     <option value="2">in den Ecken</option>
@@ -1143,7 +1147,7 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
             <form class="pure-form pure-form-aligned">
               <fieldset>
                 <div class="pure-control-group">
-                  <label for="show-seconds">Sekunden anzeigen?</label><select name="show-seconds" id="show-seconds" size="1">
+                  <label for="show-seconds">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden ?</label><select name="show-seconds" id="show-seconds" size="1">
                     <option value="0" selected>Nein</option>
                     <option value="1">Ja</option>
                   </select>
@@ -1157,6 +1161,20 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 
           </div>
           <div class="pure-u-1 pure-u-md-1-2">
+
+			<div class="box">
+			<h2>WLAN Ausschalten</h2>
+				<form class="pure-form pure-form-aligned">
+					<fieldset>
+						<div class="pure-controls">
+							<button id="disable-button" class="pure-button">WLAN Ausschalten</button>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+
+			</div>
+			<div class="pure-u-1 pure-u-md-1-2">
 
             <div class="box">
             <h2>Zuruecksetzen</h2>
