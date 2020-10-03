@@ -60,7 +60,7 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * Finaler Release wäre eine unified Binary mit selektor auf der Webseite
 
 ## ChangeLog
-### Version 2.3.0 WORK_IN_PROGRESS
+### Version 2.3.0
 * (dbambus)
 * Aufräumen der Uhr.h für die Übersichtlichkeit
 * Restrukturierung der Worduhr.ino um IDE Clang gerecht zu werden
