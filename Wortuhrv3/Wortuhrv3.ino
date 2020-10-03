@@ -21,7 +21,6 @@
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 bool show_ip = false;      // Zeige IP Adresse beim Start
 unsigned int NTP_port = 123;  // Standartport für den NTP Server
-const char NtpServerName[30] = "europe.pool.ntp.org";  // NTP Zeitserver
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
  *--------------------------------------------------------------------------
@@ -88,7 +87,7 @@ WiFiUDP ntpUDP;
 	RTC_Type RTC;
 #endif
 
-NTPClient timeClient(ntpUDP);
+NTPClient timeClient(ntpUDP, G.zeitserver);
 
 bool externalRTC = false;
 
@@ -372,6 +371,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				G.zeitserver[ii] = '\0';
 				break;
 			}
+
+            if (cc == COMMAND_SET_WIFI_DISABLED)
+            {       // Zeitserver speichern
+                G.conf = COMMAND_SET_WIFI_DISABLED;
+                break;
+            }
 			
 			if (cc == COMMAND_SET_WIFI_AND_RESTART)
 			{       // WLAN-Daten speichern und neu starten
@@ -818,7 +823,7 @@ void setup()
 		G.ldrCal = 0;
 		strcpy(G.cityid, "");
 		strcpy(G.apikey, "");
-		strcpy(G.zeitserver, "ptbtime1.ptb.de");
+		strcpy(G.zeitserver, "europe.pool.ntp.org");
 		strcpy(G.hostname, "uhr");
 		strcpy(G.ltext, "HELLO WORLD ");
 
@@ -1254,6 +1259,7 @@ void loop()
 	//------------------------------------------------
 	if (G.conf == COMMAND_SET_HOSTNAME)
 	{
+        MDNS.setHostname((const char *)G.hostname);
 		eeprom_write();
 		delay(100);
 		G.conf = COMMAND_IDLE;
@@ -1285,10 +1291,27 @@ void loop()
 	//------------------------------------------------
 	if (G.conf == COMMAND_SET_TIMESERVER)
 	{
+        timeClient.end();
+        NTPClient timeClient(ntpUDP, G.zeitserver);
+        timeClient.begin();
+        delay(100);
+        timeClient.update();
 		eeprom_write();
 		delay(100);
 		G.conf = COMMAND_IDLE;
 	}
+
+    //------------------------------------------------
+    // WLAN-Daten speichern und neu starten
+    //------------------------------------------------
+    if (G.conf == COMMAND_SET_WIFI_DISABLED)
+    {
+        eeprom_write();
+        delay(100);
+        Serial.println("Conf: WLAN Abgeschaltet");
+        WiFi.forceSleepBegin();
+        G.conf = COMMAND_IDLE;
+    }
 
 	//------------------------------------------------
 	// WLAN-Daten speichern und neu starten
@@ -1296,7 +1319,7 @@ void loop()
 	if (G.conf == COMMAND_SET_WIFI_AND_RESTART)
 	{
 		eeprom_write();
-		delay(1000);
+		delay(100);
 		Serial.println("Conf: WLAN neu konfiguriert");
 		WlanStart();
 		G.conf = COMMAND_IDLE;

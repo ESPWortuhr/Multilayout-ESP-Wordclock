@@ -61,6 +61,7 @@ var COMMAND_SET_MINUTE = 94;
 var COMMAND_SET_BRIGHTNESS = 95;
 var COMMAND_SET_MARQUEE_TEXT = 96;
 var COMMAND_SET_TIMESERVER = 97;
+var COMMAND_SET_WIFI_DISABLED = 98;
 var COMMAND_SET_WIFI_AND_RESTART = 99;
 
 var COMMAND_RESET = 100;
@@ -272,7 +273,7 @@ function getSliders() {
 }
 
 /**
- * Sets all sliders (the values) and their corresponsding labels to 
+ * Sets all sliders (the values) and their corresponsding labels to
  * the currently stored config values.
  *
  * This function also updated the color area with the current rgb values.
@@ -307,9 +308,9 @@ function setSliders() {
 }
 
 /**
- * Add '0' as a padding in front of the number to make it 
+ * Add '0' as a padding in front of the number to make it
  * a 3 character string.
- * 
+ *
  * @param  {int} number - The number to be padded.
  * @return {string} The padded number.
  */
@@ -327,7 +328,7 @@ function nstr(number) {
 /**
  * Returns the padding for the string that is send to the esp.
  * The string is padded until it has a length of exactly maxStringLength.
- * 
+ *
  * @param  {string} string - The string that is padded with spaces.
  * @param  {int}    maxStringLength - The resulting length of the padded string.
  * @return {string} The padded string.
@@ -342,7 +343,7 @@ function getPaddedString(string, maxStringLength) {
 
 /**
  * Sends data to the esp via a websocket connection.
- * 
+ *
  * @param  {int} The command that specifies what to do on the esp.
  * @param  {int} An unknown parameter.
  * @param  {int} An unknown parameter.
@@ -415,9 +416,9 @@ $.ready(function() {
 
   /**
    * The color mode has been changed.
-   * 
-   * There are a total of four different color modes that can 
-   * be changed (foreground, background, border and effect). 
+   *
+   * There are a total of four different color modes that can
+   * be changed (foreground, background, border and effect).
    * I disabled the last two because they were just confusing.
    */
   $("input[name='color-mode']").on("change", function() {
@@ -678,6 +679,9 @@ $.ready(function() {
     websocket.send(data);
     debugMessage("Hostname wurde neu konfiguriert", data);
   });
+    $("#disable-button").on("click", function() {
+		sendData(COMMAND_SET_WIFI_DISABLED, 0, 0);
+	});
   $("#reset-button").on("click", function() {
     sendData(COMMAND_RESET, 0, 0);
   });
@@ -1111,7 +1115,7 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 						<form class="pure-form pure-form-aligned">
 							<fieldset>
 								<div class="pure-control-group">
-									<label for="show-minutes">Minuten anzeigen?</label><select name="show-minutes" id="show-minutes" size="1">
+									<label for="show-minutes">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Minuten angezeigt werden ?</label><select name="show-minutes" id="show-minutes" size="1">
 										<option value="0" selected>Nein</option>
 										<option value="1">als Zeile</option>
 										<option value="2">in den Ecken</option>
@@ -1132,7 +1136,7 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 						<form class="pure-form pure-form-aligned">
 							<fieldset>
 								<div class="pure-control-group">
-									<label for="show-seconds">Sekunden anzeigen?</label><select name="show-seconds" id="show-seconds" size="1">
+									<label for="show-seconds">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden ?</label><select name="show-seconds" id="show-seconds" size="1">
 										<option value="0" selected>Nein</option>
 										<option value="1">Ja</option>
 									</select>
@@ -1142,6 +1146,20 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 								</div>
 							</fieldset>
 						</form>
+						</div>
+
+					</div>
+					<div class="pure-u-1 pure-u-md-1-2">
+
+						<div class="box">
+							<h2>WLAN Ausschalten</h2>
+							<form class="pure-form pure-form-aligned">
+								<fieldset>
+									<div class="pure-controls">
+										<button id="disable-button" class="pure-button">WLAN Ausschalten</button>
+									</div>
+								</fieldset>
+							</form>
 						</div>
 
 					</div>
