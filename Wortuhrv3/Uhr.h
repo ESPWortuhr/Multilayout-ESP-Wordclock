@@ -1,6 +1,6 @@
 #include "Arduino.h"
 
-const char *VER = "2.3.0";  // Software Version
+const char *VER = "2.4.0";  // Software Version
 
 #pragma once
 
@@ -126,43 +126,6 @@ int wwetter_24;
 int wstunde;
 int wetterswitch;
 #endif
-
-struct UHR_114_Alternative_t {
-    uint8_t NUM_PIXELS = 114;
-    uint8_t NUM_SMATRIX = 114;
-    uint8_t ROWS_MATRIX = 11;
-    uint8_t NUM_RMATRIX = 0;
-};
-
-struct UHR_114_t {
-    uint8_t NUM_PIXELS = 114;
-    uint8_t NUM_SMATRIX = 114;
-    uint8_t ROWS_MATRIX = 11;
-    uint8_t NUM_RMATRIX = 0;
-};
-
-struct UHR_125_t {
-    uint8_t NUM_PIXELS = 125;
-    uint8_t NUM_SMATRIX = 125;
-    uint8_t ROWS_MATRIX = 12;
-    uint8_t NUM_RMATRIX = 0;
-};
-
-struct UHR_169_t {
-    uint8_t NUM_PIXELS = 169;
-    uint8_t NUM_SMATRIX = 121;
-    uint8_t ROWS_MATRIX = 11;
-    uint8_t NUM_RMATRIX = 48;
-};
-
-struct UHR_242_t {
-    uint8_t NUM_PIXELS = 242;
-    uint8_t NUM_SMATRIX = 242;
-    uint8_t ROWS_MATRIX = 22;
-    uint8_t NUM_RMATRIX = 0;
-};
-
-UHR_Type Uhrtype;
 
 // LDR 
 unsigned long waitUntilLDR = 0;
