@@ -1,3 +1,5 @@
+#include "Uhrtype.hpp"
+
 #define LED_LAYOUT_NORMAL    1
 #define LED_LAYOUT_REVERSE    0
 
@@ -5,8 +7,9 @@
 
 #define LED_MAP(x)            (x)
 
-struct UHR_114_t
+class UHR_114_t : Uhrtype
 {
+	public:
 
 	uint8_t NUM_PIXELS = 114;
 	uint8_t NUM_SMATRIX = 114;

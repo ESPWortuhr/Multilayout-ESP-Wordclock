@@ -1,5 +1,8 @@
-struct UHR_242_t
+#include "Uhrtype.hpp"
+
+class UHR_242_t : Uhrtype
 {
+	public:
 	uint8_t NUM_PIXELS = 242;
 	uint8_t NUM_SMATRIX = 242;
 	uint8_t ROWS_MATRIX = 22;

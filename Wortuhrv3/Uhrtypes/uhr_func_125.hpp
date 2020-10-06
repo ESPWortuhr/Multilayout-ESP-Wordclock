@@ -1,6 +1,8 @@
+#include "Uhrtype.hpp"
 
-struct UHR_125_t
+class UHR_125_t : Uhrtype
 {
+	public:
 
 	uint8_t NUM_PIXELS = 125;
 	uint8_t NUM_SMATRIX = 125;

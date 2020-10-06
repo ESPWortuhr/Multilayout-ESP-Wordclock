@@ -1,3 +1,4 @@
+#include "Uhrtype.hpp"
 
 /*
  * Layout Front
@@ -17,8 +18,9 @@
 
 #define USE_DREIVIERTEL
 
-struct UHR_114_Alternative_t
+class UHR_114_Alternative_t : Uhrtype
 {
+	public:
 
 		uint8_t NUM_PIXELS = 114;
 		uint8_t NUM_SMATRIX = 114;
@@ -64,7 +66,7 @@ struct UHR_114_Alternative_t
 
 //------------------------------------------------------------------------------
 
-		static inline void es_ist()
+		void es_ist()
 		{
 			//Es
 			led_set(0);
@@ -77,7 +79,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void nach()
+		void nach()
 		{
 			led_set(43);
 			led_set(42);
@@ -86,7 +88,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void vor()
+		void vor()
 		{
 			led_set(33);
 			led_set(34);
@@ -94,7 +96,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void viertel()
+		void viertel()
 		{
 			led_set(32);
 			led_set(31);
@@ -106,7 +108,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void dreiviertel()
+		void dreiviertel()
 		{
 			led_set(32);
 			led_set(31);
@@ -122,7 +124,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void fuenf()
+		void fuenf()
 		{
 			led_set(7);
 			led_set(8);
@@ -131,7 +133,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void zehn()
+		void zehn()
 		{
 			led_set(21);
 			led_set(20);
@@ -140,7 +142,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void zwanzig()
+		void zwanzig()
 		{
 			led_set(17);
 			led_set(16);
@@ -152,7 +154,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void halb()
+		void halb()
 		{
 			led_set(44);
 			led_set(45);
@@ -161,7 +163,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void eins()
+		void eins()
 		{
 			led_set(85);
 			led_set(84);
@@ -170,7 +172,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void uhr()
+		void uhr()
 		{
 			led_set(101);
 			led_set(102);
@@ -178,7 +180,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void happy_birthday()
+		void happy_birthday()
 		{
 			// happy
 			led_set(40);
@@ -199,7 +201,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_ein()
+		void h_ein()
 		{
 			led_set(85);
 			led_set(84);
@@ -207,7 +209,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_zwei()
+		void h_zwei()
 		{
 			led_set(87);
 			led_set(86);
@@ -216,7 +218,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_drei()
+		void h_drei()
 		{
 			led_set(73);
 			led_set(74);
@@ -225,7 +227,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_vier()
+		void h_vier()
 		{
 			led_set(91);
 			led_set(92);
@@ -234,7 +236,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_fuenf()
+		void h_fuenf()
 		{
 			led_set(59);
 			led_set(58);
@@ -243,7 +245,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_sechs()
+		void h_sechs()
 		{
 			led_set(109);
 			led_set(108);
@@ -253,7 +255,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_sieben()
+		void h_sieben()
 		{
 			led_set(82);
 			led_set(81);
@@ -264,7 +266,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_acht()
+		void h_acht()
 		{
 			led_set(95);
 			led_set(96);
@@ -273,7 +275,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_neun()
+		void h_neun()
 		{
 			led_set(69);
 			led_set(70);
@@ -282,7 +284,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_zehn()
+		void h_zehn()
 		{
 			led_set(66);
 			led_set(67);
@@ -291,7 +293,7 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_elf()
+		void h_elf()
 		{
 			led_set(88);
 			led_set(89);
@@ -299,24 +301,22 @@ struct UHR_114_Alternative_t
 		}
 
 
-		static inline void h_zwoelf()
+		void h_zwoelf()
 		{
 			led_set(63);
 			led_set(62);
 			led_set(61);
 			led_set(60);
 			led_set(59);
-
 		}
 
 
-		static inline void h_droelf()
+		void h_droelf()
 		{
 			led_set(65);
 			led_set(64);
 			led_set(61);
 			led_set(60);
 			led_set(59);
-
 		}
 };
