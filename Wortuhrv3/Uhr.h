@@ -221,6 +221,59 @@ enum Command {
     COMMAND_REQUEST_WIFI_LIST = 302,
 };
 
+enum ledText {
+    es_ist =  1,
+    nach =  2,
+    vor =  3,
+    viertel =  4,
+    dreiviertel = 51,
+    uhr =  5,
+    halb =  6,
+    fuenf =  7,
+    zehn =  8,
+    zwanzig =  9,
+    eins =  10,
+
+    h_ein =  11,
+    h_zwei =  12,
+    h_drei =  13,
+    h_vier =  14,
+    h_fuenf =  15,
+    h_sechs =  16,
+    h_sieben =  17,
+    h_acht =  18,
+    h_neun =  19,
+    h_zehn =  20,
+    h_elf =  21,
+    h_zwoelf =  22,
+
+    w_morgen =  30,
+    w_frueh =  31,
+    w_abend =  32,
+    w_mittag =  33,
+    w_nacht =  34,
+    w_schnee =  35,
+    w_klar =  36,
+    w_warnung =  37,
+    w_regen =  38,
+    w_wolken =  39,
+    w_gewitter =  40,
+    w_unter =  41,
+    w_ueber =  42,
+    w_minus =  43,
+    w_null =  44,
+    w_fuenf =  45,
+    w_zehn =  46,
+    w_und =  47,
+    w_zwanzig =  48,
+    w_dreissig =  49,
+    w_grad =  50,
+
+    h_droelf = 90,
+    happy_birthday = 91
+};
+
+
 int dim[20] = {30, 50, 70, 90, 110, 130, 140, 160, 200, 255, 255, 200, 160, 100, 80, 60, 40, 20, 10, 0};
 int diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
 

@@ -137,19 +137,46 @@ static void led_set(uint16_t i) {
 #include "Uhrtypes/uhr_func_169.hpp"
 #include "Uhrtypes/uhr_func_242.hpp"
 
-//__attribute__ ((used)) UHR_114_Alternative_t Uhr_114_Alternative_type;
+__attribute__ ((used)) UHR_114_Alternative_t Uhr_114_Alternative_type;
 __attribute__ ((used)) UHR_114_t Uhr_114_type;
-//__attribute__ ((used)) UHR_125_t Uhr_125_type;
-//__attribute__ ((used)) UHR_169_t Uhr_169_type;
-//__attribute__ ((used)) UHR_242_t Uhr_242_type;
+__attribute__ ((used)) UHR_125_t Uhr_125_type;
+__attribute__ ((used)) UHR_169_t Uhr_169_type;
+__attribute__ ((used)) UHR_242_t Uhr_242_type;
 
 UHR_Type Uhrtype;
 
 //------------------------------------------------------------------------------
 
-void interface_es_ist(iUhrType *a) {
-	a->es_ist();
+iUhrType* getPointer(uint8_t num){
+    switch (num) {
+        case 1:
+            return reinterpret_cast<iUhrType*>(&Uhr_114_type);
+        case 2:
+            return reinterpret_cast<iUhrType*>(&Uhr_114_Alternative_type);
+        case 3:
+            return reinterpret_cast<iUhrType*>(&Uhr_125_type);
+        case 4:
+            return reinterpret_cast<iUhrType*>(&Uhr_169_type);
+        case 5:
+            return reinterpret_cast<iUhrType*>(&Uhr_242_type);
+        default:
+            return nullptr;
+    }
 }
+
+//------------------------------------------------------------------------------
+
+void iShow(iUhrType *a, uint8_t text) {
+	a->show(text);
+}
+
+//------------------------------------------------------------------------------
+
+unsigned int iMatrix(iUhrType *a, uint8_t t, uint8_t b) {
+    return a->matrix[t][b];
+}
+
+//------------------------------------------------------------------------------
 
 static inline void led_show() {
     strip.Show();
@@ -854,6 +881,8 @@ static void show_wetter() {
 //------------------------------------------------------------------------------
 
 static void show_zeit(int flag) {
+
+    static iUhrType* usedUhrType = getPointer(2);
     uint8_t rr, gg, bb, ww;
     if (flag == 1) {
         set_uhrzeit();
@@ -878,28 +907,28 @@ static void show_zeit(int flag) {
         }
     }
 
-    if (uhrzeit & ((uint32_t) 1 << ESIST)) { interface_es_ist(reinterpret_cast<iUhrType *>(&Uhr_114_type)); }
-    if (uhrzeit & ((uint32_t) 1 << FUENF)) { Uhrtype.fuenf(); }
-    if (uhrzeit & ((uint32_t) 1 << ZEHN)) { Uhrtype.zehn(); }
-    if (uhrzeit & ((uint32_t) 1 << VIERTEL)) { Uhrtype.viertel(); }
-    if (uhrzeit & ((uint32_t) 1 << ZWANZIG)) { Uhrtype.zwanzig(); }
-    if (uhrzeit & ((uint32_t) 1 << HALB)) { Uhrtype.halb(); }
-    if (uhrzeit & ((uint32_t) 1 << EINS)) { Uhrtype.eins(); }
-    if (uhrzeit & ((uint32_t) 1 << VOR)) { Uhrtype.vor(); }
-    if (uhrzeit & ((uint32_t) 1 << NACH)) { Uhrtype.nach(); }
-    if (uhrzeit & ((uint32_t) 1 << H_EIN)) { Uhrtype.h_ein(); }
-    if (uhrzeit & ((uint32_t) 1 << H_ZWEI)) { Uhrtype.h_zwei(); }
-    if (uhrzeit & ((uint32_t) 1 << H_DREI)) { Uhrtype.h_drei(); }
-    if (uhrzeit & ((uint32_t) 1 << H_VIER)) { Uhrtype.h_vier(); }
-    if (uhrzeit & ((uint32_t) 1 << H_FUENF)) { Uhrtype.h_fuenf(); }
-    if (uhrzeit & ((uint32_t) 1 << H_SECHS)) { Uhrtype.h_sechs(); }
-    if (uhrzeit & ((uint32_t) 1 << H_SIEBEN)) { Uhrtype.h_sieben(); }
-    if (uhrzeit & ((uint32_t) 1 << H_ACHT)) { Uhrtype.h_acht(); }
-    if (uhrzeit & ((uint32_t) 1 << H_NEUN)) { Uhrtype.h_neun(); }
-    if (uhrzeit & ((uint32_t) 1 << H_ZEHN)) { Uhrtype.h_zehn(); }
-    if (uhrzeit & ((uint32_t) 1 << H_ELF)) { Uhrtype.h_elf(); }
-    if (uhrzeit & ((uint32_t) 1 << H_ZWOELF)) { Uhrtype.h_zwoelf(); }
-    if (uhrzeit & ((uint32_t) 1 << UHR)) { Uhrtype.uhr(); }
+    if (uhrzeit & ((uint32_t) 1 << ESIST)) { iShow(usedUhrType, es_ist); }
+    if (uhrzeit & ((uint32_t) 1 << FUENF)) { iShow(usedUhrType, fuenf);  }
+    if (uhrzeit & ((uint32_t) 1 << ZEHN)) { iShow(usedUhrType, zehn);  }
+    if (uhrzeit & ((uint32_t) 1 << VIERTEL)) { iShow(usedUhrType, viertel);  }
+    if (uhrzeit & ((uint32_t) 1 << ZWANZIG)) { iShow(usedUhrType, zwanzig);  }
+    if (uhrzeit & ((uint32_t) 1 << HALB)) { iShow(usedUhrType, halb); }
+    if (uhrzeit & ((uint32_t) 1 << EINS)) { iShow(usedUhrType, eins); }
+    if (uhrzeit & ((uint32_t) 1 << VOR)) { iShow(usedUhrType, vor); }
+    if (uhrzeit & ((uint32_t) 1 << NACH)) { iShow(usedUhrType, nach); }
+    if (uhrzeit & ((uint32_t) 1 << H_EIN)) { iShow(usedUhrType, h_ein); }
+    if (uhrzeit & ((uint32_t) 1 << H_ZWEI)) { iShow(usedUhrType, h_zwei); }
+    if (uhrzeit & ((uint32_t) 1 << H_DREI)) { iShow(usedUhrType, h_drei); }
+    if (uhrzeit & ((uint32_t) 1 << H_VIER)) { iShow(usedUhrType, h_vier); }
+    if (uhrzeit & ((uint32_t) 1 << H_FUENF)) { iShow(usedUhrType, h_fuenf); }
+    if (uhrzeit & ((uint32_t) 1 << H_SECHS)) { iShow(usedUhrType, h_sechs); }
+    if (uhrzeit & ((uint32_t) 1 << H_SIEBEN)) { iShow(usedUhrType, h_sieben); }
+    if (uhrzeit & ((uint32_t) 1 << H_ACHT)) { iShow(usedUhrType, h_acht); }
+    if (uhrzeit & ((uint32_t) 1 << H_NEUN)) { iShow(usedUhrType, h_neun); }
+    if (uhrzeit & ((uint32_t) 1 << H_ZEHN)) { iShow(usedUhrType, h_zehn);  }
+    if (uhrzeit & ((uint32_t) 1 << H_ELF)) { iShow(usedUhrType, h_elf); }
+    if (uhrzeit & ((uint32_t) 1 << H_ZWOELF)) { iShow(usedUhrType, h_zwoelf); }
+    if (uhrzeit & ((uint32_t) 1 << UHR)) { iShow(usedUhrType, uhr); }
 
     show_minuten();
 
