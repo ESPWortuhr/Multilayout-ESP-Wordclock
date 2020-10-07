@@ -7,7 +7,7 @@
 
 #define LED_MAP(x)            (x)
 
-class UHR_114_t : Uhrtype
+class UHR_114_t : public iUhrType
 {
 	public:
 
@@ -100,7 +100,7 @@ class UHR_114_t : Uhrtype
 
 
 
-	void es_ist()
+	void es_ist() const
 	{
 		//Es
 		led_set(LED_MAP(0));
@@ -114,7 +114,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void nach()
+	void nach() const
 	{
 		led_set(LED_MAP(38));
 		led_set(LED_MAP(39));
@@ -124,7 +124,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void vor()
+	void vor() const
 	{
 		led_set(LED_MAP(35));
 		led_set(LED_MAP(36));
@@ -132,7 +132,7 @@ class UHR_114_t : Uhrtype
 	}
 //------------------------------------------------------------------------------
 
-	void viertel()
+	void viertel() const
 	{
 		led_set(LED_MAP(26));
 		led_set(LED_MAP(27));
@@ -145,7 +145,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void fuenf()
+	void fuenf() const
 	{
 		led_set(LED_MAP(7));
 		led_set(LED_MAP(8));
@@ -155,7 +155,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void zehn()
+	void zehn() const
 	{
 		led_set(LED_MAP(18));
 		led_set(LED_MAP(19));
@@ -164,7 +164,7 @@ class UHR_114_t : Uhrtype
 	}
 
 //------------------------------------------------------------------------------
-	void zwanzig()
+	void zwanzig() const
 	{
 		led_set(LED_MAP(11));
 		led_set(LED_MAP(12));
@@ -177,7 +177,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void halb()
+	void halb() const
 	{
 		led_set(LED_MAP(44));
 		led_set(LED_MAP(45));
@@ -187,7 +187,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void eins()
+	void eins() const
 	{
 		led_set(LED_MAP(60));
 		led_set(LED_MAP(61));
@@ -197,7 +197,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void uhr()
+	void uhr() const
 	{
 		led_set(LED_MAP(100));
 		led_set(LED_MAP(101));
@@ -206,7 +206,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_ein()
+	void h_ein() const
 	{
 		led_set(LED_MAP(61));
 		led_set(LED_MAP(62));
@@ -215,7 +215,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_zwei()
+	void h_zwei() const
 	{
 		led_set(LED_MAP(62));
 		led_set(LED_MAP(63));
@@ -225,7 +225,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_drei()
+	void h_drei() const
 	{
 		led_set(LED_MAP(67));
 		led_set(LED_MAP(68));
@@ -235,7 +235,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_vier()
+	void h_vier() const
 	{
 		led_set(LED_MAP(77));
 		led_set(LED_MAP(78));
@@ -245,7 +245,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_fuenf()
+	void h_fuenf() const
 	{
 		led_set(LED_MAP(73));
 		led_set(LED_MAP(74));
@@ -255,7 +255,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_sechs()
+	void h_sechs() const
 	{
 		led_set(LED_MAP(104));
 		led_set(LED_MAP(105));
@@ -266,7 +266,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_sieben()
+	void h_sieben() const
 	{
 		led_set(LED_MAP(55));
 		led_set(LED_MAP(56));
@@ -278,7 +278,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_acht()
+	void h_acht() const
 	{
 		led_set(LED_MAP(89));
 		led_set(LED_MAP(90));
@@ -288,7 +288,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_neun()
+	void h_neun() const
 	{
 		led_set(LED_MAP(81));
 		led_set(LED_MAP(82));
@@ -298,7 +298,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_zehn()
+	void h_zehn() const
 	{
 		led_set(LED_MAP(93));
 		led_set(LED_MAP(94));
@@ -308,7 +308,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_elf()
+	void h_elf() const
 	{
 		led_set(LED_MAP(85));
 		led_set(LED_MAP(86));
@@ -317,7 +317,7 @@ class UHR_114_t : Uhrtype
 
 //------------------------------------------------------------------------------
 
-	void h_zwoelf()
+	void h_zwoelf() const
 	{
 
 		led_set(LED_MAP(49));

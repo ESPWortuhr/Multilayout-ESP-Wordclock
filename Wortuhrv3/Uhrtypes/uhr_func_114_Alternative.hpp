@@ -18,7 +18,7 @@
 
 #define USE_DREIVIERTEL
 
-class UHR_114_Alternative_t : Uhrtype
+class UHR_114_Alternative_t : public iUhrType
 {
 	public:
 

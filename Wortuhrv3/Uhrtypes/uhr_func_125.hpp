@@ -1,6 +1,6 @@
 #include "Uhrtype.hpp"
 
-class UHR_125_t : Uhrtype
+class UHR_125_t : public iUhrType
 {
 	public:
 

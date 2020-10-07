@@ -137,15 +137,20 @@ static void led_set(uint16_t i) {
 #include "Uhrtypes/uhr_func_169.hpp"
 #include "Uhrtypes/uhr_func_242.hpp"
 
-__attribute__ ((used)) UHR_114_Alternative_t Uhr_114_Alternative_type;
+//__attribute__ ((used)) UHR_114_Alternative_t Uhr_114_Alternative_type;
 __attribute__ ((used)) UHR_114_t Uhr_114_type;
-__attribute__ ((used)) UHR_125_t Uhr_125_type;
-__attribute__ ((used)) UHR_169_t Uhr_169_type;
-__attribute__ ((used)) UHR_242_t Uhr_242_type;
+//__attribute__ ((used)) UHR_125_t Uhr_125_type;
+//__attribute__ ((used)) UHR_169_t Uhr_169_type;
+//__attribute__ ((used)) UHR_242_t Uhr_242_type;
 
 UHR_Type Uhrtype;
 
 //------------------------------------------------------------------------------
+
+void interface_es_ist(iUhrType *a) {
+	a->NUM_PIXELS;
+	a->es_ist();
+}
 
 static inline void led_show() {
     strip.Show();
@@ -874,7 +879,7 @@ static void show_zeit(int flag) {
         }
     }
 
-    if (uhrzeit & ((uint32_t) 1 << ESIST)) { Uhrtype.es_ist(); }
+    if (uhrzeit & ((uint32_t) 1 << ESIST)) { interface_es_ist(reinterpret_cast<iUhrType *>(&Uhr_114_type)); }
     if (uhrzeit & ((uint32_t) 1 << FUENF)) { Uhrtype.fuenf(); }
     if (uhrzeit & ((uint32_t) 1 << ZEHN)) { Uhrtype.zehn(); }
     if (uhrzeit & ((uint32_t) 1 << VIERTEL)) { Uhrtype.viertel(); }

@@ -1,6 +1,6 @@
 #include "Uhrtype.hpp"
 
-class UHR_242_t : Uhrtype
+class UHR_242_t : public iUhrType
 {
 	public:
 	uint8_t NUM_PIXELS = 242;
