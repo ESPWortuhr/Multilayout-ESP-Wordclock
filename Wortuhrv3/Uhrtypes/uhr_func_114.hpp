@@ -100,7 +100,7 @@ class UHR_114_t : public iUhrType
 
 
 
-	void es_ist() const
+	void es_ist() const override
 	{
 		//Es
 		led_set(LED_MAP(0));
@@ -114,7 +114,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void nach() const
+	void nach() const override
 	{
 		led_set(LED_MAP(38));
 		led_set(LED_MAP(39));
@@ -124,7 +124,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void vor() const
+	void vor() const override
 	{
 		led_set(LED_MAP(35));
 		led_set(LED_MAP(36));
@@ -132,7 +132,7 @@ class UHR_114_t : public iUhrType
 	}
 //------------------------------------------------------------------------------
 
-	void viertel() const
+	void viertel() const override
 	{
 		led_set(LED_MAP(26));
 		led_set(LED_MAP(27));
@@ -145,7 +145,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void fuenf() const
+	void fuenf() const override
 	{
 		led_set(LED_MAP(7));
 		led_set(LED_MAP(8));
@@ -155,7 +155,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void zehn() const
+	void zehn() const override
 	{
 		led_set(LED_MAP(18));
 		led_set(LED_MAP(19));
@@ -164,7 +164,7 @@ class UHR_114_t : public iUhrType
 	}
 
 //------------------------------------------------------------------------------
-	void zwanzig() const
+	void zwanzig() const override
 	{
 		led_set(LED_MAP(11));
 		led_set(LED_MAP(12));
@@ -177,7 +177,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void halb() const
+	void halb() const override
 	{
 		led_set(LED_MAP(44));
 		led_set(LED_MAP(45));
@@ -187,7 +187,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void eins() const
+	void eins() const override
 	{
 		led_set(LED_MAP(60));
 		led_set(LED_MAP(61));
@@ -197,7 +197,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void uhr() const
+	void uhr() const override
 	{
 		led_set(LED_MAP(100));
 		led_set(LED_MAP(101));
@@ -206,7 +206,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_ein() const
+	void h_ein() const override
 	{
 		led_set(LED_MAP(61));
 		led_set(LED_MAP(62));
@@ -215,7 +215,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_zwei() const
+	void h_zwei() const override
 	{
 		led_set(LED_MAP(62));
 		led_set(LED_MAP(63));
@@ -225,7 +225,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_drei() const
+	void h_drei() const override
 	{
 		led_set(LED_MAP(67));
 		led_set(LED_MAP(68));
@@ -235,7 +235,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_vier() const
+	void h_vier() const override
 	{
 		led_set(LED_MAP(77));
 		led_set(LED_MAP(78));
@@ -245,7 +245,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_fuenf() const
+	void h_fuenf() const override
 	{
 		led_set(LED_MAP(73));
 		led_set(LED_MAP(74));
@@ -255,7 +255,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_sechs() const
+	void h_sechs() const override
 	{
 		led_set(LED_MAP(104));
 		led_set(LED_MAP(105));
@@ -266,7 +266,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_sieben() const
+	void h_sieben() const override
 	{
 		led_set(LED_MAP(55));
 		led_set(LED_MAP(56));
@@ -278,7 +278,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_acht() const
+	void h_acht() const override
 	{
 		led_set(LED_MAP(89));
 		led_set(LED_MAP(90));
@@ -288,7 +288,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_neun() const
+	void h_neun() const override
 	{
 		led_set(LED_MAP(81));
 		led_set(LED_MAP(82));
@@ -298,7 +298,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_zehn() const
+	void h_zehn() const override
 	{
 		led_set(LED_MAP(93));
 		led_set(LED_MAP(94));
@@ -308,7 +308,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_elf() const
+	void h_elf() const override
 	{
 		led_set(LED_MAP(85));
 		led_set(LED_MAP(86));
@@ -317,7 +317,7 @@ class UHR_114_t : public iUhrType
 
 //------------------------------------------------------------------------------
 
-	void h_zwoelf() const
+	void h_zwoelf() const override
 	{
 
 		led_set(LED_MAP(49));

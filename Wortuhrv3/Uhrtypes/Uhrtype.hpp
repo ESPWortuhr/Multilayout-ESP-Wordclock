@@ -1,183 +1,181 @@
-#include "Arduino.h"
-
 #pragma once
 
 class iUhrType
 {
 
 	public:
-		uint8_t NUM_PIXELS;
-		uint8_t NUM_SMATRIX;
-		uint8_t ROWS_MATRIX;
-		uint8_t NUM_RMATRIX;
+		unsigned int NUM_PIXELS;
+		unsigned int NUM_SMATRIX;
+		unsigned int ROWS_MATRIX;
+		unsigned int NUM_RMATRIX;
 
-		virtual void es_ist() const;
-
-//------------------------------------------------------------------------------
-
-		virtual void nach() const;
+		virtual void es_ist() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void vor() const;
-//------------------------------------------------------------------------------
-
-		virtual void viertel() const;
+		virtual void nach() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void fuenf() const;
+		virtual void vor() const {};
+//------------------------------------------------------------------------------
+
+		virtual void viertel() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void zehn() const;
-
-//------------------------------------------------------------------------------
-		virtual void zwanzig() const;
+		virtual void fuenf() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void halb() const;
+		virtual void zehn() const {};
+
+//------------------------------------------------------------------------------
+		virtual void zwanzig() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void eins() const;
+		virtual void halb() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void uhr() const;
+		virtual void eins() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_ein() const;
+		virtual void uhr() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_zwei() const;
+		virtual void h_ein() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_drei() const;
+		virtual void h_zwei() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_vier() const;
+		virtual void h_drei() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_fuenf() const;
+		virtual void h_vier() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_sechs() const;
+		virtual void h_fuenf() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_sieben() const;
+		virtual void h_sechs() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_acht() const;
+		virtual void h_sieben() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_neun() const;
-//------------------------------------------------------------------------------
-
-		virtual void h_zehn() const;
+		virtual void h_acht() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_elf() const;
+		virtual void h_neun() const {};
+//------------------------------------------------------------------------------
+
+		virtual void h_zehn() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void h_zwoelf() const;
+		virtual void h_elf() const {};
+
+//------------------------------------------------------------------------------
+
+		virtual void h_zwoelf() const {};
 
 //------------------------------------------------------------------------------
 // Wetter
 //------------------------------------------------------------------------------
-/*
-		virtual void w_morgen() const;
+
+		virtual void w_morgen() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_frueh() const;
+		virtual void w_frueh() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_abend() const;
+		virtual void w_abend() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_mittag() const;
+		virtual void w_mittag() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_nacht() const;
+		virtual void w_nacht() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_schnee() const;
+		virtual void w_schnee() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_klar() const;
+		virtual void w_klar() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_warnung() const;
+		virtual void w_warnung() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_regen() const;
+		virtual void w_regen() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_wolken() const;
+		virtual void w_wolken() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_gewitter() const;
+		virtual void w_gewitter() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_unter() const;
+		virtual void w_unter() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_ueber() const;
+		virtual void w_ueber() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_minus() const;
+		virtual void w_minus() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_null() const;
+		virtual void w_null() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_fuenf() const;
+		virtual void w_fuenf() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_zehn() const;
+		virtual void w_zehn() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_und() const;
+		virtual void w_und() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_zwanzig() const;
+		virtual void w_zwanzig() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_dreissig() const;
+		virtual void w_dreissig() const {};
 
 //------------------------------------------------------------------------------
 
-		virtual void w_grad() const;
-		*/
+		virtual void w_grad() const {};
+
 };

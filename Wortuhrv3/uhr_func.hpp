@@ -148,7 +148,6 @@ UHR_Type Uhrtype;
 //------------------------------------------------------------------------------
 
 void interface_es_ist(iUhrType *a) {
-	a->NUM_PIXELS;
 	a->es_ist();
 }
 
