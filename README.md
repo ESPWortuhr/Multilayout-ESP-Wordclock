@@ -60,6 +60,10 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * Finaler Release wäre eine unified Binary mit selektor auf der Webseite
 
 ## ChangeLog
+### Version 2.3.1
+* (Eisbaeeer) 20201008   
+* upgrade ArduinoJson 5 zu ArduinoJson 6 (bitte nur noch ArduinoJson >= Version 6 verwenden   
+
 ### Version 2.3.0
 * (dbambus)
 * Aufräumen der Uhr.h für die Übersichtlichkeit

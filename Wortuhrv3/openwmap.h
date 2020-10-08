@@ -53,7 +53,7 @@ void getweather(){
          //TelnetMsg(response);
         
         // process JSON
-        DynamicJsonBuffer jsonBuffer;
+        DynamicJsonDocument doc(6144);
         
         // But.....make sure the stream header is valid
         // Sometime OWM includes invalid data after the header
@@ -87,10 +87,13 @@ void getweather(){
             }
         
         
-        JsonObject& root = jsonBuffer.parseObject(response);
-        
-        if (!root.success()) {
-            Serial.println("JSON parsing failed!");
+        //JsonObject root = doc.parseObject(response);
+        //deserializeJson(doc,response);
+        auto error = deserializeJson(doc,response);
+        if (error) {
+        Serial.print(F("deserializeJson() failed with code "));
+        Serial.println(error.c_str());
+        return;
         } 
         else {
         Serial.println("JSON parsing worked!"); 
@@ -98,19 +101,19 @@ void getweather(){
         }
 
         //Variable mit json Wert forecast füllen
-        const char* location = root["city"]["name"]; 
-        const char* wetter_6 = root["list"][1]["weather"][0]["description"];
-        const int wetterid_6 = root["list"][1]["weather"][0]["id"];
-        double temp_6 = root["list"][1]["main"]["temp"];
-        const char* wetter_12 = root["list"][3]["weather"][0]["description"];
-        const int wetterid_12 = root["list"][3]["weather"][0]["id"];
-        double temp_12 = root["list"][3]["main"]["temp"];
-        const char* wetter_18 = root["list"][5]["weather"][0]["description"];
-        const int wetterid_18 = root["list"][5]["weather"][0]["id"];
-        double temp_18 = root["list"][5]["main"]["temp"];
-        const char* wetter_24 = root["list"][7]["weather"][0]["description"];
-        const int wetterid_24 = root["list"][7]["weather"][0]["id"];
-        double temp_24 = root["list"][7]["main"]["temp"];
+        const char* location = doc["city","name"]; 
+        const char* wetter_6 = doc["list",1,"weather",0,"description"];
+        const int wetterid_6 = doc["list",1,"weather",0,"id"];
+        double temp_6 = doc["list",1,"main","temp"];
+        const char* wetter_12 = doc["list",3,"weather",0,"description"];
+        const int wetterid_12 = doc["list",3,"weather",0,"id"];
+        double temp_12 = doc["list",3,"main","temp"];
+        const char* wetter_18 = doc["list",5,"weather",0,"description"];
+        const int wetterid_18 = doc["list",5,"weather",0,"id"];
+        double temp_18 = doc["list",5,"main","temp"];
+        const char* wetter_24 = doc["list",7,"weather",0,"description"];
+        const int wetterid_24 = doc["list",7,"weather",0,"id"];
+        double temp_24 = doc["list",7,"main","temp"];
 
         /*--------------------------------------------------
         List of Conditions http://openweathermap.org/weather-conditions

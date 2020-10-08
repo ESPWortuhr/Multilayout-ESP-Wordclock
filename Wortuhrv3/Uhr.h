@@ -1,6 +1,6 @@
 #include "Arduino.h"
 
-const char *VER = "2.3.0";  // Software Version
+const char *VER = "2.3.1";  // Software Version
 
 #pragma once
 
@@ -161,6 +161,14 @@ struct UHR_242_t {
     uint8_t ROWS_MATRIX = 22;
     uint8_t NUM_RMATRIX = 0;
 };
+
+// fix Eisbaeeer
+#ifdef UHR_242 
+  uint8_t NUM_PIXELS = 242;
+    uint8_t NUM_SMATRIX = 242;
+    uint8_t ROWS_MATRIX = 22;
+    uint8_t NUM_RMATRIX = 0;                
+#endif
 
 UHR_Type Uhrtype;
 
