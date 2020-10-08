@@ -1,4 +1,3 @@
-#include <Arduino.h>
 
 /*
  * Layout Front

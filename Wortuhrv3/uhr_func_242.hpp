@@ -1,4 +1,3 @@
-#include <Arduino.h>
 
 unsigned int matrix[22 ][11] = {                               
 

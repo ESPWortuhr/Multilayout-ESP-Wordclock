@@ -1,18 +1,10 @@
-/*
- * WebPage_Adapter.h
- *
- *  Created on: 03.01.2019
- *      Author: Andreas
- */
-
-#ifndef WEBSOCKETSADAPTER_H_
-#define WEBSOCKETSADAPTER_H_
+#pragma once
 
 #include "WebSocketsServer.h"
 #ifdef Grbw
-#include "WebPageWortuhr2_RGBW.h"
+#include "WebPageWortuhr_RGBW.h"
 #else
-#include "WebPageWortuhr2.h"
+#include "WebPageWortuhr.h"
 #endif
 
 #define RESPONSE_SIZE	900
@@ -60,5 +52,3 @@ class WebPage_Adapter : public WebSocketsServer {
     }
 
 };
-
-#endif /* WEBSOCKETSADAPTER_H_ */

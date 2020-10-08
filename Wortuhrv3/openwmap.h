@@ -1,7 +1,3 @@
-/*--------------------------------------------------
-Dieses File gehoert zum Code von:
-https://github.com/Eisbaeeer/Ulrich-Radig_Wort_Uhr_Version_2
---------------------------------------------------*/
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #ifdef UHR_242
@@ -11,14 +7,11 @@ void getweather(){
         // connect to server  
         bool ok = client.connect(server, 80);
         bool beginFound = false;
-        
-         #ifdef DEBUG
-         USE_SERIAL.println(""); 
-         USE_SERIAL.println("--------------------------------------");      
-         USE_SERIAL.println ( "Connecting to Openweathermap.org" );  
-         USE_SERIAL.println("--------------------------------------");
-                
-         #endif
+
+         Serial.println(""); 
+         Serial.println("--------------------------------------");      
+         Serial.println ( "Connecting to Openweathermap.org" );  
+         Serial.println("--------------------------------------");
 
         // create calling URL
         strncat(resource, resource1, 22);
@@ -26,11 +19,9 @@ void getweather(){
         strncat(resource, resource2, 20);
         strncat(resource, G.apikey, 32);
         strncat(resource, resource3, 6);
-  
-         #ifdef DEBUG      
-         USE_SERIAL.print ( "Calling URL: " );
-         USE_SERIAL.println (resource);      
-         #endif
+
+         Serial.print ( "Calling URL: " );
+         Serial.println (resource);
         
         if (ok == 1){
     
@@ -55,14 +46,11 @@ void getweather(){
         }
          
         client.readBytes(response, 3500);
-        
-         #ifdef DEBUG
-         USE_SERIAL.println("Antwort: "); 
-         USE_SERIAL.println(response);  
+
+         Serial.println("Antwort: "); 
+         Serial.println(response);  
          //TelnetMsg("Antwort: "); 
-         //TelnetMsg(response);  
-         
-         #endif
+         //TelnetMsg(response);
         
         // process JSON
         DynamicJsonBuffer jsonBuffer;
@@ -72,59 +60,41 @@ void getweather(){
         // Parsing fails if this data is not removed
         
         if(int(response[0]) != 123){
-            #ifdef DEBUG
-            USE_SERIAL.println("Wrong start char detected"); 
-            #endif
+            Serial.println("Wrong start char detected");
         int i = 0;
         while(!beginFound){
             if(int(response[i]) == 123){ // check for the "{" 
             beginFound = true;
-            #ifdef DEBUG
-            USE_SERIAL.println("{ found at "); 
-            USE_SERIAL.println(i); 
-            #endif
+            Serial.println("{ found at "); 
+            Serial.println(i);
             }
             i++;
         }
 
             int eol = sizeof(response);
-            #ifdef DEBUG
-            USE_SERIAL.println("Length = "); 
-            USE_SERIAL.println(eol); 
-            #endif
-             
+            Serial.println("Length = "); 
+            Serial.println(eol);
     
             //restructure by shifting the correct data
-            #ifdef DEBUG
-            USE_SERIAL.println("restructure"); 
-            #endif
+            Serial.println("restructure");
             for(int c=0; c<(eol-i); c++){
                 response[c] = response[((c+i)-1)];
-                #ifdef DEBUG
-                USE_SERIAL.println(response[c]); 
-                #endif
+                Serial.println(response[c]);
             }
-     
-            #ifdef DEBUG
-            USE_SERIAL.println("Done...!"); 
-            //TelnetMsg("Done...!"); 
-            #endif
 
+            Serial.println("Done...!"); 
+            //TelnetMsg("Done...!");
             }
         
         
         JsonObject& root = jsonBuffer.parseObject(response);
         
         if (!root.success()) {
-            #ifdef DEBUG
-            USE_SERIAL.println("JSON parsing failed!"); 
-            #endif
+            Serial.println("JSON parsing failed!");
         } 
         else {
-        #ifdef DEBUG
-        USE_SERIAL.println("JSON parsing worked!"); 
-        //TelnetMsg("JSON parsing worked!"); 
-        #endif
+        Serial.println("JSON parsing worked!"); 
+        //TelnetMsg("JSON parsing worked!");
         }
 
         //Variable mit json Wert forecast füllen
@@ -156,50 +126,48 @@ void getweather(){
         --------------------------------------------------*/
                 
         // Print data to Serial
-        #ifdef DEBUG
-        USE_SERIAL.print("*** "); 
-        USE_SERIAL.print(location); 
-        USE_SERIAL.println(" ***"); 
-        USE_SERIAL.println("----------");
-        USE_SERIAL.println("+6h");                                    
-        USE_SERIAL.print("Type: "); 
-        USE_SERIAL.println(wetter_6); 
-        USE_SERIAL.print("Wetter ID: "); 
-        USE_SERIAL.println(wetterid_6); 
-        USE_SERIAL.print("Temp: "); 
-        USE_SERIAL.print(temp_6);    
-        USE_SERIAL.println("°C"); 
-        USE_SERIAL.println("----------");
-        USE_SERIAL.println("+12h");                                    
-        USE_SERIAL.print("Type: "); 
-        USE_SERIAL.println(wetter_12); 
-        USE_SERIAL.print("Wetter ID: "); 
-        USE_SERIAL.println(wetterid_12); 
-        USE_SERIAL.print("Temp: "); 
-        USE_SERIAL.print(temp_12);    
-        USE_SERIAL.println("°C"); 
-        USE_SERIAL.println("----------");              
-        USE_SERIAL.println("+18h");                                    
-        USE_SERIAL.print("Type: "); 
-        USE_SERIAL.println(wetter_18); 
-        USE_SERIAL.print("Wetter ID: "); 
-        USE_SERIAL.println(wetterid_18); 
-        USE_SERIAL.print("Temp: "); 
-        USE_SERIAL.print(temp_18);    
-        USE_SERIAL.println("°C"); 
-        USE_SERIAL.println("----------");              
-        USE_SERIAL.println("+24h");                                    
-        USE_SERIAL.print("Type: "); 
-        USE_SERIAL.println(wetter_24); 
-        USE_SERIAL.print("Wetter ID: "); 
-        USE_SERIAL.println(wetterid_24); 
-        USE_SERIAL.print("Temp: "); 
-        USE_SERIAL.print(temp_24);    
-        USE_SERIAL.println("°C");
-        USE_SERIAL.println("Stunde");
-        USE_SERIAL.println(_stunde);
-        USE_SERIAL.println("----------");  
-        #endif
+        Serial.print("*** "); 
+        Serial.print(location); 
+        Serial.println(" ***"); 
+        Serial.println("----------");
+        Serial.println("+6h");                                    
+        Serial.print("Type: "); 
+        Serial.println(wetter_6); 
+        Serial.print("Wetter ID: "); 
+        Serial.println(wetterid_6); 
+        Serial.print("Temp: "); 
+        Serial.print(temp_6);    
+        Serial.println("°C"); 
+        Serial.println("----------");
+        Serial.println("+12h");                                    
+        Serial.print("Type: "); 
+        Serial.println(wetter_12); 
+        Serial.print("Wetter ID: "); 
+        Serial.println(wetterid_12); 
+        Serial.print("Temp: "); 
+        Serial.print(temp_12);    
+        Serial.println("°C"); 
+        Serial.println("----------");              
+        Serial.println("+18h");                                    
+        Serial.print("Type: "); 
+        Serial.println(wetter_18); 
+        Serial.print("Wetter ID: "); 
+        Serial.println(wetterid_18); 
+        Serial.print("Temp: "); 
+        Serial.print(temp_18);    
+        Serial.println("°C"); 
+        Serial.println("----------");              
+        Serial.println("+24h");                                    
+        Serial.print("Type: "); 
+        Serial.println(wetter_24); 
+        Serial.print("Wetter ID: "); 
+        Serial.println(wetterid_24); 
+        Serial.print("Temp: "); 
+        Serial.print(temp_24);    
+        Serial.println("°C");
+        Serial.println("Stunde");
+        Serial.println(_stunde);
+        Serial.println("----------");  
 
         // Wetterdaten auf LED Matrix ausgeben
         
@@ -299,35 +267,30 @@ void getweather(){
         if ((_stunde >21) && (_stunde <= 23)) { wstunde = 4;}
         if ((_stunde >=0) && (_stunde < 3)) { wstunde = 4;}
 
-      
 
-        #ifdef DEBUG
-        USE_SERIAL.print("Temp_6 - ");
-        USE_SERIAL.println(wtemp_6);
-        USE_SERIAL.print("wwetter_6 - ");        
-        USE_SERIAL.println(wwetter_6);
-        USE_SERIAL.println("--------- ");
-        USE_SERIAL.print("Temp_12 - ");
-        USE_SERIAL.println(wtemp_12);
-        USE_SERIAL.print("wwetter_12 - ");
-        USE_SERIAL.println(wwetter_12);
-        USE_SERIAL.println("--------- ");
-        USE_SERIAL.print("Temp_18 - ");
-        USE_SERIAL.println(wtemp_18);
-        USE_SERIAL.print("wwetter_18 - ");
-        USE_SERIAL.println(wwetter_18);
-        USE_SERIAL.println("--------- ");
-        USE_SERIAL.print("Temp_24 - ");
-        USE_SERIAL.println(wtemp_24);
-        USE_SERIAL.print("wwetter_24 - ");
-        USE_SERIAL.println(wwetter_24);
-        USE_SERIAL.println("--------- ");
-        USE_SERIAL.print("wstunde - ");
-        USE_SERIAL.println(wstunde);
-        USE_SERIAL.println("--------- ");
-        
-        #endif    
-     
+        Serial.print("Temp_6 - ");
+        Serial.println(wtemp_6);
+        Serial.print("wwetter_6 - ");        
+        Serial.println(wwetter_6);
+        Serial.println("--------- ");
+        Serial.print("Temp_12 - ");
+        Serial.println(wtemp_12);
+        Serial.print("wwetter_12 - ");
+        Serial.println(wwetter_12);
+        Serial.println("--------- ");
+        Serial.print("Temp_18 - ");
+        Serial.println(wtemp_18);
+        Serial.print("wwetter_18 - ");
+        Serial.println(wwetter_18);
+        Serial.println("--------- ");
+        Serial.print("Temp_24 - ");
+        Serial.println(wtemp_24);
+        Serial.print("wwetter_24 - ");
+        Serial.println(wwetter_24);
+        Serial.println("--------- ");
+        Serial.print("wstunde - ");
+        Serial.println(wstunde);
+        Serial.println("--------- ");
      
      }
      client.stop(); // disconnect from server     

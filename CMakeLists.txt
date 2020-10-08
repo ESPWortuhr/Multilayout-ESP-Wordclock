@@ -10,7 +10,7 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_C_COMPILER_WORKS 1)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 
-project("Ulrich-Radig_Wort_Uhr_Version_2" C CXX)
+project("Worduhr-v3" C CXX)
 
 include(CMakeListsPrivate.txt)
 

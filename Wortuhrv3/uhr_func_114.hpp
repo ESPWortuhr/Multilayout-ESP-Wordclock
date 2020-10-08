@@ -1,4 +1,3 @@
-#include <Arduino.h>
 
 #define LED_LAYOUT_NORMAL	1
 #define LED_LAYOUT_REVERSE	0
@@ -326,4 +325,3 @@ void h_zwoelf()
 }
 
 //------------------------------------------------------------------------------
-

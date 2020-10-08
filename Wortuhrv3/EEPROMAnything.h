@@ -1,7 +1,3 @@
-/*--------------------------------------------------
-Dieses File gehoert zum Code von:
-https://github.com/Eisbaeeer/Ulrich-Radig_Wort_Uhr_Version_2
---------------------------------------------------*/
 #include <EEPROM.h>
 #include <Arduino.h>  // for type definitions
 
