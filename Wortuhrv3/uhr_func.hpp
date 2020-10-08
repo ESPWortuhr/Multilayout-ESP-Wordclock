@@ -173,9 +173,20 @@ void iShow(iUhrType *a, uint8_t text) {
 //------------------------------------------------------------------------------
 
 unsigned int iMatrix(iUhrType *a, uint8_t t, uint8_t b) {
-    return a->matrix[t][b];
+    return a->getMatrix(t,b);
 }
 
+unsigned int iSMatrix(iUhrType *a, uint8_t t) {
+	return a->getSMatrix(t);
+}
+
+unsigned int iRMatrix(iUhrType *a, uint8_t t) {
+	return a->getRMatrix(t);
+}
+
+unsigned int iMinArr(iUhrType *a, uint8_t t, uint8_t b) {
+	return a->getMinArr(t,b);
+}
 //------------------------------------------------------------------------------
 
 static inline void led_show() {
@@ -882,7 +893,7 @@ static void show_wetter() {
 
 static void show_zeit(int flag) {
 
-    static iUhrType* usedUhrType = getPointer(2);
+    static iUhrType* usedUhrType = getPointer(G.UhrtypeDef);
     uint8_t rr, gg, bb, ww;
     if (flag == 1) {
         set_uhrzeit();
@@ -903,7 +914,7 @@ static void show_zeit(int flag) {
     //Hintergrund setzen
     for (uint8_t t = 0; t < Uhrtype.ROWS_MATRIX; t++) {
         for (uint8_t b = 0; b < 11; b++) {
-            led_set_pixel(rr, gg, bb, ww, Uhrtype.matrix[t][b]);
+            led_set_pixel(rr, gg, bb, ww, usedUhrType->matrix[t][b]);
         }
     }
 

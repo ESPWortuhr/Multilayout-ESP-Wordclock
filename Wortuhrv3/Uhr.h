@@ -103,6 +103,7 @@ struct GLOBAL {
     uint8_t h20;
     uint8_t h22;
     uint8_t h24;
+    uint8_t UhrtypeDef;
 };
 GLOBAL G = {};
 
@@ -193,6 +194,7 @@ enum Command {
     COMMAND_MODE_WORD_CLOCK = 1,
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
+	COMMAND_SET_UHRTYPE = 89,
     COMMAND_SET_WEATHER_DATA = 90,
     COMMAND_SET_LDR = 91,
     COMMAND_SET_HOSTNAME = 92,
@@ -271,6 +273,14 @@ enum ledText {
 
     h_droelf = 90,
     happy_birthday = 91
+};
+
+enum UhrTypeDefinitions {
+	Uhr_114 = 1,
+	Uhr_114_Alternative = 2,
+	Uhr_125 = 3,
+	Uhr_169 = 4,
+	Uhr_242 = 5,
 };
 
 
