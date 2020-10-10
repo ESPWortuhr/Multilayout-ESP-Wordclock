@@ -59,7 +59,15 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * HSI Farb Selektor auf der Website
 * Finaler Release wäre eine unified Binary mit selektor auf der Webseite
 
+## Known Bugs
+* struct for stripes
+* payload handling webiste (fields moved SSID, API-KEY, etc.) --> reboot
+
 ## ChangeLog
+### Version 2.3.2
+* (Eisbaeeer) 20201009   
+* fix uhr_242 (Zeile 272 Uhr.h)
+
 ### Version 2.3.1
 * (Eisbaeeer) 20201008   
 * upgrade ArduinoJson 5 zu ArduinoJson 6 (bitte nur noch ArduinoJson >= Version 6 verwenden)
