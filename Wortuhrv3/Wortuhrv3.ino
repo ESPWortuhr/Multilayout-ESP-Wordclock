@@ -278,6 +278,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+			if (cc == COMMAND_SET_UHRTYPE) {       // UhrType speichern
+				G.conf = COMMAND_SET_UHRTYPE;
+				G.UhrtypeDef = split(9, 3);
+				break;
+			}
+
             if (cc == COMMAND_SET_WEATHER_DATA) {       // Openweathermap speichern
                 G.conf = COMMAND_SET_WEATHER_DATA;
                 ii = 0;
@@ -746,6 +752,26 @@ void setup() {
         G.h22 = 100;
         G.h24 = 100;
 
+#ifdef UHR_114_Alternative
+		G.UhrtypeDef = Uhr_114_Alternative;
+#endif
+
+#ifdef UHR_114
+		G.UhrtypeDef = Uhr_114;
+#endif
+
+#ifdef UHR_125
+		G.UhrtypeDef = Uhr_125;
+#endif
+
+#ifdef UHR_169
+		G.UhrtypeDef = Uhr_169;
+#endif
+
+#ifdef UHR_242
+		G.UhrtypeDef = Uhr_242;
+#endif
+
         eeprom_write();
         Serial.println("eeprom schreiben");
     }
@@ -1127,6 +1153,16 @@ void loop() {
         Serial.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
         G.conf = COMMAND_IDLE;
     }
+
+	//------------------------------------------------
+	// Uhrtype Layout einstellen
+	//------------------------------------------------
+
+	if (G.conf == COMMAND_SET_UHRTYPE) {
+		eeprom_write();
+		Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
+		G.conf = COMMAND_IDLE;
+	}
 
     //------------------------------------------------
     // OpenWeathermap Einstellung speichern
