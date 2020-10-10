@@ -1,11 +1,11 @@
 /*--------------------------------------------------------------------------
  * Hier wird definiert, welche Anzahl von LED's bzw. Reihen verwendet werden
  */
-//#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
+#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 //#define UHR_114_Alternative         // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
 //#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 //#define UHR_169                     // Uhr mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
-#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
+//#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
 
 #define SERNR 100             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 
@@ -68,6 +68,21 @@ char wstatus[7][25] = {
 #include "EEPROMAnything.h"
 #include "WebPage_Adapter.h"
 #include "Uhr.h"
+
+#include "Uhrtypes/uhr_func_114_Alternative.hpp"
+#include "Uhrtypes/uhr_func_114.hpp"
+#include "Uhrtypes/uhr_func_125.hpp"
+#include "Uhrtypes/uhr_func_169.hpp"
+#include "Uhrtypes/uhr_func_242.hpp"
+
+__attribute__ ((used)) UHR_114_Alternative_t Uhr_114_Alternative_type;
+__attribute__ ((used)) UHR_114_t Uhr_114_type;
+__attribute__ ((used)) UHR_125_t Uhr_125_type;
+__attribute__ ((used)) UHR_169_t Uhr_169_type;
+__attribute__ ((used)) UHR_242_t Uhr_242_type;
+
+iUhrType* usedUhrType = nullptr;
+
 #include "font.h"
 #include "uhr_func.hpp"
 
@@ -91,6 +106,27 @@ RTC_Type RTC;
 NTPClient timeClient(ntpUDP, G.zeitserver);
 
 bool externalRTC = false;
+
+//------------------------------------------------------------------------------
+
+iUhrType* getPointer(uint8_t num){
+    switch (num) {
+        case 1:
+            return reinterpret_cast<iUhrType*>(&Uhr_114_type);
+        case 2:
+            return reinterpret_cast<iUhrType*>(&Uhr_114_Alternative_type);
+        case 3:
+            return reinterpret_cast<iUhrType*>(&Uhr_125_type);
+        case 4:
+            return reinterpret_cast<iUhrType*>(&Uhr_169_type);
+        case 5:
+            return reinterpret_cast<iUhrType*>(&Uhr_242_type);
+        default:
+            return nullptr;
+    }
+}
+
+//------------------------------------------------------------------------------
 
 uint32_t split(uint8_t i, uint8_t j) {
     char dest[3];
@@ -779,7 +815,7 @@ void setup() {
     // Start Serielle Schnittstelle bei Bedarf
     //-------------------------------------
     if (DEBUG == true) {
-        Serial.begin(115200);     // changed Eisbaeeer
+        Serial.begin(115200);
         Serial.println("");
         Serial.println("--------------------------------------");
         Serial.println("Begin Setup");
@@ -817,6 +853,12 @@ void setup() {
     Serial.println(__TIME__);
 
     //-------------------------------------
+    // Get Pointer for Uhrtype
+    //-------------------------------------
+
+    usedUhrType = getPointer(G.UhrtypeDef);
+
+    //-------------------------------------
     // LEDs initialisieren
     //-------------------------------------
     Serial.println("LED Init");
@@ -852,15 +894,13 @@ void setup() {
     _sekunde = second(ltime);
     _minute = minute(ltime);
     _stunde = hour(ltime);
-#ifdef UHR_169
-    _sekunde48 = _sekunde * 48 / 60;
-#endif
+    if (G.UhrtypeDef == Uhr_169) {
+        _sekunde48 = _sekunde * 48 / 60;
+    }
     show_zeit(1);
-#ifdef UHR_169
-    if (G.zeige_sek <1 && G.zeige_min < 2){
+    if (G.UhrtypeDef == Uhr_169 && G.zeige_sek <1 && G.zeige_min < 2){
       set_farbe_rahmen();
     }
-#endif
 
     //-------------------------------------
     // mDNS--
@@ -898,9 +938,9 @@ void loop() {
     unsigned long currentMillis = millis();
     count_millis += currentMillis - previousMillis;
     count_delay += currentMillis - previousMillis;
-#ifdef UHR_169
-    count_millis48 += currentMillis - previousMillis;
-#endif
+    if (G.UhrtypeDef == Uhr_169) {
+        count_millis48 += currentMillis - previousMillis;
+    }
     previousMillis = currentMillis;
     if (count_millis >= interval) {
         count_millis = 0;
@@ -911,18 +951,18 @@ void loop() {
         _stunde = hour(ltime);
         count_tag++;
         // Wetteruhr
-#ifdef UHR_242
+    if (G.UhrtypeDef == Uhr_242) {
         weather_tag++;
-#endif
+    }
 
     }
-#ifdef UHR_169
+    if (G.UhrtypeDef == Uhr_169) {
     if (count_millis48 >= interval48) {
-      count_millis48 = 0;
-      _sekunde48++;
-      if (_sekunde48 >47){ _sekunde48 = 0; }
+        count_millis48 = 0;
+        _sekunde48++;
+        if (_sekunde48 > 47) { _sekunde48 = 0; }
     }
-#endif
+    }
 
     //------------------------------------------------
     Telnet();  // Handle telnet connections
@@ -934,20 +974,20 @@ void loop() {
     //------------------------------------------------
     // Sekunde48
     //------------------------------------------------
-#ifdef UHR_169
+    if (G.UhrtypeDef == Uhr_169) {
     if (last_sekunde48 != _sekunde48) {
-      if (G.prog == 0 && G.conf == 0) {
-        if (G.zeige_sek == 1 || G.zeige_min == 2){
-          rahmen_clear();
+        if (G.prog == 0 && G.conf == 0) {
+            if (G.zeige_sek == 1 || G.zeige_min == 2) {
+                rahmen_clear();
+            }
+            if (G.zeige_sek > 0) {
+                show_sekunde();
+            }
+            led_show();
         }
-        if (G.zeige_sek > 0){
-          show_sekunde();
-        }
-        led_show();
-      }
-      last_sekunde48 = _sekunde48;
+        last_sekunde48 = _sekunde48;
     }
-#endif
+    }
 
     //------------------------------------------------
     // Sekunde und LDR Regelung
@@ -966,18 +1006,18 @@ void loop() {
         }
         last_sekunde = _sekunde;
 
-#ifdef UHR_242
-        if ((_sekunde == 30) | (_sekunde == 0))  {
-            wetterswitch ++;
-            if (wetterswitch > 4) {
-            wetterswitch = 1;
+        if (G.UhrtypeDef == Uhr_242) {
+            if ((_sekunde == 30) | (_sekunde == 0)) {
+                wetterswitch++;
+                if (wetterswitch > 4) {
+                    wetterswitch = 1;
+                }
+                Serial.print("Wetterswitch: ");
+                Serial.println(wetterswitch);
+                Serial.print("WStunde: ");
+                Serial.println(wstunde);
             }
-              Serial.print("Wetterswitch: ");
-              Serial.println(wetterswitch);
-              Serial.print("WStunde: ");
-              Serial.println(wstunde);
-          }
-#endif
+        }
     }
 
     //------------------------------------------------
@@ -1037,15 +1077,13 @@ void loop() {
     //------------------------------------------------
     // Wetterdaten abrufen
     //------------------------------------------------
-#ifdef UHR_242
-    if (weather_tag >= 600) {
+    if (G.UhrtypeDef == Uhr_242 && weather_tag >= 600) {
       weather_tag = 0;
       if (WiFi.status() == WL_CONNECTED)
        {
         getweather();
-          }
+       }
     }
-#endif
 
     //------------------------------------------------
     // NTP Zeit neu holen
@@ -1083,11 +1121,9 @@ void loop() {
     //------------------------------------------------
     if (G.prog == COMMAND_MODE_WORD_CLOCK) {
         show_zeit(0); // Anzeige Uhrzeit ohne Config
-#ifdef UHR_169
-        if (G.zeige_sek <1 && G.zeige_min < 2){
+        if (G.UhrtypeDef == Uhr_169 && G.zeige_sek <1 && G.zeige_min < 2){
           set_farbe_rahmen();
         }
-#endif
         G.prog = COMMAND_IDLE;
     }
 
@@ -1100,9 +1136,9 @@ void loop() {
         _sekunde = second(ltime);
         _minute = minute(ltime);
         _stunde = hour(ltime);
-#ifdef UHR_169
+        if (G.UhrtypeDef == Uhr_169){
         _sekunde48 = _sekunde * 48 / 60;
-#endif
+        }
         show_zeit(1); // Anzeige Uhrzeit mit Config
         eeprom_write();
         delay(100);

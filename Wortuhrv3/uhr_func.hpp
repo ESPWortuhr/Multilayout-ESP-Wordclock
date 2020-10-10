@@ -123,70 +123,19 @@ static void set_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww, u
 
 //------------------------------------------------------------------------------
 
-static void led_set(uint16_t i) {
+static void led_set(const unsigned int array[]) {
     uint8_t rr, gg, bb, ww;
     set_helligkeit_ldr(rr, gg, bb, ww, Foreground);
-    led_set_pixel(rr, gg, bb, ww, i);
-}
+    int i = 0;
+    while (i < usedUhrType->NUM_PIXELS()){
 
-//------------------------------------------------------------------------------
-
-#include "Uhrtypes/uhr_func_114_Alternative.hpp"
-#include "Uhrtypes/uhr_func_114.hpp"
-#include "Uhrtypes/uhr_func_125.hpp"
-#include "Uhrtypes/uhr_func_169.hpp"
-#include "Uhrtypes/uhr_func_242.hpp"
-
-__attribute__ ((used)) UHR_114_Alternative_t Uhr_114_Alternative_type;
-__attribute__ ((used)) UHR_114_t Uhr_114_type;
-__attribute__ ((used)) UHR_125_t Uhr_125_type;
-__attribute__ ((used)) UHR_169_t Uhr_169_type;
-__attribute__ ((used)) UHR_242_t Uhr_242_type;
-
-UHR_Type Uhrtype;
-
-//------------------------------------------------------------------------------
-
-iUhrType* getPointer(uint8_t num){
-    switch (num) {
-        case 1:
-            return reinterpret_cast<iUhrType*>(&Uhr_114_type);
-        case 2:
-            return reinterpret_cast<iUhrType*>(&Uhr_114_Alternative_type);
-        case 3:
-            return reinterpret_cast<iUhrType*>(&Uhr_125_type);
-        case 4:
-            return reinterpret_cast<iUhrType*>(&Uhr_169_type);
-        case 5:
-            return reinterpret_cast<iUhrType*>(&Uhr_242_type);
-        default:
-            return nullptr;
+        if (array[i] != 255) {
+            led_set_pixel(rr, gg, bb, ww, array[i]);
+        }
+        i++;
     }
 }
 
-//------------------------------------------------------------------------------
-
-void iShow(iUhrType *a, uint8_t text) {
-	a->show(text);
-}
-
-//------------------------------------------------------------------------------
-
-unsigned int iMatrix(iUhrType *a, uint8_t t, uint8_t b) {
-    return a->getMatrix(t,b);
-}
-
-unsigned int iSMatrix(iUhrType *a, uint8_t t) {
-	return a->getSMatrix(t);
-}
-
-unsigned int iRMatrix(iUhrType *a, uint8_t t) {
-	return a->getRMatrix(t);
-}
-
-unsigned int iMinArr(iUhrType *a, uint8_t t, uint8_t b) {
-	return a->getMinArr(t,b);
-}
 //------------------------------------------------------------------------------
 
 static inline void led_show() {
@@ -202,7 +151,10 @@ static inline void led_clear_pixel(uint16_t i) {
 //------------------------------------------------------------------------------
 
 static inline void led_clear() {
-    for (uint16_t i = 0; i < Uhrtype.NUM_PIXELS; i++) {
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+        Word_array[i] = 255;
+    }
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         led_clear_pixel(i);
     }
 }
@@ -210,16 +162,16 @@ static inline void led_clear() {
 //------------------------------------------------------------------------------
 
 static inline void uhr_clear() {
-    for (uint16_t i = 0; i < Uhrtype.NUM_SMATRIX; i++) {
-        strip.SetPixelColor(Uhrtype.smatrix[i], 0);
+    for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
+        strip.SetPixelColor(usedUhrType->getSMatrix(i), 0);
     }
 }
 
 //------------------------------------------------------------------------------
 
 static inline void rahmen_clear() {
-    for (uint16_t i = 0; i < Uhrtype.NUM_RMATRIX; i++) {
-        strip.SetPixelColor(Uhrtype.rmatrix[i], 0);
+    for (uint16_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
+        strip.SetPixelColor(usedUhrType->getRMatrix(i), 0);
     }
 }
 
@@ -293,10 +245,10 @@ static void led_single(uint8_t wait) {
     float h;
     uint8_t c[4];
 
-    for (uint16_t i = 0; i < Uhrtype.NUM_PIXELS; i++) {
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
 
-        h = 360.0 * i / (Uhrtype.NUM_PIXELS - 1);
-        h = h + 360.0 / Uhrtype.NUM_PIXELS;
+        h = 360.0 * i / (usedUhrType->NUM_PIXELS() - 1);
+        h = h + 360.0 / usedUhrType->NUM_PIXELS();
         if (h > 360) { h = 0; }
 
         led_clear();
@@ -313,7 +265,7 @@ static void set_farbe() {
     uint8_t rr, gg, bb, ww;
     set_helligkeit(rr, gg, bb, ww, Effect);
 
-    for (uint16_t i = 0; i < Uhrtype.NUM_PIXELS; i++) {
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         led_set_pixel(rr, gg, bb, ww, i);
     }
 }
@@ -340,8 +292,8 @@ static void set_farbe_rahmen() {
     uint8_t rr, gg, bb, ww;
     set_helligkeit(rr, gg, bb, ww, Frame);
 
-    for (uint16_t i = 0; i < Uhrtype.NUM_RMATRIX; i++) {
-        led_set_pixel(rr, gg, bb, ww, Uhrtype.rmatrix[i]);
+    for (uint16_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
+        led_set_pixel(rr, gg, bb, ww, usedUhrType->getRMatrix(i));
     }
 }
 
@@ -353,7 +305,7 @@ static void rainbow() {
     uint8_t c[4];
     hsv_to_rgb(h, 255, G.hell * 10, c);
 
-    for (uint16_t i = 0; i < Uhrtype.NUM_PIXELS; i++) {
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         led_set_pixel(c[0], c[1], c[2], c[3], i);
     }
     led_show();
@@ -369,10 +321,10 @@ static void rainbowCycle() {
     uint8_t c[4];
 
     hh = h;
-    for (uint16_t i = 0; i < Uhrtype.NUM_SMATRIX; i++) {
+    for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
         hsv_to_rgb(hh, 255, G.hell * 10, c);
-        led_set_pixel(c[0], c[1], c[2], c[3], Uhrtype.smatrix[i]);
-        hh = hh + 360.0 / Uhrtype.NUM_SMATRIX;
+        led_set_pixel(c[0], c[1], c[2], c[3], usedUhrType->getSMatrix(i));
+        hh = hh + 360.0 / usedUhrType->NUM_SMATRIX();
         if (hh > 360) { hh = 0; }
     }
     led_show();
@@ -399,7 +351,7 @@ static void schweif_up() {
         G.ww = (G.rgb[Effect][3] * c) / 255;
         j = i + t;
         if (j >= 48) { j -= 48; }
-        led_set_pixel(G.rr, G.gg, G.bb, G.ww, Uhrtype.rmatrix[i]);
+        led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getRMatrix(i));
     }
     led_show();
     x++;
@@ -414,8 +366,8 @@ static void schweif_up() {
 
 void shift_all_pixels_to_right() {
     for (uint8_t b = 0; b < 10; b++) {
-        for (uint8_t a = 0; a < Uhrtype.ROWS_MATRIX; a++) {
-            strip.SetPixelColor(Uhrtype.matrix[a][b], strip.GetPixelColor(Uhrtype.matrix[a][b + 1]));
+        for (uint8_t a = 0; a < usedUhrType->ROWS_MATRIX(); a++) {
+            strip.SetPixelColor(usedUhrType->getMatrix(a,b), strip.GetPixelColor(usedUhrType->getMatrix(a,b + 1)));
         }
     }
 }
@@ -432,14 +384,14 @@ static void laufschrift(const char *buf) {
         for (uint8_t h = 0; h < 8; h++) {
             if (font_7x5[buf[ii]][i] & (1u << h)) {
                 led_set_pixel(G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2], G.rgb[Effect][3],
-							  Uhrtype.matrix[h + 1][10]);
+							  usedUhrType->getMatrix(h + 1,10));
             } else {
-                led_clear_pixel(Uhrtype.matrix[h + 1][10]);
+                led_clear_pixel(usedUhrType->getMatrix(h + 1,10));
             }
         }
     } else {
         for (uint8_t h = 0; h < 8; h++) {
-            led_clear_pixel(Uhrtype.matrix[h + 1][10]);
+            led_clear_pixel(usedUhrType->getMatrix(h + 1,10));
         }
     }
     led_show();
@@ -468,7 +420,7 @@ static void zeigeip(const char *buf) {
 void set_pixel_for_char(uint8_t i, uint8_t h, uint8_t offset, unsigned char unsigned_d1) {
     if (font_7x5[unsigned_d1][i] & (1u << h)) {
         led_set_pixel(G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2], G.rgb[Effect][3],
-					  Uhrtype.matrix[h + 1][i + offset]);
+					  usedUhrType->getMatrix(h + 1,i + offset));
     }
 }
 
@@ -489,18 +441,18 @@ static void zahlen(const char d1, const char d2) {
 
 static void laufen(unsigned int d, unsigned char aktion) {
     if (aktion == 0) {
-        for (uint8_t t = 0; t < Uhrtype.NUM_SMATRIX; t++) {
-            for (uint8_t a = Uhrtype.NUM_SMATRIX; a > 1; a--) {
-                strip.SetPixelColor(Uhrtype.smatrix[a - 1], strip.GetPixelColor(Uhrtype.smatrix[a - 2]));
+        for (uint8_t t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
+            for (uint8_t a = usedUhrType->NUM_SMATRIX(); a > 1; a--) {
+                strip.SetPixelColor(usedUhrType->getSMatrix(a - 1), strip.GetPixelColor(usedUhrType->getSMatrix(a - 2)));
             }
-            led_set_pixel(G.rr, G.gg, G.bb, G.ww, Uhrtype.smatrix[0]);
+            led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getSMatrix(0));
             led_show();
             delay(d);
         }
     }
     if (aktion == 1) {
-        for (uint8_t t = 0; t < Uhrtype.NUM_SMATRIX; t++) {
-            for (uint8_t a = Uhrtype.NUM_SMATRIX; a > 1; a--) {
+        for (uint8_t t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
+            for (uint8_t a = usedUhrType->NUM_SMATRIX(); a > 1; a--) {
                 //led1[a-1].r= led1[a-2].r;
             }
             //led1[0].r = led[G.anz_leds - t - 1].r;
@@ -515,20 +467,20 @@ static void laufen(unsigned int d, unsigned char aktion) {
 static void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned int d) {
     uint8_t t;
 
-    for (t = 0; t < Uhrtype.NUM_SMATRIX; t++) {
-        for (uint8_t u = 0; u < Uhrtype.ROWS_MATRIX; u++) {
-//      led_set_pixel(r, g, b, matrix[t][u]);   
+    for (t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
+        for (uint8_t u = 0; u < usedUhrType->ROWS_MATRIX(); u++) {
+//      led_set_pixel(r, g, b, usedUhrType->matrix(t,u));
         }
         if (t > 0) {
-            for (uint8_t v = 0; v < Uhrtype.ROWS_MATRIX; v++) {
-                led_set_pixel(G.rr, G.gg, G.bb, G.ww, Uhrtype.matrix[t][v]);
+            for (uint8_t v = 0; v < usedUhrType->ROWS_MATRIX(); v++) {
+                led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getMatrix(t,v));
             }
         }
         led_show();
         delay(d);
     }
-    for (uint8_t u = 0; u < Uhrtype.ROWS_MATRIX; u++) {
-        led_set_pixel(G.rr, G.gg, G.bb, G.ww, Uhrtype.matrix[t - 1][u]);
+    for (uint8_t u = 0; u < usedUhrType->ROWS_MATRIX(); u++) {
+        led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getMatrix(t - 1,u));
     }
     led_show();
 }
@@ -538,14 +490,14 @@ static void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned 
 static void schieben(int d, unsigned char aktion) {
     if (aktion == 0) {
         uint8_t a;
-        for (uint8_t t = 0; t < Uhrtype.NUM_SMATRIX; t++) {
-            for (a = Uhrtype.NUM_SMATRIX - 1; a > 0; a--) {
-                for (uint8_t b = 0; b < Uhrtype.ROWS_MATRIX; b++) {
-                    strip.SetPixelColor(Uhrtype.matrix[a][b], strip.GetPixelColor(Uhrtype.matrix[a - 1][b]));
+        for (uint8_t t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
+            for (a = usedUhrType->NUM_SMATRIX() - 1; a > 0; a--) {
+                for (uint8_t b = 0; b < usedUhrType->ROWS_MATRIX(); b++) {
+                    strip.SetPixelColor(usedUhrType->getMatrix(a,b), strip.GetPixelColor(usedUhrType->getMatrix(a - 1,b)));
                 }
             }
-            for (uint8_t b = 0; b < Uhrtype.ROWS_MATRIX; b++) {
-                led_set_pixel(G.rr, G.gg, G.bb, G.ww, Uhrtype.matrix[a][b]);
+            for (uint8_t b = 0; b < usedUhrType->ROWS_MATRIX(); b++) {
+                led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getMatrix(a,b));
             }
             led_show();
             delay(d);
@@ -718,97 +670,112 @@ static void show_sekunde() {
     uint8_t rr, gg, bb, ww;
     set_helligkeit(rr, gg, bb, ww, Effect);
 
-    led_set_pixel(rr, gg, bb, ww, Uhrtype.rmatrix[_sekunde48]);
+    led_set_pixel(rr, gg, bb, ww, usedUhrType->getRMatrix(_sekunde48));
 }
 
 //------------------------------------------------------------------------------
 
 static void show_minuten() {
-    uint8_t m;
-
     if (G.zeige_min > 0) {
         // Minuten / Sekunden-Animation
         // Minute (1-4)  ermitteln
-        m = _minute;
+        uint8_t m = _minute;
         while (m > 4) { m -= 5; }
 
-        if (m > 0) { led_set(Uhrtype.min_arr[G.zeige_min - 1][0]); }
-        if (m > 1) { led_set(Uhrtype.min_arr[G.zeige_min - 1][1]); }
-        if (m > 2) { led_set(Uhrtype.min_arr[G.zeige_min - 1][2]); }
-        if (m > 3) { led_set(Uhrtype.min_arr[G.zeige_min - 1][3]); }
+        if (m > 0) { Word_array[usedUhrType->getMinArr(G.zeige_min - 1,0)]= usedUhrType->getMinArr(G.zeige_min - 1,0); }
+        if (m > 1) { Word_array[usedUhrType->getMinArr(G.zeige_min - 1,1)]= usedUhrType->getMinArr(G.zeige_min - 1,1); }
+        if (m > 2) { Word_array[usedUhrType->getMinArr(G.zeige_min - 1,2)]= usedUhrType->getMinArr(G.zeige_min - 1,2); }
+        if (m > 3) { Word_array[usedUhrType->getMinArr(G.zeige_min - 1,3)]= usedUhrType->getMinArr(G.zeige_min - 1,3); }
     }
 }
 
-#ifdef UHR_242
+//------------------------------------------------------------------------------
+
+static void check_for_five() {
+    static bool check_for_five_done = false;
+    uint8_t m = _minute;
+    while (m > 4) { m -= 5; }
+
+    if (m == 0 && check_for_five_done == false) {
+        led_clear();
+        check_for_five_done = true;
+    }
+    if (m > 0 && check_for_five_done == true){
+        check_for_five_done = false;
+    }
+}
+
+//------------------------------------------------------------------------------
 // Wetterdaten anzeigen
+//------------------------------------------------------------------------------
 static void show_wetter() {
 
    switch (wetterswitch) {
    // +6h
    case 1: {
         switch (wstunde) {
-          case 1:   Uhrtype.w_mittag(); break;
-          case 2:   Uhrtype.w_abend(); break;
-          case 3:   Uhrtype.w_nacht(); break;
-          case 4:   { Uhrtype.w_morgen(); Uhrtype.w_frueh(); } break;
+          case 1:   usedUhrType->show(w_mittag); break;
+          case 2:   usedUhrType->show(w_abend); break;
+          case 3:   usedUhrType->show(w_nacht); break;
+          case 4:   { usedUhrType->show(w_morgen); usedUhrType->show(w_frueh); } break;
           }
         switch (wtemp_6) {
-          case 30:  { Uhrtype.w_ueber(); Uhrtype.w_dreissig(); Uhrtype.w_grad(); } break;
-          case 25:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_und(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case 20:  { Uhrtype.w_ueber(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case 15:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case 10:  { Uhrtype.w_ueber(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case 5:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_grad(); } break;
-          case 1:  { Uhrtype.w_ueber(); Uhrtype.w_null(); Uhrtype.w_grad(); } break;
-          case -1:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_null(); Uhrtype.w_grad(); } break;
-          case -5:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_grad(); } break;
-          case -10:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case -15:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case -20:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case -25:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_und(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
+          case 30:  { usedUhrType->show(w_ueber); usedUhrType->show(w_dreissig); usedUhrType->show(w_grad); } break;
+          case 25:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_und); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case 20:  { usedUhrType->show(w_ueber); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case 15:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case 10:  { usedUhrType->show(w_ueber); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case 5:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_grad); } break;
+          case 1:  { usedUhrType->show(w_ueber); usedUhrType->show(w_null); usedUhrType->show(w_grad); } break;
+          case -1:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_null); usedUhrType->show(w_grad); } break;
+          case -5:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_grad); } break;
+          case -10:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case -15:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case -20:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case -25:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_und); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
           }
         switch (wwetter_6) {
-          case 200: Uhrtype.w_gewitter(); break;
-          case 300: Uhrtype.w_regen(); break;
-          case 500: Uhrtype.w_regen(); break;
-          case 600: Uhrtype.w_schnee(); break;
-          case 700: Uhrtype.w_warnung(); break;
-          case 800: Uhrtype.w_klar(); break;
-          case 801: Uhrtype.w_wolken(); break;
+          case 200: usedUhrType->show(w_gewitter); break;
+          case 300: usedUhrType->show(w_regen); break;
+          case 500: usedUhrType->show(w_regen); break;
+          case 600: usedUhrType->show(w_schnee); break;
+          case 700: usedUhrType->show(w_warnung); break;
+          case 800: usedUhrType->show(w_klar); break;
+          case 801: usedUhrType->show(w_wolken); break;
           }
       }
       break;
    // +12h
    case 2: {
         switch (wstunde) {
-          case 1:   Uhrtype.w_abend(); break;
-          case 2:   Uhrtype.w_nacht(); break;
-          case 3:   { Uhrtype.w_morgen(); Uhrtype.w_frueh(); } break;
-          case 4:   { Uhrtype.w_morgen(); Uhrtype.w_mittag(); } break;
+          case 1:   usedUhrType->show(w_abend); break;
+          case 2:   usedUhrType->show(w_nacht); break;
+          case 3:   { usedUhrType->show(w_morgen); usedUhrType->show(w_frueh); } break;
+          case 4:   { usedUhrType->show(w_morgen); usedUhrType->show(w_mittag); } break;
           }
         switch (wtemp_12) {
-          case 30:  { Uhrtype.w_ueber(); Uhrtype.w_dreissig(); Uhrtype.w_grad(); } break;
-          case 25:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_und(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case 20:  { Uhrtype.w_ueber(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case 15:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case 10:  { Uhrtype.w_ueber(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case 5:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_grad(); } break;
-          case 1:  { Uhrtype.w_ueber(); Uhrtype.w_null(); Uhrtype.w_grad(); } break;
-          case -1:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_null(); Uhrtype.w_grad(); } break;
-          case -5:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_grad(); } break;
-          case -10:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case -15:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case -20:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case -25:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_und(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
+          case 30:  { usedUhrType->show(w_ueber); usedUhrType->show(w_dreissig); usedUhrType->show(w_grad); } break;
+          case 25:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_und); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case 20:  { usedUhrType->show(w_ueber); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case 15:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case 10:  { usedUhrType->show(w_ueber); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case 5:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_grad); } break;
+          case 1:  { usedUhrType->show(w_ueber); usedUhrType->show(w_null); usedUhrType->show(w_grad); } break;
+          case -1:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_null); usedUhrType->show(w_grad); } break;
+          case -5:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_grad); } break;
+          case -10:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case -15:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case -20:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case -25:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_und); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
           }
         switch (wwetter_12) {
-          case 200: Uhrtype.w_gewitter(); break;
-          case 300: Uhrtype.w_regen(); break;
-          case 500: Uhrtype.w_regen(); break;
-          case 600: Uhrtype.w_schnee(); break;
-          case 700: Uhrtype.w_warnung(); break;
-          case 800: Uhrtype.w_klar(); break;
-          case 801: Uhrtype.w_wolken(); break;
+          case 200: usedUhrType->show(w_gewitter); break;
+          case 300: usedUhrType->show(w_regen); break;
+          case 500: usedUhrType->show(w_regen); break;
+          case 600: usedUhrType->show(w_schnee); break;
+          case 700: usedUhrType->show(w_warnung); break;
+          case 800: usedUhrType->show(w_klar); break;
+          case 801: usedUhrType->show(w_wolken); break;
           }
 
       }
@@ -816,34 +783,34 @@ static void show_wetter() {
     // +18h
     case 3: {
         switch (wstunde) {
-          case 1:   Uhrtype.w_nacht(); break;
-          case 2:   { Uhrtype.w_morgen(); Uhrtype.w_frueh(); } break;
-          case 3:   { Uhrtype.w_morgen(); Uhrtype.w_mittag(); } break;
-          case 4:   { Uhrtype.w_morgen(); Uhrtype.w_abend(); } break;
+          case 1:   usedUhrType->show(w_nacht); break;
+          case 2:   { usedUhrType->show(w_morgen); usedUhrType->show(w_frueh); } break;
+          case 3:   { usedUhrType->show(w_morgen); usedUhrType->show(w_mittag); } break;
+          case 4:   { usedUhrType->show(w_morgen); usedUhrType->show(w_abend); } break;
           }
         switch (wtemp_18) {
-          case 30:  { Uhrtype.w_ueber(); Uhrtype.w_dreissig(); Uhrtype.w_grad(); } break;
-          case 25:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_und(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case 20:  { Uhrtype.w_ueber(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case 15:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case 10:  { Uhrtype.w_ueber(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case 5:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_grad(); } break;
-          case 1:  { Uhrtype.w_ueber(); Uhrtype.w_null(); Uhrtype.w_grad(); } break;
-          case -1:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_null(); Uhrtype.w_grad(); } break;
-          case -5:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_grad(); } break;
-          case -10:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case -15:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case -20:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case -25:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_und(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
+          case 30:  { usedUhrType->show(w_ueber); usedUhrType->show(w_dreissig); usedUhrType->show(w_grad); } break;
+          case 25:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_und); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case 20:  { usedUhrType->show(w_ueber); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case 15:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case 10:  { usedUhrType->show(w_ueber); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case 5:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_grad); } break;
+          case 1:  { usedUhrType->show(w_ueber); usedUhrType->show(w_null); usedUhrType->show(w_grad); } break;
+          case -1:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_null); usedUhrType->show(w_grad); } break;
+          case -5:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_grad); } break;
+          case -10:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case -15:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case -20:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case -25:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_und); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
           }
         switch (wwetter_18) {
-          case 200: Uhrtype.w_gewitter(); break;
-          case 300: Uhrtype.w_regen(); break;
-          case 500: Uhrtype.w_regen(); break;
-          case 600: Uhrtype.w_schnee(); break;
-          case 700: Uhrtype.w_warnung(); break;
-          case 800: Uhrtype.w_klar(); break;
-          case 801: Uhrtype.w_wolken(); break;
+          case 200: usedUhrType->show(w_gewitter); break;
+          case 300: usedUhrType->show(w_regen); break;
+          case 500: usedUhrType->show(w_regen); break;
+          case 600: usedUhrType->show(w_schnee); break;
+          case 700: usedUhrType->show(w_warnung); break;
+          case 800: usedUhrType->show(w_klar); break;
+          case 801: usedUhrType->show(w_wolken); break;
           }
 
       }
@@ -851,34 +818,34 @@ static void show_wetter() {
     // +24h
     case 4: {
         switch (wstunde) {
-          case 1:   { Uhrtype.w_morgen(); Uhrtype.w_frueh(); } break;
-          case 2:   { Uhrtype.w_morgen(); Uhrtype.w_mittag(); } break;
-          case 3:   { Uhrtype.w_morgen(); Uhrtype.w_abend(); } break;
-          case 4:   { Uhrtype.w_morgen(); Uhrtype.w_nacht(); } break;
+          case 1:   { usedUhrType->show(w_morgen); usedUhrType->show(w_frueh); } break;
+          case 2:   { usedUhrType->show(w_morgen); usedUhrType->show(w_mittag); } break;
+          case 3:   { usedUhrType->show(w_morgen); usedUhrType->show(w_abend); } break;
+          case 4:   { usedUhrType->show(w_morgen); usedUhrType->show(w_nacht); } break;
           }
         switch (wtemp_24) {
-          case 30:  { Uhrtype.w_ueber(); Uhrtype.w_dreissig(); Uhrtype.w_grad(); } break;
-          case 25:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_und(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case 20:  { Uhrtype.w_ueber(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case 15:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case 10:  { Uhrtype.w_ueber(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case 5:  { Uhrtype.w_ueber(); Uhrtype.w_fuenf(); Uhrtype.w_grad(); } break;
-          case 1:  { Uhrtype.w_ueber(); Uhrtype.w_null(); Uhrtype.w_grad(); } break;
-          case -1:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_null(); Uhrtype.w_grad(); } break;
-          case -5:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_grad(); } break;
-          case -10:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case -15:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_zehn(); Uhrtype.w_grad(); } break;
-          case -20:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
-          case -25:  { Uhrtype.w_unter(); Uhrtype.w_minus(); Uhrtype.w_fuenf(); Uhrtype.w_und(); Uhrtype.w_zwanzig(); Uhrtype.w_grad(); } break;
+          case 30:  { usedUhrType->show(w_ueber); usedUhrType->show(w_dreissig); usedUhrType->show(w_grad); } break;
+          case 25:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_und); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case 20:  { usedUhrType->show(w_ueber); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case 15:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case 10:  { usedUhrType->show(w_ueber); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case 5:  { usedUhrType->show(w_ueber); usedUhrType->show(w_fuenf); usedUhrType->show(w_grad); } break;
+          case 1:  { usedUhrType->show(w_ueber); usedUhrType->show(w_null); usedUhrType->show(w_grad); } break;
+          case -1:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_null); usedUhrType->show(w_grad); } break;
+          case -5:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_grad); } break;
+          case -10:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case -15:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_zehn); usedUhrType->show(w_grad); } break;
+          case -20:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
+          case -25:  { usedUhrType->show(w_unter); usedUhrType->show(w_minus); usedUhrType->show(w_fuenf); usedUhrType->show(w_und); usedUhrType->show(w_zwanzig); usedUhrType->show(w_grad); } break;
           }
         switch (wwetter_24) {
-          case 200: Uhrtype.w_gewitter(); break;
-          case 300: Uhrtype.w_regen(); break;
-          case 500: Uhrtype.w_regen(); break;
-          case 600: Uhrtype.w_schnee(); break;
-          case 700: Uhrtype.w_warnung(); break;
-          case 800: Uhrtype.w_klar(); break;
-          case 801: Uhrtype.w_wolken(); break;
+          case 200: usedUhrType->show(w_gewitter); break;
+          case 300: usedUhrType->show(w_regen); break;
+          case 500: usedUhrType->show(w_regen); break;
+          case 600: usedUhrType->show(w_schnee); break;
+          case 700: usedUhrType->show(w_warnung); break;
+          case 800: usedUhrType->show(w_klar); break;
+          case 801: usedUhrType->show(w_wolken); break;
           }
 
       }
@@ -886,14 +853,10 @@ static void show_wetter() {
 
    }      
 }
-#endif
-
 
 //------------------------------------------------------------------------------
 
 static void show_zeit(int flag) {
-
-    static iUhrType* usedUhrType = getPointer(G.UhrtypeDef);
     uint8_t rr, gg, bb, ww;
     if (flag == 1) {
         set_uhrzeit();
@@ -910,42 +873,46 @@ static void show_zeit(int flag) {
     else if (_stunde < 24) { G.hh = G.h22; }
 
     set_helligkeit_ldr(rr, gg, bb, ww, Background);
-
+    
     //Hintergrund setzen
-    for (uint8_t t = 0; t < Uhrtype.ROWS_MATRIX; t++) {
+    for (uint8_t t = 0; t < usedUhrType->ROWS_MATRIX(); t++) {
         for (uint8_t b = 0; b < 11; b++) {
-            led_set_pixel(rr, gg, bb, ww, usedUhrType->matrix[t][b]);
+            led_set_pixel(rr, gg, bb, ww, usedUhrType->getMatrix(t,b));
         }
     }
 
-    if (uhrzeit & ((uint32_t) 1 << ESIST)) { iShow(usedUhrType, es_ist); }
-    if (uhrzeit & ((uint32_t) 1 << FUENF)) { iShow(usedUhrType, fuenf);  }
-    if (uhrzeit & ((uint32_t) 1 << ZEHN)) { iShow(usedUhrType, zehn);  }
-    if (uhrzeit & ((uint32_t) 1 << VIERTEL)) { iShow(usedUhrType, viertel);  }
-    if (uhrzeit & ((uint32_t) 1 << ZWANZIG)) { iShow(usedUhrType, zwanzig);  }
-    if (uhrzeit & ((uint32_t) 1 << HALB)) { iShow(usedUhrType, halb); }
-    if (uhrzeit & ((uint32_t) 1 << EINS)) { iShow(usedUhrType, eins); }
-    if (uhrzeit & ((uint32_t) 1 << VOR)) { iShow(usedUhrType, vor); }
-    if (uhrzeit & ((uint32_t) 1 << NACH)) { iShow(usedUhrType, nach); }
-    if (uhrzeit & ((uint32_t) 1 << H_EIN)) { iShow(usedUhrType, h_ein); }
-    if (uhrzeit & ((uint32_t) 1 << H_ZWEI)) { iShow(usedUhrType, h_zwei); }
-    if (uhrzeit & ((uint32_t) 1 << H_DREI)) { iShow(usedUhrType, h_drei); }
-    if (uhrzeit & ((uint32_t) 1 << H_VIER)) { iShow(usedUhrType, h_vier); }
-    if (uhrzeit & ((uint32_t) 1 << H_FUENF)) { iShow(usedUhrType, h_fuenf); }
-    if (uhrzeit & ((uint32_t) 1 << H_SECHS)) { iShow(usedUhrType, h_sechs); }
-    if (uhrzeit & ((uint32_t) 1 << H_SIEBEN)) { iShow(usedUhrType, h_sieben); }
-    if (uhrzeit & ((uint32_t) 1 << H_ACHT)) { iShow(usedUhrType, h_acht); }
-    if (uhrzeit & ((uint32_t) 1 << H_NEUN)) { iShow(usedUhrType, h_neun); }
-    if (uhrzeit & ((uint32_t) 1 << H_ZEHN)) { iShow(usedUhrType, h_zehn);  }
-    if (uhrzeit & ((uint32_t) 1 << H_ELF)) { iShow(usedUhrType, h_elf); }
-    if (uhrzeit & ((uint32_t) 1 << H_ZWOELF)) { iShow(usedUhrType, h_zwoelf); }
-    if (uhrzeit & ((uint32_t) 1 << UHR)) { iShow(usedUhrType, uhr); }
+    check_for_five();
+
+    if (uhrzeit & ((uint32_t) 1 << ESIST)) { usedUhrType->show(es_ist); }
+    if (uhrzeit & ((uint32_t) 1 << FUENF)) { usedUhrType->show(fuenf);  }
+    if (uhrzeit & ((uint32_t) 1 << ZEHN)) { usedUhrType->show(zehn);  }
+    if (uhrzeit & ((uint32_t) 1 << VIERTEL)) { usedUhrType->show(viertel);  }
+    if (uhrzeit & ((uint32_t) 1 << ZWANZIG)) { usedUhrType->show(zwanzig);  }
+    if (uhrzeit & ((uint32_t) 1 << HALB)) { usedUhrType->show(halb); }
+    if (uhrzeit & ((uint32_t) 1 << EINS)) { usedUhrType->show(eins); }
+    if (uhrzeit & ((uint32_t) 1 << VOR)) { usedUhrType->show(vor); }
+    if (uhrzeit & ((uint32_t) 1 << NACH)) { usedUhrType->show(nach); }
+    if (uhrzeit & ((uint32_t) 1 << H_EIN)) { usedUhrType->show(h_ein); }
+    if (uhrzeit & ((uint32_t) 1 << H_ZWEI)) { usedUhrType->show(h_zwei); }
+    if (uhrzeit & ((uint32_t) 1 << H_DREI)) { usedUhrType->show(h_drei); }
+    if (uhrzeit & ((uint32_t) 1 << H_VIER)) { usedUhrType->show(h_vier); }
+    if (uhrzeit & ((uint32_t) 1 << H_FUENF)) { usedUhrType->show(h_fuenf); }
+    if (uhrzeit & ((uint32_t) 1 << H_SECHS)) { usedUhrType->show(h_sechs); }
+    if (uhrzeit & ((uint32_t) 1 << H_SIEBEN)) { usedUhrType->show(h_sieben); }
+    if (uhrzeit & ((uint32_t) 1 << H_ACHT)) { usedUhrType->show(h_acht); }
+    if (uhrzeit & ((uint32_t) 1 << H_NEUN)) { usedUhrType->show(h_neun); }
+    if (uhrzeit & ((uint32_t) 1 << H_ZEHN)) { usedUhrType->show(h_zehn);  }
+    if (uhrzeit & ((uint32_t) 1 << H_ELF)) { usedUhrType->show(h_elf); }
+    if (uhrzeit & ((uint32_t) 1 << H_ZWOELF)) { usedUhrType->show(h_zwoelf); }
+    if (uhrzeit & ((uint32_t) 1 << UHR)) { usedUhrType->show(uhr); }
 
     show_minuten();
 
-#ifdef UHR_242
+    if (G.UhrtypeDef == Uhr_242){
     show_wetter();
-#endif
+    }
+
+    led_set(Word_array);
 
     led_show();
 }

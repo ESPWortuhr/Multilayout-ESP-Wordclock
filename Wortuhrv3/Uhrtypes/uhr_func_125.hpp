@@ -3,12 +3,6 @@
 class UHR_125_t : public iUhrType {
 public:
 
-    uint8_t NUM_PIXELS = 125;
-    uint8_t NUM_SMATRIX = 125;
-    uint8_t ROWS_MATRIX = 12;
-    uint8_t NUM_RMATRIX = 0;
-    unsigned int rmatrix[]{};
-
     unsigned int matrix[12][11] = {
 
             {0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10},
@@ -44,173 +38,215 @@ public:
 
 //------------------------------------------------------------------------------
 
+    virtual const uint8_t getMinArr(uint8_t col, uint8_t row) override{
+        return min_arr[col][row];
+    };
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t getMatrix(uint8_t col, uint8_t row) override{
+        return matrix[col][row];
+    };
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t getRMatrix(uint8_t index) override{
+        return 0;
+    };
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t getSMatrix(uint8_t index) override{
+        return smatrix[index];
+    };
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t NUM_PIXELS() override {return 125;};
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t NUM_SMATRIX() override {return 125;};
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t ROWS_MATRIX() override {return 12;};
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t NUM_RMATRIX() override {return 0;};
+
+//------------------------------------------------------------------------------
 
 
-    void show(uint8_t text) const override {
+
+    void show(uint8_t text) override {
         switch (text) {
 
 
             case es_ist:
                 //Es
-                led_set(0);
-                led_set(1);
+                Letter_set(0);
+                Letter_set(1);
 
                 //Ist
-                led_set(3);
-                led_set(4);
-                led_set(5);
+                Letter_set(3);
+                Letter_set(4);
+                Letter_set(5);
                 break;
 
             case viertel:
-                led_set(26);
-                led_set(27);
-                led_set(28);
-                led_set(29);
-                led_set(30);
-                led_set(31);
-                led_set(32);
+                Letter_set(26);
+                Letter_set(27);
+                Letter_set(28);
+                Letter_set(29);
+                Letter_set(30);
+                Letter_set(31);
+                Letter_set(32);
                 break;
 
             case fuenf:
-                led_set(7);
-                led_set(8);
-                led_set(9);
-                led_set(10);
+                Letter_set(7);
+                Letter_set(8);
+                Letter_set(9);
+                Letter_set(10);
                 break;
 
             case zehn:
-                led_set(18);
-                led_set(19);
-                led_set(20);
-                led_set(21);
+                Letter_set(18);
+                Letter_set(19);
+                Letter_set(20);
+                Letter_set(21);
                 break;
             case zwanzig:
-                led_set(11);
-                led_set(12);
-                led_set(13);
-                led_set(14);
-                led_set(15);
-                led_set(16);
-                led_set(17);
+                Letter_set(11);
+                Letter_set(12);
+                Letter_set(13);
+                Letter_set(14);
+                Letter_set(15);
+                Letter_set(16);
+                Letter_set(17);
                 break;
 
             case halb:
-                led_set(44);
-                led_set(45);
-                led_set(46);
-                led_set(47);
+                Letter_set(44);
+                Letter_set(45);
+                Letter_set(46);
+                Letter_set(47);
                 break;
 
             case eins:
-                led_set(60);
-                led_set(61);
-                led_set(62);
-                led_set(63);
+                Letter_set(60);
+                Letter_set(61);
+                Letter_set(62);
+                Letter_set(63);
                 break;
 
             case nach:
-                led_set(38);
-                led_set(39);
-                led_set(40);
-                led_set(41);
+                Letter_set(38);
+                Letter_set(39);
+                Letter_set(40);
+                Letter_set(41);
                 break;
 
             case vor:
-                led_set(35);
-                led_set(36);
-                led_set(37);
+                Letter_set(35);
+                Letter_set(36);
+                Letter_set(37);
 
             case uhr:
-                led_set(100);
-                led_set(101);
-                led_set(102);
+                Letter_set(100);
+                Letter_set(101);
+                Letter_set(102);
                 break;
 
             case h_ein:
-                led_set(61);
-                led_set(62);
-                led_set(63);
+                Letter_set(61);
+                Letter_set(62);
+                Letter_set(63);
                 break;
 
             case h_zwei:
-                led_set(62);
-                led_set(63);
-                led_set(64);
-                led_set(65);
+                Letter_set(62);
+                Letter_set(63);
+                Letter_set(64);
+                Letter_set(65);
                 break;
 
             case h_drei:
-                led_set(67);
-                led_set(68);
-                led_set(69);
-                led_set(70);
+                Letter_set(67);
+                Letter_set(68);
+                Letter_set(69);
+                Letter_set(70);
                 break;
 
             case h_vier:
-                led_set(77);
-                led_set(78);
-                led_set(79);
-                led_set(80);
+                Letter_set(77);
+                Letter_set(78);
+                Letter_set(79);
+                Letter_set(80);
                 break;
 
             case h_fuenf:
-                led_set(73);
-                led_set(74);
-                led_set(75);
-                led_set(76);
+                Letter_set(73);
+                Letter_set(74);
+                Letter_set(75);
+                Letter_set(76);
                 break;
 
             case h_sechs:
-                led_set(104);
-                led_set(105);
-                led_set(106);
-                led_set(107);
-                led_set(108);
+                Letter_set(104);
+                Letter_set(105);
+                Letter_set(106);
+                Letter_set(107);
+                Letter_set(108);
                 break;
 
             case h_sieben:
-                led_set(55);
-                led_set(56);
-                led_set(57);
-                led_set(58);
-                led_set(59);
-                led_set(60);
+                Letter_set(55);
+                Letter_set(56);
+                Letter_set(57);
+                Letter_set(58);
+                Letter_set(59);
+                Letter_set(60);
                 break;
 
             case h_acht:
-                led_set(89);
-                led_set(90);
-                led_set(91);
-                led_set(92);
+                Letter_set(89);
+                Letter_set(90);
+                Letter_set(91);
+                Letter_set(92);
                 break;
 
             case h_neun:
-                led_set(81);
-                led_set(82);
-                led_set(83);
-                led_set(84);
+                Letter_set(81);
+                Letter_set(82);
+                Letter_set(83);
+                Letter_set(84);
                 break;
 
             case h_zehn:
-                led_set(93);
-                led_set(94);
-                led_set(95);
-                led_set(96);
+                Letter_set(93);
+                Letter_set(94);
+                Letter_set(95);
+                Letter_set(96);
                 break;
 
             case h_elf:
-                led_set(85);
-                led_set(86);
-                led_set(87);
+                Letter_set(85);
+                Letter_set(86);
+                Letter_set(87);
                 break;
 
             case h_zwoelf:
-                led_set(49);
-                led_set(50);
-                led_set(51);
-                led_set(52);
-                led_set(53);
+                Letter_set(49);
+                Letter_set(50);
+                Letter_set(51);
+                Letter_set(52);
+                Letter_set(53);
+                break;
 
+            default:
                 break;
         };
     };

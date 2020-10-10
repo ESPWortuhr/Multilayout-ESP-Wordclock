@@ -1,36 +1,27 @@
 #pragma once
 
-class iUhrType
-{
+void Letter_set(const unsigned int i ) {
+    Word_array[i] = i;
+}
 
-	public:
-		unsigned int NUM_PIXELS;
-		unsigned int NUM_SMATRIX;
-		unsigned int ROWS_MATRIX;
-		unsigned int NUM_RMATRIX;
+class iUhrType {
+public:
 
-    	unsigned int matrix[][1]{};
-    	unsigned int smatrix[]{};
-    	unsigned int rmatrix[]{};
-    	unsigned int min_arr[][1]{};
+    virtual void show(uint8_t text) = 0;
 
-	public:
-    	virtual void show(uint8_t text) const {};
+    virtual const uint8_t NUM_PIXELS() = 0;
 
-    	unsigned int getMatrix(const uint8_t &col,const uint8_t &row) const {
-        return matrix[col][row];
-    	}
+    virtual const uint8_t NUM_SMATRIX() = 0;
 
-    	unsigned int getSMatrix(const uint8_t &col) const {
-			return smatrix[col];
-    	}
+    virtual const uint8_t ROWS_MATRIX() = 0;
 
-		unsigned int getRMatrix(const uint8_t &col) const {
-			return rmatrix[col];
-		}
+    virtual const uint8_t NUM_RMATRIX() = 0;
 
-		unsigned int getMinArr(const uint8_t &col,const uint8_t &row) const {
-			return min_arr[col][row];
-    	}
+    virtual const uint8_t getSMatrix(uint8_t index) = 0;
 
+    virtual const uint8_t getRMatrix(uint8_t index) = 0;
+
+    virtual const uint8_t getMatrix(uint8_t col, uint8_t row) = 0;
+
+    virtual const uint8_t getMinArr(uint8_t col, uint8_t row) = 0;
 };

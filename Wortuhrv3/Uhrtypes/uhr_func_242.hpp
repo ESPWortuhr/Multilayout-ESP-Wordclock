@@ -2,11 +2,6 @@
 
 class UHR_242_t : public iUhrType {
 public:
-    uint8_t NUM_PIXELS = 242;
-    uint8_t NUM_SMATRIX = 242;
-    uint8_t ROWS_MATRIX = 22;
-    uint8_t NUM_RMATRIX = 0;
-    unsigned int rmatrix[]{};
 
     unsigned int matrix[22][11] = {
 
@@ -59,17 +54,57 @@ public:
 
 //------------------------------------------------------------------------------
 
-    void show(uint8_t text) const override {
+    virtual const uint8_t getMinArr(uint8_t col, uint8_t row) override{
+        return min_arr[col][row];
+    };
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t getMatrix(uint8_t col, uint8_t row) override{
+        return matrix[col][row];
+    };
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t getRMatrix(uint8_t index) override{
+        return 0;
+    };
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t getSMatrix(uint8_t index) override{
+        return smatrix[index];
+    };
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t NUM_PIXELS() override {return 242;};
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t NUM_SMATRIX() override {return 242;};
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t ROWS_MATRIX() override {return 22;};
+
+//------------------------------------------------------------------------------
+
+    virtual const uint8_t NUM_RMATRIX() override {return 0;};
+
+//------------------------------------------------------------------------------
+
+    void show(uint8_t text) override {
         switch (text) {
             case es_ist:
                 //Es
-                led_set(0);
-                led_set(1);
+                Letter_set(0);
+                Letter_set(1);
 
                 //Ist
-                led_set(3);
-                led_set(4);
-                led_set(5);
+                Letter_set(3);
+                Letter_set(4);
+                Letter_set(5);
 
 #ifdef DEBUG
                 Serial.println("");
@@ -78,13 +113,13 @@ public:
                 break;
 
             case viertel:
-                led_set(26);
-                led_set(27);
-                led_set(28);
-                led_set(29);
-                led_set(30);
-                led_set(31);
-                led_set(32);
+                Letter_set(26);
+                Letter_set(27);
+                Letter_set(28);
+                Letter_set(29);
+                Letter_set(30);
+                Letter_set(31);
+                Letter_set(32);
 
 #ifdef DEBUG
                 Serial.print("viertel ");
@@ -92,10 +127,10 @@ public:
                 break;
 
             case fuenf:
-                led_set(7);
-                led_set(8);
-                led_set(9);
-                led_set(10);
+                Letter_set(7);
+                Letter_set(8);
+                Letter_set(9);
+                Letter_set(10);
 
 #ifdef DEBUG
                 Serial.print("Fünf ");
@@ -103,10 +138,10 @@ public:
                 break;
 
             case zehn:
-                led_set(18);
-                led_set(19);
-                led_set(20);
-                led_set(21);
+                Letter_set(18);
+                Letter_set(19);
+                Letter_set(20);
+                Letter_set(21);
 
 #ifdef DEBUG
                 Serial.print("zehn ");
@@ -114,13 +149,13 @@ public:
                 break;
 
             case zwanzig:
-                led_set(11);
-                led_set(12);
-                led_set(13);
-                led_set(14);
-                led_set(15);
-                led_set(16);
-                led_set(17);
+                Letter_set(11);
+                Letter_set(12);
+                Letter_set(13);
+                Letter_set(14);
+                Letter_set(15);
+                Letter_set(16);
+                Letter_set(17);
 
 #ifdef DEBUG
                 Serial.print("zwanzig ");
@@ -128,10 +163,10 @@ public:
                 break;
 
             case halb:
-                led_set(44);
-                led_set(45);
-                led_set(46);
-                led_set(47);
+                Letter_set(44);
+                Letter_set(45);
+                Letter_set(46);
+                Letter_set(47);
 
 #ifdef DEBUG
                 Serial.print("halb ");
@@ -139,10 +174,10 @@ public:
                 break;
 
             case eins:
-                led_set(60);
-                led_set(61);
-                led_set(62);
-                led_set(63);
+                Letter_set(60);
+                Letter_set(61);
+                Letter_set(62);
+                Letter_set(63);
 
 #ifdef DEBUG
                 Serial.print("Eins ");
@@ -150,10 +185,10 @@ public:
                 break;
 
             case nach:
-                led_set(38);
-                led_set(39);
-                led_set(40);
-                led_set(41);
+                Letter_set(38);
+                Letter_set(39);
+                Letter_set(40);
+                Letter_set(41);
 
 #ifdef DEBUG
                 Serial.print("nach ");
@@ -161,18 +196,18 @@ public:
                 break;
 
             case vor:
-                led_set(35);
-                led_set(36);
-                led_set(37);
+                Letter_set(35);
+                Letter_set(36);
+                Letter_set(37);
 
 #ifdef DEBUG
                 Serial.print("vor ");
 #endif
 
             case uhr:
-                led_set(100);
-                led_set(101);
-                led_set(102);
+                Letter_set(100);
+                Letter_set(101);
+                Letter_set(102);
 
 #ifdef DEBUG
                 Serial.println("Uhr ");
@@ -180,9 +215,9 @@ public:
                 break;
 
             case h_ein:
-                led_set(61);
-                led_set(62);
-                led_set(63);
+                Letter_set(61);
+                Letter_set(62);
+                Letter_set(63);
 
 #ifdef DEBUG
                 Serial.println("Eins ");
@@ -190,10 +225,10 @@ public:
                 break;
 
             case h_zwei:
-                led_set(62);
-                led_set(63);
-                led_set(64);
-                led_set(65);
+                Letter_set(62);
+                Letter_set(63);
+                Letter_set(64);
+                Letter_set(65);
 
 #ifdef DEBUG
                 Serial.println("Zwei ");
@@ -201,10 +236,10 @@ public:
                 break;
 
             case h_drei:
-                led_set(67);
-                led_set(68);
-                led_set(69);
-                led_set(70);
+                Letter_set(67);
+                Letter_set(68);
+                Letter_set(69);
+                Letter_set(70);
 
 #ifdef DEBUG
                 Serial.println("Drei ");
@@ -212,10 +247,10 @@ public:
                 break;
 
             case h_vier:
-                led_set(77);
-                led_set(78);
-                led_set(79);
-                led_set(80);
+                Letter_set(77);
+                Letter_set(78);
+                Letter_set(79);
+                Letter_set(80);
 
 #ifdef DEBUG
                 Serial.println("Vier ");
@@ -223,10 +258,10 @@ public:
                 break;
 
             case h_fuenf:
-                led_set(73);
-                led_set(74);
-                led_set(75);
-                led_set(76);
+                Letter_set(73);
+                Letter_set(74);
+                Letter_set(75);
+                Letter_set(76);
 
 #ifdef DEBUG
                 Serial.println("Fünf ");
@@ -234,11 +269,11 @@ public:
                 break;
 
             case h_sechs:
-                led_set(104);
-                led_set(105);
-                led_set(106);
-                led_set(107);
-                led_set(108);
+                Letter_set(104);
+                Letter_set(105);
+                Letter_set(106);
+                Letter_set(107);
+                Letter_set(108);
 
 #ifdef DEBUG
                 Serial.println("Sechs ");
@@ -246,12 +281,12 @@ public:
                 break;
 
             case h_sieben:
-                led_set(55);
-                led_set(56);
-                led_set(57);
-                led_set(58);
-                led_set(59);
-                led_set(60);
+                Letter_set(55);
+                Letter_set(56);
+                Letter_set(57);
+                Letter_set(58);
+                Letter_set(59);
+                Letter_set(60);
 
 #ifdef DEBUG
                 Serial.println("Sieben ");
@@ -259,10 +294,10 @@ public:
                 break;
 
             case h_acht:
-                led_set(89);
-                led_set(90);
-                led_set(91);
-                led_set(92);
+                Letter_set(89);
+                Letter_set(90);
+                Letter_set(91);
+                Letter_set(92);
 
 #ifdef DEBUG
                 Serial.println("Acht ");
@@ -270,10 +305,10 @@ public:
                 break;
 
             case h_neun:
-                led_set(81);
-                led_set(82);
-                led_set(83);
-                led_set(84);
+                Letter_set(81);
+                Letter_set(82);
+                Letter_set(83);
+                Letter_set(84);
 
 #ifdef DEBUG
                 Serial.println("Neun ");
@@ -281,10 +316,10 @@ public:
                 break;
 
             case h_zehn:
-                led_set(93);
-                led_set(94);
-                led_set(95);
-                led_set(96);
+                Letter_set(93);
+                Letter_set(94);
+                Letter_set(95);
+                Letter_set(96);
 
 #ifdef DEBUG
                 Serial.println("Zehn ");
@@ -292,9 +327,9 @@ public:
                 break;
 
             case h_elf:
-                led_set(85);
-                led_set(86);
-                led_set(87);
+                Letter_set(85);
+                Letter_set(86);
+                Letter_set(87);
 
 #ifdef DEBUG
                 Serial.println("Elf ");
@@ -302,11 +337,11 @@ public:
                 break;
 
             case h_zwoelf:
-                led_set(49);
-                led_set(50);
-                led_set(51);
-                led_set(52);
-                led_set(53);
+                Letter_set(49);
+                Letter_set(50);
+                Letter_set(51);
+                Letter_set(52);
+                Letter_set(53);
 
 #ifdef DEBUG
                 Serial.println("Zwölf ");
@@ -318,237 +353,239 @@ public:
 //------------------------------------------------------------------------------
 
             case w_morgen:
-                led_set(131);
-                led_set(130);
-                led_set(129);
-                led_set(128);
-                led_set(127);
-                led_set(126);
+                Letter_set(131);
+                Letter_set(130);
+                Letter_set(129);
+                Letter_set(128);
+                Letter_set(127);
+                Letter_set(126);
 
 #ifdef DEBUG
                 Serial.print("Morgen ");
 #endif
 
             case w_frueh:
-                led_set(124);
-                led_set(123);
-                led_set(122);
-                led_set(121);
+                Letter_set(124);
+                Letter_set(123);
+                Letter_set(122);
+                Letter_set(121);
 
 #ifdef DEBUG
                 Serial.print("Früh ");
 #endif
 
             case w_abend:
-                led_set(132);
-                led_set(133);
-                led_set(134);
-                led_set(135);
-                led_set(136);
+                Letter_set(132);
+                Letter_set(133);
+                Letter_set(134);
+                Letter_set(135);
+                Letter_set(136);
 
 #ifdef DEBUG
                 Serial.print("Abend ");
 #endif
 
             case w_mittag:
-                led_set(137);
-                led_set(138);
-                led_set(139);
-                led_set(140);
-                led_set(141);
-                led_set(142);
+                Letter_set(137);
+                Letter_set(138);
+                Letter_set(139);
+                Letter_set(140);
+                Letter_set(141);
+                Letter_set(142);
 
 #ifdef DEBUG
                 Serial.print("Mittag ");
 #endif
 
             case w_nacht:
-                led_set(153);
-                led_set(152);
-                led_set(151);
-                led_set(150);
-                led_set(149);
+                Letter_set(153);
+                Letter_set(152);
+                Letter_set(151);
+                Letter_set(150);
+                Letter_set(149);
 
 #ifdef DEBUG
                 Serial.print("Nacht ");
 #endif
 
             case w_schnee:
-                led_set(148);
-                led_set(147);
-                led_set(146);
-                led_set(145);
-                led_set(144);
-                led_set(143);
+                Letter_set(148);
+                Letter_set(147);
+                Letter_set(146);
+                Letter_set(145);
+                Letter_set(144);
+                Letter_set(143);
 
 #ifdef DEBUG
                 Serial.print("Schnee ");
 #endif
 
             case w_klar:
-                led_set(154);
-                led_set(155);
-                led_set(156);
-                led_set(157);
+                Letter_set(154);
+                Letter_set(155);
+                Letter_set(156);
+                Letter_set(157);
 
 #ifdef DEBUG
                 Serial.print("klar ");
 #endif
 
             case w_warnung:
-                led_set(158);
-                led_set(159);
-                led_set(160);
-                led_set(161);
-                led_set(162);
-                led_set(163);
-                led_set(164);
+                Letter_set(158);
+                Letter_set(159);
+                Letter_set(160);
+                Letter_set(161);
+                Letter_set(162);
+                Letter_set(163);
+                Letter_set(164);
 
 #ifdef DEBUG
                 Serial.print("Warnung ");
 #endif
 
             case w_regen:
-                led_set(175);
-                led_set(174);
-                led_set(173);
-                led_set(172);
-                led_set(171);
+                Letter_set(175);
+                Letter_set(174);
+                Letter_set(173);
+                Letter_set(172);
+                Letter_set(171);
 
 #ifdef DEBUG
                 Serial.print("Regen ");
 #endif
 
             case w_wolken:
-                led_set(170);
-                led_set(169);
-                led_set(168);
-                led_set(167);
-                led_set(166);
-                led_set(165);
+                Letter_set(170);
+                Letter_set(169);
+                Letter_set(168);
+                Letter_set(167);
+                Letter_set(166);
+                Letter_set(165);
 
 #ifdef DEBUG
                 Serial.print("Wolken ");
 #endif
 
             case w_gewitter:
-                led_set(177);
-                led_set(178);
-                led_set(179);
-                led_set(180);
-                led_set(181);
-                led_set(182);
-                led_set(183);
-                led_set(184);
+                Letter_set(177);
+                Letter_set(178);
+                Letter_set(179);
+                Letter_set(180);
+                Letter_set(181);
+                Letter_set(182);
+                Letter_set(183);
+                Letter_set(184);
 
 #ifdef DEBUG
                 Serial.print("Gewitter ");
 #endif
 
             case w_unter:
-                led_set(197);
-                led_set(196);
-                led_set(195);
-                led_set(194);
-                led_set(193);
+                Letter_set(197);
+                Letter_set(196);
+                Letter_set(195);
+                Letter_set(194);
+                Letter_set(193);
 
 #ifdef DEBUG
                 Serial.print("unter ");
 #endif
 
             case w_ueber:
-                led_set(191);
-                led_set(190);
-                led_set(189);
-                led_set(188);
+                Letter_set(191);
+                Letter_set(190);
+                Letter_set(189);
+                Letter_set(188);
 
 #ifdef DEBUG
                 Serial.print("über ");
 #endif
 
             case w_minus:
-                led_set(199);
-                led_set(200);
-                led_set(201);
-                led_set(202);
-                led_set(203);
+                Letter_set(199);
+                Letter_set(200);
+                Letter_set(201);
+                Letter_set(202);
+                Letter_set(203);
 
 #ifdef DEBUG
                 Serial.print("minus ");
 #endif
 
             case w_null:
-                led_set(205);
-                led_set(206);
-                led_set(207);
-                led_set(208);
+                Letter_set(205);
+                Letter_set(206);
+                Letter_set(207);
+                Letter_set(208);
 
 #ifdef DEBUG
                 Serial.print("Null ");
 #endif
 
             case w_fuenf:
-                led_set(219);
-                led_set(218);
-                led_set(217);
-                led_set(216);
+                Letter_set(219);
+                Letter_set(218);
+                Letter_set(217);
+                Letter_set(216);
 
 #ifdef DEBUG
                 Serial.print("Fünf ");
 #endif
 
             case w_zehn:
-                led_set(215);
-                led_set(214);
-                led_set(213);
-                led_set(212);
+                Letter_set(215);
+                Letter_set(214);
+                Letter_set(213);
+                Letter_set(212);
 
 #ifdef DEBUG
                 Serial.print("Zehn ");
 #endif
 
             case w_und:
-                led_set(211);
-                led_set(210);
-                led_set(209);
+                Letter_set(211);
+                Letter_set(210);
+                Letter_set(209);
 
 #ifdef DEBUG
                 Serial.print("und ");
 #endif
 
             case w_zwanzig:
-                led_set(222);
-                led_set(223);
-                led_set(224);
-                led_set(225);
-                led_set(226);
-                led_set(227);
-                led_set(228);
+                Letter_set(222);
+                Letter_set(223);
+                Letter_set(224);
+                Letter_set(225);
+                Letter_set(226);
+                Letter_set(227);
+                Letter_set(228);
 
 #ifdef DEBUG
                 Serial.print("Zwanzig ");
 #endif
 
             case w_dreissig:
-                led_set(241);
-                led_set(240);
-                led_set(239);
-                led_set(238);
-                led_set(237);
-                led_set(236);
-                led_set(235);
+                Letter_set(241);
+                Letter_set(240);
+                Letter_set(239);
+                Letter_set(238);
+                Letter_set(237);
+                Letter_set(236);
+                Letter_set(235);
 
 #ifdef DEBUG
                 Serial.print("Dreißig ");
 #endif
 
             case w_grad:
-                led_set(233);
-                led_set(232);
+                Letter_set(233);
+                Letter_set(232);
 
 #ifdef DEBUG
                 Serial.println("°C ");
 #endif
+            default:
+                break;
         }
     };
 };
