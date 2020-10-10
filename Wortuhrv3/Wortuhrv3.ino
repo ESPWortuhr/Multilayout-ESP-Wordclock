@@ -83,6 +83,8 @@ __attribute__ ((used)) UHR_242_t Uhr_242_type;
 
 iUhrType* usedUhrType = nullptr;
 
+NeoPixelBus<LED_STRIPE_TYP, Neo800KbpsMethod>* strip = NULL;
+
 #include "font.h"
 #include "uhr_func.hpp"
 
@@ -862,7 +864,11 @@ void setup() {
     // LEDs initialisieren
     //-------------------------------------
     Serial.println("LED Init");
-    strip.Begin();
+    if (strip != NULL) {
+        delete strip; // delete the previous dynamically created strip
+    }
+    strip = new NeoPixelBus<LED_STRIPE_TYP, Neo800KbpsMethod>(usedUhrType->NUM_PIXELS());
+    strip->Begin();
     led_single(20);
     led_clear();
     led_show();

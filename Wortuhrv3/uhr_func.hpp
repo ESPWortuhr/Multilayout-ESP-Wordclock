@@ -80,9 +80,9 @@ static void TelnetMsg(const String &text) {
 
 static inline void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
 #ifdef Grbw
-    strip.SetPixelColor(i, RgbwColor(rr, gg, bb, ww));
+    strip->SetPixelColor(i, RgbwColor(rr, gg, bb, ww));
 #else
-    strip.SetPixelColor(i, RgbColor(rr, gg, bb));
+    strip->SetPixelColor(i, RgbColor(rr, gg, bb));
 #endif
 }
 
@@ -139,13 +139,13 @@ static void led_set(const unsigned int array[]) {
 //------------------------------------------------------------------------------
 
 static inline void led_show() {
-    strip.Show();
+    strip->Show();
 }
 
 //------------------------------------------------------------------------------
 
 static inline void led_clear_pixel(uint16_t i) {
-    strip.SetPixelColor(i, 0);
+    strip->SetPixelColor(i, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ static inline void led_clear() {
 
 static inline void uhr_clear() {
     for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
-        strip.SetPixelColor(usedUhrType->getSMatrix(i), 0);
+        strip->SetPixelColor(usedUhrType->getSMatrix(i), 0);
     }
 }
 
@@ -171,7 +171,7 @@ static inline void uhr_clear() {
 
 static inline void rahmen_clear() {
     for (uint16_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
-        strip.SetPixelColor(usedUhrType->getRMatrix(i), 0);
+        strip->SetPixelColor(usedUhrType->getRMatrix(i), 0);
     }
 }
 
@@ -367,7 +367,7 @@ static void schweif_up() {
 void shift_all_pixels_to_right() {
     for (uint8_t b = 0; b < 10; b++) {
         for (uint8_t a = 0; a < usedUhrType->ROWS_MATRIX(); a++) {
-            strip.SetPixelColor(usedUhrType->getMatrix(a,b), strip.GetPixelColor(usedUhrType->getMatrix(a,b + 1)));
+            strip->SetPixelColor(usedUhrType->getMatrix(a,b), strip->GetPixelColor(usedUhrType->getMatrix(a,b + 1)));
         }
     }
 }
@@ -443,7 +443,7 @@ static void laufen(unsigned int d, unsigned char aktion) {
     if (aktion == 0) {
         for (uint8_t t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
             for (uint8_t a = usedUhrType->NUM_SMATRIX(); a > 1; a--) {
-                strip.SetPixelColor(usedUhrType->getSMatrix(a - 1), strip.GetPixelColor(usedUhrType->getSMatrix(a - 2)));
+                strip->SetPixelColor(usedUhrType->getSMatrix(a - 1), strip->GetPixelColor(usedUhrType->getSMatrix(a - 2)));
             }
             led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getSMatrix(0));
             led_show();
@@ -493,7 +493,7 @@ static void schieben(int d, unsigned char aktion) {
         for (uint8_t t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
             for (a = usedUhrType->NUM_SMATRIX() - 1; a > 0; a--) {
                 for (uint8_t b = 0; b < usedUhrType->ROWS_MATRIX(); b++) {
-                    strip.SetPixelColor(usedUhrType->getMatrix(a,b), strip.GetPixelColor(usedUhrType->getMatrix(a - 1,b)));
+                    strip->SetPixelColor(usedUhrType->getMatrix(a,b), strip->GetPixelColor(usedUhrType->getMatrix(a - 1,b)));
                 }
             }
             for (uint8_t b = 0; b < usedUhrType->ROWS_MATRIX(); b++) {
