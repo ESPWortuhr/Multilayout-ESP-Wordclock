@@ -1,6 +1,6 @@
 #include "Arduino.h"
 
-const char *VER = "2.3.1";  // Software Version
+const char *VER = "2.3.2";  // Software Version
 
 #pragma once
 
@@ -112,7 +112,7 @@ const char* resource1 = "/data/2.5/forecast?id="; // Openweather API URL part 1
 const char* resource2 = "&units=metric&APPID="; // Openweather API URL part 2
 const char* resource3 = "&cnt=8"; // Openweather API forecast time
 char resource[40];
-char response[3500];       //fixed size buffer
+char response[6000];       //fixed size buffer
 WiFiClient client;
 unsigned int weather_tag    = 600;    //counter fuer Wetterdaten abrufen
 int wtemp_6;
@@ -164,7 +164,7 @@ struct UHR_242_t {
 
 // fix Eisbaeeer
 #ifdef UHR_242 
-  uint8_t NUM_PIXELS = 242;
+    uint8_t NUM_PIXELS = 242;
     uint8_t NUM_SMATRIX = 242;
     uint8_t ROWS_MATRIX = 22;
     uint8_t NUM_RMATRIX = 0;                
@@ -269,8 +269,7 @@ enum Command {
 int dim[20] = {30, 50, 70, 90, 110, 130, 140, 160, 200, 255, 255, 200, 160, 100, 80, 60, 40, 20, 10, 0};
 int diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
 
-NeoPixelBus <LED_STRIPE_TYP, NeoEsp8266Dma800KbpsMethod> strip(114,
-                                                               2 /* LED Data PIN, FIX durch die Liebary für den ESP8266 */);
+NeoPixelBus <LED_STRIPE_TYP, NeoEsp8266Dma800KbpsMethod> strip(NUM_PIXELS,2 /* LED Data PIN, FIX durch die Liebary für den ESP8266 */);
 
 //-- WebSocketserver
 WebPage_Adapter webSocket = WebPage_Adapter(80);
