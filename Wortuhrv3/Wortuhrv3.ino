@@ -495,13 +495,13 @@ void setup() {
 
     eeprom_read();
 
-    if (G.sernr == SERNR) {
+    if (G.sernr != SERNR) {
         for (int i = 0; i < 512; i++) { EEPROM.write(i, i); }
         EEPROM.commit();
 
         G.sernr = SERNR;
-        strcpy(G.ssid, "Geheim_24Ghz");
-        strcpy(G.passwd, "69830718001049910803");
+        strcpy(G.ssid, "Enter_Your_SSID");
+        strcpy(G.passwd, "Enter_Your_PASSWORD");
         G.prog = 1;
         G.param1 = 0;
         G.param2 = 0;
