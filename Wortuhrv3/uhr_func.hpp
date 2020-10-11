@@ -878,8 +878,6 @@ static void show_zeit(int flag) {
         }
     }
 
-    Clear_LED_Every_Minute();
-
     if (uhrzeit & ((uint32_t) 1 << ESIST)) { usedUhrType->show(es_ist); }
     if (uhrzeit & ((uint32_t) 1 << FUENF)) { usedUhrType->show(fuenf);  }
     if (uhrzeit & ((uint32_t) 1 << ZEHN)) { usedUhrType->show(zehn);  }

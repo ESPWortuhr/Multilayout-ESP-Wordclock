@@ -398,6 +398,7 @@ void loop() {
         TelnetMsg(">>>> Begin Minute <<<<");
 
         if (G.prog == 0 && G.conf == 0) {
+            led_clear();
             show_zeit(1); // Anzeige Uhrzeit mit Config
         }
 
@@ -792,6 +793,8 @@ void loop() {
         strcat(str, G.apikey);
         strcat(str, "\"}");
         webSocket.sendTXT(G.client_nr, str, strlen(str));
+        led_clear();
+        show_zeit(1);
         G.conf = COMMAND_IDLE;
     }
 

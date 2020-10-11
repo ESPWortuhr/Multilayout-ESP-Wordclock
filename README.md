@@ -1,4 +1,4 @@
-# Wortuhr - Version 2.3.1
+# Wortuhr - Version 2.4.0
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
@@ -60,10 +60,19 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * Finaler Release wäre eine unified Binary mit selektor auf der Webseite
 
 ## Known Bugs
-* struct for stripes
-* payload handling webiste (fields moved SSID, API-KEY, etc.) --> reboot
+* payload handling website (fields moved SSID, API-KEY, etc.) --> reboot
 
 ## ChangeLog
+### Version 2.4.0
+* (dbambus) 20201011   
+* Cleaned up .ino Functions for Wifi, EEPROM und Websockets
+* Moved them to external Headers
+* C++ polymorphismus with Uhrtypes introduced, moved them to external folders
+* Fixed Issue `struct for stripes`
+* Fixed Issue of showing wrong words on LED Front if entering Settings of Website
+* Change of Uhrtype on Website possible
+* removed mostly all #IfDefs
+
 ### Version 2.3.2
 * (Eisbaeeer) 20201009   
 * fix uhr_242 (Zeile 272 Uhr.h)

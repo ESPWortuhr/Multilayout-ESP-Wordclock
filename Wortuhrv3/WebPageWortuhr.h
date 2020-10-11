@@ -1,6 +1,6 @@
 #pragma once
 
-const char index_html[] PROGMEM = R"=====(
+const char index_html_head[] PROGMEM= R"=====(
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -16,20 +16,20 @@ const char index_html[] PROGMEM = R"=====(
 var MINI = require("minified");
 // eslint-disable-next-line one-var
 var _ = MINI._,
-  $ = MINI.$,
-  $$ = MINI.$$,
-  EE = MINI.EE,
-  HTML = MINI.HTML;
+    $ = MINI.$,
+    $$ = MINI.$$,
+    EE = MINI.EE,
+    HTML = MINI.HTML;
 
 var websocket;
 var ipEsp = "ws://192.168.4.1";
 var debug = true;
 var command = 1;
 var rgb = [
-  [0, 0, 100, 0],
-  [0, 10, 0, 0],
-  [10, 0, 0, 0],
-  [5, 5, 5, 0]
+    [0, 0, 100, 0],
+    [0, 10, 0, 0],
+    [10, 0, 0, 0],
+    [5, 5, 5, 0]
 ];
 var sliderType = 0; // 0: foreground, 1 background
 var hell = 2;
@@ -49,6 +49,7 @@ var h22 = 100;
 var h24 = 100;
 var showSeconds = 0;
 var showMinutes = 0;
+var uhrtype = 0;
 
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
@@ -97,49 +98,50 @@ var DATA_HOST_TEXT_LENGTH = 16;
 
 function initConfigValues() {
 
-  var locationHost = location.host;
-  if (locationHost !== "") {
-    ipEsp = "ws://" + locationHost;
-  } else {
-    ipEsp = "ws://192.168.178.44/";
-  }
+    var locationHost = location.host;
+    if (locationHost !== "") {
+        ipEsp = "ws://" + locationHost;
+    } else {
+        ipEsp = "ws://192.168.178.44/";
+    }
 
-  debug = true;
-  command = 1;
-  rgb = [
-    [0, 0, 100, 0],
-    [0, 10, 0, 0],
-    [10, 0, 0, 0],
-    [5, 5, 5, 0]
-  ];
-  sliderType = 0;
-  hell = 2;
-  geschw = 10;
-  anzahl = 100;
-  sleep = 0;
-  sleeptime = 1;
-  position = 100;
-  anzahl = 100;
-  color = 0;
-  h6 = 100;
-  h8 = 100;
-  h12 = 100;
-  h16 = 100;
-  h18 = 100;
-  h20 = 100;
-  h22 = 100;
-  h24 = 100;
-  showSeconds = 0;
-  showMinutes = 0;
+    debug = true;
+    command = 1;
+    rgb = [
+        [0, 0, 100],
+        [0, 10, 0],
+        [10, 0, 0],
+        [5, 5, 5]
+    ];
+    sliderType = 0;
+    hell = 2;
+    geschw = 10;
+    anzahl = 100;
+    sleep = 0;
+    sleeptime = 1;
+    position = 100;
+    anzahl = 100;
+    color = 0;
+    h6 = 100;
+    h8 = 100;
+    h12 = 100;
+    h16 = 100;
+    h18 = 100;
+    h20 = 100;
+    h22 = 100;
+    h24 = 100;
+    showSeconds = 0;
+    showMinutes = 0;
+    uhrtype = 0;
 }
 
 function hexToRgb(hex) {
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    red: parseInt(result[1], 16),
-    green: parseInt(result[2], 16),
-    blue: parseInt(result[3], 16)
-  } : null;
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        red: parseInt(result[1], 16),
+        green: parseInt(result[2], 16),
+        blue: parseInt(result[3], 16)
+    } : null;
 }
 
 /**
@@ -147,112 +149,114 @@ function hexToRgb(hex) {
  * an object can be provided that will be printed on the console (when a console
  * is available).
  */
+
 /* eslint-disable no-console */
 function debugMessage(debugMessage, someObject) {
-  if (debug === true) {
+    if (debug === true) {
 
-    if (console !== undefined) {
-      console.log(debugMessage);
+        if (console !== undefined) {
+            console.log(debugMessage);
 
-      if (someObject) {
-        console.log(someObject);
-      }
+            if (someObject) {
+                console.log(someObject);
+            }
+        }
+
+        $("#output").fill(debugMessage);
     }
-
-    $("#output").fill(debugMessage);
-  }
 }
 
 function initWebsocket() {
 
-  websocket = new WebSocket(ipEsp);
+    websocket = new WebSocket(ipEsp);
 
-  websocket.onopen = function(event) {
+    websocket.onopen = function (event) {
 
-    $("#status").set("+online");
-    $("#status").set("-offline");
-    $("#status").set("@value", "Online");
-    $(".status-button").fill("Verbindung trennen");
-    $(".status-button").set("@value", "1");
-    $("#section-connection-lost").set({
-      $display: "none"
-    });
+        $("#status").set("+online");
+        $("#status").set("-offline");
+        $("#status").set("@value", "Online");
+        $(".status-button").fill("Verbindung trennen");
+        $(".status-button").set("@value", "1");
+        $("#section-connection-lost").set({
+            $display: "none"
+        });
 
-    debugMessage("Die Verbindung mit dem Websocket wurde aufgebaut.", event);
+        debugMessage("Die Verbindung mit dem Websocket wurde aufgebaut.", event);
 
-    sendData(301, 0, 0);
-  };
+        sendData(301, 0, 0);
+    };
 
-  websocket.onclose = function(event) {
+    websocket.onclose = function (event) {
 
-    $("#status").set("-online");
-    $("#status").set("+offline");
-    $("#status").set("@value", "Offline");
-    $(".status-button").fill("Verbinden");
-    $(".status-button").set("@value", "0");
-    $("#section-connection-lost").set({
-      $display: "block"
-    });
+        $("#status").set("-online");
+        $("#status").set("+offline");
+        $("#status").set("@value", "Offline");
+        $(".status-button").fill("Verbinden");
+        $(".status-button").set("@value", "0");
+        $("#section-connection-lost").set({
+            $display: "block"
+        });
 
-    debugMessage("Die Verbindung mit dem Websocket wurde geschlossen (Code " + event.code + ").", event);
-  };
+        debugMessage("Die Verbindung mit dem Websocket wurde geschlossen (Code " + event.code + ").", event);
+    };
 
-  websocket.onmessage = function(event) {
+    websocket.onmessage = function (event) {
 
-    var data = JSON.parse(event.data);
+        var data = JSON.parse(event.data);
 
-    debugMessage("Webservice response arrived (Command " + data.command + ").", data);
+        debugMessage("Webservice response arrived (Command " + data.command + ").", data);
 
-    if (data.command === "config") {
+        if (data.command === "config") {
 
-      $("#ssid").set("value", data.ssid);
+            $("#ssid").set("value", data.ssid);
 
-      $("#timeserver").set("value", data.zeitserver);
-      $("#hostname").set("value", data.hostname);
-      $("#marquee").set("value", data.ltext);
+            $("#timeserver").set("value", data.zeitserver);
+            $("#hostname").set("value", data.hostname);
+            $("#marquee").set("value", data.ltext);
 
-      $("#brightness-6").set("value", data.h6);
-      $("#brightness-8").set("value", data.h8);
-      $("#brightness-12").set("value", data.h12);
-      $("#brightness-16").set("value", data.h16);
-      $("#brightness-18").set("value", data.h18);
-      $("#brightness-20").set("value", data.h20);
-      $("#brightness-22").set("value", data.h22);
-      $("#brightness-24").set("value", data.h24);
+            $("#brightness-6").set("value", data.h6);
+            $("#brightness-8").set("value", data.h8);
+            $("#brightness-12").set("value", data.h12);
+            $("#brightness-16").set("value", data.h16);
+            $("#brightness-18").set("value", data.h18);
+            $("#brightness-20").set("value", data.h20);
+            $("#brightness-22").set("value", data.h22);
+            $("#brightness-24").set("value", data.h24);
 
-      $("#slider-brightness").set("value", data.hell);
-      $("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
-      $("#showSeconds").set("value", data.zeige_sek);
-      $("#showMinutes").set("value", data.zeige_min);
+            $("#slider-brightness").set("value", data.hell);
+            $("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
+            $("#uhrtype").set("value", uhrtype);
+            $("#showSeconds").set("value", data.zeige_sek);
+            $("#showMinutes").set("value", data.zeige_min);
 
-      $("#owm-api-key").set("value", data.apiKey);
-      $("#owm-city-id").set("value", data.cityid);
-    }
-    if (data.command === "set") {
-      rgb[0][0] = data.rgb00;
-      rgb[0][1] = data.rgb01;
-      rgb[0][2] = data.rgb02;
-      rgb[0][3] = data.rgb03;
-      rgb[1][0] = data.rgb10;
-      rgb[1][1] = data.rgb11;
-      rgb[1][2] = data.rgb12;
-      rgb[1][3] = data.rgb13;
-      rgb[2][0] = data.rgb20;
-      rgb[2][1] = data.rgb21;
-      rgb[2][2] = data.rgb22;
-      rgb[2][3] = data.rgb23;
-      rgb[3][0] = data.rgb30;
-      rgb[3][1] = data.rgb31;
-      rgb[3][2] = data.rgb32;
-      rgb[3][3] = data.rgb33;
-      hell = data.hell;
-      geschw = data.geschw;
-      setSliders();
-    }
-  };
-  websocket.onerror = function(event) {
-    debugMessage("Bei der Verbindung mit dem Websocket ist ein Fehler aufgetreten.", event);
-  };
+            $("#owm-api-key").set("value", data.apiKey);
+            $("#owm-city-id").set("value", data.cityid);
+        }
+        if (data.command === "set") {
+            rgb[0][0] = data.rgb00;
+            rgb[0][1] = data.rgb01;
+            rgb[0][2] = data.rgb02;
+            rgb[0][3] = data.rgb03;
+            rgb[1][0] = data.rgb10;
+            rgb[1][1] = data.rgb11;
+            rgb[1][2] = data.rgb12;
+            rgb[1][3] = data.rgb13;
+            rgb[2][0] = data.rgb20;
+            rgb[2][1] = data.rgb21;
+            rgb[2][2] = data.rgb22;
+            rgb[2][3] = data.rgb23;
+            rgb[3][0] = data.rgb30;
+            rgb[3][1] = data.rgb31;
+            rgb[3][2] = data.rgb32;
+            rgb[3][3] = data.rgb33;
+            hell = data.hell;
+            geschw = data.geschw;
+            setSliders();
+        }
+    };
+    websocket.onerror = function (event) {
+        debugMessage("Bei der Verbindung mit dem Websocket ist ein Fehler aufgetreten.", event);
+    };
 }
 
 /**
@@ -260,16 +264,17 @@ function initWebsocket() {
  */
 function getSliders() {
 
-  // rgb sliders
-  rgb[sliderType][0] = $("#slider-red").get("value");
-  rgb[sliderType][1] = $("#slider-green").get("value");
-  rgb[sliderType][2] = $("#slider-blue").get("value");
+    // rgb sliders
+    rgb[sliderType][0] = $("#slider-red").get("value");
+    rgb[sliderType][1] = $("#slider-green").get("value");
+    rgb[sliderType][2] = $("#slider-blue").get("value");
+    rgb[sliderType][3] = $("#slider-white").get("value");
 
-  // other sliders
-  hell = $("#slider-brightness").get("value");
-  geschw = $("#slider-speed").get("value");
-  anzahl = $("#slider-leds").get("value");
-  position = $("#slider-position").get("value");
+    // other sliders
+    hell = $("#slider-brightness").get("value");
+    geschw = $("#slider-speed").get("value");
+    anzahl = $("#slider-leds").get("value");
+    position = $("#slider-position").get("value");
 }
 
 /**
@@ -280,31 +285,33 @@ function getSliders() {
  */
 function setSliders() {
 
-  // rgb sliders
-  $("#slider-red").set("value", rgb[sliderType][0]);
-  $("#slider-green").set("value", rgb[sliderType][1]);
-  $("#slider-blue").set("value", rgb[sliderType][2]);
+    // rgb sliders
+    $("#slider-red").set("value", rgb[sliderType][0]);
+    $("#slider-green").set("value", rgb[sliderType][1]);
+    $("#slider-blue").set("value", rgb[sliderType][2]);
+    $("#slider-white").set("value", rgb[sliderType][3]);
 
-  // rgb labels
-  $("#slider-red-value").fill(rgb[sliderType][0]);
-  $("#slider-green-value").fill(rgb[sliderType][1]);
-  $("#slider-blue-value").fill(rgb[sliderType][2]);
+    // rgb labels
+    $("#slider-red-value").fill(rgb[sliderType][0]);
+    $("#slider-green-value").fill(rgb[sliderType][1]);
+    $("#slider-blue-value").fill(rgb[sliderType][2]);
+    $("#slider-white-value").fill(rgb[sliderType][3]);
 
-  // various
-  $("#slider-brightness").set("value", hell);
-  $("#slider-speed").set("value", geschw);
-  $("#slider-leds").set("value", anzahl);
-  $("#slider-position").set("value", position);
+    // various
+    $("#slider-brightness").set("value", hell);
+    $("#slider-speed").set("value", geschw);
+    $("#slider-leds").set("value", anzahl);
+    $("#slider-position").set("value", position);
 
-  // various labels
-  $("#slider-brightness-value").fill(hell);
-  $("#slider-speed-value").fill(geschw);
-  $("#slider-leds-value").fill(anzahl);
-  $("#slider-position-value").fill(position);
+    // various labels
+    $("#slider-brightness-value").fill(hell);
+    $("#slider-speed-value").fill(geschw);
+    $("#slider-leds-value").fill(anzahl);
+    $("#slider-position-value").fill(position);
 
-  // Update the current color in the color area
-  var colorArea = $("#color-area");
-  colorArea[0].style.backgroundColor = "rgb(" + rgb[sliderType][0] + "," + rgb[sliderType][1] + "," + rgb[sliderType][2] + ")";
+    // Update the current color in the color area
+    var colorArea = $("#color-area");
+    colorArea[0].style.backgroundColor = "rgb(" + rgb[sliderType][0] + "," + rgb[sliderType][1] + "," + rgb[sliderType][2] + ")";
 }
 
 /**
@@ -315,14 +322,14 @@ function setSliders() {
  * @return {string} The padded number.
  */
 function nstr(number) {
-  if (number < 10) {
-    number = "00" + number;
-  } else {
-    if (number < 100) {
-      number = "0" + number;
+    if (number < 10) {
+        number = "00" + number;
+    } else {
+        if (number < 100) {
+            number = "0" + number;
+        }
     }
-  }
-  return number;
+    return number;
 }
 
 /**
@@ -335,10 +342,10 @@ function nstr(number) {
  */
 function getPaddedString(string, maxStringLength) {
 
-  while (string.length < maxStringLength) {
-    string += " ";
-  }
-  return string;
+    while (string.length < maxStringLength) {
+        string += " ";
+    }
+    return string;
 }
 
 /**
@@ -349,342 +356,352 @@ function getPaddedString(string, maxStringLength) {
  * @param  {int} An unknown parameter.
  */
 function sendData(command, unknown2, unknown3) {
-  var data = nstr(command) +
-    nstr(unknown2) +
-    nstr(unknown3) +
-    nstr(rgb[COLOR_FOREGROUND][0]) +
-    nstr(rgb[COLOR_FOREGROUND][1]) +
-    nstr(rgb[COLOR_FOREGROUND][2]) +
-    nstr(rgb[COLOR_FOREGROUND][3]) +
-    nstr(rgb[COLOR_BACKGROUND][0]) +
-    nstr(rgb[COLOR_BACKGROUND][1]) +
-    nstr(rgb[COLOR_BACKGROUND][2]) +
-    nstr(rgb[COLOR_BACKGROUND][3]) +
-    nstr(rgb[COLOR_FOREGROUND][0]) + // 2 Removed the other colors because the were just confusing as hell
-    nstr(rgb[COLOR_FOREGROUND][1]) + // 2
-    nstr(rgb[COLOR_FOREGROUND][2]) + // 2
-    nstr(rgb[COLOR_FOREGROUND][3]) + // 2
-    nstr(rgb[COLOR_FOREGROUND][0]) + // 3
-    nstr(rgb[COLOR_FOREGROUND][1]) + // 3
-    nstr(rgb[COLOR_FOREGROUND][2]) + // 3
-    nstr(rgb[COLOR_FOREGROUND][3]) + // 3
-    nstr(hell) +
-    nstr(geschw) +
-    nstr(anzahl) +
-    nstr(position) + "999";
+    var data = nstr(command) +
+        nstr(unknown2) +
+        nstr(unknown3) +
+        nstr(rgb[COLOR_FOREGROUND][0]) +
+        nstr(rgb[COLOR_FOREGROUND][1]) +
+        nstr(rgb[COLOR_FOREGROUND][2]) +
+        nstr(rgb[COLOR_FOREGROUND][3]) +
+        nstr(rgb[COLOR_BACKGROUND][0]) +
+        nstr(rgb[COLOR_BACKGROUND][1]) +
+        nstr(rgb[COLOR_BACKGROUND][2]) +
+        nstr(rgb[COLOR_BACKGROUND][3]) +
+        nstr(rgb[COLOR_FOREGROUND][0]) + // 2 Removed the other colors because the were just confusing as hell
+        nstr(rgb[COLOR_FOREGROUND][1]) + // 2
+        nstr(rgb[COLOR_FOREGROUND][2]) + // 2
+        nstr(rgb[COLOR_FOREGROUND][3]) + // 2
+        nstr(rgb[COLOR_FOREGROUND][0]) + // 3
+        nstr(rgb[COLOR_FOREGROUND][1]) + // 3
+        nstr(rgb[COLOR_FOREGROUND][2]) + // 3
+        nstr(rgb[COLOR_FOREGROUND][3]) + // 3
+        nstr(hell) +
+        nstr(geschw) +
+        nstr(anzahl) +
+        nstr(position) + "999";
 
-  websocket.send(data);
-  debugMessage("Send data: ", data);
+    websocket.send(data);
+    debugMessage("Send data: ", data);
 }
 
-$.ready(function() {
+$.ready(function () {
 
-  initConfigValues();
-  setSliders();
-  initWebsocket();
-
-  $(".status-button").on("click", function() {
-    var value = $(this).get("value");
-    if (value === "1") {
-      value = 0;
-      $("#status").fill("Verbinden ...");
-      $(".status-button").set("value", value);
-      websocket.close();
-    } else {
-      value = 1;
-      $("#status").fill("Verbinden ...");
-      $(".status-button").set("value", value);
-      initWebsocket();
-    }
-    return false;
-  });
-
-  $("#_clock").on("click", function() {
-
-    var date = new Date();
-    var timeZoneOffset = date.getTimezoneOffset();
-    timeZoneOffset = timeZoneOffset / 60 * -1;
-    var time = date.getTime() / 1000;
-
-    var data = "030000000";
-    data += getPaddedString(nstr(timeZoneOffset) + time, 21);
-    data += "999";
-
-    debugMessage("Clock data: ", data);
-    websocket.send(data);
-  });
-
-  /**
-   * The color mode has been changed.
-   *
-   * There are a total of four different color modes that can
-   * be changed (foreground, background, border and effect).
-   * I disabled the last two because they were just confusing.
-   */
-  $("input[name='color-mode']").on("change", function() {
-
-    switch ($(this).get("value")) {
-      case "foreground":
-        sliderType = COLOR_FOREGROUND;
-        break;
-      case "background":
-        sliderType = COLOR_BACKGROUND;
-        break;
-    }
-
+    initConfigValues();
     setSliders();
-  });
+    initWebsocket();
 
-  /**
-   * A menu item has been clicked.
-   */
-  $("a[class~='pure-menu-link']").on("click", function() {
-    var navigation = $(this)[0].dataset.navigation;
-
-    // add/remove active class
-    $(".pure-menu-link").set("-active");
-    $(this).set("+active");
-
-    if (navigation === "settings") {
-      sendData(COMMAND_REQUEST_CONFIG_VALUES, 0, 0);
-    }
-
-    // show/hide sections
-    $(".section").set({
-      $display: "none"
+    $(".status-button").on("click", function () {
+        var value = $(this).get("value");
+        if (value === "1") {
+            value = 0;
+            $("#status").fill("Verbinden ...");
+            $(".status-button").set("value", value);
+            websocket.close();
+        } else {
+            value = 1;
+            $("#status").fill("Verbinden ...");
+            $(".status-button").set("value", value);
+            initWebsocket();
+        }
+        return false;
     });
-    $(".section-" + navigation).set({
-      $display: "block"
+
+    $("#_clock").on("click", function () {
+
+        var date = new Date();
+        var timeZoneOffset = date.getTimezoneOffset();
+        timeZoneOffset = timeZoneOffset / 60 * -1;
+        var time = date.getTime() / 1000;
+
+        var data = "030000000";
+        data += getPaddedString(nstr(timeZoneOffset) + time, 21);
+        data += "999";
+
+        debugMessage("Clock data: ", data);
+        websocket.send(data);
     });
-  });
 
-  /**
-   * The clock mode has been changed.
-   */
-  $("input[name='mode']").on("change", function() {
-    var id = $(this).get("id");
+    /**
+     * The color mode has been changed.
+     *
+     * There are a total of four different color modes that can
+     * be changed (foreground, background, border and effect).
+     * I disabled the last two because they were just confusing.
+     */
+    $("input[name='color-mode']").on("change", function () {
 
-    var hasBrightness = false;
-    var hasSpeed = false;
+        switch ($(this).get("value")) {
+            case "foreground":
+                sliderType = COLOR_FOREGROUND;
+                break;
+            case "background":
+                sliderType = COLOR_BACKGROUND;
+                break;
+        }
 
-    if (id === "mode-wordclock") {
-      sliderType = COLOR_FOREGROUND;
-      command = COMMAND_MODE_WORD_CLOCK;
-    }
-    if (id === "mode-color") {
-      sliderType = COLOR_FOREGROUND;
-      command = COMMAND_MODE_COLOR;
-    }
-    if (id === "mode-seconds") {
-      sliderType = COLOR_FOREGROUND;
-      command = COMMAND_MODE_SECONDS;
-    }
-    if (id === "mode-marquee") {
-      hasSpeed = true;
-      sliderType = COLOR_FOREGROUND;
-      command = COMMAND_MODE_MARQUEE;
-    }
-    if (id === "mode-rainbow") {
-      hasBrightness = true;
-      hasSpeed = true;
-      command = COMMAND_MODE_RAINBOW;
-    }
-    if (id === "mode-change") {
-      hasBrightness = true;
-      hasSpeed = true;
-      command = COMMAND_MODE_CHANGE;
-    }
+        setSliders();
+    });
 
-    if (hasBrightness === true) {
-      $(".brightness").set({
-        $display: "block"
-      });
-    } else {
-      $(".brightness").set({
-        $display: "none"
-      });
-    }
+    /**
+     * A menu item has been clicked.
+     */
+    $("a[class~='pure-menu-link']").on("click", function () {
+        var navigation = $(this)[0].dataset.navigation;
 
-    if (hasSpeed === true) {
-      $(".speed").set({
-        $display: "block"
-      });
-    } else {
-      $(".speed").set({
-        $display: "none"
-      });
-    }
+        // add/remove active class
+        $(".pure-menu-link").set("-active");
+        $(this).set("+active");
 
-    if (hasBrightness || hasSpeed) {
-      $(".functions-settings").set({
-        $display: "block"
-      });
-    } else {
-      $(".functions-settings").set({
-        $display: "none"
-      });
-    }
+        if (navigation === "settings") {
+            sendData(COMMAND_REQUEST_CONFIG_VALUES, 0, 0);
+        }
 
-    sendData(command, 0, 0);
-    setSliders();
-  });
+        // show/hide sections
+        $(".section").set({
+            $display: "none"
+        });
+        $(".section-" + navigation).set({
+            $display: "block"
+        });
+    });
 
-  $(".quick-color").on("click", function(event) {
-    var hexColorString = $(this)[0].dataset.color;
-    var rgbColor = hexToRgb(hexColorString);
+    /**
+     * The clock mode has been changed.
+     */
+    $("input[name='mode']").on("change", function () {
+        var id = $(this).get("id");
 
-    rgb[sliderType][0] = rgbColor.red;
-    rgb[sliderType][1] = rgbColor.green;
-    rgb[sliderType][2] = rgbColor.blue;
+        var hasBrightness = false;
+        var hasSpeed = false;
 
-    hell = $("#slider-brightness").get("value");
-    geschw = $("#slider-speed").get("value");
-    anzahl = $("#slider-leds").get("value");
-    position = $("#slider-position").get("value");
+        if (id === "mode-wordclock") {
+            sliderType = COLOR_FOREGROUND;
+            command = COMMAND_MODE_WORD_CLOCK;
+        }
+        if (id === "mode-color") {
+            sliderType = COLOR_FOREGROUND;
+            command = COMMAND_MODE_COLOR;
+        }
+        if (id === "mode-seconds") {
+            sliderType = COLOR_FOREGROUND;
+            command = COMMAND_MODE_SECONDS;
+        }
+        if (id === "mode-marquee") {
+            hasSpeed = true;
+            sliderType = COLOR_FOREGROUND;
+            command = COMMAND_MODE_MARQUEE;
+        }
+        if (id === "mode-rainbow") {
+            hasBrightness = true;
+            hasSpeed = true;
+            command = COMMAND_MODE_RAINBOW;
+        }
+        if (id === "mode-change") {
+            hasBrightness = true;
+            hasSpeed = true;
+            command = COMMAND_MODE_CHANGE;
+        }
 
-    setSliders();
-    sendData(command, 0, 0);
-    setSliders();
+        if (hasBrightness === true) {
+            $(".brightness").set({
+                $display: "block"
+            });
+        } else {
+            $(".brightness").set({
+                $display: "none"
+            });
+        }
 
-    return false;
-  });
+        if (hasSpeed === true) {
+            $(".speed").set({
+                $display: "block"
+            });
+        } else {
+            $(".speed").set({
+                $display: "none"
+            });
+        }
 
-  $("[id*='slider']").onChange(function(event) {
-    var id = $(this).get("id");
+        if (hasBrightness || hasSpeed) {
+            $(".functions-settings").set({
+                $display: "block"
+            });
+        } else {
+            $(".functions-settings").set({
+                $display: "none"
+            });
+        }
 
-    if (sleep === 0) {
-      getSliders();
-      if (id === "slider-red") {
-        sendData(command, 1, 0);
-      }
-      if (id === "slider-green") {
-        sendData(command, 1, 0);
-      }
-      if (id === "slider-blue") {
-        sendData(command, 1, 0);
-      }
-      if (id === "slider-brightness") {
-        sendData(COMMAND_BRIGHTNESS, 0, 0);
-      }
-      if (id === "slider-speed") {
-        sendData(COMMAND_SPEED, 0, 0);
-      }
-      if (id === "slider-leds") {
-        sendData(COMMAND_LEDS, 0, 0);
-      }
-      if (id === "slider-position") {
-        sendData(COMMAND_POSITION, 0, 0);
-      }
-      setSliders();
+        sendData(command, 0, 0);
+        setSliders();
+    });
 
-      sleep = 1;
-      sleeptime = 20;
+    $(".quick-color").on("click", function (event) {
+        var hexColorString = $(this)[0].dataset.color;
+        var rgbColor = hexToRgb(hexColorString);
 
-      setTimeout(function() {
-        sleep = 0;
-      }, sleeptime);
-    }
-    return false;
-  });
+        rgb[sliderType][0] = rgbColor.red;
+        rgb[sliderType][1] = rgbColor.green;
+        rgb[sliderType][2] = rgbColor.blue;
+        rgb[sliderType][3] = rgbColor.white;
 
-  $("#initial-values-button").on("click", function() {
-    sendData(COMMAND_SET_INITIAL_VALUES, 0, 0);
-  });
+        hell = $("#slider-brightness").get("value");
+        geschw = $("#slider-speed").get("value");
+        anzahl = $("#slider-leds").get("value");
+        position = $("#slider-position").get("value");
 
-  $("#wifi-button").on("click", function() {
+        setSliders();
+        sendData(command, 0, 0);
+        setSliders();
 
-    var ssidValue = $("#ssid").get("value");
-    var passwordValue = $("#password").get("value");
+        return false;
+    });
 
-    // append ssid
-    var data = "099000000";
-    data += getPaddedString(ssidValue, DATA_SSID_TEXT_LENGTH);
+    $("[id*='slider']").onChange(function (event) {
+        var id = $(this).get("id");
 
-    // append password
-    data += getPaddedString(passwordValue, DATA_PASSWORT_TEXT_LENGTH);
-    data += "999";
+        if (sleep === 0) {
+            getSliders();
+            if (id === "slider-red") {
+                sendData(command, 1, 0);
+            }
+            if (id === "slider-green") {
+                sendData(command, 1, 0);
+            }
+            if (id === "slider-blue") {
+                sendData(command, 1, 0);
+            }
+            if (id === "slider-white") {
+                sendData(command, 1, 0);
+            }
+            if (id === "slider-brightness") {
+                sendData(COMMAND_BRIGHTNESS, 0, 0);
+            }
+            if (id === "slider-speed") {
+                sendData(COMMAND_SPEED, 0, 0);
+            }
+            if (id === "slider-leds") {
+                sendData(COMMAND_LEDS, 0, 0);
+            }
+            if (id === "slider-position") {
+                sendData(COMMAND_POSITION, 0, 0);
+            }
+            setSliders();
 
-    websocket.send(data);
-    debugMessage("WLAN wurde neu konfiguriert", data);
-    return false;
-  });
-  $("#timeserver-button").on("click", function() {
+            sleep = 1;
+            sleeptime = 20;
 
-    var timeserverValue = $("#timeserver").get("value");
+            setTimeout(function () {
+                sleep = 0;
+            }, sleeptime);
+        }
+        return false;
+    });
 
-    var data = "097000000";
-    data += getPaddedString(timeserverValue, DATA_TIMESERVER_TEXT_LENGTH);
-    data += "999";
+    $("#initial-values-button").on("click", function () {
+        sendData(COMMAND_SET_INITIAL_VALUES, 0, 0);
+    });
 
-    websocket.send(data);
-    debugMessage("Zeitserver wurde neu konfiguriert", data);
-    return false;
-  });
-  $("#marquee-button").on("click", function() {
-    var marqueeTextValue = $("#marquee").get("value");
+    $("#wifi-button").on("click", function () {
 
-    var data = "096000000";
-    data += getPaddedString(marqueeTextValue, DATA_MARQUEE_TEXT_LENGTH);
-    data += "999";
+        var ssidValue = $("#ssid").get("value");
+        var passwordValue = $("#password").get("value");
 
-    websocket.send(data);
-    debugMessage("Lauftext wurde neu konfiguriert", data);
-  });
-  $("#brightness-button").on("click", function() {
+        // append ssid
+        var data = "099000000";
+        data += getPaddedString(ssidValue, DATA_SSID_TEXT_LENGTH);
 
-    h6 = $("#brightness-6").get("value");
-    h8 = $("#brightness-8").get("value");
-    h12 = $("#brightness-12").get("value");
-    h16 = $("#brightness-16").get("value");
-    h18 = $("#brightness-18").get("value");
-    h20 = $("#brightness-20").get("value");
-    h22 = $("#brightness-22").get("value");
-    h24 = $("#brightness-24").get("value");
+        // append password
+        data += getPaddedString(passwordValue, DATA_PASSWORT_TEXT_LENGTH);
+        data += "999";
 
-    var data = "095000000" + nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + "999";
+        websocket.send(data);
+        debugMessage("WLAN wurde neu konfiguriert", data);
+        return false;
+    });
+    $("#timeserver-button").on("click", function () {
 
-    websocket.send(data);
-    debugMessage("Helligkeit wurde neu konfiguriert", data);
-  });
-  $("#weather-button").on("click", function() {
+        var timeserverValue = $("#timeserver").get("value");
 
-    var apiKey = $("#owm-api-key").get("value");
-    var cityId = $("#owm-city-id").get("value");
+        var data = "097000000";
+        data += getPaddedString(timeserverValue, DATA_TIMESERVER_TEXT_LENGTH);
+        data += "999";
 
-    var data = "090000000" + cityId + " " + apiKey + "  999";
+        websocket.send(data);
+        debugMessage("Zeitserver wurde neu konfiguriert", data);
+        return false;
+    });
+    $("#marquee-button").on("click", function () {
+        var marqueeTextValue = $("#marquee").get("value");
 
-    websocket.send(data);
-    debugMessage("OpenWeatherMap Zugangsdaten wurden konfiguriert", data);
-  });
-  $("#show-minutesbutton").on("click", function() {
-    var showMinutesValue = $("#show-minutes").get("value");
-    var data = "094000000" + showMinutesValue + "  999";
-    websocket.send(data);
-    debugMessage("Minutenanzeige wurde neu konfiguriert", data);
-  });
-  $("#show-seconds-button").on("click", function() {
-    var showSecondsValue = $("#show-seconds").get("value");
-    var data = "093000000" + showSecondsValue + "  999";
+        var data = "096000000";
+        data += getPaddedString(marqueeTextValue, DATA_MARQUEE_TEXT_LENGTH);
+        data += "999";
 
-    websocket.send(data);
-    debugMessage("Sekundenanzeige wurde neu konfiguriert", data);
-  });
-  $("#host-button").on("click", function() {
-    var hostValue = $("#host").get("value");
+        websocket.send(data);
+        debugMessage("Lauftext wurde neu konfiguriert", data);
+    });
+    $("#brightness-button").on("click", function () {
 
-    var data = "092000000";
-    data += getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH);
-    data += "999";
+        h6 = $("#brightness-6").get("value");
+        h8 = $("#brightness-8").get("value");
+        h12 = $("#brightness-12").get("value");
+        h16 = $("#brightness-16").get("value");
+        h18 = $("#brightness-18").get("value");
+        h20 = $("#brightness-20").get("value");
+        h22 = $("#brightness-22").get("value");
+        h24 = $("#brightness-24").get("value");
 
-    websocket.send(data);
-    debugMessage("Hostname wurde neu konfiguriert", data);
-  });
-    $("#disable-button").on("click", function() {
-		sendData(COMMAND_SET_WIFI_DISABLED, 0, 0);
-	});
-  $("#reset-button").on("click", function() {
-    sendData(COMMAND_RESET, 0, 0);
-  });
+        var data = "095000000" + nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + "999";
+
+        websocket.send(data);
+        debugMessage("Helligkeit wurde neu konfiguriert", data);
+    });
+    $("#weather-button").on("click", function () {
+
+        var apiKey = $("#owm-api-key").get("value");
+        var cityId = $("#owm-city-id").get("value");
+
+        var data = "090000000" + cityId + " " + apiKey + "  999";
+
+        websocket.send(data);
+        debugMessage("OpenWeatherMap Zugangsdaten wurden konfiguriert", data);
+    });
+    $("#show-minutesbutton").on("click", function () {
+        var showMinutesValue = $("#show-minutes").get("value");
+        var data = "094000000" + showMinutesValue + "  999";
+        websocket.send(data);
+        debugMessage("Minutenanzeige wurde neu konfiguriert", data);
+    });
+    $("#show-seconds-button").on("click", function () {
+        var showSecondsValue = $("#show-seconds").get("value");
+        var data = "093000000" + showSecondsValue + "  999";
+
+        websocket.send(data);
+        debugMessage("Sekundenanzeige wurde neu konfiguriert", data);
+    });
+    $("#uhrtype-button").on("click", function() {
+        var uhrtype = $("#uhrtype").get("value");
+        var data = "089000000" + uhrtype + "  999";
+        websocket.send(data);
+        debugMessage("Uhrtyp wurde neu konfiguriert", data);
+    });
+    $("#host-button").on("click", function () {
+        var hostValue = $("#host").get("value");
+
+        var data = "092000000";
+        data += getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH);
+        data += "999";
+
+        websocket.send(data);
+        debugMessage("Hostname wurde neu konfiguriert", data);
+    });
+    $("#disable-button").on("click", function () {
+        sendData(COMMAND_SET_WIFI_DISABLED, 0, 0);
+    });
+    $("#reset-button").on("click", function () {
+        sendData(COMMAND_RESET, 0, 0);
+    });
 });
 </script><style>/*!
 Pure v1.0.0
@@ -704,8 +721,9 @@ Licensed under the BSD License.
 https://github.com/yahoo/pure/blob/master/LICENSE.md
 */
 @media screen and (min-width:35.5em){.pure-u-sm-1,.pure-u-sm-1-1,.pure-u-sm-1-12,.pure-u-sm-1-2,.pure-u-sm-1-24,.pure-u-sm-1-3,.pure-u-sm-1-4,.pure-u-sm-1-5,.pure-u-sm-1-6,.pure-u-sm-1-8,.pure-u-sm-10-24,.pure-u-sm-11-12,.pure-u-sm-11-24,.pure-u-sm-12-24,.pure-u-sm-13-24,.pure-u-sm-14-24,.pure-u-sm-15-24,.pure-u-sm-16-24,.pure-u-sm-17-24,.pure-u-sm-18-24,.pure-u-sm-19-24,.pure-u-sm-2-24,.pure-u-sm-2-3,.pure-u-sm-2-5,.pure-u-sm-20-24,.pure-u-sm-21-24,.pure-u-sm-22-24,.pure-u-sm-23-24,.pure-u-sm-24-24,.pure-u-sm-3-24,.pure-u-sm-3-4,.pure-u-sm-3-5,.pure-u-sm-3-8,.pure-u-sm-4-24,.pure-u-sm-4-5,.pure-u-sm-5-12,.pure-u-sm-5-24,.pure-u-sm-5-5,.pure-u-sm-5-6,.pure-u-sm-5-8,.pure-u-sm-6-24,.pure-u-sm-7-12,.pure-u-sm-7-24,.pure-u-sm-7-8,.pure-u-sm-8-24,.pure-u-sm-9-24{display:inline-block;zoom:1;letter-spacing:normal;word-spacing:normal;vertical-align:top;text-rendering:auto}.pure-u-sm-1-24{width:4.1667%}.pure-u-sm-1-12,.pure-u-sm-2-24{width:8.3333%}.pure-u-sm-1-8,.pure-u-sm-3-24{width:12.5%}.pure-u-sm-1-6,.pure-u-sm-4-24{width:16.6667%}.pure-u-sm-1-5{width:20%}.pure-u-sm-5-24{width:20.8333%}.pure-u-sm-1-4,.pure-u-sm-6-24{width:25%}.pure-u-sm-7-24{width:29.1667%}.pure-u-sm-1-3,.pure-u-sm-8-24{width:33.3333%}.pure-u-sm-3-8,.pure-u-sm-9-24{width:37.5%}.pure-u-sm-2-5{width:40%}.pure-u-sm-10-24,.pure-u-sm-5-12{width:41.6667%}.pure-u-sm-11-24{width:45.8333%}.pure-u-sm-1-2,.pure-u-sm-12-24{width:50%}.pure-u-sm-13-24{width:54.1667%}.pure-u-sm-14-24,.pure-u-sm-7-12{width:58.3333%}.pure-u-sm-3-5{width:60%}.pure-u-sm-15-24,.pure-u-sm-5-8{width:62.5%}.pure-u-sm-16-24,.pure-u-sm-2-3{width:66.6667%}.pure-u-sm-17-24{width:70.8333%}.pure-u-sm-18-24,.pure-u-sm-3-4{width:75%}.pure-u-sm-19-24{width:79.1667%}.pure-u-sm-4-5{width:80%}.pure-u-sm-20-24,.pure-u-sm-5-6{width:83.3333%}.pure-u-sm-21-24,.pure-u-sm-7-8{width:87.5%}.pure-u-sm-11-12,.pure-u-sm-22-24{width:91.6667%}.pure-u-sm-23-24{width:95.8333%}.pure-u-sm-1,.pure-u-sm-1-1,.pure-u-sm-24-24,.pure-u-sm-5-5{width:100%}}@media screen and (min-width:48em){.pure-u-md-1,.pure-u-md-1-1,.pure-u-md-1-12,.pure-u-md-1-2,.pure-u-md-1-24,.pure-u-md-1-3,.pure-u-md-1-4,.pure-u-md-1-5,.pure-u-md-1-6,.pure-u-md-1-8,.pure-u-md-10-24,.pure-u-md-11-12,.pure-u-md-11-24,.pure-u-md-12-24,.pure-u-md-13-24,.pure-u-md-14-24,.pure-u-md-15-24,.pure-u-md-16-24,.pure-u-md-17-24,.pure-u-md-18-24,.pure-u-md-19-24,.pure-u-md-2-24,.pure-u-md-2-3,.pure-u-md-2-5,.pure-u-md-20-24,.pure-u-md-21-24,.pure-u-md-22-24,.pure-u-md-23-24,.pure-u-md-24-24,.pure-u-md-3-24,.pure-u-md-3-4,.pure-u-md-3-5,.pure-u-md-3-8,.pure-u-md-4-24,.pure-u-md-4-5,.pure-u-md-5-12,.pure-u-md-5-24,.pure-u-md-5-5,.pure-u-md-5-6,.pure-u-md-5-8,.pure-u-md-6-24,.pure-u-md-7-12,.pure-u-md-7-24,.pure-u-md-7-8,.pure-u-md-8-24,.pure-u-md-9-24{display:inline-block;zoom:1;letter-spacing:normal;word-spacing:normal;vertical-align:top;text-rendering:auto}.pure-u-md-1-24{width:4.1667%}.pure-u-md-1-12,.pure-u-md-2-24{width:8.3333%}.pure-u-md-1-8,.pure-u-md-3-24{width:12.5%}.pure-u-md-1-6,.pure-u-md-4-24{width:16.6667%}.pure-u-md-1-5{width:20%}.pure-u-md-5-24{width:20.8333%}.pure-u-md-1-4,.pure-u-md-6-24{width:25%}.pure-u-md-7-24{width:29.1667%}.pure-u-md-1-3,.pure-u-md-8-24{width:33.3333%}.pure-u-md-3-8,.pure-u-md-9-24{width:37.5%}.pure-u-md-2-5{width:40%}.pure-u-md-10-24,.pure-u-md-5-12{width:41.6667%}.pure-u-md-11-24{width:45.8333%}.pure-u-md-1-2,.pure-u-md-12-24{width:50%}.pure-u-md-13-24{width:54.1667%}.pure-u-md-14-24,.pure-u-md-7-12{width:58.3333%}.pure-u-md-3-5{width:60%}.pure-u-md-15-24,.pure-u-md-5-8{width:62.5%}.pure-u-md-16-24,.pure-u-md-2-3{width:66.6667%}.pure-u-md-17-24{width:70.8333%}.pure-u-md-18-24,.pure-u-md-3-4{width:75%}.pure-u-md-19-24{width:79.1667%}.pure-u-md-4-5{width:80%}.pure-u-md-20-24,.pure-u-md-5-6{width:83.3333%}.pure-u-md-21-24,.pure-u-md-7-8{width:87.5%}.pure-u-md-11-12,.pure-u-md-22-24{width:91.6667%}.pure-u-md-23-24{width:95.8333%}.pure-u-md-1,.pure-u-md-1-1,.pure-u-md-24-24,.pure-u-md-5-5{width:100%}}@media screen and (min-width:64em){.pure-u-lg-1,.pure-u-lg-1-1,.pure-u-lg-1-12,.pure-u-lg-1-2,.pure-u-lg-1-24,.pure-u-lg-1-3,.pure-u-lg-1-4,.pure-u-lg-1-5,.pure-u-lg-1-6,.pure-u-lg-1-8,.pure-u-lg-10-24,.pure-u-lg-11-12,.pure-u-lg-11-24,.pure-u-lg-12-24,.pure-u-lg-13-24,.pure-u-lg-14-24,.pure-u-lg-15-24,.pure-u-lg-16-24,.pure-u-lg-17-24,.pure-u-lg-18-24,.pure-u-lg-19-24,.pure-u-lg-2-24,.pure-u-lg-2-3,.pure-u-lg-2-5,.pure-u-lg-20-24,.pure-u-lg-21-24,.pure-u-lg-22-24,.pure-u-lg-23-24,.pure-u-lg-24-24,.pure-u-lg-3-24,.pure-u-lg-3-4,.pure-u-lg-3-5,.pure-u-lg-3-8,.pure-u-lg-4-24,.pure-u-lg-4-5,.pure-u-lg-5-12,.pure-u-lg-5-24,.pure-u-lg-5-5,.pure-u-lg-5-6,.pure-u-lg-5-8,.pure-u-lg-6-24,.pure-u-lg-7-12,.pure-u-lg-7-24,.pure-u-lg-7-8,.pure-u-lg-8-24,.pure-u-lg-9-24{display:inline-block;zoom:1;letter-spacing:normal;word-spacing:normal;vertical-align:top;text-rendering:auto}.pure-u-lg-1-24{width:4.1667%}.pure-u-lg-1-12,.pure-u-lg-2-24{width:8.3333%}.pure-u-lg-1-8,.pure-u-lg-3-24{width:12.5%}.pure-u-lg-1-6,.pure-u-lg-4-24{width:16.6667%}.pure-u-lg-1-5{width:20%}.pure-u-lg-5-24{width:20.8333%}.pure-u-lg-1-4,.pure-u-lg-6-24{width:25%}.pure-u-lg-7-24{width:29.1667%}.pure-u-lg-1-3,.pure-u-lg-8-24{width:33.3333%}.pure-u-lg-3-8,.pure-u-lg-9-24{width:37.5%}.pure-u-lg-2-5{width:40%}.pure-u-lg-10-24,.pure-u-lg-5-12{width:41.6667%}.pure-u-lg-11-24{width:45.8333%}.pure-u-lg-1-2,.pure-u-lg-12-24{width:50%}.pure-u-lg-13-24{width:54.1667%}.pure-u-lg-14-24,.pure-u-lg-7-12{width:58.3333%}.pure-u-lg-3-5{width:60%}.pure-u-lg-15-24,.pure-u-lg-5-8{width:62.5%}.pure-u-lg-16-24,.pure-u-lg-2-3{width:66.6667%}.pure-u-lg-17-24{width:70.8333%}.pure-u-lg-18-24,.pure-u-lg-3-4{width:75%}.pure-u-lg-19-24{width:79.1667%}.pure-u-lg-4-5{width:80%}.pure-u-lg-20-24,.pure-u-lg-5-6{width:83.3333%}.pure-u-lg-21-24,.pure-u-lg-7-8{width:87.5%}.pure-u-lg-11-12,.pure-u-lg-22-24{width:91.6667%}.pure-u-lg-23-24{width:95.8333%}.pure-u-lg-1,.pure-u-lg-1-1,.pure-u-lg-24-24,.pure-u-lg-5-5{width:100%}}@media screen and (min-width:80em){.pure-u-xl-1,.pure-u-xl-1-1,.pure-u-xl-1-12,.pure-u-xl-1-2,.pure-u-xl-1-24,.pure-u-xl-1-3,.pure-u-xl-1-4,.pure-u-xl-1-5,.pure-u-xl-1-6,.pure-u-xl-1-8,.pure-u-xl-10-24,.pure-u-xl-11-12,.pure-u-xl-11-24,.pure-u-xl-12-24,.pure-u-xl-13-24,.pure-u-xl-14-24,.pure-u-xl-15-24,.pure-u-xl-16-24,.pure-u-xl-17-24,.pure-u-xl-18-24,.pure-u-xl-19-24,.pure-u-xl-2-24,.pure-u-xl-2-3,.pure-u-xl-2-5,.pure-u-xl-20-24,.pure-u-xl-21-24,.pure-u-xl-22-24,.pure-u-xl-23-24,.pure-u-xl-24-24,.pure-u-xl-3-24,.pure-u-xl-3-4,.pure-u-xl-3-5,.pure-u-xl-3-8,.pure-u-xl-4-24,.pure-u-xl-4-5,.pure-u-xl-5-12,.pure-u-xl-5-24,.pure-u-xl-5-5,.pure-u-xl-5-6,.pure-u-xl-5-8,.pure-u-xl-6-24,.pure-u-xl-7-12,.pure-u-xl-7-24,.pure-u-xl-7-8,.pure-u-xl-8-24,.pure-u-xl-9-24{display:inline-block;zoom:1;letter-spacing:normal;word-spacing:normal;vertical-align:top;text-rendering:auto}.pure-u-xl-1-24{width:4.1667%}.pure-u-xl-1-12,.pure-u-xl-2-24{width:8.3333%}.pure-u-xl-1-8,.pure-u-xl-3-24{width:12.5%}.pure-u-xl-1-6,.pure-u-xl-4-24{width:16.6667%}.pure-u-xl-1-5{width:20%}.pure-u-xl-5-24{width:20.8333%}.pure-u-xl-1-4,.pure-u-xl-6-24{width:25%}.pure-u-xl-7-24{width:29.1667%}.pure-u-xl-1-3,.pure-u-xl-8-24{width:33.3333%}.pure-u-xl-3-8,.pure-u-xl-9-24{width:37.5%}.pure-u-xl-2-5{width:40%}.pure-u-xl-10-24,.pure-u-xl-5-12{width:41.6667%}.pure-u-xl-11-24{width:45.8333%}.pure-u-xl-1-2,.pure-u-xl-12-24{width:50%}.pure-u-xl-13-24{width:54.1667%}.pure-u-xl-14-24,.pure-u-xl-7-12{width:58.3333%}.pure-u-xl-3-5{width:60%}.pure-u-xl-15-24,.pure-u-xl-5-8{width:62.5%}.pure-u-xl-16-24,.pure-u-xl-2-3{width:66.6667%}.pure-u-xl-17-24{width:70.8333%}.pure-u-xl-18-24,.pure-u-xl-3-4{width:75%}.pure-u-xl-19-24{width:79.1667%}.pure-u-xl-4-5{width:80%}.pure-u-xl-20-24,.pure-u-xl-5-6{width:83.3333%}.pure-u-xl-21-24,.pure-u-xl-7-8{width:87.5%}.pure-u-xl-11-12,.pure-u-xl-22-24{width:91.6667%}.pure-u-xl-23-24{width:95.8333%}.pure-u-xl-1,.pure-u-xl-1-1,.pure-u-xl-24-24,.pure-u-xl-5-5{width:100%}}</style><style>body{background:#f7f7f7;font-size:16px}.content{padding:20px;max-width:1200px;margin:auto}.content>.pure-g{margin-left:-10px;margin-right:-10px}p{margin-bottom:15px;margin-top:0}a{text-decoration:none}h1,h2,h3,h4,h5,h6{color:rgba(0,0,0,.7)}h1{font-size:1.4em;margin-top:0;margin-bottom:8px}h2{font-size:1.2em;color:rgba(0,0,0,.6)}.main-menu{background:#5c5c5c;box-shadow:inset 0 -10px 7px -10px rgba(0,0,0,.8);overflow-x:scroll;overflow-y:hidden}.main-menu .content{padding:0}.pure-menu-item{height:auto}.main-menu .pure-menu-link{padding:1.2em;padding-bottom:1em;padding-top:1em;color:#fff}.pure-menu-link:hover{background:#898989;color:#fff}.pure-menu-link.active{background:#f7f7f7;color:#5c5c5c}.color-area{height:40px;width:100%;background:gray;margin-bottom:15px;margin-top:10px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}.button-xl{font-size:150%}.pure-g.colors>div{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.pure-g.colors>div{padding:.3em}.pure-g.colors button{width:100%;height:40px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}label.pure-radio{padding:5px;display:inline-block}label.pure-radio input[type=radio]{margin-top:-14px;display:inline-block}input[type=range],input[type=range]:-moz-focusring,input[type=range]::-moz-focus-inner,input[type=range]::-moz-focus-outer,input[type=range]:active,input[type=range]:focus{border:0;outline:0}input[type=range]{width:100%;-webkit-appearance:none;-moz-appearance:none;margin-top:8px;margin-bottom:8px;height:20px}input[type=range]::-webkit-slider-runnable-track{height:6px;cursor:pointer;background:#ddd;border:none;border-radius:100px;box-shadow:inset 0 1px 1px 0 rgba(0,0,0,.3);-webkit-appearance:none;-moz-appearance:none}input[type=range]::-webkit-slider-thumb{height:28px;width:28px;margin-top:-11px;border-radius:200px;background:linear-gradient(to bottom,rgba(255,255,255,1) 0,rgba(235,235,235,1) 100%);box-shadow:0 1px 1px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.9);border:1px solid rgba(0,0,0,.3);cursor:pointer;-webkit-appearance:none;-moz-appearance:none}input[type=range]::-moz-range-track{height:6px;background:#ddd;border:none;border-radius:100px;box-shadow:inset 0 1px 1px 0 rgba(0,0,0,.3);-webkit-appearance:none;-moz-appearance:none}input[type=range]::-moz-range-thumb{height:28px;width:28px;border-radius:200px;background:linear-gradient(to bottom,rgba(255,255,255,1) 0,rgba(235,235,235,1) 100%);box-shadow:0 1px 1px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.9);border:1px solid rgba(0,0,0,.3);cursor:pointer;-webkit-appearance:none;-moz-appearance:none}.slider-label{margin-top:11px;margin-bottom:4px;display:inline-block;width:100%}.slider-label .value{float:right;margin-right:15px}.section{display:none}.section-main{display:block}.box-debug{overflow:hidden;overflow-wrap:break-word}.box-debug>div{font-family:monospace}.brightness,.functions-settings,.leds,.position,.speed{display:none}.section-settings .box,.section-settings .pure-u-1,.section-settings>div{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.section-settings .pure-u-1{padding-bottom:20px}.section-settings .box{height:100%}.status.online{color:green}.status.offline{color:red}.box{padding:20px;margin:10px;box-shadow:0 1px 1px 0 rgba(60,64,67,.08),0 1px 3px 1px rgba(60,64,67,.16);background:#fff;border-radius:3px;color:#5f6368}.box h2{margin-top:-5px;border-bottom:1px solid #f0f0f0;padding-bottom:10px;margin-left:-20px;margin-right:-20px;padding-right:15px;padding-left:15px;font-weight:400;font-size:1.1em}</style>
-</head>
-<body>
+</head>)=====";
+
+const char index_html_body[] PROGMEM= R"=====(<body>
 
 	<div class="pure-g">
 		<div class="pure-u-24-24">
@@ -1143,6 +1161,29 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 								</div>
 								<div class="pure-controls">
 									<button id="show-seconds-button" class="pure-button">Sekunden-Anzeige speichern</button>
+								</div>
+							</fieldset>
+						</form>
+						</div>
+
+					</div>
+					<div class="pure-u-1 pure-u-md-1-2">
+
+                        <div class="box">
+						<h2>Uhrentyp ?</h2>
+						<form class="pure-form pure-form-aligned">
+							<fieldset>
+								<div class="pure-control-group">
+									<label for="uhrtype">Änderung des Uhrentypes.</label><select name="uhrtype" id="uhrtype" size="1">
+										<option value="1" selected>Uhr_114</option>
+										<option value="2">Uhr_114_Alternative</option>
+										<option value="3">Uhr_125</option>
+										<option value="4">Uhr_169</option>
+										<option value="5">Uhr_242</option>
+									</select>
+								</div>
+								<div class="pure-controls">
+									<button id="uhrtyp-button" class="pure-button">Uhrentyp speichern</button>
 								</div>
 							</fieldset>
 						</form>
