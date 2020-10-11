@@ -264,8 +264,6 @@ enum UhrTypeDefinitions {
 int dim[20] = {30, 50, 70, 90, 110, 130, 140, 160, 200, 255, 255, 200, 160, 100, 80, 60, 40, 20, 10, 0};
 int diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
 
-//-- WebSocketserver
-WebPage_Adapter webSocket = WebPage_Adapter(80);
 
 //--OTA--
 ESP8266WebServer httpServer(81);
