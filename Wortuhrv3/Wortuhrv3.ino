@@ -709,6 +709,7 @@ void eeprom_read() {
     Serial.printf("H24       : %u\n", G.h24);
     Serial.printf("LDR       : %u\n", G.ldr);
     Serial.printf("LDRCal    : %u\n", G.ldrCal);
+    Serial.printf("Uhrtype    : %u\n", G.UhrtypeDef);
     Serial.print("OWM_apikey: ");
     Serial.println(G.apikey);
     Serial.print("OWM_city  : ");

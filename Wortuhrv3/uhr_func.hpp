@@ -691,17 +691,14 @@ static void show_minuten() {
 
 //------------------------------------------------------------------------------
 
-static void check_for_five() {
-    static bool check_for_five_done = false;
-    uint8_t m = _minute;
-    while (m > 4) { m -= 5; }
-
-    if (m == 0 && check_for_five_done == false) {
+static void Clear_LED_Every_Minute() {
+    static bool already_cleared = false;
+    if (_sekunde == 0 && already_cleared == false) {
         led_clear();
-        check_for_five_done = true;
+        already_cleared = true;
     }
-    if (m > 0 && check_for_five_done == true){
-        check_for_five_done = false;
+    if (_sekunde > 0 && already_cleared == true){
+        already_cleared = false;
     }
 }
 
@@ -881,7 +878,7 @@ static void show_zeit(int flag) {
         }
     }
 
-    check_for_five();
+    Clear_LED_Every_Minute();
 
     if (uhrzeit & ((uint32_t) 1 << ESIST)) { usedUhrType->show(es_ist); }
     if (uhrzeit & ((uint32_t) 1 << FUENF)) { usedUhrType->show(fuenf);  }
