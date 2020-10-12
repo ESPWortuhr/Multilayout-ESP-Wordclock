@@ -723,7 +723,7 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 @media screen and (min-width:35.5em){.pure-u-sm-1,.pure-u-sm-1-1,.pure-u-sm-1-12,.pure-u-sm-1-2,.pure-u-sm-1-24,.pure-u-sm-1-3,.pure-u-sm-1-4,.pure-u-sm-1-5,.pure-u-sm-1-6,.pure-u-sm-1-8,.pure-u-sm-10-24,.pure-u-sm-11-12,.pure-u-sm-11-24,.pure-u-sm-12-24,.pure-u-sm-13-24,.pure-u-sm-14-24,.pure-u-sm-15-24,.pure-u-sm-16-24,.pure-u-sm-17-24,.pure-u-sm-18-24,.pure-u-sm-19-24,.pure-u-sm-2-24,.pure-u-sm-2-3,.pure-u-sm-2-5,.pure-u-sm-20-24,.pure-u-sm-21-24,.pure-u-sm-22-24,.pure-u-sm-23-24,.pure-u-sm-24-24,.pure-u-sm-3-24,.pure-u-sm-3-4,.pure-u-sm-3-5,.pure-u-sm-3-8,.pure-u-sm-4-24,.pure-u-sm-4-5,.pure-u-sm-5-12,.pure-u-sm-5-24,.pure-u-sm-5-5,.pure-u-sm-5-6,.pure-u-sm-5-8,.pure-u-sm-6-24,.pure-u-sm-7-12,.pure-u-sm-7-24,.pure-u-sm-7-8,.pure-u-sm-8-24,.pure-u-sm-9-24{display:inline-block;zoom:1;letter-spacing:normal;word-spacing:normal;vertical-align:top;text-rendering:auto}.pure-u-sm-1-24{width:4.1667%}.pure-u-sm-1-12,.pure-u-sm-2-24{width:8.3333%}.pure-u-sm-1-8,.pure-u-sm-3-24{width:12.5%}.pure-u-sm-1-6,.pure-u-sm-4-24{width:16.6667%}.pure-u-sm-1-5{width:20%}.pure-u-sm-5-24{width:20.8333%}.pure-u-sm-1-4,.pure-u-sm-6-24{width:25%}.pure-u-sm-7-24{width:29.1667%}.pure-u-sm-1-3,.pure-u-sm-8-24{width:33.3333%}.pure-u-sm-3-8,.pure-u-sm-9-24{width:37.5%}.pure-u-sm-2-5{width:40%}.pure-u-sm-10-24,.pure-u-sm-5-12{width:41.6667%}.pure-u-sm-11-24{width:45.8333%}.pure-u-sm-1-2,.pure-u-sm-12-24{width:50%}.pure-u-sm-13-24{width:54.1667%}.pure-u-sm-14-24,.pure-u-sm-7-12{width:58.3333%}.pure-u-sm-3-5{width:60%}.pure-u-sm-15-24,.pure-u-sm-5-8{width:62.5%}.pure-u-sm-16-24,.pure-u-sm-2-3{width:66.6667%}.pure-u-sm-17-24{width:70.8333%}.pure-u-sm-18-24,.pure-u-sm-3-4{width:75%}.pure-u-sm-19-24{width:79.1667%}.pure-u-sm-4-5{width:80%}.pure-u-sm-20-24,.pure-u-sm-5-6{width:83.3333%}.pure-u-sm-21-24,.pure-u-sm-7-8{width:87.5%}.pure-u-sm-11-12,.pure-u-sm-22-24{width:91.6667%}.pure-u-sm-23-24{width:95.8333%}.pure-u-sm-1,.pure-u-sm-1-1,.pure-u-sm-24-24,.pure-u-sm-5-5{width:100%}}@media screen and (min-width:48em){.pure-u-md-1,.pure-u-md-1-1,.pure-u-md-1-12,.pure-u-md-1-2,.pure-u-md-1-24,.pure-u-md-1-3,.pure-u-md-1-4,.pure-u-md-1-5,.pure-u-md-1-6,.pure-u-md-1-8,.pure-u-md-10-24,.pure-u-md-11-12,.pure-u-md-11-24,.pure-u-md-12-24,.pure-u-md-13-24,.pure-u-md-14-24,.pure-u-md-15-24,.pure-u-md-16-24,.pure-u-md-17-24,.pure-u-md-18-24,.pure-u-md-19-24,.pure-u-md-2-24,.pure-u-md-2-3,.pure-u-md-2-5,.pure-u-md-20-24,.pure-u-md-21-24,.pure-u-md-22-24,.pure-u-md-23-24,.pure-u-md-24-24,.pure-u-md-3-24,.pure-u-md-3-4,.pure-u-md-3-5,.pure-u-md-3-8,.pure-u-md-4-24,.pure-u-md-4-5,.pure-u-md-5-12,.pure-u-md-5-24,.pure-u-md-5-5,.pure-u-md-5-6,.pure-u-md-5-8,.pure-u-md-6-24,.pure-u-md-7-12,.pure-u-md-7-24,.pure-u-md-7-8,.pure-u-md-8-24,.pure-u-md-9-24{display:inline-block;zoom:1;letter-spacing:normal;word-spacing:normal;vertical-align:top;text-rendering:auto}.pure-u-md-1-24{width:4.1667%}.pure-u-md-1-12,.pure-u-md-2-24{width:8.3333%}.pure-u-md-1-8,.pure-u-md-3-24{width:12.5%}.pure-u-md-1-6,.pure-u-md-4-24{width:16.6667%}.pure-u-md-1-5{width:20%}.pure-u-md-5-24{width:20.8333%}.pure-u-md-1-4,.pure-u-md-6-24{width:25%}.pure-u-md-7-24{width:29.1667%}.pure-u-md-1-3,.pure-u-md-8-24{width:33.3333%}.pure-u-md-3-8,.pure-u-md-9-24{width:37.5%}.pure-u-md-2-5{width:40%}.pure-u-md-10-24,.pure-u-md-5-12{width:41.6667%}.pure-u-md-11-24{width:45.8333%}.pure-u-md-1-2,.pure-u-md-12-24{width:50%}.pure-u-md-13-24{width:54.1667%}.pure-u-md-14-24,.pure-u-md-7-12{width:58.3333%}.pure-u-md-3-5{width:60%}.pure-u-md-15-24,.pure-u-md-5-8{width:62.5%}.pure-u-md-16-24,.pure-u-md-2-3{width:66.6667%}.pure-u-md-17-24{width:70.8333%}.pure-u-md-18-24,.pure-u-md-3-4{width:75%}.pure-u-md-19-24{width:79.1667%}.pure-u-md-4-5{width:80%}.pure-u-md-20-24,.pure-u-md-5-6{width:83.3333%}.pure-u-md-21-24,.pure-u-md-7-8{width:87.5%}.pure-u-md-11-12,.pure-u-md-22-24{width:91.6667%}.pure-u-md-23-24{width:95.8333%}.pure-u-md-1,.pure-u-md-1-1,.pure-u-md-24-24,.pure-u-md-5-5{width:100%}}@media screen and (min-width:64em){.pure-u-lg-1,.pure-u-lg-1-1,.pure-u-lg-1-12,.pure-u-lg-1-2,.pure-u-lg-1-24,.pure-u-lg-1-3,.pure-u-lg-1-4,.pure-u-lg-1-5,.pure-u-lg-1-6,.pure-u-lg-1-8,.pure-u-lg-10-24,.pure-u-lg-11-12,.pure-u-lg-11-24,.pure-u-lg-12-24,.pure-u-lg-13-24,.pure-u-lg-14-24,.pure-u-lg-15-24,.pure-u-lg-16-24,.pure-u-lg-17-24,.pure-u-lg-18-24,.pure-u-lg-19-24,.pure-u-lg-2-24,.pure-u-lg-2-3,.pure-u-lg-2-5,.pure-u-lg-20-24,.pure-u-lg-21-24,.pure-u-lg-22-24,.pure-u-lg-23-24,.pure-u-lg-24-24,.pure-u-lg-3-24,.pure-u-lg-3-4,.pure-u-lg-3-5,.pure-u-lg-3-8,.pure-u-lg-4-24,.pure-u-lg-4-5,.pure-u-lg-5-12,.pure-u-lg-5-24,.pure-u-lg-5-5,.pure-u-lg-5-6,.pure-u-lg-5-8,.pure-u-lg-6-24,.pure-u-lg-7-12,.pure-u-lg-7-24,.pure-u-lg-7-8,.pure-u-lg-8-24,.pure-u-lg-9-24{display:inline-block;zoom:1;letter-spacing:normal;word-spacing:normal;vertical-align:top;text-rendering:auto}.pure-u-lg-1-24{width:4.1667%}.pure-u-lg-1-12,.pure-u-lg-2-24{width:8.3333%}.pure-u-lg-1-8,.pure-u-lg-3-24{width:12.5%}.pure-u-lg-1-6,.pure-u-lg-4-24{width:16.6667%}.pure-u-lg-1-5{width:20%}.pure-u-lg-5-24{width:20.8333%}.pure-u-lg-1-4,.pure-u-lg-6-24{width:25%}.pure-u-lg-7-24{width:29.1667%}.pure-u-lg-1-3,.pure-u-lg-8-24{width:33.3333%}.pure-u-lg-3-8,.pure-u-lg-9-24{width:37.5%}.pure-u-lg-2-5{width:40%}.pure-u-lg-10-24,.pure-u-lg-5-12{width:41.6667%}.pure-u-lg-11-24{width:45.8333%}.pure-u-lg-1-2,.pure-u-lg-12-24{width:50%}.pure-u-lg-13-24{width:54.1667%}.pure-u-lg-14-24,.pure-u-lg-7-12{width:58.3333%}.pure-u-lg-3-5{width:60%}.pure-u-lg-15-24,.pure-u-lg-5-8{width:62.5%}.pure-u-lg-16-24,.pure-u-lg-2-3{width:66.6667%}.pure-u-lg-17-24{width:70.8333%}.pure-u-lg-18-24,.pure-u-lg-3-4{width:75%}.pure-u-lg-19-24{width:79.1667%}.pure-u-lg-4-5{width:80%}.pure-u-lg-20-24,.pure-u-lg-5-6{width:83.3333%}.pure-u-lg-21-24,.pure-u-lg-7-8{width:87.5%}.pure-u-lg-11-12,.pure-u-lg-22-24{width:91.6667%}.pure-u-lg-23-24{width:95.8333%}.pure-u-lg-1,.pure-u-lg-1-1,.pure-u-lg-24-24,.pure-u-lg-5-5{width:100%}}@media screen and (min-width:80em){.pure-u-xl-1,.pure-u-xl-1-1,.pure-u-xl-1-12,.pure-u-xl-1-2,.pure-u-xl-1-24,.pure-u-xl-1-3,.pure-u-xl-1-4,.pure-u-xl-1-5,.pure-u-xl-1-6,.pure-u-xl-1-8,.pure-u-xl-10-24,.pure-u-xl-11-12,.pure-u-xl-11-24,.pure-u-xl-12-24,.pure-u-xl-13-24,.pure-u-xl-14-24,.pure-u-xl-15-24,.pure-u-xl-16-24,.pure-u-xl-17-24,.pure-u-xl-18-24,.pure-u-xl-19-24,.pure-u-xl-2-24,.pure-u-xl-2-3,.pure-u-xl-2-5,.pure-u-xl-20-24,.pure-u-xl-21-24,.pure-u-xl-22-24,.pure-u-xl-23-24,.pure-u-xl-24-24,.pure-u-xl-3-24,.pure-u-xl-3-4,.pure-u-xl-3-5,.pure-u-xl-3-8,.pure-u-xl-4-24,.pure-u-xl-4-5,.pure-u-xl-5-12,.pure-u-xl-5-24,.pure-u-xl-5-5,.pure-u-xl-5-6,.pure-u-xl-5-8,.pure-u-xl-6-24,.pure-u-xl-7-12,.pure-u-xl-7-24,.pure-u-xl-7-8,.pure-u-xl-8-24,.pure-u-xl-9-24{display:inline-block;zoom:1;letter-spacing:normal;word-spacing:normal;vertical-align:top;text-rendering:auto}.pure-u-xl-1-24{width:4.1667%}.pure-u-xl-1-12,.pure-u-xl-2-24{width:8.3333%}.pure-u-xl-1-8,.pure-u-xl-3-24{width:12.5%}.pure-u-xl-1-6,.pure-u-xl-4-24{width:16.6667%}.pure-u-xl-1-5{width:20%}.pure-u-xl-5-24{width:20.8333%}.pure-u-xl-1-4,.pure-u-xl-6-24{width:25%}.pure-u-xl-7-24{width:29.1667%}.pure-u-xl-1-3,.pure-u-xl-8-24{width:33.3333%}.pure-u-xl-3-8,.pure-u-xl-9-24{width:37.5%}.pure-u-xl-2-5{width:40%}.pure-u-xl-10-24,.pure-u-xl-5-12{width:41.6667%}.pure-u-xl-11-24{width:45.8333%}.pure-u-xl-1-2,.pure-u-xl-12-24{width:50%}.pure-u-xl-13-24{width:54.1667%}.pure-u-xl-14-24,.pure-u-xl-7-12{width:58.3333%}.pure-u-xl-3-5{width:60%}.pure-u-xl-15-24,.pure-u-xl-5-8{width:62.5%}.pure-u-xl-16-24,.pure-u-xl-2-3{width:66.6667%}.pure-u-xl-17-24{width:70.8333%}.pure-u-xl-18-24,.pure-u-xl-3-4{width:75%}.pure-u-xl-19-24{width:79.1667%}.pure-u-xl-4-5{width:80%}.pure-u-xl-20-24,.pure-u-xl-5-6{width:83.3333%}.pure-u-xl-21-24,.pure-u-xl-7-8{width:87.5%}.pure-u-xl-11-12,.pure-u-xl-22-24{width:91.6667%}.pure-u-xl-23-24{width:95.8333%}.pure-u-xl-1,.pure-u-xl-1-1,.pure-u-xl-24-24,.pure-u-xl-5-5{width:100%}}</style><style>body{background:#f7f7f7;font-size:16px}.content{padding:20px;max-width:1200px;margin:auto}.content>.pure-g{margin-left:-10px;margin-right:-10px}p{margin-bottom:15px;margin-top:0}a{text-decoration:none}h1,h2,h3,h4,h5,h6{color:rgba(0,0,0,.7)}h1{font-size:1.4em;margin-top:0;margin-bottom:8px}h2{font-size:1.2em;color:rgba(0,0,0,.6)}.main-menu{background:#5c5c5c;box-shadow:inset 0 -10px 7px -10px rgba(0,0,0,.8);overflow-x:scroll;overflow-y:hidden}.main-menu .content{padding:0}.pure-menu-item{height:auto}.main-menu .pure-menu-link{padding:1.2em;padding-bottom:1em;padding-top:1em;color:#fff}.pure-menu-link:hover{background:#898989;color:#fff}.pure-menu-link.active{background:#f7f7f7;color:#5c5c5c}.color-area{height:40px;width:100%;background:gray;margin-bottom:15px;margin-top:10px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}.button-xl{font-size:150%}.pure-g.colors>div{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.pure-g.colors>div{padding:.3em}.pure-g.colors button{width:100%;height:40px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}label.pure-radio{padding:5px;display:inline-block}label.pure-radio input[type=radio]{margin-top:-14px;display:inline-block}input[type=range],input[type=range]:-moz-focusring,input[type=range]::-moz-focus-inner,input[type=range]::-moz-focus-outer,input[type=range]:active,input[type=range]:focus{border:0;outline:0}input[type=range]{width:100%;-webkit-appearance:none;-moz-appearance:none;margin-top:8px;margin-bottom:8px;height:20px}input[type=range]::-webkit-slider-runnable-track{height:6px;cursor:pointer;background:#ddd;border:none;border-radius:100px;box-shadow:inset 0 1px 1px 0 rgba(0,0,0,.3);-webkit-appearance:none;-moz-appearance:none}input[type=range]::-webkit-slider-thumb{height:28px;width:28px;margin-top:-11px;border-radius:200px;background:linear-gradient(to bottom,rgba(255,255,255,1) 0,rgba(235,235,235,1) 100%);box-shadow:0 1px 1px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.9);border:1px solid rgba(0,0,0,.3);cursor:pointer;-webkit-appearance:none;-moz-appearance:none}input[type=range]::-moz-range-track{height:6px;background:#ddd;border:none;border-radius:100px;box-shadow:inset 0 1px 1px 0 rgba(0,0,0,.3);-webkit-appearance:none;-moz-appearance:none}input[type=range]::-moz-range-thumb{height:28px;width:28px;border-radius:200px;background:linear-gradient(to bottom,rgba(255,255,255,1) 0,rgba(235,235,235,1) 100%);box-shadow:0 1px 1px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.9);border:1px solid rgba(0,0,0,.3);cursor:pointer;-webkit-appearance:none;-moz-appearance:none}.slider-label{margin-top:11px;margin-bottom:4px;display:inline-block;width:100%}.slider-label .value{float:right;margin-right:15px}.section{display:none}.section-main{display:block}.box-debug{overflow:hidden;overflow-wrap:break-word}.box-debug>div{font-family:monospace}.brightness,.functions-settings,.leds,.position,.speed{display:none}.section-settings .box,.section-settings .pure-u-1,.section-settings>div{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.section-settings .pure-u-1{padding-bottom:20px}.section-settings .box{height:100%}.status.online{color:green}.status.offline{color:red}.box{padding:20px;margin:10px;box-shadow:0 1px 1px 0 rgba(60,64,67,.08),0 1px 3px 1px rgba(60,64,67,.16);background:#fff;border-radius:3px;color:#5f6368}.box h2{margin-top:-5px;border-bottom:1px solid #f0f0f0;padding-bottom:10px;margin-left:-20px;margin-right:-20px;padding-right:15px;padding-left:15px;font-weight:400;font-size:1.1em}</style>
 </head>)=====";
 
-const char index_html_body[] PROGMEM= R"=====(<body>
+const char index_html_body_RGB[] PROGMEM= R"=====(<body>
 
 	<div class="pure-g">
 		<div class="pure-u-24-24">
@@ -1249,6 +1249,517 @@ const char index_html_body[] PROGMEM= R"=====(<body>
 			</div>
 		</div> <!--/pure-g-->
 	</div> <!--/content-->
+</body>
+</html>
+)=====";
+
+const char index_html_body_RGBW[] PROGMEM = R"=====(<body>
+
+  <div class="pure-g">
+    <div class="pure-u-24-24">
+      <div class="pure-menu pure-menu-horizontal main-menu">
+        <div class="content">
+          <a href="#" class="pure-menu-heading pure-menu-link active" data-navigation="main">Wortuhr 3</a><ul class="pure-menu-list"><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="functions">Funktionen</a></li><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="settings">Einstellungen</a></li><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="about">Ueber</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="pure-g">
+      <div class="pure-u-24-24 section-connection-lost" id="section-connection-lost">
+        <div class="box">
+          <button class="pure-button status-button">Verbinden</button>
+          <p>Die Verbindung zur Wortuhr wurde unterbrochen.</p>
+        </div>
+      </div>
+
+      <div class="pure-u-24-24 section section-main">
+        <div class="box">
+          <h2>Farbart</h2>
+          <label for="fg" class="pure-radio">
+            <input id="fg" type="radio" name="color-mode" value="foreground" checked> Vordergrund
+          </label>
+          <label for="bg" class="pure-radio">
+            <input id="bg" type="radio" name="color-mode" value="background"> Hintergrund
+          </label>
+          <!--<label for="bo" class="pure-radio">
+            <input id="bo" type="radio" name="color-mode" value="border"> Rahmen
+          </label>
+          <label for="un" class="pure-radio">
+            <input id="un" type="radio" name="color-mode" value="unknown"> Effekt
+          </label>-->
+        </div>
+
+        <div class="box">
+          <h2>Farbmischer</h2>
+          <div class="color-area" id="color-area"></div>
+
+          <div class="pure-g color-r">
+            <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-red">Red <span class="value" id="slider-red-value">0</span></label></div>
+            <div class="pure-u-1 pure-u-md-5-6"><input id="slider-red" type="range" min="0" max="255" value="0"></div>
+          </div>
+          <div class="pure-g color-g">
+            <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-green">Green <span class="value" id="slider-green-value">0</span></label></div>
+            <div class="pure-u-1 pure-u-md-5-6"><input id="slider-green" type="range" min="0" max="255" value="0"></div>
+          </div>
+          <div class="pure-g color-b">
+            <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-blue">Blue <span class="value" id="slider-blue-value">0</span></label></div>
+            <div class="pure-u-1 pure-u-md-5-6"><input id="slider-blue" type="range" min="0" max="255" value="0"></div>
+          </div>
+          <div class="pure-g color-w">
+            <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-white">White <span class="value" id="slider-white-value">0</span></label></div>
+            <div class="pure-u-1 pure-u-md-5-6"><input id="slider-white" type="range" min="0" max="255" value="0"></div>
+          </div>
+        </div>
+
+        <div class="box">
+          <h2>Schnellfarben</h2>
+          <div class="pure-g colors">
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#F44336" style="background: #F44336"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#FF0000" style="background: #FF0000"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#E91E63" style="background: #E91E63"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#FF00FF" style="background: #FF00FF"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#9C27B0" style="background: #9C27B0"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#673AB7" style="background: #673AB7"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#3F51B5" style="background: #3F51B5"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#0000FF" style="background: #0000FF"></button>
+            </div>
+
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#2196F3" style="background: #2196F3"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#03A9F4" style="background: #03A9F4"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#00FFFF" style="background: #00FFFF"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#00BCD4" style="background: #00BCD4"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#009688" style="background: #009688"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#4CAF50" style="background: #4CAF50"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#00FF00" style="background: #00FF00"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#8BC34A" style="background: #8BC34A"></button>
+            </div>
+
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#CDDC39" style="background: #CDDC39"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#FFEB3B" style="background: #FFEB3B"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#FFFF00" style="background: #FFFF00"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#FFC107" style="background: #FFC107"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#FF9800" style="background: #FF9800"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#FF5722" style="background: #FF5722"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#FFFFFF" style="background: #FFFFFF"></button>
+            </div>
+            <div class="pure-u-1-3 pure-u-sm-1-8">
+              <button class="quick-color pure-button" data-color="#000000" style="background: #000000"></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="pure-u-24-24 section section-functions">
+
+        <div class="box">
+          <h2>Funktion</h2>
+
+          <label for="mode-wordclock" class="pure-radio">
+            <input id="mode-wordclock" type="radio" name="mode" value="color" checked> Wort Uhr
+          </label>
+          <label for="mode-color" class="pure-radio">
+            <input id="mode-color" type="radio" name="mode" value="color"> Farbe
+          </label>
+          <label for="mode-seconds" class="pure-radio">
+            <input id="mode-seconds" type="radio" name="mode" value="seconds"> Sekunden
+          </label>
+          <label for="mode-marquee" class="pure-radio">
+            <input id="mode-marquee" type="radio" name="mode" value="marquee"> Laufschrift
+          </label>
+          <label for="mode-rainbow" class="pure-radio">
+            <input id="mode-rainbow" type="radio" name="mode" value="rainbow"> Regenbogen
+          </label>
+          <label for="mode-change" class="pure-radio">
+            <input id="mode-change" type="radio" name="mode" value="change"> Farbwechsel
+          </label>
+        </div>
+
+        <div class="box functions-settings">
+          <h2>Einstellung</h2>
+
+          <div class="pure-g brightness">
+            <div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-brightness">Helligkeit <span class="value" id="slider-brightness-value">0</span></label></div>
+            <div class="pure-u-1 pure-u-md-3-4"><input id="slider-brightness" type="range" min="1" max="10" value="1"></div>
+          </div>
+          <div class="pure-g speed">
+            <div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-speed">Geschwindigkeit <span class="value" id="slider-speed-value">0</span></label></div>
+            <div class="pure-u-1 pure-u-md-3-4"><input id="slider-speed" type="range" min="0" max="40" value="0"></div>
+          </div>
+          <div class="pure-g leds">
+            <div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-leds">Anzahl LEDs <span class="value" id="slider-leds-value">0</span></label></div>
+            <div class="pure-u-1 pure-u-md-3-4"><input id="slider-leds" type="range" min="5" max="100" value="100"></div>
+          </div>
+          <div class="pure-g position">
+            <div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-position">Positon <span class="value" id="slider-position-value">0</span></label></div>
+            <div class="pure-u-1 pure-u-md-3-4"><input id="slider-position" type="range" min="1" max="100" value="100"></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="pure-u-24-24 section section-settings">
+        <div class="pure-g">
+
+          <div class="pure-u-1 pure-u-md-1-2">
+            <div class="box">
+              <h2>Status</h2>
+              <form class="pure-form pure-form-aligned">
+                <fieldset>
+                  <div class="pure-control-group">
+                    <label for="status">Verbindungsstatus</label><input id="status" class="status" value="Loading ...">
+                  </div>
+                  <div class="pure-controls">
+                    <button class="pure-button">Verbinden</button>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+
+          <div class="pure-u-1 pure-u-md-1-2">
+
+            <div class="box">
+            <h2>Startwerte</h2>
+            <form class="pure-form pure-form-aligned">
+              <fieldset>
+                <div class="pure-controls">
+                  <button id="initial-values-button" class="pure-button">Startwerte speichern</button>
+                </div>
+              </fieldset>
+            </form>
+            </div>
+
+          </div>
+          <div class="pure-u-1 pure-u-md-1-2">
+
+            <div class="box">
+            <h2>WLAN</h2>
+            <form class="pure-form pure-form-aligned">
+              <fieldset>
+                <div class="pure-control-group">
+                  <label for="ssid">SSID</label><input id="ssid" type="text" placeholder="SSID">
+                </div>
+                <div class="pure-control-group">
+                  <label for="password">Passwort</label><input id="password" type="password" placeholder="Passwort">
+                </div>
+                <div class="pure-controls">
+                  <button id="wifi-button" class="pure-button">WLAN speichern</button>
+                </div>
+              </fieldset>
+            </form>
+            </div>
+
+          </div>
+          <div class="pure-u-1 pure-u-md-1-2">
+
+            <div class="box">
+            <h2>Zeitserver</h2>
+            <form class="pure-form pure-form-aligned">
+              <fieldset>
+                <div class="pure-control-group">
+                  <label for="timeserver">Zeitserver</label><input id="timeserver" type="text" placeholder="Zeitserver">
+                </div>
+                <div class="pure-controls">
+                  <button id="timeserver-button" class="pure-button">Zeitserver speichern</button>
+                </div>
+              </fieldset>
+            </form>
+            </div>
+
+          </div>
+          <div class="pure-u-1 pure-u-md-1-2">
+
+            <div class="box">
+            <h2>Lauftext</h2>
+            <form class="pure-form pure-form-aligned">
+              <fieldset>
+                <div class="pure-control-group">
+                  <label for="marquee">Lauftext</label><input id="marquee" type="text" placeholder="Lauftext">
+                </div>
+                <div class="pure-controls">
+                  <button id="marquee-button" class="pure-button">Lauftext speichern</button>
+                </div>
+              </fieldset>
+            </form>
+            </div>
+
+          </div>
+          <div class="pure-u-1 pure-u-md-1-2">
+
+            <div class="box">
+            <h2>Helligkeit</h2>
+            <form class="pure-form pure-form-aligned">
+              <fieldset>
+                <div class="pure-control-group">
+                  <label for="brightness-6">6 Uhr</label><select name="brightness-6" id="brightness-6" size="1">
+                    <option value="100">100</option>
+                    <option value="80">80</option>
+                    <option value="60">60</option>
+                    <option value="40">40</option>
+                    <option value="20">20</option>
+                    <option value="0">Aus</option>
+                  </select>
+                </div>
+                <div class="pure-control-group">
+                  <label for="brightness-8">8 Uhr</label><select name="brightness-8" id="brightness-8" size="1">
+                    <option value="100">100</option>
+                    <option value="80">80</option>
+                    <option value="60">60</option>
+                    <option value="40">40</option>
+                    <option value="20">20</option>
+                    <option value="0">Aus</option>
+                  </select>
+                </div>
+                <div class="pure-control-group">
+                  <label for="brightness-12">12 Uhr</label><select name="brightness-12" id="brightness-12" size="1">
+                    <option value="100">100</option>
+                    <option value="80">80</option>
+                    <option value="60">60</option>
+                    <option value="40">40</option>
+                    <option value="20">20</option>
+                    <option value="0">Aus</option>
+                  </select>
+                </div>
+                <div class="pure-control-group">
+                  <label for="brightness-16">16 Uhr</label><select name="brightness-16" id="brightness-16" size="1">
+                    <option value="100">100</option>
+                    <option value="80">80</option>
+                    <option value="60">60</option>
+                    <option value="40">40</option>
+                    <option value="20">20</option>
+                    <option value="0">Aus</option>
+                  </select>
+                </div>
+                <div class="pure-control-group">
+                  <label for="brightness-18">18 Uhr</label><select name="brightness-18" id="brightness-18" size="1">
+                    <option value="100">100</option>
+                    <option value="80">80</option>
+                    <option value="60">60</option>
+                    <option value="40">40</option>
+                    <option value="20">20</option>
+                    <option value="0">Aus</option>
+                  </select>
+                </div>
+                <div class="pure-control-group">
+                  <label for="brightness-20">20 Uhr</label><select name="brightness-20" id="brightness-20" size="1">
+                    <option value="100">100</option>
+                    <option value="80">80</option>
+                    <option value="60">60</option>
+                    <option value="40">40</option>
+                    <option value="20">20</option>
+                    <option value="0">Aus</option>
+                  </select>
+                </div>
+                <div class="pure-control-group">
+                  <label for="brightness-22">22 Uhr</label><select name="brightness-22" id="brightness-22" size="1">
+                    <option value="100">100</option>
+                    <option value="80">80</option>
+                    <option value="60">60</option>
+                    <option value="40">40</option>
+                    <option value="20">20</option>
+                    <option value="0">Aus</option>
+                  </select>
+                </div>
+                <div class="pure-control-group">
+                  <label for="brightness-24">24 Uhr</label><select name="brightness-24" id="brightness-24" size="1">
+                    <option value="100">100</option>
+                    <option value="80">80</option>
+                    <option value="60">60</option>
+                    <option value="40">40</option>
+                    <option value="20">20</option>
+                    <option value="0">Aus</option>
+                  </select>
+                </div>
+                <div class="pure-controls">
+                  <button id="brightness-button" class="pure-button">Helligkeit speichern</button>
+                </div>
+              </fieldset>
+            </form>
+            </div>
+
+          </div>
+          <div class="pure-u-1 pure-u-md-1-2">
+
+            <div class="box">
+            <h2>Hostname</h2>
+            <form class="pure-form pure-form-aligned">
+              <fieldset>
+                <div class="pure-control-group">
+                  <label for="hostname">Hostname</label><input id="hostname" type="text" placeholder="Hostname">
+                </div>
+                <div class="pure-controls">
+                  <button id="hostname-button" class="pure-button">Hostname speichern</button>
+                </div>
+              </fieldset>
+            </form>
+            </div>
+
+          </div>
+          <div class="pure-u-1 pure-u-md-1-2">
+
+            <div class="box">
+            <h2>Wetter</h2>
+            <form class="pure-form pure-form-aligned">
+              <fieldset>
+                <div class="pure-control-group">
+                  <label for="owm-api-key">OpenWeatherMap API-Schluessel</label><input id="owm-api-key" type="text" minlength="32" maxlength="32" placeholder="API-Schlüssel">
+                </div>
+                <div class="pure-control-group">
+                  <label for="owm-city-id">OpenWeatherMap City ID</label><input id="owm-city-id" type="text" minlength="7" maxlength="7" placeholder="City ID">
+                </div>
+                <div class="pure-controls">
+                  <button id="weather-button" class="pure-button">OpenWeatherMap Daten speichern</button>
+                </div>
+              </fieldset>
+            </form>
+            </div>
+
+          </div>
+          <div class="pure-u-1 pure-u-md-1-2">
+
+            <div class="box">
+            <h2>Minuten-Anzeige</h2>
+            <form class="pure-form pure-form-aligned">
+              <fieldset>
+                <div class="pure-control-group">
+				<label for="show-minutes">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Minuten angezeigt werden ?</label><select name="show-minutes" id="show-minutes" size="1">
+                    <option value="0" selected>Nein</option>
+                    <option value="1">als Zeile</option>
+                    <option value="2">in den Ecken</option>
+                  </select>
+                </div>
+                <div class="pure-controls">
+                  <button id="show-minutes-button" class="pure-button">Minuten-Anzeige speichern</button>
+                </div>
+              </fieldset>
+            </form>
+            </div>
+
+          </div>
+          <div class="pure-u-1 pure-u-md-1-2">
+
+            <div class="box">
+            <h2>Sekunden-Anzeige</h2>
+            <form class="pure-form pure-form-aligned">
+              <fieldset>
+                <div class="pure-control-group">
+                  <label for="show-seconds">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden ?</label><select name="show-seconds" id="show-seconds" size="1">
+                    <option value="0" selected>Nein</option>
+                    <option value="1">Ja</option>
+                  </select>
+                </div>
+                <div class="pure-controls">
+                  <button id="show-seconds-button" class="pure-button">Sekunden-Anzeige speichern</button>
+                </div>
+              </fieldset>
+            </form>
+            </div>
+
+          </div>
+          <div class="pure-u-1 pure-u-md-1-2">
+
+			<div class="box">
+			<h2>WLAN Ausschalten</h2>
+				<form class="pure-form pure-form-aligned">
+					<fieldset>
+						<div class="pure-controls">
+							<button id="disable-button" class="pure-button">WLAN Ausschalten</button>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+
+			</div>
+			<div class="pure-u-1 pure-u-md-1-2">
+
+            <div class="box">
+            <h2>Zuruecksetzen</h2>
+            <form class="pure-form pure-form-aligned">
+              <fieldset>
+                <div class="pure-controls">
+                  <button id="reset-button" class="pure-button">Zuruecksetzen</button>
+                </div>
+              </fieldset>
+            </form>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pure-u-24-24 section section-about">
+        <div class="box">
+          <h2>Ueber</h2>
+          <p>Die Wortuhr 2 basiert auf der Wortuhr von <a href="https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu">Ulrich Radig</a> und wird entwickelt von <a href="https://github.com/Eisbaeeer">Lars Weimar</a>, <a href="https://github.com/Wandmalfarbe">Pascal Wagler</a>, <a href="https://github.com/dbambus">dbambus</a>, <a href="https://github.com/Flo455">Flo455</a>, <a href="https://github.com/Elektron79">Elektron79</a> und <a href="https://github.com/masju1">masju1</a>.</p>
+          <p>This project is open source licensed under the BSD 3-Clause License. Please see the LICENSE file for more information.</p>
+        </div>
+
+        <div class="box">
+          <h2>Enthaltene Bibliotheken und Software</h2>
+
+          <div class="pure-g">
+            <div class="pure-u-1 pure-u-md-1-3"><p>Ulrich Radig Wort Uhr (Version 1)</p></div>
+            <div class="pure-u-1 pure-u-md-2-3"><p><a href="https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu">https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu</a></p></div>
+            <div class="pure-u-1 pure-u-md-1-3"><p>Pure.css</p></div>
+            <div class="pure-u-1 pure-u-md-2-3"><p><a href="https://purecss.io">https://purecss.io</a></p></div>
+            <div class="pure-u-1 pure-u-md-1-3"><p>Minified.js</p></div>
+            <div class="pure-u-1 pure-u-md-2-3"><p><a href="http://minifiedjs.com">http://minifiedjs.com</a></p></div>
+          </div>
+        </div>
+
+        <div class="box box-debug">
+          <h2>Debug-Ausgabe</h2>
+          <div id="output"></div>
+        </div>
+      </div>
+    </div> <!--/pure-g-->
+  </div> <!--/content-->
 </body>
 </html>
 )=====";

@@ -53,8 +53,8 @@ public:
         }
         ww = 0;
         yy = 0;
-        while (ww < sizeof(index_html_body)) {
-            str[yy] = pgm_read_byte(&index_html_body[ww]);
+        while (ww < sizeof(index_html_body_RGB)) {
+            str[yy] = pgm_read_byte(&index_html_body_RGB[ww]);
             str[yy + 1] = '\0';
             yy++;
             if (yy == RESPONSE_SIZE) {
