@@ -1,14 +1,8 @@
 #pragma once
 
 #include "WebSocketsServer.h"
-
-#ifdef Grbw
-#include "WebPageWortuhr_RGBW.h"
-#else
-
 #include "WebPageWortuhr.h"
-
-#endif
+#include "Uhr.h"
 
 #define RESPONSE_SIZE    900
 
@@ -27,6 +21,16 @@ public:
         unsigned ww = 0;
         unsigned yy = 0;
         int j;
+        uint16_t slider_size = 0;
+        uint8_t slider_index = 0;
+        if (slider == true){
+            slider_size = sizeof(slider_RGB);
+            slider_index = 0;
+        }
+        else {
+            slider_size = sizeof(slider_RGBW);
+            slider_index = 1;
+        }
         DEBUG_WEBSOCKETS("[WS-Server][%d][handleHeader] no Websocket connection close.\n", client->num);
         client->tcp->write("HTTP/1.1 200 OK\r\n"
                            "Server: arduino-WebSocket-Server\r\n"
@@ -53,8 +57,27 @@ public:
         }
         ww = 0;
         yy = 0;
-        while (ww < sizeof(index_html_body_RGB)) {
-            str[yy] = pgm_read_byte(&index_html_body_RGB[ww]);
+        while (ww < sizeof(index_html_body_first)) {
+            str[yy] = pgm_read_byte(&index_html_body_first[ww]);
+            str[yy + 1] = '\0';
+            yy++;
+            if (yy == RESPONSE_SIZE) {
+                j = strlen(str);
+                client->tcp->write(&str[0], j);
+                str[0] = '\0';
+                yy = 0;
+            }
+            ww++;
+        }
+        if (yy > 0) {
+            j = strlen(str);
+            client->tcp->write(&str[0], j);
+        }
+        Send_HTML_Code_for_Sliders(client, slider_size, slider_index);
+        ww = 0;
+        yy = 0;
+        while (ww < sizeof(index_html_body_rest)) {
+            str[yy] = pgm_read_byte(&index_html_body_rest[ww]);
             str[yy + 1] = '\0';
             yy++;
             if (yy == RESPONSE_SIZE) {
@@ -70,6 +93,29 @@ public:
             client->tcp->write(&str[0], j);
         }
         clientDisconnect(client);
+    }
+
+    void Send_HTML_Code_for_Sliders(const WSclient_t *client, uint16_t slider_size, uint8_t slider_index) const {
+        char str[RESPONSE_SIZE + 4];
+        unsigned ww = 0;
+        unsigned yy = 0;
+        int j;
+        while (ww < slider_size) {
+            str[yy] = pgm_read_byte(&html_sliders[slider_index][ww]);
+            str[yy + 1] = '\0';
+            yy++;
+            if (yy == RESPONSE_SIZE) {
+                j = strlen(str);
+                client->tcp->write(&str[0], j);
+                str[0] = '\0';
+                yy = 0;
+            }
+            ww++;
+        }
+        if (yy > 0) {
+            j = strlen(str);
+            client->tcp->write(&str[0], j);
+        }
     }
 
 };

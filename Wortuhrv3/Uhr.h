@@ -117,6 +117,8 @@ bool ConnectionEstablished; // Flag for successfully handled connection
 WiFiServer TelnetServer(23);
 WiFiClient TelnetClient[MAX_TELNET_CLIENTS];
 
+unsigned char slider = false;
+
 const char *ssid_ap = "Uhr";
 const char *password_ap = "12345678";
 //--OTA--

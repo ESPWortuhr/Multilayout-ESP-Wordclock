@@ -95,10 +95,10 @@ function initConfigValues() {
     debug = true;
     command = 1;
     rgb = [
-        [0, 0, 100],
-        [0, 10, 0],
-        [10, 0, 0],
-        [5, 5, 5]
+        [0, 0, 100, 0],
+        [0, 10, 0, 0],
+        [10, 0, 0, 0],
+        [5, 5, 5, 0]
     ];
     sliderType = 0;
     hell = 2;
