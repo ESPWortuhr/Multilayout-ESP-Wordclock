@@ -124,10 +124,10 @@ label.pure-radio input[type="radio"] {
  * Slider
  */
 
-input[type="range"], 
-input[type="range"]:focus, 
-input[type="range"]:active, 
-input[type="range"]::-moz-focus-inner, 
+input[type="range"],
+input[type="range"]:focus,
+input[type="range"]:active,
+input[type="range"]::-moz-focus-inner,
 input[type="range"]:-moz-focusring,
 input[type="range"]::-moz-focus-outer{
 	border: 0;
@@ -203,7 +203,7 @@ input[type=range]::-moz-range-thumb {
 }
 
 /**
- * Sections 
+ * Sections
  */
 
 .section, .section-connection-lost{
