@@ -67,11 +67,12 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * (dbambus) 20201011   
 * Cleaned up .ino Functions for Wifi, EEPROM und Websockets
 * Moved them to external Headers
-* C++ polymorphismus with Uhrtypes introduced, moved them to external folders
+* C++ polymorphismus introduced with Uhrtypes, moved them to external folders
 * Fixed Issue `struct for stripes`
+* Changed Structure of Webpage-folder on Github
+* Added Python Script to compile C-header for webpage
 * Fixed Issue of showing wrong words on LED Front if entering Settings of Website
-* Change of Uhrtype on Website possible
-* removed mostly all #IfDefs
+* Removed almost all #IfDefs
 
 ### Version 2.3.2
 * (Eisbaeeer) 20201009   
