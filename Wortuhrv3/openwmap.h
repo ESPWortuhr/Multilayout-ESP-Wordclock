@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#ifdef UHR_242
+#include "Uhr.h"
 
 void getweather(){
     
@@ -298,4 +298,3 @@ void getweather(){
      }
      client.stop(); // disconnect from server     
   }
-#endif
