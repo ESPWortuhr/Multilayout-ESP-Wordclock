@@ -1,4 +1,4 @@
-# Wortuhr - Version 2.3.0
+# Wortuhr - Version 2.4.0
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
@@ -42,7 +42,7 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * Unter Datei \> Sketch \> Include Libraries folgende Bibliotheken hinzufügen:
     * '[NeoPixelBus](https://github.com/Makuna/NeoPixelBus)' von Mankuna
     * '[Time](https://github.com/PaulStoffregen/Time)' von PaulStoffregen
-    * '[ArduinoJson](https://github.com/bblanchon/ArduinoJson)' von BBlanchon (Version 5.13.4)
+    * '[ArduinoJson](https://github.com/bblanchon/ArduinoJson)' von BBlanchon
     * '[Timezone](https://github.com/JChristensen/Timezone)' von JChristensen
     * '[WebSockets](https://www.arduino.cc/reference/en/libraries/websockets/)' von Arduino
     * '[NTPClient](https://github.com/arduino-libraries/NTPClient)' von arduino-libraries
@@ -60,17 +60,27 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * Finaler Release wäre eine unified Binary mit selektor auf der Webseite
 
 ## Known Bugs
-* struct for stripes
-* payload handling webiste (fields moved SSID, API-KEY, etc.) --> reboot
+* payload handling website (fields moved SSID, API-KEY, etc.) --> reboot
 
 ## ChangeLog
+### Version 2.4.0
+* (dbambus) 20201011   
+* Cleaned up .ino Functions for Wifi, EEPROM und Websockets
+* Moved them to external Headers
+* C++ polymorphismus introduced with Uhrtypes, moved them to external folders
+* Fixed Issue `struct for stripes`
+* Changed Structure of Webpage-folder on Github
+* Added Python Script to compile C-header for webpage
+* Fixed Issue of showing wrong words on LED Front if entering Settings of Website
+* Removed almost all #IfDefs
+
 ### Version 2.3.2
 * (Eisbaeeer) 20201009   
 * fix uhr_242 (Zeile 272 Uhr.h)
 
 ### Version 2.3.1
 * (Eisbaeeer) 20201008   
-* upgrade ArduinoJson 5 zu ArduinoJson 6 (bitte nur noch ArduinoJson >= Version 6 verwenden   
+* upgrade ArduinoJson 5 zu ArduinoJson 6 (bitte nur noch ArduinoJson >= Version 6 verwenden)
 
 ### Version 2.3.0
 * (dbambus)

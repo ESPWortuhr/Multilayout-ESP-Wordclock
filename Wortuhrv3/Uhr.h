@@ -1,29 +1,8 @@
 #include "Arduino.h"
 
-const char *VER = "2.3.2";  // Software Version
+const char *VER = "2.4.0";  // Software Version
 
 #pragma once
-
-#ifdef UHR_114_Alternative
-#define UHR_Type UHR_114_Alternative_t
-#endif
-
-#ifdef UHR_114
-#define UHR_Type UHR_114_t
-#endif
-
-#ifdef UHR_125
-#define UHR_Type UHR_125_t
-#endif
-
-#ifdef UHR_169
-#define UHR_Type UHR_169_t
-#endif
-
-#ifdef UHR_242
-#define UHR_Type UHR_242_t
-#endif
-
 
 #ifdef Grb
 #define LED_STRIPE_TYP   NeoGrbFeature
@@ -103,10 +82,10 @@ struct GLOBAL {
     uint8_t h20;
     uint8_t h22;
     uint8_t h24;
+    uint8_t UhrtypeDef;
 };
 GLOBAL G = {};
 
-#ifdef UHR_242
 const char* server = "api.openweathermap.org";  // Openweather server's address
 const char* resource1 = "/data/2.5/forecast?id="; // Openweather API URL part 1
 const char* resource2 = "&units=metric&APPID="; // Openweather API URL part 2
@@ -125,52 +104,6 @@ int wwetter_18;
 int wwetter_24;
 int wstunde;
 int wetterswitch;
-#endif
-
-struct UHR_114_Alternative_t {
-    uint8_t NUM_PIXELS = 114;
-    uint8_t NUM_SMATRIX = 114;
-    uint8_t ROWS_MATRIX = 11;
-    uint8_t NUM_RMATRIX = 0;
-};
-
-struct UHR_114_t {
-    uint8_t NUM_PIXELS = 114;
-    uint8_t NUM_SMATRIX = 114;
-    uint8_t ROWS_MATRIX = 11;
-    uint8_t NUM_RMATRIX = 0;
-};
-
-struct UHR_125_t {
-    uint8_t NUM_PIXELS = 125;
-    uint8_t NUM_SMATRIX = 125;
-    uint8_t ROWS_MATRIX = 12;
-    uint8_t NUM_RMATRIX = 0;
-};
-
-struct UHR_169_t {
-    uint8_t NUM_PIXELS = 169;
-    uint8_t NUM_SMATRIX = 121;
-    uint8_t ROWS_MATRIX = 11;
-    uint8_t NUM_RMATRIX = 48;
-};
-
-struct UHR_242_t {
-    uint8_t NUM_PIXELS = 242;
-    uint8_t NUM_SMATRIX = 242;
-    uint8_t ROWS_MATRIX = 22;
-    uint8_t NUM_RMATRIX = 0;
-};
-
-// fix Eisbaeeer
-#ifdef UHR_242 
-    uint8_t NUM_PIXELS = 242;
-    uint8_t NUM_SMATRIX = 242;
-    uint8_t ROWS_MATRIX = 22;
-    uint8_t NUM_RMATRIX = 0;                
-#endif
-
-UHR_Type Uhrtype;
 
 // LDR 
 unsigned long waitUntilLDR = 0;
@@ -183,6 +116,8 @@ bool ConnectionEstablished; // Flag for successfully handled connection
 #define MAX_TELNET_CLIENTS 2
 WiFiServer TelnetServer(23);
 WiFiClient TelnetClient[MAX_TELNET_CLIENTS];
+
+unsigned char slider = false;
 
 const char *ssid_ap = "Uhr";
 const char *password_ap = "12345678";
@@ -219,12 +154,12 @@ const long interval = 1000;   // 1 Sekunde
 
 uint32_t uhrzeit;
 
-#ifndef UHR_169
-unsigned int rmatrix[]{};
-#endif
+unsigned int Word_array[242] = { 255 };
 
 char str[300];
 char s[5];
+
+bool externalRTC = false;
 
 enum ledPositions {
     Foreground = 0,
@@ -238,6 +173,7 @@ enum Command {
     COMMAND_MODE_WORD_CLOCK = 1,
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
+	COMMAND_SET_UHRTYPE = 89,
     COMMAND_SET_WEATHER_DATA = 90,
     COMMAND_SET_LDR = 91,
     COMMAND_SET_HOSTNAME = 92,
@@ -266,13 +202,70 @@ enum Command {
     COMMAND_REQUEST_WIFI_LIST = 302,
 };
 
+enum ledText {
+    es_ist =  1,
+    nach =  2,
+    vor =  3,
+    viertel =  4,
+    dreiviertel = 51,
+    uhr =  5,
+    halb =  6,
+    fuenf =  7,
+    zehn =  8,
+    zwanzig =  9,
+    eins =  10,
+
+    h_ein =  11,
+    h_zwei =  12,
+    h_drei =  13,
+    h_vier =  14,
+    h_fuenf =  15,
+    h_sechs =  16,
+    h_sieben =  17,
+    h_acht =  18,
+    h_neun =  19,
+    h_zehn =  20,
+    h_elf =  21,
+    h_zwoelf =  22,
+
+    w_morgen =  30,
+    w_frueh =  31,
+    w_abend =  32,
+    w_mittag =  33,
+    w_nacht =  34,
+    w_schnee =  35,
+    w_klar =  36,
+    w_warnung =  37,
+    w_regen =  38,
+    w_wolken =  39,
+    w_gewitter =  40,
+    w_unter =  41,
+    w_ueber =  42,
+    w_minus =  43,
+    w_null =  44,
+    w_fuenf =  45,
+    w_zehn =  46,
+    w_und =  47,
+    w_zwanzig =  48,
+    w_dreissig =  49,
+    w_grad =  50,
+
+    h_droelf = 90,
+    happy_birthday = 91
+};
+
+enum UhrTypeDefinitions {
+	Uhr_114 = 1,
+	Uhr_114_Alternative = 2,
+	Uhr_125 = 3,
+	Uhr_169 = 4,
+	Uhr_242 = 5,
+};
+
+
 int dim[20] = {30, 50, 70, 90, 110, 130, 140, 160, 200, 255, 255, 200, 160, 100, 80, 60, 40, 20, 10, 0};
 int diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
 
-NeoPixelBus <LED_STRIPE_TYP, NeoEsp8266Dma800KbpsMethod> strip(NUM_PIXELS,2 /* LED Data PIN, FIX durch die Liebary für den ESP8266 */);
-
-//-- WebSocketserver
-WebPage_Adapter webSocket = WebPage_Adapter(80);
 
 //--OTA--
 ESP8266WebServer httpServer(81);
