@@ -36,7 +36,8 @@ var h22 = 100;
 var h24 = 100;
 var showSeconds = 0;
 var showMinutes = 0;
-var uhrtype = 0;
+var UhrtypeDef = 0;
+var colortype = 0;
 
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
@@ -119,7 +120,8 @@ function initConfigValues() {
     h24 = 100;
     showSeconds = 0;
     showMinutes = 0;
-    uhrtype = 0;
+    UhrtypeDef = 0;
+    colortype = 0;
 }
 
 function hexToRgb(hex) {
@@ -212,7 +214,8 @@ function initWebsocket() {
 
             $("#slider-brightness").set("value", data.hell);
             $("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
-            $("#uhrtype").set("value", uhrtype);
+            $("#UhrtypeDef").set("value", UhrtypeDef);
+            $("#colortype").set("value", colortype);
             $("#showSeconds").set("value", data.zeige_sek);
             $("#showMinutes").set("value", data.zeige_min);
 
@@ -667,11 +670,17 @@ $.ready(function () {
         websocket.send(data);
         debugMessage("Sekundenanzeige wurde neu konfiguriert", data);
     });
-    $("#uhrtype-button").on("click", function() {
-        var uhrtype = $("#uhrtype").get("value");
-        var data = "089000000" + uhrtype + "  999";
+    $("#UhrtypeDef-button").on("click", function() {
+        var UhrtypeDef = $("#UhrtypeDef").get("value");
+        var data = "089000000" + UhrtypeDef + "  999";
         websocket.send(data);
-        debugMessage("Uhrtyp wurde neu konfiguriert", data);
+        debugMessage("UhrtypeDef wurde neu konfiguriert", data);
+    });
+    $("#colortype-button").on("click", function() {
+        var colortype = $("#colortype").get("value");
+        var data = "088000000" + colortype + "  999";
+        websocket.send(data);
+        debugMessage("Colortype wurde neu konfiguriert", data);
     });
     $("#host-button").on("click", function () {
         var hostValue = $("#host").get("value");

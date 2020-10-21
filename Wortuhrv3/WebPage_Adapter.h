@@ -23,13 +23,13 @@ public:
         int j;
         uint16_t slider_size = 0;
         uint8_t slider_index = 0;
-        if (slider == true){
-            slider_size = sizeof(slider_RGB);
-            slider_index = 0;
-        }
-        else {
+        if (G.Colortype == Grbw){
             slider_size = sizeof(slider_RGBW);
             slider_index = 1;
+        }
+        else {
+            slider_size = sizeof(slider_RGB);
+            slider_index = 0;
         }
         DEBUG_WEBSOCKETS("[WS-Server][%d][handleHeader] no Websocket connection close.\n", client->num);
         client->tcp->write("HTTP/1.1 200 OK\r\n"
@@ -204,6 +204,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_MODE_MARQUEE) {      // Laufschrift
                 G.prog = COMMAND_MODE_MARQUEE;
                 if (G.param1 == 0) { G.prog_init = 1; }
@@ -217,6 +219,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_MODE_RAINBOW) {      // Regenbogen
                 G.prog = COMMAND_MODE_RAINBOW;
                 G.prog_init = 1;
@@ -226,6 +230,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_MODE_CHANGE) {      // Farbwechsel
                 G.prog = COMMAND_MODE_CHANGE;
                 G.prog_init = 1;
@@ -234,6 +240,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 G.geschw = split(60, 3);
                 break;
             }
+
+            //------------------------------------------------------------------------------
 
             if (cc == COMMAND_MODE_COLOR) {      // Farbe
                 G.prog = COMMAND_MODE_COLOR;
@@ -253,6 +261,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_SPEED) {       // Geschwindigkeit
                 G.geschw = split(60, 3);
                 break;
@@ -264,6 +274,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 G.conf = COMMAND_SET_INITIAL_VALUES;
                 break;
             }
+
+            //------------------------------------------------------------------------------
 
             if (cc == COMMAND_SET_TIME) {       // Uhrzeit setzen
                 G.conf = COMMAND_SET_TIME;
@@ -279,6 +291,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_SET_HOSTNAME) {         // Hostname speichern
                 G.conf = COMMAND_SET_HOSTNAME;
                 ii = 0;
@@ -292,17 +306,23 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_SET_SETTING_SECOND) {       // Anzeige Sekunden speichern
                 G.conf = COMMAND_SET_SETTING_SECOND;
                 G.zeige_sek = split(9, 3);
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_SET_MINUTE) {       // Anzeige Minuten speichern
                 G.conf = COMMAND_SET_MINUTE;
                 G.zeige_min = split(9, 3);
                 break;
             }
+
+            //------------------------------------------------------------------------------
 
             if (cc == COMMAND_SET_LDR) {       // LDR speichern
                 G.conf = COMMAND_SET_LDR;
@@ -311,11 +331,23 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
+            if (cc == COMMAND_SET_COLORTYPE) {       // UhrType speichern
+                G.conf = COMMAND_SET_COLORTYPE;
+                G.Colortype = split(9, 3);
+                break;
+            }
+
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_SET_UHRTYPE) {       // UhrType speichern
                 G.conf = COMMAND_SET_UHRTYPE;
                 G.UhrtypeDef = split(9, 3);
                 break;
             }
+
+            //------------------------------------------------------------------------------
 
             if (cc == COMMAND_SET_WEATHER_DATA) {       // Openweathermap speichern
                 G.conf = COMMAND_SET_WEATHER_DATA;
@@ -339,6 +371,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_SET_BRIGHTNESS) {       // Helligkeit speichern
                 G.conf = COMMAND_SET_BRIGHTNESS;
                 G.h6 = split(9, 3);
@@ -351,6 +385,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 G.h24 = split(30, 3);
                 break;
             }
+
+            //------------------------------------------------------------------------------
 
             if (cc == COMMAND_SET_MARQUEE_TEXT) {       // Lauftext speichern
                 G.conf = COMMAND_SET_MARQUEE_TEXT;
@@ -365,6 +401,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_SET_TIMESERVER) {       // Zeitserver speichern
                 G.conf = COMMAND_SET_TIMESERVER;
                 ii = 0;
@@ -376,10 +414,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_SET_WIFI_DISABLED) {       // Zeitserver speichern
                 G.conf = COMMAND_SET_WIFI_DISABLED;
                 break;
             }
+
+            //------------------------------------------------------------------------------
 
             if (cc == COMMAND_SET_WIFI_AND_RESTART) {       // WLAN-Daten speichern und neu starten
                 G.conf = COMMAND_SET_WIFI_AND_RESTART;
@@ -408,6 +450,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_RESET) {      // Reset
                 G.conf = COMMAND_RESET;
                 break;
@@ -421,11 +465,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 break;
             }
 
+            //------------------------------------------------------------------------------
+
             if (cc == COMMAND_REQUEST_COLOR_VALUES) {      // Farbwerte anfordern
                 G.conf = COMMAND_REQUEST_COLOR_VALUES;
                 G.client_nr = num;
                 break;
             }
+
+            //------------------------------------------------------------------------------
 
             if (cc == COMMAND_REQUEST_WIFI_LIST) {      // Wlan Liste anfordern
                 G.conf = COMMAND_REQUEST_WIFI_LIST;

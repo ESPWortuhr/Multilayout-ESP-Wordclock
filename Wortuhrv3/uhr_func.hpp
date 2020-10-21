@@ -78,12 +78,86 @@ static void TelnetMsg(const String &text) {
 
 //------------------------------------------------------------------------------
 
-static inline void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
-#ifdef Grbw
-    strip->SetPixelColor(i, RgbwColor(rr, gg, bb, ww));
-#else
-    strip->SetPixelColor(i, RgbColor(rr, gg, bb));
-#endif
+void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
+
+    switch (G.Colortype) {
+        case Brg:{
+            strip_RGB->SetPixelColor(i, RgbColor(bb, rr, gg));
+            break;}
+        case Grb:{
+            strip_RGB->SetPixelColor(i, RgbColor(gg, rr, bb));
+            break;}
+        case Rgb:{
+            strip_RGB->SetPixelColor(i, RgbColor(rr, gg, bb));
+            break;}
+        case Rbg:{
+            strip_RGB->SetPixelColor(i, RgbColor(rr, bb, gg));
+            break;}
+        case Grbw:{
+            strip_RGBW->SetPixelColor(i, RgbwColor(color));
+            break;}
+        default:
+            break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void led_set_pixel_Color_Object(uint16_t i, RgbColor color) {
+
+    switch (G.Colortype) {
+        case Brg:{
+            strip_RGB->SetPixelColor(i,color);
+            break;}
+        case Grb:{
+            strip_RGB->SetPixelColor(i,color);
+            break;}
+        case Rgb:{
+            strip_RGB->SetPixelColor(i,color);
+            break;}
+        case Rbg:{
+            strip_RGB->SetPixelColor(i,color);
+            break;}
+        case Grbw:{
+            strip_RGBW->SetPixelColor(i, RgbwColor(color));
+            break;}
+        default:
+            break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void led_set_pixel_Color_Object_rgbw(uint16_t i, RgbwColor color) {
+    strip_RGBW->SetPixelColor(i, RgbwColor(color));
+}
+
+//------------------------------------------------------------------------------
+
+RgbColor led_get_pixel(uint16_t i) {
+
+    switch (G.Colortype) {
+        case Brg:{
+            return strip_RGB->GetPixelColor(i);
+            break;}
+        case Grb:{
+            return strip_RGB->GetPixelColor(i);
+            break;}
+        case Rgb:{
+            return strip_RGB->GetPixelColor(i);
+            break;}
+        case Rbg:{
+            return strip_RGB->GetPixelColor(i);
+            break;}
+        default:
+            break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+RgbwColor led_get_pixel_rgbw(uint16_t i) {
+    return strip_RGBW->GetPixelColor(i);
 }
 
 
@@ -139,13 +213,23 @@ static void led_set(const unsigned int array[]) {
 //------------------------------------------------------------------------------
 
 static inline void led_show() {
-    strip->Show();
+    if (G.Colortype == Grbw){
+        strip_RGBW->Show();
+    }
+    else {
+        strip_RGB->Show();
+    }
 }
 
 //------------------------------------------------------------------------------
 
 static inline void led_clear_pixel(uint16_t i) {
-    strip->SetPixelColor(i, 0);
+    if (G.Colortype == Grbw){
+        strip_RGBW->SetPixelColor(i, 0);
+    }
+    else {
+        strip_RGB->SetPixelColor(i, 0);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -163,7 +247,7 @@ static inline void led_clear() {
 
 static inline void uhr_clear() {
     for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
-        strip->SetPixelColor(usedUhrType->getSMatrix(i), 0);
+        led_clear_pixel(usedUhrType->getSMatrix(i));
     }
 }
 
@@ -171,7 +255,7 @@ static inline void uhr_clear() {
 
 static inline void rahmen_clear() {
     for (uint16_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
-        strip->SetPixelColor(usedUhrType->getRMatrix(i), 0);
+        led_clear_pixel(usedUhrType->getRMatrix(i));
     }
 }
 
@@ -190,32 +274,27 @@ void hsv_to_rgb(double hue, float sat, float bri, uint8_t *c) {
     bri = bri > 0 ? (bri < 1 ? bri : 1) : 0;    // clamp s and i to interval [0,1]
     bri = bri * std::sqrt(bri);                    // shape intensity to have finer granularity near 0
 
-#ifdef Grbw
-    if (hue < 2.09439)
-    {
+if (G.Colortype == Grbw) {
+    if (hue < 2.09439) {
         c[0] = sat * 255.0 * bri / 3.0 * (1 + std::cos(hue) / std::cos(1.047196667 - hue));
         c[1] = sat * 255.0 * bri / 3.0 * (1 + (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
         c[2] = 0;
         c[3] = 255.0 * (1.0 - sat) * bri;
-    }
-    else if (hue < 4.188787)
-    {
+    } else if (hue < 4.188787) {
         hue = hue - 2.09439;
         c[1] = sat * 255.0 * bri / 3.0 * (1 + std::cos(hue) / std::cos(1.047196667 - hue));
         c[2] = sat * 255.0 * bri / 3.0 * (1 + (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
         c[0] = 0;
         c[3] = 255.0 * (1.0 - sat) * bri;
-    }
-    else
-    {
+    } else {
         hue = hue - 4.188787;
         c[2] = sat * 255.0 * bri / 3.0 * (1 + std::cos(hue) / std::cos(1.047196667 - hue));
         c[0] = sat * 255.0 * bri / 3.0 * (1 + (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
         c[1] = 0;
         c[3] = 255.0 * (1 - sat) * bri;
     }
-
-#else
+}
+else {
     while (hue < 0) { hue += 360.0F; }     // cycle h around to 0-360 degrees
     while (hue >= 360) { hue -= 360.0F; }
 
@@ -235,7 +314,7 @@ void hsv_to_rgb(double hue, float sat, float bri, uint8_t *c) {
         c[1] = 255 * bri / 3 * (1 - sat);
     }
     c[3] = 0;
-#endif
+}
 }
 
 //------------------------------------------------------------------------------
@@ -367,7 +446,14 @@ static void schweif_up() {
 void shift_all_pixels_to_right() {
     for (uint8_t b = 0; b < 10; b++) {
         for (uint8_t a = 0; a < usedUhrType->ROWS_MATRIX(); a++) {
-            strip->SetPixelColor(usedUhrType->getMatrix(a,b), strip->GetPixelColor(usedUhrType->getMatrix(a,b + 1)));
+            if (G.Colortype == Grbw){
+                led_set_pixel_Color_Object_rgbw(usedUhrType->getMatrix(a, b),
+                                           led_get_pixel_rgbw(usedUhrType->getMatrix(a, b + 1)));
+            }
+            else {
+                led_set_pixel_Color_Object(usedUhrType->getMatrix(a, b),
+                                           led_get_pixel(usedUhrType->getMatrix(a, b + 1)));
+            }
         }
     }
 }
@@ -443,7 +529,12 @@ static void laufen(unsigned int d, unsigned char aktion) {
     if (aktion == 0) {
         for (uint8_t t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
             for (uint8_t a = usedUhrType->NUM_SMATRIX(); a > 1; a--) {
-                strip->SetPixelColor(usedUhrType->getSMatrix(a - 1), strip->GetPixelColor(usedUhrType->getSMatrix(a - 2)));
+                if (G.Colortype == Grbw){
+                    led_set_pixel_Color_Object_rgbw(usedUhrType->getSMatrix(a - 1), led_get_pixel_rgbw(usedUhrType->getSMatrix(a - 2)));
+                }
+                else {
+                    led_set_pixel_Color_Object(usedUhrType->getSMatrix(a - 1), led_get_pixel(usedUhrType->getSMatrix(a - 2)));
+                }
             }
             led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getSMatrix(0));
             led_show();
@@ -493,7 +584,12 @@ static void schieben(int d, unsigned char aktion) {
         for (uint8_t t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
             for (a = usedUhrType->NUM_SMATRIX() - 1; a > 0; a--) {
                 for (uint8_t b = 0; b < usedUhrType->ROWS_MATRIX(); b++) {
-                    strip->SetPixelColor(usedUhrType->getMatrix(a,b), strip->GetPixelColor(usedUhrType->getMatrix(a - 1,b)));
+                    if (G.Colortype == Grbw){
+                        led_set_pixel_Color_Object_rgbw(usedUhrType->getMatrix(a,b), led_get_pixel_rgbw(usedUhrType->getMatrix(a - 1,b)));
+                    }
+                    else {
+                        led_set_pixel_Color_Object(usedUhrType->getMatrix(a,b), led_get_pixel(usedUhrType->getMatrix(a - 1,b)));
+                    }
                 }
             }
             for (uint8_t b = 0; b < usedUhrType->ROWS_MATRIX(); b++) {
