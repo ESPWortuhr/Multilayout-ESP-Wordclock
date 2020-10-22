@@ -6,6 +6,8 @@
 
 #define RESPONSE_SIZE    900
 
+const char* const html_sliders[] PROGMEM = {index_html_head, index_html_body_first, slider_RGBW, index_html_body_mid, Switches_UHR169, index_html_body_rest};
+
 class WebPage_Adapter : public WebSocketsServer {
 
 public:
@@ -17,20 +19,6 @@ public:
      * @param client WSclient_t *  ptr to the client struct
      */
     void handleNonWebsocketConnection(WSclient_t *client) override {
-        char str[RESPONSE_SIZE + 4];
-        unsigned ww = 0;
-        unsigned yy = 0;
-        int j;
-        uint16_t slider_size = 0;
-        uint8_t slider_index = 0;
-        if (G.Colortype == Grbw){
-            slider_size = sizeof(slider_RGBW);
-            slider_index = 1;
-        }
-        else {
-            slider_size = sizeof(slider_RGB);
-            slider_index = 0;
-        }
         DEBUG_WEBSOCKETS("[WS-Server][%d][handleHeader] no Websocket connection close.\n", client->num);
         client->tcp->write("HTTP/1.1 200 OK\r\n"
                            "Server: arduino-WebSocket-Server\r\n"
@@ -39,59 +27,12 @@ public:
                            "Connection: close\r\n"
                            //--                    "Sec-WebSocket-Version: 13\r\n"
                            "\r\n");
-        while (ww < sizeof(index_html_head)) {
-            str[yy] = pgm_read_byte(&index_html_head[ww]);
-            str[yy + 1] = '\0';
-            yy++;
-            if (yy == RESPONSE_SIZE) {
-                j = strlen(str);
-                client->tcp->write(&str[0], j);
-                str[0] = '\0';
-                yy = 0;
-            }
-            ww++;
-        }
-        if (yy > 0) {
-            j = strlen(str);
-            client->tcp->write(&str[0], j);
-        }
-        ww = 0;
-        yy = 0;
-        while (ww < sizeof(index_html_body_first)) {
-            str[yy] = pgm_read_byte(&index_html_body_first[ww]);
-            str[yy + 1] = '\0';
-            yy++;
-            if (yy == RESPONSE_SIZE) {
-                j = strlen(str);
-                client->tcp->write(&str[0], j);
-                str[0] = '\0';
-                yy = 0;
-            }
-            ww++;
-        }
-        if (yy > 0) {
-            j = strlen(str);
-            client->tcp->write(&str[0], j);
-        }
-        Send_HTML_Code_for_Sliders(client, slider_size, slider_index);
-        ww = 0;
-        yy = 0;
-        while (ww < sizeof(index_html_body_rest)) {
-            str[yy] = pgm_read_byte(&index_html_body_rest[ww]);
-            str[yy + 1] = '\0';
-            yy++;
-            if (yy == RESPONSE_SIZE) {
-                j = strlen(str);
-                client->tcp->write(&str[0], j);
-                str[0] = '\0';
-                yy = 0;
-            }
-            ww++;
-        }
-        if (yy > 0) {
-            j = strlen(str);
-            client->tcp->write(&str[0], j);
-        }
+        Send_HTML_Code_for_Sliders(client, sizeof(index_html_head), 0);
+        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_first), 1);
+        if (G.Colortype == Grbw){Send_HTML_Code_for_Sliders(client, sizeof(slider_RGBW), 2);};
+        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_mid), 3);
+        if (G.UhrtypeDef == Uhr_169){Send_HTML_Code_for_Sliders(client, sizeof(Switches_UHR169), 4);};
+        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_rest), 5);
         clientDisconnect(client);
     }
 
