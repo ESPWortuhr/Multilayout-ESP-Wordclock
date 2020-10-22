@@ -842,16 +842,14 @@ void loop() {
         strcat(str, G.cityid);
         strcat(str, R"(","apikey":")");
         strcat(str, G.apikey);
-        strcat(str, "\"}");
         strcat(str, R"(","UhrtypeDef":")");
-        sprintf(str, "%d", G.UhrtypeDef);
-        strcat(str, "\"}");
+        sprintf(s, "%d", G.UhrtypeDef);
+        strcat(str, s);
         strcat(str, R"(","colortype":")");
-        sprintf(str, "%d", G.Colortype);
+        sprintf(s, "%d", G.Colortype);
+        strcat(str, s);
         strcat(str, "\"}");
         webSocket.sendTXT(G.client_nr, str, strlen(str));
-        led_clear();
-        show_zeit(1);
         G.conf = COMMAND_IDLE;
     }
 
@@ -878,6 +876,9 @@ void loop() {
         strcat(str, s);
         strcat(str, R"(","geschw":")");
         sprintf(s, "%d", G.geschw);
+        strcat(str, s);
+        strcat(str, R"(","colortype":")");
+        sprintf(s, "%d", G.Colortype);
         strcat(str, s);
         strcat(str, "\"}");
         webSocket.sendTXT(G.client_nr, str, strlen(str));

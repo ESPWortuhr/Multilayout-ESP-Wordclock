@@ -139,7 +139,7 @@ uint32_t uhrzeit;
 
 unsigned int Word_array[242] = { 255 };
 
-char str[300];
+char str[350];
 char s[5];
 
 bool externalRTC = false;

@@ -1,4 +1,4 @@
-# Wortuhr - Version 2.4.0
+# Wortuhr - Version 2.4.0 BETA
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
@@ -57,20 +57,20 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 * HomeKit Support
 * Alexa/GoogleHome Support
 * HSI Farb Selektor auf der Website
-* Finaler Release wäre eine unified Binary mit selektor auf der Webseite
 
 ## Known Bugs
 * payload handling website (fields moved SSID, API-KEY, etc.) --> reboot
 
 ## ChangeLog
 ### Version 2.4.0
-* (dbambus) 20201011   
+* (dbambus) 20201022   
 * Cleaned up .ino Functions for Wifi, EEPROM und Websockets
 * Moved them to external Headers
 * C++ polymorphismus introduced with Uhrtypes, moved them to external folders
 * Fixed Issue `struct for stripes`
 * Changed Structure of Webpage-folder on Github
 * Added Python Script to compile C-header for webpage
+* Now it is possible to Change Type of Wordclock on Webpage and Colortype -> Unified Firmware
 * Fixed Issue of showing wrong words on LED Front if entering Settings of Website
 * Removed almost all #IfDefs
 

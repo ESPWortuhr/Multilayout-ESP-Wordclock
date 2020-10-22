@@ -94,7 +94,7 @@ void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
             strip_RGB->SetPixelColor(i, RgbColor(rr, bb, gg));
             break;}
         case Grbw:{
-            strip_RGBW->SetPixelColor(i, RgbwColor(color));
+            strip_RGBW->SetPixelColor(i, RgbwColor(rr, gg, bb, ww));
             break;}
         default:
             break;

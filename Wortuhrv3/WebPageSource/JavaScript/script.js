@@ -214,13 +214,14 @@ function initWebsocket() {
 
             $("#slider-brightness").set("value", data.hell);
             $("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
-            $("#UhrtypeDef").set("value", UhrtypeDef);
-            $("#colortype").set("value", colortype);
             $("#showSeconds").set("value", data.zeige_sek);
             $("#showMinutes").set("value", data.zeige_min);
 
             $("#owm-api-key").set("value", data.apiKey);
             $("#owm-city-id").set("value", data.cityid);
+
+            $("#UhrtypeDef").set("value", data.UhrtypeDef);
+            $("#colortype").set("value", data.colortype);
         }
         if (data.command === "set") {
             rgb[0][0] = data.rgb00;
@@ -241,6 +242,7 @@ function initWebsocket() {
             rgb[3][3] = data.rgb33;
             hell = data.hell;
             geschw = data.geschw;
+            colortype = data.colortype;
             setSliders();
         }
     };
@@ -258,7 +260,9 @@ function getSliders() {
     rgb[sliderType][0] = $("#slider-red").get("value");
     rgb[sliderType][1] = $("#slider-green").get("value");
     rgb[sliderType][2] = $("#slider-blue").get("value");
-    rgb[sliderType][3] = $("#slider-white").get("value");
+    if (colortype === "4"){
+        rgb[sliderType][3] = $("#slider-white").get("value");
+    }
 
     // other sliders
     hell = $("#slider-brightness").get("value");
@@ -533,7 +537,7 @@ $.ready(function () {
         rgb[sliderType][0] = rgbColor.red;
         rgb[sliderType][1] = rgbColor.green;
         rgb[sliderType][2] = rgbColor.blue;
-        rgb[sliderType][3] = rgbColor.white;
+        rgb[sliderType][3] = 0;
 
         hell = $("#slider-brightness").get("value");
         geschw = $("#slider-speed").get("value");
@@ -677,7 +681,7 @@ $.ready(function () {
         debugMessage("UhrtypeDef wurde neu konfiguriert", data);
     });
     $("#colortype-button").on("click", function() {
-        var colortype = $("#colortype").get("value");
+        colortype = $("#colortype").get("value");
         var data = "088000000" + colortype + "  999";
         websocket.send(data);
         debugMessage("Colortype wurde neu konfiguriert", data);
