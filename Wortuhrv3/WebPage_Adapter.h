@@ -6,7 +6,7 @@
 
 #define RESPONSE_SIZE    900
 
-const char* const html_sliders[] PROGMEM = {index_html_head, index_html_body_first, slider_RGBW, index_html_body_mid, Switches_UHR169, index_html_body_rest};
+const char* const html_sliders[] PROGMEM = {index_html_head, index_html_body_first, slider_RGBW, index_html_body_mid, Switches_UHR242, Switches_UHR169, index_html_body_rest};
 
 class WebPage_Adapter : public WebSocketsServer {
 
@@ -31,8 +31,9 @@ public:
         Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_first), 1);
         if (G.Colortype == Grbw){Send_HTML_Code_for_Sliders(client, sizeof(slider_RGBW), 2);};
         Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_mid), 3);
-        if (G.UhrtypeDef == Uhr_169){Send_HTML_Code_for_Sliders(client, sizeof(Switches_UHR169), 4);};
-        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_rest), 5);
+        if (G.UhrtypeDef == Uhr_242){Send_HTML_Code_for_Sliders(client, sizeof(Switches_UHR242), 4);};
+        if (G.UhrtypeDef == Uhr_169){Send_HTML_Code_for_Sliders(client, sizeof(Switches_UHR169), 5);};
+        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_rest), 6);
         clientDisconnect(client);
     }
 
