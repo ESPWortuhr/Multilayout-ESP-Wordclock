@@ -1,11 +1,11 @@
-# Wortuhr - Version 2.4.0 BETA
+# Wortuhr - Version 2.4.0
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
 ![](pics/wortuhr-3-screenshot.png)
 
 ### Einleitung 
-Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem Projekt von [Ulrich Radig](https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
+Es handelt sich hier um die Version 2.4.0 der Wortuhr (Wordclock). Aufbauend auf dem Projekt von [Ulrich Radig](https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
 
 ## Für den Nachbau wird folgende Hardware/Software benötigt:
 * Hardware
@@ -30,8 +30,7 @@ Es handelt sich hier um die Version 3 der Wortuhr (Wordclock). Aufbauend auf dem
 
 -   `pics` enthält Bilder
 -   `svg` enthält SVG Dateien
--   `src` enthält den Sketch für Arduino und das Webinterface
--   `include` enthält die Header-Dateien für Arduino
+-   `Wortuhr3` enthält den Sketch für Arduino und das Webinterface
 -   `docs` enthält Anleitungen
 -   `bin` enthält die Binary (Für die Uhrenvariante *UHR_114*)
 
