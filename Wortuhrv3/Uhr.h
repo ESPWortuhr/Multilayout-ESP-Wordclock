@@ -4,22 +4,6 @@ const char *VER = "2.4.0";  // Software Version
 
 #pragma once
 
-#ifdef Grb
-#define LED_STRIPE_TYP   NeoGrbFeature
-#endif
-#ifdef Brg
-#define LED_STRIPE_TYP   NeoBrgFeature
-#endif
-#ifdef Rgb
-#define LED_STRIPE_TYP   NeoRgbFeature
-#endif
-#ifdef Rbg
-#define LED_STRIPE_TYP   NeoRbgFeature
-#endif
-#ifdef Grbw
-#define LED_STRIPE_TYP   NeoGrbwFeature
-#endif
-
 enum uhrzeit_t {
     ESIST = 0,
     VOR = 1,
@@ -83,6 +67,7 @@ struct GLOBAL {
     uint8_t h22;
     uint8_t h24;
     uint8_t UhrtypeDef;
+    uint8_t Colortype;
 };
 GLOBAL G = {};
 
@@ -116,8 +101,6 @@ bool ConnectionEstablished; // Flag for successfully handled connection
 #define MAX_TELNET_CLIENTS 2
 WiFiServer TelnetServer(23);
 WiFiClient TelnetClient[MAX_TELNET_CLIENTS];
-
-unsigned char slider = false;
 
 const char *ssid_ap = "Uhr";
 const char *password_ap = "12345678";
@@ -156,7 +139,7 @@ uint32_t uhrzeit;
 
 unsigned int Word_array[242] = { 255 };
 
-char str[300];
+char str[350];
 char s[5];
 
 bool externalRTC = false;
@@ -168,11 +151,20 @@ enum ledPositions {
     Effect = 3
 };
 
+enum ledColortypes {
+    Brg = 0,
+    Grb = 1,
+    Rgb = 2,
+    Rbg = 3,
+    Grbw = 4,
+};
+
 enum Command {
     COMMAND_IDLE = 0,
     COMMAND_MODE_WORD_CLOCK = 1,
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
+    COMMAND_SET_COLORTYPE = 88,
 	COMMAND_SET_UHRTYPE = 89,
     COMMAND_SET_WEATHER_DATA = 90,
     COMMAND_SET_LDR = 91,

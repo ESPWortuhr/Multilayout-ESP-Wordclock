@@ -10,16 +10,16 @@
 #define SERNR 100             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 
 // Wenn die Farben nicht passen können sie hier angepasst werden:
-//#define Brg   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
-//#define Grb      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
-#define Rgb    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rgb
-//#define Rbg    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
-//#define Grbw   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
+#define Brg_Color   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
+//#define Grb_Color      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
+//#define Rgb_Color    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rgb
+//#define Rbg_Color    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
+//#define Grbw_Color   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
 
 #define RTC_Type RTC_DS3231        // External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
 
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
-bool show_ip = false;      // Zeige IP Adresse beim Start
+bool show_ip = true;      // Zeige IP Adresse beim Start
 unsigned int NTP_port = 123;  // Standartport für den NTP Server
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
@@ -51,15 +51,16 @@ unsigned int NTP_port = 123;  // Standartport für den NTP Server
 #include "Uhrtypes/uhr_func_169.hpp"
 #include "Uhrtypes/uhr_func_242.hpp"
 
-__attribute__ ((used)) UHR_114_Alternative_t Uhr_114_Alternative_type;
-__attribute__ ((used)) UHR_114_t Uhr_114_type;
-__attribute__ ((used)) UHR_125_t Uhr_125_type;
-__attribute__ ((used)) UHR_169_t Uhr_169_type;
-__attribute__ ((used)) UHR_242_t Uhr_242_type;
+UHR_114_Alternative_t Uhr_114_Alternative_type;
+UHR_114_t Uhr_114_type;
+UHR_125_t Uhr_125_type;
+UHR_169_t Uhr_169_type;
+UHR_242_t Uhr_242_type;
 
 iUhrType* usedUhrType = nullptr;
 
-NeoPixelBus<LED_STRIPE_TYP, Neo800KbpsMethod>* strip = NULL;
+NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod>* strip_RGB = NULL;
+NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>* strip_RGBW = NULL;
 
 TimeChangeRule CEST = {"CEST", Last, Sun, Mar, 2, 120};     //Central European Summer Time
 TimeChangeRule CET = {"CET ", Last, Sun, Oct, 3, 60};       //Central European Standard Time
@@ -97,6 +98,25 @@ iUhrType* getPointer(uint8_t num){
             return reinterpret_cast<iUhrType*>(&Uhr_242_type);
         default:
             return nullptr;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void InitLedStrip(uint8_t num) {
+    if (num == Grbw){
+        if (strip_RGBW != NULL) {
+            delete strip_RGBW; // delete the previous dynamically created strip
+        }
+        strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(usedUhrType->NUM_PIXELS());
+        strip_RGBW->Begin();
+    }
+    else {
+        if (strip_RGB != NULL) {
+            delete strip_RGB; // delete the previous dynamically created strip
+        }
+        strip_RGB = new NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod>(usedUhrType->NUM_PIXELS());
+        strip_RGB->Begin();
     }
 }
 
@@ -174,6 +194,26 @@ void setup() {
 		G.UhrtypeDef = Uhr_242;
 #endif
 
+#ifdef Brg_Color
+        G.Colortype = Brg;
+#endif
+
+#ifdef Grb_Color
+        G.Colortype = Grb;
+#endif
+
+#ifdef Rgb_Color
+        G.Colortype = Rgb;
+#endif
+
+#ifdef Rbg_Color
+        G.Colortype = Rbg;
+#endif
+
+#ifdef Grbw_Color
+        G.Colortype = Grbw;
+#endif
+
         eeprom_write();
         Serial.println("eeprom schreiben");
     }
@@ -228,11 +268,7 @@ void setup() {
     // LEDs initialisieren
     //-------------------------------------
     Serial.println("LED Init");
-    if (strip != NULL) {
-        delete strip; // delete the previous dynamically created strip
-    }
-    strip = new NeoPixelBus<LED_STRIPE_TYP, Neo800KbpsMethod>(usedUhrType->NUM_PIXELS());
-    strip->Begin();
+    InitLedStrip(G.Colortype);
     led_single(20);
     led_clear();
     led_show();
@@ -561,6 +597,21 @@ void loop() {
         G.conf = COMMAND_IDLE;
     }
 
+    //------------------------------------------------
+    // Colortype der LED einstellen
+    //------------------------------------------------
+
+    if (G.conf == COMMAND_SET_COLORTYPE) {
+        eeprom_write();
+        Serial.printf("LED Colortype: %u\n", G.Colortype);
+        if (G.Colortype == Grbw){
+            G.conf = COMMAND_RESET;
+        }
+        else{
+            G.conf = COMMAND_IDLE;
+        }
+    }
+
 	//------------------------------------------------
 	// Uhrtype Layout einstellen
 	//------------------------------------------------
@@ -568,7 +619,7 @@ void loop() {
 	if (G.conf == COMMAND_SET_UHRTYPE) {
 		eeprom_write();
 		Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
-		G.conf = COMMAND_IDLE;
+		G.conf = COMMAND_RESET;
 	}
 
     //------------------------------------------------
@@ -791,10 +842,14 @@ void loop() {
         strcat(str, G.cityid);
         strcat(str, R"(","apikey":")");
         strcat(str, G.apikey);
+        strcat(str, R"(","UhrtypeDef":")");
+        sprintf(s, "%d", G.UhrtypeDef);
+        strcat(str, s);
+        strcat(str, R"(","colortype":")");
+        sprintf(s, "%d", G.Colortype);
+        strcat(str, s);
         strcat(str, "\"}");
         webSocket.sendTXT(G.client_nr, str, strlen(str));
-        led_clear();
-        show_zeit(1);
         G.conf = COMMAND_IDLE;
     }
 
@@ -821,6 +876,9 @@ void loop() {
         strcat(str, s);
         strcat(str, R"(","geschw":")");
         sprintf(s, "%d", G.geschw);
+        strcat(str, s);
+        strcat(str, R"(","colortype":")");
+        sprintf(s, "%d", G.Colortype);
         strcat(str, s);
         strcat(str, "\"}");
         webSocket.sendTXT(G.client_nr, str, strlen(str));

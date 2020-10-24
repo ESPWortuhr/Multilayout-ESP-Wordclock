@@ -1,6 +1,6 @@
 {
-	"name": "Wortuhr-2",
-	"version": "2.2.0",
+	"name": "Wortuhr-2.4.0",
+	"version": "2.4.0",
 	"description": "For building a wordclock with an esp8266 module.",
 	"author": {
 		"name": "Ulrich Radig",
