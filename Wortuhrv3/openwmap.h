@@ -101,19 +101,19 @@ void getweather(){
         }
 
         //Variable mit json Wert forecast füllen
-        const char* location = doc["city","name"]; 
-        const char* wetter_6 = doc["list",1,"weather",0,"description"];
-        const int wetterid_6 = doc["list",1,"weather",0,"id"];
-        double temp_6 = doc["list",1,"main","temp"];
-        const char* wetter_12 = doc["list",3,"weather",0,"description"];
-        const int wetterid_12 = doc["list",3,"weather",0,"id"];
-        double temp_12 = doc["list",3,"main","temp"];
-        const char* wetter_18 = doc["list",5,"weather",0,"description"];
-        const int wetterid_18 = doc["list",5,"weather",0,"id"];
-        double temp_18 = doc["list",5,"main","temp"];
-        const char* wetter_24 = doc["list",7,"weather",0,"description"];
-        const int wetterid_24 = doc["list",7,"weather",0,"id"];
-        double temp_24 = doc["list",7,"main","temp"];
+        const char* location = doc["city"]["name"]; 
+        const char* wetter_6 = doc["list"][1]["weather"][0]["description"];
+        const int wetterid_6 = doc["list"][1]["weather"][0]["id"];
+        double temp_6 = doc["list"][1]["main"]["temp"];
+        const char* wetter_12 = doc["list"][3]["weather"][0]["description"];
+        const int wetterid_12 = doc["list"][3]["weather"][0]["id"];
+        double temp_12 = doc["list"][3]["main"]["temp"];
+        const char* wetter_18 = doc["list"][5]["weather"][0]["description"];
+        const int wetterid_18 = doc["list"][5]["weather"][0]["id"];
+        double temp_18 = doc["list"][5]["main"]["temp"];
+        const char* wetter_24 = doc["list"][7]["weather"][0]["description"];
+        const int wetterid_24 = doc["list"][7]["weather"][0]["id"];
+        double temp_24 = doc["list"][7]["main"]["temp"];
 
         /*--------------------------------------------------
         List of Conditions http://openweathermap.org/weather-conditions

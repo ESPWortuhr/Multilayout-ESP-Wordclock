@@ -1,6 +1,6 @@
 #include "Arduino.h"
 
-const char *VER = "2.4.0";  // Software Version
+const char *VER = "2.4.1";  // Software Version
 
 #pragma once
 
@@ -76,7 +76,7 @@ const char* resource1 = "/data/2.5/forecast?id="; // Openweather API URL part 1
 const char* resource2 = "&units=metric&APPID="; // Openweather API URL part 2
 const char* resource3 = "&cnt=8"; // Openweather API forecast time
 char resource[40];
-char response[6000];       //fixed size buffer
+char response[3500];       //fixed size buffer
 WiFiClient client;
 unsigned int weather_tag    = 600;    //counter fuer Wetterdaten abrufen
 int wtemp_6;
@@ -139,7 +139,12 @@ uint32_t uhrzeit;
 
 unsigned int Word_array[242] = { 255 };
 
-char str[350];
+#ifndef UHR_242
+char str[3500];
+#else
+char str[450];
+#endif
+
 char s[5];
 
 bool externalRTC = false;

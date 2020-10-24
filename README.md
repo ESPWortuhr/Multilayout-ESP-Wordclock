@@ -1,11 +1,11 @@
-# Wortuhr - Version 2.4.0
+# Wortuhr - Version 2.4.1
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
 ![](pics/wortuhr-3-screenshot.png)
 
 ### Einleitung 
-Es handelt sich hier um die Version 2.4.0 der Wortuhr (Wordclock). Aufbauend auf dem Projekt von [Ulrich Radig](https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
+Es handelt sich hier um die Version 2.4.1 der Wortuhr (Wordclock). Aufbauend auf dem Projekt von [Ulrich Radig](https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
 
 ## Für den Nachbau wird folgende Hardware/Software benötigt:
 * Hardware
@@ -58,9 +58,16 @@ Es handelt sich hier um die Version 2.4.0 der Wortuhr (Wordclock). Aufbauend auf
 * HSI Farb Selektor auf der Website
 
 ## Known Bugs
-* payload handling website (fields moved SSID, API-KEY, etc.) --> reboot
 
 ## ChangeLog
+### Version 2.4.1   
+* (Eisbaeeer) 20201024
+* fixed upgrade json 5 to 6 in openweathermap by parsing
+* fixed json parsing reagarding too small vars
+* fixed missing "break" points in "uhr_func_242.hpp"
+* fixed too small vars to website char str[]
+* limit var char str[] to need value
+
 ### Version 2.4.0
 * (dbambus) 20201022   
 * Cleaned up .ino Functions for Wifi, EEPROM und Websockets

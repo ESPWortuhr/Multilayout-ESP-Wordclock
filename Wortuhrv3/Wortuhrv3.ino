@@ -19,6 +19,7 @@
 #define RTC_Type RTC_DS3231        // External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
 
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
+#define VERBOSE          // DEBUG VERBOSE Openweathermap
 bool show_ip = true;      // Zeige IP Adresse beim Start
 unsigned int NTP_port = 123;  // Standartport für den NTP Server
 /*--------------------------------------------------------------------------
