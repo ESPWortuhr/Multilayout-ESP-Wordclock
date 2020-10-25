@@ -60,6 +60,11 @@ Es handelt sich hier um die Version 2.4.1 der Wortuhr (Wordclock). Aufbauend auf
 ## Known Bugs
 
 ## ChangeLog
+### Version 2.4.2
+* (Eisbaeeer) 20201025   
+* fixed var [resource,str, apikey] openweathermap
+* new config need, because var of apikey changed in lenght. Please change Serial
+
 ### Version 2.4.1   
 * (Eisbaeeer) 20201024
 * fixed upgrade json 5 to 6 in openweathermap by parsing

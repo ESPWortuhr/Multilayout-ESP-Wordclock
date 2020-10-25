@@ -14,10 +14,11 @@ void getweather(){
          Serial.println("--------------------------------------");
 
         // create calling URL
+        memset(resource,0,sizeof(resource));
         strncat(resource, resource1, 22);
         strncat(resource, G.cityid, 7);
         strncat(resource, resource2, 20);
-        strncat(resource, G.apikey, 32);
+        strncat(resource, G.apikey, 35);
         strncat(resource, resource3, 6);
 
          Serial.print ( "Calling URL: " );
@@ -37,7 +38,7 @@ void getweather(){
         delay(100);
     
         //Reading stream and remove headers
-        client.setTimeout(6000);
+        client.setTimeout(10000);
    
         bool ok_header = ok_header = client.find("\r\n\r\n");
     
@@ -45,10 +46,15 @@ void getweather(){
         // wait
         }
          
+        memset(response,0,sizeof(response));
         client.readBytes(response, 3500);
 
          Serial.println("Antwort: "); 
          Serial.println(response);  
+         
+         int eol = sizeof(response);
+         Serial.print("Length = "); 
+         Serial.println(eol);
          //TelnetMsg("Antwort: "); 
          //TelnetMsg(response);
         

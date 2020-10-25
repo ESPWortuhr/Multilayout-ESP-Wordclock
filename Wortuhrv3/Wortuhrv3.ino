@@ -19,7 +19,7 @@
 #define RTC_Type RTC_DS3231        // External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
 
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
-#define VERBOSE          // DEBUG VERBOSE Openweathermap
+//#define VERBOSE          // DEBUG VERBOSE Openweathermap
 bool show_ip = true;      // Zeige IP Adresse beim Start
 unsigned int NTP_port = 123;  // Standartport für den NTP Server
 /*--------------------------------------------------------------------------
@@ -414,8 +414,9 @@ void loop() {
         last_sekunde = _sekunde;
 
         if (G.UhrtypeDef == Uhr_242) {
-            if ((_sekunde == 30) | (_sekunde == 0)) {
+            if ((_sekunde == 0) | (_sekunde == 10) | (_sekunde == 20) | (_sekunde == 30) | (_sekunde == 40) | (_sekunde == 50)) {
                 wetterswitch++;
+                led_clear();
                 if (wetterswitch > 4) {
                     wetterswitch = 1;
                 }
@@ -485,7 +486,7 @@ void loop() {
     //------------------------------------------------
     // Wetterdaten abrufen
     //------------------------------------------------
-    if (G.UhrtypeDef == Uhr_242 && weather_tag >= 600) {
+    if (G.UhrtypeDef == Uhr_242 && weather_tag >= 600) {    // Eisbaeeer changed for Debug (soll 600)
       weather_tag = 0;
       if (WiFi.status() == WL_CONNECTED)
        {
