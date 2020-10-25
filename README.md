@@ -1,4 +1,4 @@
-# Wortuhr - Version 2.4.1
+# Wortuhr - Version 2.4.2
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
