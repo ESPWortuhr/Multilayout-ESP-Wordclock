@@ -14,10 +14,11 @@ void getweather(){
          Serial.println("--------------------------------------");
 
         // create calling URL
+        memset(resource,0,sizeof(resource));
         strncat(resource, resource1, 22);
         strncat(resource, G.cityid, 7);
         strncat(resource, resource2, 20);
-        strncat(resource, G.apikey, 32);
+        strncat(resource, G.apikey, 35);
         strncat(resource, resource3, 6);
 
          Serial.print ( "Calling URL: " );
@@ -37,7 +38,7 @@ void getweather(){
         delay(100);
     
         //Reading stream and remove headers
-        client.setTimeout(6000);
+        client.setTimeout(10000);
    
         bool ok_header = ok_header = client.find("\r\n\r\n");
     
@@ -45,10 +46,15 @@ void getweather(){
         // wait
         }
          
+        memset(response,0,sizeof(response));
         client.readBytes(response, 3500);
 
          Serial.println("Antwort: "); 
          Serial.println(response);  
+         
+         int eol = sizeof(response);
+         Serial.print("Length = "); 
+         Serial.println(eol);
          //TelnetMsg("Antwort: "); 
          //TelnetMsg(response);
         
@@ -101,19 +107,19 @@ void getweather(){
         }
 
         //Variable mit json Wert forecast füllen
-        const char* location = doc["city","name"]; 
-        const char* wetter_6 = doc["list",1,"weather",0,"description"];
-        const int wetterid_6 = doc["list",1,"weather",0,"id"];
-        double temp_6 = doc["list",1,"main","temp"];
-        const char* wetter_12 = doc["list",3,"weather",0,"description"];
-        const int wetterid_12 = doc["list",3,"weather",0,"id"];
-        double temp_12 = doc["list",3,"main","temp"];
-        const char* wetter_18 = doc["list",5,"weather",0,"description"];
-        const int wetterid_18 = doc["list",5,"weather",0,"id"];
-        double temp_18 = doc["list",5,"main","temp"];
-        const char* wetter_24 = doc["list",7,"weather",0,"description"];
-        const int wetterid_24 = doc["list",7,"weather",0,"id"];
-        double temp_24 = doc["list",7,"main","temp"];
+        const char* location = doc["city"]["name"]; 
+        const char* wetter_6 = doc["list"][1]["weather"][0]["description"];
+        const int wetterid_6 = doc["list"][1]["weather"][0]["id"];
+        double temp_6 = doc["list"][1]["main"]["temp"];
+        const char* wetter_12 = doc["list"][3]["weather"][0]["description"];
+        const int wetterid_12 = doc["list"][3]["weather"][0]["id"];
+        double temp_12 = doc["list"][3]["main"]["temp"];
+        const char* wetter_18 = doc["list"][5]["weather"][0]["description"];
+        const int wetterid_18 = doc["list"][5]["weather"][0]["id"];
+        double temp_18 = doc["list"][5]["main"]["temp"];
+        const char* wetter_24 = doc["list"][7]["weather"][0]["description"];
+        const int wetterid_24 = doc["list"][7]["weather"][0]["id"];
+        double temp_24 = doc["list"][7]["main"]["temp"];
 
         /*--------------------------------------------------
         List of Conditions http://openweathermap.org/weather-conditions
