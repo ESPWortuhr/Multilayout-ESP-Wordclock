@@ -197,10 +197,10 @@ static void set_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww, u
 
 //------------------------------------------------------------------------------
 
-static void led_set(const unsigned int array[]) {
+static void led_set(const uint8_t array[]) {
     uint8_t rr, gg, bb, ww;
     set_helligkeit_ldr(rr, gg, bb, ww, Foreground);
-    int i = 0;
+    uint8_t i = 0;
     while (i < usedUhrType->NUM_PIXELS()){
 
         if (array[i] != 255) {
@@ -461,7 +461,7 @@ void shift_all_pixels_to_right() {
 //------------------------------------------------------------------------------
 
 static void laufschrift(const char *buf) {
-    static unsigned int i = 0, ii = 0;
+    static uint8_t i = 0, ii = 0;
 
     // Alle Pixes eins nach rechts schieben
     shift_all_pixels_to_right();
@@ -495,7 +495,7 @@ static void laufschrift(const char *buf) {
 static void zeigeip(const char *buf) {
     uint8_t StringLength = strlen(buf);
     StringLength = StringLength * 6;  // Times 6, because thats the length of a char in the 7x5 font plus spacing
-    for (int i = 0; i <= StringLength; i++) {
+    for (uint8_t i = 0; i <= StringLength; i++) {
         laufschrift(buf);
         delay(200);
     }

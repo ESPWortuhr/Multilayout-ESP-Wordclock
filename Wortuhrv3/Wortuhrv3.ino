@@ -21,7 +21,7 @@
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
 bool show_ip = true;      // Zeige IP Adresse beim Start
-unsigned int NTP_port = 123;  // Standartport für den NTP Server
+uint16_t NTP_port = 123;  // Standartport für den NTP Server
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
  *--------------------------------------------------------------------------
@@ -886,11 +886,11 @@ void loop() {
         webSocket.sendTXT(G.client_nr, str, strlen(str));
         G.conf = COMMAND_IDLE;
     }
-    //------------------------------------------------
 
     //------------------------------------------------
     // Wlan Liste
     //------------------------------------------------
+
     if (G.conf == COMMAND_REQUEST_WIFI_LIST) {
         String strs = R"({"command":"wlan")";
         strs += R"(,"list":")";
@@ -899,6 +899,7 @@ void loop() {
         webSocket.sendTXT(G.client_nr, strs);
         G.conf = COMMAND_IDLE;
     }
+
     //------------------------------------------------
 
     if (count_delay > 10000) { count_delay = 0; }

@@ -112,9 +112,9 @@ unsigned char wlan_client = false;
 unsigned char wlan_status = 99;
 unsigned char wlan_ssid = false;
 
-unsigned int _sekunde = 0;
-unsigned int _minute = 0;
-unsigned int _stunde = 0;
+uint8_t _sekunde = 0;
+uint8_t _minute = 0;
+uint8_t _stunde = 0;
 unsigned int last_sekunde = 100;
 unsigned int last_minute = 100;
 unsigned int last_stunde = 100;
@@ -136,8 +136,7 @@ unsigned long previousMillis = 0;
 const long interval = 1000;   // 1 Sekunde
 
 uint32_t uhrzeit;
-
-unsigned int Word_array[242] = { 255 };
+uint8_t Word_array[242] = { 255 };
 
 char str[450];
 char s[5];
@@ -255,8 +254,8 @@ enum UhrTypeDefinitions {
 };
 
 
-int dim[20] = {30, 50, 70, 90, 110, 130, 140, 160, 200, 255, 255, 200, 160, 100, 80, 60, 40, 20, 10, 0};
-int diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
+const uint8_t dim[20] = {30, 50, 70, 90, 110, 130, 140, 160, 200, 255, 255, 200, 160, 100, 80, 60, 40, 20, 10, 0};
+const uint8_t diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
 
 
 //--OTA--
