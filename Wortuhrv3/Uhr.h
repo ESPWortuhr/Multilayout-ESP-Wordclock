@@ -1,6 +1,6 @@
 #include "Arduino.h"
 
-const char *VER = "2.4.2";  // Software Version
+const char *VER = "2.5.0";  // Software Version
 
 #pragma once
 
@@ -35,7 +35,7 @@ struct GLOBAL {
     uint8_t sernr;
     char ssid[25];
     char passwd[25];
-    unsigned int prog;
+	uint16_t prog;
     uint8_t param1;
     uint8_t param2;
     uint8_t prog_init;
@@ -46,8 +46,8 @@ struct GLOBAL {
     uint8_t bb;
     uint8_t ww;
     uint8_t hell;
-    int ldr;
-    int ldrCal;
+	uint16_t ldr;
+	uint16_t ldrCal;
     char apikey[35];
     char cityid[8];
     int geschw;
@@ -78,23 +78,23 @@ const char* resource3 = "&cnt=8"; // Openweather API forecast time
 char resource[100];
 char response[3500];       //fixed size buffer
 WiFiClient client;
-unsigned int weather_tag    = 600;    //counter fuer Wetterdaten abrufen
-int wtemp_6;
-int wtemp_12;
-int wtemp_18;
-int wtemp_24;
-int wwetter_6;
-int wwetter_12;
-int wwetter_18;
-int wwetter_24;
-int wstunde;
-int wetterswitch;
+uint16_t weather_tag = 600;    //counter fuer Wetterdaten abrufen
+int16_t wtemp_6;
+int16_t wtemp_12;
+int16_t wtemp_18;
+int16_t wtemp_24;
+uint16_t wwetter_6;
+uint16_t wwetter_12;
+uint16_t wwetter_18;
+uint16_t wwetter_24;
+uint16_t wstunde;
+uint16_t wetterswitch;
 
 // LDR 
 unsigned long waitUntilLDR = 0;
-int autoBrightnessEnabled = 1;
-int ldrVal = 50;
-int oneseconddelay = 1000;
+uint16_t autoBrightnessEnabled = 1;
+uint16_t ldrVal = 50;
+uint16_t oneseconddelay = 1000;
 
 // Telnet vars
 bool ConnectionEstablished; // Flag for successfully handled connection
@@ -115,15 +115,15 @@ unsigned char wlan_ssid = false;
 uint8_t _sekunde = 0;
 uint8_t _minute = 0;
 uint8_t _stunde = 0;
-unsigned int last_sekunde = 100;
-unsigned int last_minute = 100;
-unsigned int last_stunde = 100;
+uint8_t last_sekunde = 100;
+uint8_t last_minute = 100;
+uint8_t last_stunde = 100;
 
-unsigned int count_millis48 = 0;
+uint8_t count_millis48 = 0;
 unsigned long previous48 = 0;
 const long interval48 = 1250;
-unsigned int _sekunde48 = 0;
-unsigned int last_sekunde48 = 100;
+uint8_t _sekunde48 = 0;
+uint8_t last_sekunde48 = 100;
 
 unsigned long unix_time = 0;
 
@@ -255,7 +255,7 @@ enum UhrTypeDefinitions {
 
 
 const uint8_t dim[20] = {30, 50, 70, 90, 110, 130, 140, 160, 200, 255, 255, 200, 160, 100, 80, 60, 40, 20, 10, 0};
-const uint8_t diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
+const int8_t diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
 
 
 //--OTA--

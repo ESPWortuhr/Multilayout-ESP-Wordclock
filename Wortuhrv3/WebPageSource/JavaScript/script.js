@@ -245,6 +245,8 @@ function initWebsocket() {
             colortype = data.colortype;
             setSliders();
         }
+        if (data.command === "wlan"){
+            document.getElementById("wlanlist").innerHTML = data.list}
     };
     websocket.onerror = function (event) {
         debugMessage("Bei der Verbindung mit dem Websocket ist ein Fehler aufgetreten.", event);
@@ -613,6 +615,15 @@ $.ready(function () {
         debugMessage("WLAN wurde neu konfiguriert", data);
         return false;
     });
+
+
+    $("#_wlanscan").on("click",function(){
+        var data = "302000000";
+        websocket.send(data);
+        document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
+        return false;
+    });
+
     $("#timeserver-button").on("click", function () {
 
         var timeserverValue = $("#timeserver").get("value");
