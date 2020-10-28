@@ -39,9 +39,20 @@ var showMinutes = 0;
 var UhrtypeDef = 0;
 var colortype = 0;
 
+// operation modes
+var COMMAND_MODE_WORD_CLOCK = 1;
+var COMMAND_MODE_SECONDS = 2;
+var COMMAND_MODE_MARQUEE = 3;
+var COMMAND_MODE_RAINBOW = 4;
+var COMMAND_MODE_CHANGE = 5;
+var COMMAND_MODE_COLOR = 6;
+
+
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
+var COMMAND_SET_COLORTYPE = 88;
+var COMMAND_SET_UHRTYPE = 89;
 var COMMAND_SET_WEATHER_DATA = 90;
 var COMMAND_SET_LDR = 91;
 var COMMAND_SET_HOSTNAME = 92;
@@ -52,24 +63,16 @@ var COMMAND_SET_MARQUEE_TEXT = 96;
 var COMMAND_SET_TIMESERVER = 97;
 var COMMAND_SET_WIFI_DISABLED = 98;
 var COMMAND_SET_WIFI_AND_RESTART = 99;
-
 var COMMAND_RESET = 100;
-var COMMAND_REQUEST_CONFIG_VALUES = 300;
-var COMMAND_REQUEST_COLOR_VALUES = 301;
-var COMMAND_REQUEST_WIFI_LIST = 302;
 
-// operation modes
-var COMMAND_MODE_WORD_CLOCK = 1;
-var COMMAND_MODE_SECONDS = 200;
-var COMMAND_MODE_MARQUEE = 201;
-var COMMAND_MODE_RAINBOW = 202;
-var COMMAND_MODE_CHANGE = 203;
-var COMMAND_MODE_COLOR = 204;
+var COMMAND_BRIGHTNESS = 151;
+var COMMAND_SPEED = 152;
+var COMMAND_LEDS = 153;
+var COMMAND_POSITION = 154;
 
-var COMMAND_BRIGHTNESS = 251;
-var COMMAND_SPEED = 252;
-var COMMAND_LEDS = 253;
-var COMMAND_POSITION = 254;
+var COMMAND_REQUEST_CONFIG_VALUES = 200;
+var COMMAND_REQUEST_COLOR_VALUES = 201;
+var COMMAND_REQUEST_WIFI_LIST = 202;
 
 // colors
 var COLOR_FOREGROUND = 0;
@@ -172,7 +175,7 @@ function initWebsocket() {
 
         debugMessage("Die Verbindung mit dem Websocket wurde aufgebaut.", event);
 
-        sendData(301, 0, 0);
+        sendData(COMMAND_REQUEST_COLOR_VALUES, 0, 0);
     };
 
     websocket.onclose = function (event) {
@@ -618,7 +621,7 @@ $.ready(function () {
 
 
     $("#_wlanscan").on("click",function(){
-        var data = "302000000";
+        var data = "202000000";
         websocket.send(data);
         document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
         return false;
