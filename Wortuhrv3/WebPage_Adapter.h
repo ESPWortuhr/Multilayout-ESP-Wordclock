@@ -79,6 +79,18 @@ uint16_t split(uint8_t *payload, uint8_t start, uint8_t end) {
 
 //------------------------------------------------------------------------------
 
+uint32_t split(uint8_t *payload, uint8_t start, uint8_t end, uint8_t i) {
+	char buffer[i];
+	uint8_t m = 0;
+	for (uint16_t k = start; k < (start + end); k++) {
+		buffer[m] = payload[k];
+		m++;
+	}
+	return atoi(buffer);
+}
+
+//------------------------------------------------------------------------------
+
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght) {
     int ii;
     int jj;
@@ -232,12 +244,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 					G.conf = COMMAND_SET_TIME;
 					ii = 0;
 					tmp[0] = '\0';
+					uint32_t  tt = split(payload, 12, 28, 28-12);
+					Serial.println(tt);
 					for (uint8_t k = 12; k < 28; k++)
 					{
 						tmp[ii] = payload[k];
 						ii++;
 					}
-					uint32_t tt = atoi(tmp);
+					tt = atoi(tmp);
+					Serial.println(tt);
 					Serial.printf("Conf: Time: %d\n", tt);
 					setTime(tt);
 					break;
