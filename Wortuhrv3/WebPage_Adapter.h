@@ -67,26 +67,14 @@ WebPage_Adapter webSocket = WebPage_Adapter(80);
 
 //------------------------------------------------------------------------------
 
-uint16_t split(uint8_t *payload, uint8_t start, uint8_t end) {
-    char buffer[3];
+uint16_t split(uint8_t *payload, uint8_t start, uint8_t lenght) {
+    char buffer[lenght];
 	uint8_t m = 0;
-    for (uint16_t k = start; k < (start + end); k++) {
+    for (uint16_t k = start; k < (start + lenght); k++) {
         buffer[m] = payload[k];
         m++;
     }
     return atoi(buffer);
-}
-
-//------------------------------------------------------------------------------
-
-uint32_t split(uint8_t *payload, uint8_t start, uint8_t end, uint8_t i) {
-	char buffer[i];
-	uint8_t m = 0;
-	for (uint16_t k = start; k < (start + end); k++) {
-		buffer[m] = payload[k];
-		m++;
-	}
-	return atoi(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -244,7 +232,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 					G.conf = COMMAND_SET_TIME;
 					ii = 0;
 					tmp[0] = '\0';
-					uint32_t  tt = split(payload, 12, 28, 28-12);
+					uint32_t  tt = split(payload, 12, 16);
 					Serial.println(tt);
 					for (uint8_t k = 12; k < 28; k++)
 					{

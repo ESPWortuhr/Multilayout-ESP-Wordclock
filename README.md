@@ -1,11 +1,11 @@
-# Wortuhr - Version 2.4.2
+# Wortuhr - Version <!-- VER_placeholder1 -->2.5.0
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
 ![](pics/wortuhr-3-screenshot.png)
 
 ### Einleitung 
-Es handelt sich hier um die Version 2.4.1 der Wortuhr (Wordclock). Aufbauend auf dem Projekt von [Ulrich Radig](https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
+Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (Wordclock). Aufbauend auf dem Projekt von [Ulrich Radig](https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
 
 ## Für den Nachbau wird folgende Hardware/Software benötigt:
 * Hardware
