@@ -440,6 +440,17 @@ void loop(){
 			show_zeit(1); // Anzeige Uhrzeit mit Config
 		}
 
+		//Deaktiviere WLAN nach 5 Minuten AP Zeit
+		if (wlan_client == false && wlan_ssid == false){
+			if (Five_Min_Counter == 6){
+				G.conf = COMMAND_SET_WIFI_DISABLED;
+				Wifi_off = true;
+			}
+			if (Wifi_off == false){
+				Five_Min_Counter += 1;
+			}
+		}
+
 		// WLAN reconnect
 		wlan_status = WiFi.status();
 		Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
@@ -716,6 +727,7 @@ void loop(){
 			delay(100);
 			Serial.println("Conf: WLAN Abgeschaltet");
 			WiFi.forceSleepBegin();
+			Wifi_off = true;
 			G.conf = COMMAND_IDLE;
 			break;
 		}

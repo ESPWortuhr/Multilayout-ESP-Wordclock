@@ -137,6 +137,8 @@ const long interval = 1000;   // 1 Sekunde
 
 uint32_t uhrzeit;
 uint8_t Word_array[242] = { 255 };
+uint16_t Five_Min_Counter = 0;
+bool Wifi_off = false;
 
 char str[450];
 char s[5];
