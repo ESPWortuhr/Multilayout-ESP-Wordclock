@@ -24,7 +24,7 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
 * Pegelanpassung 3,3V zu 5V siehe docs
 
 ## Anschluss LDR (optional)
-![](pics/old/LDR.jpg)
+![](pics/old/LDR.png)
       
 ## Verzeichnisstruktur
 
@@ -60,6 +60,12 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
 ## Known Bugs
 
 ## ChangeLog
+### Version 2.5.0
+* (dbambus) 2020xxxx  
+* Updated Python-Script to update Version String based on VER in Uhr.h
+* Changed internal handling of Command/Mode Selection
+* Improved Memoryusage on RAM
+
 ### Version 2.4.2
 * (Eisbaeeer) 20201025   
 * fixed var [resource,str, apikey] openweathermap

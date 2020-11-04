@@ -251,6 +251,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_HOSTNAME:
 				{         // Hostname speichern
 					G.conf = COMMAND_SET_HOSTNAME;
+					uint32_t  tt = split(payload, 12, 16);
 					ii = 0;
 					for (uint8_t k = 9; k < 25; k++)
 					{
