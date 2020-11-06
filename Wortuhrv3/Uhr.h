@@ -33,8 +33,8 @@ enum uhrzeit_t {
 
 struct GLOBAL {
     uint8_t sernr;
-    char ssid[25];
-    char passwd[25];
+    char ssid[WL_SSID_MAX_LENGTH];
+    char passwd[WL_WPA_KEY_MAX_LENGTH];
 	uint16_t prog;
     uint8_t param1;
     uint8_t param2;
@@ -172,6 +172,7 @@ enum Command {
 
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
+	COMMAND_SET_WPS_MODE = 87,
     COMMAND_SET_COLORTYPE = 88,
 	COMMAND_SET_UHRTYPE = 89,
     COMMAND_SET_WEATHER_DATA = 90,

@@ -625,6 +625,16 @@ void loop(){
 			//------------------------------------------------
 			// Colortype der LED einstellen
 			//------------------------------------------------
+		case COMMAND_SET_WPS_MODE:
+		{
+			eeprom_write();
+			Serial.printf("WiFi WPS Mode Activen");
+			break;
+		}
+
+			//------------------------------------------------
+			// Colortype der LED einstellen
+			//------------------------------------------------
 		case COMMAND_SET_COLORTYPE:
 		{
 			eeprom_write();

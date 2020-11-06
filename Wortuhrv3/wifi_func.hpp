@@ -120,6 +120,26 @@ char wstatus[7][25] = {
 
 //------------------------------------------------------------------------------
 
+void WiFiStart_WPS()
+{
+	Serial.println("WPS Configuration Started");
+	bool wpsSuccess = WiFi.beginWPSConfig();
+	String buffer;
+	if(wpsSuccess)
+	{
+		String newSSID = WiFi.SSID();
+		String newPasswd = WiFi.psk();
+		if(newSSID.length() > 0)
+		{
+			Serial.printf("WPS done. Successfully logged in to SSID ' %s'", newSSID.c_str());
+			strncpy(G.ssid, newSSID.c_str(), sizeof(G.ssid));
+			strncpy(G.passwd, newPasswd.c_str(), sizeof(G.passwd));
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+
     void WiFiStart_Client() {
         unsigned int count = 0;
         // Connect to WiFi network

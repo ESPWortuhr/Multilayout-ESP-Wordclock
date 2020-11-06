@@ -295,8 +295,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 
 					//------------------------------------------------------------------------------
 
+				case COMMAND_SET_WPS_MODE:
+				{       // Aktivieren des WPA Modus
+					G.conf = COMMAND_SET_WPS_MODE;
+					break;
+				}
+
+					//------------------------------------------------------------------------------
+
 				case COMMAND_SET_COLORTYPE:
-				{       // UhrType speichern
+				{       // ColorType speichern
 					G.conf = COMMAND_SET_COLORTYPE;
 					G.Colortype = split (payload, 9, 3);
 					break;
@@ -403,7 +411,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				{       // WLAN-Daten speichern und neu starten
 					G.conf = COMMAND_SET_WIFI_AND_RESTART;
 					ii = 0;
-					for (uint8_t k = 9; k < 34; k++)
+					for (uint8_t k = 9; k < 9 + WL_SSID_MAX_LENGTH; k++)
 					{
 						G.ssid[ii] = payload[k];
 						ii++;
@@ -420,7 +428,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 					G.ssid[index + 1] = '\0';
 
 					ii = 0;
-					for (int k = 34; k < 59; k++)
+					for (int k = 34; k < 34 + WL_WPA_KEY_MAX_LENGTH; k++)
 					{
 						if (payload[k] != ' ')
 						{
