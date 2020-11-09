@@ -1,4 +1,6 @@
 #pragma once
+#include "Arduino.h"
+#include "Uhr.h"
 
 //---------------------------------------------------------
 // WLAN-Status
@@ -180,6 +182,24 @@ void WiFiStart_WPS()
 
 //------------------------------------------------------------------------------
 
+void WiFiCheck_AP_Status()
+{
+	if (AP_Status > 0)
+	{
+		if (AP_Status == 6)
+		{
+			G.conf = COMMAND_SET_WIFI_DISABLED;
+			AP_Status = 0;
+		}
+		if (AP_Status > 0)
+		{
+			AP_Status += 1;
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+
     void WiFiStart_AP() {
         // WLAN-Mode AccessPoint stetzen
         Serial.println("");
@@ -232,24 +252,32 @@ void WiFiStart_WPS()
         // Zeitanfrage beim NTP-Server
         //-------------------------------------
         if (wlan_client == true) {
+			AP_Status = 0;
             timeClient.begin();
             delay(100);
             timeClient.update();
-            delay(100);
-            Serial.println(timeClient.getFormattedTime());
+			delay(100);
+			Serial.println(timeClient.getFormattedTime());
 
-            unix_time = timeClient.getEpochTime();
-            if (externalRTC == true) { RTC.adjust(DateTime(unix_time)); }
-        } else if (wlan_client == false) {
-            if (externalRTC == true) {
-                unix_time = RTC.now().unixtime();
-            }
-            WiFiStart_AP();
-        }
-        // Zeit setzen
-        setTime(unix_time);
-        Serial.printf("-- Ende  WlanStart -- \n\n");
-    }
+			unix_time = timeClient.getEpochTime();
+			if (externalRTC == true)
+			{
+				RTC.adjust(DateTime(unix_time));
+			}
+		}
+		else if (wlan_client == false)
+		{
+			AP_Status = 1;
+			WiFiStart_AP();
+			if (externalRTC == true)
+			{
+				unix_time = RTC.now().unixtime();
+			}
+		}
+		// Zeit setzen
+		setTime(unix_time);
+		Serial.printf("-- Ende  WlanStart -- \n\n");
+	}
 
 //------------------------------------------------------------------------------
 

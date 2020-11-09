@@ -21,7 +21,6 @@
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
 bool show_ip = true;      // Zeige IP Adresse beim Start
-uint16_t NTP_port = 123;  // Standartport für den NTP Server
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
  *--------------------------------------------------------------------------
@@ -441,15 +440,7 @@ void loop(){
 		}
 
 		//Deaktiviere WLAN nach 5 Minuten AP Zeit
-		if (wlan_client == false && wlan_ssid == false){
-			if (Five_Min_Counter == 6){
-				G.conf = COMMAND_SET_WIFI_DISABLED;
-				Wifi_off = true;
-			}
-			if (Wifi_off == false){
-				Five_Min_Counter += 1;
-			}
-		}
+		WiFiCheck_AP_Status();
 
 		// WLAN reconnect
 		wlan_status = WiFi.status();
@@ -737,7 +728,6 @@ void loop(){
 			delay(100);
 			Serial.println("Conf: WLAN Abgeschaltet");
 			WiFi.forceSleepBegin();
-			Wifi_off = true;
 			G.conf = COMMAND_IDLE;
 			break;
 		}

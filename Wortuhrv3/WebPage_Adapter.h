@@ -80,6 +80,10 @@ uint16_t split(uint8_t *payload, uint8_t start, uint8_t lenght) {
 //------------------------------------------------------------------------------
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght) {
+	//Disable Accesspoint Mode Disable Timer on Web Event
+	if (AP_Status > 0){
+		AP_Status = 0;
+	}
     int ii;
     int jj;
     char tmp[30];
