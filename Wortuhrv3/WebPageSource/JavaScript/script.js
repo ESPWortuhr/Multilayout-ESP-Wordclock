@@ -714,6 +714,9 @@ $.ready(function () {
     $("#disable-button").on("click", function () {
         sendData(COMMAND_SET_WIFI_DISABLED, 0, 0);
     });
+    $("#wps-button").on("click", function () {
+        sendData(COMMAND_SET_WPS_MODE, 0, 0);
+    });
     $("#reset-button").on("click", function () {
         sendData(COMMAND_RESET, 0, 0);
     });

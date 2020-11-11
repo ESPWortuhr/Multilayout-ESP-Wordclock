@@ -65,6 +65,9 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
 * Updated Python-Script to update Version String based on VER in Uhr.h
 * Changed internal handling of Command/Mode Selection
 * Improved Memoryusage on RAM
+* Auto-Shutdown of Wifi-AP-Mode after 5 Minutes, if unused. Just restart Wordclock to enable
+* Fixed Issue for compiling with Arduino IDE
+* Added a WPS Support with Button on Website 
 
 ### Version 2.4.2
 * (Eisbaeeer) 20201025   

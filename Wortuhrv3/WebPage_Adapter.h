@@ -300,7 +300,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 					//------------------------------------------------------------------------------
 
 				case COMMAND_SET_WPS_MODE:
-				{       // Aktivieren des WPA Modus
+				{       // Aktivieren des WPS Modus
 					G.conf = COMMAND_SET_WPS_MODE;
 					break;
 				}

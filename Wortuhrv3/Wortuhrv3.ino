@@ -618,8 +618,9 @@ void loop(){
 			//------------------------------------------------
 		case COMMAND_SET_WPS_MODE:
 		{
+			Serial.printf("WiFi WPS Mode aktiviert");
+			WiFiStart_WPS();
 			eeprom_write();
-			Serial.printf("WiFi WPS Mode Activen");
 			break;
 		}
 
