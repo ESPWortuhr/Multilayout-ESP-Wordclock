@@ -467,7 +467,7 @@ void loop(){
 		Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
 		TelnetMsg("WLAN-Status: ");
 		TelnetMsg(wstatus[wlan_status]);
-		if (wlan_client == false && wlan_ssid == true){
+		if (wlan_client == false && wlan_ssid == true && AP_Status != 6){
 			WlanStart();
 		}
 

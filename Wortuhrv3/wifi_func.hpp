@@ -1,6 +1,4 @@
 #pragma once
-#include "Arduino.h"
-#include "Uhr.h"
 
 //---------------------------------------------------------
 // WLAN-Status
@@ -184,16 +182,13 @@ void WiFiStart_WPS()
 
 void WiFiCheck_AP_Status()
 {
-	if (AP_Status > 0)
+	// Is AP-Status > 0 ... ON.
+	if (AP_Status > 0 && AP_Status != 6)
 	{
-		if (AP_Status == 6)
+		AP_Status++;
+		if (AP_Status == 6) // Five Interations (Minutes)
 		{
 			G.conf = COMMAND_SET_WIFI_DISABLED;
-			AP_Status = 0;
-		}
-		if (AP_Status > 0)
-		{
-			AP_Status += 1;
 		}
 	}
 }
@@ -252,7 +247,7 @@ void WiFiCheck_AP_Status()
         // Zeitanfrage beim NTP-Server
         //-------------------------------------
         if (wlan_client == true) {
-			AP_Status = 0;
+			AP_Status = 0;  //OFF
             timeClient.begin();
             delay(100);
             timeClient.update();
@@ -267,7 +262,7 @@ void WiFiCheck_AP_Status()
 		}
 		else if (wlan_client == false)
 		{
-			AP_Status = 1;
+			AP_Status = 1;  // ON > 0
 			WiFiStart_AP();
 			if (externalRTC == true)
 			{
