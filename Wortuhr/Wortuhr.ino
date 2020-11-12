@@ -389,8 +389,8 @@ void loop(){
 
 	if (WiFi.status() == WL_CONNECTED)
 	{
-		if (!client.connected()) {MQTT_reconnect();}
-		mqttClient.loop();
+        if (!client.connected()) {MQTT_reconnect();}
+        mqttClient.loop();
 	}
 
 	//------------------------------------------------
@@ -634,9 +634,10 @@ void loop(){
 			//------------------------------------------------
 		case COMMAND_SET_WPS_MODE:
 		{
-			Serial.printf("WiFi WPS Mode aktiviert");
+			Serial.println("WiFi WPS Mode aktiviert");
 			WiFiStart_WPS();
 			eeprom_write();
+            G.conf = COMMAND_IDLE;
 			break;
 		}
 

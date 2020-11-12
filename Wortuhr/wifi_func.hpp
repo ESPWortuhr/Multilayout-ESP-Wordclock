@@ -149,7 +149,6 @@ String WiFiScan(bool html)
 
 void WiFiStart_WPS()
 {
-	Serial.println("WPS Configuration Started");
 	bool wpsSuccess = WiFi.beginWPSConfig();
 	String buffer;
 	if (wpsSuccess)
@@ -158,18 +157,14 @@ void WiFiStart_WPS()
 		String newPasswd = WiFi.psk();
 		if (newSSID.length() > 0)
 		{
-			Serial.printf("WPS done. Successfully logged in to SSID ' %s'", newSSID.c_str());
+			Serial.println("WPS fertig. Erfolgreich verbunden mit ' %s'", newSSID.c_str());
 			strncpy(G.ssid, newSSID.c_str(), sizeof(G.ssid));
-			Serial.print("New-Wifi-SSID:  ");
-			Serial.println(G.ssid);
 			strncpy(G.passwd, newPasswd.c_str(), sizeof(G.passwd));
-			Serial.print("New-Wifi-Password:  ");
-			Serial.println(G.passwd);
 		}
 	}
 	else
 	{
-		Serial.println("WPS Pairing failed");
+		Serial.println("WPS Verbindungsversuch fehlgeschlagen");
 	}
 }
 
