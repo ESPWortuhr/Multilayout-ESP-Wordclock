@@ -30,7 +30,7 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
 
 -   `pics` enthält Bilder
 -   `svg` enthält SVG Dateien
--   `Wortuhr3` enthält den Sketch für Arduino und das Webinterface
+-   `Wortuhr` enthält den Sketch für Arduino und das Webinterface
 -   `docs` enthält Anleitungen
 -   `bin` enthält die Binary (Für die Uhrenvariante *UHR_114*)
 
@@ -68,6 +68,7 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
 * Auto-Shutdown of Wifi-AP-Mode after 5 Minutes, if unused. Just restart Wordclock to enable
 * Fixed Issue for compiling with Arduino IDE
 * Added a WPS Support with Button on Website 
+* Added MQTT Support
 
 ### Version 2.4.2
 * (Eisbaeeer) 20201025   

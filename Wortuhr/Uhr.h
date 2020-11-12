@@ -77,7 +77,6 @@ const char* resource2 = "&units=metric&APPID="; // Openweather API URL part 2
 const char* resource3 = "&cnt=8"; // Openweather API forecast time
 char resource[100];
 char response[3500];       //fixed size buffer
-WiFiClient client;
 uint16_t weather_tag = 600;    //counter fuer Wetterdaten abrufen
 int16_t wtemp_6;
 int16_t wtemp_12;
