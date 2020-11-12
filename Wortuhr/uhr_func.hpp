@@ -468,7 +468,7 @@ static void laufschrift(const char *buf) {
 
     if (i < 5) {
         for (uint8_t h = 0; h < 8; h++) {
-            if (font_7x5[buf[ii]][i] & (1u << h)) {
+            if (pgm_read_byte(&(font_7x5[buf[ii]][i])) & (1u << h)) {
                 led_set_pixel(G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2], G.rgb[Effect][3],
 							  usedUhrType->getMatrix(h + 1,10));
             } else {
@@ -504,7 +504,7 @@ static void zeigeip(const char *buf) {
 //------------------------------------------------------------------------------
 
 void set_pixel_for_char(uint8_t i, uint8_t h, uint8_t offset, unsigned char unsigned_d1) {
-    if (font_7x5[unsigned_d1][i] & (1u << h)) {
+    if (pgm_read_byte(&(font_7x5[unsigned_d1][i])) & (1u << h)) {
         led_set_pixel(G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2], G.rgb[Effect][3],
 					  usedUhrType->getMatrix(h + 1,i + offset));
     }
@@ -782,19 +782,6 @@ static void show_minuten() {
         if (m > 1) { Word_array[usedUhrType->getMinArr(G.zeige_min - 1,1)]= usedUhrType->getMinArr(G.zeige_min - 1,1); }
         if (m > 2) { Word_array[usedUhrType->getMinArr(G.zeige_min - 1,2)]= usedUhrType->getMinArr(G.zeige_min - 1,2); }
         if (m > 3) { Word_array[usedUhrType->getMinArr(G.zeige_min - 1,3)]= usedUhrType->getMinArr(G.zeige_min - 1,3); }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-static void Clear_LED_Every_Minute() {
-    static bool already_cleared = false;
-    if (_sekunde == 0 && already_cleared == false) {
-        led_clear();
-        already_cleared = true;
-    }
-    if (_sekunde > 0 && already_cleared == true){
-        already_cleared = false;
     }
 }
 

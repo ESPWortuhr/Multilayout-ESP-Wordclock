@@ -40,6 +40,7 @@ bool show_ip = true;      // Zeige IP Adresse beim Start
 #include <Timezone.h>
 #include <Wire.h>
 #include <RTClib.h>
+#include <PubSubClient.h>
 
 #include "Uhr.h"
 #include "WebPage_Adapter.h"
@@ -66,10 +67,12 @@ TimeChangeRule CEST = {"CEST", Last, Sun, Mar, 2, 120};     //Central European S
 TimeChangeRule CET = {"CET ", Last, Sun, Oct, 3, 60};       //Central European Standard Time
 Timezone tzc(CEST, CET);
 
+WiFiClient client;
 time_t ltime, utc;
 TimeChangeRule *tcr;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, G.zeitserver);
+PubSubClient mqttClient(client);
 
 #ifndef RTC_Type
 RTC_DS3231 RTC;
@@ -78,6 +81,7 @@ RTC_Type RTC;
 #endif
 
 #include "font.h"
+#include "mqtt_func.hpp"
 #include "uhr_func.hpp"
 #include "wifi_func.hpp"
 #include "openwmap.h"
@@ -320,7 +324,13 @@ void setup(){
 	//-------------------------------------
 	httpUpdater.setup(&httpServer);
 	httpServer.begin();
+
 	//-------------------------------------
+	// MQTT
+	//-------------------------------------
+	const char* MQTT_BROKER = "BROKER_IP";
+	mqttClient.setServer(MQTT_BROKER, 1883);
+	mqttClient.setCallback(MQTT_callback);
 
 
 	//-------------------------------------
@@ -376,6 +386,12 @@ void loop(){
 	httpServer.handleClient();
 
 	webSocket.loop();
+
+	if (WiFi.status() == WL_CONNECTED)
+	{
+        if (!client.connected()) {MQTT_reconnect();}
+        mqttClient.loop();
+	}
 
 	//------------------------------------------------
 	// Sekunde48
@@ -503,7 +519,7 @@ void loop(){
 		TelnetMsg("npt: Neue Zeit holen");
 		ntp_flag = false;
 		wlan_status = WiFi.status();
-		if (wlan_status == 3){
+		if (wlan_status == WL_CONNECTED){
 			timeClient.update();
 			unix_time = timeClient.getEpochTime();
 			if (unix_time > 0){
@@ -618,9 +634,10 @@ void loop(){
 			//------------------------------------------------
 		case COMMAND_SET_WPS_MODE:
 		{
-			Serial.printf("WiFi WPS Mode aktiviert");
+			Serial.println("WiFi WPS Mode aktiviert");
 			WiFiStart_WPS();
 			eeprom_write();
+            G.conf = COMMAND_IDLE;
 			break;
 		}
 
