@@ -9,6 +9,29 @@ output_dir = "WebPageWortuhr.h"          # Source C++ Header
 URL_minify_js   = 'https://javascript-minifier.com/raw' # Website to minify javascript
 URL_minify_css  = 'https://cssminifier.com/raw'         # Website to minify css
 
+# Get Version String from Uhr.h
+source_fileVersion = open("Uhr.h", 'rb').read()
+source_fileVersion = source_fileVersion.decode("UTF-8")
+count = source_fileVersion.find("const char *VER = ")
+lenght = len("const char *VER = ")
+source_fileVersion = source_fileVersion[count+lenght+1:count+lenght+6]
+
+# Replace Version in README
+source_README= open("../README.md", 'rb').read()
+source_README = source_README.decode("UTF-8")
+count = source_README.find("<!-- VER_placeholder1 -->")
+lenght = len("<!-- VER_placeholder1 -->")
+source_README = source_README[0:count+lenght] + source_fileVersion + source_README[count+lenght + 5:len(source_README)]
+
+count = source_README.find("<!-- VER_placeholder2 -->")
+lenght = len("<!-- VER_placeholder2 -->")
+source_README = source_README[0:count+lenght] + source_fileVersion + source_README[count+lenght + 5:len(source_README)]
+
+f_output = open("../README.md", "w")
+f_output.write(source_README)            # print binary data
+f_output.close()
+
+
 def write_to_file():
     source_file = open(output_dir, 'rb').read()
     source_data = source_file.decode("UTF-8")
@@ -50,8 +73,9 @@ def addStyleCssTo(html_head):
     return html_head
 
 def minify_html(input_file):
-    data = open(input_file, 'rb').read()
-    data = data.decode("utf-8")
+    data_raw = open(input_file, 'rb').read()
+    data_utf_8 = data_raw.decode("utf-8")
+    data = data_utf_8.replace("**VER_placeholder**", source_fileVersion)        # Replace Version in HTML_Code
     count = data.find("<body")
     return data[0:count-1]
 

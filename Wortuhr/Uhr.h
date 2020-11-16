@@ -1,6 +1,6 @@
 #include "Arduino.h"
 
-const char *VER = "2.4.2";  // Software Version
+const char *VER = "2.5.0";  // Software Version
 
 #pragma once
 
@@ -33,9 +33,9 @@ enum uhrzeit_t {
 
 struct GLOBAL {
     uint8_t sernr;
-    char ssid[25];
-    char passwd[25];
-    unsigned int prog;
+    char ssid[WL_SSID_MAX_LENGTH];
+    char passwd[WL_WPA_KEY_MAX_LENGTH];
+	uint16_t prog;
     uint8_t param1;
     uint8_t param2;
     uint8_t prog_init;
@@ -46,8 +46,8 @@ struct GLOBAL {
     uint8_t bb;
     uint8_t ww;
     uint8_t hell;
-    int ldr;
-    int ldrCal;
+	uint16_t ldr;
+	uint16_t ldrCal;
     char apikey[35];
     char cityid[8];
     int geschw;
@@ -77,24 +77,23 @@ const char* resource2 = "&units=metric&APPID="; // Openweather API URL part 2
 const char* resource3 = "&cnt=8"; // Openweather API forecast time
 char resource[100];
 char response[3500];       //fixed size buffer
-WiFiClient client;
-unsigned int weather_tag    = 600;    //counter fuer Wetterdaten abrufen
-int wtemp_6;
-int wtemp_12;
-int wtemp_18;
-int wtemp_24;
-int wwetter_6;
-int wwetter_12;
-int wwetter_18;
-int wwetter_24;
-int wstunde;
-int wetterswitch;
+uint16_t weather_tag = 600;    //counter fuer Wetterdaten abrufen
+int16_t wtemp_6;
+int16_t wtemp_12;
+int16_t wtemp_18;
+int16_t wtemp_24;
+uint16_t wwetter_6;
+uint16_t wwetter_12;
+uint16_t wwetter_18;
+uint16_t wwetter_24;
+uint16_t wstunde;
+uint16_t wetterswitch;
 
 // LDR 
 unsigned long waitUntilLDR = 0;
-int autoBrightnessEnabled = 1;
-int ldrVal = 50;
-int oneseconddelay = 1000;
+uint16_t autoBrightnessEnabled = 1;
+uint16_t ldrVal = 50;
+uint16_t oneseconddelay = 1000;
 
 // Telnet vars
 bool ConnectionEstablished; // Flag for successfully handled connection
@@ -112,18 +111,18 @@ unsigned char wlan_client = false;
 unsigned char wlan_status = 99;
 unsigned char wlan_ssid = false;
 
-unsigned int _sekunde = 0;
-unsigned int _minute = 0;
-unsigned int _stunde = 0;
-unsigned int last_sekunde = 100;
-unsigned int last_minute = 100;
-unsigned int last_stunde = 100;
+uint8_t _sekunde = 0;
+uint8_t _minute = 0;
+uint8_t _stunde = 0;
+uint8_t last_sekunde = 100;
+uint8_t last_minute = 100;
+uint8_t last_stunde = 100;
 
-unsigned int count_millis48 = 0;
+uint8_t count_millis48 = 0;
 unsigned long previous48 = 0;
 const long interval48 = 1250;
-unsigned int _sekunde48 = 0;
-unsigned int last_sekunde48 = 100;
+uint8_t _sekunde48 = 0;
+uint8_t last_sekunde48 = 100;
 
 unsigned long unix_time = 0;
 
@@ -136,8 +135,8 @@ unsigned long previousMillis = 0;
 const long interval = 1000;   // 1 Sekunde
 
 uint32_t uhrzeit;
-
-unsigned int Word_array[242] = { 255 };
+uint8_t Word_array[242] = { 255 };
+uint8_t AP_Status = 0;
 
 char str[450];
 char s[5];
@@ -161,9 +160,17 @@ enum ledColortypes {
 
 enum Command {
     COMMAND_IDLE = 0,
+
     COMMAND_MODE_WORD_CLOCK = 1,
+	COMMAND_MODE_SECONDS = 2,
+	COMMAND_MODE_MARQUEE = 3,
+	COMMAND_MODE_RAINBOW = 4,
+	COMMAND_MODE_CHANGE = 5,
+	COMMAND_MODE_COLOR = 6,
+
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
+	COMMAND_SET_WPS_MODE = 87,
     COMMAND_SET_COLORTYPE = 88,
 	COMMAND_SET_UHRTYPE = 89,
     COMMAND_SET_WEATHER_DATA = 90,
@@ -178,20 +185,14 @@ enum Command {
     COMMAND_SET_WIFI_AND_RESTART = 99,
     COMMAND_RESET = 100,
 
-    COMMAND_MODE_SECONDS = 200,
-    COMMAND_MODE_MARQUEE = 201,
-    COMMAND_MODE_RAINBOW = 202,
-    COMMAND_MODE_CHANGE = 203,
-    COMMAND_MODE_COLOR = 204,
+    COMMAND_BRIGHTNESS = 151,
+    COMMAND_SPEED = 152,
+    COMMAND_LEDS = 153,
+    COMMAND_POSITION = 154,
 
-    COMMAND_BRIGHTNESS = 251,
-    COMMAND_SPEED = 252,
-    COMMAND_LEDS = 253,
-    COMMAND_POSITION = 254,
-
-    COMMAND_REQUEST_CONFIG_VALUES = 300,
-    COMMAND_REQUEST_COLOR_VALUES = 301,
-    COMMAND_REQUEST_WIFI_LIST = 302,
+    COMMAND_REQUEST_CONFIG_VALUES = 200,
+    COMMAND_REQUEST_COLOR_VALUES = 201,
+    COMMAND_REQUEST_WIFI_LIST = 202,
 };
 
 enum ledText {
@@ -255,8 +256,8 @@ enum UhrTypeDefinitions {
 };
 
 
-int dim[20] = {30, 50, 70, 90, 110, 130, 140, 160, 200, 255, 255, 200, 160, 100, 80, 60, 40, 20, 10, 0};
-int diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
+const uint8_t dim[20] = {30, 50, 70, 90, 110, 130, 140, 160, 200, 255, 255, 200, 160, 100, 80, 60, 40, 20, 10, 0};
+const int8_t diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
 
 
 //--OTA--

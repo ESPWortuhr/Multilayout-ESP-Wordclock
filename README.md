@@ -1,11 +1,11 @@
-# Wortuhr - Version 2.4.1
+# Wortuhr - Version <!-- VER_placeholder1 -->2.5.0
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
 ![](pics/wortuhr-3-screenshot.png)
 
 ### Einleitung 
-Es handelt sich hier um die Version 2.4.1 der Wortuhr (Wordclock). Aufbauend auf dem Projekt von [Ulrich Radig](https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
+Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (Wordclock). Aufbauend auf dem Projekt von [Ulrich Radig](https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu) (Stand 2019, die Website ist mittlerweile offline).
 
 ## Für den Nachbau wird folgende Hardware/Software benötigt:
 * Hardware
@@ -24,13 +24,13 @@ Es handelt sich hier um die Version 2.4.1 der Wortuhr (Wordclock). Aufbauend auf
 * Pegelanpassung 3,3V zu 5V siehe docs
 
 ## Anschluss LDR (optional)
-![](pics/old/LDR.jpg)
+![](pics/old/LDR.png)
       
 ## Verzeichnisstruktur
 
 -   `pics` enthält Bilder
 -   `svg` enthält SVG Dateien
--   `Wortuhr3` enthält den Sketch für Arduino und das Webinterface
+-   `Wortuhr` enthält den Sketch für Arduino und das Webinterface
 -   `docs` enthält Anleitungen
 -   `bin` enthält die Binary (Für die Uhrenvariante *UHR_114*)
 
@@ -60,6 +60,16 @@ Es handelt sich hier um die Version 2.4.1 der Wortuhr (Wordclock). Aufbauend auf
 ## Known Bugs
 
 ## ChangeLog
+### Version 2.5.0
+* (dbambus) 2020xxxx  
+* Updated Python-Script to update Version String based on VER in Uhr.h
+* Changed internal handling of Command/Mode Selection
+* Improved Memoryusage on RAM
+* Auto-Shutdown of Wifi-AP-Mode after 5 Minutes, if unused. Just restart Wordclock to enable
+* Fixed Issue for compiling with Arduino IDE
+* Added a WPS Support with Button on Website 
+* Added MQTT Support
+
 ### Version 2.4.2
 * (Eisbaeeer) 20201025   
 * fixed var [resource,str, apikey] openweathermap

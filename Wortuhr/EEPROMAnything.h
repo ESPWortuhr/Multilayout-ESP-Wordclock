@@ -41,7 +41,7 @@ void eeprom_read() {
     Serial.printf("rgb.0.0   : %u\n", G.rgb[Foreground][0]);
     Serial.printf("rgb.0.1   : %u\n", G.rgb[Foreground][1]);
     Serial.printf("rgb.0.2   : %u\n", G.rgb[Foreground][2]);
-    Serial.printf("rgb.0.2   : %u\n", G.rgb[Foreground][3]);
+    Serial.printf("rgb.0.3   : %u\n", G.rgb[Foreground][3]);
     Serial.printf("rgb.1.0   : %u\n", G.rgb[Background][0]);
     Serial.printf("rgb.1.1   : %u\n", G.rgb[Background][1]);
     Serial.printf("rgb.1.2   : %u\n", G.rgb[Background][2]);
@@ -66,6 +66,7 @@ void eeprom_read() {
     Serial.printf("LDR       : %u\n", G.ldr);
     Serial.printf("LDRCal    : %u\n", G.ldrCal);
     Serial.printf("Uhrtype    : %u\n", G.UhrtypeDef);
+	Serial.printf("Colortype    : %u\n", G.Colortype);
     Serial.print("OWM_apikey: ");
     Serial.println(G.apikey);
     Serial.print("OWM_city  : ");

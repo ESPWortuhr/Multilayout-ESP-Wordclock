@@ -39,9 +39,21 @@ var showMinutes = 0;
 var UhrtypeDef = 0;
 var colortype = 0;
 
+// operation modes
+var COMMAND_MODE_WORD_CLOCK = 1;
+var COMMAND_MODE_SECONDS = 2;
+var COMMAND_MODE_MARQUEE = 3;
+var COMMAND_MODE_RAINBOW = 4;
+var COMMAND_MODE_CHANGE = 5;
+var COMMAND_MODE_COLOR = 6;
+
+
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
+var COMMAND_SET_WPS_MODE = 87;
+var COMMAND_SET_COLORTYPE = 88;
+var COMMAND_SET_UHRTYPE = 89;
 var COMMAND_SET_WEATHER_DATA = 90;
 var COMMAND_SET_LDR = 91;
 var COMMAND_SET_HOSTNAME = 92;
@@ -52,24 +64,16 @@ var COMMAND_SET_MARQUEE_TEXT = 96;
 var COMMAND_SET_TIMESERVER = 97;
 var COMMAND_SET_WIFI_DISABLED = 98;
 var COMMAND_SET_WIFI_AND_RESTART = 99;
-
 var COMMAND_RESET = 100;
-var COMMAND_REQUEST_CONFIG_VALUES = 300;
-var COMMAND_REQUEST_COLOR_VALUES = 301;
-var COMMAND_REQUEST_WIFI_LIST = 302;
 
-// operation modes
-var COMMAND_MODE_WORD_CLOCK = 1;
-var COMMAND_MODE_SECONDS = 200;
-var COMMAND_MODE_MARQUEE = 201;
-var COMMAND_MODE_RAINBOW = 202;
-var COMMAND_MODE_CHANGE = 203;
-var COMMAND_MODE_COLOR = 204;
+var COMMAND_BRIGHTNESS = 151;
+var COMMAND_SPEED = 152;
+var COMMAND_LEDS = 153;
+var COMMAND_POSITION = 154;
 
-var COMMAND_BRIGHTNESS = 251;
-var COMMAND_SPEED = 252;
-var COMMAND_LEDS = 253;
-var COMMAND_POSITION = 254;
+var COMMAND_REQUEST_CONFIG_VALUES = 200;
+var COMMAND_REQUEST_COLOR_VALUES = 201;
+var COMMAND_REQUEST_WIFI_LIST = 202;
 
 // colors
 var COLOR_FOREGROUND = 0;
@@ -79,8 +83,8 @@ var COLOR_EFFECT = 3;
 
 // data that gets send back to the esp
 var DATA_MARQUEE_TEXT_LENGTH = 30;
-var DATA_SSID_TEXT_LENGTH = 25;
-var DATA_PASSWORT_TEXT_LENGTH = 25;
+var DATA_SSID_TEXT_LENGTH = 32;  // WL_SSID_MAX_LENGTH == 32
+var DATA_PASSWORT_TEXT_LENGTH = 63;  //WL_WPA_KEY_MAX_LENGTH == 63
 var DATA_TIMESERVER_TEXT_LENGTH = 16;
 var DATA_HOST_TEXT_LENGTH = 16;
 
@@ -172,7 +176,7 @@ function initWebsocket() {
 
         debugMessage("Die Verbindung mit dem Websocket wurde aufgebaut.", event);
 
-        sendData(301, 0, 0);
+        sendData(COMMAND_REQUEST_COLOR_VALUES, 0, 0);
     };
 
     websocket.onclose = function (event) {
@@ -245,6 +249,8 @@ function initWebsocket() {
             colortype = data.colortype;
             setSliders();
         }
+        if (data.command === "wlan"){
+            document.getElementById("wlanlist").innerHTML = data.list}
     };
     websocket.onerror = function (event) {
         debugMessage("Bei der Verbindung mit dem Websocket ist ein Fehler aufgetreten.", event);
@@ -613,6 +619,15 @@ $.ready(function () {
         debugMessage("WLAN wurde neu konfiguriert", data);
         return false;
     });
+
+
+    $("#_wlanscan").on("click",function(){
+        var data = "202000000";
+        websocket.send(data);
+        document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
+        return false;
+    });
+
     $("#timeserver-button").on("click", function () {
 
         var timeserverValue = $("#timeserver").get("value");
@@ -698,6 +713,9 @@ $.ready(function () {
     });
     $("#disable-button").on("click", function () {
         sendData(COMMAND_SET_WIFI_DISABLED, 0, 0);
+    });
+    $("#wps-button").on("click", function () {
+        sendData(COMMAND_SET_WPS_MODE, 0, 0);
     });
     $("#reset-button").on("click", function () {
         sendData(COMMAND_RESET, 0, 0);
