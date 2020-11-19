@@ -149,15 +149,16 @@ String WiFiScan(bool html)
 
 void WiFiStart_WPS()
 {
+    WiFi.softAPdisconnect(true);
+    String buffer;
 	bool wpsSuccess = WiFi.beginWPSConfig();
-	String buffer;
 	if (wpsSuccess)
 	{
 		String newSSID = WiFi.SSID();
 		String newPasswd = WiFi.psk();
 		if (newSSID.length() > 0)
 		{
-			Serial.println("WPS fertig. Erfolgreich verbunden mit ' %s'", newSSID.c_str());
+			Serial.printf("WPS fertig. Erfolgreich verbunden mit ' %s' \n", newSSID.c_str());
 			strncpy(G.ssid, newSSID.c_str(), sizeof(G.ssid));
 			strncpy(G.passwd, newPasswd.c_str(), sizeof(G.passwd));
 		}

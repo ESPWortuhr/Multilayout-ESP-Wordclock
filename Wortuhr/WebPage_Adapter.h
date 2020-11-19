@@ -392,12 +392,21 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				{       // Zeitserver speichern
 					G.conf = COMMAND_SET_TIMESERVER;
 					ii = 0;
-					for (int k = 9; k < 24; k++)
-					{
-						G.zeitserver[ii] = payload[k];
-						ii++;
-					}
-					G.zeitserver[ii] = '\0';
+                    for (uint8_t k = 9; k < 24; k++)
+                    {
+                        G.zeitserver[ii] = payload[k];
+                        ii++;
+                    }
+                    uint8_t index = 0;
+                    for (int8_t counter = sizeof(G.zeitserver) / sizeof(G.zeitserver[0]) - 1; counter > -1; counter--)
+                    {
+                        if (!isSpace(G.zeitserver[counter]))
+                        {
+                            index = counter;
+                            break;
+                        }
+                    }
+                    G.ssid[index + 1] = '\0';
 					break;
 				}
 

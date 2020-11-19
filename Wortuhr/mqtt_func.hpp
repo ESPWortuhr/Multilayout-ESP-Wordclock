@@ -22,11 +22,11 @@ void MQTT_callback(char *topic, byte *payload, unsigned int length)
 
 	if (strcmp(msg, "on") == 0)
 	{
-		digitalWrite(13, HIGH);
+        Serial.println("MQTT ON");
 	}
 	else if (strcmp(msg, "off") == 0)
 	{
-		digitalWrite(13, LOW);
+        Serial.println("MQTT Off");
 	}
 }
 
