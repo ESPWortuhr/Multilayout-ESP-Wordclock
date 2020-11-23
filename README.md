@@ -46,6 +46,7 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
     * '[WebSockets](https://www.arduino.cc/reference/en/libraries/websockets/)' von Arduino
     * '[NTPClient](https://github.com/arduino-libraries/NTPClient)' von arduino-libraries
     * '[RTClib](https://github.com/adafruit/RTClib)' von adafruit
+    * '[PubSubClient](https://www.arduino.cc/reference/en/libraries/pubsubclient/)' von Nick O'Leary
     
 ## To DO & (Ideen):
 * Symbol zu einem bestimmten Datum/Uhrzeit
