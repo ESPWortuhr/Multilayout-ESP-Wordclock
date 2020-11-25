@@ -20,7 +20,7 @@
 		<div class="pure-u-24-24">
 			<div class="pure-menu pure-menu-horizontal main-menu">
 				<div class="content">
-					<a href="#" class="pure-menu-heading pure-menu-link active" data-navigation="main">Wortuhr **VER_placeholder**</a><ul class="pure-menu-list"><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="functions">Funktionen</a></li><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="settings">Einstellungen</a></li><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="about">Über</a></li>
+					<a href="#" class="pure-menu-heading pure-menu-link active" data-navigation="main">Wortuhr **VER_placeholder**</a><ul class="pure-menu-list"><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="functions">Funktionen</a></li><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="settings">Einstellungen</a></li><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="smart_home">Smart Home</a></li></li><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="about">Über</a></li>
 					</ul>
 				</div>
 			</div>
@@ -550,10 +550,56 @@
 
 			</div>
 
+            <div class="pure-u-24-24 section section-smart_home">
+                <div class="box">
+                    <h2>Smart Home</h2>
+                    <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über MQTT. Diese Funktion ist noch experiemtell und wird stetig erweitert.</p>
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-2">
+
+                    <div class="box">
+                        <h2>WLAN</h2>
+                        <form class="pure-form pure-form-aligned">
+                            <fieldset>
+                                <div class="pure-control-group">
+                                    <label for="ssid">SSID</label><input id="ssid" type="text" placeholder="SSID">
+                                </div>
+                                <div class="pure-control-group">
+                                    <label for="password">Passwort</label><input id="password" type="password" placeholder="Passwort">
+                                </div>
+                                <div class="pure-controls">
+                                    <button id="wifi-button" class="pure-button">WLAN speichern</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="pure-u-1 pure-u-md-1-2">
+
+                    <div class="box">
+                        <h2>MQTT-Server</h2>
+                        <form class="pure-form pure-form-aligned">
+                            <fieldset>
+                                <div class="pure-control-group">
+                                    <label for="timeserver">Zeitserver</label><input id="timeserver" type="text" placeholder="Zeitserver">
+                                </div>
+                                <div class="pure-controls">
+                                    <button id="timeserver-button" class="pure-button">Einstellungen speichern</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+
 			<div class="pure-u-24-24 section section-about">
 				<div class="box">
 					<h2>Ueber</h2>
-					<p>Die Wortuhr basiert auf der Wortuhr von <a href="https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu">Ulrich Radig</a> und wird entwickelt von <a href="https://github.com/Eisbaeeer">Lars Weimar</a>, <a href="https://github.com/Wandmalfarbe">Pascal Wagler</a>, <a href="https://github.com/dbambus">dbambus</a>, <a href="https://github.com/Flo455">Flo455</a>, <a href="https://github.com/Elektron79">Elektron79</a> und <a href="https://github.com/masju1">masju1</a>.</p>
+					<p>Die Wortuhr basiert auf der Wortuhr von <a href="https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu">Ulrich Radig</a> und wird entwickelt von <a href="https://github.com/Eisbaeeer">Lars Weimar</a>, <a href="https://github.com/Wandmalfarbe">Pascal Wagler</a>, <a href="https://github.com/dbambus">dbambus</a>, <a href="https://github.com/Flo455">Flo455</a>, <a href="https://github.com/Elektron79">Elektron79</a> und <a href="https://github.com/masju1">masju1</a>. Ein Update der Software ist möglich, dazu bitte <a href=":81/update">hier</a> klicken.</p>
 					<p>This project is open source licensed under the BSD 3-Clause License. Please see the LICENSE file for more information.</p>
 				</div>
 
