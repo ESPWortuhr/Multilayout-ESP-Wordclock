@@ -70,6 +70,8 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
 * Fixed Issue for compiling with Arduino IDE
 * Added a WPS Support with Button on Website 
 * Added MQTT Support
+* Updated Responsive Design of Website
+* Added dedicated Link to Firmware Update Page
 
 ### Version 2.4.2
 * (Eisbaeeer) 20201025   

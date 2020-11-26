@@ -660,8 +660,8 @@ const char HTML_Code5[] PROGMEM= R"=====(
                 <div class="box">
                     <p>Die Wortuhr basiert auf der Wortuhr von <a href="https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu">Ulrich Radig</a> und wird entwickelt von <a
                             href="https://github.com/Eisbaeeer">Lars Weimar</a>, <a href="https://github.com/Wandmalfarbe">Pascal Wagler</a>, <a href="https://github.com/dbambus">dbambus</a>,
-                        <a href="https://github.com/Flo455">Flo455</a>, <a href="https://github.com/Elektron79">Elektron79</a> und <a href="https://github.com/masju1">masju1</a>.
-                        Ein Update der Software ist möglich, dazu bitte <a href=":81/update">hier</a> klicken.</p>
+                        <a href="https://github.com/Flo455">Flo455</a>, <a href="https://github.com/Elektron79">Elektron79</a> und <a href="https://github.com/masju1">masju1</a>.</p>
+                        <p>Ein Update der Software ist möglich, dazu bitte <a href="/update" onclick="javascript:event.target.port=81">hier</a> klicken.</p>
                     <p>This project is open source licensed under the BSD 3-Clause License. Please see the LICENSE file for more information.</p>
                 </div>
 
@@ -701,5 +701,7 @@ const char HTML_Code5[] PROGMEM= R"=====(
 )=====";
 
 const char* const html_code[] PROGMEM = {HTML_Code0,HTML_Code1,HTML_Code2,HTML_Code3,HTML_Code4,HTML_Code5};
+
+const uint32_t HTML_Size[] = {sizeof(HTML_Code0),sizeof(HTML_Code1),sizeof(HTML_Code2),sizeof(HTML_Code3),sizeof(HTML_Code4),sizeof(HTML_Code5)};
 
 /* End for CODE generation by Script */

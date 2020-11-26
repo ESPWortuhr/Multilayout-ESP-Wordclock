@@ -49,14 +49,18 @@ def write_to_file():
 
     buffer = buffer + "\nconst char* const html_code[] PROGMEM = {"
 
+    SizeOfArrays = "\n\nconst uint32_t HTML_Size[] = {"
+
     for i in range(0, n):
         if i == n-1:
             buffer = buffer + "HTML_Code" + str(i) + "};"
+            SizeOfArrays = SizeOfArrays + "sizeof(HTML_Code" + str(i) + ")};"
         else:
             buffer = buffer + "HTML_Code" + str(i) + ","
+            SizeOfArrays = SizeOfArrays + "sizeof(HTML_Code" + str(i) + "),"
 
     f_output = open(output_dir, "w")
-    f_output.write(source_data[0:count+lenght+1] + buffer + "\n\n/* End for CODE generation by Script */")            # print binary data
+    f_output.write(source_data[0:count+lenght+1] + buffer + SizeOfArrays + "\n\n/* End for CODE generation by Script */")            # print binary data
 
     f_output.close()
 

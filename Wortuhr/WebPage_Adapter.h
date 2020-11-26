@@ -39,7 +39,7 @@ public:
         unsigned ww = 0;
         unsigned yy = 0;
         int j;
-        while (ww < sizeof(html_code[index])) {
+        while (ww < HTML_Size[index]) {
             str[yy] = pgm_read_byte(&html_code[index][ww]);
             str[yy + 1] = '\0';
             yy++;
