@@ -1,523 +1,558 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-	<title>Wortuhr **VER_placeholder**</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
-	<meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Wortuhr **VER_placeholder**</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 
-	<!-- scripts -->
-	<script src="minified.min.js"></script>
-	<script src="script.js"></script>
-
-	<!-- stylesheets -->
-	<link rel="stylesheet" href="pure.min.css">
-	<link rel="stylesheet" href="style.css">
+    <!-- stylesheets -->
+    <link rel="stylesheet" href="CSS/pure.min.css">
+    <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
 
-	<div class="pure-g">
-		<div class="pure-u-24-24">
-			<div class="pure-menu pure-menu-horizontal main-menu">
-				<div class="content">
-					<a href="#" class="pure-menu-heading pure-menu-link active" data-navigation="main">Wortuhr **VER_placeholder**</a><ul class="pure-menu-list"><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="functions">Funktionen</a></li><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="settings">Einstellungen</a></li><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="smart_home">Smart Home</a></li></li><li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="about">Über</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
+<div id="layout">
+    <!-- Menu toggle -->
+    <a href="#menu" id="menuLink" class="menu-link">
+        <!-- Hamburger icon -->
+        <span></span>
+    </a>
 
-	<div class="content">
-		<div class="pure-g">
-			<div class="pure-u-24-24 section-connection-lost" id="section-connection-lost">
-				<div class="box">
-					<button class="pure-button status-button">Verbinden</button>
-					<p>Die Verbindung zur Wortuhr wurde unterbrochen.</p>
-				</div>
-			</div>
+    <div id="menu">
+        <div class="pure-menu">
+            <a class="pure-menu-heading" href="#">Wortuhr</a>
 
-			<div class="pure-u-24-24 section section-main">
-				<div class="box">
-					<h2>Farbart</h2>
-					<label for="fg" class="pure-radio">
-						<input id="fg" type="radio" name="color-mode" value="foreground" checked> Vordergrund
-					</label>
-					<label for="bg" class="pure-radio">
-						<input id="bg" type="radio" name="color-mode" value="background"> Hintergrund
-					</label>
-					<!--<label for="bo" class="pure-radio">
-						<input id="bo" type="radio" name="color-mode" value="border"> Rahmen
-					</label>
-					<label for="un" class="pure-radio">
-						<input id="un" type="radio" name="color-mode" value="unknown"> Effekt
-					</label>-->
-				</div>
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="main">Farben</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="functions">Funktionen</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="settings">Einstellungen</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="smart_home">Smart Home</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="about">Über</a></li>
+            </ul>
+        </div>
+    </div>
 
-				<div class="box">
-					<h2>Farbmischer</h2>
-					<div class="color-area" id="color-area"></div>
+    <div id="main">
+        <div class="pure-g">
+            <div class="pure-u-24-24 section-connection-lost" id="section-connection-lost">
+                <div class="box">
+                    <button class="pure-button status-button">Verbinden</button>
+                    <p>Die Verbindung zur Wortuhr wurde unterbrochen.</p>
+                </div>
+            </div>
 
-					<div class="pure-g color-r">
-						<div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-red">Red <span class="value" id="slider-red-value">0</span></label></div>
-						<div class="pure-u-1 pure-u-md-5-6"><input id="slider-red" type="range" min="0" max="255" value="0"></div>
-					</div>
-					<div class="pure-g color-g">
-						<div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-green">Green <span class="value" id="slider-green-value">0</span></label></div>
-						<div class="pure-u-1 pure-u-md-5-6"><input id="slider-green" type="range" min="0" max="255" value="0"></div>
-					</div>
-					<div class="pure-g color-b">
-						<div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-blue">Blue <span class="value" id="slider-blue-value">0</span></label></div>
-						<div class="pure-u-1 pure-u-md-5-6"><input id="slider-blue" type="range" min="0" max="255" value="0"></div>
-					</div>
-				</div>
+            <div class="pure-u-24-24 section section-main">
+                <div class="header">
+                    <h1>Farben</h1>
+                </div>
+                <div class="box">
+                    <h2>Art</h2>
+                    <label for="fg" class="pure-radio">
+                        <input id="fg" type="radio" name="color-mode" value="foreground" checked> Vordergrund
+                    </label>
+                    <label for="bg" class="pure-radio">
+                        <input id="bg" type="radio" name="color-mode" value="background"> Hintergrund
+                    </label>
+                    <!--<label for="bo" class="pure-radio">
+                        <input id="bo" type="radio" name="color-mode" value="border"> Rahmen
+                    </label>
+                    <label for="un" class="pure-radio">
+                        <input id="un" type="radio" name="color-mode" value="unknown"> Effekt
+                    </label>-->
+                </div>
 
-				<div class="box">
-					<h2>Schnellfarben</h2>
-					<div class="pure-g colors">
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#F44336" style="background: #F44336"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#FF0000" style="background: #FF0000"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#E91E63" style="background: #E91E63"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#FF00FF" style="background: #FF00FF"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#9C27B0" style="background: #9C27B0"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#673AB7" style="background: #673AB7"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#3F51B5" style="background: #3F51B5"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#0000FF" style="background: #0000FF"></button>
-						</div>
+                <div class="box">
+                    <h2>Farbmischer</h2>
+                    <div class="color-area" id="color-area"></div>
 
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#2196F3" style="background: #2196F3"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#03A9F4" style="background: #03A9F4"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#00FFFF" style="background: #00FFFF"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#00BCD4" style="background: #00BCD4"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#009688" style="background: #009688"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#4CAF50" style="background: #4CAF50"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#00FF00" style="background: #00FF00"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#8BC34A" style="background: #8BC34A"></button>
-						</div>
+                    <div class="pure-g color-r">
+                        <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-red">Red<span class="value" id="slider-red-value">0</span></label></div>
+                        <div class="pure-u-1 pure-u-md-5-6"><input id="slider-red" type="range" min="0" max="255" value="0"></div>
+                    </div>
+                    <div class="pure-g color-g">
+                        <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-green">Green<span class="value" id="slider-green-value">0</span></label></div>
+                        <div class="pure-u-1 pure-u-md-5-6"><input id="slider-green" type="range" min="0" max="255" value="0"></div>
+                    </div>
+                    <div class="pure-g color-b">
+                        <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-blue">Blue<span class="value" id="slider-blue-value">0</span></label></div>
+                        <div class="pure-u-1 pure-u-md-5-6"><input id="slider-blue" type="range" min="0" max="255" value="0"></div>
+                    </div>
+                    <!-- Specific RGBW Start-->
+                    <div class="pure-g color-w">
+                        <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-white">White <span class="value" id="slider-white-value">0</span></label></div>
+                        <div class="pure-u-1 pure-u-md-5-6"><input id="slider-white" type="range" min="0" max="255" value="0"></div>
+                    </div>
+                    <!-- Specific RGBW End-->
+                </div>
 
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#CDDC39" style="background: #CDDC39"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#FFEB3B" style="background: #FFEB3B"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#FFFF00" style="background: #FFFF00"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#FFC107" style="background: #FFC107"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#FF9800" style="background: #FF9800"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#FF5722" style="background: #FF5722"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#FFFFFF" style="background: #FFFFFF"></button>
-						</div>
-						<div class="pure-u-1-3 pure-u-sm-1-8">
-							<button class="quick-color pure-button" data-color="#000000" style="background: #000000"></button>
-						</div>
-					</div>
-				</div>
+                <div class="box">
+                    <h2>Schnellfarben</h2>
+                    <div class="pure-g colors">
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#F44336" style="background: #F44336"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#FF0000" style="background: #FF0000"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#E91E63" style="background: #E91E63"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#FF00FF" style="background: #FF00FF"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#9C27B0" style="background: #9C27B0"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#673AB7" style="background: #673AB7"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#3F51B5" style="background: #3F51B5"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#0000FF" style="background: #0000FF"></button>
+                        </div>
 
-			</div>
-			<div class="pure-u-24-24 section section-functions">
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#2196F3" style="background: #2196F3"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#03A9F4" style="background: #03A9F4"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#00FFFF" style="background: #00FFFF"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#00BCD4" style="background: #00BCD4"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#009688" style="background: #009688"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#4CAF50" style="background: #4CAF50"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#00FF00" style="background: #00FF00"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#8BC34A" style="background: #8BC34A"></button>
+                        </div>
 
-				<div class="box">
-					<h2>Funktion</h2>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#CDDC39" style="background: #CDDC39"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#FFEB3B" style="background: #FFEB3B"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#FFFF00" style="background: #FFFF00"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#FFC107" style="background: #FFC107"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#FF9800" style="background: #FF9800"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#FF5722" style="background: #FF5722"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#FFFFFF" style="background: #FFFFFF"></button>
+                        </div>
+                        <div class="pure-u-1-3 pure-u-sm-1-8">
+                            <button class="quick-color pure-button" data-color="#000000" style="background: #000000"></button>
+                        </div>
+                    </div>
+                </div>
 
-					<label for="mode-wordclock" class="pure-radio">
-						<input id="mode-wordclock" type="radio" name="mode" value="color" checked> Wort Uhr
-					</label>
-					<label for="mode-color" class="pure-radio">
-						<input id="mode-color" type="radio" name="mode" value="color"> Farbe
-					</label>
-					<label for="mode-seconds" class="pure-radio">
-						<input id="mode-seconds" type="radio" name="mode" value="seconds"> Sekunden
-					</label>
-					<label for="mode-marquee" class="pure-radio">
-						<input id="mode-marquee" type="radio" name="mode" value="marquee"> Laufschrift
-					</label>
-					<label for="mode-rainbow" class="pure-radio">
-						<input id="mode-rainbow" type="radio" name="mode" value="rainbow"> Regenbogen
-					</label>
-					<label for="mode-change" class="pure-radio">
-						<input id="mode-change" type="radio" name="mode" value="change"> Farbwechsel
-					</label>
-				</div>
+            </div>
+            <div class="pure-u-24-24 section section-functions">
+                <div class="header">
+                    <h1>Funktionen</h1>
+                </div>
 
-				<div class="box functions-settings">
-					<h2>Einstellung</h2>
+                <div class="box">
+                    <h2>Funktion</h2>
 
-					<div class="pure-g brightness">
-						<div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-brightness">Helligkeit <span class="value" id="slider-brightness-value">0</span></label></div>
-						<div class="pure-u-1 pure-u-md-3-4"><input id="slider-brightness" type="range" min="1" max="10" value="1"></div>
-					</div>
-					<div class="pure-g speed">
-						<div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-speed">Geschwindigkeit <span class="value" id="slider-speed-value">0</span></label></div>
-						<div class="pure-u-1 pure-u-md-3-4"><input id="slider-speed" type="range" min="0" max="40" value="0"></div>
-					</div>
-					<div class="pure-g leds">
-						<div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-leds">Anzahl LEDs <span class="value" id="slider-leds-value">0</span></label></div>
-						<div class="pure-u-1 pure-u-md-3-4"><input id="slider-leds" type="range" min="5" max="100" value="100"></div>
-					</div>
-					<div class="pure-g position">
-						<div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-position">Positon <span class="value" id="slider-position-value">0</span></label></div>
-						<div class="pure-u-1 pure-u-md-3-4"><input id="slider-position" type="range" min="1" max="100" value="100"></div>
-					</div>
-				</div>
+                    <label for="mode-wordclock" class="pure-radio">
+                        <input id="mode-wordclock" type="radio" name="mode" value="color" checked> Wort Uhr
+                    </label>
+                    <label for="mode-color" class="pure-radio">
+                        <input id="mode-color" type="radio" name="mode" value="color"> Farbe
+                    </label>
+                    <label for="mode-seconds" class="pure-radio">
+                        <input id="mode-seconds" type="radio" name="mode" value="seconds"> Sekunden
+                    </label>
+                    <label for="mode-marquee" class="pure-radio">
+                        <input id="mode-marquee" type="radio" name="mode" value="marquee"> Laufschrift
+                    </label>
+                    <label for="mode-rainbow" class="pure-radio">
+                        <input id="mode-rainbow" type="radio" name="mode" value="rainbow"> Regenbogen
+                    </label>
+                    <label for="mode-change" class="pure-radio">
+                        <input id="mode-change" type="radio" name="mode" value="change"> Farbwechsel
+                    </label>
+                </div>
 
-			</div>
-			<div class="pure-u-24-24 section section-settings">
-				<div class="pure-g">
+                <div class="box functions-settings">
+                    <h2>Einstellung</h2>
 
-					<div class="pure-u-1 pure-u-md-1-2">
-						<div class="box">
-							<h2>Status</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="status">Verbindungsstatus</label><input id="status" class="status" value="Loading ...">
-									</div>
-									<div class="pure-controls">
-										<button class="pure-button">Verbinden</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
-					</div>
+                    <div class="pure-g brightness">
+                        <div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-brightness">Helligkeit <span class="value" id="slider-brightness-value">0</span></label>
+                        </div>
+                        <div class="pure-u-1 pure-u-md-3-4"><input id="slider-brightness" type="range" min="1" max="10" value="1"></div>
+                    </div>
+                    <div class="pure-g speed">
+                        <div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-speed">Geschwindigkeit <span class="value"
+                                                                                                                                 id="slider-speed-value">0</span></label></div>
+                        <div class="pure-u-1 pure-u-md-3-4"><input id="slider-speed" type="range" min="0" max="40" value="0"></div>
+                    </div>
+                    <div class="pure-g leds">
+                        <div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-leds">Anzahl LEDs <span class="value" id="slider-leds-value">0</span></label>
+                        </div>
+                        <div class="pure-u-1 pure-u-md-3-4"><input id="slider-leds" type="range" min="5" max="100" value="100"></div>
+                    </div>
+                    <div class="pure-g position">
+                        <div class="pure-u-1 pure-u-md-1-4"><label class="slider-label" for="slider-position">Positon <span class="value"
+                                                                                                                            id="slider-position-value">0</span></label></div>
+                        <div class="pure-u-1 pure-u-md-3-4"><input id="slider-position" type="range" min="1" max="100" value="100"></div>
+                    </div>
+                </div>
 
-					<div class="pure-u-1 pure-u-md-1-2">
+            </div>
+            <div class="pure-u-24-24 section section-settings">
+                <div class="header">
+                    <h1>Einstellungen</h1>
+                </div>
+                <div class="pure-g">
 
-						<div class="box">
-							<h2>Startwerte</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-controls">
-										<button id="initial-values-button" class="pure-button">Startwerte speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                    <div class="pure-u-1 pure-u-md-1-2">
+                        <div class="box">
+                            <h2>Status</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="status">Verbindungsstatus</label><input id="status" class="status" value="Loading ...">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button class="pure-button">Verbinden</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-						<div class="box">
-							<h2>WLAN</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="ssid">SSID</label><input id="ssid" type="text" placeholder="SSID">
-									</div>
-									<div class="pure-control-group">
-										<label for="password">Passwort</label><input id="password" type="password" placeholder="Passwort">
-									</div>
-									<div class="pure-controls">
-										<button id="wifi-button" class="pure-button">WLAN speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                        <div class="box">
+                            <h2>Startwerte</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-controls">
+                                        <button id="initial-values-button" class="pure-button">Startwerte speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-						<div class="box">
-							<h2>Zeitserver</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="timeserver">Zeitserver</label><input id="timeserver" type="text" placeholder="Zeitserver">
-									</div>
-									<div class="pure-controls">
-										<button id="timeserver-button" class="pure-button">Zeitserver speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                        <div class="box">
+                            <h2>WLAN</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="ssid">SSID</label><input id="ssid" type="text" placeholder="SSID">
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="password">Passwort</label><input id="password" type="password" placeholder="Passwort">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="wifi-button" class="pure-button">WLAN speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-						<div class="box">
-							<h2>Lauftext</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="marquee">Lauftext</label><input id="marquee" type="text" placeholder="Lauftext">
-									</div>
-									<div class="pure-controls">
-										<button id="marquee-button" class="pure-button">Lauftext speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                        <div class="box">
+                            <h2>Zeitserver</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="timeserver">Zeitserver</label><input id="timeserver" type="text" placeholder="Zeitserver">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="timeserver-button" class="pure-button">Zeitserver speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-						<div class="box">
-							<h2>Helligkeit</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="brightness-6">6 Uhr</label><select name="brightness-6" id="brightness-6" size="1">
-										<option value="100">100 %</option>
-										<option value="80">80 %</option>
-										<option value="60">60 %</option>
-										<option value="40">40 %</option>
-										<option value="20">20 %</option>
-										<option value="0">Aus</option>
-									</select>
-									</div>
-									<div class="pure-control-group">
-										<label for="brightness-8">8 Uhr</label><select name="brightness-8" id="brightness-8" size="1">
-										<option value="100">100 %</option>
-										<option value="80">80 %</option>
-										<option value="60">60 %</option>
-										<option value="40">40 %</option>
-										<option value="20">20 %</option>
-										<option value="0">Aus</option>
-									</select>
-									</div>
-									<div class="pure-control-group">
-										<label for="brightness-12">12 Uhr</label><select name="brightness-12" id="brightness-12" size="1">
-										<option value="100">100 %</option>
-										<option value="80">80 %</option>
-										<option value="60">60 %</option>
-										<option value="40">40 %</option>
-										<option value="20">20 %</option>
-										<option value="0">Aus</option>
-									</select>
-									</div>
-									<div class="pure-control-group">
-										<label for="brightness-16">16 Uhr</label><select name="brightness-16" id="brightness-16" size="1">
-										<option value="100">100 %</option>
-										<option value="80">80 %</option>
-										<option value="60">60 %</option>
-										<option value="40">40 %</option>
-										<option value="20">20 %</option>
-										<option value="0">Aus</option>
-									</select>
-									</div>
-									<div class="pure-control-group">
-										<label for="brightness-18">18 Uhr</label><select name="brightness-18" id="brightness-18" size="1">
-										<option value="100">100 %</option>
-										<option value="80">80 %</option>
-										<option value="60">60 %</option>
-										<option value="40">40 %</option>
-										<option value="20">20 %</option>
-										<option value="0">Aus</option>
-									</select>
-									</div>
-									<div class="pure-control-group">
-										<label for="brightness-20">20 Uhr</label><select name="brightness-20" id="brightness-20" size="1">
-										<option value="100">100 %</option>
-										<option value="80">80 %</option>
-										<option value="60">60 %</option>
-										<option value="40">40 %</option>
-										<option value="20">20 %</option>
-										<option value="0">Aus</option>
-									</select>
-									</div>
-									<div class="pure-control-group">
-										<label for="brightness-22">22 Uhr</label><select name="brightness-22" id="brightness-22" size="1">
-										<option value="100">100 %</option>
-										<option value="80">80 %</option>
-										<option value="60">60 %</option>
-										<option value="40">40 %</option>
-										<option value="20">20 %</option>
-										<option value="0">Aus</option>
-									</select>
-									</div>
-									<div class="pure-control-group">
-										<label for="brightness-24">24 Uhr</label><select name="brightness-24" id="brightness-24" size="1">
-										<option value="100">100 %</option>
-										<option value="80">80 %</option>
-										<option value="60">60 %</option>
-										<option value="40">40 %</option>
-										<option value="20">20 %</option>
-										<option value="0">Aus</option>
-									</select>
-									</div>
-									<div class="pure-controls">
-										<button id="brightness-button" class="pure-button">Helligkeit speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                        <div class="box">
+                            <h2>Lauftext</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="marquee">Lauftext</label><input id="marquee" type="text" placeholder="Lauftext">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="marquee-button" class="pure-button">Lauftext speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-						<div class="box">
-							<h2>Hostname</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="hostname">Hostname</label><input id="hostname" type="text" placeholder="Hostname">
-									</div>
-									<div class="pure-controls">
-										<button id="hostname-button" class="pure-button">Hostname speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                        <div class="box">
+                            <h2>Helligkeit</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-6">6 Uhr</label><select name="brightness-6" id="brightness-6" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-8">8 Uhr</label><select name="brightness-8" id="brightness-8" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-12">12 Uhr</label><select name="brightness-12" id="brightness-12" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-16">16 Uhr</label><select name="brightness-16" id="brightness-16" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-18">18 Uhr</label><select name="brightness-18" id="brightness-18" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-20">20 Uhr</label><select name="brightness-20" id="brightness-20" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-22">22 Uhr</label><select name="brightness-22" id="brightness-22" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-24">24 Uhr</label><select name="brightness-24" id="brightness-24" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="brightness-button" class="pure-button">Helligkeit speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-						<div class="box">
-							<h2>Wetter</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="owm-api-key">OpenWeatherMap API-Schluessel</label><input id="owm-api-key" type="text" minlength="32" maxlength="32" placeholder="API-Schlüssel">
-									</div>
-									<div class="pure-control-group">
-										<label for="owm-city-id">OpenWeatherMap City ID</label><input id="owm-city-id" type="text" minlength="7" maxlength="7" placeholder="City ID">
-									</div>
-									<div class="pure-controls">
-										<button id="weather-button" class="pure-button">OpenWeatherMap Daten speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                        <div class="box">
+                            <h2>Hostname</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="hostname">Hostname</label><input id="hostname" type="text" placeholder="Hostname">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="hostname-button" class="pure-button">Hostname speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                    </div>
 
-						<div class="box">
-							<h2>Minuten-Anzeige</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="show-minutes">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Minuten angezeigt werden ?</label><select name="show-minutes" id="show-minutes" size="1">
-										<option value="0" selected>Nein</option>
-										<option value="1">als Zeile</option>
-										<option value="2">in den Ecken</option>
-									</select>
-									</div>
-									<div class="pure-controls">
-										<button id="show-minutes-button" class="pure-button">Minuten-Anzeige speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                    <!-- Specific UHR242 Start-->
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                        <div class="box">
+                            <h2>Wetter</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="owm-api-key">OpenWeatherMap API-Schluessel</label><input id="owm-api-key" type="text" minlength="32" maxlength="32"
+                                                                                                             placeholder="API-Schlüssel">
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="owm-city-id">OpenWeatherMap City ID</label><input id="owm-city-id" type="text" minlength="7" maxlength="7"
+                                                                                                      placeholder="City ID">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="weather-button" class="pure-button">OpenWeatherMap Daten speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-						<div class="box">
-							<h2>Sekunden-Anzeige</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="show-seconds">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden ?</label><select name="show-seconds" id="show-seconds" size="1">
-										<option value="0" selected>Nein</option>
-										<option value="1">Ja</option>
-									</select>
-									</div>
-									<div class="pure-controls">
-										<button id="show-seconds-button" class="pure-button">Sekunden-Anzeige speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                    </div>
+                    <!-- Specific UHR242 End--><!-- Specific UHR169 Start-->
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                        <div class="box">
+                            <h2>Minuten-Anzeige</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="show-minutes">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Minuten angezeigt werden
+                                            ?</label><select name="show-minutes" id="show-minutes" size="1">
+                                        <option value="0" selected>Nein</option>
+                                        <option value="1">als Zeile</option>
+                                        <option value="2">in den Ecken</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="show-minutes-button" class="pure-button">Minuten-Anzeige speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-						<div class="box">
-							<h2>Typ der Uhr</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="UhrtypeDef">Änderung des Uhrentypes.</label><select name="UhrtypeDef" id="UhrtypeDef" size="1">
-										<option value="1" selected>Uhr 114</option>
-										<option value="2">Uhr 114 Alternative</option>
-										<option value="3">Uhr 125</option>
-										<option value="4">Uhr 169</option>
-										<option value="5">Uhr 242</option>
-									</select>
-									</div>
-									<div class="pure-controls">
-										<button id="UhrtypeDef-button" class="pure-button">UhrtypeDef speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                        <div class="box">
+                            <h2>Sekunden-Anzeige</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="show-seconds">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden
+                                            ?</label><select name="show-seconds" id="show-seconds" size="1">
+                                        <option value="0" selected>Nein</option>
+                                        <option value="1">Ja</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="show-seconds-button" class="pure-button">Sekunden-Anzeige speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-						<div class="box">
-							<h2>Einstellung des LED-Typs</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-control-group">
-										<label for="colortype">Änderung des Colortypes.</label><select name="colortype" id="colortype" size="1">
-										<option value="0" selected>WS2812 BRG</option>
-										<option value="1">WS2812 GRB</option>
-										<option value="2">WS2812 RGB</option>
-										<option value="3">WS2812 RBG</option>
-										<option value="4">SK6812 RGBW</option>
-									</select>
-									</div>
-									<div class="pure-controls">
-										<button id="colortype-button" class="pure-button">Colortype speichern</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                    </div>
+                    <!-- Specific UHR169 End-->
 
-					</div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-						<div class="box">
-							<h2>WLAN Abschalten</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-controls">
-										<label for="disable-button">Neustart zu Einschalten benötigt</label><button id="disable-button" class="pure-button">WLAN Ausschalten</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                        <div class="box">
+                            <h2>Typ der Uhr</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="UhrtypeDef">Änderung des Uhrentypes.</label><select name="UhrtypeDef" id="UhrtypeDef" size="1">
+                                        <option value="1" selected>Uhr 114</option>
+                                        <option value="2">Uhr 114 Alternative</option>
+                                        <option value="3">Uhr 125</option>
+                                        <option value="4">Uhr 169</option>
+                                        <option value="5">Uhr 242</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="UhrtypeDef-button" class="pure-button">UhrtypeDef speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-					</div>
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
+
+                        <div class="box">
+                            <h2>Einstellung des LED-Typs</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="colortype">Änderung des Colortypes.</label><select name="colortype" id="colortype" size="1">
+                                        <option value="0" selected>WS2812 BRG</option>
+                                        <option value="1">WS2812 GRB</option>
+                                        <option value="2">WS2812 RGB</option>
+                                        <option value="3">WS2812 RBG</option>
+                                        <option value="4">SK6812 RGBW</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="colortype-button" class="pure-button">Colortype speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
+
+                        <div class="box">
+                            <h2>WLAN Abschalten</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-controls">
+                                        <label for="disable-button">Neustart zu Einschalten benötigt</label>
+                                        <button id="disable-button" class="pure-button">WLAN Ausschalten</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
                     <div class="pure-u-1 pure-u-md-1-2">
 
                         <div class="box">
@@ -525,32 +560,35 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-controls">
-                                        <label for="wps-button">Wifi-Protected-Setup</label><button id="wps-button" class="pure-button">WPS Aktivieren</button>
+                                        <label for="wps-button">Wifi-Protected-Setup</label>
+                                        <button id="wps-button" class="pure-button">WPS Aktivieren</button>
                                     </div>
                                 </fieldset>
                             </form>
                         </div>
 
                     </div>
-					<div class="pure-u-1 pure-u-md-1-2">
+                    <div class="pure-u-1 pure-u-md-1-2">
 
-						<div class="box">
-							<h2>Zuruecksetzen</h2>
-							<form class="pure-form pure-form-aligned">
-								<fieldset>
-									<div class="pure-controls">
-										<button id="reset-button" class="pure-button">Zuruecksetzen</button>
-									</div>
-								</fieldset>
-							</form>
-						</div>
+                        <div class="box">
+                            <h2>Zuruecksetzen</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-controls">
+                                        <button id="reset-button" class="pure-button">Zuruecksetzen</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
 
-					</div>
-				</div>
+                    </div>
+                </div>
 
-			</div>
-
+            </div>
             <div class="pure-u-24-24 section section-smart_home">
+                <div class="header">
+                    <h1>Smart Home</h1>
+                </div>
                 <div class="box">
                     <h2>Smart Home</h2>
                     <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über MQTT. Diese Funktion ist noch experiemtell und wird stetig erweitert.</p>
@@ -563,13 +601,13 @@
                         <form class="pure-form pure-form-aligned">
                             <fieldset>
                                 <div class="pure-control-group">
-                                    <label for="ssid">SSID</label><input id="ssid" type="text" placeholder="SSID">
+                                    <label for="ssid">SSID</label><input id="mqtt_ssid" type="text" placeholder="SSID">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="password">Passwort</label><input id="password" type="password" placeholder="Passwort">
+                                    <label for="password">Passwort</label><input id="mqtt_password" type="password" placeholder="Passwort">
                                 </div>
                                 <div class="pure-controls">
-                                    <button id="wifi-button" class="pure-button">WLAN speichern</button>
+                                    <button id="mqtt-button" class="pure-button">WLAN speichern</button>
                                 </div>
                             </fieldset>
                         </form>
@@ -583,10 +621,10 @@
                         <form class="pure-form pure-form-aligned">
                             <fieldset>
                                 <div class="pure-control-group">
-                                    <label for="timeserver">Zeitserver</label><input id="timeserver" type="text" placeholder="Zeitserver">
+                                    <label for="timeserver">Zeitserver</label><input id="mqtt_timeserver" type="text" placeholder="Zeitserver">
                                 </div>
                                 <div class="pure-controls">
-                                    <button id="timeserver-button" class="pure-button">Einstellungen speichern</button>
+                                    <button id="mqtt_timeserver-button" class="pure-button">Einstellungen speichern</button>
                                 </div>
                             </fieldset>
                         </form>
@@ -595,33 +633,48 @@
                 </div>
 
             </div>
+            <div class="pure-u-24-24 section section-about">
+                <div class="header">
+                    <h1>Über</h1>
+                </div>
+                <div class="box">
+                    <p>Die Wortuhr basiert auf der Wortuhr von <a href="https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu">Ulrich Radig</a> und wird entwickelt von <a
+                            href="https://github.com/Eisbaeeer">Lars Weimar</a>, <a href="https://github.com/Wandmalfarbe">Pascal Wagler</a>, <a href="https://github.com/dbambus">dbambus</a>,
+                        <a href="https://github.com/Flo455">Flo455</a>, <a href="https://github.com/Elektron79">Elektron79</a> und <a href="https://github.com/masju1">masju1</a>.
+                        Ein Update der Software ist möglich, dazu bitte <a href=":81/update">hier</a> klicken.</p>
+                    <p>This project is open source licensed under the BSD 3-Clause License. Please see the LICENSE file for more information.</p>
+                </div>
 
-			<div class="pure-u-24-24 section section-about">
-				<div class="box">
-					<h2>Ueber</h2>
-					<p>Die Wortuhr basiert auf der Wortuhr von <a href="https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu">Ulrich Radig</a> und wird entwickelt von <a href="https://github.com/Eisbaeeer">Lars Weimar</a>, <a href="https://github.com/Wandmalfarbe">Pascal Wagler</a>, <a href="https://github.com/dbambus">dbambus</a>, <a href="https://github.com/Flo455">Flo455</a>, <a href="https://github.com/Elektron79">Elektron79</a> und <a href="https://github.com/masju1">masju1</a>. Ein Update der Software ist möglich, dazu bitte <a href=":81/update">hier</a> klicken.</p>
-					<p>This project is open source licensed under the BSD 3-Clause License. Please see the LICENSE file for more information.</p>
-				</div>
+                <div class="box">
+                    <h2>Enthaltene Bibliotheken und Software</h2>
 
-				<div class="box">
-					<h2>Enthaltene Bibliotheken und Software</h2>
+                    <div class="pure-g">
+                        <div class="pure-u-1 pure-u-md-1-3"><p>Ulrich Radig Wort Uhr (Version 1)</p></div>
+                        <div class="pure-u-1 pure-u-md-2-3"><p><a href="https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu">https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu</a>
+                        </p></div>
+                        <div class="pure-u-1 pure-u-md-1-3"><p>Pure.css</p></div>
+                        <div class="pure-u-1 pure-u-md-2-3"><p><a href="https://purecss.io">https://purecss.io</a></p></div>
+                        <div class="pure-u-1 pure-u-md-1-3"><p>Minified.js</p></div>
+                        <div class="pure-u-1 pure-u-md-2-3"><p><a href="http://minifiedjs.com">http://minifiedjs.com</a></p></div>
+                    </div>
+                </div>
 
-					<div class="pure-g">
-						<div class="pure-u-1 pure-u-md-1-3"><p>Ulrich Radig Wort Uhr (Version 1)</p></div>
-						<div class="pure-u-1 pure-u-md-2-3"><p><a href="https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu">https://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu</a></p></div>
-						<div class="pure-u-1 pure-u-md-1-3"><p>Pure.css</p></div>
-						<div class="pure-u-1 pure-u-md-2-3"><p><a href="https://purecss.io">https://purecss.io</a></p></div>
-						<div class="pure-u-1 pure-u-md-1-3"><p>Minified.js</p></div>
-						<div class="pure-u-1 pure-u-md-2-3"><p><a href="http://minifiedjs.com">http://minifiedjs.com</a></p></div>
-					</div>
-				</div>
+                <div class="box box-debug">
+                    <h2>Debug-Ausgabe</h2>
+                    <div id="output"></div>
+                </div>
+            </div>
+        </div> <!--/pure-g-->
 
-				<div class="box box-debug">
-					<h2>Debug-Ausgabe</h2>
-					<div id="output"></div>
-				</div>
-			</div>
-		</div> <!--/pure-g-->
-	</div> <!--/content-->
+        <div class="header">
+            <h2>V **VER_placeholder**</h2>
+        </div>
+    </div> <!--/content-->
+</div>
+
+<!-- scripts -->
+<script src="JavaScript/minified.min.js"></script>
+<script src="JavaScript/script.js"></script>
+
 </body>
 </html>

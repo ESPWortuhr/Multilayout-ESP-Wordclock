@@ -6,8 +6,6 @@
 
 #define RESPONSE_SIZE    900
 
-const char* const html_sliders[] PROGMEM = {index_html_head, index_html_body_first, slider_RGBW, index_html_body_mid, Switches_UHR242, Switches_UHR169, index_html_body_rest};
-
 class WebPage_Adapter : public WebSocketsServer {
 
 public:
@@ -27,23 +25,22 @@ public:
                            "Connection: close\r\n"
                            //--                    "Sec-WebSocket-Version: 13\r\n"
                            "\r\n");
-        Send_HTML_Code_for_Sliders(client, sizeof(index_html_head), 0);
-        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_first), 1);
-        if (G.Colortype == Grbw){Send_HTML_Code_for_Sliders(client, sizeof(slider_RGBW), 2);};
-        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_mid), 3);
-        if (G.UhrtypeDef == Uhr_242){Send_HTML_Code_for_Sliders(client, sizeof(Switches_UHR242), 4);};
-        if (G.UhrtypeDef == Uhr_169){Send_HTML_Code_for_Sliders(client, sizeof(Switches_UHR169), 5);};
-        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_rest), 6);
+		Send_HTML_Code(client, 0);
+        if (G.Colortype == Grbw){ Send_HTML_Code(client, 1);};
+		Send_HTML_Code(client, 2);
+        if (G.UhrtypeDef == Uhr_242){ Send_HTML_Code(client, 3);};
+        if (G.UhrtypeDef == Uhr_169){ Send_HTML_Code(client, 4);};
+		Send_HTML_Code(client, 5);
         clientDisconnect(client);
     }
 
-    void Send_HTML_Code_for_Sliders(const WSclient_t *client, uint16_t slider_size, uint8_t slider_index) const {
+    void Send_HTML_Code(const WSclient_t *client, uint8_t index) const {
         char str[RESPONSE_SIZE + 4];
         unsigned ww = 0;
         unsigned yy = 0;
         int j;
-        while (ww < slider_size) {
-            str[yy] = pgm_read_byte(&html_sliders[slider_index][ww]);
+        while (ww < sizeof(html_code[index])) {
+            str[yy] = pgm_read_byte(&html_code[index][ww]);
             str[yy + 1] = '\0';
             yy++;
             if (yy == RESPONSE_SIZE) {
