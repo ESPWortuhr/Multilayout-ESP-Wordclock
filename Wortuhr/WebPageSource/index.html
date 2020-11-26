@@ -297,6 +297,114 @@
                     <div class="pure-u-1 pure-u-md-1-2">
 
                         <div class="box">
+                            <h2>Uhrzeit manuell einstellen</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-16">Stunde</label><select name="brightness-16" id="brightness-16" size="1">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-16">Minute</label><select name="brightness-16" id="brightness-16" size="1">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+                                        <option value="32">32</option>
+                                        <option value="33">33</option>
+                                        <option value="34">34</option>
+                                        <option value="35">35</option>
+                                        <option value="36">36</option>
+                                        <option value="37">37</option>
+                                        <option value="38">38</option>
+                                        <option value="39">39</option>
+                                        <option value="40">40</option>
+                                        <option value="41">41</option>
+                                        <option value="42">42</option>
+                                        <option value="43">43</option>
+                                        <option value="44">44</option>
+                                        <option value="45">45</option>
+                                        <option value="46">46</option>
+                                        <option value="47">47</option>
+                                        <option value="48">48</option>
+                                        <option value="49">49</option>
+                                        <option value="50">50</option>
+                                        <option value="51">51</option>
+                                        <option value="52">52</option>
+                                        <option value="53">53</option>
+                                        <option value="54">54</option>
+                                        <option value="55">55</option>
+                                        <option value="56">56</option>
+                                        <option value="57">57</option>
+                                        <option value="58">58</option>
+                                        <option value="59">59</option>
+                                        <option value="60">60</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="uhrzeit-button" class="pure-button">Uhrzeit speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
+
+                        <div class="box">
                             <h2>Lauftext</h2>
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
@@ -591,40 +699,26 @@
                 </div>
                 <div class="box">
                     <h2>Smart Home</h2>
-                    <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über MQTT. Diese Funktion ist noch experiemtell und wird stetig erweitert.</p>
+                    <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über die MQTT Schnittstelle. Diese Funktion ist noch experiemtell und wird stetig erweitert.</p>
                 </div>
 
                 <div class="pure-u-1 pure-u-md-1-2">
 
                     <div class="box">
-                        <h2>WLAN</h2>
+                        <h2>MQTT</h2>
                         <form class="pure-form pure-form-aligned">
                             <fieldset>
                                 <div class="pure-control-group">
-                                    <label for="ssid">SSID</label><input id="mqtt_ssid" type="text" placeholder="SSID">
+                                    <label for="password">MQTT Serveradresse</label><input id="mqtt_server" type="mqtt_server" placeholder="MQTT Server">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="password">Passwort</label><input id="mqtt_password" type="password" placeholder="Passwort">
+                                    <label for="password">MQTT Port</label><input id="mqtt_port" type="mqtt_port" placeholder="MQTT Serverport">
                                 </div>
-                                <div class="pure-controls">
-                                    <button id="mqtt-button" class="pure-button">WLAN speichern</button>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-
-                </div>
-                <div class="pure-u-1 pure-u-md-1-2">
-
-                    <div class="box">
-                        <h2>MQTT-Server</h2>
-                        <form class="pure-form pure-form-aligned">
-                            <fieldset>
                                 <div class="pure-control-group">
-                                    <label for="timeserver">Zeitserver</label><input id="mqtt_timeserver" type="text" placeholder="Zeitserver">
+                                    <label for="password">MQTT Topic</label><input id="mqtt_topic" type="mqtt_topic" placeholder="MQTT Topic">
                                 </div>
                                 <div class="pure-controls">
-                                    <button id="mqtt_timeserver-button" class="pure-button">Einstellungen speichern</button>
+                                    <button id="mqtt-button" class="pure-button">MQTT-Daten speichern</button>
                                 </div>
                             </fieldset>
                         </form>
