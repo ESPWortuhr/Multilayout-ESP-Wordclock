@@ -68,6 +68,9 @@ struct GLOBAL {
     uint8_t h24;
     uint8_t UhrtypeDef;
     uint8_t Colortype;
+	char MQTT_Server[35];
+	uint16_t MQTT_Port;
+	char MQTT_Topic[35];
 };
 GLOBAL G = {};
 
@@ -170,6 +173,8 @@ enum Command {
 
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
+    COMMAND_SET_MQTT = 85,
+	COMMAND_SET_TIME_MANUAL = 86,
 	COMMAND_SET_WPS_MODE = 87,
     COMMAND_SET_COLORTYPE = 88,
 	COMMAND_SET_UHRTYPE = 89,

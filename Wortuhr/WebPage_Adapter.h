@@ -296,6 +296,46 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 
 					//------------------------------------------------------------------------------
 
+				case COMMAND_SET_MQTT:
+				{       // MQTT Daten speichern
+					G.conf = COMMAND_SET_MQTT;
+					ii = 0;
+					G.MQTT_Port = split (payload, 9, 5);
+					for (uint8_t k = 9; k < 16; k++)
+					{
+						if (payload[k] != ' ')
+						{
+							G.MQTT_Server[ii] = payload[k];
+							ii++;
+						}
+					}
+					G.MQTT_Server[ii] = '\0';
+					//
+					jj = 0;
+					for (uint8_t l = 17; l < 49; l++)
+					{
+						if (payload[l] != ' ')
+						{
+							G.MQTT_Topic[jj] = payload[l];
+							jj++;
+						}
+					}
+					G.MQTT_Topic[jj] = '\0';
+					break;
+				}
+
+					//------------------------------------------------------------------------------
+
+				case COMMAND_SET_TIME_MANUAL:
+				{       // Uhrzeit manuell setzen
+					G.conf = COMMAND_SET_TIME_MANUAL;
+					_stunde = split (payload, 9, 3);
+					_minute = split (payload, 12, 3);
+					break;
+				}
+
+					//------------------------------------------------------------------------------
+
 				case COMMAND_SET_WPS_MODE:
 				{       // Aktivieren des WPS Modus
 					G.conf = COMMAND_SET_WPS_MODE;

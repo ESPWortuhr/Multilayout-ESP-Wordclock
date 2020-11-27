@@ -85,6 +85,9 @@ var showSeconds = 0;
 var showMinutes = 0;
 var UhrtypeDef = 0;
 var colortype = 0;
+var MQTT_Port = 0;
+var MQTT_Server = 0;
+var MQTT_Topic = 0;
 
 // operation modes
 var COMMAND_MODE_WORD_CLOCK = 1;
@@ -98,6 +101,7 @@ var COMMAND_MODE_COLOR = 6;
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
+var COMMAND_SET_MQTT = 85;
 var COMMAND_SET_TIME_MANUAL = 86;
 var COMMAND_SET_WPS_MODE = 87;
 var COMMAND_SET_COLORTYPE = 88;
@@ -174,6 +178,9 @@ function initConfigValues() {
     showMinutes = 0;
     UhrtypeDef = 0;
     colortype = 0;
+    MQTT_Port = 0;
+    MQTT_Server = 0;
+    MQTT_Topic = 0;
 }
 
 function hexToRgb(hex) {
@@ -271,6 +278,10 @@ function initWebsocket() {
 
             $("#owm-api-key").set("value", data.apiKey);
             $("#owm-city-id").set("value", data.cityid);
+
+            $("#MQTT_Port").set("value", data.MQTT_Port);
+            $("#MQTT_Server").set("value", data.MQTT_Server);
+            $("#MQTT_Topic").set("value", data.MQTT_Topic);
 
             $("#UhrtypeDef").set("value", data.UhrtypeDef);
             $("#colortype").set("value", data.colortype);
@@ -791,5 +802,15 @@ $.ready(function () {
         data += nstr(stunde) + nstr(minute) + "999";
         websocket.send(data);
         debugMessage("Uhrzeit wurde manuell konfiguriert", data);
+    });
+    $("#mqtt-button").on("click", function() {
+        var mqtt_port = $("#mqtt_port").get("value");
+        var mqtt_server = $("#mqtt_server").get("value");
+        var mqtt_topic = $("#mqtt_topic").get("value");
+
+        var data = CMDtoData(COMMAND_SET_MQTT, 0, 0);
+        data += nstr(mqtt_port) +  mqtt_server + " " + mqtt_topic + "  999";
+        websocket.send(data);
+        debugMessage("MQTT Server wurde konfiguriert", data);
     });
 });

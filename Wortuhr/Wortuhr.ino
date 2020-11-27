@@ -861,8 +861,19 @@ void loop(){
             break;
         }
 
+			//------------------------------------------------
+			// Uhrzeit manuell einstellen
+			//------------------------------------------------
+		case COMMAND_SET_TIME_MANUAL:
+		{
+			Serial.println("Uhrzeit manuell eingstellt");
+			show_zeit(1); // Anzeige Uhrzeit mit Config
+			G.conf = COMMAND_IDLE;
+			break;
+		}
+
             //------------------------------------------------
-            // Colortype der LED einstellen
+            // trigger für WPS Mode gesetzt
             //------------------------------------------------
         case COMMAND_SET_WPS_MODE:
         {
