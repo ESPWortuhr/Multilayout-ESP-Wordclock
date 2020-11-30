@@ -286,6 +286,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
             if (cc == COMMAND_SET_UHRTYPE) {       // UhrType speichern
                 G.conf = COMMAND_SET_UHRTYPE;
                 G.UhrtypeDef = split(9, 3);
+                G.ItIs15 = split(12, 3);
+                G.ItIs20 = split(15, 3);
+                G.ItIs40 = split(18, 3);
+                G.ItIs45 = split(21, 3);
                 break;
             }
 

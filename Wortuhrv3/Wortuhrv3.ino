@@ -7,7 +7,7 @@
 //#define UHR_169                     // Uhr mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
 //#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
 
-#define SERNR 100             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+#define SERNR 105             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 
 // Wenn die Farben nicht passen können sie hier angepasst werden:
 #define Brg_Color   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
@@ -194,6 +194,11 @@ void setup() {
 #ifdef UHR_242
 		G.UhrtypeDef = Uhr_242;
 #endif
+
+        G.ItIs15 = 1;
+        G.ItIs20 = 1;
+        G.ItIs40 = 1;
+        G.ItIs45 = 1;
 
 #ifdef Brg_Color
         G.Colortype = Brg;

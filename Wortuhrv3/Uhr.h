@@ -13,6 +13,7 @@ enum uhrzeit_t {
     FUENF = 4,
     ZEHN = 5,
     VIERTEL = 6,
+    DREIVIERTEL = 22,
     ZWANZIG = 7,
     HALB = 8,
     EINS = 9,
@@ -67,6 +68,10 @@ struct GLOBAL {
     uint8_t h22;
     uint8_t h24;
     uint8_t UhrtypeDef;
+    uint8_t ItIs15;
+    uint8_t ItIs20;
+    uint8_t ItIs40;
+    uint8_t ItIs45;
     uint8_t Colortype;
 };
 GLOBAL G = {};

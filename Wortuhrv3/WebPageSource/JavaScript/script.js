@@ -676,7 +676,11 @@ $.ready(function () {
     });
     $("#UhrtypeDef-button").on("click", function() {
         var UhrtypeDef = $("#UhrtypeDef").get("value");
-        var data = "089000000" + UhrtypeDef + "  999";
+        var ItIs15 = $("#ItIs15").get("value");
+        var ItIs20 = $("#ItIs20").get("value");
+        var ItIs40 = $("#ItIs40").get("value");
+        var ItIs45 = $("#ItIs45").get("value");
+        var data = "089000000" + nstr(UhrtypeDef) + nstr(ItIs15) + nstr(ItIs20) + nstr(ItIs40) + nstr(ItIs45) + "999";
         websocket.send(data);
         debugMessage("UhrtypeDef wurde neu konfiguriert", data);
     });
