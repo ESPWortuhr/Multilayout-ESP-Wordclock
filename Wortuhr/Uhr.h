@@ -68,9 +68,9 @@ struct GLOBAL {
     uint8_t h24;
     uint8_t UhrtypeDef;
     uint8_t Colortype;
-	char MQTT_Server[35];
+    uint8_t MQTT_State;
+	char MQTT_Server[30];
 	uint16_t MQTT_Port;
-	char MQTT_Topic[35];
 };
 GLOBAL G = {};
 

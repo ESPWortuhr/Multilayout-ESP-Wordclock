@@ -76,6 +76,27 @@ uint16_t split(uint8_t *payload, uint8_t start, uint8_t lenght) {
 
 //------------------------------------------------------------------------------
 
+void payloadTextHandling(const uint8_t *payload, char* text, uint8_t length){
+	uint8_t ii = 0;
+	for (uint8_t k = 9; k < 9 + length; k++)
+	{
+		text[ii] = payload[k];
+		ii++;
+	}
+	uint8_t index = 0;
+	for (int8_t counter = length - 1; counter > -1; counter--)
+	{
+		if (!isSpace(text[counter]))
+		{
+			index = counter;
+			break;
+		}
+	}
+	text[index + 1] = '\0';
+}
+
+//------------------------------------------------------------------------------
+
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght) {
 	//Disable Accesspoint Mode Disable Timer on Web Event
 	if (AP_Status > 0){
@@ -300,8 +321,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				{       // MQTT Daten speichern
 					G.conf = COMMAND_SET_MQTT;
 					ii = 0;
-					G.MQTT_Port = split (payload, 9, 5);
-					for (uint8_t k = 9; k < 16; k++)
+					G.MQTT_State = split (payload, 9, 3);
+					G.MQTT_Port = split (payload, 12, 5);
+					for (uint8_t k = 17; k < 47; k++)
 					{
 						if (payload[k] != ' ')
 						{
@@ -310,17 +332,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 						}
 					}
 					G.MQTT_Server[ii] = '\0';
-					//
-					jj = 0;
-					for (uint8_t l = 17; l < 49; l++)
-					{
-						if (payload[l] != ' ')
-						{
-							G.MQTT_Topic[jj] = payload[l];
-							jj++;
-						}
-					}
-					G.MQTT_Topic[jj] = '\0';
 					break;
 				}
 
@@ -329,8 +340,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_TIME_MANUAL:
 				{       // Uhrzeit manuell setzen
 					G.conf = COMMAND_SET_TIME_MANUAL;
-					_stunde = split (payload, 9, 3);
-					_minute = split (payload, 12, 3);
+					int temp_std= split (payload, 9, 3);
+					int temp_min = split (payload, 12, 3);
+					setTime(temp_std, temp_min, 0, 1, 12, 2020);
 					break;
 				}
 
@@ -410,16 +422,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_MARQUEE_TEXT:
 				{       // Lauftext speichern
 					G.conf = COMMAND_SET_MARQUEE_TEXT;
-					ii = 0;
-					for (uint8_t k = 9; k < 39; k++)
-					{
-						if (payload[k] != ' ')
-						{
-							G.ltext[ii] = payload[k];
-							ii++;
-						}
-					}
-					G.ltext[ii] = '\0';
+					payloadTextHandling(payload, G.ltext, sizeof(G.ltext) / sizeof(G.ltext[0]));
 					break;
 				}
 

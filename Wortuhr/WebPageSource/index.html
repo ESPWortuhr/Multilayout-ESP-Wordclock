@@ -697,9 +697,8 @@
                 </div>
                 <div class="box">
                     <h2>Smart Home</h2>
-                    <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über die MQTT Schnittstelle. Diese Funktion ist noch experiemtell und wird stetig erweitert.</p>
+                    <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über die MQTT Schnittstelle. Hierbei kann man über sein bestehendes HomeAssistant Setup die Uhr einbinden, um rudimentäre Funktionen steuern zu können. Diese Funktion ist noch experimentell und wird stetig erweitert.</p>
                 </div>
-
                 <div class="pure-u-1 pure-u-md-1-2">
 
                     <div class="box">
@@ -707,13 +706,16 @@
                         <form class="pure-form pure-form-aligned">
                             <fieldset>
                                 <div class="pure-control-group">
-                                    <label for="mqtt_server">MQTT Serveradresse</label><input id="mqtt_server" type="mqtt_server" placeholder="MQTT Server">
+                                    <label for="MQTT_State">Aktiviere MQTT</label><select name="MQTT_State" id="MQTT_State" size="1">
+                                    <option value="0" selected>Off</option>
+                                    <option value="1">ON</option>
+                                </select>
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt_port">MQTT Port</label><input id="mqtt_port" type="mqtt_port" placeholder="MQTT Serverport">
+                                    <label for="MQTT_Server">MQTT Serveradresse</label><input id="MQTT_Server" type="MQTT_Server" placeholder="MQTT Server">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt_topic">MQTT Topic</label><input id="mqtt_topic" type="mqtt_topic" placeholder="MQTT Topic">
+                                    <label for="MQTT_Port">MQTT Port</label><input id="MQTT_Port" type="MQTT_Port" placeholder="MQTT Serverport">
                                 </div>
                                 <div class="pure-controls">
                                     <button id="mqtt-button" class="pure-button">MQTT-Daten speichern</button>

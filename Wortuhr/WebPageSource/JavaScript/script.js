@@ -85,9 +85,9 @@ var showSeconds = 0;
 var showMinutes = 0;
 var UhrtypeDef = 0;
 var colortype = 0;
+var MQTT_State = 0;
 var MQTT_Port = 0;
 var MQTT_Server = 0;
-var MQTT_Topic = 0;
 
 // operation modes
 var COMMAND_MODE_WORD_CLOCK = 1;
@@ -138,6 +138,7 @@ var DATA_MARQUEE_TEXT_LENGTH = 30;
 var DATA_SSID_TEXT_LENGTH = 32;  // WL_SSID_MAX_LENGTH == 32
 var DATA_PASSWORT_TEXT_LENGTH = 63;  //WL_WPA_KEY_MAX_LENGTH == 63
 var DATA_TIMESERVER_TEXT_LENGTH = 16;
+var DATA_MQTTSERVER_TEXT_LENGTH = 30;
 var DATA_HOST_TEXT_LENGTH = 16;
 
 function initConfigValues() {
@@ -178,9 +179,9 @@ function initConfigValues() {
     showMinutes = 0;
     UhrtypeDef = 0;
     colortype = 0;
+    MQTT_State = 0;
     MQTT_Port = 0;
     MQTT_Server = 0;
-    MQTT_Topic = 0;
 }
 
 function hexToRgb(hex) {
@@ -285,6 +286,10 @@ function initWebsocket() {
 
             $("#UhrtypeDef").set("value", data.UhrtypeDef);
             $("#colortype").set("value", data.colortype);
+
+            $("#MQTT_State").set("value", data.MQTT_State);
+            $("#MQTT_Port").set("value", data.MQTT_Port);
+            $("#MQTT_Server").set("value", data.MQTT_Server);
         }
         if (data.command === "set") {
             rgb[0][0] = data.rgb00;
@@ -373,13 +378,25 @@ function setSliders() {
     colorArea[0].style.backgroundColor = "rgb(" + rgb[sliderType][0] + "," + rgb[sliderType][1] + "," + rgb[sliderType][2] + ")";
 }
 
-/**
- * Add '0' as a padding in front of the number to make it
- * a 3 character string.
- *
- * @param  {int} number - The number to be padded.
- * @return {string} The padded number.
- */
+function nstr5(number) {
+    if (number < 10) {
+        number = "00" + number;
+    } else {
+        if (number < 100) {
+            number = "0" + number;
+        } else {
+            if (number < 1000) {
+                number = "0" + number;
+            } else {
+                if (number < 10000) {
+                    number = "0" + number;
+                }
+            }
+        }
+    }
+    return number;
+}
+
 function nstr(number) {
     if (number < 10) {
         number = "00" + number;
@@ -804,12 +821,12 @@ $.ready(function () {
         debugMessage("Uhrzeit wurde manuell konfiguriert", data);
     });
     $("#mqtt-button").on("click", function() {
-        var mqtt_port = $("#mqtt_port").get("value");
-        var mqtt_server = $("#mqtt_server").get("value");
-        var mqtt_topic = $("#mqtt_topic").get("value");
+        MQTT_State = $("#mqtt_state").get("value");
+        MQTT_Port = $("#mqtt_port").get("value");
+        MQTT_Server = $("#mqtt_server").get("value");
 
         var data = CMDtoData(COMMAND_SET_MQTT, 0, 0);
-        data += nstr(mqtt_port) +  mqtt_server + " " + mqtt_topic + "  999";
+        data += nstr(MQTT_State) + nstr5(MQTT_Port) +  getPaddedString(MQTT_Server, DATA_MQTTSERVER_TEXT_LENGTH); + " 999";
         websocket.send(data);
         debugMessage("MQTT Server wurde konfiguriert", data);
     });

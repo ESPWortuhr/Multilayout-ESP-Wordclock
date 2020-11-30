@@ -936,7 +936,7 @@ static void show_wetter() {
 
 //------------------------------------------------------------------------------
 
-static void show_zeit(int flag) {
+static void show_zeit(uint8_t flag) {
     uint8_t rr, gg, bb, ww;
     if (flag == 1) {
         set_uhrzeit();
