@@ -429,11 +429,9 @@ void loop(){
 	if (last_sekunde != _sekunde){
 
 		//--- LDR Regelung
-		//
 		if (G.ldr == 1){
 			doLDRLogic();
 		}
-		//--- LDR Regelung
 
 		if (G.prog == 0 && G.conf == 0){
 			show_zeit(0); // Anzeige Uhrzeit ohne Config

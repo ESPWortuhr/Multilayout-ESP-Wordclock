@@ -92,11 +92,8 @@ uint16_t wwetter_24;
 uint16_t wstunde;
 uint16_t wetterswitch;
 
-// LDR 
-unsigned long waitUntilLDR = 0;
-uint16_t autoBrightnessEnabled = 1;
-uint16_t ldrVal = 50;
-uint16_t oneseconddelay = 1000;
+// LDR
+uint8_t ldrVal = 100;
 
 // Telnet vars
 bool ConnectionEstablished; // Flag for successfully handled connection

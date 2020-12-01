@@ -81,6 +81,7 @@ var h18 = 100;
 var h20 = 100;
 var h22 = 100;
 var h24 = 100;
+var ldr = 0;
 var showSeconds = 0;
 var showMinutes = 0;
 var UhrtypeDef = 0;
@@ -175,6 +176,7 @@ function initConfigValues() {
     h20 = 100;
     h22 = 100;
     h24 = 100;
+    ldr = 0;
     showSeconds = 0;
     showMinutes = 0;
     UhrtypeDef = 0;
@@ -272,6 +274,7 @@ function initWebsocket() {
             $("#brightness-22").set("value", data.h22);
             $("#brightness-24").set("value", data.h24);
 
+            $("#ldr").set("value", data.ldr);
             $("#slider-brightness").set("value", data.hell);
             $("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
             $("#showSeconds").set("value", data.zeige_sek);
@@ -791,6 +794,15 @@ $.ready(function () {
 
         websocket.send(data);
         debugMessage("Colortype wurde neu konfiguriert", data);
+    });
+    $("#ldr-button").on("click", function() {
+        ldr = $("#ldr").get("value");
+
+        var data = CMDtoData(COMMAND_SET_LDR, 0, 0);
+        data += nstr(ldr) + "000" + "  999";
+
+        websocket.send(data);
+        debugMessage("LDR Steuerung wurde konfiguriert", data);
     });
     $("#host-button").on("click", function () {
         var hostValue = $("#host").get("value");
