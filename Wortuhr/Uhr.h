@@ -13,6 +13,7 @@ enum uhrzeit_t {
     FUENF = 4,
     ZEHN = 5,
     VIERTEL = 6,
+	DREIVIERTEL = 22,
     ZWANZIG = 7,
     HALB = 8,
     EINS = 9,
@@ -66,6 +67,8 @@ struct GLOBAL {
     uint8_t h20;
     uint8_t h22;
     uint8_t h24;
+	uint8_t Sprachvariation[4];
+
     uint8_t UhrtypeDef;
     uint8_t Colortype;
     uint8_t MQTT_State;
@@ -158,6 +161,13 @@ enum ledColortypes {
     Grbw = 4,
 };
 
+enum Sprachvariationen {
+	ItIs15 = 0,
+	ItIs20 = 1,
+	ItIs40 = 2,
+	ItIs45 = 3,
+};
+
 enum Command {
     COMMAND_IDLE = 0,
 
@@ -170,6 +180,7 @@ enum Command {
 
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
+	COMMAND_SET_LANGUAGE_VARIANT = 84,
     COMMAND_SET_MQTT = 85,
 	COMMAND_SET_TIME_MANUAL = 86,
 	COMMAND_SET_WPS_MODE = 87,

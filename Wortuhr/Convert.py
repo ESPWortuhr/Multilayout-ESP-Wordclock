@@ -2,6 +2,7 @@
 #	 pip install requests
 import requests
 import os
+from io import open
 
 input_dir = "WebPageSource"              # Sub folder of webfiles
 output_dir = "WebPageWortuhr.h"          # Source C++ Header
@@ -36,8 +37,7 @@ f_output.close()
 
 
 def write_to_file():
-    source_file = open(output_dir, 'rb').read()
-    source_data = source_file.decode("UTF-8")
+    source_data = open(output_dir, 'r', encoding="utf-8").read()
     count = source_data.find("/* The following CODE is created by the Python Script Convert.py in the Source Folder */")
     lenght = len("/* The following CODE is created by the Python Script Convert.py in the Source Folder */")
     buffer = ""
@@ -59,7 +59,7 @@ def write_to_file():
             buffer = buffer + "HTML_Code" + str(i) + ","
             SizeOfArrays = SizeOfArrays + "sizeof(HTML_Code" + str(i) + "),"
 
-    f_output = open(output_dir, "w")
+    f_output = open(output_dir, "w", encoding="utf-8")
     f_output.write(source_data[0:count+lenght+1] + buffer + SizeOfArrays + "\n\n/* End for CODE generation by Script */")            # print binary data
 
     f_output.close()
@@ -67,7 +67,7 @@ def write_to_file():
 # Minify JavaScript
 def minify_js(input_file):
     url = URL_minify_js
-    data = {'input': open(input_file, 'rb').read()}
+    data = {'input': open(input_file, 'r', encoding="utf-8").read()}
     response = requests.post(url, data=data)
     return response.text
 
@@ -97,14 +97,13 @@ def addStyleCssTo(html):
     return html
 
 def loadHtmlAndReplaceVersion(input_file):
-    data_raw = open(input_file, 'rb').read()
-    data_utf_8 = data_raw.decode("utf-8")
-    data = data_utf_8.replace("**VER_placeholder**", source_fileVersion)        # Replace Version in HTML_Code
+    data = open(input_file, 'r', encoding="utf-8").read()
+    data = data.replace("**VER_placeholder**", source_fileVersion)        # Replace Version in HTML_Code
     return data
 
 def minify_css(input_file):
     url = URL_minify_css
-    data = {'input': open(input_file, 'rb').read()}
+    data = {'input': open(input_file, 'r', encoding="utf-8").read()}
     response = requests.post(url, data=data)
     return response.text
 
@@ -153,6 +152,21 @@ def cutSpecificUHR169(data):
 
     return data[count_end+lenght_end:len(data)]
 
+def cutSpecificUHR114_Alternative(data):
+    count_start = data.find("<!-- Specific UHR114_Alternative Start-->")
+    lenght_start = len("<!-- Specific UHR114_Alternative Start-->")
+    count_end = data.find("<!-- Specific UHR114_Alternative End-->")
+    lenght_end = len("<!-- Specific UHR114_Alternative End-->")
+
+    #Generate First element
+    if data[0:count_start] != "":
+        output_data.append(data[0:count_start])
+
+    #Cut out UHR114_Alternative Specific Data
+    output_data.append(data[count_start+lenght_start:count_end])
+
+    return data[count_end+lenght_end:len(data)]
+
 def appendRestOfHTML(data):
     output_data.append(data[0:len(data)])
 
@@ -169,6 +183,7 @@ for root, dirs, files in os.walk(input_dir, topdown=False):
             html = cutSpecificRGBW(html)
             html = cutSpecificUHR242(html)
             html = cutSpecificUHR169(html)
+            html = cutSpecificUHR114_Alternative(html)
             appendRestOfHTML(html)
             write_to_file()
 

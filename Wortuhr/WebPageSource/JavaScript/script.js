@@ -81,6 +81,7 @@ var h18 = 100;
 var h20 = 100;
 var h22 = 100;
 var h24 = 100;
+var Sprachvariation = [0, 0, 0, 0];
 var ldr = 0;
 var showSeconds = 0;
 var showMinutes = 0;
@@ -102,6 +103,7 @@ var COMMAND_MODE_COLOR = 6;
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
+var COMMAND_SET_LANGUAGE_VARIANT = 84;
 var COMMAND_SET_MQTT = 85;
 var COMMAND_SET_TIME_MANUAL = 86;
 var COMMAND_SET_WPS_MODE = 87;
@@ -177,6 +179,7 @@ function initConfigValues() {
     h22 = 100;
     h24 = 100;
     ldr = 0;
+    Sprachvariation = [0, 0, 0, 0];
     showSeconds = 0;
     showMinutes = 0;
     UhrtypeDef = 0;
@@ -273,6 +276,11 @@ function initWebsocket() {
             $("#brightness-20").set("value", data.h20);
             $("#brightness-22").set("value", data.h22);
             $("#brightness-24").set("value", data.h24);
+
+            $("#Sprachvariation0").set("value", data.Sprachvariation0);
+            $("#Sprachvariation1").set("value", data.Sprachvariation1);
+            $("#Sprachvariation2").set("value", data.Sprachvariation2);
+            $("#Sprachvariation3").set("value", data.Sprachvariation3);
 
             $("#ldr").set("value", data.ldr);
             $("#slider-brightness").set("value", data.hell);
@@ -841,5 +849,15 @@ $.ready(function () {
         data += nstr(MQTT_State) + nstr5(MQTT_Port) +  getPaddedString(MQTT_Server, DATA_MQTTSERVER_TEXT_LENGTH); + " 999";
         websocket.send(data);
         debugMessage("MQTT Server wurde konfiguriert", data);
+    });
+    $("#Sprachvariation-button").on("click", function() {
+        var data = CMDtoData(COMMAND_SET_LANGUAGE_VARIANT, 0, 0);
+        Sprachvariation[0] = $("#Sprachvariation0").get("value");
+        Sprachvariation[1] = $("#Sprachvariation1").get("value");
+        Sprachvariation[2] = $("#Sprachvariation2").get("value");
+        Sprachvariation[3] = $("#Sprachvariation3").get("value");
+        data += nstr(Sprachvariation[0]) + nstr(Sprachvariation[1]) + nstr(Sprachvariation[2]) + nstr(Sprachvariation[3]) + "999";
+        websocket.send(data);
+        debugMessage("Sprachvariation wurde konfiguriert", data);
     });
 });

@@ -178,6 +178,7 @@ void setup(){
 		G.h20 = 100;
 		G.h22 = 100;
 		G.h24 = 100;
+		for (uint8_t i = 0; i < 4; i++) { G.Sprachvariation[i] = 0;}
 
 		G.MQTT_State = 0;
 		G.MQTT_Port = 1883;
@@ -713,6 +714,16 @@ void loop(){
 			strcat(str, R"(","h24":")");
 			sprintf(s, "%d", G.h24);
 			strcat(str, s);
+			for (uint8_t i = 0; i < 4; i++)
+			{
+					strcat(str, ",\"Sprachvariation");
+					sprintf(s, "%d", i);
+					strcat(str, s);
+					strcat(str, "\":\"");
+					sprintf(s, "%d", G.Sprachvariation[i]);
+					strcat(str, s);
+					strcat(str, "\"");
+			}
 			strcat(str, R"(","hell":")");
 			sprintf(s, "%d", G.hell);
 			strcat(str, s);
@@ -876,6 +887,17 @@ void loop(){
             G.conf = COMMAND_IDLE;
             break;
         }
+
+			//------------------------------------------------
+			// Sprachvarianten Einstellungen
+			//------------------------------------------------
+		case COMMAND_SET_LANGUAGE_VARIANT:
+		{
+			eeprom_write();
+			show_zeit(1);
+			G.conf = COMMAND_IDLE;
+			break;
+		}
 
 			//------------------------------------------------
 			// MQTT Einstellungen

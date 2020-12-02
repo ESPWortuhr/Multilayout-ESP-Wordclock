@@ -701,9 +701,14 @@ static void set_uhrzeit() {
             set_stunde(_stunde, 0);
             break;
         case 2: // 10 nach
-            uhrzeit |= ((uint32_t) 1 << ZEHN);
-            uhrzeit |= ((uint32_t) 1 << NACH);
-            set_stunde(_stunde, 0);
+			if (G.Sprachvariation[ItIs15] == 1) {
+				uhrzeit |= ((uint32_t) 1 << VIERTEL);
+				uhrzeit |= ((uint32_t) 1 << NACH);
+				set_stunde(_stunde, 0);
+			} else {
+				uhrzeit |= ((uint32_t) 1 << VIERTEL);
+				set_stunde(_stunde + 1, 0);
+			}
             break;
         case 3: // viertel nach
             uhrzeit |= ((uint32_t) 1 << VIERTEL);
@@ -711,9 +716,16 @@ static void set_uhrzeit() {
             set_stunde(_stunde, 0);
             break;
         case 4: // 20 nach
-            uhrzeit |= ((uint32_t) 1 << ZWANZIG);
-            uhrzeit |= ((uint32_t) 1 << NACH);
-            set_stunde(_stunde, 0);
+			if (G.Sprachvariation[ItIs20] == 1) {
+				uhrzeit |= ((uint32_t) 1 << ZWANZIG);
+				uhrzeit |= ((uint32_t) 1 << NACH);
+				set_stunde(_stunde, 0);
+			} else {
+				uhrzeit |= ((uint32_t) 1 << ZEHN);
+				uhrzeit |= ((uint32_t) 1 << VOR);
+				uhrzeit |= ((uint32_t) 1 << HALB);
+				set_stunde(_stunde + 1, 0);
+			}
             break;
         case 5: // 5 vor halb
             uhrzeit |= ((uint32_t) 1 << FUENF);
@@ -732,13 +744,23 @@ static void set_uhrzeit() {
             set_stunde(_stunde + 1, 0);
             break;
         case 8: // 20 vor
-            uhrzeit |= ((uint32_t) 1 << ZWANZIG);
-            uhrzeit |= ((uint32_t) 1 << VOR);
+			if (G.Sprachvariation[ItIs40] == 1) {
+				uhrzeit |= ((uint32_t) 1 << ZWANZIG);
+				uhrzeit |= ((uint32_t) 1 << VOR);
+			} else {
+				uhrzeit |= ((uint32_t) 1 << ZEHN);
+				uhrzeit |= ((uint32_t) 1 << NACH);
+				uhrzeit |= ((uint32_t) 1 << HALB);
+			}
             set_stunde(_stunde + 1, 0);
             break;
         case 9: // viertel vor
-            uhrzeit |= ((uint32_t) 1 << VIERTEL);
-            uhrzeit |= ((uint32_t) 1 << VOR);
+			if (G.Sprachvariation[ItIs45] == 1 && G.UhrtypeDef == Uhr_114_Alternative) {
+				uhrzeit |= ((uint32_t) 1 << VIERTEL);
+				uhrzeit |= ((uint32_t) 1 << VOR);
+			} else {
+				uhrzeit |= ((uint32_t) 1 << DREIVIERTEL);
+			}
             set_stunde(_stunde + 1, 0);
             break;
         case 10: // 10 vor
@@ -961,6 +983,7 @@ static void show_zeit(uint8_t flag) {
     if (uhrzeit & ((uint32_t) 1 << FUENF)) { usedUhrType->show(fuenf);  }
     if (uhrzeit & ((uint32_t) 1 << ZEHN)) { usedUhrType->show(zehn);  }
     if (uhrzeit & ((uint32_t) 1 << VIERTEL)) { usedUhrType->show(viertel);  }
+	if (uhrzeit & ((uint32_t) 1 << DREIVIERTEL)) { usedUhrType->show(dreiviertel);  }
     if (uhrzeit & ((uint32_t) 1 << ZWANZIG)) { usedUhrType->show(zwanzig);  }
     if (uhrzeit & ((uint32_t) 1 << HALB)) { usedUhrType->show(halb); }
     if (uhrzeit & ((uint32_t) 1 << EINS)) { usedUhrType->show(eins); }
