@@ -2,6 +2,7 @@
 #	 pip install requests
 import requests
 import os
+from io import open
 
 input_dir = "WebPageSource"              # Sub folder of webfiles
 output_dir = "WebPageWortuhr.h"          # Source C++ Header
@@ -10,18 +11,17 @@ URL_minify_js   = 'https://javascript-minifier.com/raw' # Website to minify java
 URL_minify_css  = 'https://cssminifier.com/raw'         # Website to minify css
 
 def write_to_file():
-    source_file = open(output_dir, 'rb').read()
-    source_data = source_file.decode("UTF-8")
+    source_data = open(output_dir, 'r', encoding="utf-8").read()
     count = source_data.find("/* The following CODE is created by the Python Script Convert.py in the Source Folder */")
     lenght = len("/* The following CODE is created by the Python Script Convert.py in the Source Folder */")
 
-    f_output = open(output_dir, "w")
+    f_output = open(output_dir, "w", encoding="utf-8")
     f_output.write(source_data[0:count+lenght+1] + "\nconst char index_html_head[] PROGMEM= R\"=====("+html_head+")=====\";\n\n/* End for CODE generation by Script */")            # print binary data
     f_output.close()
 
 def minify_js(input_file):
     url = URL_minify_js
-    data = {'input': open(input_file, 'rb').read()}
+    data = {'input': open(input_file, 'r', encoding="utf-8").read()}
     response = requests.post(url, data=data)
     return response.text
 
@@ -50,14 +50,13 @@ def addStyleCssTo(html_head):
     return html_head
 
 def minify_html(input_file):
-    data = open(input_file, 'rb').read()
-    data = data.decode("utf-8")
+    data = open(input_file, 'r', encoding="utf-8").read()
     count = data.find("<body")
     return data[0:count-1]
 
 def minify_css(input_file):
     url = URL_minify_css
-    data = {'input': open(input_file, 'rb').read()}
+    data = {'input': open(input_file, 'r', encoding="utf-8").read()}
     response = requests.post(url, data=data)
     return response.text
 
