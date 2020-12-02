@@ -64,14 +64,15 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
 ### Version 2.5.0
 * (dbambus) 2020xxxx  
 * Updated Python-Script to update Version String based on VER in Uhr.h
-* Changed internal handling of Command/Mode Selection
-* Improved Memoryusage on RAM
-* Auto-Shutdown of Wifi-AP-Mode after 5 Minutes, if unused. Just restart Wordclock to enable
-* Fixed Issue for compiling with Arduino IDE
+* Improved internal handling of Command/Mode Selection
+* Improved memoryusage on RAM
+* Added Auto-Shutdown of Wifi-AP-Mode after 5 Minutes, if unused. Just restart Wordclock to enable
 * Added a WPS Support with Button on Website 
 * Added MQTT Support
-* Updated Responsive Design of Website
+* Added up to date responsive design for Website
 * Added dedicated Link to Firmware Update Page
+* Fixed Issue for compiling with Arduino IDE
+* Fixed Handling of Text-input on Website
 
 ### Version 2.4.2
 * (Eisbaeeer) 20201025   

@@ -301,7 +301,7 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-control-group">
-                                        <label for="brightness-16">Stunde</label><select name="brightness-16" id="brightness-16" size="1">
+                                        <label for="stunde">Stunde</label><select name="stunde" id="stunde" size="1">
                                         <option value="0">0</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -326,21 +326,20 @@
                                         <option value="21">21</option>
                                         <option value="22">22</option>
                                         <option value="23">23</option>
-                                        <option value="24">24</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="brightness-16">Minute</label><select name="brightness-16" id="brightness-16" size="1">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
+                                        <label for="minute">Minute</label><select name="minute" id="minute" size="1">
+                                        <option value="00">00</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
                                         <option value="10">10</option>
                                         <option value="11">11</option>
                                         <option value="12">12</option>
@@ -391,7 +390,6 @@
                                         <option value="57">57</option>
                                         <option value="58">58</option>
                                         <option value="59">59</option>
-                                        <option value="60">60</option>
                                     </select>
                                     </div>
                                     <div class="pure-controls">
@@ -547,7 +545,7 @@
                                                                                                       placeholder="City ID">
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="weather-button" class="pure-button">OpenWeatherMap Daten speichern</button>
+                                        <button id="weather-button" class="pure-button">Daten speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -649,6 +647,26 @@
                     <div class="pure-u-1 pure-u-md-1-2">
 
                         <div class="box">
+                            <h2>Einstellung des LDR</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="ldr">Aktivieren der LDR Steuerung</label><select name="ldr" id="ldr" size="1">
+                                        <option value="0" selected>OFF</option>
+                                        <option value="1">ON</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="ldr-button" class="pure-button">LDR speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
+
+                        <div class="box">
                             <h2>WLAN Abschalten</h2>
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
@@ -699,9 +717,8 @@
                 </div>
                 <div class="box">
                     <h2>Smart Home</h2>
-                    <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über die MQTT Schnittstelle. Diese Funktion ist noch experiemtell und wird stetig erweitert.</p>
+                    <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über die MQTT Schnittstelle. Hierbei kann man über sein bestehendes HomeAssistant Setup die Uhr einbinden, um rudimentäre Funktionen steuern zu können. Diese Funktion ist noch experimentell und wird stetig erweitert.</p>
                 </div>
-
                 <div class="pure-u-1 pure-u-md-1-2">
 
                     <div class="box">
@@ -709,13 +726,16 @@
                         <form class="pure-form pure-form-aligned">
                             <fieldset>
                                 <div class="pure-control-group">
-                                    <label for="password">MQTT Serveradresse</label><input id="mqtt_server" type="mqtt_server" placeholder="MQTT Server">
+                                    <label for="MQTT_State">Aktiviere MQTT</label><select name="MQTT_State" id="MQTT_State" size="1">
+                                    <option value="0" selected>Off</option>
+                                    <option value="1">ON</option>
+                                </select>
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="password">MQTT Port</label><input id="mqtt_port" type="mqtt_port" placeholder="MQTT Serverport">
+                                    <label for="MQTT_Server">MQTT Serveradresse</label><input id="MQTT_Server" type="MQTT_Server" placeholder="MQTT Server">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="password">MQTT Topic</label><input id="mqtt_topic" type="mqtt_topic" placeholder="MQTT Topic">
+                                    <label for="MQTT_Port">MQTT Port</label><input id="MQTT_Port" type="MQTT_Port" placeholder="MQTT Serverport">
                                 </div>
                                 <div class="pure-controls">
                                     <button id="mqtt-button" class="pure-button">MQTT-Daten speichern</button>

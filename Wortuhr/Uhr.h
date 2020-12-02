@@ -68,6 +68,9 @@ struct GLOBAL {
     uint8_t h24;
     uint8_t UhrtypeDef;
     uint8_t Colortype;
+    uint8_t MQTT_State;
+	char MQTT_Server[30];
+	uint16_t MQTT_Port;
 };
 GLOBAL G = {};
 
@@ -89,11 +92,8 @@ uint16_t wwetter_24;
 uint16_t wstunde;
 uint16_t wetterswitch;
 
-// LDR 
-unsigned long waitUntilLDR = 0;
-uint16_t autoBrightnessEnabled = 1;
-uint16_t ldrVal = 50;
-uint16_t oneseconddelay = 1000;
+// LDR
+uint8_t ldrVal = 100;
 
 // Telnet vars
 bool ConnectionEstablished; // Flag for successfully handled connection
@@ -170,6 +170,8 @@ enum Command {
 
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
+    COMMAND_SET_MQTT = 85,
+	COMMAND_SET_TIME_MANUAL = 86,
 	COMMAND_SET_WPS_MODE = 87,
     COMMAND_SET_COLORTYPE = 88,
 	COMMAND_SET_UHRTYPE = 89,

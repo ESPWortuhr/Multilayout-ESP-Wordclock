@@ -76,6 +76,27 @@ uint16_t split(uint8_t *payload, uint8_t start, uint8_t lenght) {
 
 //------------------------------------------------------------------------------
 
+void payloadTextHandling(const uint8_t *payload, char* text, uint8_t length){
+	uint8_t ii = 0;
+	for (uint8_t k = 9; k < 9 + length; k++)
+	{
+		text[ii] = payload[k];
+		ii++;
+	}
+	uint8_t index = 0;
+	for (int8_t counter = length - 1; counter > -1; counter--)
+	{
+		if (!isSpace(text[counter]))
+		{
+			index = counter;
+			break;
+		}
+	}
+	text[index + 1] = '\0';
+}
+
+//------------------------------------------------------------------------------
+
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght) {
 	//Disable Accesspoint Mode Disable Timer on Web Event
 	if (AP_Status > 0){
@@ -296,6 +317,37 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 
 					//------------------------------------------------------------------------------
 
+				case COMMAND_SET_MQTT:
+				{       // MQTT Daten speichern
+					G.conf = COMMAND_SET_MQTT;
+					G.MQTT_State = split (payload, 9, 3);
+					G.MQTT_Port = split (payload, 12, 5);
+                    ii = 0;
+					for (uint8_t k = 17; k < 47; k++)
+					{
+						if (payload[k] != ' ')
+						{
+							G.MQTT_Server[ii] = payload[k];
+							ii++;
+						}
+					}
+					G.MQTT_Server[ii] = '\0';
+					break;
+				}
+
+					//------------------------------------------------------------------------------
+
+				case COMMAND_SET_TIME_MANUAL:
+				{       // Uhrzeit manuell setzen
+					G.conf = COMMAND_SET_TIME_MANUAL;
+					int temp_std= split (payload, 9, 3);
+					int temp_min = split (payload, 12, 3);
+					setTime(temp_std, temp_min, 0, 1, 12, 2020);
+					break;
+				}
+
+					//------------------------------------------------------------------------------
+
 				case COMMAND_SET_WPS_MODE:
 				{       // Aktivieren des WPS Modus
 					G.conf = COMMAND_SET_WPS_MODE;
@@ -370,16 +422,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_MARQUEE_TEXT:
 				{       // Lauftext speichern
 					G.conf = COMMAND_SET_MARQUEE_TEXT;
-					ii = 0;
-					for (uint8_t k = 9; k < 39; k++)
-					{
-						if (payload[k] != ' ')
-						{
-							G.ltext[ii] = payload[k];
-							ii++;
-						}
-					}
-					G.ltext[ii] = '\0';
+					payloadTextHandling(payload, G.ltext, sizeof(G.ltext) / sizeof(G.ltext[0]));
 					break;
 				}
 
@@ -388,22 +431,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_TIMESERVER:
 				{       // Zeitserver speichern
 					G.conf = COMMAND_SET_TIMESERVER;
-					ii = 0;
-                    for (uint8_t k = 9; k < 24; k++)
-                    {
-                        G.zeitserver[ii] = payload[k];
-                        ii++;
-                    }
-                    uint8_t index = 0;
-                    for (int8_t counter = sizeof(G.zeitserver) / sizeof(G.zeitserver[0]) - 1; counter > -1; counter--)
-                    {
-                        if (!isSpace(G.zeitserver[counter]))
-                        {
-                            index = counter;
-                            break;
-                        }
-                    }
-                    G.ssid[index + 1] = '\0';
+                    payloadTextHandling(payload, G.zeitserver, sizeof(G.zeitserver) / sizeof(G.zeitserver[0]));
 					break;
 				}
 
@@ -420,23 +448,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_WIFI_AND_RESTART:
 				{       // WLAN-Daten speichern und neu starten
 					G.conf = COMMAND_SET_WIFI_AND_RESTART;
-					ii = 0;
-					for (uint8_t k = 9; k < 9 + WL_SSID_MAX_LENGTH; k++)
-					{
-						G.ssid[ii] = payload[k];
-						ii++;
-					}
-					uint8_t index = 0;
-					for (int8_t counter = sizeof(G.ssid) / sizeof(G.ssid[0]) - 1; counter > -1; counter--)
-					{
-						if (!isSpace(G.ssid[counter]))
-						{
-							index = counter;
-							break;
-						}
-					}
-					G.ssid[index + 1] = '\0';
-
+                    payloadTextHandling(payload, G.ssid, sizeof(G.ssid) / sizeof(G.ssid[0]));
 					ii = 0;
 					for (int k = 34; k < 34 + WL_WPA_KEY_MAX_LENGTH; k++)
 					{

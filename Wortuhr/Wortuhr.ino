@@ -41,6 +41,7 @@ bool show_ip = true;      // Zeige IP Adresse beim Start
 #include <Wire.h>
 #include <RTClib.h>
 #include <PubSubClient.h>
+#include <ArduinoJson.h>
 
 #include "Uhr.h"
 #include "WebPage_Adapter.h"
@@ -137,7 +138,7 @@ void setup(){
 	eeprom_read();
 
 	if (G.sernr != SERNR){
-		for (int i = 0; i < 512; i++) { EEPROM.write(i, i); }
+		for (uint16_t i = 0; i < 512; i++) { EEPROM.write(i, i); }
 		EEPROM.commit();
 
 		G.sernr = SERNR;
@@ -148,7 +149,7 @@ void setup(){
 		G.param2 = 0;
 		G.prog_init = 1;
 		G.conf = COMMAND_IDLE;
-		for (int i = 0; i < 4; i++) { for (int ii = 0; ii < 4; ii++) { G.rgb[i][ii] = 0; }}
+		for (uint8_t i = 0; i < 4; i++) { for (uint8_t ii = 0; ii < 4; ii++) { G.rgb[i][ii] = 0; }}
 		G.rgb[Foreground][2] = 100;
 		G.rgb[Effect][1] = 100;
 		G.rr = 0;
@@ -177,6 +178,10 @@ void setup(){
 		G.h20 = 100;
 		G.h22 = 100;
 		G.h24 = 100;
+
+		G.MQTT_State = 0;
+		G.MQTT_Port = 1883;
+		strcpy(G.MQTT_Server, "192.168.4.1");
 
 #ifdef UHR_114_Alternative
 		G.UhrtypeDef = Uhr_114_Alternative;
@@ -328,12 +333,14 @@ void setup(){
 	//-------------------------------------
 	// MQTT
 	//-------------------------------------
-    //IPAddress ip(192, 168, 4, 1);
-	//mqttClient.setServer(ip, 1883);
-	//mqttClient.setCallback(MQTT_callback);
-	//mqttClient.connect("Wortuhr_TEST");
-    //mqttClient.subscribe("/Wortuhr");
 
+	if (G.MQTT_State == 1)
+	{
+		mqttClient.setServer(G.MQTT_Server, G.MQTT_Port);
+		mqttClient.setCallback(MQTT_callback);
+		mqttClient.connect("Wortuhr");
+		mqttClient.subscribe("/Wortuhr");
+	}
 
 	//-------------------------------------
 	// Start Websocket
@@ -389,11 +396,14 @@ void loop(){
 
 	webSocket.loop();
 
-	//if (WiFi.status() == WL_CONNECTED)
-	//{
-        //if (!mqttClient.connected()) {MQTT_reconnect();}
-        //mqttClient.loop();
-	//}
+	//------------------------------------------------
+	// MQTT
+	//------------------------------------------------
+	if (G.MQTT_State == 1 && WiFi.status() == WL_CONNECTED)
+	{
+        if (!mqttClient.connected()) {MQTT_reconnect();}
+        mqttClient.loop();
+	}
 
 	//------------------------------------------------
 	// Sekunde48
@@ -419,11 +429,9 @@ void loop(){
 	if (last_sekunde != _sekunde){
 
 		//--- LDR Regelung
-		//
 		if (G.ldr == 1){
 			doLDRLogic();
 		}
-		//--- LDR Regelung
 
 		if (G.prog == 0 && G.conf == 0){
 			show_zeit(0); // Anzeige Uhrzeit ohne Config
@@ -730,6 +738,14 @@ void loop(){
 			strcat(str, R"(","colortype":")");
 			sprintf(s, "%d", G.Colortype);
 			strcat(str, s);
+			strcat(str, R"(","MQTT_State":")");
+			sprintf(s, "%d", G.MQTT_State);
+			strcat(str, s);
+			strcat(str, R"(","MQTT_Port":")");
+			sprintf(s, "%d", G.MQTT_Port);
+			strcat(str, s);
+			strcat(str, R"(","MQTT_Server":")");
+			strcat(str, G.MQTT_Server);
 			strcat(str, "\"}");
 			webSocket.sendTXT(G.client_nr, str, strlen(str));
 			G.conf = COMMAND_IDLE;
@@ -861,8 +877,33 @@ void loop(){
             break;
         }
 
+			//------------------------------------------------
+			// MQTT Einstellungen
+			//------------------------------------------------
+		case COMMAND_SET_MQTT:
+		{
+			if (!mqttClient.connected()) {
+				mqttClient.connect("Wortuhr");
+				MQTT_reconnect();
+			}
+			eeprom_write();
+			G.conf = COMMAND_IDLE;
+			break;
+		}
+
+			//------------------------------------------------
+			// Uhrzeit manuell einstellen
+			//------------------------------------------------
+		case COMMAND_SET_TIME_MANUAL:
+		{
+			Serial.println("Uhrzeit manuell eingstellt");
+			show_zeit(1); // Anzeige Uhrzeit mit Config
+			G.conf = COMMAND_IDLE;
+			break;
+		}
+
             //------------------------------------------------
-            // Colortype der LED einstellen
+            // trigger für WPS Mode gesetzt
             //------------------------------------------------
         case COMMAND_SET_WPS_MODE:
         {

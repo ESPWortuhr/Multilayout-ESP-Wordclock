@@ -166,10 +166,10 @@ RgbwColor led_get_pixel_rgbw(uint16_t i) {
 //------------------------------------------------------------------------------
 static void set_helligkeit_ldr(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww, uint8_t position) {
     if (G.ldr == 1) {
-        rr = G.rgb[position][0] / ldrVal;
-        gg = G.rgb[position][1] / ldrVal;
-        bb = G.rgb[position][2] / ldrVal;
-        ww = G.rgb[position][3] / ldrVal;
+        rr = G.rgb[position][0] * ldrVal / 100;
+        gg = G.rgb[position][1] * ldrVal / 100;
+        bb = G.rgb[position][2] * ldrVal / 100;
+        ww = G.rgb[position][3] * ldrVal / 100;
     } else {
         rr = G.rgb[position][0] * G.hh / 100;
         gg = G.rgb[position][1] * G.hh / 100;
@@ -354,15 +354,11 @@ static void set_farbe() {
 //------------------------------------------------------------------------------
 
 static void doLDRLogic() {
-    if (millis() >= waitUntilLDR) {
-        waitUntilLDR = millis();
-        int temp = analogRead(A0);
-        temp = temp - G.ldrCal;
-        if (temp >= 900) { temp = 900; }
-        if (temp <= 1) { temp = 1; }
-        ldrVal = map(temp, 1, 900, 1, 100);
-        waitUntilLDR += oneseconddelay;
-    }
+        uint16_t lux = analogRead(A0);
+        lux = lux - G.ldrCal;
+        if (lux >= 900) { lux = 900; }
+        if (lux <= 1) { lux = 1; }
+        ldrVal = map(lux, 1, 900, 1, 100);
 }
 
 //------------------------------------------------------------------------------
@@ -936,7 +932,7 @@ static void show_wetter() {
 
 //------------------------------------------------------------------------------
 
-static void show_zeit(int flag) {
+static void show_zeit(uint8_t flag) {
     uint8_t rr, gg, bb, ww;
     if (flag == 1) {
         set_uhrzeit();
