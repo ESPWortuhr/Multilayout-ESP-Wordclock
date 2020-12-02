@@ -321,10 +321,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_LANGUAGE_VARIANT:
 				{       // LDR speichern
 					G.conf = COMMAND_SET_LANGUAGE_VARIANT;
-					G.Sprachvariation[ItIs15] = split(9, 3);
-					G.Sprachvariation[ItIs20] = split(12, 3);
-					G.Sprachvariation[ItIs40] = split(15, 3);
-					G.Sprachvariation[ItIs45] = split(18, 3);
+					G.Sprachvariation[ItIs15] = split(payload,9, 3);
+					G.Sprachvariation[ItIs20] = split(payload,12, 3);
+					G.Sprachvariation[ItIs40] = split(payload,15, 3);
+					G.Sprachvariation[ItIs45] = split(payload,18, 3);
 					break;
 				}
 
