@@ -30,8 +30,9 @@ public:
 		Send_HTML_Code(client, 2);
         if (G.UhrtypeDef == Uhr_242){ Send_HTML_Code(client, 3);};
         if (G.UhrtypeDef == Uhr_169){ Send_HTML_Code(client, 4);};
-		if (G.UhrtypeDef == Uhr_114_Alternative){ Send_HTML_Code(client, 5);};
-		Send_HTML_Code(client, 6);
+        Send_HTML_Code(client, 5);
+		if (G.UhrtypeDef == Uhr_114_Alternative){ Send_HTML_Code(client, 6);};
+		Send_HTML_Code(client, 7);
         clientDisconnect(client);
     }
 

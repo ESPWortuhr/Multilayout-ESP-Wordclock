@@ -716,13 +716,12 @@ void loop(){
 			strcat(str, s);
 			for (uint8_t i = 0; i < 4; i++)
 			{
-					strcat(str, ",\"Sprachvariation");
+					strcat(str, R"(","spv)");
 					sprintf(s, "%d", i);
 					strcat(str, s);
-					strcat(str, "\":\"");
+					strcat(str, R"(":")");
 					sprintf(s, "%d", G.Sprachvariation[i]);
 					strcat(str, s);
-					strcat(str, "\"");
 			}
 			strcat(str, R"(","hell":")");
 			sprintf(s, "%d", G.hell);
@@ -758,6 +757,8 @@ void loop(){
 			strcat(str, R"(","MQTT_Server":")");
 			strcat(str, G.MQTT_Server);
 			strcat(str, "\"}");
+			Serial.print("Sending Payload:");
+			Serial.println(str);
 			webSocket.sendTXT(G.client_nr, str, strlen(str));
 			G.conf = COMMAND_IDLE;
 			break;
@@ -894,6 +895,7 @@ void loop(){
 		case COMMAND_SET_LANGUAGE_VARIANT:
 		{
 			eeprom_write();
+            led_clear();
 			show_zeit(1);
 			G.conf = COMMAND_IDLE;
 			break;

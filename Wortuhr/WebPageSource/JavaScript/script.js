@@ -277,10 +277,10 @@ function initWebsocket() {
             $("#brightness-22").set("value", data.h22);
             $("#brightness-24").set("value", data.h24);
 
-            $("#Sprachvariation0").set("value", data.Sprachvariation0);
-            $("#Sprachvariation1").set("value", data.Sprachvariation1);
-            $("#Sprachvariation2").set("value", data.Sprachvariation2);
-            $("#Sprachvariation3").set("value", data.Sprachvariation3);
+            $("#Sprachvariation0").set("value", data.spv0);
+            $("#Sprachvariation1").set("value", data.spv1);
+            $("#Sprachvariation2").set("value", data.spv2);
+            $("#Sprachvariation3").set("value", data.spv3);
 
             $("#ldr").set("value", data.ldr);
             $("#slider-brightness").set("value", data.hell);

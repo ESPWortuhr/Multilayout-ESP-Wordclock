@@ -702,12 +702,12 @@ static void set_uhrzeit() {
             break;
         case 2: // 10 nach
 			if (G.Sprachvariation[ItIs15] == 1) {
-				uhrzeit |= ((uint32_t) 1 << VIERTEL);
-				uhrzeit |= ((uint32_t) 1 << NACH);
-				set_stunde(_stunde, 0);
+                uhrzeit |= ((uint32_t) 1 << VIERTEL);
+                set_stunde(_stunde + 1, 0);
 			} else {
-				uhrzeit |= ((uint32_t) 1 << VIERTEL);
-				set_stunde(_stunde + 1, 0);
+                uhrzeit |= ((uint32_t) 1 << VIERTEL);
+                uhrzeit |= ((uint32_t) 1 << NACH);
+                set_stunde(_stunde, 0);
 			}
             break;
         case 3: // viertel nach
@@ -717,14 +717,14 @@ static void set_uhrzeit() {
             break;
         case 4: // 20 nach
 			if (G.Sprachvariation[ItIs20] == 1) {
-				uhrzeit |= ((uint32_t) 1 << ZWANZIG);
-				uhrzeit |= ((uint32_t) 1 << NACH);
-				set_stunde(_stunde, 0);
+                uhrzeit |= ((uint32_t) 1 << ZEHN);
+                uhrzeit |= ((uint32_t) 1 << VOR);
+                uhrzeit |= ((uint32_t) 1 << HALB);
+                set_stunde(_stunde + 1, 0);
 			} else {
-				uhrzeit |= ((uint32_t) 1 << ZEHN);
-				uhrzeit |= ((uint32_t) 1 << VOR);
-				uhrzeit |= ((uint32_t) 1 << HALB);
-				set_stunde(_stunde + 1, 0);
+                uhrzeit |= ((uint32_t) 1 << ZWANZIG);
+                uhrzeit |= ((uint32_t) 1 << NACH);
+                set_stunde(_stunde, 0);
 			}
             break;
         case 5: // 5 vor halb
@@ -745,21 +745,21 @@ static void set_uhrzeit() {
             break;
         case 8: // 20 vor
 			if (G.Sprachvariation[ItIs40] == 1) {
-				uhrzeit |= ((uint32_t) 1 << ZWANZIG);
-				uhrzeit |= ((uint32_t) 1 << VOR);
+                uhrzeit |= ((uint32_t) 1 << ZEHN);
+                uhrzeit |= ((uint32_t) 1 << NACH);
+                uhrzeit |= ((uint32_t) 1 << HALB);
 			} else {
-				uhrzeit |= ((uint32_t) 1 << ZEHN);
-				uhrzeit |= ((uint32_t) 1 << NACH);
-				uhrzeit |= ((uint32_t) 1 << HALB);
+                uhrzeit |= ((uint32_t) 1 << ZWANZIG);
+                uhrzeit |= ((uint32_t) 1 << VOR);
 			}
             set_stunde(_stunde + 1, 0);
             break;
         case 9: // viertel vor
 			if (G.Sprachvariation[ItIs45] == 1 && G.UhrtypeDef == Uhr_114_Alternative) {
-				uhrzeit |= ((uint32_t) 1 << VIERTEL);
-				uhrzeit |= ((uint32_t) 1 << VOR);
+                uhrzeit |= ((uint32_t) 1 << DREIVIERTEL);
 			} else {
-				uhrzeit |= ((uint32_t) 1 << DREIVIERTEL);
+                uhrzeit |= ((uint32_t) 1 << VIERTEL);
+                uhrzeit |= ((uint32_t) 1 << VOR);
 			}
             set_stunde(_stunde + 1, 0);
             break;
