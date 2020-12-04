@@ -30,7 +30,9 @@ public:
 		Send_HTML_Code(client, 2);
         if (G.UhrtypeDef == Uhr_242){ Send_HTML_Code(client, 3);};
         if (G.UhrtypeDef == Uhr_169){ Send_HTML_Code(client, 4);};
-		Send_HTML_Code(client, 5);
+        Send_HTML_Code(client, 5);
+		if (G.UhrtypeDef == Uhr_114_Alternative){ Send_HTML_Code(client, 6);};
+		Send_HTML_Code(client, 7);
         clientDisconnect(client);
     }
 
@@ -312,6 +314,18 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 					G.conf = COMMAND_SET_LDR;
 					G.ldr = split (payload, 9, 3);
 					G.ldrCal = split (payload, 12, 3);
+					break;
+				}
+
+					//------------------------------------------------------------------------------
+
+				case COMMAND_SET_LANGUAGE_VARIANT:
+				{       // LDR speichern
+					G.conf = COMMAND_SET_LANGUAGE_VARIANT;
+					G.Sprachvariation[ItIs15] = split(payload,9, 3);
+					G.Sprachvariation[ItIs20] = split(payload,12, 3);
+					G.Sprachvariation[ItIs40] = split(payload,15, 3);
+					G.Sprachvariation[ItIs45] = split(payload,18, 3);
 					break;
 				}
 

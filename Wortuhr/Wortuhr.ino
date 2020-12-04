@@ -178,6 +178,7 @@ void setup(){
 		G.h20 = 100;
 		G.h22 = 100;
 		G.h24 = 100;
+		for (uint8_t i = 0; i < 4; i++) { G.Sprachvariation[i] = 0;}
 
 		G.MQTT_State = 0;
 		G.MQTT_Port = 1883;
@@ -713,6 +714,15 @@ void loop(){
 			strcat(str, R"(","h24":")");
 			sprintf(s, "%d", G.h24);
 			strcat(str, s);
+			for (uint8_t i = 0; i < 4; i++)
+			{
+					strcat(str, R"(","spv)");
+					sprintf(s, "%d", i);
+					strcat(str, s);
+					strcat(str, R"(":")");
+					sprintf(s, "%d", G.Sprachvariation[i]);
+					strcat(str, s);
+			}
 			strcat(str, R"(","hell":")");
 			sprintf(s, "%d", G.hell);
 			strcat(str, s);
@@ -747,6 +757,8 @@ void loop(){
 			strcat(str, R"(","MQTT_Server":")");
 			strcat(str, G.MQTT_Server);
 			strcat(str, "\"}");
+			Serial.print("Sending Payload:");
+			Serial.println(str);
 			webSocket.sendTXT(G.client_nr, str, strlen(str));
 			G.conf = COMMAND_IDLE;
 			break;
@@ -878,6 +890,18 @@ void loop(){
         }
 
 			//------------------------------------------------
+			// Sprachvarianten Einstellungen
+			//------------------------------------------------
+		case COMMAND_SET_LANGUAGE_VARIANT:
+		{
+			eeprom_write();
+            led_clear();
+			show_zeit(1);
+			G.conf = COMMAND_IDLE;
+			break;
+		}
+
+			//------------------------------------------------
 			// MQTT Einstellungen
 			//------------------------------------------------
 		case COMMAND_SET_MQTT:
@@ -897,6 +921,7 @@ void loop(){
 		case COMMAND_SET_TIME_MANUAL:
 		{
 			Serial.println("Uhrzeit manuell eingstellt");
+			led_clear();
 			show_zeit(1); // Anzeige Uhrzeit mit Config
 			G.conf = COMMAND_IDLE;
 			break;

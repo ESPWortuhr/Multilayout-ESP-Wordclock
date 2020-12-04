@@ -71,8 +71,10 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
 * Added MQTT Support
 * Added up to date responsive design for Website
 * Added dedicated Link to Firmware Update Page
+* Added support for language variants (dreiviertel)
 * Fixed Issue for compiling with Arduino IDE
 * Fixed Handling of Text-input on Website
+* Fixed LDR Handling
 
 ### Version 2.4.2
 * (Eisbaeeer) 20201025   
