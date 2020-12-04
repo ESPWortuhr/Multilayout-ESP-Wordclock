@@ -701,20 +701,20 @@ static void set_uhrzeit() {
             set_stunde(_stunde, 0);
             break;
         case 2: // 10 nach
-			if (G.Sprachvariation[ItIs15] == 1) {
-                uhrzeit |= ((uint32_t) 1 << VIERTEL);
-                set_stunde(_stunde + 1, 0);
-			} else {
-                uhrzeit |= ((uint32_t) 1 << VIERTEL);
-                uhrzeit |= ((uint32_t) 1 << NACH);
-                set_stunde(_stunde, 0);
-			}
-            break;
+			uhrzeit |= ((uint32_t) 1 << ZEHN);
+			uhrzeit |= ((uint32_t) 1 << NACH);
+			set_stunde(_stunde, 0);
+			break;
         case 3: // viertel nach
-            uhrzeit |= ((uint32_t) 1 << VIERTEL);
-            uhrzeit |= ((uint32_t) 1 << NACH);
-            set_stunde(_stunde, 0);
-            break;
+			if (G.Sprachvariation[ItIs15] == 1) {
+				uhrzeit |= ((uint32_t) 1 << VIERTEL);
+				set_stunde(_stunde + 1, 0);
+			} else {
+				uhrzeit |= ((uint32_t) 1 << VIERTEL);
+				uhrzeit |= ((uint32_t) 1 << NACH);
+				set_stunde(_stunde, 0);
+			}
+			break;
         case 4: // 20 nach
 			if (G.Sprachvariation[ItIs20] == 1) {
                 uhrzeit |= ((uint32_t) 1 << ZEHN);

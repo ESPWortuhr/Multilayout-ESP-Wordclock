@@ -921,6 +921,7 @@ void loop(){
 		case COMMAND_SET_TIME_MANUAL:
 		{
 			Serial.println("Uhrzeit manuell eingstellt");
+			led_clear();
 			show_zeit(1); // Anzeige Uhrzeit mit Config
 			G.conf = COMMAND_IDLE;
 			break;
