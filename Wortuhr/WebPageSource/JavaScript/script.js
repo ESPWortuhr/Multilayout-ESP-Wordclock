@@ -695,20 +695,8 @@ $.ready(function () {
         sendData(COMMAND_SET_INITIAL_VALUES, 0, 0);
     });
     $("#wifi-button").on("click", function () {
-
-        var ssidValue = $("#ssid").get("value");
-        var passwordValue = $("#password").get("value");
-
-        // append ssid
-        var data = CMDtoData(COMMAND_SET_WIFI_AND_RESTART, 0, 0);
-        data += getPaddedString(ssidValue, DATA_SSID_TEXT_LENGTH);
-
-        // append password
-        data += getPaddedString(passwordValue, DATA_PASSWORT_TEXT_LENGTH);
-        data += "999";
-
-        websocket.send(data);
-        debugMessage("WLAN wurde neu konfiguriert", data);
+        sendData(COMMAND_SET_WIFI_AND_RESTART, 0, 0);
+        debugMessage("WLAN wird neu konfiguriert", data);
         return false;
     });
     $("#_wlanscan").on("click",function(){
@@ -812,8 +800,8 @@ $.ready(function () {
         websocket.send(data);
         debugMessage("LDR Steuerung wurde konfiguriert", data);
     });
-    $("#host-button").on("click", function () {
-        var hostValue = $("#host").get("value");
+    $("#hostname-button").on("click", function () {
+        var hostValue = $("#hostname").get("value");
 
         var data = CMDtoData(COMMAND_SET_HOSTNAME, 0, 0);
         data += getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH);

@@ -7,7 +7,7 @@
 //#define UHR_169                     // Uhr mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
 //#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
 
-#define SERNR 100             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+#define SERNR 101             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
 
 // Wenn die Farben nicht passen können sie hier angepasst werden:
 #define Brg_Color   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
@@ -142,8 +142,6 @@ void setup(){
 		EEPROM.commit();
 
 		G.sernr = SERNR;
-		strcpy(G.ssid, "Enter_Your_SSID");
-		strcpy(G.passwd, "Enter_Your_PASSWORD");
 		G.prog = 1;
 		G.param1 = 0;
 		G.param2 = 0;
@@ -300,6 +298,7 @@ void setup(){
 	//-------------------------------------
 	// Start WiFi
 	//-------------------------------------
+	Network_setup(G.hostname);
 	WlanStart();
 
 	//-------------------------------------
@@ -466,41 +465,12 @@ void loop(){
 			show_zeit(1); // Anzeige Uhrzeit mit Config
 		}
 
-		//Deaktiviere WLAN nach 5 Minuten AP Zeit
-		WiFiCheck_AP_Status();
-
-		// WLAN reconnect
-		wlan_status = WiFi.status();
-		Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
-		TelnetMsg("WLAN-Status: ");
-		TelnetMsg(wstatus[wlan_status]);
-
 		_sekunde48 = 0;
 		last_minute = _minute;
 
 		Serial.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
 		Serial.println(">>>> Ende  Minute <<<<");
 		TelnetMsg(">>>> Ende  Minute <<<<");
-	}
-
-	//------------------------------------------------
-	// Stunde
-	//------------------------------------------------
-	if (last_stunde != _stunde){
-		Serial.println(">>>> Begin Stunde <<<<");
-		TelnetMsg(">>>> Begin Stunde <<<<");
-		// WLAN testen
-		wlan_status = WiFi.status();
-		Serial.printf("WLAN-Status: %s\n", wstatus[wlan_status]);
-		TelnetMsg("WLAN-Status: ");
-		TelnetMsg(wstatus[wlan_status]);
-		if (wlan_client == false && wlan_ssid == true && AP_Status != 6){
-			WlanStart();
-		}
-
-		last_stunde = _stunde;
-		Serial.println(">>>> Ende  Stunde <<<<");
-		TelnetMsg(">>>> Ende  Stunde <<<<");
 	}
 
 	//------------------------------------------------
@@ -521,6 +491,8 @@ void loop(){
 			getweather();
 		}
 	}
+
+	Network_loop();
 
 	//------------------------------------------------
 	// NTP Zeit neu holen
@@ -681,9 +653,8 @@ void loop(){
 		case COMMAND_REQUEST_CONFIG_VALUES:
 		{
 			strcpy(str, R"({"command":"config")");
-			strcat(str, ",\"ssid\":");
-			strcat(str, "\"");
-			strcat(str, G.ssid);
+			strcat(str, R"(,"ssid":")");
+			strcat(str, Network_getSSID().c_str());
 			strcat(str, R"(","zeitserver":")");
 			strcat(str, G.zeitserver);
 			strcat(str, R"(","hostname":")");
@@ -796,21 +767,6 @@ void loop(){
 			strcat(str, s);
 			strcat(str, "\"}");
 			webSocket.sendTXT(G.client_nr, str, strlen(str));
-			G.conf = COMMAND_IDLE;
-			break;
-		}
-
-			//------------------------------------------------
-			// Wlan Liste
-			//------------------------------------------------
-
-		case COMMAND_REQUEST_WIFI_LIST:
-		{
-			String strs = R"({"command":"wlan")";
-			strs += R"(,"list":")";
-			strs += WiFiScan(true);
-			strs += "\"}";
-			webSocket.sendTXT(G.client_nr, strs);
 			G.conf = COMMAND_IDLE;
 			break;
 		}
@@ -928,18 +884,6 @@ void loop(){
 		}
 
             //------------------------------------------------
-            // trigger für WPS Mode gesetzt
-            //------------------------------------------------
-        case COMMAND_SET_WPS_MODE:
-        {
-            Serial.println("WiFi WPS Mode aktiviert");
-            WiFiStart_WPS();
-            eeprom_write();
-            G.conf = COMMAND_RESET;
-            break;
-        }
-
-            //------------------------------------------------
             // Colortype der LED einstellen
             //------------------------------------------------
         case COMMAND_SET_COLORTYPE:
@@ -989,9 +933,10 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_HOSTNAME:
         {
-            MDNS.setHostname((const char *) G.hostname);
+            Serial.print("Hostname: ");
+            Serial.println(G.hostname);
             eeprom_write();
-            delay(100);
+            Network_reboot();
             G.conf = COMMAND_IDLE;
             break;
         }
@@ -1042,7 +987,7 @@ void loop(){
             eeprom_write();
             delay(100);
             Serial.println("Conf: WLAN Abgeschaltet");
-            WiFi.forceSleepBegin();
+            Network_disable();
             G.conf = COMMAND_IDLE;
             break;
         }
@@ -1052,10 +997,8 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_WIFI_AND_RESTART:
         {
-            eeprom_write();
-            delay(100);
             Serial.println("Conf: WLAN neu konfiguriert");
-            WlanStart();
+            Network_resetSettings();
             G.conf = COMMAND_IDLE;
             break;
         }

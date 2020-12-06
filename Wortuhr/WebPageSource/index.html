@@ -260,26 +260,6 @@
                     <div class="pure-u-1 pure-u-md-1-2">
 
                         <div class="box">
-                            <h2>WLAN</h2>
-                            <form class="pure-form pure-form-aligned">
-                                <fieldset>
-                                    <div class="pure-control-group">
-                                        <label for="ssid">SSID</label><input id="ssid" type="text" placeholder="SSID">
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <label for="password">Passwort</label><input id="password" type="password" placeholder="Passwort">
-                                    </div>
-                                    <div class="pure-controls">
-                                        <button id="wifi-button" class="pure-button">WLAN speichern</button>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-
-                    </div>
-                    <div class="pure-u-1 pure-u-md-1-2">
-
-                        <div class="box">
                             <h2>Zeitserver</h2>
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
@@ -708,27 +688,27 @@
                     <div class="pure-u-1 pure-u-md-1-2">
 
                         <div class="box">
-                            <h2>WLAN Abschalten</h2>
+                            <h2>WiFi</h2>
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
-                                    <div class="pure-controls">
-                                        <label for="disable-button">Neustart zu Einschalten benötigt</label>
-                                        <button id="disable-button" class="pure-button">WLAN Ausschalten</button>
+                                    <legend>
+                                    Neukonfiguration erstellt ein eigenes WLAN.
+                                    Mit diesem verbinden, dann kann das Zielnetz ausgewählt werden.
+                                    </legend>
+
+                                    <div class="pure-control-group">
+                                        <label for="ssid">SSID</label>
+					<input id="ssid" type="text" placeholder="SSID" readonly>
                                     </div>
-                                </fieldset>
-                            </form>
-                        </div>
 
-                    </div>
-                    <div class="pure-u-1 pure-u-md-1-2">
+                                    <div class="pure-control-group">
+                                        <label for="wifi-button">Anderes WLAN</label>
+                                        <button id="wifi-button" class="pure-button">Konfigurieren</button>
+                                    </div>
 
-                        <div class="box">
-                            <h2>WPS Aktivieren</h2>
-                            <form class="pure-form pure-form-aligned">
-                                <fieldset>
-                                    <div class="pure-controls">
-                                        <label for="wps-button">Wifi-Protected-Setup</label>
-                                        <button id="wps-button" class="pure-button">WPS Aktivieren</button>
+                                    <div class="pure-control-group">
+                                        <label for="disable-button">Bis zum Neustart</label>
+                                        <button id="disable-button" class="pure-button">Ausschalten</button>
                                     </div>
                                 </fieldset>
                             </form>

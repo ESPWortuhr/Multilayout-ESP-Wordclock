@@ -34,8 +34,6 @@ enum uhrzeit_t {
 
 struct GLOBAL {
     uint8_t sernr;
-    char ssid[WL_SSID_MAX_LENGTH];
-    char passwd[WL_WPA_KEY_MAX_LENGTH];
 	uint16_t prog;
     uint8_t param1;
     uint8_t param2;
@@ -103,12 +101,6 @@ bool ConnectionEstablished; // Flag for successfully handled connection
 #define MAX_TELNET_CLIENTS 2
 WiFiServer TelnetServer(23);
 WiFiClient TelnetClient[MAX_TELNET_CLIENTS];
-
-const char *ssid_ap = "Uhr";
-const char *password_ap = "12345678";
-//--OTA--
-const char *host = "webupdate";
-//--OTA--
 
 unsigned char wlan_client = false;
 unsigned char wlan_status = 99;
