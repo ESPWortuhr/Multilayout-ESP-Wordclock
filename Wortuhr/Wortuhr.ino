@@ -46,6 +46,7 @@ bool show_ip = true;      // Zeige IP Adresse beim Start
 #include "Uhr.h"
 #include "WebPage_Adapter.h"
 #include "EEPROMAnything.h"
+#include "icons.h"
 
 #include "Uhrtypes/uhr_func_114_Alternative.hpp"
 #include "Uhrtypes/uhr_func_114.hpp"
@@ -298,7 +299,12 @@ void setup(){
 	//-------------------------------------
 	// Start WiFi
 	//-------------------------------------
+	show_icon_wlan(0);
 	Network_setup(G.hostname);
+	int strength = Network_getQuality();
+	Serial.printf("Signal strength: %i\n", strength);
+	show_icon_wlan(strength);
+	delay(500);
 	WlanStart();
 
 	//-------------------------------------

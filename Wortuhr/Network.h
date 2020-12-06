@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 void Network_info();
+int Network_getQuality();
 void Network_disable();
 void Network_reboot();
 void Network_resetSettings();

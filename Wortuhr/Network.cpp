@@ -11,8 +11,13 @@ WiFiManager wifiManager;
 
 const char * connectionSSID = "WortUhr_verbinden";
 
-void Network_info(){
+void Network_info() {
 	WiFi.printDiag(Serial);
+}
+
+int Network_getQuality() {
+	int rssi = WiFi.RSSI();
+	return wifiManager.getRSSIasQuality(rssi);
 }
 
 void Network_disable() {

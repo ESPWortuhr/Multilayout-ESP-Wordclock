@@ -1,4 +1,7 @@
+#include "leds.h"
+
 #include <Arduino.h>
+
 #include "Uhr.h"
 
 //------------------------------------------------------------------------------
@@ -212,7 +215,7 @@ static void led_set(const uint8_t array[]) {
 
 //------------------------------------------------------------------------------
 
-static inline void led_show() {
+void led_show() {
     if (G.Colortype == Grbw){
         strip_RGBW->Show();
     }
@@ -234,7 +237,7 @@ static inline void led_clear_pixel(uint16_t i) {
 
 //------------------------------------------------------------------------------
 
-static inline void led_clear() {
+void led_clear() {
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         Word_array[i] = 255;
     }
