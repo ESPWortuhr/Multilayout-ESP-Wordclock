@@ -688,6 +688,40 @@
                     <div class="pure-u-1 pure-u-md-1-2">
 
                         <div class="box">
+                            <h2>Neustart</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <legend>
+                                    Was soll beim Neustart passieren?
+                                    </legend>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-led-blink" />
+                                        <label for="boot-led-blink" class="pure-checkbox">LEDs kurz aufblitzen</label>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-led-sweep" />
+                                        <label for="boot-led-sweep" class="pure-checkbox">Alle LEDs einmal durchlaufen lassen</label>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-show-wifi" />
+                                        <label for="boot-show-wifi" class="pure-checkbox">WiFi Symbol während der Suche anzeigen</label>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-show-ip" />
+                                        <label for="boot-show-ip" class="pure-checkbox">IP Addresse anzeigen</label>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="boot-button" class="pure-button">Speichern</button>
+                                        <button id="reset-button" class="pure-button">Neu Starten</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
+
+                        <div class="box">
                             <h2>WiFi</h2>
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
@@ -709,20 +743,6 @@
                                     <div class="pure-control-group">
                                         <label for="disable-button">Bis zum Neustart</label>
                                         <button id="disable-button" class="pure-button">Ausschalten</button>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-
-                    </div>
-                    <div class="pure-u-1 pure-u-md-1-2">
-
-                        <div class="box">
-                            <h2>Zuruecksetzen</h2>
-                            <form class="pure-form pure-form-aligned">
-                                <fieldset>
-                                    <div class="pure-controls">
-                                        <button id="reset-button" class="pure-button">Zuruecksetzen</button>
                                     </div>
                                 </fieldset>
                             </form>

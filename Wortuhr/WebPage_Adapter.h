@@ -452,6 +452,17 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 
 					//------------------------------------------------------------------------------
 
+				case COMMAND_SET_BOOT:
+				{       // Bootoptionen speichern
+					G.conf = COMMAND_SET_BOOT;
+					G.bootLedBlink = split (payload, 9, 3);
+					G.bootLedSweep = split (payload, 12, 3);
+					G.bootShowWifi = split (payload, 15, 3);
+					G.bootShowIP = split (payload, 18, 3);
+					break;
+				}
+					//------------------------------------------------------------------------------
+
 				case COMMAND_SET_WIFI_DISABLED:
 				{       // Zeitserver speichern
 					G.conf = COMMAND_SET_WIFI_DISABLED;

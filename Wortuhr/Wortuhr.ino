@@ -20,7 +20,6 @@
 
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
-bool show_ip = true;      // Zeige IP Adresse beim Start
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
  *--------------------------------------------------------------------------
@@ -222,6 +221,10 @@ void setup(){
 #ifdef Grbw_Color
 		G.Colortype = Grbw;
 #endif
+		G.bootLedBlink = false;
+		G.bootLedSweep = false;
+		G.bootShowWifi = true;
+		G.bootShowIP = false;
 
 		eeprom_write();
 		Serial.println("eeprom schreiben");
@@ -278,7 +281,14 @@ void setup(){
 	//-------------------------------------
 	Serial.println("LED Init");
 	InitLedStrip(G.Colortype);
-	led_single(20);
+	if (G.bootLedBlink) {
+		led_set_all(0x40, 0x40, 0x40, 0x40);
+		led_show();
+		delay(20);
+	}
+	if (G.bootLedSweep) {
+		led_single(20);
+	}
 	led_clear();
 	led_show();
 
@@ -299,12 +309,16 @@ void setup(){
 	//-------------------------------------
 	// Start WiFi
 	//-------------------------------------
-	show_icon_wlan(0);
+	if (G.bootShowWifi) {
+		show_icon_wlan(0);
+	}
 	Network_setup(G.hostname);
 	int strength = Network_getQuality();
 	Serial.printf("Signal strength: %i\n", strength);
-	show_icon_wlan(strength);
-	delay(500);
+	if (G.bootShowWifi) {
+		show_icon_wlan(strength);
+		delay(500);
+	}
 	WlanStart();
 
 	//-------------------------------------
@@ -733,6 +747,14 @@ void loop(){
 			strcat(str, s);
 			strcat(str, R"(","MQTT_Server":")");
 			strcat(str, G.MQTT_Server);
+			strcat(str, R"(","bootLedBlink":")");
+			strcat(str, G.bootLedBlink ? "1" : "0");
+			strcat(str, R"(","bootLedSweep":")");
+			strcat(str, G.bootLedSweep ? "1" : "0");
+			strcat(str, R"(","bootShowWifi":")");
+			strcat(str, G.bootShowWifi ? "1" : "0");
+			strcat(str, R"(","bootShowIP":")");
+			strcat(str, G.bootShowIP ? "1" : "0");
 			strcat(str, "\"}");
 			Serial.print("Sending Payload:");
 			Serial.println(str);
@@ -982,6 +1004,16 @@ void loop(){
             timeClient.update();
             eeprom_write();
             G.conf = COMMAND_SET_TIME;
+            break;
+        }
+
+            //------------------------------------------------
+            // Bootoptionen speichern
+            //------------------------------------------------
+        case COMMAND_SET_BOOT:
+        {
+            eeprom_write();
+            G.conf = COMMAND_IDLE;
             break;
         }
 

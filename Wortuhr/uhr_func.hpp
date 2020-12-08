@@ -343,13 +343,16 @@ static void led_single(uint8_t wait) {
 
 //------------------------------------------------------------------------------
 
+static void led_set_all(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww) {
+    for (int i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+        led_set_pixel(rr, gg, bb, ww, i);
+    }
+}
+
 static void set_farbe() {
     uint8_t rr, gg, bb, ww;
     set_helligkeit(rr, gg, bb, ww, Effect);
-
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        led_set_pixel(rr, gg, bb, ww, i);
-    }
+    led_set_all(rr, gg, bb, ww);
 }
 
 //------------------------------------------------------------------------------

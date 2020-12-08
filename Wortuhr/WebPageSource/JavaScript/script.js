@@ -120,6 +120,7 @@ var COMMAND_SET_TIMESERVER = 97;
 var COMMAND_SET_WIFI_DISABLED = 98;
 var COMMAND_SET_WIFI_AND_RESTART = 99;
 var COMMAND_RESET = 100;
+var COMMAND_SET_BOOT = 101;
 
 var COMMAND_BRIGHTNESS = 151;
 var COMMAND_SPEED = 152;
@@ -187,6 +188,10 @@ function initConfigValues() {
     MQTT_State = 0;
     MQTT_Port = 0;
     MQTT_Server = 0;
+    bootLedBlink = 0;
+    bootLedSweep = 0;
+    bootShowWifi = 0;
+    bootShowIP = 0;
 }
 
 function hexToRgb(hex) {
@@ -301,6 +306,11 @@ function initWebsocket() {
             $("#MQTT_State").set("value", data.MQTT_State);
             $("#MQTT_Port").set("value", data.MQTT_Port);
             $("#MQTT_Server").set("value", data.MQTT_Server);
+
+            $("#boot-led-blink").set("checked", data.bootLedBlink | 0);
+            $("#boot-led-sweep").set("checked", data.bootLedSweep | 0);
+            $("#boot-show-wifi").set("checked", data.bootShowWifi | 0);
+            $("#boot-show-ip").set("checked", data.bootShowIP | 0);
         }
         if (data.command === "set") {
             rgb[0][0] = data.rgb00;
@@ -809,6 +819,19 @@ $.ready(function () {
 
         websocket.send(data);
         debugMessage("Hostname wurde neu konfiguriert", data);
+    });
+    $("#boot-button").on("click", function () {
+
+        bootLedBlink = $("#boot-led-blink").get("checked") | 0;
+        bootLedSweep = $("#boot-led-sweep").get("checked") | 0;
+        bootShowWifi = $("#boot-show-wifi").get("checked") | 0;
+        bootShowIP = $("#boot-show-ip").get("checked") | 0;
+
+        var data = CMDtoData(COMMAND_SET_BOOT, 0, 0);
+        data += nstr(bootLedBlink) + nstr(bootLedSweep) + nstr(bootShowWifi) + nstr(bootShowIP) + "999";
+
+        websocket.send(data);
+        debugMessage("Bootoptionen wurden neu konfiguriert", data);
     });
     $("#disable-button").on("click", function () {
         sendData(COMMAND_SET_WIFI_DISABLED, 0, 0);

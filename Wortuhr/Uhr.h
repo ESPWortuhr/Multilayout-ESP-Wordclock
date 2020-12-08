@@ -72,6 +72,11 @@ struct GLOBAL {
     uint8_t MQTT_State;
 	char MQTT_Server[30];
 	uint16_t MQTT_Port;
+
+	bool bootLedBlink;
+	bool bootLedSweep;
+	bool bootShowWifi;
+	bool bootShowIP;
 };
 GLOBAL G = {};
 
@@ -133,7 +138,7 @@ uint32_t uhrzeit;
 uint8_t Word_array[242] = { 255 };
 uint8_t AP_Status = 0;
 
-char str[450];
+char str[1024];
 char s[5];
 
 bool externalRTC = false;
@@ -189,6 +194,7 @@ enum Command {
     COMMAND_SET_WIFI_DISABLED = 98,
     COMMAND_SET_WIFI_AND_RESTART = 99,
     COMMAND_RESET = 100,
+    COMMAND_SET_BOOT = 101,
 
     COMMAND_BRIGHTNESS = 151,
     COMMAND_SPEED = 152,

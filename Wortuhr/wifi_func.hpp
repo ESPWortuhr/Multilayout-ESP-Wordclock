@@ -34,7 +34,7 @@ void WlanStart()
 	Serial.println(ip_adress);
 	Serial.println("");
 	// IP-Adresse als Laufschrift anzeigen
-	if (show_ip == true) { zeigeip(ip_adress); }
+	if (G.bootShowIP) { zeigeip(ip_adress); }
 
 	timeClient.begin();
 	delay(100);
