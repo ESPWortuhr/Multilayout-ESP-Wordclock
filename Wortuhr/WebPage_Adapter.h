@@ -3,6 +3,7 @@
 #include "WebSocketsServer.h"
 #include "WebPageWortuhr.h"
 #include "Uhr.h"
+#include "Network.h"
 
 #define RESPONSE_SIZE    900
 
@@ -451,6 +452,17 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 
 					//------------------------------------------------------------------------------
 
+				case COMMAND_SET_BOOT:
+				{       // Bootoptionen speichern
+					G.conf = COMMAND_SET_BOOT;
+					G.bootLedBlink = split (payload, 9, 3);
+					G.bootLedSweep = split (payload, 12, 3);
+					G.bootShowWifi = split (payload, 15, 3);
+					G.bootShowIP = split (payload, 18, 3);
+					break;
+				}
+					//------------------------------------------------------------------------------
+
 				case COMMAND_SET_WIFI_DISABLED:
 				{       // Zeitserver speichern
 					G.conf = COMMAND_SET_WIFI_DISABLED;
@@ -460,19 +472,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 					//------------------------------------------------------------------------------
 
 				case COMMAND_SET_WIFI_AND_RESTART:
-				{       // WLAN-Daten speichern und neu starten
+				{       // WLAN-Daten löschen und neu starten
 					G.conf = COMMAND_SET_WIFI_AND_RESTART;
-                    payloadTextHandling(payload, G.ssid, sizeof(G.ssid) / sizeof(G.ssid[0]));
-					ii = 0;
-					for (int k = 34; k < 34 + WL_WPA_KEY_MAX_LENGTH; k++)
-					{
-						if (payload[k] != ' ')
-						{
-							G.passwd[ii] = payload[k];
-							ii++;
-						}
-					}
-					G.passwd[ii] = '\0';
 					break;
 				}
 
