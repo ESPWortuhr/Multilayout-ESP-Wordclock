@@ -1,0 +1,28 @@
+# Example configuration.yaml entry
+light:
+  - platform: mqtt
+    schema: template
+    effect_list:
+      - Wortuhr
+      - Sekundenanzeige
+      - Laufschrift
+      - Regenbogen
+      - Farbwechsel
+      - Farbe
+    command_topic: "home/rgb1/set"
+    state_topic: "home/rgb1/status"
+    command_on_template: >
+      {"state": "on"
+      {%- if red is defined and green is defined and blue is defined -%}
+      , "color": [{{ red }}, {{ green }}, {{ blue }}]
+      {%- endif -%}
+      {%- if effect is defined -%}
+      , "effect": "{{ effect }}"
+      {%- endif -%}
+      }
+    command_off_template: '{"state": "off"}'
+    state_template: '{{ value_json.state }}'
+    red_template: '{{ value_json.color[0] }}'
+    green_template: '{{ value_json.color[1] }}'
+    blue_template: '{{ value_json.color[2] }}'
+    effect_template: '{{ value_json.effect }}'

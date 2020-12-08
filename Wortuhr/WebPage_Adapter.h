@@ -6,8 +6,6 @@
 
 #define RESPONSE_SIZE    900
 
-const char* const html_sliders[] PROGMEM = {index_html_head, index_html_body_first, slider_RGBW, index_html_body_mid, Switches_UHR242, Switches_UHR169, index_html_body_rest};
-
 class WebPage_Adapter : public WebSocketsServer {
 
 public:
@@ -27,23 +25,24 @@ public:
                            "Connection: close\r\n"
                            //--                    "Sec-WebSocket-Version: 13\r\n"
                            "\r\n");
-        Send_HTML_Code_for_Sliders(client, sizeof(index_html_head), 0);
-        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_first), 1);
-        if (G.Colortype == Grbw){Send_HTML_Code_for_Sliders(client, sizeof(slider_RGBW), 2);};
-        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_mid), 3);
-        if (G.UhrtypeDef == Uhr_242){Send_HTML_Code_for_Sliders(client, sizeof(Switches_UHR242), 4);};
-        if (G.UhrtypeDef == Uhr_169){Send_HTML_Code_for_Sliders(client, sizeof(Switches_UHR169), 5);};
-        Send_HTML_Code_for_Sliders(client, sizeof(index_html_body_rest), 6);
+		Send_HTML_Code(client, 0);
+        if (G.Colortype == Grbw){ Send_HTML_Code(client, 1);};
+		Send_HTML_Code(client, 2);
+        if (G.UhrtypeDef == Uhr_242){ Send_HTML_Code(client, 3);};
+        if (G.UhrtypeDef == Uhr_169){ Send_HTML_Code(client, 4);};
+        Send_HTML_Code(client, 5);
+		if (G.UhrtypeDef == Uhr_114_Alternative){ Send_HTML_Code(client, 6);};
+		Send_HTML_Code(client, 7);
         clientDisconnect(client);
     }
 
-    void Send_HTML_Code_for_Sliders(const WSclient_t *client, uint16_t slider_size, uint8_t slider_index) const {
+    void Send_HTML_Code(const WSclient_t *client, uint8_t index) const {
         char str[RESPONSE_SIZE + 4];
         unsigned ww = 0;
         unsigned yy = 0;
         int j;
-        while (ww < slider_size) {
-            str[yy] = pgm_read_byte(&html_sliders[slider_index][ww]);
+        while (ww < HTML_Size[index]) {
+            str[yy] = pgm_read_byte(&html_code[index][ww]);
             str[yy + 1] = '\0';
             yy++;
             if (yy == RESPONSE_SIZE) {
@@ -75,6 +74,27 @@ uint16_t split(uint8_t *payload, uint8_t start, uint8_t lenght) {
         m++;
     }
     return atoi(buffer);
+}
+
+//------------------------------------------------------------------------------
+
+void payloadTextHandling(const uint8_t *payload, char* text, uint8_t length){
+	uint8_t ii = 0;
+	for (uint8_t k = 9; k < 9 + length; k++)
+	{
+		text[ii] = payload[k];
+		ii++;
+	}
+	uint8_t index = 0;
+	for (int8_t counter = length - 1; counter > -1; counter--)
+	{
+		if (!isSpace(text[counter]))
+		{
+			index = counter;
+			break;
+		}
+	}
+	text[index + 1] = '\0';
 }
 
 //------------------------------------------------------------------------------
@@ -299,6 +319,49 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 
 					//------------------------------------------------------------------------------
 
+				case COMMAND_SET_LANGUAGE_VARIANT:
+				{       // LDR speichern
+					G.conf = COMMAND_SET_LANGUAGE_VARIANT;
+					G.Sprachvariation[ItIs15] = split(payload,9, 3);
+					G.Sprachvariation[ItIs20] = split(payload,12, 3);
+					G.Sprachvariation[ItIs40] = split(payload,15, 3);
+					G.Sprachvariation[ItIs45] = split(payload,18, 3);
+					break;
+				}
+
+					//------------------------------------------------------------------------------
+
+				case COMMAND_SET_MQTT:
+				{       // MQTT Daten speichern
+					G.conf = COMMAND_SET_MQTT;
+					G.MQTT_State = split (payload, 9, 3);
+					G.MQTT_Port = split (payload, 12, 5);
+                    ii = 0;
+					for (uint8_t k = 17; k < 47; k++)
+					{
+						if (payload[k] != ' ')
+						{
+							G.MQTT_Server[ii] = payload[k];
+							ii++;
+						}
+					}
+					G.MQTT_Server[ii] = '\0';
+					break;
+				}
+
+					//------------------------------------------------------------------------------
+
+				case COMMAND_SET_TIME_MANUAL:
+				{       // Uhrzeit manuell setzen
+					G.conf = COMMAND_SET_TIME_MANUAL;
+					int temp_std= split (payload, 9, 3);
+					int temp_min = split (payload, 12, 3);
+					setTime(temp_std, temp_min, 0, 1, 12, 2020);
+					break;
+				}
+
+					//------------------------------------------------------------------------------
+
 				case COMMAND_SET_WPS_MODE:
 				{       // Aktivieren des WPS Modus
 					G.conf = COMMAND_SET_WPS_MODE;
@@ -373,16 +436,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_MARQUEE_TEXT:
 				{       // Lauftext speichern
 					G.conf = COMMAND_SET_MARQUEE_TEXT;
-					ii = 0;
-					for (uint8_t k = 9; k < 39; k++)
-					{
-						if (payload[k] != ' ')
-						{
-							G.ltext[ii] = payload[k];
-							ii++;
-						}
-					}
-					G.ltext[ii] = '\0';
+					payloadTextHandling(payload, G.ltext, sizeof(G.ltext) / sizeof(G.ltext[0]));
 					break;
 				}
 
@@ -391,13 +445,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_TIMESERVER:
 				{       // Zeitserver speichern
 					G.conf = COMMAND_SET_TIMESERVER;
-					ii = 0;
-					for (int k = 9; k < 24; k++)
-					{
-						G.zeitserver[ii] = payload[k];
-						ii++;
-					}
-					G.zeitserver[ii] = '\0';
+                    payloadTextHandling(payload, G.zeitserver, sizeof(G.zeitserver) / sizeof(G.zeitserver[0]));
 					break;
 				}
 
@@ -414,23 +462,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_WIFI_AND_RESTART:
 				{       // WLAN-Daten speichern und neu starten
 					G.conf = COMMAND_SET_WIFI_AND_RESTART;
-					ii = 0;
-					for (uint8_t k = 9; k < 9 + WL_SSID_MAX_LENGTH; k++)
-					{
-						G.ssid[ii] = payload[k];
-						ii++;
-					}
-					uint8_t index = 0;
-					for (int8_t counter = sizeof(G.ssid) / sizeof(G.ssid[0]) - 1; counter > -1; counter--)
-					{
-						if (!isSpace(G.ssid[counter]))
-						{
-							index = counter;
-							break;
-						}
-					}
-					G.ssid[index + 1] = '\0';
-
+                    payloadTextHandling(payload, G.ssid, sizeof(G.ssid) / sizeof(G.ssid[0]));
 					ii = 0;
 					for (int k = 34; k < 34 + WL_WPA_KEY_MAX_LENGTH; k++)
 					{

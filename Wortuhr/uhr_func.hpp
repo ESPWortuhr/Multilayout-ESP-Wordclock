@@ -166,10 +166,10 @@ RgbwColor led_get_pixel_rgbw(uint16_t i) {
 //------------------------------------------------------------------------------
 static void set_helligkeit_ldr(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww, uint8_t position) {
     if (G.ldr == 1) {
-        rr = G.rgb[position][0] / ldrVal;
-        gg = G.rgb[position][1] / ldrVal;
-        bb = G.rgb[position][2] / ldrVal;
-        ww = G.rgb[position][3] / ldrVal;
+        rr = G.rgb[position][0] * ldrVal / 100;
+        gg = G.rgb[position][1] * ldrVal / 100;
+        bb = G.rgb[position][2] * ldrVal / 100;
+        ww = G.rgb[position][3] * ldrVal / 100;
     } else {
         rr = G.rgb[position][0] * G.hh / 100;
         gg = G.rgb[position][1] * G.hh / 100;
@@ -354,15 +354,11 @@ static void set_farbe() {
 //------------------------------------------------------------------------------
 
 static void doLDRLogic() {
-    if (millis() >= waitUntilLDR) {
-        waitUntilLDR = millis();
-        int temp = analogRead(A0);
-        temp = temp - G.ldrCal;
-        if (temp >= 900) { temp = 900; }
-        if (temp <= 1) { temp = 1; }
-        ldrVal = map(temp, 1, 900, 1, 100);
-        waitUntilLDR += oneseconddelay;
-    }
+        uint16_t lux = analogRead(A0);
+        lux = lux - G.ldrCal;
+        if (lux >= 900) { lux = 900; }
+        if (lux <= 1) { lux = 1; }
+        ldrVal = map(lux, 1, 900, 1, 100);
 }
 
 //------------------------------------------------------------------------------
@@ -705,19 +701,31 @@ static void set_uhrzeit() {
             set_stunde(_stunde, 0);
             break;
         case 2: // 10 nach
-            uhrzeit |= ((uint32_t) 1 << ZEHN);
-            uhrzeit |= ((uint32_t) 1 << NACH);
-            set_stunde(_stunde, 0);
-            break;
+			uhrzeit |= ((uint32_t) 1 << ZEHN);
+			uhrzeit |= ((uint32_t) 1 << NACH);
+			set_stunde(_stunde, 0);
+			break;
         case 3: // viertel nach
-            uhrzeit |= ((uint32_t) 1 << VIERTEL);
-            uhrzeit |= ((uint32_t) 1 << NACH);
-            set_stunde(_stunde, 0);
-            break;
+			if (G.Sprachvariation[ItIs15] == 1) {
+				uhrzeit |= ((uint32_t) 1 << VIERTEL);
+				set_stunde(_stunde + 1, 0);
+			} else {
+				uhrzeit |= ((uint32_t) 1 << VIERTEL);
+				uhrzeit |= ((uint32_t) 1 << NACH);
+				set_stunde(_stunde, 0);
+			}
+			break;
         case 4: // 20 nach
-            uhrzeit |= ((uint32_t) 1 << ZWANZIG);
-            uhrzeit |= ((uint32_t) 1 << NACH);
-            set_stunde(_stunde, 0);
+			if (G.Sprachvariation[ItIs20] == 1) {
+                uhrzeit |= ((uint32_t) 1 << ZEHN);
+                uhrzeit |= ((uint32_t) 1 << VOR);
+                uhrzeit |= ((uint32_t) 1 << HALB);
+                set_stunde(_stunde + 1, 0);
+			} else {
+                uhrzeit |= ((uint32_t) 1 << ZWANZIG);
+                uhrzeit |= ((uint32_t) 1 << NACH);
+                set_stunde(_stunde, 0);
+			}
             break;
         case 5: // 5 vor halb
             uhrzeit |= ((uint32_t) 1 << FUENF);
@@ -736,13 +744,23 @@ static void set_uhrzeit() {
             set_stunde(_stunde + 1, 0);
             break;
         case 8: // 20 vor
-            uhrzeit |= ((uint32_t) 1 << ZWANZIG);
-            uhrzeit |= ((uint32_t) 1 << VOR);
+			if (G.Sprachvariation[ItIs40] == 1) {
+                uhrzeit |= ((uint32_t) 1 << ZEHN);
+                uhrzeit |= ((uint32_t) 1 << NACH);
+                uhrzeit |= ((uint32_t) 1 << HALB);
+			} else {
+                uhrzeit |= ((uint32_t) 1 << ZWANZIG);
+                uhrzeit |= ((uint32_t) 1 << VOR);
+			}
             set_stunde(_stunde + 1, 0);
             break;
         case 9: // viertel vor
-            uhrzeit |= ((uint32_t) 1 << VIERTEL);
-            uhrzeit |= ((uint32_t) 1 << VOR);
+			if (G.Sprachvariation[ItIs45] == 1 && G.UhrtypeDef == Uhr_114_Alternative) {
+                uhrzeit |= ((uint32_t) 1 << DREIVIERTEL);
+			} else {
+                uhrzeit |= ((uint32_t) 1 << VIERTEL);
+                uhrzeit |= ((uint32_t) 1 << VOR);
+			}
             set_stunde(_stunde + 1, 0);
             break;
         case 10: // 10 vor
@@ -936,7 +954,7 @@ static void show_wetter() {
 
 //------------------------------------------------------------------------------
 
-static void show_zeit(int flag) {
+static void show_zeit(uint8_t flag) {
     uint8_t rr, gg, bb, ww;
     if (flag == 1) {
         set_uhrzeit();
@@ -965,6 +983,7 @@ static void show_zeit(int flag) {
     if (uhrzeit & ((uint32_t) 1 << FUENF)) { usedUhrType->show(fuenf);  }
     if (uhrzeit & ((uint32_t) 1 << ZEHN)) { usedUhrType->show(zehn);  }
     if (uhrzeit & ((uint32_t) 1 << VIERTEL)) { usedUhrType->show(viertel);  }
+	if (uhrzeit & ((uint32_t) 1 << DREIVIERTEL)) { usedUhrType->show(dreiviertel);  }
     if (uhrzeit & ((uint32_t) 1 << ZWANZIG)) { usedUhrType->show(zwanzig);  }
     if (uhrzeit & ((uint32_t) 1 << HALB)) { usedUhrType->show(halb); }
     if (uhrzeit & ((uint32_t) 1 << EINS)) { usedUhrType->show(eins); }

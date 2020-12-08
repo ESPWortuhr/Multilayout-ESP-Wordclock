@@ -46,6 +46,7 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
     * '[WebSockets](https://www.arduino.cc/reference/en/libraries/websockets/)' von Arduino
     * '[NTPClient](https://github.com/arduino-libraries/NTPClient)' von arduino-libraries
     * '[RTClib](https://github.com/adafruit/RTClib)' von adafruit
+    * '[PubSubClient](https://www.arduino.cc/reference/en/libraries/pubsubclient/)' von Nick O'Leary
     
 ## To DO & (Ideen):
 * Symbol zu einem bestimmten Datum/Uhrzeit
@@ -59,16 +60,24 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
 
 ## Known Bugs
 
+* Bei > 60 Sekunden in der Sekundenanzeige wird die Uhrzeit nach Wechsel erst zur nächsten vollen Minute aktualisiert. 
+* Die Hostname Configuration ist noch fehlerbehaftet
+
 ## ChangeLog
 ### Version 2.5.0
 * (dbambus) 2020xxxx  
 * Updated Python-Script to update Version String based on VER in Uhr.h
-* Changed internal handling of Command/Mode Selection
-* Improved Memoryusage on RAM
-* Auto-Shutdown of Wifi-AP-Mode after 5 Minutes, if unused. Just restart Wordclock to enable
-* Fixed Issue for compiling with Arduino IDE
+* Improved internal handling of Command/Mode Selection
+* Improved memoryusage on RAM
+* Added Auto-Shutdown of Wifi-AP-Mode after 5 Minutes, if unused. Just restart Wordclock to enable
 * Added a WPS Support with Button on Website 
 * Added MQTT Support
+* Added up to date responsive design for Website
+* Added dedicated Link to Firmware Update Page
+* Added support for language variants (dreiviertel)
+* Fixed Issue for compiling with Arduino IDE
+* Fixed Handling of Text-input on Website
+* Fixed LDR Handling
 
 ### Version 2.4.2
 * (Eisbaeeer) 20201025   

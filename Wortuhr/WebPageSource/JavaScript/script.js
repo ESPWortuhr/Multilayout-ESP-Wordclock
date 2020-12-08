@@ -1,3 +1,50 @@
+(function (window, document) {
+
+    var layout   = document.getElementById('layout'),
+        menu     = document.getElementById('menu'),
+        menuLink = document.getElementById('menuLink');
+
+    function toggleClass(element, className) {
+        var classes = element.className.split(/\s+/),
+            length = classes.length,
+            i = 0;
+
+        for (; i < length; i++) {
+            if (classes[i] === className) {
+                classes.splice(i, 1);
+                break;
+            }
+        }
+        // The className is not found
+        if (length === classes.length) {
+            classes.push(className);
+        }
+
+        element.className = classes.join(' ');
+    }
+
+    function toggleAll(e) {
+        var active = 'active';
+
+        e.preventDefault();
+        toggleClass(layout, active);
+        toggleClass(menu, active);
+        toggleClass(menuLink, active);
+    }
+
+    function handleEvent(e) {
+        if (e.target.id === menuLink.id) {
+            return toggleAll(e);
+        }
+
+        if (menu.className.indexOf('active') !== -1) {
+            return toggleAll(e);
+        }
+    }
+
+    document.addEventListener('click', handleEvent);
+
+}(this, this.document));
 "use strict";
 
 var MINI = require("minified");
@@ -34,10 +81,15 @@ var h18 = 100;
 var h20 = 100;
 var h22 = 100;
 var h24 = 100;
+var Sprachvariation = [0, 0, 0, 0];
+var ldr = 0;
 var showSeconds = 0;
 var showMinutes = 0;
 var UhrtypeDef = 0;
 var colortype = 0;
+var MQTT_State = 0;
+var MQTT_Port = 0;
+var MQTT_Server = 0;
 
 // operation modes
 var COMMAND_MODE_WORD_CLOCK = 1;
@@ -51,6 +103,9 @@ var COMMAND_MODE_COLOR = 6;
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
+var COMMAND_SET_LANGUAGE_VARIANT = 84;
+var COMMAND_SET_MQTT = 85;
+var COMMAND_SET_TIME_MANUAL = 86;
 var COMMAND_SET_WPS_MODE = 87;
 var COMMAND_SET_COLORTYPE = 88;
 var COMMAND_SET_UHRTYPE = 89;
@@ -86,6 +141,7 @@ var DATA_MARQUEE_TEXT_LENGTH = 30;
 var DATA_SSID_TEXT_LENGTH = 32;  // WL_SSID_MAX_LENGTH == 32
 var DATA_PASSWORT_TEXT_LENGTH = 63;  //WL_WPA_KEY_MAX_LENGTH == 63
 var DATA_TIMESERVER_TEXT_LENGTH = 16;
+var DATA_MQTTSERVER_TEXT_LENGTH = 30;
 var DATA_HOST_TEXT_LENGTH = 16;
 
 function initConfigValues() {
@@ -122,10 +178,15 @@ function initConfigValues() {
     h20 = 100;
     h22 = 100;
     h24 = 100;
+    ldr = 0;
+    Sprachvariation = [0, 0, 0, 0];
     showSeconds = 0;
     showMinutes = 0;
     UhrtypeDef = 0;
     colortype = 0;
+    MQTT_State = 0;
+    MQTT_Port = 0;
+    MQTT_Server = 0;
 }
 
 function hexToRgb(hex) {
@@ -216,6 +277,12 @@ function initWebsocket() {
             $("#brightness-22").set("value", data.h22);
             $("#brightness-24").set("value", data.h24);
 
+            $("#Sprachvariation0").set("value", data.spv0);
+            $("#Sprachvariation1").set("value", data.spv1);
+            $("#Sprachvariation2").set("value", data.spv2);
+            $("#Sprachvariation3").set("value", data.spv3);
+
+            $("#ldr").set("value", data.ldr);
             $("#slider-brightness").set("value", data.hell);
             $("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
             $("#showSeconds").set("value", data.zeige_sek);
@@ -224,8 +291,16 @@ function initWebsocket() {
             $("#owm-api-key").set("value", data.apiKey);
             $("#owm-city-id").set("value", data.cityid);
 
+            $("#MQTT_Port").set("value", data.MQTT_Port);
+            $("#MQTT_Server").set("value", data.MQTT_Server);
+            $("#MQTT_Topic").set("value", data.MQTT_Topic);
+
             $("#UhrtypeDef").set("value", data.UhrtypeDef);
             $("#colortype").set("value", data.colortype);
+
+            $("#MQTT_State").set("value", data.MQTT_State);
+            $("#MQTT_Port").set("value", data.MQTT_Port);
+            $("#MQTT_Server").set("value", data.MQTT_Server);
         }
         if (data.command === "set") {
             rgb[0][0] = data.rgb00;
@@ -314,13 +389,25 @@ function setSliders() {
     colorArea[0].style.backgroundColor = "rgb(" + rgb[sliderType][0] + "," + rgb[sliderType][1] + "," + rgb[sliderType][2] + ")";
 }
 
-/**
- * Add '0' as a padding in front of the number to make it
- * a 3 character string.
- *
- * @param  {int} number - The number to be padded.
- * @return {string} The padded number.
- */
+function nstr5(number) {
+    if (number < 10) {
+        number = "00" + number;
+    } else {
+        if (number < 100) {
+            number = "0" + number;
+        } else {
+            if (number < 1000) {
+                number = "0" + number;
+            } else {
+                if (number < 10000) {
+                    number = "0" + number;
+                }
+            }
+        }
+    }
+    return number;
+}
+
 function nstr(number) {
     if (number < 10) {
         number = "00" + number;
@@ -384,6 +471,13 @@ function sendData(command, unknown2, unknown3) {
     debugMessage("Send data: ", data);
 }
 
+function CMDtoData(command, unknown2, unknown3) {
+    var data = nstr(command) +
+        nstr(unknown2) +
+        nstr(unknown3)
+    return data;
+}
+
 $.ready(function () {
 
     initConfigValues();
@@ -413,7 +507,7 @@ $.ready(function () {
         timeZoneOffset = timeZoneOffset / 60 * -1;
         var time = date.getTime() / 1000;
 
-        var data = "030000000";
+        var data = CMDtoData(COMMAND_SET_TIME, 0, 0);
         data += getPaddedString(nstr(timeZoneOffset) + time, 21);
         data += "999";
 
@@ -597,18 +691,16 @@ $.ready(function () {
         }
         return false;
     });
-
     $("#initial-values-button").on("click", function () {
         sendData(COMMAND_SET_INITIAL_VALUES, 0, 0);
     });
-
     $("#wifi-button").on("click", function () {
 
         var ssidValue = $("#ssid").get("value");
         var passwordValue = $("#password").get("value");
 
         // append ssid
-        var data = "099000000";
+        var data = CMDtoData(COMMAND_SET_WIFI_AND_RESTART, 0, 0);
         data += getPaddedString(ssidValue, DATA_SSID_TEXT_LENGTH);
 
         // append password
@@ -619,20 +711,17 @@ $.ready(function () {
         debugMessage("WLAN wurde neu konfiguriert", data);
         return false;
     });
-
-
     $("#_wlanscan").on("click",function(){
-        var data = "202000000";
+        var data = CMDtoData(COMMAND_REQUEST_WIFI_LIST, 0, 0);
         websocket.send(data);
         document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
         return false;
     });
-
     $("#timeserver-button").on("click", function () {
 
         var timeserverValue = $("#timeserver").get("value");
 
-        var data = "097000000";
+        var data = CMDtoData(COMMAND_SET_TIMESERVER, 0, 0);
         data += getPaddedString(timeserverValue, DATA_TIMESERVER_TEXT_LENGTH);
         data += "999";
 
@@ -643,7 +732,7 @@ $.ready(function () {
     $("#marquee-button").on("click", function () {
         var marqueeTextValue = $("#marquee").get("value");
 
-        var data = "096000000";
+        var data = CMDtoData(COMMAND_SET_MARQUEE_TEXT, 0, 0);
         data += getPaddedString(marqueeTextValue, DATA_MARQUEE_TEXT_LENGTH);
         data += "999";
 
@@ -661,7 +750,8 @@ $.ready(function () {
         h22 = $("#brightness-22").get("value");
         h24 = $("#brightness-24").get("value");
 
-        var data = "095000000" + nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + "999";
+        var data = CMDtoData(COMMAND_SET_BRIGHTNESS, 0, 0);
+        data += nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + "999";
 
         websocket.send(data);
         debugMessage("Helligkeit wurde neu konfiguriert", data);
@@ -671,40 +761,61 @@ $.ready(function () {
         var apiKey = $("#owm-api-key").get("value");
         var cityId = $("#owm-city-id").get("value");
 
-        var data = "090000000" + cityId + " " + apiKey + "  999";
+        var data = CMDtoData(COMMAND_SET_WEATHER_DATA, 0, 0);
+        data += cityId + " " + apiKey + "  999";
 
         websocket.send(data);
         debugMessage("OpenWeatherMap Zugangsdaten wurden konfiguriert", data);
     });
     $("#show-minutesbutton").on("click", function () {
         var showMinutesValue = $("#show-minutes").get("value");
-        var data = "094000000" + showMinutesValue + "  999";
+
+        var data = CMDtoData(COMMAND_SET_MINUTE, 0, 0);
+        data += showMinutesValue + "  999";
+
         websocket.send(data);
         debugMessage("Minutenanzeige wurde neu konfiguriert", data);
     });
     $("#show-seconds-button").on("click", function () {
         var showSecondsValue = $("#show-seconds").get("value");
-        var data = "093000000" + showSecondsValue + "  999";
+
+        var data = CMDtoData(COMMAND_SET_SETTING_SECOND, 0, 0);
+        data += showSecondsValue + "  999";
 
         websocket.send(data);
         debugMessage("Sekundenanzeige wurde neu konfiguriert", data);
     });
     $("#UhrtypeDef-button").on("click", function() {
         var UhrtypeDef = $("#UhrtypeDef").get("value");
-        var data = "089000000" + UhrtypeDef + "  999";
+
+        var data = CMDtoData(COMMAND_SET_UHRTYPE, 0, 0);
+        data += UhrtypeDef + "  999";
+
         websocket.send(data);
         debugMessage("UhrtypeDef wurde neu konfiguriert", data);
     });
     $("#colortype-button").on("click", function() {
         colortype = $("#colortype").get("value");
-        var data = "088000000" + colortype + "  999";
+
+        var data = CMDtoData(COMMAND_SET_COLORTYPE, 0, 0);
+        data += colortype + "  999";
+
         websocket.send(data);
         debugMessage("Colortype wurde neu konfiguriert", data);
+    });
+    $("#ldr-button").on("click", function() {
+        ldr = $("#ldr").get("value");
+
+        var data = CMDtoData(COMMAND_SET_LDR, 0, 0);
+        data += nstr(ldr) + "000" + "  999";
+
+        websocket.send(data);
+        debugMessage("LDR Steuerung wurde konfiguriert", data);
     });
     $("#host-button").on("click", function () {
         var hostValue = $("#host").get("value");
 
-        var data = "092000000";
+        var data = CMDtoData(COMMAND_SET_HOSTNAME, 0, 0);
         data += getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH);
         data += "999";
 
@@ -719,5 +830,34 @@ $.ready(function () {
     });
     $("#reset-button").on("click", function () {
         sendData(COMMAND_RESET, 0, 0);
+    });
+    $("#uhrzeit-button").on("click", function() {
+        var stunde = $("#stunde").get("value");
+        var minute = $("#minute").get("value");
+
+        var data = CMDtoData(COMMAND_SET_TIME_MANUAL, 0, 0);
+        data += nstr(stunde) + nstr(minute) + "999";
+        websocket.send(data);
+        debugMessage("Uhrzeit wurde manuell konfiguriert", data);
+    });
+    $("#mqtt-button").on("click", function() {
+        MQTT_State = $("#mqtt_state").get("value");
+        MQTT_Port = $("#mqtt_port").get("value");
+        MQTT_Server = $("#mqtt_server").get("value");
+
+        var data = CMDtoData(COMMAND_SET_MQTT, 0, 0);
+        data += nstr(MQTT_State) + nstr5(MQTT_Port) +  getPaddedString(MQTT_Server, DATA_MQTTSERVER_TEXT_LENGTH); + " 999";
+        websocket.send(data);
+        debugMessage("MQTT Server wurde konfiguriert", data);
+    });
+    $("#Sprachvariation-button").on("click", function() {
+        var data = CMDtoData(COMMAND_SET_LANGUAGE_VARIANT, 0, 0);
+        Sprachvariation[0] = $("#Sprachvariation0").get("value");
+        Sprachvariation[1] = $("#Sprachvariation1").get("value");
+        Sprachvariation[2] = $("#Sprachvariation2").get("value");
+        Sprachvariation[3] = $("#Sprachvariation3").get("value");
+        data += nstr(Sprachvariation[0]) + nstr(Sprachvariation[1]) + nstr(Sprachvariation[2]) + nstr(Sprachvariation[3]) + "999";
+        websocket.send(data);
+        debugMessage("Sprachvariation wurde konfiguriert", data);
     });
 });
