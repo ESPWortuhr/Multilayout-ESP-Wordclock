@@ -60,6 +60,9 @@ Es handelt sich hier um die Version <!-- VER_placeholder2 -->2.5.0 der Wortuhr (
 
 ## Known Bugs
 
+* Bei > 60 Sekunden in der Sekundenanzeige wird die Uhrzeit nach Wechsel erst zur nächsten vollen Minute aktualisiert. 
+* Die Hostname Configuration ist noch fehlerbehaftet
+
 ## ChangeLog
 ### Version 2.5.0
 * (dbambus) 2020xxxx  
