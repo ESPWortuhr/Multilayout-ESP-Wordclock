@@ -5,7 +5,7 @@
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include <WiFiClient.h>
-#include <WifiManager.h>
+#include <WiFiManager.h>
 
 WiFiManager wifiManager;
 

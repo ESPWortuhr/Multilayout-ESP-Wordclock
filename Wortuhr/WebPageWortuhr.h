@@ -5,7 +5,7 @@
 const char HTML_Code0[] PROGMEM= R"=====(<!DOCTYPE html>
 <html lang="de">
 <head>
-    <title>Wortuhr 2.5.0</title>
+    <title>Wortuhr 2.6.0</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -843,7 +843,7 @@ const char HTML_Code7[] PROGMEM= R"=====(
         </div> <!--/pure-g-->
 
         <div class="header">
-            <h2>V 2.5.0</h2>
+            <h2>V 2.6.0</h2>
         </div>
     </div> <!--/content-->
 </div>

@@ -1,6 +1,6 @@
 #include "Arduino.h"
 
-const char *VER = "2.5.0";  // Software Version
+const char *VER = "2.6.0";  // Software Version
 
 #pragma once
 
