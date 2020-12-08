@@ -34,8 +34,6 @@ void eeprom_read() {
     Serial.print("Version   : ");
     Serial.println(VER);
     Serial.printf("Sernr     : %u\n", G.sernr);
-    Serial.printf("SSID      : %s\n", G.ssid);
-    Serial.printf("Passwd    : %s\n", G.passwd);
     Serial.printf("Programm  : %u\n", G.prog);
     Serial.printf("Conf      : %u\n", G.conf);
     Serial.printf("rgb.0.0   : %u\n", G.rgb[Foreground][0]);

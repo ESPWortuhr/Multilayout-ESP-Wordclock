@@ -34,8 +34,6 @@ enum uhrzeit_t {
 
 struct GLOBAL {
     uint8_t sernr;
-    char ssid[WL_SSID_MAX_LENGTH];
-    char passwd[WL_WPA_KEY_MAX_LENGTH];
 	uint16_t prog;
     uint8_t param1;
     uint8_t param2;
@@ -74,6 +72,11 @@ struct GLOBAL {
     uint8_t MQTT_State;
 	char MQTT_Server[30];
 	uint16_t MQTT_Port;
+
+	bool bootLedBlink;
+	bool bootLedSweep;
+	bool bootShowWifi;
+	bool bootShowIP;
 };
 GLOBAL G = {};
 
@@ -103,12 +106,6 @@ bool ConnectionEstablished; // Flag for successfully handled connection
 #define MAX_TELNET_CLIENTS 2
 WiFiServer TelnetServer(23);
 WiFiClient TelnetClient[MAX_TELNET_CLIENTS];
-
-const char *ssid_ap = "Uhr";
-const char *password_ap = "12345678";
-//--OTA--
-const char *host = "webupdate";
-//--OTA--
 
 unsigned char wlan_client = false;
 unsigned char wlan_status = 99;
@@ -141,7 +138,7 @@ uint32_t uhrzeit;
 uint8_t Word_array[242] = { 255 };
 uint8_t AP_Status = 0;
 
-char str[450];
+char str[1024];
 char s[5];
 
 bool externalRTC = false;
@@ -197,6 +194,7 @@ enum Command {
     COMMAND_SET_WIFI_DISABLED = 98,
     COMMAND_SET_WIFI_AND_RESTART = 99,
     COMMAND_RESET = 100,
+    COMMAND_SET_BOOT = 101,
 
     COMMAND_BRIGHTNESS = 151,
     COMMAND_SPEED = 152,
