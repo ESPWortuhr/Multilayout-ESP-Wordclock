@@ -85,9 +85,15 @@ def addScriptJsTo(html):
     return html
 
 def addPureMinCssTo(html):
-    count = html.find("<link rel=\"stylesheet\" href=\"CSS/pure.min.css\">")
-    lenght = len("<link rel=\"stylesheet\" href=\"CSS/pure.min.css\">")
+    count = html.find("<link rel=\"stylesheet\" href=\"CSS/pure-min.css\">")
+    lenght = len("<link rel=\"stylesheet\" href=\"CSS/pure-min.css\">")
     html = html[0:count -1] +"<style>" + pure_min_css + "</style>" + html[count+lenght+1:len(html)]
+    return html
+
+def addGridsResponsiveMinCssTo(html):
+    count = html.find("<link rel=\"stylesheet\" href=\"CSS/grids-responsive-min.css\">")
+    lenght = len("<link rel=\"stylesheet\" href=\"CSS/grids-responsive-min.css\">")
+    html = html[0:count -1] +"<style>" + grids_responsive_min_css + "</style>" + html[count+lenght+1:len(html)]
     return html
 
 def addStyleCssTo(html):
@@ -179,6 +185,7 @@ for root, dirs, files in os.walk(input_dir, topdown=False):
             html = addMinifiedMinJsTo(html)
             html = addScriptJsTo(html)
             html = addPureMinCssTo(html)
+            html = addGridsResponsiveMinCssTo(html)
             html = addStyleCssTo(html)
             html = cutSpecificRGBW(html)
             html = cutSpecificUHR242(html)
@@ -201,7 +208,11 @@ for root, dirs, files in os.walk(input_dir, topdown=False):
             print(os.path.join(root, name))
             style_css = minify_css(os.path.join(root, name))         # minify css
 
-        elif name.endswith("pure.min.css"):
+        elif name.endswith("pure-min.css"):
             print(os.path.join(root, name))
             pure_min_css = minify_css(os.path.join(root, name))  # minify css
+
+        elif name.endswith("grids-responsive-min.css"):
+            print(os.path.join(root, name))
+            grids_responsive_min_css = minify_css(os.path.join(root, name))  # minify css
 
