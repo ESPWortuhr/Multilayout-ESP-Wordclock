@@ -14,7 +14,7 @@
 
 <div id="layout">
     <!-- Menu toggle -->
-    <a href="#menu" id="menuLink" class="menu-link">
+    <a href="#menu" id="menu-link" class="menu-link">
         <!-- Hamburger icon -->
         <span></span>
     </a>
@@ -27,7 +27,7 @@
                 <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="main">Farben</a></li>
                 <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="functions">Funktionen</a></li>
                 <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="settings">Einstellungen</a></li>
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="smart_home">Smart Home</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="smart-home">Smart Home</a></li>
                 <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="about">Über</a></li>
             </ul>
         </div>
@@ -204,8 +204,7 @@
                         <div class="pure-u-1 pure-u-lg-3-4"><input id="slider-brightness" type="range" min="1" max="10" value="1"></div>
                     </div>
                     <div class="pure-g speed">
-                        <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="slider-speed">Geschwindigkeit <span class="value"
-                                                                                                                                 id="slider-speed-value">0</span></label></div>
+                        <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="slider-speed">Geschwindigkeit <span class="value" id="slider-speed-value">0</span></label></div>
                         <div class="pure-u-1 pure-u-lg-3-4"><input id="slider-speed" type="range" min="0" max="40" value="0"></div>
                     </div>
                     <div class="pure-g leds">
@@ -214,8 +213,7 @@
                         <div class="pure-u-1 pure-u-lg-3-4"><input id="slider-leds" type="range" min="5" max="100" value="100"></div>
                     </div>
                     <div class="pure-g position">
-                        <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="slider-position">Positon <span class="value"
-                                                                                                                            id="slider-position-value">0</span></label></div>
+                        <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="slider-position">Positon <span class="value" id="slider-position-value">0</span></label></div>
                         <div class="pure-u-1 pure-u-lg-3-4"><input id="slider-position" type="range" min="1" max="100" value="100"></div>
                     </div>
                 </div>
@@ -517,12 +515,10 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-control-group">
-                                        <label for="owm-api-key">OpenWeatherMap API-Schluessel</label><input id="owm-api-key" type="text" minlength="32" maxlength="32"
-                                                                                                             placeholder="API-Schlüssel">
+                                        <label for="owm-api-key">OpenWeatherMap API-Schluessel</label><input id="owm-api-key" type="text" minlength="32" maxlength="32" placeholder="API-Schlüssel">
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="owm-city-id">OpenWeatherMap City ID</label><input id="owm-city-id" type="text" minlength="7" maxlength="7"
-                                                                                                      placeholder="City ID">
+                                        <label for="owm-city-id">OpenWeatherMap City ID</label><input id="owm-city-id" type="text" minlength="7" maxlength="7" placeholder="City ID">
                                     </div>
                                     <div class="pure-controls">
                                         <button id="weather-button" class="pure-button">Daten speichern</button>
@@ -585,7 +581,7 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-control-group">
-                                        <label for="UhrtypeDef">Änderung des Uhrentypes.</label><select name="UhrtypeDef" id="UhrtypeDef" size="1">
+                                        <label for="front-layout">Änderung des Uhrentypes.</label><select name="front-layout" id="front-layout" size="1">
                                         <option value="1" selected>Uhr 114</option>
                                         <option value="2">Uhr 114 Alternative</option>
                                         <option value="3">Uhr 125</option>
@@ -594,7 +590,7 @@
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="UhrtypeDef-button" class="pure-button">UhrtypeDef speichern</button>
+                                        <button id="front-layout-button" class="pure-button">UhrtypeDef speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -609,33 +605,33 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-control-group">
-                                        <label for="Sprachvariation0">Um 9:15 ist es...</label><select name="Sprachvariation0" id="Sprachvariation0" size="1">
+                                        <label for="dialect-0">Um 9:15 ist es...</label><select name="dialect-0" id="dialect-0" size="1">
                                         <option value="0" selected>viertel nach neun</option>
                                         <option value="1">viertel zehn</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="Sprachvariation1">Um 9:20 ist es...</label><select name="Sprachvariation1" id="Sprachvariation1" size="1">
+                                        <label for="dialect-1">Um 9:20 ist es...</label><select name="dialect-1" id="dialect-1" size="1">
                                         <option value="0" selected>zwanzig nach neun</option>
                                         <option value="1">zehn vor halb zehn</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="Sprachvariation2">Um 9:40 ist es...</label><select name="Sprachvariation2" id="Sprachvariation2" size="1">
+                                        <label for="dialect-2">Um 9:40 ist es...</label><select name="dialect-2" id="dialect-2" size="1">
                                         <option value="0" selected>zwanzig vor zehn</option>
                                         <option value="1">zehn nach halb zehn</option>
                                     </select>
                                     </div>
                                     <!-- Specific UHR114_Alternative Start-->
                                     <div class="pure-control-group">
-                                        <label for="Sprachvariation3">Um 9:45 ist es...</label><select name="Sprachvariation3" id="Sprachvariation3" size="1">
+                                        <label for="dialect-3">Um 9:45 ist es...</label><select name="dialect-3" id="dialect-3" size="1">
                                         <option value="0" selected>viertel vor zehn</option>
                                         <option value="1">dreiviertel zehn</option>
                                     </select>
                                     </div>
                                     <!-- Specific UHR114_Alternative End-->
                                     <div class="pure-controls">
-                                        <button id="Sprachvariation-button" class="pure-button">Optionen speichern</button>
+                                        <button id="dialect-button" class="pure-button">Optionen speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -732,7 +728,7 @@
 
                                     <div class="pure-control-group">
                                         <label for="ssid">SSID</label>
-					<input id="ssid" type="text" placeholder="SSID" readonly>
+                                        <input id="ssid" type="text" placeholder="SSID" readonly />
                                     </div>
 
                                     <div class="pure-control-group">
@@ -752,7 +748,7 @@
                 </div>
 
             </div>
-            <div class="pure-u-24-24 section section-smart_home">
+            <div class="pure-u-24-24 section section-smart-home">
                 <div class="header">
                     <h1>Smart Home</h1>
                 </div>
@@ -767,16 +763,16 @@
                         <form class="pure-form pure-form-aligned">
                             <fieldset>
                                 <div class="pure-control-group">
-                                    <label for="MQTT_State">Aktiviere MQTT</label><select name="MQTT_State" id="MQTT_State" size="1">
+                                    <label for="mqtt-state">Aktiviere MQTT</label><select name="mqtt-state" id="mqtt-state" size="1">
                                     <option value="0" selected>Off</option>
                                     <option value="1">ON</option>
                                 </select>
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="MQTT_Server">MQTT Serveradresse</label><input id="MQTT_Server" type="MQTT_Server" placeholder="MQTT Server">
+                                    <label for="mqtt-server">MQTT Serveradresse</label><input id="mqtt-server" type="MQTT_Server" placeholder="MQTT Server">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="MQTT_Port">MQTT Port</label><input id="MQTT_Port" type="MQTT_Port" placeholder="MQTT Serverport">
+                                    <label for="mqtt-port">MQTT Port</label><input id="mqtt-port" type="MQTT_Port" placeholder="MQTT Serverport">
                                 </div>
                                 <div class="pure-controls">
                                     <button id="mqtt-button" class="pure-button">MQTT-Daten speichern</button>
