@@ -225,6 +225,14 @@ function debugMessage(debugMessage, someObject) {
     }
 }
 
+/// only shows elements of class `cls` if `enbl` is true.
+function enableSpecific(cls, enbl) {
+    let items = document.getElementsByClassName(cls);
+    for (var item of items) {
+        item.style.display = enbl ? null : "none";
+    }
+}
+
 function initWebsocket() {
 
     websocket = new WebSocket(ipEsp);
@@ -311,6 +319,11 @@ function initWebsocket() {
             $("#boot-led-sweep").set("checked", data.bootLedSweep | 0);
             $("#boot-show-wifi").set("checked", data.bootShowWifi | 0);
             $("#boot-show-ip").set("checked", data.bootShowIP | 0);
+
+            enableSpecific("specific-layout-2", data.UhrtypeDef == 2);
+            enableSpecific("specific-layout-4", data.UhrtypeDef == 4);
+            enableSpecific("specific-layout-5", data.UhrtypeDef == 5);
+            enableSpecific("specific-colortype-4", data.colortype == 4);
         }
         if (data.command === "set") {
             rgb[0][0] = data.rgb00;
@@ -333,6 +346,7 @@ function initWebsocket() {
             geschw = data.geschw;
             colortype = data.colortype;
             setSliders();
+            enableSpecific("specific-colortype-4", data.colortype == 4);
         }
         if (data.command === "wlan"){
             document.getElementById("wlanlist").innerHTML = data.list}
