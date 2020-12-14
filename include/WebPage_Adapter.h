@@ -1,7 +1,7 @@
 #pragma once
 
 #include "WebSocketsServer.h"
-#include "WebPageWortuhr.h"
+#include "WebPageContent.h"
 #include "Uhr.h"
 #include "Network.h"
 

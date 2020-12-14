@@ -3,26 +3,24 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 
 		settings: {
-			distDirectory: "dist",
-			tempDirectory: "temp",
-			srcDirectory: "Wortuhr/WebPageSource/",
-			target: "Wortuhr/WebPageWortuhr.h"
+			tempDirectory: ".pio/build/webpage",
+			srcDirectory: "webpage",
+			target: "include/WebPageContent.gen.inc"
 		},
 
 		clean: {
-			temp: ["<%= settings.tempDirectory %>"],
-			dist: ["<%= settings.distDirectory %>"]
+			temp: ["<%= settings.tempDirectory %>"]
 		},
 
 		eslint: {
 			options: {
 				configFile: "eslintrc.json"
 			},
-			files: ["Gruntfile.js", "<%= settings.srcDirectory %>/JavaScript/script.js"]
+			files: ["Gruntfile.js", "<%= settings.srcDirectory %>/script.js"]
 		},
 
 		csslint: {
-			files: ["<%= settings.srcDirectory %>/CSS/style.css"],
+			files: ["<%= settings.srcDirectory %>/style.css"],
 			options: {
 				"order-alphabetical": false,
 				"fallback-colors": false,
@@ -58,9 +56,9 @@ module.exports = function(grunt) {
 			dev: {
 				files: [{
 					expand: true,
-					cwd: "<%= settings.srcDirectory %>/CSS",
+					cwd: "<%= settings.srcDirectory %>",
 					src: ["*.css", "!*.min.css"],
-					dest: "<%= settings.tempDirectory %>/CSS"
+					dest: "<%= settings.tempDirectory %>"
 				}]
 			}
 		},
@@ -69,9 +67,9 @@ module.exports = function(grunt) {
 			dev: {
 				files: [{
 					expand: true,
-					cwd: "<%= settings.srcDirectory %>/JavaScript",
+					cwd: "<%= settings.srcDirectory %>",
 					src: ["*.js", "!*.min.js"],
-					dest: "<%= settings.tempDirectory %>/JavaScript/"
+					dest: "<%= settings.tempDirectory %>"
 				}]
 			}
 		},
@@ -86,10 +84,6 @@ module.exports = function(grunt) {
 		},
 
 		copy: {
-			from_temp_to_dist: {
-				src: "<%= settings.tempDirectory %>/index.html",
-				dest: "<%= settings.distDirectory %>/index.html"
-			},
 			index: {
 				src: "<%= settings.srcDirectory %>/index.html",
 				dest: "<%= settings.tempDirectory %>/index.html"
@@ -99,7 +93,7 @@ module.exports = function(grunt) {
 					expand: true,
 					cwd: "node_modules/minified/",
 					src: ["minified-web.js"],
-					dest: "<%= settings.tempDirectory %>/JavaScript/"
+					dest: "<%= settings.tempDirectory %>"
 				}]
 			},
 			minified_css_files: {
@@ -107,21 +101,21 @@ module.exports = function(grunt) {
 					expand: true,
 					cwd: "node_modules/purecss/build",
 					src: ["*-min.css"],
-					dest: "<%= settings.tempDirectory %>/CSS/"
+					dest: "<%= settings.tempDirectory %>"
 				}]
 			},
 			html_to_h: {
 				options: {
 					process: function(content, srcpath) {
 						return    "// generated file -- do not modify\n"
-							+ "// change *.html/*.css/*.js instead\n\n"
+							+ "// change *.html/*.css/*.js files instead\n\n"
 							+ "const char html_code[] PROGMEM = R\"=====(\n"
 							+ content + "\n"
 							+ ")=====\";\n"
 							+ "const uint32_t html_size = sizeof(html_code);\n";
 					}
 				},
-				src: "<%= settings.distDirectory %>/index.html",
+				src: "<%= settings.tempDirectory %>/index.html",
 				dest: "<%= settings.target %>"
 			}
 		},
@@ -164,7 +158,7 @@ module.exports = function(grunt) {
 	// tasks
 	grunt.registerTask("build", [
 		//"lint",
-		"clean:dist",
+		"clean:temp",
 		"cssmin",
 		"copy:minified_css_files",
 		"terser",
@@ -173,9 +167,7 @@ module.exports = function(grunt) {
 		"version:index",
 		"assets_inline",
 		"htmlmin",
-		"copy:from_temp_to_dist",
 		"copy:html_to_h",
-		"clean:temp"
 	]);
 
 	grunt.registerTask("default", [
