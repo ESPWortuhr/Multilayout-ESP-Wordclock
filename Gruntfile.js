@@ -71,7 +71,7 @@ module.exports = function(grunt) {
 					expand: true,
 					cwd: "<%= settings.srcDirectory %>/JavaScript",
 					src: ["*.js", "!*.min.js"],
-					dest: "<%= settings.tempDirectory %>/JavaScript"
+					dest: "<%= settings.tempDirectory %>/JavaScript/"
 				}]
 			}
 		},
@@ -97,17 +97,17 @@ module.exports = function(grunt) {
 			minified_js_files: {
 				files: [{
 					expand: true,
-					cwd: "<%= settings.srcDirectory %>/JavaScript",
-					src: ["*.min.js"],
-					dest: "<%= settings.tempDirectory %>/JavaScript"
+					cwd: "node_modules/minified/",
+					src: ["minified-web.js"],
+					dest: "<%= settings.tempDirectory %>/JavaScript/"
 				}]
 			},
 			minified_css_files: {
 				files: [{
 					expand: true,
-					cwd: "<%= settings.srcDirectory %>/CSS",
-					src: ["*.min.css"],
-					dest: "<%= settings.tempDirectory %>/CSS"
+					cwd: "node_modules/purecss/build",
+					src: ["*-min.css"],
+					dest: "<%= settings.tempDirectory %>/CSS/"
 				}]
 			},
 			html_to_h: {
