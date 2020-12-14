@@ -5,7 +5,8 @@ module.exports = function(grunt) {
 		settings: {
 			distDirectory: "dist",
 			tempDirectory: "temp",
-			srcDirectory: "source/webinterface/"
+			srcDirectory: "Wortuhr/WebPageSource/",
+			target: "Wortuhr/WebPageWortuhr.h"
 		},
 
 		clean: {
@@ -17,11 +18,11 @@ module.exports = function(grunt) {
 			options: {
 				configFile: "eslintrc.json"
 			},
-			files: ["Gruntfile.js", "<%= settings.srcDirectory %>/script.js"]
+			files: ["Gruntfile.js", "<%= settings.srcDirectory %>/JavaScript/script.js"]
 		},
 
 		csslint: {
-			files: ["<%= settings.srcDirectory %>/style.css"],
+			files: ["<%= settings.srcDirectory %>/CSS/style.css"],
 			options: {
 				"order-alphabetical": false,
 				"fallback-colors": false,
@@ -57,26 +58,30 @@ module.exports = function(grunt) {
 			dev: {
 				files: [{
 					expand: true,
-					cwd: "<%= settings.srcDirectory %>",
+					cwd: "<%= settings.srcDirectory %>/CSS",
 					src: ["*.css", "!*.min.css"],
-					dest: "<%= settings.tempDirectory %>/"
+					dest: "<%= settings.tempDirectory %>/CSS"
 				}]
 			}
 		},
 
-		uglify: {
-			options: {
-				beautify: false,
-				mangle: true, // sadly has no effect https://github.com/gruntjs/grunt-contrib-uglify/issues/65
-				compress: true
-			},
+		terser: {
 			dev: {
 				files: [{
 					expand: true,
-					cwd: "<%= settings.srcDirectory %>",
+					cwd: "<%= settings.srcDirectory %>/JavaScript",
 					src: ["*.js", "!*.min.js"],
-					dest: "<%= settings.tempDirectory %>/"
+					dest: "<%= settings.tempDirectory %>/JavaScript"
 				}]
+			}
+		},
+
+		version: {
+			index: {
+				options: {
+					prefix: "<span class=\"version\">"
+				},
+				src: "<%= settings.tempDirectory %>/index.html"
 			}
 		},
 
@@ -92,28 +97,46 @@ module.exports = function(grunt) {
 			minified_js_files: {
 				files: [{
 					expand: true,
-					cwd: "<%= settings.srcDirectory %>",
+					cwd: "<%= settings.srcDirectory %>/JavaScript",
 					src: ["*.min.js"],
-					dest: "<%= settings.tempDirectory %>/"
+					dest: "<%= settings.tempDirectory %>/JavaScript"
 				}]
 			},
 			minified_css_files: {
 				files: [{
 					expand: true,
-					cwd: "<%= settings.srcDirectory %>",
+					cwd: "<%= settings.srcDirectory %>/CSS",
 					src: ["*.min.css"],
-					dest: "<%= settings.tempDirectory %>/"
+					dest: "<%= settings.tempDirectory %>/CSS"
 				}]
+			},
+			html_to_h: {
+				options: {
+					process: function(content, srcpath) {
+						return    "// generated file -- do not modify\n"
+							+ "// change *.html/*.css/*.js instead\n\n"
+							+ "const char html_code[] PROGMEM = R\"=====(\n"
+							+ content + "\n"
+							+ ")=====\";\n"
+							+ "const uint32_t html_size = sizeof(html_code);\n";
+					}
+				},
+				src: "<%= settings.distDirectory %>/index.html",
+				dest: "<%= settings.target %>"
 			}
 		},
 
 		assets_inline: {
 			dev: {
+				options: {
+					assetsDir: "<%= settings.tempDirectory %>/"
+				},
 				files: {
 					"<%= settings.tempDirectory %>/index.html": "<%= settings.tempDirectory %>/index.html"
 				}
 			}
 		}
+
 	});
 
 	// Linters
@@ -124,12 +147,13 @@ module.exports = function(grunt) {
 	// Minifiers
 	grunt.loadNpmTasks("grunt-contrib-htmlmin");
 	grunt.loadNpmTasks("grunt-contrib-cssmin");
-	grunt.loadNpmTasks("grunt-contrib-uglify");
+	grunt.loadNpmTasks("grunt-terser");
 
 	// Other
 	grunt.loadNpmTasks("grunt-assets-inline");
 	grunt.loadNpmTasks("grunt-contrib-copy");
 	grunt.loadNpmTasks("grunt-contrib-clean");
+	grunt.loadNpmTasks("grunt-version");
 
 	grunt.registerTask("lint", [
 		"eslint",
@@ -139,16 +163,18 @@ module.exports = function(grunt) {
 
 	// tasks
 	grunt.registerTask("build", [
-		"lint",
+		//"lint",
 		"clean:dist",
 		"cssmin",
 		"copy:minified_css_files",
-		"uglify",
+		"terser",
 		"copy:minified_js_files",
 		"copy:index",
+		"version:index",
 		"assets_inline",
 		"htmlmin",
 		"copy:from_temp_to_dist",
+		"copy:html_to_h",
 		"clean:temp"
 	]);
 
