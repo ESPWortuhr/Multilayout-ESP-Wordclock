@@ -18,22 +18,6 @@ count = source_fileVersion.find("const char *VER = ")
 lenght = len("const char *VER = ")
 source_fileVersion = source_fileVersion[count+lenght+1:count+lenght+6]
 
-# Replace Version in README
-source_README= open("../README.md", 'rb').read()
-source_README = source_README.decode("UTF-8")
-count = source_README.find("<!-- VER_placeholder1 -->")
-lenght = len("<!-- VER_placeholder1 -->")
-source_README = source_README[0:count+lenght] + source_fileVersion + source_README[count+lenght + 5:len(source_README)]
-
-count = source_README.find("<!-- VER_placeholder2 -->")
-lenght = len("<!-- VER_placeholder2 -->")
-source_README = source_README[0:count+lenght] + source_fileVersion + source_README[count+lenght + 5:len(source_README)]
-
-# Save Version to README
-f_output = open("../README.md", "w")
-f_output.write(source_README)            # print binary data
-f_output.close()
-
 
 def write_to_file():
     source_data = open(output_dir, 'r', encoding="utf-8").read()
