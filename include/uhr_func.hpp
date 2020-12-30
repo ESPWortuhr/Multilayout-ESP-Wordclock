@@ -693,6 +693,24 @@ static void set_stunde(uint8_t std, uint8_t voll) {
 
 static void set_uhrzeit() {
     uhrzeit = 0;
+
+    if (_stunde == 23 && _minute == 59 && _sekunde >= 50) {
+       Serial.printf("Count down: %d\n", 60 - _sekunde);
+       switch (_sekunde) {
+       case 50: uhrzeit |= (1u << ZEHN); break;
+       case 51: uhrzeit |= (1u << H_NEUN); break;
+       case 52: uhrzeit |= (1u << H_ACHT); break;
+       case 53: uhrzeit |= (1u << H_SIEBEN); break;
+       case 54: uhrzeit |= (1u << H_SECHS); break;
+       case 55: uhrzeit |= (1u << FUENF); break;
+       case 56: uhrzeit |= (1u << H_VIER); break;
+       case 57: uhrzeit |= (1u << H_DREI); break;
+       case 58: uhrzeit |= (1u << H_ZWEI); break;
+       case 59: uhrzeit |= (1u << EINS); break;
+       }
+       return;
+    }
+
     uhrzeit |= ((uint32_t) 1 << ESIST);
 
     uint8_t m = _minute / 5;
@@ -960,11 +978,10 @@ static void show_wetter() {
 
 //------------------------------------------------------------------------------
 
-static void show_zeit(uint8_t flag) {
+static void show_zeit() {
     uint8_t rr, gg, bb, ww;
-    if (flag == 1) {
-        set_uhrzeit();
-    }
+
+    set_uhrzeit();
 
     //Helligkeitswert ermitteln
     if (_stunde < 6) { G.hh = G.h24; }

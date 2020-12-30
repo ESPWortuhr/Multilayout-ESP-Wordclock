@@ -332,7 +332,7 @@ void setup(){
 	if (G.UhrtypeDef == Uhr_169){
 		_sekunde48 = _sekunde * 48 / 60;
 	}
-	show_zeit(1);
+	show_zeit();
 	if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2){
 		set_farbe_rahmen();
 	}
@@ -381,26 +381,18 @@ void setup(){
 
 void loop(){
 	unsigned long currentMillis = millis();
-	count_millis += currentMillis - previousMillis;
+	previousMillis = currentMillis;
 	count_delay += currentMillis - previousMillis;
 	if (G.UhrtypeDef == Uhr_169){
 		count_millis48 += currentMillis - previousMillis;
 	}
-	previousMillis = currentMillis;
-	if (count_millis >= interval){
-		count_millis = 0;
-		utc = now();    //current time from the Time Library
-		ltime = tzc.toLocal(utc, &tcr);
-		_sekunde = second(ltime);
-		_minute = minute(ltime);
-		_stunde = hour(ltime);
-		count_tag++;
-		// Wetteruhr
-		if (G.UhrtypeDef == Uhr_242){
-			weather_tag++;
-		}
 
-	}
+	utc = now();    //current time from the Time Library
+	ltime = tzc.toLocal(utc, &tcr);
+	_sekunde = second(ltime);
+	_minute = minute(ltime);
+	_stunde = hour(ltime);
+
 	if (G.UhrtypeDef == Uhr_169){
 		if (count_millis48 >= interval48){
 			count_millis48 = 0;
@@ -448,13 +440,20 @@ void loop(){
 	//------------------------------------------------
 	if (last_sekunde != _sekunde){
 
+		count_tag++;
+		// Wetteruhr
+		if (G.UhrtypeDef == Uhr_242){
+			weather_tag++;
+		}
+
 		//--- LDR Regelung
 		if (G.ldr == 1){
 			doLDRLogic();
 		}
 
 		if (G.prog == 0 && G.conf == 0){
-			show_zeit(0); // Anzeige Uhrzeit ohne Config
+			led_clear();
+			show_zeit();
 		}
 		last_sekunde = _sekunde;
 
@@ -471,26 +470,16 @@ void loop(){
 				Serial.println(wstunde);
 			}
 		}
+
+		Serial.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
 	}
 
 	//------------------------------------------------
 	// Minute
 	//------------------------------------------------
 	if (last_minute != _minute){
-		Serial.println(">>>> Begin Minute <<<<");
-		TelnetMsg(">>>> Begin Minute <<<<");
-
-		if (G.prog == 0 && G.conf == 0){
-			led_clear();
-			show_zeit(1); // Anzeige Uhrzeit mit Config
-		}
-
 		_sekunde48 = 0;
 		last_minute = _minute;
-
-		Serial.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
-		Serial.println(">>>> Ende  Minute <<<<");
-		TelnetMsg(">>>> Ende  Minute <<<<");
 	}
 
 	//------------------------------------------------
@@ -552,7 +541,7 @@ void loop(){
         //------------------------------------------------
 	    case COMMAND_MODE_WORD_CLOCK:
 	        {
-            show_zeit(0); // Anzeige Uhrzeit ohne Config
+            show_zeit();
             if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2){
                 set_farbe_rahmen();
             }
@@ -813,7 +802,7 @@ void loop(){
             {
                 _sekunde48 = _sekunde * 48 / 60;
             }
-            show_zeit(1); // Anzeige Uhrzeit mit Config
+            show_zeit();
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
@@ -841,7 +830,7 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_BRIGHTNESS:
         {
-            show_zeit(1); // Anzeige Uhrzeit mit Config
+            show_zeit();
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
@@ -853,7 +842,7 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_MINUTE:
         {
-            show_zeit(1); // Anzeige Uhrzeit mit Config
+            show_zeit();
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
@@ -879,8 +868,8 @@ void loop(){
 		case COMMAND_SET_LANGUAGE_VARIANT:
 		{
 			eeprom_write();
-            led_clear();
-			show_zeit(1);
+			led_clear();
+			show_zeit();
 			G.conf = COMMAND_IDLE;
 			break;
 		}
@@ -906,7 +895,7 @@ void loop(){
 		{
 			Serial.println("Uhrzeit manuell eingstellt");
 			led_clear();
-			show_zeit(1); // Anzeige Uhrzeit mit Config
+			show_zeit();
 			G.conf = COMMAND_IDLE;
 			break;
 		}
@@ -974,7 +963,7 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_SETTING_SECOND:
         {
-            show_zeit(1); // Anzeige Uhrzeit mit Config
+            show_zeit();
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
