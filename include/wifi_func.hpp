@@ -36,20 +36,6 @@ void WlanStart()
 	// IP-Adresse als Laufschrift anzeigen
 	if (G.bootShowIP) { zeigeip(ip_adress); }
 
-	timeClient.begin();
-	delay(100);
-	timeClient.update();
-	delay(100);
-	Serial.println(timeClient.getFormattedTime());
-
-	unix_time = timeClient.getEpochTime();
-	if (externalRTC == true)
-	{
-		RTC.adjust(DateTime(unix_time));
-	}
-
-	// Zeit setzen
-	setTime(unix_time);
 	Serial.printf("-- Ende  WlanStart -- \n\n");
 }
 

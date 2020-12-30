@@ -33,7 +33,6 @@ bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 #include <ESP8266HTTPUpdateServer.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
-#include <NTPClient.h>
 #include <Hash.h>
 #include <TimeLib.h>
 #include <Timezone.h>
@@ -41,6 +40,8 @@ bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 #include <RTClib.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <coredecls.h>
+#include <sntp.h>
 
 #include "Uhr.h"
 #include "WebPage_Adapter.h"
@@ -72,7 +73,6 @@ WiFiClient client;
 time_t ltime, utc;
 TimeChangeRule *tcr;
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, G.zeitserver);
 PubSubClient mqttClient(client);
 
 #ifndef RTC_Type
@@ -122,6 +122,35 @@ void InitLedStrip(uint8_t num){
 		}
 		strip_RGB = new NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod>(usedUhrType->NUM_PIXELS());
 		strip_RGB->Begin();
+	}
+}
+
+uint32_t sntp_startup_delay_MS_rfc_not_less_than_60000 () {
+	if (externalRTC) {
+		Serial.println("SNTP startup delay 1min");
+		return 60000;
+	} else {
+		// yes this is against the RFC, but we don't have an RTC and want the time now.
+		Serial.println("no RTC clock - disable SNTP startup delay");
+		return 500;
+	}
+}
+
+void time_is_set() {
+	Serial.printf("settimeofday %ld", now());
+
+	time_t utc = time(nullptr);
+	setTime(utc);
+	if (externalRTC) {
+		RTC.adjust(DateTime(utc));
+	}
+
+	ltime = tzc.toLocal(utc, &tcr);
+	_sekunde = second(ltime);
+	_minute = minute(ltime);
+	_stunde = hour(ltime);
+	if (G.UhrtypeDef == Uhr_169){
+		_sekunde48 = _sekunde * 48 / 60;
 	}
 }
 
@@ -305,6 +334,7 @@ void setup(){
 		Serial.println("No external RealtimeClock found");
 		externalRTC = false;
 	}
+	settimeofday_cb(time_is_set);
 
 	//-------------------------------------
 	// Start WiFi
@@ -317,25 +347,9 @@ void setup(){
 	Serial.printf("Signal strength: %i\n", strength);
 	if (G.bootShowWifi) {
 		show_icon_wlan(strength);
-		delay(500);
 	}
 	WlanStart();
-
-	//-------------------------------------
-	// Zeit setzen
-	//-------------------------------------
-	utc = now();    //current time from the Time Library
-	ltime = tzc.toLocal(utc, &tcr);
-	_sekunde = second(ltime);
-	_minute = minute(ltime);
-	_stunde = hour(ltime);
-	if (G.UhrtypeDef == Uhr_169){
-		_sekunde48 = _sekunde * 48 / 60;
-	}
-	show_zeit();
-	if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2){
-		set_farbe_rahmen();
-	}
+	configTime(0, 0, G.zeitserver);
 
 	//-------------------------------------
 	// mDNS--
@@ -373,6 +387,11 @@ void setup(){
 	Serial.println("Ende Setup");
 	Serial.println("--------------------------------------");
 	Serial.println("");
+
+	// setup frame
+	if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2){
+		set_farbe_rahmen();
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -387,11 +406,13 @@ void loop(){
 		count_millis48 += currentMillis - previousMillis;
 	}
 
-	utc = now();    //current time from the Time Library
-	ltime = tzc.toLocal(utc, &tcr);
-	_sekunde = second(ltime);
-	_minute = minute(ltime);
-	_stunde = hour(ltime);
+	utc = now();
+	if (utc > 100000000) {
+		ltime = tzc.toLocal(utc, &tcr);
+		_sekunde = second(ltime);
+		_minute = minute(ltime);
+		_stunde = hour(ltime);
+	}
 
 	if (G.UhrtypeDef == Uhr_169){
 		if (count_millis48 >= interval48){
@@ -440,7 +461,6 @@ void loop(){
 	//------------------------------------------------
 	if (last_sekunde != _sekunde){
 
-		count_tag++;
 		// Wetteruhr
 		if (G.UhrtypeDef == Uhr_242){
 			weather_tag++;
@@ -471,7 +491,12 @@ void loop(){
 			}
 		}
 
-		Serial.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
+		Serial.printf("%u.%u.%u %2u:%02u:%02u ", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
+		if (sntp_getreachability(0)) {
+			Serial.printf("(%s)\n", sntp_getservername(0));
+		} else {
+			Serial.printf("(SNTP not reachable)\n");
+		}
 	}
 
 	//------------------------------------------------
@@ -480,14 +505,6 @@ void loop(){
 	if (last_minute != _minute){
 		_sekunde48 = 0;
 		last_minute = _minute;
-	}
-
-	//------------------------------------------------
-	// Tag
-	//------------------------------------------------
-	if (count_tag >= 86400){
-		count_tag = 0;
-		ntp_flag = true;
 	}
 
 	//------------------------------------------------
@@ -502,37 +519,6 @@ void loop(){
 	}
 
 	Network_loop();
-
-	//------------------------------------------------
-	// NTP Zeit neu holen
-	//------------------------------------------------
-	if (ntp_flag == true){
-		Serial.println("npt: Neue Zeit holen");
-		TelnetMsg("npt: Neue Zeit holen");
-		ntp_flag = false;
-		wlan_status = WiFi.status();
-		if (wlan_status == WL_CONNECTED){
-			timeClient.update();
-			unix_time = timeClient.getEpochTime();
-			if (unix_time > 0){
-				setTime(unix_time);
-				Serial.println(unix_time);
-				utc = now();    //current time from the Time Library
-				ltime = tzc.toLocal(utc, &tcr);
-				Serial.print(hour(ltime));
-				Serial.print(":");
-				Serial.print(minute(ltime));
-				Serial.print(":");
-				Serial.print(second(ltime));
-				Serial.print(" - ");
-				Serial.print(day(ltime));
-				Serial.print(".");
-				Serial.print(month(ltime));
-				Serial.print(".");
-				Serial.println(year(ltime));
-			}
-		}
-	}
 
 	switch (G.prog)
 	{
@@ -986,12 +972,8 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_TIMESERVER:
         {
-            timeClient.end();
-            NTPClient timeClient(ntpUDP, G.zeitserver);
-            timeClient.begin();
-            delay(500);
-            timeClient.update();
             eeprom_write();
+            configTime(0, 0, G.zeitserver);
             G.conf = COMMAND_SET_TIME;
             break;
         }
