@@ -415,36 +415,6 @@ static void rainbowCycle() {
 
 //------------------------------------------------------------------------------
 
-static void schweif_up() {
-
-    int l, c, j;
-    static int t = 0, x = 0;
-
-    for (uint16_t i = 0; i < 10; i++) {
-        l = diff[i] * x / (G.geschw + 1);
-        c = dim[i] + l;
-        if (c > 255) { c = 255; }
-        if (c < 0) { c = 0; }
-
-        G.rr = (G.rgb[Effect][0] * c) / 255;
-        G.gg = (G.rgb[Effect][1] * c) / 255;
-        G.bb = (G.rgb[Effect][2] * c) / 255;
-        G.ww = (G.rgb[Effect][3] * c) / 255;
-        j = i + t;
-        if (j >= 48) { j -= 48; }
-        led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getRMatrix(i));
-    }
-    led_show();
-    x++;
-    if (x > (G.geschw + 1)) {
-        x = 0;
-        t++;
-    }
-    if (t >= 48) { t = 0; }
-}
-
-//------------------------------------------------------------------------------
-
 void shift_all_pixels_to_right() {
     for (uint8_t b = 0; b < 10; b++) {
         for (uint8_t a = 0; a < usedUhrType->ROWS_MATRIX(); a++) {
@@ -523,84 +493,6 @@ static void zahlen(const char d1, const char d2) {
         }
     }
     led_show();
-}
-
-//------------------------------------------------------------------------------
-
-static void laufen(unsigned int d, unsigned char aktion) {
-    if (aktion == 0) {
-        for (uint8_t t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
-            for (uint8_t a = usedUhrType->NUM_SMATRIX(); a > 1; a--) {
-                if (G.Colortype == Grbw){
-                    led_set_pixel_Color_Object_rgbw(usedUhrType->getSMatrix(a - 1), led_get_pixel_rgbw(usedUhrType->getSMatrix(a - 2)));
-                }
-                else {
-                    led_set_pixel_Color_Object(usedUhrType->getSMatrix(a - 1), led_get_pixel(usedUhrType->getSMatrix(a - 2)));
-                }
-            }
-            led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getSMatrix(0));
-            led_show();
-            delay(d);
-        }
-    }
-    if (aktion == 1) {
-        for (uint8_t t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
-            for (uint8_t a = usedUhrType->NUM_SMATRIX(); a > 1; a--) {
-                //led1[a-1].r= led1[a-2].r;
-            }
-            //led1[0].r = led[G.anz_leds - t - 1].r;
-            led_show();
-            delay(d);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-static void wischen(unsigned char r, unsigned char g, unsigned char b, unsigned int d) {
-    uint8_t t;
-
-    for (t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
-        for (uint8_t u = 0; u < usedUhrType->ROWS_MATRIX(); u++) {
-//      led_set_pixel(r, g, b, usedUhrType->matrix(t,u));
-        }
-        if (t > 0) {
-            for (uint8_t v = 0; v < usedUhrType->ROWS_MATRIX(); v++) {
-                led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getMatrix(t,v));
-            }
-        }
-        led_show();
-        delay(d);
-    }
-    for (uint8_t u = 0; u < usedUhrType->ROWS_MATRIX(); u++) {
-        led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getMatrix(t - 1,u));
-    }
-    led_show();
-}
-
-//------------------------------------------------------------------------------
-
-static void schieben(int d, unsigned char aktion) {
-    if (aktion == 0) {
-        uint8_t a;
-        for (uint8_t t = 0; t < usedUhrType->NUM_SMATRIX(); t++) {
-            for (a = usedUhrType->NUM_SMATRIX() - 1; a > 0; a--) {
-                for (uint8_t b = 0; b < usedUhrType->ROWS_MATRIX(); b++) {
-                    if (G.Colortype == Grbw){
-                        led_set_pixel_Color_Object_rgbw(usedUhrType->getMatrix(a,b), led_get_pixel_rgbw(usedUhrType->getMatrix(a - 1,b)));
-                    }
-                    else {
-                        led_set_pixel_Color_Object(usedUhrType->getMatrix(a,b), led_get_pixel(usedUhrType->getMatrix(a - 1,b)));
-                    }
-                }
-            }
-            for (uint8_t b = 0; b < usedUhrType->ROWS_MATRIX(); b++) {
-                led_set_pixel(G.rr, G.gg, G.bb, G.ww, usedUhrType->getMatrix(a,b));
-            }
-            led_show();
-            delay(d);
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
