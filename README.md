@@ -12,12 +12,12 @@ Hier findet man alle nötigen Informationen zur Worduhr.
     * 470 Ohm Widerstand
     * Optional: LDR, 10 KOhm Widerstand
 * Software
-    * Arduio IDE oder Platformio IDE
+    * PlatformIO Core oder IDE
 
 ## Anschluss WS2812 oder SK6812 Stripe
-* RX = Data Bus
-* GND = Ground
-* VV = 5V
+* RX = DI / Data Bus
+* G = GND / Masse
+* VU = 5V
 * Pegelanpassung 3,3V zu 5V siehe docs
 
 ## Anschluss LDR (optional)
@@ -27,30 +27,17 @@ Hier findet man alle nötigen Informationen zur Worduhr.
 
 -   `pics` enthält Bilder
 -   `svg` enthält SVG Dateien
--   `Wortuhr` enthält den Sketch für Arduino und das Webinterface
+-   `include` enthält C Header Dateien
+-   `src` enthält C Source Dateien
+-   `webpage` enthält das Webinterface
 -   `docs` enthält Anleitungen
 -   `bin` enthält die Binary (Für die Uhrenvariante *UHR_114*)
 
-## Arduino IDE vorbereiten
-* Datei \> Voreinstellungen \> Zusätzliche Boardverwalter-URLs \> "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
-* Werkzeuge \>  Board \> Boardverwalter \> esp8266 Board installieren
-    * Weitere Informationen sind auf der [Github Seite des Entwicklers zu finden](https://github.com/esp8266/Arduino)
-* Unter Datei \> Sketch \> Include Libraries folgende Bibliotheken hinzufügen:
-    * '[NeoPixelBus](https://github.com/Makuna/NeoPixelBus)' von Mankuna
-    * '[Time](https://github.com/PaulStoffregen/Time)' von PaulStoffregen
-    * '[ArduinoJson](https://github.com/bblanchon/ArduinoJson)' von BBlanchon
-    * '[Timezone](https://github.com/JChristensen/Timezone)' von JChristensen
-    * '[WebSockets](https://www.arduino.cc/reference/en/libraries/websockets/)' von Arduino
-    * '[NTPClient](https://github.com/arduino-libraries/NTPClient)' von arduino-libraries
-    * '[RTClib](https://github.com/adafruit/RTClib)' von adafruit
-    * '[PubSubClient](https://www.arduino.cc/reference/en/libraries/pubsubclient/)' von Nick O'Leary
-    
 ## To DO & (Ideen):
 * Symbol zu einem bestimmten Datum/Uhrzeit
 * Getrennte Helligkeitsregelung Hintergrundbeleuchtung/Anzeige 
 * "The Matrix" effekt
 * Minten Effekte
-* Silvester Countdown
 * HomeKit Support
 * Alexa/GoogleHome Support
 * HSI Farb Selektor auf der Website
@@ -58,7 +45,6 @@ Hier findet man alle nötigen Informationen zur Worduhr.
 ## Known Bugs
 
 * Bei > 60 Sekunden in der Sekundenanzeige wird die Uhrzeit nach Wechsel erst zur nächsten vollen Minute aktualisiert. 
-* Die Hostname Configuration ist noch fehlerbehaftet
 
 ## ChangeLog
 ### Version 2.6.0
