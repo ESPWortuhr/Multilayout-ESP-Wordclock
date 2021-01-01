@@ -252,10 +252,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 						tmp[ii] = payload[k];
 						ii++;
 					}
-					tt = atoi(tmp);
-					Serial.println(tt);
-					Serial.printf("Conf: Time: %d\n", tt);
-					setTime(tt);
+					struct timeval tv;
+					tv.tv_sec = atoi(tmp);
+					tv.tv_usec = 0;
+					Serial.printf("Conf: Time: %ld\n", tv.tv_sec);
+					settimeofday(&tv, nullptr);
 					break;
 				}
 
@@ -343,9 +344,17 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_TIME_MANUAL:
 				{       // Uhrzeit manuell setzen
 					G.conf = COMMAND_SET_TIME_MANUAL;
-					int temp_std= split (payload, 9, 3);
-					int temp_min = split (payload, 12, 3);
-					setTime(temp_std, temp_min, 0, 1, 12, 2020);
+					time_t old = time(nullptr);
+					struct tm tm;
+					localtime_r(&old, &tm);
+					tm.tm_hour = split (payload, 9, 3);
+					tm.tm_min = split (payload, 12, 3);
+					tm.tm_sec = 0;
+					struct timeval tv;
+					tv.tv_sec = mktime(&tm);
+					tv.tv_usec = 0;
+					Serial.printf("Conf: Time: %ld\n", tv.tv_sec);
+					settimeofday(&tv, nullptr);
 					break;
 				}
 

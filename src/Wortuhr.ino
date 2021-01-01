@@ -34,8 +34,6 @@ bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
 #include <Hash.h>
-#include <TimeLib.h>
-#include <Timezone.h>
 #include <Wire.h>
 #include <RTClib.h>
 #include <PubSubClient.h>
@@ -65,15 +63,12 @@ iUhrType *usedUhrType = nullptr;
 NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
 
-TimeChangeRule CEST = {"CEST", Last, Sun, Mar, 2, 120};     //Central European Summer Time
-TimeChangeRule CET = {"CET ", Last, Sun, Oct, 3, 60};       //Central European Standard Time
-Timezone tzc(CEST, CET);
-
 WiFiClient client;
-time_t ltime, utc;
-TimeChangeRule *tcr;
 WiFiUDP ntpUDP;
 PubSubClient mqttClient(client);
+
+// Timezone from https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
+const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
 
 #ifndef RTC_Type
 RTC_DS3231 RTC;
@@ -137,18 +132,18 @@ uint32_t sntp_startup_delay_MS_rfc_not_less_than_60000 () {
 }
 
 void time_is_set() {
-	Serial.printf("settimeofday %ld", now());
+	Serial.printf("settimeofday");
 
 	time_t utc = time(nullptr);
-	setTime(utc);
 	if (externalRTC) {
 		RTC.adjust(DateTime(utc));
 	}
 
-	ltime = tzc.toLocal(utc, &tcr);
-	_sekunde = second(ltime);
-	_minute = minute(ltime);
-	_stunde = hour(ltime);
+	struct tm tm;
+	localtime_r(&utc, &tm);
+	_sekunde = tm.tm_sec;
+	_minute = tm.tm_min;
+	_stunde = tm.tm_hour;
 	if (G.UhrtypeDef == Uhr_169){
 		_sekunde48 = _sekunde * 48 / 60;
 	}
@@ -350,6 +345,8 @@ void setup(){
 	}
 	WlanStart();
 	configTime(0, 0, G.zeitserver);
+	setenv("TZ", TZ_Europe_Berlin, true);
+	tzset();
 
 	//-------------------------------------
 	// mDNS--
@@ -406,12 +403,13 @@ void loop(){
 		count_millis48 += currentMillis - previousMillis;
 	}
 
-	utc = now();
+	time_t utc = time(nullptr);
 	if (utc > 100000000) {
-		ltime = tzc.toLocal(utc, &tcr);
-		_sekunde = second(ltime);
-		_minute = minute(ltime);
-		_stunde = hour(ltime);
+		struct tm tm;
+		localtime_r(&utc, &tm);
+		_sekunde = tm.tm_sec;
+		_minute = tm.tm_min;
+		_stunde = tm.tm_hour;
 	}
 
 	if (G.UhrtypeDef == Uhr_169){
@@ -491,11 +489,10 @@ void loop(){
 			}
 		}
 
-		Serial.printf("%u.%u.%u %2u:%02u:%02u ", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
 		if (sntp_getreachability(0)) {
-			Serial.printf("(%s)\n", sntp_getservername(0));
+			Serial.printf("%s (%s)\n", ctime(&utc), sntp_getservername(0));
 		} else {
-			Serial.printf("(SNTP not reachable)\n");
+			Serial.printf("%s (SNTP not reachable)\n", ctime(&utc));
 		}
 	}
 
@@ -779,16 +776,6 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_TIME:
         {
-            utc = now();    //current time from the Time Library
-            ltime = tzc.toLocal(utc, &tcr);
-            _sekunde = second(ltime);
-            _minute = minute(ltime);
-            _stunde = hour(ltime);
-            if (G.UhrtypeDef == Uhr_169)
-            {
-                _sekunde48 = _sekunde * 48 / 60;
-            }
-            show_zeit();
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
@@ -816,7 +803,6 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_BRIGHTNESS:
         {
-            show_zeit();
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
@@ -828,7 +814,6 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_MINUTE:
         {
-            show_zeit();
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
