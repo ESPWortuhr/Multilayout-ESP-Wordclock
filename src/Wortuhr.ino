@@ -644,90 +644,41 @@ void loop(){
 			//------------------------------------------------
 		case COMMAND_REQUEST_CONFIG_VALUES:
 		{
-			strcpy(str, R"({"command":"config")");
-			strcat(str, R"(,"ssid":")");
-			strcat(str, Network_getSSID().c_str());
-			strcat(str, R"(","zeitserver":")");
-			strcat(str, G.zeitserver);
-			strcat(str, R"(","hostname":")");
-			strcat(str, G.hostname);
-			strcat(str, R"(","ltext":")");
-			strcat(str, G.ltext);
-			strcat(str, R"(","h6":")");
-			sprintf(s, "%d", G.h6);
-			strcat(str, s);
-			strcat(str, R"(","h8":")");
-			sprintf(s, "%d", G.h8);
-			strcat(str, s);
-			strcat(str, R"(","h12":")");
-			sprintf(s, "%d", G.h12);
-			strcat(str, s);
-			strcat(str, R"(","h16":")");
-			sprintf(s, "%d", G.h16);
-			strcat(str, s);
-			strcat(str, R"(","h18":")");
-			sprintf(s, "%d", G.h18);
-			strcat(str, s);
-			strcat(str, R"(","h20":")");
-			sprintf(s, "%d", G.h20);
-			strcat(str, s);
-			strcat(str, R"(","h22":")");
-			sprintf(s, "%d", G.h22);
-			strcat(str, s);
-			strcat(str, R"(","h24":")");
-			sprintf(s, "%d", G.h24);
-			strcat(str, s);
+			DynamicJsonDocument config(1024);
+			config["command"] = "config";
+			config["ssid"] = Network_getSSID();
+			config["zeitserver"] = G.zeitserver;
+			config["hostname"] = G.hostname;
+			config["ltext"] = G.ltext;
+			config["h6"] = G.h6;
+			config["h8"] = G.h8;
+			config["h12"] = G.h12;
+			config["h16"] = G.h16;
+			config["h18"] = G.h18;
+			config["h20"] = G.h20;
+			config["h22"] = G.h22;
+			config["h24"] = G.h24;
 			for (uint8_t i = 0; i < 4; i++)
 			{
-					strcat(str, R"(","spv)");
-					sprintf(s, "%d", i);
-					strcat(str, s);
-					strcat(str, R"(":")");
-					sprintf(s, "%d", G.Sprachvariation[i]);
-					strcat(str, s);
+				sprintf(s, "spv%d", i);
+				config[s] = G.Sprachvariation[i];
 			}
-			strcat(str, R"(","hell":")");
-			sprintf(s, "%d", G.hell);
-			strcat(str, s);
-			strcat(str, R"(","zeige_sek":")");
-			sprintf(s, "%d", G.zeige_sek);
-			strcat(str, s);
-			strcat(str, R"(","zeige_min":")");
-			sprintf(s, "%d", G.zeige_min);
-			strcat(str, s);
-			strcat(str, R"(","ldr":")");
-			sprintf(s, "%d", G.ldr);
-			strcat(str, s);
-			strcat(str, R"(","ldrCal":")");
-			sprintf(s, "%d", G.ldrCal);
-			strcat(str, s);
-			strcat(str, R"(","cityid":")");
-			strcat(str, G.cityid);
-			strcat(str, R"(","apikey":")");
-			strcat(str, G.apikey);
-			strcat(str, R"(","UhrtypeDef":")");
-			sprintf(s, "%d", G.UhrtypeDef);
-			strcat(str, s);
-			strcat(str, R"(","colortype":")");
-			sprintf(s, "%d", G.Colortype);
-			strcat(str, s);
-			strcat(str, R"(","MQTT_State":")");
-			sprintf(s, "%d", G.MQTT_State);
-			strcat(str, s);
-			strcat(str, R"(","MQTT_Port":")");
-			sprintf(s, "%d", G.MQTT_Port);
-			strcat(str, s);
-			strcat(str, R"(","MQTT_Server":")");
-			strcat(str, G.MQTT_Server);
-			strcat(str, R"(","bootLedBlink":")");
-			strcat(str, G.bootLedBlink ? "1" : "0");
-			strcat(str, R"(","bootLedSweep":")");
-			strcat(str, G.bootLedSweep ? "1" : "0");
-			strcat(str, R"(","bootShowWifi":")");
-			strcat(str, G.bootShowWifi ? "1" : "0");
-			strcat(str, R"(","bootShowIP":")");
-			strcat(str, G.bootShowIP ? "1" : "0");
-			strcat(str, "\"}");
+			config["hell"] = G.hell;
+			config["zeige_sek"] = G.zeige_sek;
+			config["zeige_min"] = G.zeige_min;
+			config["ldr"] = G.ldr;
+			config["ldrCal"] = G.ldrCal;
+			config["cityid"] = G.cityid;
+			config["apikey"] = G.apikey;
+			config["UhrtypeDef"] = G.UhrtypeDef;
+			config["MQTT_State"] = G.MQTT_State;
+			config["MQTT_Port"] = G.MQTT_State;
+			config["MQTT_Server"] = G.MQTT_State;
+			config["bootLedBlink"] = G.bootLedBlink;
+			config["bootLedSweep"] = G.bootLedSweep;
+			config["bootShowWifi"] = G.bootShowWifi;
+			config["bootShowIP"] = G.bootShowIP;
+			serializeJson(config, str);
 			Serial.print("Sending Payload:");
 			Serial.println(str);
 			webSocket.sendTXT(G.client_nr, str, strlen(str));
@@ -740,32 +691,20 @@ void loop(){
 			//------------------------------------------------
 		case COMMAND_REQUEST_COLOR_VALUES:
 		{
-			strcpy(str, R"({"command":"set")");
+			DynamicJsonDocument config(1024);
+			config["command"] = "set";
 			for (uint8_t i = 0; i < 4; i++)
 			{
 				for (uint8_t ii = 0; ii < 4; ii++)
 				{
-					strcat(str, ",\"rgb");
-					sprintf(s, "%d", i);
-					strcat(str, s);
-					sprintf(s, "%d", ii);
-					strcat(str, s);
-					strcat(str, "\":\"");
-					sprintf(s, "%d", G.rgb[i][ii]);
-					strcat(str, s);
-					strcat(str, "\"");
+					sprintf(s, "rgb%d%d", i, ii);
+					config[s] = G.rgb[i][ii];
 				}
 			}
-			strcat(str, R"(,"hell":")");
-			sprintf(s, "%d", G.hell);
-			strcat(str, s);
-			strcat(str, R"(","geschw":")");
-			sprintf(s, "%d", G.geschw);
-			strcat(str, s);
-			strcat(str, R"(","colortype":")");
-			sprintf(s, "%d", G.Colortype);
-			strcat(str, s);
-			strcat(str, "\"}");
+			config["hell"] = G.hell;
+			config["geschw"] = G.geschw;
+			config["colortype"] = G.Colortype;
+			serializeJson(config, str);
 			webSocket.sendTXT(G.client_nr, str, strlen(str));
 			G.conf = COMMAND_IDLE;
 			break;
