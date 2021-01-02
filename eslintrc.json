@@ -143,7 +143,9 @@
 		"no-octal-escape": "error",
 		"no-path-concat": "error",
 		"no-proto": "error",
-		"no-redeclare": "error",
+		"no-redeclare": ["error", {
+			"builtinGlobals": false
+		}],
 		"no-regex-spaces": "error",
 		"no-return-assign": ["error", "except-parens"],
 		"no-return-await": "error",
@@ -249,7 +251,7 @@
 		"yield-star-spacing": ["error", "both"],
 		"yoda": ["error", "never"],
 		"id-length": ["error", {
-			"exceptions": ["$", "_"]
+			"exceptions": ["$", "_", "i"]
 		}]
 	},
 	"env": {
