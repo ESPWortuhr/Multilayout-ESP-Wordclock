@@ -114,9 +114,9 @@ unsigned char wlan_ssid = false;
 uint8_t _sekunde = 0;
 uint8_t _minute = 0;
 uint8_t _stunde = 0;
-uint8_t last_sekunde = 100;
-uint8_t last_minute = 100;
-uint8_t last_stunde = 100;
+uint8_t last_sekunde = 0;
+uint8_t last_minute = 0;
+uint8_t last_stunde = 0;
 
 uint8_t count_millis48 = 0;
 unsigned long previous48 = 0;
@@ -124,12 +124,8 @@ const long interval48 = 1250;
 uint8_t _sekunde48 = 0;
 uint8_t last_sekunde48 = 100;
 
-unsigned long unix_time = 0;
-
 unsigned int count_millis = 0;
-unsigned int count_tag = 0;
 unsigned int count_delay = 0;
-unsigned char ntp_flag = false;
 
 unsigned long previousMillis = 0;
 const long interval = 1000;   // 1 Sekunde

@@ -34,14 +34,13 @@ bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 #include <ESP8266HTTPUpdateServer.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
-#include <NTPClient.h>
 #include <Hash.h>
-#include <TimeLib.h>
-#include <Timezone.h>
 #include <Wire.h>
 #include <RTClib.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <coredecls.h>
+#include <sntp.h>
 
 #include "Uhr.h"
 #include "WebPage_Adapter.h"
@@ -67,16 +66,12 @@ iUhrType *usedUhrType = nullptr;
 NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
 
-TimeChangeRule CEST = {"CEST", Last, Sun, Mar, 2, 120};     //Central European Summer Time
-TimeChangeRule CET = {"CET ", Last, Sun, Oct, 3, 60};       //Central European Standard Time
-Timezone tzc(CEST, CET);
-
 WiFiClient client;
-time_t ltime, utc;
-TimeChangeRule *tcr;
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, G.zeitserver);
 PubSubClient mqttClient(client);
+
+// Timezone from https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
+const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
 
 #ifndef RTC_Type
 RTC_DS3231 RTC;
@@ -127,6 +122,35 @@ void InitLedStrip(uint8_t num){
 		}
 		strip_RGB = new NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod>(usedUhrType->NUM_PIXELS());
 		strip_RGB->Begin();
+	}
+}
+
+uint32_t sntp_startup_delay_MS_rfc_not_less_than_60000 () {
+	if (externalRTC) {
+		Serial.println("SNTP startup delay 1min");
+		return 60000;
+	} else {
+		// yes this is against the RFC, but we don't have an RTC and want the time now.
+		Serial.println("no RTC clock - disable SNTP startup delay");
+		return 500;
+	}
+}
+
+void time_is_set() {
+	Serial.printf("settimeofday");
+
+	time_t utc = time(nullptr);
+	if (externalRTC) {
+		RTC.adjust(DateTime(utc));
+	}
+
+	struct tm tm;
+	localtime_r(&utc, &tm);
+	_sekunde = tm.tm_sec;
+	_minute = tm.tm_min;
+	_stunde = tm.tm_hour;
+	if (G.UhrtypeDef == Uhr_169){
+		_sekunde48 = _sekunde * 48 / 60;
 	}
 }
 
@@ -314,6 +338,7 @@ void setup(){
 		Serial.println("No external RealtimeClock found");
 		externalRTC = false;
 	}
+	settimeofday_cb(time_is_set);
 
 	//-------------------------------------
 	// Start WiFi
@@ -326,25 +351,11 @@ void setup(){
 	Serial.printf("Signal strength: %i\n", strength);
 	if (G.bootShowWifi) {
 		show_icon_wlan(strength);
-		delay(500);
 	}
 	WlanStart();
-
-	//-------------------------------------
-	// Zeit setzen
-	//-------------------------------------
-	utc = now();    //current time from the Time Library
-	ltime = tzc.toLocal(utc, &tcr);
-	_sekunde = second(ltime);
-	_minute = minute(ltime);
-	_stunde = hour(ltime);
-	if (G.UhrtypeDef == Uhr_169){
-		_sekunde48 = _sekunde * 48 / 60;
-	}
-	show_zeit(1);
-	if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2){
-		set_farbe_rahmen();
-	}
+	configTime(0, 0, G.zeitserver);
+	setenv("TZ", TZ_Europe_Berlin, true);
+	tzset();
 
 	//-------------------------------------
 	// mDNS--
@@ -382,6 +393,11 @@ void setup(){
 	Serial.println("Ende Setup");
 	Serial.println("--------------------------------------");
 	Serial.println("");
+
+	// setup frame
+	if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2){
+		set_farbe_rahmen();
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -390,26 +406,21 @@ void setup(){
 
 void loop(){
 	unsigned long currentMillis = millis();
-	count_millis += currentMillis - previousMillis;
+	previousMillis = currentMillis;
 	count_delay += currentMillis - previousMillis;
 	if (G.UhrtypeDef == Uhr_169){
 		count_millis48 += currentMillis - previousMillis;
 	}
-	previousMillis = currentMillis;
-	if (count_millis >= interval){
-		count_millis = 0;
-		utc = now();    //current time from the Time Library
-		ltime = tzc.toLocal(utc, &tcr);
-		_sekunde = second(ltime);
-		_minute = minute(ltime);
-		_stunde = hour(ltime);
-		count_tag++;
-		// Wetteruhr
-		if (G.UhrtypeDef == Uhr_242){
-			weather_tag++;
-		}
 
+	time_t utc = time(nullptr);
+	if (utc > 100000000) {
+		struct tm tm;
+		localtime_r(&utc, &tm);
+		_sekunde = tm.tm_sec;
+		_minute = tm.tm_min;
+		_stunde = tm.tm_hour;
 	}
+
 	if (G.UhrtypeDef == Uhr_169){
 		if (count_millis48 >= interval48){
 			count_millis48 = 0;
@@ -457,13 +468,19 @@ void loop(){
 	//------------------------------------------------
 	if (last_sekunde != _sekunde){
 
+		// Wetteruhr
+		if (G.UhrtypeDef == Uhr_242){
+			weather_tag++;
+		}
+
 		//--- LDR Regelung
 		if (G.ldr == 1){
 			doLDRLogic();
 		}
 
 		if (G.prog == 0 && G.conf == 0){
-			show_zeit(0); // Anzeige Uhrzeit ohne Config
+			led_clear();
+			show_zeit();
 		}
 		last_sekunde = _sekunde;
 
@@ -480,34 +497,20 @@ void loop(){
 				Serial.println(wstunde);
 			}
 		}
+
+		if (sntp_getreachability(0)) {
+			Serial.printf("%s (%s)\n", ctime(&utc), sntp_getservername(0));
+		} else {
+			Serial.printf("%s (SNTP not reachable)\n", ctime(&utc));
+		}
 	}
 
 	//------------------------------------------------
 	// Minute
 	//------------------------------------------------
 	if (last_minute != _minute){
-		Serial.println(">>>> Begin Minute <<<<");
-		TelnetMsg(">>>> Begin Minute <<<<");
-
-		if (G.prog == 0 && G.conf == 0){
-			led_clear();
-			show_zeit(1); // Anzeige Uhrzeit mit Config
-		}
-
 		_sekunde48 = 0;
 		last_minute = _minute;
-
-		Serial.printf("%u.%u.%u %u:%u:%u \n", day(ltime), month(ltime), year(ltime), hour(ltime), minute(ltime), second(ltime));
-		Serial.println(">>>> Ende  Minute <<<<");
-		TelnetMsg(">>>> Ende  Minute <<<<");
-	}
-
-	//------------------------------------------------
-	// Tag
-	//------------------------------------------------
-	if (count_tag >= 86400){
-		count_tag = 0;
-		ntp_flag = true;
 	}
 
 	//------------------------------------------------
@@ -523,37 +526,6 @@ void loop(){
 
 	Network_loop();
 
-	//------------------------------------------------
-	// NTP Zeit neu holen
-	//------------------------------------------------
-	if (ntp_flag == true){
-		Serial.println("npt: Neue Zeit holen");
-		TelnetMsg("npt: Neue Zeit holen");
-		ntp_flag = false;
-		wlan_status = WiFi.status();
-		if (wlan_status == WL_CONNECTED){
-			timeClient.update();
-			unix_time = timeClient.getEpochTime();
-			if (unix_time > 0){
-				setTime(unix_time);
-				Serial.println(unix_time);
-				utc = now();    //current time from the Time Library
-				ltime = tzc.toLocal(utc, &tcr);
-				Serial.print(hour(ltime));
-				Serial.print(":");
-				Serial.print(minute(ltime));
-				Serial.print(":");
-				Serial.print(second(ltime));
-				Serial.print(" - ");
-				Serial.print(day(ltime));
-				Serial.print(".");
-				Serial.print(month(ltime));
-				Serial.print(".");
-				Serial.println(year(ltime));
-			}
-		}
-	}
-
 	switch (G.prog)
 	{
         //------------------------------------------------
@@ -561,7 +533,7 @@ void loop(){
         //------------------------------------------------
 	    case COMMAND_MODE_WORD_CLOCK:
 	        {
-            show_zeit(0); // Anzeige Uhrzeit ohne Config
+            show_zeit();
             if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2){
                 set_farbe_rahmen();
             }
@@ -681,90 +653,41 @@ void loop(){
 			//------------------------------------------------
 		case COMMAND_REQUEST_CONFIG_VALUES:
 		{
-			strcpy(str, R"({"command":"config")");
-			strcat(str, R"(,"ssid":")");
-			strcat(str, Network_getSSID().c_str());
-			strcat(str, R"(","zeitserver":")");
-			strcat(str, G.zeitserver);
-			strcat(str, R"(","hostname":")");
-			strcat(str, G.hostname);
-			strcat(str, R"(","ltext":")");
-			strcat(str, G.ltext);
-			strcat(str, R"(","h6":")");
-			sprintf(s, "%d", G.h6);
-			strcat(str, s);
-			strcat(str, R"(","h8":")");
-			sprintf(s, "%d", G.h8);
-			strcat(str, s);
-			strcat(str, R"(","h12":")");
-			sprintf(s, "%d", G.h12);
-			strcat(str, s);
-			strcat(str, R"(","h16":")");
-			sprintf(s, "%d", G.h16);
-			strcat(str, s);
-			strcat(str, R"(","h18":")");
-			sprintf(s, "%d", G.h18);
-			strcat(str, s);
-			strcat(str, R"(","h20":")");
-			sprintf(s, "%d", G.h20);
-			strcat(str, s);
-			strcat(str, R"(","h22":")");
-			sprintf(s, "%d", G.h22);
-			strcat(str, s);
-			strcat(str, R"(","h24":")");
-			sprintf(s, "%d", G.h24);
-			strcat(str, s);
+			DynamicJsonDocument config(1024);
+			config["command"] = "config";
+			config["ssid"] = Network_getSSID();
+			config["zeitserver"] = G.zeitserver;
+			config["hostname"] = G.hostname;
+			config["ltext"] = G.ltext;
+			config["h6"] = G.h6;
+			config["h8"] = G.h8;
+			config["h12"] = G.h12;
+			config["h16"] = G.h16;
+			config["h18"] = G.h18;
+			config["h20"] = G.h20;
+			config["h22"] = G.h22;
+			config["h24"] = G.h24;
 			for (uint8_t i = 0; i < 4; i++)
 			{
-					strcat(str, R"(","spv)");
-					sprintf(s, "%d", i);
-					strcat(str, s);
-					strcat(str, R"(":")");
-					sprintf(s, "%d", G.Sprachvariation[i]);
-					strcat(str, s);
+				sprintf(s, "spv%d", i);
+				config[s] = G.Sprachvariation[i];
 			}
-			strcat(str, R"(","hell":")");
-			sprintf(s, "%d", G.hell);
-			strcat(str, s);
-			strcat(str, R"(","zeige_sek":")");
-			sprintf(s, "%d", G.zeige_sek);
-			strcat(str, s);
-			strcat(str, R"(","zeige_min":")");
-			sprintf(s, "%d", G.zeige_min);
-			strcat(str, s);
-			strcat(str, R"(","ldr":")");
-			sprintf(s, "%d", G.ldr);
-			strcat(str, s);
-			strcat(str, R"(","ldrCal":")");
-			sprintf(s, "%d", G.ldrCal);
-			strcat(str, s);
-			strcat(str, R"(","cityid":")");
-			strcat(str, G.cityid);
-			strcat(str, R"(","apikey":")");
-			strcat(str, G.apikey);
-			strcat(str, R"(","UhrtypeDef":")");
-			sprintf(s, "%d", G.UhrtypeDef);
-			strcat(str, s);
-			strcat(str, R"(","colortype":")");
-			sprintf(s, "%d", G.Colortype);
-			strcat(str, s);
-			strcat(str, R"(","MQTT_State":")");
-			sprintf(s, "%d", G.MQTT_State);
-			strcat(str, s);
-			strcat(str, R"(","MQTT_Port":")");
-			sprintf(s, "%d", G.MQTT_Port);
-			strcat(str, s);
-			strcat(str, R"(","MQTT_Server":")");
-			strcat(str, G.MQTT_Server);
-			strcat(str, R"(","bootLedBlink":")");
-			strcat(str, G.bootLedBlink ? "1" : "0");
-			strcat(str, R"(","bootLedSweep":")");
-			strcat(str, G.bootLedSweep ? "1" : "0");
-			strcat(str, R"(","bootShowWifi":")");
-			strcat(str, G.bootShowWifi ? "1" : "0");
-			strcat(str, R"(","bootShowIP":")");
-			strcat(str, G.bootShowIP ? "1" : "0");
-			strcat(str, "\"}");
+			config["hell"] = G.hell;
+			config["zeige_sek"] = G.zeige_sek;
+			config["zeige_min"] = G.zeige_min;
+			config["ldr"] = G.ldr;
+			config["ldrCal"] = G.ldrCal;
+			config["cityid"] = G.cityid;
+			config["apikey"] = G.apikey;
+			config["UhrtypeDef"] = G.UhrtypeDef;
+			config["MQTT_State"] = G.MQTT_State;
+			config["MQTT_Port"] = G.MQTT_State;
+			config["MQTT_Server"] = G.MQTT_State;
+			config["bootLedBlink"] = G.bootLedBlink;
+			config["bootLedSweep"] = G.bootLedSweep;
+			config["bootShowWifi"] = G.bootShowWifi;
+			config["bootShowIP"] = G.bootShowIP;
+			serializeJson(config, str);
 			Serial.print("Sending Payload:");
 			Serial.println(str);
 			webSocket.sendTXT(G.client_nr, str, strlen(str));
@@ -777,32 +700,20 @@ void loop(){
 			//------------------------------------------------
 		case COMMAND_REQUEST_COLOR_VALUES:
 		{
-			strcpy(str, R"({"command":"set")");
+			DynamicJsonDocument config(1024);
+			config["command"] = "set";
 			for (uint8_t i = 0; i < 4; i++)
 			{
 				for (uint8_t ii = 0; ii < 4; ii++)
 				{
-					strcat(str, ",\"rgb");
-					sprintf(s, "%d", i);
-					strcat(str, s);
-					sprintf(s, "%d", ii);
-					strcat(str, s);
-					strcat(str, "\":\"");
-					sprintf(s, "%d", G.rgb[i][ii]);
-					strcat(str, s);
-					strcat(str, "\"");
+					sprintf(s, "rgb%d%d", i, ii);
+					config[s] = G.rgb[i][ii];
 				}
 			}
-			strcat(str, R"(,"hell":")");
-			sprintf(s, "%d", G.hell);
-			strcat(str, s);
-			strcat(str, R"(","geschw":")");
-			sprintf(s, "%d", G.geschw);
-			strcat(str, s);
-			strcat(str, R"(","colortype":")");
-			sprintf(s, "%d", G.Colortype);
-			strcat(str, s);
-			strcat(str, "\"}");
+			config["hell"] = G.hell;
+			config["geschw"] = G.geschw;
+			config["colortype"] = G.Colortype;
+			serializeJson(config, str);
 			webSocket.sendTXT(G.client_nr, str, strlen(str));
 			G.conf = COMMAND_IDLE;
 			break;
@@ -813,16 +724,6 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_TIME:
         {
-            utc = now();    //current time from the Time Library
-            ltime = tzc.toLocal(utc, &tcr);
-            _sekunde = second(ltime);
-            _minute = minute(ltime);
-            _stunde = hour(ltime);
-            if (G.UhrtypeDef == Uhr_169)
-            {
-                _sekunde48 = _sekunde * 48 / 60;
-            }
-            show_zeit(1); // Anzeige Uhrzeit mit Config
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
@@ -850,7 +751,6 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_BRIGHTNESS:
         {
-            show_zeit(1); // Anzeige Uhrzeit mit Config
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
@@ -862,7 +762,6 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_MINUTE:
         {
-            show_zeit(1); // Anzeige Uhrzeit mit Config
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
@@ -888,8 +787,8 @@ void loop(){
 		case COMMAND_SET_LANGUAGE_VARIANT:
 		{
 			eeprom_write();
-            led_clear();
-			show_zeit(1);
+			led_clear();
+			show_zeit();
 			G.conf = COMMAND_IDLE;
 			break;
 		}
@@ -915,7 +814,7 @@ void loop(){
 		{
 			Serial.println("Uhrzeit manuell eingstellt");
 			led_clear();
-			show_zeit(1); // Anzeige Uhrzeit mit Config
+			show_zeit();
 			G.conf = COMMAND_IDLE;
 			break;
 		}
@@ -983,7 +882,7 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_SETTING_SECOND:
         {
-            show_zeit(1); // Anzeige Uhrzeit mit Config
+            show_zeit();
             eeprom_write();
             delay(100);
             G.conf = COMMAND_IDLE;
@@ -1006,12 +905,8 @@ void loop(){
             //------------------------------------------------
         case COMMAND_SET_TIMESERVER:
         {
-            timeClient.end();
-            NTPClient timeClient(ntpUDP, G.zeitserver);
-            timeClient.begin();
-            delay(500);
-            timeClient.update();
             eeprom_write();
+            configTime(0, 0, G.zeitserver);
             G.conf = COMMAND_SET_TIME;
             break;
         }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "WebSocketsServer.h"
-#include "WebPageWortuhr.h"
+#include "WebPageContent.h"
 #include "Uhr.h"
 #include "Network.h"
 
@@ -26,37 +26,25 @@ public:
                            "Connection: close\r\n"
                            //--                    "Sec-WebSocket-Version: 13\r\n"
                            "\r\n");
-		Send_HTML_Code(client, 0);
-        if (G.Colortype == Grbw){ Send_HTML_Code(client, 1);};
-		Send_HTML_Code(client, 2);
-        if (G.UhrtypeDef == Uhr_242){ Send_HTML_Code(client, 3);};
-        if (G.UhrtypeDef == Uhr_169){ Send_HTML_Code(client, 4);};
-        Send_HTML_Code(client, 5);
-		if (G.UhrtypeDef == Uhr_114_Alternative){ Send_HTML_Code(client, 6);};
-		Send_HTML_Code(client, 7);
+	Send_HTML_Code(client, html_code, html_size);
         clientDisconnect(client);
     }
 
-    void Send_HTML_Code(const WSclient_t *client, uint8_t index) const {
-        char str[RESPONSE_SIZE + 4];
-        unsigned ww = 0;
-        unsigned yy = 0;
-        int j;
-        while (ww < HTML_Size[index]) {
-            str[yy] = pgm_read_byte(&html_code[index][ww]);
-            str[yy + 1] = '\0';
-            yy++;
-            if (yy == RESPONSE_SIZE) {
-                j = strlen(str);
-                client->tcp->write(&str[0], j);
-                str[0] = '\0';
-                yy = 0;
+    void Send_HTML_Code(const WSclient_t *client, const char * data, uint32_t size) const {
+        char buf[RESPONSE_SIZE];
+        unsigned sent = 0;
+        unsigned blen = 0;
+        while (sent < size) {
+            buf[blen] = pgm_read_byte(&data[sent]);
+	    blen++;
+            if (blen == RESPONSE_SIZE) {
+                client->tcp->write(buf, blen);
+                blen = 0;
             }
-            ww++;
+            sent++;
         }
-        if (yy > 0) {
-            j = strlen(str);
-            client->tcp->write(&str[0], j);
+        if (blen > 0) {
+            client->tcp->write(buf, blen);
         }
     }
 
@@ -264,10 +252,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 						tmp[ii] = payload[k];
 						ii++;
 					}
-					tt = atoi(tmp);
-					Serial.println(tt);
-					Serial.printf("Conf: Time: %d\n", tt);
-					setTime(tt);
+					struct timeval tv;
+					tv.tv_sec = atoi(tmp);
+					tv.tv_usec = 0;
+					Serial.printf("Conf: Time: %ld\n", tv.tv_sec);
+					settimeofday(&tv, nullptr);
 					break;
 				}
 
@@ -355,9 +344,17 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 				case COMMAND_SET_TIME_MANUAL:
 				{       // Uhrzeit manuell setzen
 					G.conf = COMMAND_SET_TIME_MANUAL;
-					int temp_std= split (payload, 9, 3);
-					int temp_min = split (payload, 12, 3);
-					setTime(temp_std, temp_min, 0, 1, 12, 2020);
+					time_t old = time(nullptr);
+					struct tm tm;
+					localtime_r(&old, &tm);
+					tm.tm_hour = split (payload, 9, 3);
+					tm.tm_min = split (payload, 12, 3);
+					tm.tm_sec = 0;
+					struct timeval tv;
+					tv.tv_sec = mktime(&tm);
+					tv.tv_usec = 0;
+					Serial.printf("Conf: Time: %ld\n", tv.tv_sec);
+					settimeofday(&tv, nullptr);
 					break;
 				}
 

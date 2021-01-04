@@ -2,7 +2,7 @@
 
     var layout   = document.getElementById('layout'),
         menu     = document.getElementById('menu'),
-        menuLink = document.getElementById('menuLink');
+        menuLink = document.getElementById('menu-link');
 
     function toggleClass(element, className) {
         var classes = element.className.split(/\s+/),
@@ -227,6 +227,14 @@ function debugMessage(debugMessage, someObject) {
     }
 }
 
+/// only shows elements of class `cls` if `enbl` is true.
+function enableSpecific(cls, enbl) {
+    let items = document.getElementsByClassName(cls);
+    for (var item of items) {
+        item.style.display = enbl ? null : "none";
+    }
+}
+
 function initWebsocket() {
 
     websocket = new WebSocket(ipEsp);
@@ -299,21 +307,26 @@ function initWebsocket() {
             $("#owm-api-key").set("value", data.apiKey);
             $("#owm-city-id").set("value", data.cityid);
 
-            $("#MQTT_Port").set("value", data.MQTT_Port);
-            $("#MQTT_Server").set("value", data.MQTT_Server);
-            $("#MQTT_Topic").set("value", data.MQTT_Topic);
+            $("#mqtt-port").set("value", data.MQTT_Port);
+            $("#mqtt-server").set("value", data.MQTT_Server);
+            $("#mqtt-topic").set("value", data.MQTT_Topic);
 
-            $("#UhrtypeDef").set("value", data.UhrtypeDef);
+            $("#front-layout").set("value", data.UhrtypeDef);
             $("#colortype").set("value", data.colortype);
 
-            $("#MQTT_State").set("value", data.MQTT_State);
-            $("#MQTT_Port").set("value", data.MQTT_Port);
-            $("#MQTT_Server").set("value", data.MQTT_Server);
+            $("#mqtt-state").set("value", data.MQTT_State);
+            $("#mqtt-port").set("value", data.MQTT_Port);
+            $("#mqtt-server").set("value", data.MQTT_Server);
 
             $("#boot-led-blink").set("checked", data.bootLedBlink | 0);
             $("#boot-led-sweep").set("checked", data.bootLedSweep | 0);
             $("#boot-show-wifi").set("checked", data.bootShowWifi | 0);
             $("#boot-show-ip").set("checked", data.bootShowIP | 0);
+
+            enableSpecific("specific-layout-2", data.UhrtypeDef == 2);
+            enableSpecific("specific-layout-4", data.UhrtypeDef == 4);
+            enableSpecific("specific-layout-5", data.UhrtypeDef == 5);
+            enableSpecific("specific-colortype-4", data.colortype == 4);
         }
         if (data.command === "set") {
             rgb[0][0] = data.rgb00;
@@ -336,6 +349,7 @@ function initWebsocket() {
             geschw = data.geschw;
             colortype = data.colortype;
             setSliders();
+            enableSpecific("specific-colortype-4", data.colortype == 4);
         }
         if (data.command === "wlan"){
             document.getElementById("wlanlist").innerHTML = data.list}
@@ -786,14 +800,14 @@ $.ready(function () {
         websocket.send(data);
         debugMessage("Sekundenanzeige wurde neu konfiguriert", data);
     });
-    $("#UhrtypeDef-button").on("click", function() {
-        var UhrtypeDef = $("#UhrtypeDef").get("value");
+    $("#front-layout-button").on("click", function() {
+        var frontLayout = $("#front-layout").get("value");
 
         var data = CMDtoData(COMMAND_SET_UHRTYPE, 0, 0);
-        data += UhrtypeDef + "  999";
+        data += frontLayout + "  999";
 
         websocket.send(data);
-        debugMessage("UhrtypeDef wurde neu konfiguriert", data);
+        debugMessage("frontLayout wurde neu konfiguriert", data);
     });
     $("#colortype-button").on("click", function() {
         colortype = $("#colortype").get("value");
@@ -865,14 +879,14 @@ $.ready(function () {
         websocket.send(data);
         debugMessage("MQTT Server wurde konfiguriert", data);
     });
-    $("#Sprachvariation-button").on("click", function() {
+    $("#dialect-button").on("click", function() {
         var data = CMDtoData(COMMAND_SET_LANGUAGE_VARIANT, 0, 0);
-        Sprachvariation[0] = $("#Sprachvariation0").get("value");
-        Sprachvariation[1] = $("#Sprachvariation1").get("value");
-        Sprachvariation[2] = $("#Sprachvariation2").get("value");
-        Sprachvariation[3] = $("#Sprachvariation3").get("value");
-        data += nstr(Sprachvariation[0]) + nstr(Sprachvariation[1]) + nstr(Sprachvariation[2]) + nstr(Sprachvariation[3]) + "999";
+        dialect[0] = $("#dialect-0").get("value");
+        dialect[1] = $("#dialect-1").get("value");
+        dialect[2] = $("#dialect-2").get("value");
+        dialect[3] = $("#dialect-3").get("value");
+        data += nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + "999";
         websocket.send(data);
-        debugMessage("Sprachvariation wurde konfiguriert", data);
+        debugMessage("dialect wurde konfiguriert", data);
     });
 });
