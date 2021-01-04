@@ -261,6 +261,7 @@ enum ledText {
 enum UhrTypeDefinitions {
 	Uhr_114 = 1,
 	Uhr_114_Alternative = 2,
+	Uhr_114_2Clock = 6,
 	Uhr_125 = 3,
 	Uhr_169 = 4,
 	Uhr_242 = 5,
