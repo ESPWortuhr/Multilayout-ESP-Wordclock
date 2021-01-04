@@ -22,6 +22,7 @@ module.exports = function(grunt) {
 		csslint: {
 			files: ["<%= settings.srcDirectory %>/style.css"],
 			options: {
+				"ids": false,
 				"order-alphabetical": false,
 				"fallback-colors": false,
 				"box-sizing": false,
@@ -159,7 +160,7 @@ module.exports = function(grunt) {
 
 	// tasks
 	grunt.registerTask("build", [
-		// "lint",
+		"lint",
 		"clean:temp",
 		"cssmin",
 		"copy:minified_css_files",
