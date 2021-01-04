@@ -340,6 +340,14 @@ void setup(){
 	}
 	settimeofday_cb(time_is_set);
 
+    //-------------------------------------
+    // Init Array
+    //-------------------------------------
+
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+        Word_array_old[i] = 255;
+    }
+
 	//-------------------------------------
 	// Start WiFi
 	//-------------------------------------
@@ -679,6 +687,7 @@ void loop(){
 			config["ldrCal"] = G.ldrCal;
 			config["cityid"] = G.cityid;
 			config["apikey"] = G.apikey;
+            config["colortype"] = G.Colortype;
 			config["UhrtypeDef"] = G.UhrtypeDef;
 			config["MQTT_State"] = G.MQTT_State;
 			config["MQTT_Port"] = G.MQTT_State;
