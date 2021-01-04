@@ -48,10 +48,15 @@ Hier findet man alle nötigen Informationen zur Worduhr.
 
 ## ChangeLog
 ### Version 2.6.0
-* (tali & dbambus) 2020xxxx
+* (tali & dbambus) 2021xxxx
 * Added WifiManager
 * Added Wifi Connection Symbol 
 * Added LED Show Boot Options on Website 
+
+### Version 2.5.1
+* (dbambus) 20210104
+* Added UHR114_2Clock Layoutoption
+* Added LDR Calibration Option
 
 ### Version 2.5.0
 * (dbambus) 20201208  

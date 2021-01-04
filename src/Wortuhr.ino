@@ -3,6 +3,7 @@
  */
 #define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 //#define UHR_114_Alternative         // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
+//#define UHR_114_2Clock			  // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit dem Layout vom orginal Hersteller
 //#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 //#define UHR_169                     // Uhr mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
 //#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
@@ -46,14 +47,16 @@ bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 #include "EEPROMAnything.h"
 #include "icons.h"
 
-#include "Uhrtypes/uhr_func_114_Alternative.hpp"
 #include "Uhrtypes/uhr_func_114.hpp"
+#include "Uhrtypes/uhr_func_114_Alternative.hpp"
+#include "Uhrtypes/uhr_func_114_2Clock.hpp"
 #include "Uhrtypes/uhr_func_125.hpp"
 #include "Uhrtypes/uhr_func_169.hpp"
 #include "Uhrtypes/uhr_func_242.hpp"
 
-UHR_114_Alternative_t Uhr_114_Alternative_type;
 UHR_114_t Uhr_114_type;
+UHR_114_Alternative_t Uhr_114_Alternative_type;
+UHR_114_2Clock_t Uhr_114_2Clock_type;
 UHR_125_t Uhr_125_type;
 UHR_169_t Uhr_169_type;
 UHR_242_t Uhr_242_type;
@@ -90,6 +93,8 @@ iUhrType *getPointer(uint8_t num){
 			return reinterpret_cast<iUhrType *>(&Uhr_114_type);
 		case 2:
 			return reinterpret_cast<iUhrType *>(&Uhr_114_Alternative_type);
+		case 6:
+			return reinterpret_cast<iUhrType *>(&Uhr_114_2Clock_type);
 		case 3:
 			return reinterpret_cast<iUhrType *>(&Uhr_125_type);
 		case 4:
@@ -206,12 +211,16 @@ void setup(){
 		G.MQTT_Port = 1883;
 		strcpy(G.MQTT_Server, "192.168.4.1");
 
+#ifdef UHR_114
+		G.UhrtypeDef = Uhr_114;
+#endif
+
 #ifdef UHR_114_Alternative
 		G.UhrtypeDef = Uhr_114_Alternative;
 #endif
 
-#ifdef UHR_114
-		G.UhrtypeDef = Uhr_114;
+#ifdef UHR_114_2Clock
+		G.UhrtypeDef = Uhr_114_2Clock;
 #endif
 
 #ifdef UHR_125
