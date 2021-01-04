@@ -354,10 +354,10 @@ static void set_farbe() {
 //------------------------------------------------------------------------------
 
 static void doLDRLogic() {
-        uint16_t lux = analogRead(A0);
-        lux = lux - G.ldrCal;
-        if (lux >= 900) { lux = 900; }
-        if (lux <= 1) { lux = 1; }
+        int16_t lux = analogRead(A0); //Range 0-1023
+        lux = lux - (G.ldrCal*20);
+        if (lux >= 900) { lux = 900; } // Maximale Helligkeit
+        if (lux <= 1) { lux = 1; } // Minimale Helligkeit
         ldrVal = map(lux, 1, 900, 1, 100);
 }
 

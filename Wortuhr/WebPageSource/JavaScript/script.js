@@ -83,6 +83,7 @@ var h22 = 100;
 var h24 = 100;
 var Sprachvariation = [0, 0, 0, 0];
 var ldr = 0;
+var ldrCal = 0;
 var showSeconds = 0;
 var showMinutes = 0;
 var UhrtypeDef = 0;
@@ -179,6 +180,7 @@ function initConfigValues() {
     h22 = 100;
     h24 = 100;
     ldr = 0;
+    ldrCal = 10;
     Sprachvariation = [0, 0, 0, 0];
     showSeconds = 0;
     showMinutes = 0;
@@ -283,6 +285,7 @@ function initWebsocket() {
             $("#Sprachvariation3").set("value", data.spv3);
 
             $("#ldr").set("value", data.ldr);
+            $("#ldrCal").set("value", data.ldrCal);
             $("#slider-brightness").set("value", data.hell);
             $("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
             $("#showSeconds").set("value", data.zeige_sek);
@@ -805,9 +808,10 @@ $.ready(function () {
     });
     $("#ldr-button").on("click", function() {
         ldr = $("#ldr").get("value");
+        ldrCal = $("#ldrCal").get("value");
 
         var data = CMDtoData(COMMAND_SET_LDR, 0, 0);
-        data += nstr(ldr) + "000" + "  999";
+        data += nstr(ldr) + nstr(ldrCal) + "  999";
 
         websocket.send(data);
         debugMessage("LDR Steuerung wurde konfiguriert", data);
