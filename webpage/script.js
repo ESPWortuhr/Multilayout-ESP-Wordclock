@@ -293,17 +293,17 @@ function initWebsocket() {
 			$("#brightness-22").set("value", data.h22);
 			$("#brightness-24").set("value", data.h24);
 
-			$("#Sprachvariation0").set("value", data.spv0);
-			$("#Sprachvariation1").set("value", data.spv1);
-			$("#Sprachvariation2").set("value", data.spv2);
-			$("#Sprachvariation3").set("value", data.spv3);
+			$("#dialect-0").set("value", data.spv0);
+			$("#dialect-1").set("value", data.spv1);
+			$("#dialect-2").set("value", data.spv2);
+			$("#dialect-3").set("value", data.spv3);
 
 			$("#ldr").set("value", data.ldr);
-			$("#ldrCal").set("value", data.ldrCal);
+			$("#ldr-cal").set("value", data.ldrCal);
 			$("#slider-brightness").set("value", data.hell);
 			$("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
-			$("#showSeconds").set("value", data.zeige_sek);
-			$("#showMinutes").set("value", data.zeige_min);
+			$("#show-seconds").set("value", data.zeige_sek);
+			$("#show-minutes").set("value", data.zeige_min);
 
 			$("#owm-api-key").set("value", data.apiKey);
 			$("#owm-city-id").set("value", data.cityid);
