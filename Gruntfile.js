@@ -22,6 +22,7 @@ module.exports = function(grunt) {
 		csslint: {
 			files: ["<%= settings.srcDirectory %>/style.css"],
 			options: {
+				"ids": false,
 				"order-alphabetical": false,
 				"fallback-colors": false,
 				"box-sizing": false,
@@ -107,12 +108,14 @@ module.exports = function(grunt) {
 			html_to_h: {
 				options: {
 					process: function(content, srcpath) {
-						return    "// generated file -- do not modify\n"
-							+ "// change *.html/*.css/*.js files instead\n\n"
-							+ "const char html_code[] PROGMEM = R\"=====(\n"
-							+ content + "\n"
-							+ ")=====\";\n"
-							+ "const uint32_t html_size = sizeof(html_code);\n";
+						var gen = "";
+						gen += "// generated file -- do not modify\n";
+						gen += "// change *.html/*.css/*.js files instead\n\n";
+						gen += "const char html_code[] PROGMEM = R\"=====(\n";
+						gen += content + "\n";
+						gen += ")=====\";\n";
+						gen += "const uint32_t html_size = sizeof(html_code);\n";
+						return gen;
 					}
 				},
 				src: "<%= settings.tempDirectory %>/index.html",
@@ -157,7 +160,7 @@ module.exports = function(grunt) {
 
 	// tasks
 	grunt.registerTask("build", [
-		//"lint",
+		"lint",
 		"clean:temp",
 		"cssmin",
 		"copy:minified_css_files",
@@ -167,7 +170,7 @@ module.exports = function(grunt) {
 		"version:index",
 		"assets_inline",
 		"htmlmin",
-		"copy:html_to_h",
+		"copy:html_to_h"
 	]);
 
 	grunt.registerTask("default", [
