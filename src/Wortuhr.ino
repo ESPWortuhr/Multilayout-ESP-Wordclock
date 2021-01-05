@@ -137,8 +137,6 @@ uint32_t sntp_startup_delay_MS_rfc_not_less_than_60000 () {
 }
 
 void time_is_set() {
-	Serial.printf("settimeofday");
-
 	time_t utc = time(nullptr);
 	if (externalRTC) {
 		RTC.adjust(DateTime(utc));
@@ -151,6 +149,12 @@ void time_is_set() {
 	_stunde = tm.tm_hour;
 	if (G.UhrtypeDef == Uhr_169){
 		_sekunde48 = _sekunde * 48 / 60;
+	}
+
+	if (sntp_getreachability(0)) {
+		Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _stunde, _minute, _sekunde, sntp_getservername(0));
+	} else {
+		Serial.printf("Set new time: %02d:%02d:%02d (SNTP not reachable)\n", _stunde, _minute, _sekunde);
 	}
 }
 
@@ -421,9 +425,9 @@ void loop(){
 	}
 
 	time_t utc = time(nullptr);
+	struct tm tm;
+	localtime_r(&utc, &tm);
 	if (utc > 100000000) {
-		struct tm tm;
-		localtime_r(&utc, &tm);
 		_sekunde = tm.tm_sec;
 		_minute = tm.tm_min;
 		_stunde = tm.tm_hour;
@@ -508,11 +512,10 @@ void loop(){
 			}
 		}
 
-		if (sntp_getreachability(0)) {
-			Serial.printf("%s (%s)\n", ctime(&utc), sntp_getservername(0));
-		} else {
-			Serial.printf("%s (SNTP not reachable)\n", ctime(&utc));
-		}
+		char currentTime[80];
+		strftime(currentTime, sizeof(currentTime), "%F %T (%z)\n", &tm);
+		Serial.printf(currentTime);
+		TelnetMsg(currentTime);
 	}
 
 	//------------------------------------------------
