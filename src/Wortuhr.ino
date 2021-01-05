@@ -366,13 +366,6 @@ void setup(){
 	tzset();
 
 	//-------------------------------------
-	// mDNS--
-	//-------------------------------------
-	MDNS.begin((const char *) G.hostname);
-	MDNS.addService("http", "tcp", 80);
-	MDNS.addService("http", "tcp", 81);
-
-	//-------------------------------------
 	// OTA--
 	//-------------------------------------
 	httpUpdater.setup(&httpServer);
@@ -401,6 +394,13 @@ void setup(){
 	Serial.println("Ende Setup");
 	Serial.println("--------------------------------------");
 	Serial.println("");
+
+	//-------------------------------------
+	// mDNS
+	//-------------------------------------
+	MDNS.begin(G.hostname);
+	MDNS.addService("http", "tcp", 80);
+	MDNS.addService("http", "tcp", 81);
 
 	// setup frame
 	if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2){
@@ -438,6 +438,8 @@ void loop(){
 	}
 
 	//------------------------------------------------
+	MDNS.update();
+
 	Telnet();  // Handle telnet connections
 
 	httpServer.handleClient();
