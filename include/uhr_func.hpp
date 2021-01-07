@@ -276,39 +276,57 @@ static void transition_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t
 
 //------------------------------------------------------------------------------
 
-static void led_set() {
-    uint8_t rr, gg, bb, ww;
-    bool use_new_array = false;
-    set_helligkeit(rr,gg,bb,ww, Foreground);
-    for (uint8_t i = 0; i < usedUhrType->NUM_PIXELS(); i++){
-        led_set_pixel(rr, gg, bb, ww, Word_array_old[i]);
-    }
-    for (uint8_t ii = 0; ii < 20; ii++){
-        transition_helligkeit(rr, gg, bb, ww, transition_array[ii]);
-            for (uint8_t i = 0; i < usedUhrType->NUM_PIXELS(); i++)
-            {
-                if (Word_array_transition_old2zero[i] != 255 && use_new_array == false)
-                {
-                    led_set_pixel(rr, gg, bb, ww, Word_array_transition_old2zero[i]);
-                }
-                else if (Word_array_transition_zero2new[i] != 255 && use_new_array == true)
-                {
-                    led_set_pixel(rr, gg, bb, ww, Word_array_transition_zero2new[i]);
-                }
-            }
-            if (transition_array[ii] == 0) {
-                use_new_array = true;
-            }
-        }
-        led_show();
-        delay(tansition_time);
-    }
+static void led_set()
+{
+	uint8_t rr, gg, bb, ww;
+	set_helligkeit(rr, gg, bb, ww, Foreground);
+	for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++)
+	{
+		led_set_pixel(rr, gg, bb, ww, Word_array[i]);
+	}
+	led_show();
+}
 
+//------------------------------------------------------------------------------
+
+static void led_set_old_array() {
+	uint8_t rr, gg, bb, ww;
+	set_helligkeit(rr,gg,bb,ww, Foreground);
+	for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++){
+		led_set_pixel(rr, gg, bb, ww, Word_array_old[i]);
+	}
+	led_show();
+}
+
+//------------------------------------------------------------------------------
+
+static void led_transition(uint8_t transitionStep) {
+	uint8_t rr, gg, bb, ww;
+	transition_helligkeit(rr, gg, bb, ww, transition_array[transitionStep]);
+	for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++)
+	{
+		if (Word_array_transition_old2zero[i] != 255 && useNewArray == false)
+		{
+			led_set_pixel(rr, gg, bb, ww, Word_array_transition_old2zero[i]);
+		}
+		else if (Word_array_transition_zero2new[i] != 255 && useNewArray == true)
+		{
+			led_set_pixel(rr, gg, bb, ww, Word_array_transition_zero2new[i]);
+		}
+	}
+	if (transition_array[transitionStep] == 0) {
+		useNewArray = true;
+	}
+	else if (transition_array[transitionStep] == 100){
+		useNewArray = false;
+	}
+led_show();
+}
 
 //------------------------------------------------------------------------------
 
 static void copy_array(const uint8_t source[], uint8_t destination[]) {
-    for (uint8_t i = 0; i < usedUhrType->NUM_PIXELS(); i++){
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++){
         destination[i] = source[i];
     }
 }
@@ -649,6 +667,11 @@ static void set_stunde(uint8_t std, uint8_t voll) {
             break;
     }
 }
+//------------------------------------------------------------------------------
+
+bool definedAndHasDreiviertel(){
+	return (G.Sprachvariation[ItIs45] == 1 && G.UhrtypeDef == Uhr_114_Alternative) || (G.Sprachvariation[ItIs45] == 1 && G.UhrtypeDef == Uhr_114_2Clock);
+}
 
 //------------------------------------------------------------------------------
 
@@ -740,7 +763,7 @@ static void set_uhrzeit() {
             set_stunde(_stunde + 1, 0);
             break;
         case 9: // viertel vor
-			if (G.Sprachvariation[ItIs45] == 1 && G.UhrtypeDef == Uhr_114_Alternative) {
+			if (definedAndHasDreiviertel() == true) {
                 uhrzeit |= ((uint32_t) 1 << DREIVIERTEL);
 			} else {
                 uhrzeit |= ((uint32_t) 1 << VIERTEL);
@@ -939,65 +962,61 @@ static void show_wetter() {
 
 //------------------------------------------------------------------------------
 
-static void show_zeit() {
-    uint8_t rr, gg, bb, ww;
+static void calcNewWordArray()
+{
+	uint8_t rr, gg, bb, ww;
 
-    set_uhrzeit();
+	set_uhrzeit();
 
-    //Helligkeitswert ermitteln
-    if (_stunde < 6) { G.hh = G.h24; }
-    else if (_stunde < 8) { G.hh = G.h6; }
-    else if (_stunde < 12) { G.hh = G.h8; }
-    else if (_stunde < 16) { G.hh = G.h12; }
-    else if (_stunde < 18) { G.hh = G.h16; }
-    else if (_stunde < 20) { G.hh = G.h18; }
-    else if (_stunde < 22) { G.hh = G.h20; }
-    else if (_stunde < 24) { G.hh = G.h22; }
+	//Helligkeitswert ermitteln
+	if (_stunde < 6) { G.hh = G.h24; }
+	else if (_stunde < 8) { G.hh = G.h6; }
+	else if (_stunde < 12) { G.hh = G.h8; }
+	else if (_stunde < 16) { G.hh = G.h12; }
+	else if (_stunde < 18) { G.hh = G.h16; }
+	else if (_stunde < 20) { G.hh = G.h18; }
+	else if (_stunde < 22) { G.hh = G.h20; }
+	else if (_stunde < 24) { G.hh = G.h22; }
 
-    set_helligkeit_ldr(rr, gg, bb, ww, Background);
-    
-    //Hintergrund setzen
-    for (uint8_t t = 0; t < usedUhrType->ROWS_MATRIX(); t++) {
-        for (uint8_t b = 0; b < 11; b++) {
-            led_set_pixel(rr, gg, bb, ww, usedUhrType->getMatrix(t,b));
-        }
-    }
+	set_helligkeit_ldr(rr, gg, bb, ww, Background);
 
-    if (uhrzeit & ((uint32_t) 1 << ESIST)) { usedUhrType->show(es_ist); }
-    if (uhrzeit & ((uint32_t) 1 << FUENF)) { usedUhrType->show(fuenf);  }
-    if (uhrzeit & ((uint32_t) 1 << ZEHN)) { usedUhrType->show(zehn);  }
-    if (uhrzeit & ((uint32_t) 1 << VIERTEL)) { usedUhrType->show(viertel);  }
-	if (uhrzeit & ((uint32_t) 1 << DREIVIERTEL)) { usedUhrType->show(dreiviertel);  }
-    if (uhrzeit & ((uint32_t) 1 << ZWANZIG)) { usedUhrType->show(zwanzig);  }
-    if (uhrzeit & ((uint32_t) 1 << HALB)) { usedUhrType->show(halb); }
-    if (uhrzeit & ((uint32_t) 1 << EINS)) { usedUhrType->show(eins); }
-    if (uhrzeit & ((uint32_t) 1 << VOR)) { usedUhrType->show(vor); }
-    if (uhrzeit & ((uint32_t) 1 << NACH)) { usedUhrType->show(nach); }
-    if (uhrzeit & ((uint32_t) 1 << H_EIN)) { usedUhrType->show(h_ein); }
-    if (uhrzeit & ((uint32_t) 1 << H_ZWEI)) { usedUhrType->show(h_zwei); }
-    if (uhrzeit & ((uint32_t) 1 << H_DREI)) { usedUhrType->show(h_drei); }
-    if (uhrzeit & ((uint32_t) 1 << H_VIER)) { usedUhrType->show(h_vier); }
-    if (uhrzeit & ((uint32_t) 1 << H_FUENF)) { usedUhrType->show(h_fuenf); }
-    if (uhrzeit & ((uint32_t) 1 << H_SECHS)) { usedUhrType->show(h_sechs); }
-    if (uhrzeit & ((uint32_t) 1 << H_SIEBEN)) { usedUhrType->show(h_sieben); }
-    if (uhrzeit & ((uint32_t) 1 << H_ACHT)) { usedUhrType->show(h_acht); }
-    if (uhrzeit & ((uint32_t) 1 << H_NEUN)) { usedUhrType->show(h_neun); }
-    if (uhrzeit & ((uint32_t) 1 << H_ZEHN)) { usedUhrType->show(h_zehn);  }
-    if (uhrzeit & ((uint32_t) 1 << H_ELF)) { usedUhrType->show(h_elf); }
-    if (uhrzeit & ((uint32_t) 1 << H_ZWOELF)) { usedUhrType->show(h_zwoelf); }
-    if (uhrzeit & ((uint32_t) 1 << UHR)) { usedUhrType->show(uhr); }
+	//Hintergrund setzen
+	for (uint16_t t = 0; t < usedUhrType->ROWS_MATRIX(); t++)
+	{
+		for (uint8_t b = 0; b < 11; b++)
+		{
+			led_set_pixel(rr, gg, bb, ww, usedUhrType->getMatrix(t, b));
+		}
+	}
 
-    show_minuten();
+	if (uhrzeit & ((uint32_t) 1 << ESIST)) { usedUhrType->show(es_ist); }
+	if (uhrzeit & ((uint32_t) 1 << FUENF)) { usedUhrType->show(fuenf); }
+	if (uhrzeit & ((uint32_t) 1 << ZEHN)) { usedUhrType->show(zehn); }
+	if (uhrzeit & ((uint32_t) 1 << VIERTEL)) { usedUhrType->show(viertel); }
+	if (uhrzeit & ((uint32_t) 1 << DREIVIERTEL)) { usedUhrType->show(dreiviertel); }
+	if (uhrzeit & ((uint32_t) 1 << ZWANZIG)) { usedUhrType->show(zwanzig); }
+	if (uhrzeit & ((uint32_t) 1 << HALB)) { usedUhrType->show(halb); }
+	if (uhrzeit & ((uint32_t) 1 << EINS)) { usedUhrType->show(eins); }
+	if (uhrzeit & ((uint32_t) 1 << VOR)) { usedUhrType->show(vor); }
+	if (uhrzeit & ((uint32_t) 1 << NACH)) { usedUhrType->show(nach); }
+	if (uhrzeit & ((uint32_t) 1 << H_EIN)) { usedUhrType->show(h_ein); }
+	if (uhrzeit & ((uint32_t) 1 << H_ZWEI)) { usedUhrType->show(h_zwei); }
+	if (uhrzeit & ((uint32_t) 1 << H_DREI)) { usedUhrType->show(h_drei); }
+	if (uhrzeit & ((uint32_t) 1 << H_VIER)) { usedUhrType->show(h_vier); }
+	if (uhrzeit & ((uint32_t) 1 << H_FUENF)) { usedUhrType->show(h_fuenf); }
+	if (uhrzeit & ((uint32_t) 1 << H_SECHS)) { usedUhrType->show(h_sechs); }
+	if (uhrzeit & ((uint32_t) 1 << H_SIEBEN)) { usedUhrType->show(h_sieben); }
+	if (uhrzeit & ((uint32_t) 1 << H_ACHT)) { usedUhrType->show(h_acht); }
+	if (uhrzeit & ((uint32_t) 1 << H_NEUN)) { usedUhrType->show(h_neun); }
+	if (uhrzeit & ((uint32_t) 1 << H_ZEHN)) { usedUhrType->show(h_zehn); }
+	if (uhrzeit & ((uint32_t) 1 << H_ELF)) { usedUhrType->show(h_elf); }
+	if (uhrzeit & ((uint32_t) 1 << H_ZWOELF)) { usedUhrType->show(h_zwoelf); }
+	if (uhrzeit & ((uint32_t) 1 << UHR)) { usedUhrType->show(uhr); }
 
-    if (G.UhrtypeDef == Uhr_242){
-    show_wetter();
-    }
+	show_minuten();
 
-    if (changes_in_array() == true){
-        led_set();
-        copy_array(Word_array, Word_array_old);
-    }
-    else if (G.prog == COMMAND_MODE_WORD_CLOCK){
-        led_set();
-    }
+	if (G.UhrtypeDef == Uhr_242)
+	{
+		show_wetter();
+	}
 }

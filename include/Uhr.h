@@ -2,6 +2,7 @@
 
 const char *VER = "2.6.0";  // Software Version
 
+#define MAX_ARRAY_SIZE 242
 #pragma once
 
 enum uhrzeit_t {
@@ -120,6 +121,7 @@ uint8_t last_stunde = 0;
 
 uint8_t count_millis48 = 0;
 unsigned long previous48 = 0;
+unsigned long transitionDelay = 0;
 const long interval48 = 1250;
 uint8_t _sekunde48 = 0;
 uint8_t last_sekunde48 = 100;
@@ -131,12 +133,14 @@ unsigned long previousMillis = 0;
 const long interval = 1000;   // 1 Sekunde
 
 uint32_t uhrzeit;
-uint8_t Word_array[242] = {0};
-uint8_t Word_array_old[242] = {0};
-uint8_t Word_array_transition_zero2new[242] = {0};
-uint8_t Word_array_transition_old2zero[242] = {0};
-uint8_t transition_array[20] = {90, 80, 70, 60, 50, 40, 30, 20, 10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-uint8_t tansition_time = 15; //ms
+uint8_t Word_array[MAX_ARRAY_SIZE] = {0};
+uint8_t Word_array_old[MAX_ARRAY_SIZE] = {0};
+uint8_t Word_array_transition_zero2new[MAX_ARRAY_SIZE] = {0};
+uint8_t Word_array_transition_old2zero[MAX_ARRAY_SIZE] = {0};
+const uint8_t transition_array[20] = {90, 80, 70, 60, 50, 40, 30, 20, 10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+const uint8_t tansition_time = 15; //ms
+bool useNewArray = false;
+bool changesInWordArray = false;
 uint8_t AP_Status = 0;
 
 char str[1024];
