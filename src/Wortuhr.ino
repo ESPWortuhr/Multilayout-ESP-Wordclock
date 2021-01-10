@@ -1,26 +1,36 @@
-/*--------------------------------------------------------------------------
- * Hier wird definiert, welche Anzahl von LED's bzw. Reihen verwendet werden
+/*
+ * Standard Wortuhr Konfiguration. Kann später in den Einstellungen auf der Webseite geändert werden.
  */
-#define UHR_114                       // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-//#define UHR_114_Alternative         // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
-//#define UHR_114_2Clock			  // Uhr mit 10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit dem Layout vom orginal Hersteller
-//#define UHR_125                       // Uhr mit 11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-//#define UHR_169                     // Uhr mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
-//#define UHR_242                       // Uhr mit Wettervorhersage 242 LED's --> Bitte die Library "ArduinoJson" im Library Manager installieren!
 
-#define SERNR 101             //um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+// Layout der Frontplatte:
+// - Uhr_114
+//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
+// - Uhr_114_Alternative
+//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem Layout für extra Wörter in der Matrix
+// - Uhr_114_2Clock
+//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit dem Layout vom orginal Hersteller
+// - Uhr_125
+//   11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
+// - Uhr_169
+//   mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
+// - Uhr_242
+//   Uhr mit Wettervorhersage 242 LED's
+#define DEFAULT_LAYOUT Uhr_114
 
-// Wenn die Farben nicht passen können sie hier angepasst werden:
-#define Brg_Color   // RGB-Stripe mit dem Chip WS2812b und dem Layout Brg
-//#define Grb_Color      // RGB-Stripe mit dem Chip WS2812b und dem Layout Grb
-//#define Rgb_Color    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rgb
-//#define Rbg_Color    // RGB-Stripe mit dem Chip WS2812b und dem Layout Rbg
-//#define Grbw_Color   // RGBW-Stripe mit dem Chip SK6812 und dem Layout Grbw
+// Typ der LEDs:
+// - Brg, Grb, Rgb, Rbg (WS2812b)
+// - Grbw (SK6812)
+#define DEFAULT_LEDTYPE Brg
 
-#define RTC_Type RTC_DS3231        // External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
+// External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
+#define RTC_Type RTC_DS3231
+
+// um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere Seriennummer eintragen!
+#define SERNR 101
 
 bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
+
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
  *--------------------------------------------------------------------------
@@ -73,11 +83,7 @@ PubSubClient mqttClient(client);
 // Timezone from https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
 
-#ifndef RTC_Type
-RTC_DS3231 RTC;
-#else
 RTC_Type RTC;
-#endif
 
 #include "font.h"
 #include "mqtt_func.hpp"
@@ -215,49 +221,8 @@ void setup(){
 		G.MQTT_Port = 1883;
 		strcpy(G.MQTT_Server, "192.168.4.1");
 
-#ifdef UHR_114
-		G.UhrtypeDef = Uhr_114;
-#endif
-
-#ifdef UHR_114_Alternative
-		G.UhrtypeDef = Uhr_114_Alternative;
-#endif
-
-#ifdef UHR_114_2Clock
-		G.UhrtypeDef = Uhr_114_2Clock;
-#endif
-
-#ifdef UHR_125
-		G.UhrtypeDef = Uhr_125;
-#endif
-
-#ifdef UHR_169
-		G.UhrtypeDef = Uhr_169;
-#endif
-
-#ifdef UHR_242
-		G.UhrtypeDef = Uhr_242;
-#endif
-
-#ifdef Brg_Color
-		G.Colortype = Brg;
-#endif
-
-#ifdef Grb_Color
-		G.Colortype = Grb;
-#endif
-
-#ifdef Rgb_Color
-		G.Colortype = Rgb;
-#endif
-
-#ifdef Rbg_Color
-		G.Colortype = Rbg;
-#endif
-
-#ifdef Grbw_Color
-		G.Colortype = Grbw;
-#endif
+		G.UhrtypeDef = DEFAULT_LAYOUT;
+		G.Colortype = DEFAULT_LEDTYPE;
 		G.bootLedBlink = false;
 		G.bootLedSweep = false;
 		G.bootShowWifi = true;
