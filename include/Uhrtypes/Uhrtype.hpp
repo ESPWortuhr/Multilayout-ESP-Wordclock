@@ -1,12 +1,9 @@
 #pragma once
 
-void Letter_set(const unsigned int i ) {
-    Word_array[i] = i;
-}
+void Letter_set(const unsigned int i) { Word_array[i] = i; }
 
 class iUhrType {
 public:
-
     virtual void show(uint8_t text) = 0;
 
     virtual const uint8_t NUM_PIXELS() = 0;

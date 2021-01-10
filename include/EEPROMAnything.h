@@ -1,22 +1,20 @@
 #include <EEPROM.h>
 
-#include <Arduino.h>  // for type definitions
+#include <Arduino.h> // for type definitions
 
-template <class T> int EEPROM_writeAnything(int ee, const T& value)
-{
-    const byte* p = (const byte*)(const void*)&value;
+template <class T> int EEPROM_writeAnything(int ee, const T &value) {
+    const byte *p = (const byte *)(const void *)&value;
     unsigned int i;
     for (i = 0; i < sizeof(value); i++)
-          EEPROM.write(ee++, *p++);
+        EEPROM.write(ee++, *p++);
     return i;
 }
 
-template <class T> int EEPROM_readAnything(int ee, T& value)
-{
-    byte* p = (byte*)(void*)&value;
+template <class T> int EEPROM_readAnything(int ee, T &value) {
+    byte *p = (byte *)(void *)&value;
     unsigned int i;
     for (i = 0; i < sizeof(value); i++)
-          *p++ = EEPROM.read(ee++);
+        *p++ = EEPROM.read(ee++);
     return i;
 }
 
@@ -65,7 +63,7 @@ void eeprom_read() {
     Serial.printf("LDR       : %u\n", G.ldr);
     Serial.printf("LDRCal    : %u\n", G.ldrCal);
     Serial.printf("Uhrtype    : %u\n", G.UhrtypeDef);
-	Serial.printf("Colortype    : %u\n", G.Colortype);
+    Serial.printf("Colortype    : %u\n", G.Colortype);
     Serial.print("OWM_apikey: ");
     Serial.println(G.apikey);
     Serial.print("OWM_city  : ");

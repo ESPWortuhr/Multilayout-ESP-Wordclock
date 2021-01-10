@@ -1,6 +1,6 @@
 #include "Arduino.h"
 
-const char *VER = "2.6.0";  // Software Version
+const char *VER = "2.6.0"; // Software Version
 
 #pragma once
 
@@ -13,7 +13,7 @@ enum uhrzeit_t {
     FUENF = 4,
     ZEHN = 5,
     VIERTEL = 6,
-	DREIVIERTEL = 22,
+    DREIVIERTEL = 22,
     ZWANZIG = 7,
     HALB = 8,
     EINS = 9,
@@ -34,7 +34,7 @@ enum uhrzeit_t {
 
 struct GLOBAL {
     uint8_t sernr;
-	uint16_t prog;
+    uint16_t prog;
     uint8_t param1;
     uint8_t param2;
     uint8_t prog_init;
@@ -45,8 +45,8 @@ struct GLOBAL {
     uint8_t bb;
     uint8_t ww;
     uint8_t hell;
-	uint16_t ldr;
-	uint16_t ldrCal;
+    uint16_t ldr;
+    uint16_t ldrCal;
     char apikey[35];
     char cityid[8];
     int geschw;
@@ -65,28 +65,28 @@ struct GLOBAL {
     uint8_t h20;
     uint8_t h22;
     uint8_t h24;
-	uint8_t Sprachvariation[4];
+    uint8_t Sprachvariation[4];
 
     uint8_t UhrtypeDef;
     uint8_t Colortype;
     uint8_t MQTT_State;
-	char MQTT_Server[30];
-	uint16_t MQTT_Port;
+    char MQTT_Server[30];
+    uint16_t MQTT_Port;
 
-	bool bootLedBlink;
-	bool bootLedSweep;
-	bool bootShowWifi;
-	bool bootShowIP;
+    bool bootLedBlink;
+    bool bootLedSweep;
+    bool bootShowWifi;
+    bool bootShowIP;
 };
 GLOBAL G = {};
 
-const char* server = "api.openweathermap.org";  // Openweather server's address
-const char* resource1 = "/data/2.5/forecast?id="; // Openweather API URL part 1
-const char* resource2 = "&units=metric&APPID="; // Openweather API URL part 2
-const char* resource3 = "&cnt=8"; // Openweather API forecast time
+const char *server = "api.openweathermap.org"; // Openweather server's address
+const char *resource1 = "/data/2.5/forecast?id="; // Openweather API URL part 1
+const char *resource2 = "&units=metric&APPID=";   // Openweather API URL part 2
+const char *resource3 = "&cnt=8"; // Openweather API forecast time
 char resource[100];
-char response[3500];       //fixed size buffer
-uint16_t weather_tag = 600;    //counter fuer Wetterdaten abrufen
+char response[3500];        // fixed size buffer
+uint16_t weather_tag = 600; // counter fuer Wetterdaten abrufen
 int16_t wtemp_6;
 int16_t wtemp_12;
 int16_t wtemp_18;
@@ -128,15 +128,16 @@ unsigned int count_millis = 0;
 unsigned int count_delay = 0;
 
 unsigned long previousMillis = 0;
-const long interval = 1000;   // 1 Sekunde
+const long interval = 1000; // 1 Sekunde
 
 uint32_t uhrzeit;
 uint8_t Word_array[242] = {0};
 uint8_t Word_array_old[242] = {0};
 uint8_t Word_array_transition_zero2new[242] = {0};
 uint8_t Word_array_transition_old2zero[242] = {0};
-uint8_t transition_array[20] = {90, 80, 70, 60, 50, 40, 30, 20, 10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-uint8_t tansition_time = 15; //ms
+uint8_t transition_array[20] = {90, 80, 70, 60, 50, 40, 30, 20, 10, 0,
+                                10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+uint8_t tansition_time = 15; // ms
 uint8_t AP_Status = 0;
 
 char str[1024];
@@ -144,12 +145,7 @@ char s[5];
 
 bool externalRTC = false;
 
-enum ledPositions {
-    Foreground = 0,
-    Background = 1,
-    Frame = 2,
-    Effect = 3
-};
+enum ledPositions { Foreground = 0, Background = 1, Frame = 2, Effect = 3 };
 
 enum ledColortypes {
     Brg = 0,
@@ -160,30 +156,30 @@ enum ledColortypes {
 };
 
 enum Sprachvariationen {
-	ItIs15 = 0,
-	ItIs20 = 1,
-	ItIs40 = 2,
-	ItIs45 = 3,
+    ItIs15 = 0,
+    ItIs20 = 1,
+    ItIs40 = 2,
+    ItIs45 = 3,
 };
 
 enum Command {
     COMMAND_IDLE = 0,
 
     COMMAND_MODE_WORD_CLOCK = 1,
-	COMMAND_MODE_SECONDS = 2,
-	COMMAND_MODE_MARQUEE = 3,
-	COMMAND_MODE_RAINBOW = 4,
-	COMMAND_MODE_CHANGE = 5,
-	COMMAND_MODE_COLOR = 6,
+    COMMAND_MODE_SECONDS = 2,
+    COMMAND_MODE_MARQUEE = 3,
+    COMMAND_MODE_RAINBOW = 4,
+    COMMAND_MODE_CHANGE = 5,
+    COMMAND_MODE_COLOR = 6,
 
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
-	COMMAND_SET_LANGUAGE_VARIANT = 84,
+    COMMAND_SET_LANGUAGE_VARIANT = 84,
     COMMAND_SET_MQTT = 85,
-	COMMAND_SET_TIME_MANUAL = 86,
-	COMMAND_SET_WPS_MODE = 87,
+    COMMAND_SET_TIME_MANUAL = 86,
+    COMMAND_SET_WPS_MODE = 87,
     COMMAND_SET_COLORTYPE = 88,
-	COMMAND_SET_UHRTYPE = 89,
+    COMMAND_SET_UHRTYPE = 89,
     COMMAND_SET_WEATHER_DATA = 90,
     COMMAND_SET_LDR = 91,
     COMMAND_SET_HOSTNAME = 92,
@@ -208,70 +204,70 @@ enum Command {
 };
 
 enum ledText {
-    es_ist =  1,
-    nach =  2,
-    vor =  3,
-    viertel =  4,
+    es_ist = 1,
+    nach = 2,
+    vor = 3,
+    viertel = 4,
     dreiviertel = 51,
-    uhr =  5,
-    halb =  6,
-    fuenf =  7,
-    zehn =  8,
-    zwanzig =  9,
-    eins =  10,
+    uhr = 5,
+    halb = 6,
+    fuenf = 7,
+    zehn = 8,
+    zwanzig = 9,
+    eins = 10,
 
-    h_ein =  11,
-    h_zwei =  12,
-    h_drei =  13,
-    h_vier =  14,
-    h_fuenf =  15,
-    h_sechs =  16,
-    h_sieben =  17,
-    h_acht =  18,
-    h_neun =  19,
-    h_zehn =  20,
-    h_elf =  21,
-    h_zwoelf =  22,
+    h_ein = 11,
+    h_zwei = 12,
+    h_drei = 13,
+    h_vier = 14,
+    h_fuenf = 15,
+    h_sechs = 16,
+    h_sieben = 17,
+    h_acht = 18,
+    h_neun = 19,
+    h_zehn = 20,
+    h_elf = 21,
+    h_zwoelf = 22,
 
-    w_morgen =  30,
-    w_frueh =  31,
-    w_abend =  32,
-    w_mittag =  33,
-    w_nacht =  34,
-    w_schnee =  35,
-    w_klar =  36,
-    w_warnung =  37,
-    w_regen =  38,
-    w_wolken =  39,
-    w_gewitter =  40,
-    w_unter =  41,
-    w_ueber =  42,
-    w_minus =  43,
-    w_null =  44,
-    w_fuenf =  45,
-    w_zehn =  46,
-    w_und =  47,
-    w_zwanzig =  48,
-    w_dreissig =  49,
-    w_grad =  50,
+    w_morgen = 30,
+    w_frueh = 31,
+    w_abend = 32,
+    w_mittag = 33,
+    w_nacht = 34,
+    w_schnee = 35,
+    w_klar = 36,
+    w_warnung = 37,
+    w_regen = 38,
+    w_wolken = 39,
+    w_gewitter = 40,
+    w_unter = 41,
+    w_ueber = 42,
+    w_minus = 43,
+    w_null = 44,
+    w_fuenf = 45,
+    w_zehn = 46,
+    w_und = 47,
+    w_zwanzig = 48,
+    w_dreissig = 49,
+    w_grad = 50,
 
     h_droelf = 90,
     happy_birthday = 91
 };
 
 enum UhrTypeDefinitions {
-	Uhr_114 = 1,
-	Uhr_114_Alternative = 2,
-	Uhr_114_2Clock = 6,
-	Uhr_125 = 3,
-	Uhr_169 = 4,
-	Uhr_242 = 5,
+    Uhr_114 = 1,
+    Uhr_114_Alternative = 2,
+    Uhr_114_2Clock = 6,
+    Uhr_125 = 3,
+    Uhr_169 = 4,
+    Uhr_242 = 5,
 };
 
-
-const uint8_t dim[20] = {30, 50, 70, 90, 110, 130, 140, 160, 200, 255, 255, 200, 160, 100, 80, 60, 40, 20, 10, 0};
-const int8_t diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55, 0, 55, 40, 60, 20, 20, 20, 20, 10, 10};
-
+const uint8_t dim[20] = {30,  50,  70,  90,  110, 130, 140, 160, 200, 255,
+                         255, 200, 160, 100, 80,  60,  40,  20,  10,  0};
+const int8_t diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55,
+                         0,   55,  40,  60,  20,  20,  20,  20,  10,  10};
 
 //--OTA--
 ESP8266WebServer httpServer(81);
