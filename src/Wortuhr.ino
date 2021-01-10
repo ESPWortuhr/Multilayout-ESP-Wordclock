@@ -53,6 +53,7 @@ bool DEBUG = true;       // DEBUG ON|OFF wenn auskommentiert
 #include <sntp.h>
 
 #include "Uhr.h"
+
 #include "WebPage_Adapter.h"
 #include "EEPROMAnything.h"
 #include "icons.h"
