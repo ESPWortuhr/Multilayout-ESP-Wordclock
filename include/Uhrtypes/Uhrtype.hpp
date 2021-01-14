@@ -12,6 +12,8 @@ public:
 
     virtual const uint16_t ROWS_MATRIX() = 0;
 
+    virtual const uint16_t COLS_MATRIX() = 0;
+
     virtual const uint16_t NUM_RMATRIX() = 0;
 
     virtual const uint16_t getSMatrix(uint16_t index) = 0;

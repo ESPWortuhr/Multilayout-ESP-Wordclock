@@ -1413,7 +1413,7 @@ static void show_zeit() {
 
     // Hintergrund setzen
     for (uint8_t t = 0; t < usedUhrType->ROWS_MATRIX(); t++) {
-        for (uint8_t b = 0; b < 11; b++) {
+        for (uint8_t b = 0; b < usedUhrType->COLS_MATRIX(); b++) {
             led_set_pixel(rr, gg, bb, ww, usedUhrType->getMatrix(t, b));
         }
     }
