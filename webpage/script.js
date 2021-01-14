@@ -370,9 +370,7 @@ function getSliders() {
 	rgb[sliderType][0] = $("#slider-red").get("value");
 	rgb[sliderType][1] = $("#slider-green").get("value");
 	rgb[sliderType][2] = $("#slider-blue").get("value");
-	if (colortype === "4") {
-		rgb[sliderType][3] = $("#slider-white").get("value");
-	}
+	rgb[sliderType][3] = $("#slider-white").get("value");
 
 	// other sliders
 	hell = $("#slider-brightness").get("value");
