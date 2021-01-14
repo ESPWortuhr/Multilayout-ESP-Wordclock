@@ -2,7 +2,7 @@
 
 class UHR_125_t : public iUhrType {
 public:
-    const uint8_t matrix[12][11] = {
+    const uint16_t matrix[12][11] = {
 
         {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
         {21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11},
@@ -20,7 +20,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    const uint8_t min_arr[2][4] = {
+    const uint16_t min_arr[2][4] = {
         // ergänzt aus "Uhr func 169"-datei
         {110, 111, 112, 113}, // LED für Minuten Anzeige Zeile
         {121, 122, 123, 124}  // LED für Minuten Anzeige Ecken
@@ -28,41 +28,41 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t getMinArr(uint8_t col, uint8_t row) override {
+    virtual const uint16_t getMinArr(uint8_t col, uint8_t row) override {
         return min_arr[col][row];
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t getMatrix(uint8_t col, uint8_t row) override {
+    virtual const uint16_t getMatrix(uint8_t col, uint8_t row) override {
         return matrix[col][row];
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t getRMatrix(uint8_t index) override { return 0; };
+    virtual const uint16_t getRMatrix(uint16_t index) override { return 0; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t getSMatrix(uint8_t index) override {
+    virtual const uint16_t getSMatrix(uint16_t index) override {
         return index;
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t NUM_PIXELS() override { return 125; };
+    virtual const uint16_t NUM_PIXELS() override { return 125; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t NUM_SMATRIX() override { return 125; };
+    virtual const uint16_t NUM_SMATRIX() override { return 125; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t ROWS_MATRIX() override { return 12; };
+    virtual const uint16_t ROWS_MATRIX() override { return 12; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t NUM_RMATRIX() override { return 0; };
+    virtual const uint16_t NUM_RMATRIX() override { return 0; };
 
     //------------------------------------------------------------------------------
 

@@ -2,7 +2,7 @@
 
 const char *VER = "2.6.0"; // Software Version
 
-#define MAX_ARRAY_SIZE 242
+#define MAX_ARRAY_SIZE 291
 #pragma once
 
 enum uhrzeit_t {
@@ -133,10 +133,10 @@ unsigned long previousMillis = 0;
 const long interval = 1000; // 1 Sekunde
 
 uint32_t uhrzeit;
-uint8_t Word_array[242] = {0};
-uint8_t Word_array_old[242] = {0};
-uint8_t Word_array_transition_zero2new[242] = {0};
-uint8_t Word_array_transition_old2zero[242] = {0};
+uint16_t Word_array[MAX_ARRAY_SIZE] = {0};
+uint16_t Word_array_old[MAX_ARRAY_SIZE] = {0};
+uint16_t Word_array_transition_zero2new[MAX_ARRAY_SIZE] = {0};
+uint16_t Word_array_transition_old2zero[MAX_ARRAY_SIZE] = {0};
 uint8_t transition_array[20] = {90, 80, 70, 60, 50, 40, 30, 20, 10, 0,
                                 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
 uint8_t tansition_time = 15; // ms
@@ -206,55 +206,70 @@ enum Command {
 };
 
 enum ledText {
-    es_ist = 1,
-    nach = 2,
-    vor = 3,
-    viertel = 4,
-    dreiviertel = 51,
-    uhr = 5,
-    halb = 6,
-    fuenf = 7,
-    zehn = 8,
-    zwanzig = 9,
-    eins = 10,
 
-    h_ein = 11,
-    h_zwei = 12,
-    h_drei = 13,
-    h_vier = 14,
-    h_fuenf = 15,
-    h_sechs = 16,
-    h_sieben = 17,
-    h_acht = 18,
-    h_neun = 19,
-    h_zehn = 20,
-    h_elf = 21,
-    h_zwoelf = 22,
+	/* Numbers from 0 to 60 are reserved */
 
-    w_morgen = 30,
-    w_frueh = 31,
-    w_abend = 32,
-    w_mittag = 33,
-    w_nacht = 34,
-    w_schnee = 35,
-    w_klar = 36,
-    w_warnung = 37,
-    w_regen = 38,
-    w_wolken = 39,
-    w_gewitter = 40,
-    w_unter = 41,
-    w_ueber = 42,
-    w_minus = 43,
-    w_null = 44,
-    w_fuenf = 45,
-    w_zehn = 46,
-    w_und = 47,
-    w_zwanzig = 48,
-    w_dreissig = 49,
-    w_grad = 50,
+	es_ist =  101,
+	nach =  102,
+	vor =  103,
+	viertel =  104,
+	dreiviertel = 105,
+	uhr =  106,
+	halb =  107,
+	fuenf =  108,
+	zehn =  109,
+	zwanzig =  110,
+	eins =  111,
+	frueh = 112,
+	minute = 113,
+	minuten = 114,
+	minuten_extra = 115,
+	abends = 116,
+	mitternacht = 117,
+	mittags = 118,
+	warm = 119,
+	morgens = 120,
+	und = 121,
+	minuten_uhr = 122,
 
-    h_droelf = 90,
-    happy_birthday = 91
+	h_ein =  151,
+	h_zwei = 152,
+	h_drei = 153,
+	h_vier =  154,
+	h_fuenf =  155,
+	h_sechs =  156,
+	h_sieben =  157,
+	h_acht =  158,
+	h_neun =  159,
+	h_zehn =  160,
+	h_elf =  161,
+	h_zwoelf =  162,
+	h_dreizehn = 163,
+
+	w_morgen =  200,
+	w_frueh =  201,
+	w_abend =  202,
+	w_mittag =  203,
+	w_nacht =  204,
+	w_schnee =  205,
+	w_klar =  206,
+	w_warnung =  207,
+	w_regen =  208,
+	w_wolken =  209,
+	w_gewitter =  210,
+	w_unter =  211,
+	w_ueber =  212,
+	w_minus =  213,
+	w_null =  214,
+	w_fuenf =  215,
+	w_zehn =  216,
+	w_und =  217,
+	w_zwanzig =  218,
+	w_dreissig =  219,
+	w_grad =  220,
+
+	h_droelf = 240,
+	happy_birthday = 241
 };
 
 enum UhrTypeDefinitions {
@@ -264,6 +279,7 @@ enum UhrTypeDefinitions {
     Uhr_125 = 3,
     Uhr_169 = 4,
     Uhr_242 = 5,
+	Uhr_291 = 7,
 };
 
 const uint8_t dim[20] = {30,  50,  70,  90,  110, 130, 140, 160, 200, 255,

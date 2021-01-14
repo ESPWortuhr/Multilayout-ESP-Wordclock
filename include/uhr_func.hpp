@@ -296,12 +296,12 @@ static void led_set() {
     uint8_t rr, gg, bb, ww;
     bool use_new_array = false;
     set_helligkeit(rr, gg, bb, ww, Foreground);
-    for (uint8_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         led_set_pixel(rr, gg, bb, ww, Word_array_old[i]);
     }
     for (uint8_t ii = 0; ii < 20; ii++) {
         transition_helligkeit(rr, gg, bb, ww, transition_array[ii]);
-        for (uint8_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+        for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
             if (Word_array_transition_old2zero[i] != 255 &&
                 use_new_array == false) {
                 led_set_pixel(rr, gg, bb, ww,
@@ -322,8 +322,8 @@ static void led_set() {
 
 //------------------------------------------------------------------------------
 
-static void copy_array(const uint8_t source[], uint8_t destination[]) {
-    for (uint8_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+static void copy_array(const uint16_t source[], uint16_t destination[]) {
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         destination[i] = source[i];
     }
 }
@@ -447,7 +447,7 @@ static void led_single(uint8_t wait) {
 //------------------------------------------------------------------------------
 
 static void led_set_all(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww) {
-    for (int i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         led_set_pixel(rr, gg, bb, ww, i);
     }
 }
@@ -585,7 +585,7 @@ static void zeigeip(const char *buf) {
     uint8_t StringLength = strlen(buf);
     StringLength = StringLength * 6; // Times 6, because thats the length of a
                                      // char in the 7x5 font plus spacing
-    for (uint8_t i = 0; i <= StringLength; i++) {
+    for (uint16_t i = 0; i <= StringLength; i++) {
         laufschrift(buf);
         delay(200);
     }

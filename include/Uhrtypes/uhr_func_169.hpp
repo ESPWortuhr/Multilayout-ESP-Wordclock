@@ -2,7 +2,7 @@
 
 class UHR_169_t : public iUhrType {
 public:
-    const uint8_t matrix[11][11] = {
+    const uint16_t matrix[11][11] = {
 
         {24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14},
         {27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37},
@@ -18,7 +18,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    const uint8_t smatrix[121] = {
+    const uint16_t smatrix[121] = {
 
         24,  23,  22,  21,  20,  19,  18,  17,  16,  15,  14,  37,  36,  35,
         34,  33,  32,  31,  30,  29,  28,  27,  50,  49,  48,  47,  46,  45,
@@ -32,7 +32,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    const uint8_t rmatrix[48] = {
+    const uint16_t rmatrix[48] = {
         0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,
         12,  13,  38,  39,  64,  65,  90,  91,  116, 117, 142, 143,
         168, 167, 166, 165, 164, 163, 162, 161, 160, 159, 158, 157,
@@ -40,49 +40,49 @@ public:
 
     //------------------------------------------------------------------------------
 
-    const uint8_t min_arr[2][4] = {
+    const uint16_t min_arr[2][4] = {
 
         {152, 150, 148, 146}, {0, 12, 168, 156}};
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t getMinArr(uint8_t col, uint8_t row) override {
+    virtual const uint16_t getMinArr(uint8_t col, uint8_t row) override {
         return min_arr[col][row];
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t getMatrix(uint8_t col, uint8_t row) override {
+    virtual const uint16_t getMatrix(uint8_t col, uint8_t row) override {
         return matrix[col][row];
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t getRMatrix(uint8_t index) override {
+    virtual const uint16_t getRMatrix(uint16_t index) override {
         return rmatrix[index];
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t getSMatrix(uint8_t index) override {
+    virtual const uint16_t getSMatrix(uint16_t index) override {
         return smatrix[index];
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t NUM_PIXELS() override { return 169; };
+    virtual const uint16_t NUM_PIXELS() override { return 169; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t NUM_SMATRIX() override { return 121; };
+    virtual const uint16_t NUM_SMATRIX() override { return 121; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t ROWS_MATRIX() override { return 11; };
+    virtual const uint16_t ROWS_MATRIX() override { return 11; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t NUM_RMATRIX() override { return 48; };
+    virtual const uint16_t NUM_RMATRIX() override { return 48; };
 
     //------------------------------------------------------------------------------
 

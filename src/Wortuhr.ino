@@ -18,6 +18,8 @@
 //   mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
 // - Uhr_242
 //   Uhr mit Wettervorhersage 242 LED's
+// - Uhr_291
+//   Uhr mit 24 Stunden Anzeige 18x16
 #define DEFAULT_LAYOUT Uhr_114
 
 // Typ der LEDs:
@@ -68,6 +70,7 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include "Uhrtypes/uhr_func_125.hpp"
 #include "Uhrtypes/uhr_func_169.hpp"
 #include "Uhrtypes/uhr_func_242.hpp"
+#include "Uhrtypes/uhr_func_291.hpp"
 
 UHR_114_t Uhr_114_type;
 UHR_114_Alternative_t Uhr_114_Alternative_type;
@@ -75,6 +78,7 @@ UHR_114_2Clock_t Uhr_114_2Clock_type;
 UHR_125_t Uhr_125_type;
 UHR_169_t Uhr_169_type;
 UHR_242_t Uhr_242_type;
+UHR_291_t Uhr_291_type;
 
 iUhrType *usedUhrType = nullptr;
 
@@ -113,6 +117,8 @@ iUhrType *getPointer(uint8_t num) {
         return reinterpret_cast<iUhrType *>(&Uhr_169_type);
     case 5:
         return reinterpret_cast<iUhrType *>(&Uhr_242_type);
+    case 7:
+		return reinterpret_cast<iUhrType *>(&Uhr_291_type);
     default:
         return nullptr;
     }
