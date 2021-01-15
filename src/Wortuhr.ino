@@ -118,7 +118,7 @@ iUhrType *getPointer(uint8_t num) {
     case 5:
         return reinterpret_cast<iUhrType *>(&Uhr_242_type);
     case 7:
-		return reinterpret_cast<iUhrType *>(&Uhr_291_type);
+        return reinterpret_cast<iUhrType *>(&Uhr_291_type);
     default:
         return nullptr;
     }

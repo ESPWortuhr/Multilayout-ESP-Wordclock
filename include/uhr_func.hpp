@@ -708,8 +708,10 @@ static void set_stunde(uint8_t std, uint8_t voll) {
 }
 //------------------------------------------------------------------------------
 
-bool definedAndHasDreiviertel(){
-	return (G.Sprachvariation[ItIs45] == 1 && G.UhrtypeDef == Uhr_114_Alternative) || (G.Sprachvariation[ItIs45] == 1 && G.UhrtypeDef == Uhr_114_2Clock);
+bool definedAndHasDreiviertel() {
+    return (G.Sprachvariation[ItIs45] == 1 &&
+            G.UhrtypeDef == Uhr_114_Alternative) ||
+           (G.Sprachvariation[ItIs45] == 1 && G.UhrtypeDef == Uhr_114_2Clock);
 }
 
 //------------------------------------------------------------------------------

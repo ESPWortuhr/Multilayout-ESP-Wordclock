@@ -98,9 +98,9 @@ public:
 
     virtual const uint16_t ROWS_MATRIX() override { return 11; };
 
-	//------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
 
-	virtual const uint16_t COLS_MATRIX() override { return 11; };
+    virtual const uint16_t COLS_MATRIX() override { return 11; };
 
     //------------------------------------------------------------------------------
 
