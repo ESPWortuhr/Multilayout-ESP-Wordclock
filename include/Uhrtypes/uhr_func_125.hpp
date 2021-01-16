@@ -2,7 +2,6 @@
 
 class UHR_125_t : public iUhrType {
 public:
-
     const uint16_t min_arr[2][4] = {
         // ergänzt aus "Uhr func 169"-datei
         {110, 111, 112, 113}, // LED für Minuten Anzeige Zeile

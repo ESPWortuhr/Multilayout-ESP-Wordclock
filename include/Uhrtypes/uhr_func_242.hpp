@@ -2,7 +2,6 @@
 
 class UHR_242_t : public iUhrType {
 public:
-
     const uint16_t min_arr[2][4] = {
         {112, 114, 116, 118}, // Minuten LED´s für Zeile
         {112, 114, 116, 118}  // Minuten LED´s für Ecken

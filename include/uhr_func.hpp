@@ -530,11 +530,13 @@ static void rainbowCycle() {
 
 void shift_all_pixels_to_right() {
     for (uint8_t col = 0; col < usedUhrType->COLS_MATRIX() - 1; col++) {
-        for (uint8_t row = 0; row < usedUhrType->ROWS_MATRIX() - 1 /* Only Front*/ ; row++) {
+        for (uint8_t row = 0;
+             row < usedUhrType->ROWS_MATRIX() - 1 /* Only Front*/; row++) {
             if (G.Colortype == Grbw) {
                 led_set_pixel_Color_Object_rgbw(
                     usedUhrType->getFrontMatrix(row, col),
-                    led_get_pixel_rgbw(usedUhrType->getFrontMatrix(row, col + 1)));
+                    led_get_pixel_rgbw(
+                        usedUhrType->getFrontMatrix(row, col + 1)));
             } else {
                 led_set_pixel_Color_Object(
                     usedUhrType->getFrontMatrix(row, col),
@@ -548,7 +550,7 @@ void shift_all_pixels_to_right() {
 
 static void laufschrift(const char *buf) {
     static uint8_t i = 0, ii = 0;
-    
+
     shift_all_pixels_to_right();
 
     if (i < 5) {
@@ -1414,7 +1416,7 @@ static void show_zeit() {
 
     // Hintergrund setzen
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-            led_set_pixel(rr, gg, bb, ww, i);
+        led_set_pixel(rr, gg, bb, ww, i);
     }
 
     if (uhrzeit & ((uint32_t)1 << ESIST)) {
