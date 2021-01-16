@@ -529,16 +529,16 @@ static void rainbowCycle() {
 //------------------------------------------------------------------------------
 
 void shift_all_pixels_to_right() {
-    for (uint8_t b = 0; b < 10; b++) {
-        for (uint8_t a = 0; a < usedUhrType->ROWS_MATRIX(); a++) {
+    for (uint8_t col = 0; col < usedUhrType->COLS_MATRIX() - 1; col++) {
+        for (uint8_t row = 0; row < usedUhrType->ROWS_MATRIX() - 1 /* Only Front*/ ; row++) {
             if (G.Colortype == Grbw) {
                 led_set_pixel_Color_Object_rgbw(
-                    usedUhrType->getMatrix(a, b),
-                    led_get_pixel_rgbw(usedUhrType->getMatrix(a, b + 1)));
+                    usedUhrType->getFrontMatrix(row, col),
+                    led_get_pixel_rgbw(usedUhrType->getFrontMatrix(row, col + 1)));
             } else {
                 led_set_pixel_Color_Object(
-                    usedUhrType->getMatrix(a, b),
-                    led_get_pixel(usedUhrType->getMatrix(a, b + 1)));
+                    usedUhrType->getFrontMatrix(row, col),
+                    led_get_pixel(usedUhrType->getFrontMatrix(row, col + 1)));
             }
         }
     }
@@ -548,8 +548,7 @@ void shift_all_pixels_to_right() {
 
 static void laufschrift(const char *buf) {
     static uint8_t i = 0, ii = 0;
-
-    // Alle Pixes eins nach rechts schieben
+    
     shift_all_pixels_to_right();
 
     if (i < 5) {
@@ -557,14 +556,14 @@ static void laufschrift(const char *buf) {
             if (pgm_read_byte(&(font_7x5[buf[ii]][i])) & (1u << h)) {
                 led_set_pixel(G.rgb[Effect][0], G.rgb[Effect][1],
                               G.rgb[Effect][2], G.rgb[Effect][3],
-                              usedUhrType->getMatrix(h + 1, 10));
+                              usedUhrType->getFrontMatrix(h + 1, 10));
             } else {
-                led_clear_pixel(usedUhrType->getMatrix(h + 1, 10));
+                led_clear_pixel(usedUhrType->getFrontMatrix(h + 1, 10));
             }
         }
     } else {
         for (uint8_t h = 0; h < 8; h++) {
-            led_clear_pixel(usedUhrType->getMatrix(h + 1, 10));
+            led_clear_pixel(usedUhrType->getFrontMatrix(h + 1, 10));
         }
     }
     led_show();
@@ -598,7 +597,7 @@ void set_pixel_for_char(uint8_t i, uint8_t h, uint8_t offset,
     if (pgm_read_byte(&(font_7x5[unsigned_d1][i])) & (1u << h)) {
         led_set_pixel(G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2],
                       G.rgb[Effect][3],
-                      usedUhrType->getMatrix(h + 1, i + offset));
+                      usedUhrType->getFrontMatrix(h + 1, i + offset));
     }
 }
 
@@ -1414,10 +1413,8 @@ static void show_zeit() {
     set_helligkeit_ldr(rr, gg, bb, ww, Background);
 
     // Hintergrund setzen
-    for (uint8_t t = 0; t < usedUhrType->ROWS_MATRIX(); t++) {
-        for (uint8_t b = 0; b < usedUhrType->COLS_MATRIX(); b++) {
-            led_set_pixel(rr, gg, bb, ww, usedUhrType->getMatrix(t, b));
-        }
+    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+            led_set_pixel(rr, gg, bb, ww, i);
     }
 
     if (uhrzeit & ((uint32_t)1 << ESIST)) {
