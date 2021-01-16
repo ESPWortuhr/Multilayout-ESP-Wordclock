@@ -407,11 +407,11 @@ void setup() {
 
 void loop() {
     unsigned long currentMillis = millis();
-    previousMillis = currentMillis;
     count_delay += currentMillis - previousMillis;
     if (G.UhrtypeDef == Uhr_169) {
         count_millis48 += currentMillis - previousMillis;
     }
+    previousMillis = currentMillis;
 
     time_t utc = time(nullptr);
     struct tm tm;
