@@ -95,6 +95,11 @@ module.exports = function(grunt) {
 					cwd: "node_modules/minified/",
 					src: ["minified-web.js"],
 					dest: "<%= settings.tempDirectory %>"
+				}, {
+					expand: true,
+					cwd: "node_modules/@jaames/iro/dist/",
+					src: ["iro.min.js"],
+					dest: "<%= settings.tempDirectory %>"
 				}]
 			},
 			minified_css_files: {

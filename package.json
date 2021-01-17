@@ -60,6 +60,7 @@
 		"grunt-version": "^2.0.0"
 	},
 	"dependencies": {
+		"@jaames/iro": "^5.3.1",
 		"minified": "^1.0.1",
 		"purecss": "^2.0.3"
 	}
