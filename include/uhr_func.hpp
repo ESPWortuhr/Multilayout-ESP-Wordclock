@@ -452,6 +452,8 @@ static void led_set_all(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww) {
     }
 }
 
+//------------------------------------------------------------------------------
+
 static void set_farbe() {
     uint8_t rr, gg, bb, ww;
     set_helligkeit(rr, gg, bb, ww, Effect);
@@ -550,22 +552,31 @@ void shift_all_pixels_to_right() {
 
 static void laufschrift(const char *buf) {
     static uint8_t i = 0, ii = 0;
+    static uint8_t offsetRow = 1;
 
     shift_all_pixels_to_right();
 
+    if (G.UhrtypeDef == Uhr_291) {
+        offsetRow = 4;
+    }
+
     if (i < 5) {
-        for (uint8_t h = 0; h < 8; h++) {
-            if (pgm_read_byte(&(font_7x5[buf[ii]][i])) & (1u << h)) {
-                led_set_pixel(G.rgb[Effect][0], G.rgb[Effect][1],
-                              G.rgb[Effect][2], G.rgb[Effect][3],
-                              usedUhrType->getFrontMatrix(h + 1, 10));
+        for (uint8_t row = 0; row < 8; row++) {
+            if (pgm_read_byte(&(font_7x5[buf[ii]][i])) & (1u << row)) {
+                led_set_pixel(
+                    G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2],
+                    G.rgb[Effect][3],
+                    usedUhrType->getFrontMatrix(
+                        row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
             } else {
-                led_clear_pixel(usedUhrType->getFrontMatrix(h + 1, 10));
+                led_clear_pixel(usedUhrType->getFrontMatrix(
+                    row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
             }
         }
     } else {
-        for (uint8_t h = 0; h < 8; h++) {
-            led_clear_pixel(usedUhrType->getFrontMatrix(h + 1, 10));
+        for (uint8_t row = 0; row < 8; row++) {
+            led_clear_pixel(usedUhrType->getFrontMatrix(
+                row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
         }
     }
     led_show();
@@ -594,23 +605,36 @@ static void zeigeip(const char *buf) {
 
 //------------------------------------------------------------------------------
 
-void set_pixel_for_char(uint8_t i, uint8_t h, uint8_t offset,
-                        unsigned char unsigned_d1) {
-    if (pgm_read_byte(&(font_7x5[unsigned_d1][i])) & (1u << h)) {
-        led_set_pixel(G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2],
-                      G.rgb[Effect][3],
-                      usedUhrType->getFrontMatrix(h + 1, i + offset));
+void set_pixel_for_char(uint8_t col, uint8_t row, uint8_t offsetCol,
+                        uint8_t offsetRow, unsigned char unsigned_d1) {
+    if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
+        led_set_pixel(
+            G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2],
+            G.rgb[Effect][3],
+            usedUhrType->getFrontMatrix(row + offsetRow, col + offsetCol));
     }
 }
 
 static void zahlen(const char d1, const char d2) {
     uhr_clear();
-    for (uint8_t i = 0; i < 5; i++) {
-        for (uint8_t h = 0; h < 8; h++) {
+    static uint8_t offsetLetter0 = 0;
+    static uint8_t offsetLetter1 = 6;
+    static uint8_t offsetRow = 1;
+
+    if (G.UhrtypeDef == Uhr_291) {
+        offsetLetter0 = 3;
+        offsetLetter1 = 9;
+        offsetRow = 4;
+    }
+
+    for (uint8_t col = 0; col < 5; col++) {
+        for (uint8_t row = 0; row < 8; row++) {
             // 1. Zahl ohne Offset
-            set_pixel_for_char(i, h, 0, static_cast<unsigned char>(d1));
+            set_pixel_for_char(col, row, offsetLetter0, offsetRow,
+                               static_cast<unsigned char>(d1));
             // 2. Zahl mit Offset
-            set_pixel_for_char(i, h, 6, static_cast<unsigned char>(d2));
+            set_pixel_for_char(col, row, offsetLetter1, offsetRow,
+                               static_cast<unsigned char>(d2));
         }
     }
     led_show();

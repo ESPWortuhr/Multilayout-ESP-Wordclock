@@ -2,8 +2,8 @@
 
 #include "leds.h"
 
-static void led_set_pixels(int b, int first, int last) {
-    for (int i = first; i <= last; i++)
+static void led_set_pixels(uint8_t b, uint16_t first, uint16_t last) {
+    for (uint16_t i = first; i <= last; i++)
         led_set_pixel(b, b, b, b, i);
 }
 
