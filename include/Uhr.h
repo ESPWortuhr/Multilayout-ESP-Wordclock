@@ -74,6 +74,15 @@ struct GLOBAL {
     char MQTT_Server[30];
     uint16_t MQTT_Port;
 
+    uint8_t autoLdrEnabled;
+    uint8_t autoLdrBright;
+    uint8_t autoLdrDark;
+    uint8_t animType;
+    uint8_t animDuration;
+    uint8_t animSpeed;
+    uint8_t animColorize;
+    uint8_t animDemo;
+
     bool bootLedBlink;
     bool bootLedSweep;
     bool bootShowWifi;
@@ -119,7 +128,7 @@ uint8_t last_sekunde = 0;
 uint8_t last_minute = 0;
 uint8_t last_stunde = 0;
 
-uint8_t count_millis48 = 0;
+unsigned long count_millis48 = 0;
 unsigned long previous48 = 0;
 unsigned long transitionDelay = 0;
 const long interval48 = 1250;
@@ -174,6 +183,8 @@ enum Command {
     COMMAND_MODE_CHANGE = 5,
     COMMAND_MODE_COLOR = 6,
 
+    COMMAND_MODE_ANIMATION = 10,
+
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
     COMMAND_SET_LANGUAGE_VARIANT = 84,
@@ -194,6 +205,7 @@ enum Command {
     COMMAND_SET_WIFI_AND_RESTART = 99,
     COMMAND_RESET = 100,
     COMMAND_SET_BOOT = 101,
+	COMMAND_SET_AUTO_LDR = 102,
 
     COMMAND_BRIGHTNESS = 151,
     COMMAND_SPEED = 152,
@@ -203,6 +215,9 @@ enum Command {
     COMMAND_REQUEST_CONFIG_VALUES = 200,
     COMMAND_REQUEST_COLOR_VALUES = 201,
     COMMAND_REQUEST_WIFI_LIST = 202,
+    COMMAND_REQUEST_AUTO_LDR = 203,
+    COMMAND_REQUEST_ANIMATION = 204,
+
 };
 
 enum ledText {

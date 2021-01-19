@@ -7,6 +7,21 @@
 
 #define RESPONSE_SIZE 900
 
+const unsigned char favicon[] = {
+		0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x10, 0x10, 0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0xae, 0x00,
+		0x00, 0x00, 0x16, 0x00, 0x00, 0x00, 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00,
+		0x00, 0x0d, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10, 0x08, 0x06,
+		0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x00, 0x75, 0x49, 0x44, 0x41, 0x54, 0x38,
+		0x8d, 0xcd, 0x91, 0xbd, 0x0a, 0x80, 0x40, 0x0c, 0x83, 0xbf, 0xaa, 0xb3, 0x83, 0xb8, 0xf9, 0xe2,
+		0x3e, 0x9d, 0x93, 0x93, 0x83, 0x83, 0x20, 0x38, 0x78, 0xc6, 0x41, 0x45, 0xe1, 0xf0, 0xf7, 0x16,
+		0x03, 0xa5, 0x94, 0x36, 0x21, 0xa4, 0xb0, 0x43, 0x4d, 0x8d, 0xc6, 0x1e, 0x69, 0x40, 0x70, 0x5b,
+		0x3b, 0x2a, 0xcb, 0x05, 0x0b, 0x71, 0xab, 0x07, 0x02, 0x02, 0x30, 0x4f, 0xed, 0x25, 0xa2, 0x10,
+		0x32, 0x40, 0x72, 0xb9, 0x55, 0x71, 0xcd, 0x76, 0x0a, 0x74, 0x10, 0x9b, 0x9f, 0x81, 0xd2, 0xd6,
+		0xbb, 0xb3, 0x2e, 0x3b, 0xd5, 0x08, 0xce, 0xe0, 0xef, 0x5f, 0xd8, 0x50, 0x9e, 0x9b, 0x0c, 0x73,
+		0x30, 0xb9, 0x1f, 0x64, 0x60, 0x6b, 0xff, 0xea, 0xc2, 0xec, 0x30, 0xbc, 0x15, 0x31, 0x80, 0x19,
+		0x09, 0x86, 0x36, 0x37, 0x8e, 0x9c, 0xde, 0xbf, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44,
+		0xae, 0x42, 0x60, 0x82, 0x0a
+};
 class WebPage_Adapter : public WebSocketsServer {
 
 public:
@@ -20,6 +35,20 @@ public:
         DEBUG_WEBSOCKETS(
             "[WS-Server][%d][handleHeader] no Websocket connection close.\n",
             client->num);
+        char buf[200];
+        // ----------------------------------------
+    	if (client->cUrl.endsWith("favicon.ico")) {
+    		sprintf(buf, "HTTP/1.1 200 OK\r\n"
+    				"Content-Type: image/x-ico\r\n"
+    				"Content-Length: %d\r\n"
+    				"Connection: close\r\n"
+    				"\r\n", sizeof(favicon));
+    		client->tcp->write(buf);
+    		client->tcp->write(favicon, sizeof(favicon));
+
+    	} else {
+            // ------------------------------------
+    		if (client->cUrl.equals("/")) {
         client->tcp->write(
             "HTTP/1.1 200 OK\r\n"
             "Server: arduino-WebSocket-Server\r\n"
@@ -29,6 +58,18 @@ public:
             //--                    "Sec-WebSocket-Version: 13\r\n"
             "\r\n");
         Send_HTML_Code(client, html_code, html_size);
+    		} else {
+
+    	        // --------------------------------
+    			int len = sprintf(buf, 	"HTTP/1.1 404 Not Found\r\n"
+    					"Content-Type: text/plain\r\n\r\n"
+    					"Seite ");
+    			client->cUrl.toCharArray(buf + len, sizeof(buf) - len);
+    			strcat(buf, " nicht gefunden\n");
+    			client->tcp->write(buf);
+    		}
+    	}
+    	
         clientDisconnect(client);
     }
 
@@ -71,18 +112,21 @@ uint16_t split(uint8_t *payload, uint8_t start, uint8_t lenght) {
 
 void payloadTextHandling(const uint8_t *payload, char *text, uint8_t length) {
     uint8_t ii = 0;
-    for (uint8_t k = 9; k < 9 + length; k++) {
+	for (uint8_t k = 9; k < 9 + length - 1; k++)  // need space for  '\0'
+	{
         text[ii] = payload[k];
         ii++;
     }
-    uint8_t index = 0;
-    for (int8_t counter = length - 1; counter > -1; counter--) {
-        if (!isSpace(text[counter])) {
-            index = counter;
+	uint8_t index = length - 1;
+	for (int8_t counter = length - 2; counter > -1; counter--)
+	{
+		if (!isSpace(text[counter]))
+		{
+			index = counter + 1;
             break;
         }
     }
-    text[index + 1] = '\0';
+	text[index] = '\0';
 }
 
 //------------------------------------------------------------------------------
@@ -211,6 +255,20 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.rgb[Effect][3] = split(payload, 54, 3);
             break;
         }
+			//------------------------------------------------------------------------------
+
+		case COMMAND_MODE_ANIMATION: { // Animation
+			G.prog = COMMAND_MODE_ANIMATION;
+			G.prog_init = 1;
+			G.animType = split(payload, 3, 3);
+			G.animDuration = split(payload, 6, 3);
+			G.animSpeed = split(payload, 9, 3);
+			G.animColorize = split(payload, 12, 3);
+			G.animDemo = split(payload, 15, 3);
+//					Serial.printf("animType %d animDuration %d animSpeed %d animColorize %d animDemo %d\n",
+//						G.animType, G.animDuration, G.animSpeed, G.animColorize, G.animDemo);
+			break;
+		}
 
             //------------------------------------------------------------------------------
 
@@ -257,15 +315,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_HOSTNAME: { // Hostname speichern
             G.conf = COMMAND_SET_HOSTNAME;
-            uint32_t tt = split(payload, 12, 16);
-            ii = 0;
-            for (uint8_t k = 9; k < 25; k++) {
-                if (payload[k] != ' ') {
-                    G.hostname[ii] = payload[k];
-                    ii++;
-                }
-            }
-            G.hostname[ii] = '\0';
+			payloadTextHandling(payload, G.hostname, sizeof(G.hostname) / sizeof(G.hostname[0]));
             break;
         }
 
@@ -292,6 +342,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.ldr = split(payload, 9, 3);
             G.ldrCal = split(payload, 12, 3);
             break;
+        }
+
+            //------------------------------------------------------------------------------
+
+		case COMMAND_SET_AUTO_LDR: { // Automatische Helligkeit
+			G.conf = COMMAND_SET_AUTO_LDR;
+			G.autoLdrEnabled = split(payload, 9, 3);
+			G.autoLdrBright = split(payload, 12, 3);
+			G.autoLdrDark = split(payload, 15, 3);
+			break;
         }
 
             //------------------------------------------------------------------------------
@@ -478,9 +538,26 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+		case COMMAND_REQUEST_AUTO_LDR: { // Werte fuer automatische Helligkeit anfordern
+			G.conf = COMMAND_REQUEST_AUTO_LDR;
+			G.client_nr = num;
+			break;
+		}
+
+			//------------------------------------------------------------------------------
+
+		case COMMAND_REQUEST_ANIMATION: { // Werte fuer Animation anfordern
+			G.conf = COMMAND_REQUEST_ANIMATION;
+			G.client_nr = num;
+			break;
+		}
+
+			//------------------------------------------------------------------------------
+
         default:
             break;
         }
+		break;
     }
     case WStype_BIN: {
         Serial.printf("[%u] get binary lenght: %u\n", num, lenght);

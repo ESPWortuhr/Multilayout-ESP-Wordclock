@@ -95,6 +95,16 @@ var bootLedBlink = 0;
 var bootLedSweep = 0;
 var bootShowWifi = 0;
 var bootShowIP = 0;
+var autoLdrInterval = null;
+var autoLdrEnabled = 0;
+var autoLdrBright = " ";
+var autoLdrDark = " ";
+var animType = 0;
+var animTypes = ["keine"];
+var animDuration = 1;
+var animSpeed = 30;
+var animColorize = 1;
+var animDemo = false;
 
 // operation modes
 var COMMAND_MODE_WORD_CLOCK = 1;
@@ -103,6 +113,7 @@ var COMMAND_MODE_MARQUEE = 3;
 var COMMAND_MODE_RAINBOW = 4;
 var COMMAND_MODE_CHANGE = 5;
 var COMMAND_MODE_COLOR = 6;
+var COMMAND_MODE_ANIMATION = 10;
 
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
@@ -125,6 +136,7 @@ var COMMAND_SET_WIFI_DISABLED = 98;
 var COMMAND_SET_WIFI_AND_RESTART = 99;
 var COMMAND_RESET = 100;
 var COMMAND_SET_BOOT = 101;
+var COMMAND_SET_AUTO_LDR = 102;
 
 var COMMAND_BRIGHTNESS = 151;
 var COMMAND_SPEED = 152;
@@ -134,6 +146,8 @@ var COMMAND_POSITION = 154;
 var COMMAND_REQUEST_CONFIG_VALUES = 200;
 var COMMAND_REQUEST_COLOR_VALUES = 201;
 var COMMAND_REQUEST_WIFI_LIST = 202;
+var COMMAND_REQUEST_AUTO_LDR = 203;
+var COMMAND_REQUEST_ANIMATION = 204;
 
 // colors
 var COLOR_FOREGROUND = 0;
@@ -145,9 +159,9 @@ var COLOR_EFFECT = 3;
 var DATA_MARQUEE_TEXT_LENGTH = 30;
 var DATA_SSID_TEXT_LENGTH = 32; // WL_SSID_MAX_LENGTH == 32
 var DATA_PASSWORT_TEXT_LENGTH = 63; // WL_WPA_KEY_MAX_LENGTH == 63
-var DATA_TIMESERVER_TEXT_LENGTH = 16;
+var DATA_TIMESERVER_TEXT_LENGTH = 30;
 var DATA_MQTTSERVER_TEXT_LENGTH = 30;
-var DATA_HOST_TEXT_LENGTH = 16;
+var DATA_HOST_TEXT_LENGTH = 30;
 
 function initConfigValues() {
 	var locationHost = location.host;
@@ -196,6 +210,15 @@ function initConfigValues() {
 	bootLedSweep = 0;
 	bootShowWifi = 0;
 	bootShowIP = 0;
+	autoLdrEnabled = 0;
+	autoLdrBright = " ";
+	autoLdrDark = " ";
+	animType = 0;
+	animTypes = ["keine"];
+	animDuration = 1;
+	animSpeed = 30;
+	animColorize = 1;
+	animDemo = false;
 }
 
 function hexToRgb(hex) {
@@ -254,6 +277,7 @@ function initWebsocket() {
 		debugMessage("Die Verbindung mit dem Websocket wurde aufgebaut.", event);
 
 		sendData(COMMAND_REQUEST_COLOR_VALUES, 0, 0);
+		sendData(COMMAND_REQUEST_ANIMATION, 0, 0);
 	};
 
 	websocket.onclose = function(event) {
@@ -266,6 +290,7 @@ function initWebsocket() {
 		$("#section-connection-lost").set({
 			$display: "block"
 		});
+		autoLdrStop();
 
 		debugMessage("Die Verbindung mit dem Websocket wurde geschlossen (Code " + event.code + ").", event);
 	};
@@ -349,11 +374,40 @@ function initWebsocket() {
 			hell = data.hell;
 			geschw = data.geschw;
 			colortype = data.colortype;
+			var map = [0, 0, 2, 3, 4, 5, 1];	// see COMMAND_MODE_XX
+			var prog = data.prog;
+			command = prog === 0 ? COMMAND_MODE_WORD_CLOCK : prog;	// 0 == COMMAND_IDLE
+			document.prog.mode[map[prog]].checked = true;
 			setSliders();
 			enableSpecific("specific-colortype-4", data.colortype === 4);
 		}
 		if (data.command === "wlan") {
 			document.getElementById("wlanlist").innerHTML = data.list;
+		}
+		if (data.command === "animation") {
+			animType = data.animType;
+			animTypes = data.animTypes;
+			animDuration = data.animDuration;
+			animSpeed = data.animSpeed;
+			animColorize = data.animColorize;
+			animDemo = data.animDemo;
+			var index;
+			var animSelect = document.getElementById("animation-types");
+			var option;
+			for (index = 0; index < animTypes.length; index++) {
+				option = document.createElement("option");
+				option.value = index;
+				option.text = animTypes[index];
+				animSelect.remove(index);
+				animSelect.add(option);
+			}
+			setAnimation();
+		}
+		if (data.command === "autoLdr") {
+			$("#auto-ldr-enabled").set("value", data.autoLdrEnabled);
+			$("#auto-ldr-value").set("value", data.autoLdrValue);
+			$("#auto-ldr-bright").set("value", data.autoLdrBright);
+			$("#auto-ldr-dark").set("value", data.autoLdrDark);
 		}
 	};
 	websocket.onerror = function(event) {
@@ -414,6 +468,43 @@ function setSliders() {
 	// Update the current color in the color area
 	var colorArea = $("#color-area");
 	colorArea[0].style.backgroundColor = "rgb(" + rgb[sliderType][0] + "," + rgb[sliderType][1] + "," + rgb[sliderType][2] + ")";
+}
+
+function setAnimation() {
+	if (document.getElementById("mode-wordclock").checked) {
+		$("#animation-box").set({
+			$display: "block"
+		});
+	} else {
+		$("#animation-box").set({
+			$display: "none"
+		});
+	}
+	$("#animation-types").set("value", animType);
+	$("#animation-duration").set("value", animDuration);
+	$("#animation-speed-value").fill(animSpeed);
+	$("#animation-speed").set("value", animSpeed);
+	$("#animation-colorize").set("value", animColorize);
+	document.getElementById("animation-demo").checked = animDemo;
+}
+
+function autoLdrValueUpdater() {
+	if (autoLdrInterval == null) {
+		autoLdrInterval = setInterval(function() {
+			// jede Sekunde ausfuehren 
+			if ($("#auto-ldr-enabled").get("value") === "1") {
+				sendData(COMMAND_REQUEST_AUTO_LDR, 1, 0);
+			}
+		}, 1000);
+	}
+}
+
+function autoLdrStop() {
+	if (autoLdrInterval != null) {
+		clearInterval(autoLdrInterval);
+		autoLdrInterval = null;
+		debugMessage("LDR Requests stopped", null);
+	}
 }
 
 function nstr5(number) {
@@ -509,6 +600,7 @@ $.ready(function() {
 
 	initConfigValues();
 	setSliders();
+	setAnimation();
 	initWebsocket();
 
 	$(".status-button").on("click", function() {
@@ -573,8 +665,15 @@ $.ready(function() {
 		$(".pure-menu-link").set("-active");
 		$(this).set("+active");
 
+		if (navigation === "functions") {
+			setAnimation();
+		}
 		if (navigation === "settings") {
 			sendData(COMMAND_REQUEST_CONFIG_VALUES, 0, 0);
+			sendData(COMMAND_REQUEST_AUTO_LDR, 0, 0);
+			autoLdrValueUpdater();
+		} else {
+			autoLdrStop();
 		}
 
 		// show/hide sections
@@ -622,6 +721,8 @@ $.ready(function() {
 			hasSpeed = true;
 			command = COMMAND_MODE_CHANGE;
 		}
+
+		setAnimation();
 
 		if (hasBrightness === true) {
 			$(".brightness").set({
@@ -718,6 +819,31 @@ $.ready(function() {
 		}
 		return false;
 	});
+
+	$("#animation-speed").onChange(function(event) {
+		animSpeed = $("#animation-speed").get("value");
+		$("#animation-speed-value").fill(animSpeed);
+	});
+
+	$("[id*='animation']").on("change", function(event) {
+		animType = $("#animation-types").get("value");
+		animDuration = $("#animation-duration").get("value");
+		animSpeed = $("#animation-speed").get("value");
+		animColorize = $("#animation-colorize").get("value");
+		animDemo = document.getElementById("animation-demo").checked;
+		var data = nstr(COMMAND_MODE_ANIMATION) +
+		nstr(animType) +
+		nstr(animDuration) +
+		nstr(animSpeed) +
+		nstr(animColorize) +
+		nstr(animDemo ? 1 : 0) +
+		"999";
+
+		websocket.send(data);
+		debugMessage("Animation wurde neu konfiguriert", data);
+		setAnimation();
+		return false;
+	});
 	$("#initial-values-button").on("click", function() {
 		sendData(COMMAND_SET_INITIAL_VALUES, 0, 0);
 	});
@@ -753,6 +879,14 @@ $.ready(function() {
 
 		websocket.send(data);
 		debugMessage("Lauftext wurde neu konfiguriert", data);
+	});
+	$("#auto-ldr-button").on("click", function() {
+		autoLdrEnabled = $("#auto-ldr-enabled").get("value");
+		autoLdrBright = $("#auto-ldr-bright").get("value");
+		autoLdrDark = $("#auto-ldr-dark").get("value");
+		var data = CMDtoData(COMMAND_SET_AUTO_LDR, 0, 0) + nstr(autoLdrEnabled) + nstr(autoLdrBright) + nstr(autoLdrDark) + "999";
+		websocket.send(data);
+		sendData(COMMAND_REQUEST_AUTO_LDR, 0, 0);	// read back values
 	});
 	$("#brightness-button").on("click", function() {
 
