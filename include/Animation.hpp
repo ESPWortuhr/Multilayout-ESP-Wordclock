@@ -181,7 +181,7 @@ Animation::Ani Animation::isSilvester(struct tm &tm) {
             (_minute == 59)) {
             //			if ((month(ltime) == 12) && (day(ltime) == 12)
             //&& (hour(ltime) == 14) && (_minute == 35)) {
-            //if (_minute ==
+            // if (_minute ==
             // G.autoLdrBright) {					// for
             // testing
             minutesActive = 0;
@@ -466,8 +466,8 @@ void Animation::loop(struct tm &tm) {
                     lastAnimColor = G.animColorize;
                     phase = 1;
                 }
-                //					Serial.printf("Anim: type
-                //%d phase %d\n", G.animType, phase);
+                //					Serial.printf("Anim:
+                // type %d phase %d\n", G.animType, phase);
                 switch (G.animType) {
                 case HOCH_ROLLEN:
                     phase = animScrollDown(false);
@@ -871,7 +871,7 @@ uint Animation::animCountdown(struct tm &tm) {
         char seconds[8];
         sprintf(seconds, "%d", countDown); // start 23:59:00		60 - 0
                                            // for (uint8_t i = 0; i < 5; i++) {
-        for (uint8_t i = 0; i < 5; i++) {     // column
+        for (uint8_t i = 0; i < 5; i++) {  // column
             for (uint8_t h = 0; h < 8; h++) { // row
                 if (countDown >= 10) {
                     // 1. Zahl ohne Offset
