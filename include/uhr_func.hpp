@@ -117,20 +117,32 @@ void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
 void led_set_pixel_Color_Object(uint16_t i, RgbColor color) {
 
     switch (G.Colortype) {
-    case Brg: {
+    case Brg: {										// nicht getestet
+    	uint8_t color_B;
+    	color_B = color.B;
+    	color.B = color.G;
+    	color.G = color.R;
+    	color.R = color_B;
         strip_RGB->SetPixelColor(i, color);
         break;
     }
-    case Grb: {
+    case Grb: {										// getestet
+    	uint8_t color_R;
+    	color.R = color.G;
+    	color.G = color_R;
         strip_RGB->SetPixelColor(i, color);
         break;
     }
     case Rgb: {
-        strip_RGB->SetPixelColor(i, color);
+    	// passt schon
+        strip_RGB->SetPixelColor(i, color);			// getestet
         break;
     }
     case Rbg: {
-        strip_RGB->SetPixelColor(i, color);
+    	uint8_t color_B;
+    	color.B = color.G;
+    	color.G = color_B;
+        strip_RGB->SetPixelColor(i, color);			// nicht getestet
         break;
     }
     case Grbw: {
@@ -151,27 +163,31 @@ void led_set_pixel_Color_Object_rgbw(uint16_t i, RgbwColor color) {
 //------------------------------------------------------------------------------
 
 RgbColor led_get_pixel(uint16_t i) {
-
+	RgbColor color(0);
     switch (G.Colortype) {
     case Brg: {
-        return strip_RGB->GetPixelColor(i);
+        color = strip_RGB->GetPixelColor(i);
+        return RgbColor(color.B, color.R, color.G);		// nicht getestet
         break;
     }
     case Grb: {
-        return strip_RGB->GetPixelColor(i);
+        color = strip_RGB->GetPixelColor(i);
+        return RgbColor(color.G, color.R, color.B);		// getestet
         break;
     }
     case Rgb: {
-        return strip_RGB->GetPixelColor(i);
+        return strip_RGB->GetPixelColor(i);				// getestet
         break;
     }
     case Rbg: {
-        return strip_RGB->GetPixelColor(i);
+        color = strip_RGB->GetPixelColor(i);
+        return RgbColor(color.R, color.B, color.G);		// nicht getestet
         break;
     }
     default:
         break;
     }
+    return color;
 }
 
 //------------------------------------------------------------------------------
@@ -183,8 +199,22 @@ RgbwColor led_get_pixel_rgbw(uint16_t i) {
 //------------------------------------------------------------------------------
 // Helligkeitsregelung nach Uhrzeiten oder per LDR
 //------------------------------------------------------------------------------
+static uint8_t autoLdr(uint8_t val) {
+	if (G.autoLdrEnabled) {
+		uint16_t u16 = val;
+		return ((uint8_t)((u16 * ldrVal) / 100));
+	}
+	return val;
+}
+
 static void set_helligkeit_ldr(uint8_t &rr, uint8_t &gg, uint8_t &bb,
                                uint8_t &ww, uint8_t position) {
+	if (G.autoLdrEnabled) {
+		rr = autoLdr(G.rgb[position][0]);
+		gg = autoLdr(G.rgb[position][1]);
+		bb = autoLdr(G.rgb[position][2]);
+		ww = autoLdr(G.rgb[position][3]);
+	} else {
     if (G.ldr == 1) {
         rr = G.rgb[position][0] * ldrVal / 100;
         gg = G.rgb[position][1] * ldrVal / 100;
@@ -196,6 +226,7 @@ static void set_helligkeit_ldr(uint8_t &rr, uint8_t &gg, uint8_t &bb,
         bb = G.rgb[position][2] * G.hh / 100;
         ww = G.rgb[position][3] * G.hh / 100;
     }
+}
 }
 
 //------------------------------------------------------------------------------
@@ -292,7 +323,7 @@ static void transition_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb,
 
 //------------------------------------------------------------------------------
 
-static void led_set() {
+static void led_set(bool changed = false) {
     uint8_t rr, gg, bb, ww;
     bool use_new_array = false;
     set_helligkeit(rr, gg, bb, ww, Foreground);
@@ -316,8 +347,10 @@ static void led_set() {
             use_new_array = true;
         }
     }
+    if (animation.led_show_notify(changed, _minute)) {
     led_show();
     delay(tansition_time);
+}
 }
 
 //------------------------------------------------------------------------------
@@ -466,6 +499,16 @@ static void set_farbe() {
 
 static void doLDRLogic() {
     int16_t lux = analogRead(A0); // Range 0-1023
+
+	if (G.autoLdrEnabled) {
+		lux /= 4;
+		int minimum = min(G.autoLdrBright, G.autoLdrDark);
+		int maximum = max(G.autoLdrBright, G.autoLdrDark);
+		if (lux >= maximum ) lux = maximum;
+		if (lux <= minimum ) lux = minimum;
+		ldrVal = map(lux, G.autoLdrDark, G.autoLdrBright, 10, 100);
+	} else {
+		if (G.ldr == 1) {
     lux = lux - (G.ldrCal * 20);
     if (lux >= 900) {
         lux = 900;
@@ -474,6 +517,8 @@ static void doLDRLogic() {
         lux = 1;
     } // Minimale Helligkeit
     ldrVal = map(lux, 1, 900, 1, 100);
+}
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -1520,7 +1565,7 @@ static void show_zeit() {
     }
 
     if (changes_in_array() == true) {
-        led_set();
+        led_set(true);		// animation muss Aenderungen mitgeteilt bekommen
         copy_array(Word_array, Word_array_old);
     } else if (G.prog == COMMAND_MODE_WORD_CLOCK) {
         led_set();
