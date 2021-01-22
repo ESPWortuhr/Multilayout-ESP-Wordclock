@@ -273,7 +273,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.animColorize = split(payload, 12, 3);
             G.animDemo = split(payload, 15, 3);
             //					Serial.printf("animType %d
-            //animDuration %d animSpeed %d animColorize %d animDemo %d\n",
+            // animDuration %d animSpeed %d animColorize %d animDemo %d\n",
             // G.animType, G.animDuration, G.animSpeed, G.animColorize,
             // G.animDemo);
             break;
