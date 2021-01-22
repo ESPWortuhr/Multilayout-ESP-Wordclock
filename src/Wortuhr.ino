@@ -32,7 +32,7 @@
 
 // um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere
 // Seriennummer eintragen!
-#define SERNR 101
+#define SERNR 134
 
 bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
@@ -98,9 +98,14 @@ RTC_Type RTC;
 #include "font.h"
 #include "mqtt_func.hpp"
 #include "openwmap.h"
+//#include "Animation.h"
 #include "uhr_func.hpp"
 #include "wifi_func.hpp"
+//#include "Animation.hpp"
 
+#define EEPROM_SIZE 512
+_Static_assert(sizeof(G) <= EEPROM_SIZE,
+               "Datenstruktur G zu gross für reservierten EEPROM Bereich");
 //------------------------------------------------------------------------------
 
 iUhrType *getPointer(uint8_t num) {
@@ -188,12 +193,12 @@ void setup() {
     //-------------------------------------
     // EEPROM lesen / initialisieren
     //-------------------------------------
-    EEPROM.begin(512);
+    EEPROM.begin(EEPROM_SIZE);
 
     eeprom_read();
 
     if (G.sernr != SERNR) {
-        for (uint16_t i = 0; i < 512; i++) {
+        for (uint16_t i = 0; i < EEPROM_SIZE; i++) {
             EEPROM.write(i, i);
         }
         EEPROM.commit();
@@ -252,9 +257,19 @@ void setup() {
         G.bootShowWifi = true;
         G.bootShowIP = false;
 
+        G.autoLdrEnabled = 0;
+        G.autoLdrBright = 100;
+        G.autoLdrDark = 10;
+        G.animType = 0; // Animation::KEINE;
+        G.animDuration = 2;
+        G.animSpeed = 30;
+        G.animColorize = 1;
+        G.animDemo = false;
+
         eeprom_write();
         Serial.println("eeprom schreiben");
     }
+    // G.prog_init = 1;
     //-------------------------------------
     // Start Serielle Schnittstelle bei Bedarf
     //-------------------------------------
@@ -342,6 +357,8 @@ void setup() {
         Word_array_old[i] = 255;
     }
 
+    // animation.begin();
+
     //-------------------------------------
     // Start WiFi
     //-------------------------------------
@@ -422,6 +439,9 @@ void loop() {
         _stunde = tm.tm_hour;
     }
 
+    // lass die Zeit im Demo Mode der Animation schneller ablaufen
+    // animation.demoMode(_minute, _sekunde);
+
     if (G.UhrtypeDef == Uhr_169) {
         if (count_millis48 >= interval48) {
             count_millis48 = 0;
@@ -480,7 +500,7 @@ void loop() {
         }
 
         //--- LDR Regelung
-        if (G.ldr == 1) {
+        if ((G.ldr == 1) || G.autoLdrEnabled) {
             doLDRLogic();
         }
 
@@ -510,6 +530,8 @@ void loop() {
         Serial.printf(currentTime);
         TelnetMsg(currentTime);
     }
+
+    // animation.loop(tm); // muss periodisch aufgerufen werden
 
     //------------------------------------------------
     // Minute
@@ -621,6 +643,19 @@ void loop() {
     }
 
         //------------------------------------------------
+        // Animation
+        //------------------------------------------------
+    case COMMAND_MODE_ANIMATION: {
+        G.prog = COMMAND_MODE_WORD_CLOCK; // sonst laeuft die Zeit nicht weiter
+        if (G.prog_init == 1) {
+            G.prog_init = 0;
+            eeprom_write();
+            delay(100);
+        }
+        break;
+    }
+
+        //------------------------------------------------
     default:
         break;
     }
@@ -699,6 +734,54 @@ void loop() {
         config["hell"] = G.hell;
         config["geschw"] = G.geschw;
         config["colortype"] = G.Colortype;
+        config["prog"] = G.prog;
+        serializeJson(config, str);
+        webSocket.sendTXT(G.client_nr, str, strlen(str));
+        G.conf = COMMAND_IDLE;
+        break;
+    }
+
+        //------------------------------------------------
+        // Automatische Helligkeit
+        //------------------------------------------------
+    case COMMAND_REQUEST_AUTO_LDR: {
+        DynamicJsonDocument config(1024);
+        config["command"] = "autoLdr";
+        if (G.param1 == 0) {
+            config["autoLdrEnabled"] = G.autoLdrEnabled;
+            config["autoLdrBright"] = G.autoLdrBright;
+            config["autoLdrDark"] = G.autoLdrDark;
+        }
+        config["autoLdrValue"] = map(analogRead(A0), 0, 1023, 0, 255);
+        serializeJson(config, str);
+        webSocket.sendTXT(G.client_nr, str, strlen(str));
+        G.conf = COMMAND_IDLE;
+        break;
+    }
+
+        //------------------------------------------------
+        // Animation
+        //------------------------------------------------
+    case COMMAND_REQUEST_ANIMATION: {
+        DynamicJsonDocument config(1024);
+        config["command"] = "animation";
+        config["animType"] = G.animType;
+        config["animDuration"] = G.animDuration;
+        config["animSpeed"] = G.animSpeed;
+        config["animDemo"] = G.animDemo;
+        config["animColorize"] = G.animColorize;
+        JsonArray types = config.createNestedArray("animTypes");
+        // Reihenfolge muss zu enum Ani passen!
+        types.add("keine");
+        types.add("Hoch rollen");
+        types.add("Runter rollen");
+        types.add("Links schieben");
+        types.add("Rechts schieben");
+        types.add("Ueberblenden");
+        types.add("Laser");
+        types.add("Matrix");
+        types.add("Baelle");
+        types.add("Feuerwerk");
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
         G.conf = COMMAND_IDLE;
@@ -759,6 +842,16 @@ void loop() {
         Serial.printf("LDR : %u\n\n", G.ldr);
         Serial.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
         G.conf = COMMAND_IDLE;
+        break;
+    }
+
+        //------------------------------------------------
+        // Auto LDR Parameter speichern
+        //------------------------------------------------
+    case COMMAND_SET_AUTO_LDR: {
+        G.conf = COMMAND_IDLE;
+        eeprom_write();
+        delay(100);
         break;
     }
 
