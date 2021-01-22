@@ -7,20 +7,20 @@
 class UHR_114_t : public iUhrType {
 public:
 #if (LED_LAYOUT_REVERSE)
-	/*
-	 * Layout Front
-	 *
-	 * E S K I S T R F Ü N F
-	 * Z E H N Z W A N Z I G
-	 * D R E I V I E R T E L
-	 * T G N A C H V O R U M
-	 * H A L B G Z W Ö L F J
-	 * Z W E I N S I E B E N
-	 * K D R E I R H F Ü N F
-	 * E L F N E U N V I E R
-	 * N A C H T Z E H N B X
-	 * U S E C H S F U H R Y
-	 *
+    /*
+     * Layout Front
+     *
+     * E S K I S T R F Ü N F
+     * Z E H N Z W A N Z I G
+     * D R E I V I E R T E L
+     * T G N A C H V O R U M
+     * H A L B G Z W Ö L F J
+     * Z W E I N S I E B E N
+     * K D R E I R H F Ü N F
+     * E L F N E U N V I E R
+     * N A C H T Z E H N B X
+     * U S E C H S F U H R Y
+     *
      * 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
      * 102, 101, 100,  99,  98,  97,  96,  95,  94,  93,  92,
      *  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,  91,
@@ -32,15 +32,12 @@ public:
      *  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
      *  14,  13,  12,  11,  10,   9,   8,   7,   6,   5,   4,
      *                      0, 1, 2, 3
-	 */
+     */
 #undef LED_MAP
-#define LED_MAP(x)		(x > 109 ? x - 110 : 113 - (((x / 11) * 11) + (10 - (x % 11))))
+#define LED_MAP(x)                                                             \
+    (x > 109 ? x - 110 : 113 - (((x / 11) * 11) + (10 - (x % 11))))
 
     //------------------------------------------------------------------------------
-
-//    virtual const uint16_t getMatrix(uint8_t col, uint8_t row) override {
-//        return matrix[col][row];
-//    };
 
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) override {
         if (row == ROWS_MATRIX() - 1) {

@@ -32,7 +32,7 @@
 
 // um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere
 // Seriennummer eintragen!
-#define SERNR 102
+#define SERNR 134
 
 bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
@@ -72,8 +72,6 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include "Uhrtypes/uhr_func_242.hpp"
 #include "Uhrtypes/uhr_func_291.hpp"
 
-#include "Animation.h"
-
 UHR_114_t Uhr_114_type;
 UHR_114_Alternative_t Uhr_114_Alternative_type;
 UHR_114_2Clock_t Uhr_114_2Clock_type;
@@ -84,7 +82,7 @@ UHR_291_t Uhr_291_type;
 
 iUhrType *usedUhrType = nullptr;
 
-NeoPixelBus<NeoRgbFeature, Neo800KbpsMethod> *strip_RGB = NULL;
+NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
 
 WiFiClient client;
@@ -100,12 +98,14 @@ RTC_Type RTC;
 #include "font.h"
 #include "mqtt_func.hpp"
 #include "openwmap.h"
+//#include "Animation.h"
 #include "uhr_func.hpp"
 #include "wifi_func.hpp"
-#include "Animation.hpp"
+//#include "Animation.hpp"
 
 #define EEPROM_SIZE 512
-_Static_assert(sizeof(G) <= EEPROM_SIZE, "Datenstruktur G zu gross für reservierten EEPROM Bereich");
+_Static_assert(sizeof(G) <= EEPROM_SIZE,
+               "Datenstruktur G zu gross für reservierten EEPROM Bereich");
 //------------------------------------------------------------------------------
 
 iUhrType *getPointer(uint8_t num) {
@@ -143,7 +143,7 @@ void InitLedStrip(uint8_t num) {
         if (strip_RGB != NULL) {
             delete strip_RGB; // delete the previous dynamically created strip
         }
-        strip_RGB = new NeoPixelBus<NeoRgbFeature, Neo800KbpsMethod>(
+        strip_RGB = new NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod>(
             usedUhrType->NUM_PIXELS());
         strip_RGB->Begin();
     }
@@ -260,7 +260,7 @@ void setup() {
         G.autoLdrEnabled = 0;
         G.autoLdrBright = 100;
         G.autoLdrDark = 10;
-        G.animType = 0;        // Animation::KEINE;
+        G.animType = 0; // Animation::KEINE;
         G.animDuration = 2;
         G.animSpeed = 30;
         G.animColorize = 1;
@@ -269,7 +269,7 @@ void setup() {
         eeprom_write();
         Serial.println("eeprom schreiben");
     }
-	G.prog_init = 1;
+    // G.prog_init = 1;
     //-------------------------------------
     // Start Serielle Schnittstelle bei Bedarf
     //-------------------------------------
@@ -357,7 +357,7 @@ void setup() {
         Word_array_old[i] = 255;
     }
 
-    animation.begin();
+    // animation.begin();
 
     //-------------------------------------
     // Start WiFi
@@ -439,9 +439,8 @@ void loop() {
         _stunde = tm.tm_hour;
     }
 
-
     // lass die Zeit im Demo Mode der Animation schneller ablaufen
-    animation.demoMode(_minute, _sekunde);
+    // animation.demoMode(_minute, _sekunde);
 
     if (G.UhrtypeDef == Uhr_169) {
         if (count_millis48 >= interval48) {
@@ -532,7 +531,7 @@ void loop() {
         TelnetMsg(currentTime);
     }
 
-	animation.loop(tm);   				// muss periodisch aufgerufen werden
+    // animation.loop(tm); // muss periodisch aufgerufen werden
 
     //------------------------------------------------
     // Minute
@@ -644,17 +643,16 @@ void loop() {
     }
 
         //------------------------------------------------
-    	// Animation
-    	//------------------------------------------------
-    case COMMAND_MODE_ANIMATION:
-    {
-    	G.prog = COMMAND_MODE_WORD_CLOCK;	// sonst laeuft die Zeit nicht weiter
-    	if (G.prog_init == 1) {
-    		G.prog_init = 0;
-    		eeprom_write();
-    		delay(100);
-    	}
-    	break;
+        // Animation
+        //------------------------------------------------
+    case COMMAND_MODE_ANIMATION: {
+        G.prog = COMMAND_MODE_WORD_CLOCK; // sonst laeuft die Zeit nicht weiter
+        if (G.prog_init == 1) {
+            G.prog_init = 0;
+            eeprom_write();
+            delay(100);
+        }
+        break;
     }
 
         //------------------------------------------------
@@ -743,47 +741,47 @@ void loop() {
         break;
     }
 
-		//------------------------------------------------
-		// Automatische Helligkeit
-		//------------------------------------------------
+        //------------------------------------------------
+        // Automatische Helligkeit
+        //------------------------------------------------
     case COMMAND_REQUEST_AUTO_LDR: {
         DynamicJsonDocument config(1024);
         config["command"] = "autoLdr";
-    	if (G.param1 == 0) {
-    		config["autoLdrEnabled"] = G.autoLdrEnabled;
-			config["autoLdrBright"] = G.autoLdrBright;
-			config["autoLdrDark"] = G.autoLdrDark;
-    	}
-    	config["autoLdrValue"] = map(analogRead(A0), 0, 1023, 0, 255);
+        if (G.param1 == 0) {
+            config["autoLdrEnabled"] = G.autoLdrEnabled;
+            config["autoLdrBright"] = G.autoLdrBright;
+            config["autoLdrDark"] = G.autoLdrDark;
+        }
+        config["autoLdrValue"] = map(analogRead(A0), 0, 1023, 0, 255);
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
-    	G.conf = COMMAND_IDLE;
+        G.conf = COMMAND_IDLE;
         break;
     }
 
-    	//------------------------------------------------
-    	// Animation
-    	//------------------------------------------------
+        //------------------------------------------------
+        // Animation
+        //------------------------------------------------
     case COMMAND_REQUEST_ANIMATION: {
         DynamicJsonDocument config(1024);
         config["command"] = "animation";
         config["animType"] = G.animType;
-		config["animDuration"] = G.animDuration;
-		config["animSpeed"] = G.animSpeed;
-		config["animDemo"] = G.animDemo;
-		config["animColorize"] = G.animColorize;
-		JsonArray types = config.createNestedArray("animTypes");
-    	// Reihenfolge muss zu enum Ani passen!
-		types.add("keine");
-		types.add("Hoch rollen");
-		types.add("Runter rollen");
-		types.add("Links schieben");
-		types.add("Rechts schieben");
-		types.add("Ueberblenden");
-		types.add("Laser");
-		types.add("Matrix");
-		types.add("Baelle");
-		types.add("Feuerwerk");
+        config["animDuration"] = G.animDuration;
+        config["animSpeed"] = G.animSpeed;
+        config["animDemo"] = G.animDemo;
+        config["animColorize"] = G.animColorize;
+        JsonArray types = config.createNestedArray("animTypes");
+        // Reihenfolge muss zu enum Ani passen!
+        types.add("keine");
+        types.add("Hoch rollen");
+        types.add("Runter rollen");
+        types.add("Links schieben");
+        types.add("Rechts schieben");
+        types.add("Ueberblenden");
+        types.add("Laser");
+        types.add("Matrix");
+        types.add("Baelle");
+        types.add("Feuerwerk");
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
         G.conf = COMMAND_IDLE;
@@ -847,15 +845,14 @@ void loop() {
         break;
     }
 
-		//------------------------------------------------
-		// Auto LDR Parameter speichern
-		//------------------------------------------------
-    case COMMAND_SET_AUTO_LDR:
-    {
-    	G.conf = COMMAND_IDLE;
-    	eeprom_write();
-    	delay(100);
-    	break;
+        //------------------------------------------------
+        // Auto LDR Parameter speichern
+        //------------------------------------------------
+    case COMMAND_SET_AUTO_LDR: {
+        G.conf = COMMAND_IDLE;
+        eeprom_write();
+        delay(100);
+        break;
     }
 
         //------------------------------------------------
