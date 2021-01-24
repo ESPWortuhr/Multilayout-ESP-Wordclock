@@ -96,12 +96,13 @@ const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
 RTC_Type RTC;
 
 #include "Animation.h"
-#include "Animation.hpp"
 #include "font.h"
 #include "mqtt_func.hpp"
 #include "openwmap.h"
 #include "uhr_func.hpp"
 #include "wifi_func.hpp"
+
+#include "Animation.hpp"
 
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) <= EEPROM_SIZE,
