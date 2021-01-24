@@ -6,6 +6,7 @@
 #include "WebSocketsServer.h"
 
 #define RESPONSE_SIZE 900
+#define SIZE_OF_FAVICON 197
 
 const char favicon[] PROGMEM = {
     0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x10, 0x10, 0x00, 0x00, 0x01, 0x00,
@@ -48,9 +49,9 @@ public:
                     "Content-Length: %d\r\n"
                     "Connection: close\r\n"
                     "\r\n",
-                    197);
+                    SIZE_OF_FAVICON);
             client->tcp->write(buf);
-            for (uint8_t i; i < 197; i++) {
+            for (uint8_t i; i < SIZE_OF_FAVICON; i++) {
                 buf[i] = pgm_read_byte(&favicon[i]);
             }
             client->tcp->write(buf);

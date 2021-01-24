@@ -1,12 +1,4 @@
-/*
- * Animation_Blocks.h
- *
- *  Created on: 13.01.2021
- *      Author: Andreas
- */
-
-#ifndef WORTUHR_ANIMATION_BLOCKS_H_
-#define WORTUHR_ANIMATION_BLOCKS_H_
+#pragma once
 
 enum BLOCKS {
     WLANT,
@@ -139,5 +131,3 @@ const uint16_t grafik_11x10[][11] = {
             },
     */
 };
-
-#endif /* WORTUHR_ANIMATION_BLOCKS_H_ */

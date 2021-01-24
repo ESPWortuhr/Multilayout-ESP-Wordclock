@@ -1,10 +1,3 @@
-/*
- * Animation.cpp
- *
- *  Created on: 15.01.2019
- *      Author: Andreas
- */
-
 #define MAX_BAELLE ANIMATION_COLUMNS
 #define MAX_ANIM_PERIOD 5
 #define MAX_RANDOM 10
@@ -165,7 +158,7 @@ void Animation::begin() {
             getIndex[row][column] = usedUhrType->getFrontMatrix(row, column);
         }
     }
-    animation.blockgrafik(0, 0, 255, WLAN); // blau
+    // animation.blockgrafik(0, 0, 255, WLAN); // blau
 }
 
 //------------------------------------------------------------------------------

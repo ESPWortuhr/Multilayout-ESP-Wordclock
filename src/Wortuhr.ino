@@ -25,14 +25,14 @@
 // Typ der LEDs:
 // - Brg, Grb, Rgb, Rbg (WS2812b)
 // - Grbw (SK6812)
-#define DEFAULT_LEDTYPE Brg
+#define DEFAULT_LEDTYPE RGB
 
 // External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
 #define RTC_Type RTC_DS3231
 
 // um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere
 // Seriennummer eintragen!
-#define SERNR 134
+#define SERNR 122
 
 bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
@@ -95,13 +95,13 @@ const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
 
 RTC_Type RTC;
 
+#include "Animation.h"
+#include "Animation.hpp"
 #include "font.h"
 #include "mqtt_func.hpp"
 #include "openwmap.h"
-//#include "Animation.h"
 #include "uhr_func.hpp"
 #include "wifi_func.hpp"
-//#include "Animation.hpp"
 
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) <= EEPROM_SIZE,
@@ -354,10 +354,8 @@ void setup() {
     //-------------------------------------
 
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        Word_array_old[i] = 255;
+        Word_array_old[i] = 500;
     }
-
-    // animation.begin();
 
     //-------------------------------------
     // Start WiFi
@@ -376,11 +374,17 @@ void setup() {
     setenv("TZ", TZ_Europe_Berlin, true);
     tzset();
 
+    delay(50);
     //-------------------------------------
     // OTA--
     //-------------------------------------
     httpUpdater.setup(&httpServer);
     httpServer.begin();
+
+    //-------------------------------------
+    // Animation
+    //-------------------------------------
+    animation.begin();
 
     //-------------------------------------
     // MQTT
@@ -440,7 +444,7 @@ void loop() {
     }
 
     // lass die Zeit im Demo Mode der Animation schneller ablaufen
-    // animation.demoMode(_minute, _sekunde);
+    animation.demoMode(_minute, _sekunde);
 
     if (G.UhrtypeDef == Uhr_169) {
         if (count_millis48 >= interval48) {
@@ -531,7 +535,7 @@ void loop() {
         TelnetMsg(currentTime);
     }
 
-    // animation.loop(tm); // muss periodisch aufgerufen werden
+    animation.loop(tm); // muss periodisch aufgerufen werden
 
     //------------------------------------------------
     // Minute

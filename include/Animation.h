@@ -1,15 +1,6 @@
-/*
- * Animation.h
- *
- *  Created on: 15.01.2019
- *      Author: Andreas
- */
-
-#ifndef ANIMATION_H_
-#define ANIMATION_H_
+#pragma once
 
 #include "Animation_Blocks.h"
-#include <NeoPixelBus.h>
 
 // ********** getestet nur mit UHR_114 und LED_LAYOUT_REVERSE ***************
 #define ANIMATION_ROW_START 0     /* Startindex der Reihe */
@@ -22,8 +13,6 @@
 #define ANIMATION_ROWS 11 /* Anzahl der Reihen (Y-Richtung) */
 #endif
 
-// **************************************************************************
-// #define USE_SERIAL Serial
 
 // ###############################################################################
 // compare operators are derived from RgbColor which compare R, G, B only
@@ -162,5 +151,3 @@ protected:
 };
 
 extern Animation animation;
-
-#endif /* ANIMATION_H_ */
