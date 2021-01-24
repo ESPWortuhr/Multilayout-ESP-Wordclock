@@ -1534,10 +1534,13 @@ static void show_zeit() {
         show_wetter();
     }
 
+    led_set(true);
+    /*
     if (changes_in_array()) {
         led_set(true); // animation muss Aenderungen mitgeteilt bekommen
         copy_array(Word_array, Word_array_old);
     } else if (G.prog == COMMAND_MODE_WORD_CLOCK) {
         led_set();
     }
+     */
 }

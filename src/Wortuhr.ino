@@ -25,7 +25,7 @@
 // Typ der LEDs:
 // - Brg, Grb, Rgb, Rbg (WS2812b)
 // - Grbw (SK6812)
-#define DEFAULT_LEDTYPE RGB
+#define DEFAULT_LEDTYPE Brg
 
 // External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
 #define RTC_Type RTC_DS3231

@@ -13,7 +13,6 @@
 #define ANIMATION_ROWS 11 /* Anzahl der Reihen (Y-Richtung) */
 #endif
 
-
 // ###############################################################################
 // compare operators are derived from RgbColor which compare R, G, B only
 struct RgbaColor : RgbColor {
