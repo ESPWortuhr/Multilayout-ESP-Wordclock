@@ -352,12 +352,12 @@ void led_set_Icon(uint8 num_icon, uint8_t brightness) {
     set_helligkeit(rr, gg, bb, ww, Foreground, brightness);
     for (uint8_t row = 0; row < MAX_ROWS; row++) {
         for (uint8_t col = 0; col < MAX_COL; col++) {
-            if (pgm_read_byte(&(grafik_11x10[num_icon][row])) &
+            if (pgm_read_word(&(grafik_11x10[num_icon][row])) &
                 (1 << (MAX_COL - 1 - col))) {
                 led_set_pixel(rr, gg, bb, ww,
                               usedUhrType->getFrontMatrix(row, col));
             } else {
-                led_set_pixel(rr, gg, bb, ww,
+                led_set_pixel(0, 0, 0, 0,
                               usedUhrType->getFrontMatrix(row, col));
             }
         }
@@ -653,12 +653,12 @@ void set_pixel_for_char(uint8_t col, uint8_t row, uint8_t offsetCol,
 
 // show signal-strenght by using different brightness for the individual rings
 void show_icon_wlan(int strength) {
-    if (strength <= 30) {
-        led_set_Icon(WLAN30, 30);
+    if (strength <= 100) {
+        led_set_Icon(WLAN100, 100);
     } else if (strength <= 60) {
         led_set_Icon(WLAN60, 60);
-    } else if (strength <= 100) {
-        led_set_Icon(WLAN100, 100);
+    } else if (strength <= 30) {
+        led_set_Icon(WLAN30, 30);
     }
 }
 

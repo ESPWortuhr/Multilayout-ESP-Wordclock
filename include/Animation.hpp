@@ -1,3 +1,6 @@
+#include "Animation.h"
+#include "Uhr.h"
+#include <Arduino.h>
 
 Animation::Animation_t Animation::isSilvester(struct tm &tm) {
     static int lastMinute = 99;
@@ -402,7 +405,8 @@ void Animation::copyBlock(RgbaColor color, uint block, bool fgbg, bool mirrored,
     uint16_t column;
     for (int r = 0; r < MAX_ROWS; r++) {
         for (int c = 0; c < MAX_COL; c++) {
-            column = reverse(grafik_11x10[block][r], mirrored);
+            column =
+                reverse(pgm_read_word(&(grafik_11x10[block][r])), mirrored);
             if (column & (1 << (10 - c))) {
                 tmp[r][c] = color;
                 tmp[r][c].Foreground = true;
