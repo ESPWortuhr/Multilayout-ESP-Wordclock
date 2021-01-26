@@ -1,5 +1,4 @@
 #include "Uhr.h"
-#include "leds.h"
 #include <Arduino.h>
 
 //------------------------------------------------------------------------------
@@ -230,6 +229,16 @@ static void set_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
 
 //------------------------------------------------------------------------------
 
+static void set_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
+                           uint8_t position, uint8 percentage) {
+    rr = G.rgb[position][0] * percentage / 100;
+    gg = G.rgb[position][1] * percentage / 100;
+    bb = G.rgb[position][2] * percentage / 100;
+    ww = G.rgb[position][3] * percentage / 100;
+}
+
+//------------------------------------------------------------------------------
+
 void led_show() {
     if (G.Colortype == Grbw) {
         strip_RGBW->Show();
@@ -275,16 +284,6 @@ static inline void rahmen_clear() {
     for (uint16_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
         led_clear_pixel(usedUhrType->getRMatrix(i));
     }
-}
-
-//------------------------------------------------------------------------------
-
-static void transition_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb,
-                                  uint8_t &ww, uint8 percentage) {
-    rr = G.rgb[Foreground][0] * percentage / 100;
-    gg = G.rgb[Foreground][1] * percentage / 100;
-    bb = G.rgb[Foreground][2] * percentage / 100;
-    ww = G.rgb[Foreground][3] * percentage / 100;
 }
 
 //------------------------------------------------------------------------------
@@ -344,6 +343,26 @@ static bool changes_in_array() {
         }
     }
     return return_value;
+}
+
+//------------------------------------------------------------------------------
+
+void led_set_Icon(uint8 num_icon, uint8_t brightness) {
+    uint8_t rr, gg, bb, ww;
+    set_helligkeit(rr, gg, bb, ww, Foreground, brightness);
+    for (uint8_t row = 0; row < MAX_ROWS; row++) {
+        for (uint8_t col = 0; col < MAX_COL; col++) {
+            if (pgm_read_byte(&(grafik_11x10[num_icon][row])) &
+                (1 << (MAX_COL - 1 - col))) {
+                led_set_pixel(rr, gg, bb, ww,
+                              usedUhrType->getFrontMatrix(row, col));
+            } else {
+                led_set_pixel(rr, gg, bb, ww,
+                              usedUhrType->getFrontMatrix(row, col));
+            }
+        }
+    }
+    led_show();
 }
 
 //------------------------------------------------------------------------------
@@ -629,6 +648,21 @@ void set_pixel_for_char(uint8_t col, uint8_t row, uint8_t offsetCol,
             usedUhrType->getFrontMatrix(row + offsetRow, col + offsetCol));
     }
 }
+
+//------------------------------------------------------------------------------
+
+// show signal-strenght by using different brightness for the individual rings
+void show_icon_wlan(int strength) {
+    if (strength <= 30) {
+        led_set_Icon(WLAN30, 30);
+    } else if (strength <= 60) {
+        led_set_Icon(WLAN60, 60);
+    } else if (strength <= 100) {
+        led_set_Icon(WLAN100, 100);
+    }
+}
+
+//------------------------------------------------------------------------------
 
 static void zahlen(const char d1, const char d2) {
     uhr_clear();

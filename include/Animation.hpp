@@ -358,7 +358,7 @@ void Animation::loop(struct tm &tm) {
 }
 
 //------------------------------------------------------------------------------
-
+/*
 void Animation::blockgrafik(uint8_t rot, uint8_t gruen, uint8_t blau,
                             BLOCKS num) {
     for (uint8_t row = 0; row < MAX_ROWS; row++) {
@@ -374,6 +374,7 @@ void Animation::blockgrafik(uint8_t rot, uint8_t gruen, uint8_t blau,
     }
     led_show();
 }
+*/
 
 //------------------------------------------------------------------------------
 

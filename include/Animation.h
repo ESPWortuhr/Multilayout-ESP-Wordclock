@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Animation_Blocks.h"
-
 // ###############################################################################
 // compare operators are derived from RgbColor which compare R, G, B only
 struct RgbaColor : RgbColor {
@@ -78,7 +76,6 @@ public:
     void begin();
     void loop(struct tm &tm);
     bool led_show_notify(bool flag, uint8_t minute);
-    void blockgrafik(uint8_t rot, uint8_t gruen, uint8_t blau, BLOCKS num);
     void demoMode(uint8_t &_minute, uint8_t _sekunde);
     //------------------------------------------------------------------------------
 protected:

@@ -310,6 +310,21 @@ enum UhrTypeDefinitions {
     Uhr_291 = 7,
 };
 
+enum Icons {
+    WLANT = 0,
+    WLAN100 = 1,
+    WLAN60 = 2,
+    WLAN30 = 3,
+    HERZ = 4,
+    SMILY = 5,
+    FIRE_1 = 6,
+    FIRE_2 = 7,
+    FIRE_3 = 8,
+    FIRE_4 = 9,
+    FIRE_5 = 10,
+    FIRE_6 = 11,
+};
+
 const uint8_t dim[20] = {30,  50,  70,  90,  110, 130, 140, 160, 200, 255,
                          255, 200, 160, 100, 80,  60,  40,  20,  10,  0};
 const int8_t diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55,

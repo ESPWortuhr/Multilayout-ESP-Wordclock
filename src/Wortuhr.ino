@@ -62,7 +62,6 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 
 #include "EEPROMAnything.h"
 #include "WebPage_Adapter.h"
-#include "icons.h"
 
 #include "Uhrtypes/uhr_func_114.hpp"
 #include "Uhrtypes/uhr_func_114_2Clock.hpp"
@@ -97,6 +96,7 @@ RTC_Type RTC;
 
 #include "Animation.h"
 #include "font.h"
+#include "icons.h"
 #include "mqtt_func.hpp"
 #include "openwmap.h"
 #include "uhr_func.hpp"
