@@ -104,6 +104,8 @@ RTC_Type RTC;
 
 #include "Animation.hpp"
 
+Animation animation;
+
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) <= EEPROM_SIZE,
                "Datenstruktur G zu gross für reservierten EEPROM Bereich");
@@ -381,11 +383,6 @@ void setup() {
     //-------------------------------------
     httpUpdater.setup(&httpServer);
     httpServer.begin();
-
-    //-------------------------------------
-    // Animation
-    //-------------------------------------
-    animation.begin();
 
     //-------------------------------------
     // MQTT
