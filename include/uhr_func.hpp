@@ -211,12 +211,12 @@ static void set_helligkeit_ldr(uint8_t &rr, uint8_t &gg, uint8_t &bb,
 
 //------------------------------------------------------------------------------
 
-static void set_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
-                           uint8_t position) {
-    rr = G.rgb[position][0];
-    gg = G.rgb[position][1];
-    bb = G.rgb[position][2];
-    ww = G.rgb[position][3];
+void set_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
+                    uint8_t position, uint8_t percentage = 100) {
+    rr = G.rgb[position][0] * percentage / 100;
+    gg = G.rgb[position][1] * percentage / 100;
+    bb = G.rgb[position][2] * percentage / 100;
+    ww = G.rgb[position][3] * percentage / 100;
     uint16_t zz = rr + gg + bb;
     if (zz > 150) {
         zz = zz * 10 / 150;
@@ -225,16 +225,6 @@ static void set_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
         bb = bb * 10 / zz;
         ww = ww * 10 / zz;
     }
-}
-
-//------------------------------------------------------------------------------
-
-static void set_helligkeit(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
-                           uint8_t position, uint8 percentage) {
-    rr = G.rgb[position][0] * percentage / 100;
-    gg = G.rgb[position][1] * percentage / 100;
-    bb = G.rgb[position][2] * percentage / 100;
-    ww = G.rgb[position][3] * percentage / 100;
 }
 
 //------------------------------------------------------------------------------
@@ -347,7 +337,7 @@ static bool changes_in_array() {
 
 //------------------------------------------------------------------------------
 
-void led_set_Icon(uint8 num_icon, uint8_t brightness) {
+void led_set_Icon(uint8 num_icon, uint8_t brightness = 100) {
     uint8_t rr, gg, bb, ww;
     set_helligkeit(rr, gg, bb, ww, Foreground, brightness);
     for (uint8_t row = 0; row < MAX_ROWS; row++) {
@@ -357,8 +347,7 @@ void led_set_Icon(uint8 num_icon, uint8_t brightness) {
                 led_set_pixel(rr, gg, bb, ww,
                               usedUhrType->getFrontMatrix(row, col));
             } else {
-                led_set_pixel(0, 0, 0, 0,
-                              usedUhrType->getFrontMatrix(row, col));
+                led_clear_pixel(usedUhrType->getFrontMatrix(row, col));
             }
         }
     }
