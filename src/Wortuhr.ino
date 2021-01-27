@@ -179,13 +179,17 @@ void time_is_set() {
         _sekunde48 = _sekunde * 48 / 60;
     }
 
+    String origin;
     if (sntp_getreachability(0)) {
-        Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _stunde, _minute,
-                      _sekunde, sntp_getservername(0));
+        origin = sntp_getservername(0);
+        if (origin.length() == 0) {
+            origin = IPAddress(sntp_getserver(0)).toString();
+        }
     } else {
-        Serial.printf("Set new time: %02d:%02d:%02d (SNTP not reachable)\n",
-                      _stunde, _minute, _sekunde);
+        origin = "SNTP not reachable";
     }
+    Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _stunde, _minute,
+                  _sekunde, origin.c_str());
 }
 
 //------------------------------------------------------------------------------
