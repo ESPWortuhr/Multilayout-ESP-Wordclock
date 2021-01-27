@@ -43,130 +43,15 @@
             </div>
 
             <div class="pure-u-24-24 section section-main">
-                <div class="header">
-                    <h1>Farben</h1>
-                </div>
-                <div class="box">
-                    <h2>Art</h2>
-                    <label for="fg" class="pure-radio">
-                        <input id="fg" type="radio" name="color-mode" value="foreground" checked> Vordergrund
+                <div class="box" style="justify-content: center">
+                    <h2>Farbe</h2>
+                    <label for="with-background" class="pure-checkbox">
+                        <input type="checkbox" id="with-background" value="" /> Mit Hintergrundfarbe
                     </label>
-                    <label for="bg" class="pure-radio">
-                        <input id="bg" type="radio" name="color-mode" value="background"> Hintergrund
-                    </label>
-                    <!--<label for="bo" class="pure-radio">
-                        <input id="bo" type="radio" name="color-mode" value="border"> Rahmen
-                    </label>
-                    <label for="un" class="pure-radio">
-                        <input id="un" type="radio" name="color-mode" value="unknown"> Effekt
-                    </label>-->
+                    <div id="color-picker" class="color-picker"></div>
                 </div>
-
-                <div class="box">
-                    <h2>Farbmischer</h2>
-                    <div class="color-area" id="color-area"></div>
-
-                    <div class="pure-g color-r">
-                        <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-red">Red<span class="value" id="slider-red-value">0</span></label></div>
-                        <div class="pure-u-1 pure-u-md-5-6"><input id="slider-red" type="range" min="0" max="255" value="0"></div>
-                    </div>
-                    <div class="pure-g color-g">
-                        <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-green">Green<span class="value" id="slider-green-value">0</span></label></div>
-                        <div class="pure-u-1 pure-u-md-5-6"><input id="slider-green" type="range" min="0" max="255" value="0"></div>
-                    </div>
-                    <div class="pure-g color-b">
-                        <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-blue">Blue<span class="value" id="slider-blue-value">0</span></label></div>
-                        <div class="pure-u-1 pure-u-md-5-6"><input id="slider-blue" type="range" min="0" max="255" value="0"></div>
-                    </div>
-                    <!-- Specific RGBW Start-->
-                    <div class="pure-g color-w specific-colortype-4">
-                        <div class="pure-u-1 pure-u-md-4-24"><label class="slider-label" for="slider-white">White <span class="value" id="slider-white-value">0</span></label></div>
-                        <div class="pure-u-1 pure-u-md-5-6"><input id="slider-white" type="range" min="0" max="255" value="0"></div>
-                    </div>
-                    <!-- Specific RGBW End-->
-                </div>
-
-                <div class="box">
-                    <h2>Schnellfarben</h2>
-                    <div class="pure-g colors">
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#F44336" style="background: #F44336"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#FF0000" style="background: #FF0000"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#E91E63" style="background: #E91E63"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#FF00FF" style="background: #FF00FF"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#9C27B0" style="background: #9C27B0"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#673AB7" style="background: #673AB7"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#3F51B5" style="background: #3F51B5"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#0000FF" style="background: #0000FF"></button>
-                        </div>
-
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#2196F3" style="background: #2196F3"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#03A9F4" style="background: #03A9F4"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#00FFFF" style="background: #00FFFF"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#00BCD4" style="background: #00BCD4"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#009688" style="background: #009688"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#4CAF50" style="background: #4CAF50"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#00FF00" style="background: #00FF00"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#8BC34A" style="background: #8BC34A"></button>
-                        </div>
-
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#CDDC39" style="background: #CDDC39"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#FFEB3B" style="background: #FFEB3B"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#FFFF00" style="background: #FFFF00"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#FFC107" style="background: #FFC107"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#FF9800" style="background: #FF9800"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#FF5722" style="background: #FF5722"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#FFFFFF" style="background: #FFFFFF"></button>
-                        </div>
-                        <div class="pure-u-1-3 pure-u-sm-1-8">
-                            <button class="quick-color pure-button" data-color="#000000" style="background: #000000"></button>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+
             <div class="pure-u-24-24 section section-functions">
                 <div class="header">
                     <h1>Funktionen</h1>
@@ -910,6 +795,7 @@
 
 <!-- scripts -->
 <script src="minified-web.js"></script>
+<script src="iro.min.js"></script>
 <script src="script.js"></script>
 
 </body>

@@ -1,4 +1,5 @@
 "use strict";
+const iro = window.iro; // require("@jaames/iro");
 (function(window, document) {
 
 	var layout = document.getElementById("layout");
@@ -65,7 +66,6 @@ var rgb = [
 	[10, 0, 0, 0],
 	[5, 5, 5, 0]
 ];
-var sliderType = 0; // 0: foreground, 1 background
 var hell = 2;
 var geschw = 10;
 var anzahl = 100;
@@ -152,8 +152,6 @@ var COMMAND_REQUEST_ANIMATION = 204;
 // colors
 var COLOR_FOREGROUND = 0;
 var COLOR_BACKGROUND = 1;
-var COLOR_BORDER = 2;
-var COLOR_EFFECT = 3;
 
 // data that gets send back to the esp
 var DATA_MARQUEE_TEXT_LENGTH = 30;
@@ -162,6 +160,9 @@ var DATA_PASSWORT_TEXT_LENGTH = 63; // WL_WPA_KEY_MAX_LENGTH == 63
 var DATA_TIMESERVER_TEXT_LENGTH = 30;
 var DATA_MQTTSERVER_TEXT_LENGTH = 30;
 var DATA_HOST_TEXT_LENGTH = 30;
+
+// color pickers
+var colorPicker;
 
 function initConfigValues() {
 	var locationHost = location.host;
@@ -179,7 +180,6 @@ function initConfigValues() {
 		[10, 0, 0, 0],
 		[5, 5, 5, 0]
 	];
-	sliderType = 0;
 	hell = 2;
 	geschw = 10;
 	anzahl = 100;
@@ -379,6 +379,7 @@ function initWebsocket() {
 			command = prog === 0 ? COMMAND_MODE_WORD_CLOCK : prog;	// 0 == COMMAND_IDLE
 			document.prog.mode[map[prog]].checked = true;
 			setSliders();
+			setColors();
 			enableSpecific("specific-colortype-4", data.colortype === 4);
 		}
 		if (data.command === "wlan") {
@@ -415,22 +416,101 @@ function initWebsocket() {
 	};
 }
 
+function changeColor(color) {
+	rgb[color.index][0] = color.red;
+	rgb[color.index][1] = color.green;
+	rgb[color.index][2] = color.blue;
+	rgb[color.index][3] = Math.round(255 * (1.0 - color.alpha));
+	sendData(command, 1, 0);
+}
+
+function createColorPicker() {
+	colorPicker = new iro.ColorPicker("#color-picker", {
+		wheelLightness: false,
+		borderWidth: 3,
+		borderColor: "#777",
+		layout: [{
+			component: iro.ui.Wheel
+		}, {
+			component: iro.ui.Slider,
+			options: { sliderType: "value" }
+		}, {
+			component: iro.ui.Slider,
+			options: { sliderType: "alpha" }
+		}]
+	});
+	colorPicker.on("input:change", changeColor);
+	// attach extra attribute to the alpha slider to only show it for RGBW LEDs
+	const alphaSlider = colorPicker.el.lastElementChild.lastElementChild;
+	alphaSlider.classList.add("specific-colortype-4");
+}
+
 /**
  * Gets all the values from the sliders and puts them in the config variables.
  */
 function getSliders() {
-
-	// rgb sliders
-	rgb[sliderType][0] = $("#slider-red").get("value");
-	rgb[sliderType][1] = $("#slider-green").get("value");
-	rgb[sliderType][2] = $("#slider-blue").get("value");
-	rgb[sliderType][3] = $("#slider-white").get("value");
-
-	// other sliders
 	hell = $("#slider-brightness").get("value");
 	geschw = $("#slider-speed").get("value");
 	anzahl = $("#slider-leds").get("value");
 	position = $("#slider-position").get("value");
+}
+
+/**
+ * show the color configuration in the color picker
+ */
+function setColorPicker(withBackground) {
+	var rgbaFg = {
+		r: rgb[COLOR_FOREGROUND][0],
+		g: rgb[COLOR_FOREGROUND][1],
+		b: rgb[COLOR_FOREGROUND][2],
+		a: 1.0 - rgb[COLOR_FOREGROUND][3] / 255.0
+	};
+	var rgbaBg = {
+		r: rgb[COLOR_BACKGROUND][0],
+		g: rgb[COLOR_BACKGROUND][1],
+		b: rgb[COLOR_BACKGROUND][2],
+		a: 1.0 - rgb[COLOR_BACKGROUND][3] / 255.0
+	};
+	var colors = [rgbaFg];
+	if (withBackground) {
+		colors.push(rgbaBg);
+	}
+	colorPicker.setColors(colors);
+}
+
+/**
+ * initialize background checkbox and color picker
+ */
+function setColors() {
+	var withBackground =
+		rgb[COLOR_BACKGROUND][0] ||
+		rgb[COLOR_BACKGROUND][1] ||
+		rgb[COLOR_BACKGROUND][2] ||
+		rgb[COLOR_BACKGROUND][3];
+	setColorPicker(withBackground);
+	$("#with-background").set("checked", withBackground);
+}
+
+/**
+ * toggle between no background and a default dark gray background
+ */
+function toggleBackground() {
+	var withBackground = $("#with-background").get("checked") | 0;
+	if (withBackground) {
+		// set to dark gray
+		rgb[COLOR_BACKGROUND][0] = 5;
+		rgb[COLOR_BACKGROUND][1] = 5;
+		rgb[COLOR_BACKGROUND][2] = 5;
+		rgb[COLOR_BACKGROUND][3] = 5;
+	} else {
+		// set to black
+		rgb[COLOR_BACKGROUND][0] = 0;
+		rgb[COLOR_BACKGROUND][1] = 0;
+		rgb[COLOR_BACKGROUND][2] = 0;
+		rgb[COLOR_BACKGROUND][3] = 0;
+	}
+	setColorPicker(withBackground);
+	sendData(command, 1, 0);
 }
 
 /**
@@ -440,34 +520,17 @@ function getSliders() {
  * This function also updated the color area with the current rgb values.
  */
 function setSliders() {
-
-	// rgb sliders
-	$("#slider-red").set("value", rgb[sliderType][0]);
-	$("#slider-green").set("value", rgb[sliderType][1]);
-	$("#slider-blue").set("value", rgb[sliderType][2]);
-	$("#slider-white").set("value", rgb[sliderType][3]);
-
-	// rgb labels
-	$("#slider-red-value").fill(rgb[sliderType][0]);
-	$("#slider-green-value").fill(rgb[sliderType][1]);
-	$("#slider-blue-value").fill(rgb[sliderType][2]);
-	$("#slider-white-value").fill(rgb[sliderType][3]);
-
-	// various
+	// sliders
 	$("#slider-brightness").set("value", hell);
 	$("#slider-speed").set("value", geschw);
 	$("#slider-leds").set("value", anzahl);
 	$("#slider-position").set("value", position);
 
-	// various labels
+	// labels
 	$("#slider-brightness-value").fill(hell);
 	$("#slider-speed-value").fill(geschw);
 	$("#slider-leds-value").fill(anzahl);
 	$("#slider-position-value").fill(position);
-
-	// Update the current color in the color area
-	var colorArea = $("#color-area");
-	colorArea[0].style.backgroundColor = "rgb(" + rgb[sliderType][0] + "," + rgb[sliderType][1] + "," + rgb[sliderType][2] + ")";
 }
 
 function setAnimation() {
@@ -599,10 +662,13 @@ function CMDtoData(command, unknown2, unknown3) {
 $.ready(function() {
 
 	initConfigValues();
+	createColorPicker();
 	setSliders();
 	setAnimation();
 	initWebsocket();
+	setColors();
 
+	$("#with-background").on("change", toggleBackground);
 	$(".status-button").on("click", function() {
 		var value = $(this).get("value");
 		if (value === "1") {
@@ -632,27 +698,6 @@ $.ready(function() {
 
 		debugMessage("Clock data: ", data);
 		websocket.send(data);
-	});
-
-	/**
-	 * The color mode has been changed.
-	 *
-	 * There are a total of four different color modes that can
-	 * be changed (foreground, background, border and effect).
-	 * I disabled the last two because they were just confusing.
-     */
-	$("input[name='color-mode']").on("change", function() {
-
-		switch ($(this).get("value")) {
-			case "foreground":
-				sliderType = COLOR_FOREGROUND;
-				break;
-			case "background":
-				sliderType = COLOR_BACKGROUND;
-				break;
-		}
-
-		setSliders();
 	});
 
 	/**
@@ -695,20 +740,16 @@ $.ready(function() {
 		var hasSpeed = false;
 
 		if (id === "mode-wordclock") {
-			sliderType = COLOR_FOREGROUND;
 			command = COMMAND_MODE_WORD_CLOCK;
 		}
 		if (id === "mode-color") {
-			sliderType = COLOR_FOREGROUND;
 			command = COMMAND_MODE_COLOR;
 		}
 		if (id === "mode-seconds") {
-			sliderType = COLOR_FOREGROUND;
 			command = COMMAND_MODE_SECONDS;
 		}
 		if (id === "mode-marquee") {
 			hasSpeed = true;
-			sliderType = COLOR_FOREGROUND;
 			command = COMMAND_MODE_MARQUEE;
 		}
 		if (id === "mode-rainbow") {
@@ -756,27 +797,7 @@ $.ready(function() {
 
 		sendData(command, 0, 0);
 		setSliders();
-	});
-
-	$(".quick-color").on("click", function(event) {
-		var hexColorString = $(this)[0].dataset.color;
-		var rgbColor = hexToRgb(hexColorString);
-
-		rgb[sliderType][0] = rgbColor.red;
-		rgb[sliderType][1] = rgbColor.green;
-		rgb[sliderType][2] = rgbColor.blue;
-		rgb[sliderType][3] = 0;
-
-		hell = $("#slider-brightness").get("value");
-		geschw = $("#slider-speed").get("value");
-		anzahl = $("#slider-leds").get("value");
-		position = $("#slider-position").get("value");
-
-		setSliders();
-		sendData(command, 0, 0);
-		setSliders();
-
-		return false;
+		setColors();
 	});
 
 	$("[id*='slider']").onChange(function(event) {
@@ -784,18 +805,6 @@ $.ready(function() {
 
 		if (sleep === 0) {
 			getSliders();
-			if (id === "slider-red") {
-				sendData(command, 1, 0);
-			}
-			if (id === "slider-green") {
-				sendData(command, 1, 0);
-			}
-			if (id === "slider-blue") {
-				sendData(command, 1, 0);
-			}
-			if (id === "slider-white") {
-				sendData(command, 1, 0);
-			}
 			if (id === "slider-brightness") {
 				sendData(COMMAND_BRIGHTNESS, 0, 0);
 			}

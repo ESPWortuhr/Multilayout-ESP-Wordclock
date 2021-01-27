@@ -520,3 +520,8 @@ input[type=range]::-moz-range-thumb {
     font-weight: normal;
     font-size: 1.1em;
 }
+
+.color-picker {
+	width: 300px;
+	margin: auto;
+}
