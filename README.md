@@ -2,7 +2,7 @@
 
 Hier findet man alle nötigen Informationen zur Worduhr.
 
-![](pics/wortuhr-3-screenshot.png)
+![](pics/wortuhr-webpage.png)
 
 ## Für den Nachbau wird folgende Hardware/Software benötigt:
 * Hardware
