@@ -252,8 +252,6 @@ static inline void led_clear_pixel(uint16_t i) {
 void led_clear() {
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         Word_array[i] = 500;
-        Word_array_transition_old2zero[i] = 500;
-        Word_array_transition_zero2new[i] = 500;
     }
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         led_clear_pixel(i);
@@ -283,30 +281,10 @@ static void led_set(bool changed) {
     bool use_new_array = false;
     set_helligkeit(rr, gg, bb, ww, Foreground);
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        led_set_pixel(rr, gg, bb, ww, Word_array[i]);
-    } /*
-     for (uint8_t ii = 0; ii < 20; ii++) {
-         transition_helligkeit(rr, gg, bb, ww, transition_array[ii]);
-         for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-             if (Word_array_transition_old2zero[i] != 500 &&
-                 use_new_array == false) {
-                 led_set_pixel(rr, gg, bb, ww,
-                               Word_array_transition_old2zero[i]);
-             } else if (Word_array_transition_zero2new[i] != 500 &&
-                        use_new_array == true) {
-                 led_set_pixel(rr, gg, bb, ww,
-                               Word_array_transition_zero2new[i]);
-             }
-         }
-         if (transition_array[ii] == 0) {
-             use_new_array = true;
-         }
-     }
-     */
-
+        led_set_pixel(rr, gg, bb, ww, Word_array_old[i]);
+    }
     if (animation.led_show_notify(changed, _minute)) {
         led_show();
-        // delay(tansition_time);
     }
 }
 
@@ -320,15 +298,10 @@ void copy_array(const uint16_t source[], uint16_t destination[]) {
 
 //------------------------------------------------------------------------------
 
-static bool changes_in_array() {
+bool changes_in_array() {
     bool return_value = false;
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         if (Word_array[i] != Word_array_old[i]) {
-            if (Word_array_old[i] == 500) {
-                Word_array_transition_zero2new[i] = i;
-            } else if (Word_array[i] == 500) {
-                Word_array_transition_old2zero[i] = i;
-            }
             return_value = true;
         }
     }
@@ -1557,13 +1530,8 @@ static void show_zeit() {
         show_wetter();
     }
 
-    led_set(true);
-    /*
     if (changes_in_array()) {
-        led_set(true); // animation muss Aenderungen mitgeteilt bekommen
         copy_array(Word_array, Word_array_old);
-    } else if (G.prog == COMMAND_MODE_WORD_CLOCK) {
-        led_set();
+        led_set(true); // animation muss Aenderungen mitgeteilt bekommen
     }
-     */
 }
