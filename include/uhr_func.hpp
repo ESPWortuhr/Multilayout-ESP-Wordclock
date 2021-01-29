@@ -1,86 +1,6 @@
 #include "Uhr.h"
 #include <Arduino.h>
 
-//------------------------------------------------------------------------------
-// Telnet Server für Konsolen Ausgaben
-//------------------------------------------------------------------------------
-
-static void Telnet() {
-    // Cleanup disconnected session
-    for (uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++) {
-        if (TelnetClient[i] && !TelnetClient[i].connected()) {
-            Serial.print("Client disconnected ... terminate session ");
-            Serial.println(i + 1);
-            TelnetClient[i].stop();
-        }
-    }
-
-    // Check new client connections
-    if (TelnetServer.hasClient()) {
-        ConnectionEstablished = false; // Set to false
-
-        for (uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++) {
-            // Serial.print("Checking telnet session "); Serial.println(i+1);
-
-            // find free socket
-            if (!TelnetClient[i]) {
-                TelnetClient[i] = TelnetServer.available();
-
-                Serial.print("New Telnet client connected to session ");
-                Serial.println(i + 1);
-
-                TelnetClient[i].flush(); // clear input buffer, else you get
-                                         // strange characters
-                TelnetClient[i].println("Welcome!");
-
-                TelnetClient[i].print("Millis since start: ");
-                TelnetClient[i].println(millis());
-
-                TelnetClient[i].print("Free Heap RAM: ");
-                TelnetClient[i].println(ESP.getFreeHeap());
-
-                TelnetClient[i].println("--------------------------------------"
-                                        "--------------------------");
-
-                ConnectionEstablished = true;
-
-                break;
-            } else {
-                // Serial.println("Session is in use");
-            }
-        }
-
-        if (ConnectionEstablished == false) {
-            Serial.println("No free sessions ... drop connection");
-            TelnetServer.available().stop();
-            // TelnetMsg("An other user cannot connect ... MAX_TELNET_CLIENTS
-            // limit is reached!");
-        }
-    }
-
-    for (uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++) {
-        if (TelnetClient[i] && TelnetClient[i].connected()) {
-            if (TelnetClient[i].available()) {
-                // get data from the telnet client
-                while (TelnetClient[i].available()) {
-                    Serial.write(TelnetClient[i].read());
-                }
-            }
-        }
-    }
-}
-
-static void TelnetMsg(const String &text) {
-    for (uint8_t i = 0; i < MAX_TELNET_CLIENTS; i++) {
-        if (TelnetClient[i] || TelnetClient[i].connected()) {
-            TelnetClient[i].println(text);
-        }
-    }
-    delay(10); // to astatic void strange characters left in buffer
-}
-
-//------------------------------------------------------------------------------
-
 void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
 
     switch (G.Colortype) {
@@ -187,6 +107,8 @@ static uint8_t autoLdr(uint8_t val) {
     return val;
 }
 
+//------------------------------------------------------------------------------
+
 static void set_helligkeit_ldr(uint8_t &rr, uint8_t &gg, uint8_t &bb,
                                uint8_t &ww, uint8_t position) {
     if (G.autoLdrEnabled) {
@@ -276,7 +198,7 @@ static inline void rahmen_clear() {
 
 //------------------------------------------------------------------------------
 
-static void led_set(bool changed) {
+static void led_set(bool changed = false) {
     uint8_t rr, gg, bb, ww;
     bool use_new_array = false;
     set_helligkeit(rr, gg, bb, ww, Foreground);
@@ -612,8 +534,9 @@ void set_pixel_for_char(uint8_t col, uint8_t row, uint8_t offsetCol,
 }
 
 //------------------------------------------------------------------------------
-
 // show signal-strenght by using different brightness for the individual rings
+//------------------------------------------------------------------------------
+
 void show_icon_wlan(int strength) {
     if (strength <= 100) {
         led_set_Icon(WLAN100, 100);
@@ -860,8 +783,7 @@ static void set_uhrzeit() {
         set_stunde(_stunde + 1, 0);
         break;
     case 9: // viertel vor
-        if (G.Sprachvariation[ItIs45] == 1 &&
-            G.UhrtypeDef == Uhr_114_Alternative) {
+        if (definedAndHasDreiviertel()) {
             uhrzeit |= ((uint32_t)1 << DREIVIERTEL);
         } else {
             uhrzeit |= ((uint32_t)1 << VIERTEL);

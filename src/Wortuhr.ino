@@ -99,6 +99,7 @@ RTC_Type RTC;
 #include "icons.h"
 #include "mqtt_func.hpp"
 #include "openwmap.h"
+#include "telnet_func.hpp"
 #include "uhr_func.hpp"
 #include "wifi_func.hpp"
 
