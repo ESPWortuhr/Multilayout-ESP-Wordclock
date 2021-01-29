@@ -1345,7 +1345,7 @@ static void show_wetter() {
 
 //------------------------------------------------------------------------------
 
-static void show_zeit() {
+static void calc_Word_array() {
     uint8_t rr, gg, bb, ww;
 
     set_uhrzeit();
@@ -1450,10 +1450,5 @@ static void show_zeit() {
 
     if (G.UhrtypeDef == Uhr_242) {
         show_wetter();
-    }
-
-    if (changes_in_array()) {
-        copy_array(Word_array, Word_array_old);
-        led_set(true); // animation muss Aenderungen mitgeteilt bekommen
     }
 }
