@@ -99,7 +99,6 @@ RTC_Type RTC;
 #include "icons.h"
 #include "mqtt_func.hpp"
 #include "openwmap.h"
-#include "telnet_func.hpp"
 #include "uhr_func.hpp"
 #include "wifi_func.hpp"
 
@@ -290,11 +289,6 @@ void setup() {
     }
 
     //-------------------------------------
-    Serial.println("Starting Telnet server");
-    TelnetServer.begin();
-    TelnetServer.setNoDelay(true);
-
-    //-------------------------------------
     Serial.println("--------------------------------------");
     Serial.println("ESP Uhr");
     Serial.print("Version         : "), Serial.println(VER);
@@ -462,8 +456,6 @@ void loop() {
     //------------------------------------------------
     MDNS.update();
 
-    Telnet(); // Handle telnet connections
-
     httpServer.handleClient();
 
     webSocket.loop();
@@ -535,7 +527,6 @@ void loop() {
         char currentTime[80];
         strftime(currentTime, sizeof(currentTime), "%F %T (%z)\n", &tm);
         Serial.printf(currentTime);
-        TelnetMsg(currentTime);
     }
 
     animation.loop(tm); // muss periodisch aufgerufen werden
@@ -1004,15 +995,15 @@ void loop() {
     }
 
     if (G.prog == COMMAND_MODE_WORD_CLOCK) {
-        calc_Word_array();
+        calc_word_array();
 
         if (changes_in_array()) {
             copy_array(Word_array, Word_array_old);
             led_set(true);
-        } else if (Changes_in_Parameter) {
+        } else if (parameters_changed) {
             led_set();
-            Changes_in_Parameter = false;
         }
+        parameters_changed = false;
 
         if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2) {
             set_farbe_rahmen();

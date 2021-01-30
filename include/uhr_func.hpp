@@ -1345,7 +1345,7 @@ static void show_wetter() {
 
 //------------------------------------------------------------------------------
 
-static void calc_Word_array() {
+static void calc_word_array() {
     uint8_t rr, gg, bb, ww;
 
     set_uhrzeit();

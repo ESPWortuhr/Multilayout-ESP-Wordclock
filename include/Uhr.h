@@ -158,7 +158,7 @@ const long interval = 1000; // 1 Sekunde
 uint32_t uhrzeit;
 uint16_t Word_array[MAX_ARRAY_SIZE] = {0};
 uint16_t Word_array_old[MAX_ARRAY_SIZE] = {0};
-bool Changes_in_Parameter = false;
+bool parameters_changed = false;
 uint8_t AP_Status = 0;
 
 char str[1024];
