@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>WortUhr</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- stylesheets -->
+    <link rel="stylesheet" href="pure-min.css">
+    <link rel="stylesheet" href="grids-responsive-min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="layout">
+    <!-- Menu toggle -->
+    <a href="#menu" id="menu-link" class="menu-link">
+        <!-- Hamburger icon -->
+        <span></span>
+    </a>
+
+    <div id="menu">
+        <div class="pure-menu">
+            <a class="pure-menu-heading" href="#">Wortuhr</a>
+
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="main">Farben</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="functions">Funktionen</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="settings">Einstellungen</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="smart-home">Smart Home</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="about">Über</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="main">
+        <div class="pure-g">
+            <div class="pure-u-24-24 section-connection-lost" id="section-connection-lost">
+                <div class="box">
+                    <button class="pure-button status-button">Verbinden</button>
+                    <p>Die Verbindung zur Wortuhr wurde unterbrochen.</p>
+                </div>
+            </div>
+
+            <div class="pure-u-24-24 section section-main">
+                <div class="box" style="justify-content: center">
+                    <h2>Farbe</h2>
+                    <label for="with-background" class="pure-checkbox">
+                        <input type="checkbox" id="with-background" value="" /> Mit Hintergrundfarbe
+                    </label>
+                    <div id="color-picker" class="color-picker"></div>
+                </div>
+            </div>
+
+            <div class="pure-u-24-24 section section-functions">
+                <div class="header">
+                    <h1>Funktionen</h1>
+                </div>
+
+                <div class="box">
+                    <h2>Funktion</h2>
+                    <form name="prog">
+                    <label for="mode-wordclock" class="pure-radio">
+                        <input id="mode-wordclock" type="radio" name="mode" value="color" checked> Wort Uhr
+                    </label>
+                    <label for="mode-color" class="pure-radio">
+                        <input id="mode-color" type="radio" name="mode" value="color"> Farbe
+                    </label>
+                    <label for="mode-seconds" class="pure-radio">
+                        <input id="mode-seconds" type="radio" name="mode" value="seconds"> Sekunden
+                    </label>
+                    <label for="mode-marquee" class="pure-radio">
+                        <input id="mode-marquee" type="radio" name="mode" value="marquee"> Laufschrift
+                    </label>
+                    <label for="mode-rainbow" class="pure-radio">
+                        <input id="mode-rainbow" type="radio" name="mode" value="rainbow"> Regenbogen
+                    </label>
+                    <label for="mode-change" class="pure-radio">
+                        <input id="mode-change" type="radio" name="mode" value="change"> Farbwechsel
+                    </label>
+                    </form>
+                </div>
+                <div class="box" id="animation-box">
+                    <h2>Animation</h2>
+                    <form class="pure-form pure-form-aligned">
+                        <fieldset>
+                            <div class="pure-control-group">
+                                <label for="animation-types">Art</label>
+                                <select id="animation-types" size="1">
+                                </select>
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="animation-duration">Dauer</label>
+                                <select id="animation-duration" size="1">
+                                    <option value="1">kurz</option>
+                                    <option value="2">mittel</option>
+                                    <option value="3">lang</option>
+                                </select>
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="animation-colorize">Farbanimation</label>
+                                <select id="animation-colorize" size="1">
+                                    <option value="1">Aus</option>
+                                    <option value="2">Bunte Wörter</option>
+                                    <option value="3">Bunte Buchstaben</option>
+                                </select>
+                            </div>
+                            <div class="pure-g">
+                                <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="animation-speed">Farbwechsel <span class="value" id="animation-speed-value">30</span></label>
+                                </div>
+                                <div class="pure-u-1 pure-u-lg-3-4"><input id="animation-speed" type="range" min="0" max="60" value="0"></div>
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="animation-demo">Demo</label>
+                                <input type="checkbox" id="animation-demo" ><br>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+
+                <div class="box functions-settings">
+                    <h2>Einstellung</h2>
+
+                    <div class="pure-g brightness">
+                        <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="slider-brightness">Helligkeit <span class="value" id="slider-brightness-value">0</span></label>
+                        </div>
+                        <div class="pure-u-1 pure-u-lg-3-4"><input id="slider-brightness" type="range" min="1" max="10" value="1"></div>
+                    </div>
+                    <div class="pure-g speed">
+                        <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="slider-speed">Geschwindigkeit <span class="value" id="slider-speed-value">0</span></label></div>
+                        <div class="pure-u-1 pure-u-lg-3-4"><input id="slider-speed" type="range" min="0" max="40" value="0"></div>
+                    </div>
+                    <div class="pure-g leds">
+                        <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="slider-leds">Anzahl LEDs <span class="value" id="slider-leds-value">0</span></label>
+                        </div>
+                        <div class="pure-u-1 pure-u-lg-3-4"><input id="slider-leds" type="range" min="5" max="100" value="100"></div>
+                    </div>
+                    <div class="pure-g position">
+                        <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="slider-position">Positon <span class="value" id="slider-position-value">0</span></label></div>
+                        <div class="pure-u-1 pure-u-lg-3-4"><input id="slider-position" type="range" min="1" max="100" value="100"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="pure-u-24-24 section section-settings">
+                <div class="header">
+                    <h1>Einstellungen</h1>
+                </div>
+                <div class="pure-g">
+
+                    <div class="pure-u-1 pure-u-lg-1-2">
+                        <div class="box">
+                            <h2>Status</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="status">Verbindungsstatus</label><input id="status" class="status" value="Loading ...">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button class="pure-button">Verbinden</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>Startwerte</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-controls">
+                                        <button id="initial-values-button" class="pure-button">Startwerte speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>Zeitserver</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="timeserver">Zeitserver</label><input id="timeserver" type="text" placeholder="Zeitserver">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="timeserver-button" class="pure-button">Zeitserver speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>Uhrzeit manuell einstellen</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="stunde">Stunde</label><select name="stunde" id="stunde" size="1">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="minute">Minute</label><select name="minute" id="minute" size="1">
+                                        <option value="00">00</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+                                        <option value="32">32</option>
+                                        <option value="33">33</option>
+                                        <option value="34">34</option>
+                                        <option value="35">35</option>
+                                        <option value="36">36</option>
+                                        <option value="37">37</option>
+                                        <option value="38">38</option>
+                                        <option value="39">39</option>
+                                        <option value="40">40</option>
+                                        <option value="41">41</option>
+                                        <option value="42">42</option>
+                                        <option value="43">43</option>
+                                        <option value="44">44</option>
+                                        <option value="45">45</option>
+                                        <option value="46">46</option>
+                                        <option value="47">47</option>
+                                        <option value="48">48</option>
+                                        <option value="49">49</option>
+                                        <option value="50">50</option>
+                                        <option value="51">51</option>
+                                        <option value="52">52</option>
+                                        <option value="53">53</option>
+                                        <option value="54">54</option>
+                                        <option value="55">55</option>
+                                        <option value="56">56</option>
+                                        <option value="57">57</option>
+                                        <option value="58">58</option>
+                                        <option value="59">59</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="uhrzeit-button" class="pure-button">Uhrzeit speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>Lauftext</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="marquee">Lauftext</label><input id="marquee" type="text" placeholder="Lauftext">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="marquee-button" class="pure-button">Lauftext speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1-2">
+                        <div class="box">
+                            <h2>Automatische Helligkeit</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="auto-ldr-enabled">Aktiviert</label>
+                                        <select id="auto-ldr-enabled" size="1">
+                                        <option value="1">Ja</option>
+                                        <option value="0">Nein</option>
+                                    </select>
+                                    </div>
+                                    <br>
+                                    <div class="pure-control-group">
+                                        <label for="auto-ldr-value">Aktueller Wert:</label>
+                                        <input id="auto-ldr-value" type="text" value=" " disabled style="color:black">
+                                    </div>
+                                    <br>
+                                    <div class="pure-control-group">
+                                        <label for="auto-ldr-bright">Wert hell (0 - 255)</label>
+                                        <input id="auto-ldr-bright" type="text">
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="auto-ldr-dark">Wert dunkel (0 - 255)</label>
+                                        <input id="auto-ldr-dark" type="text">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="auto-ldr-button" class="pure-button">Werte speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
+
+                        <div class="box">
+                            <h2>Helligkeit</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-6">6 Uhr</label><select name="brightness-6" id="brightness-6" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-8">8 Uhr</label><select name="brightness-8" id="brightness-8" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-12">12 Uhr</label><select name="brightness-12" id="brightness-12" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-16">16 Uhr</label><select name="brightness-16" id="brightness-16" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-18">18 Uhr</label><select name="brightness-18" id="brightness-18" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-20">20 Uhr</label><select name="brightness-20" id="brightness-20" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-22">22 Uhr</label><select name="brightness-22" id="brightness-22" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="brightness-24">24 Uhr</label><select name="brightness-24" id="brightness-24" size="1">
+                                        <option value="100">100 %</option>
+                                        <option value="80">80 %</option>
+                                        <option value="60">60 %</option>
+                                        <option value="40">40 %</option>
+                                        <option value="20">20 %</option>
+                                        <option value="0">Aus</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="brightness-button" class="pure-button">Helligkeit speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>Hostname</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="hostname">Hostname</label><input id="hostname" type="text" placeholder="Hostname">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="hostname-button" class="pure-button">Hostname speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+
+                    <!-- Specific UHR242 Start-->
+                    <div class="pure-u-1 pure-u-lg-1-2 specific-layout-5">
+
+                        <div class="box">
+                            <h2>Wetter</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="owm-api-key">OpenWeatherMap API-Schluessel</label><input id="owm-api-key" type="text" minlength="32" maxlength="32" placeholder="API-Schlüssel">
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="owm-city-id">OpenWeatherMap City ID</label><input id="owm-city-id" type="text" minlength="7" maxlength="7" placeholder="City ID">
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="weather-button" class="pure-button">Daten speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <!-- Specific UHR242 End--><!-- Specific UHR169 Start-->
+                    <div class="pure-u-1 pure-u-lg-1-2 specific-layout-4">
+
+                        <div class="box">
+                            <h2>Minuten-Anzeige</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="show-minutes">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Minuten angezeigt werden
+                                            ?</label><select name="show-minutes" id="show-minutes" size="1">
+                                        <option value="0" selected>Nein</option>
+                                        <option value="1">als Zeile</option>
+                                        <option value="2">in den Ecken</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="show-minutes-button" class="pure-button">Minuten-Anzeige speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1-2 specific-layout-4">
+
+                        <div class="box">
+                            <h2>Sekunden-Anzeige</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="show-seconds">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden
+                                            ?</label><select name="show-seconds" id="show-seconds" size="1">
+                                        <option value="0" selected>Nein</option>
+                                        <option value="1">Ja</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="show-seconds-button" class="pure-button">Sekunden-Anzeige speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <!-- Specific UHR169 End-->
+
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>Typ der Uhr</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="front-layout">Änderung des Uhrentypes.</label><select name="front-layout" id="front-layout" size="1">
+                                        <option value="1" selected>Uhr 114</option>
+                                        <option value="2">Uhr 114 Alternative</option>
+                                        <option value="6">Uhr 114 2Clock</option>
+                                        <option value="3">Uhr 125</option>
+                                        <option value="4">Uhr 169</option>
+                                        <option value="5">Uhr 242</option>
+                                        <option value="7">Uhr 291</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="front-layout-button" class="pure-button">UhrtypeDef speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>Sprachoptionen</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="dialect-0">Um 9:15 ist es...</label><select name="dialect-0" id="dialect-0" size="1">
+                                        <option value="0" selected>viertel nach neun</option>
+                                        <option value="1">viertel zehn</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="dialect-1">Um 9:20 ist es...</label><select name="dialect-1" id="dialect-1" size="1">
+                                        <option value="0" selected>zwanzig nach neun</option>
+                                        <option value="1">zehn vor halb zehn</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="dialect-2">Um 9:40 ist es...</label><select name="dialect-2" id="dialect-2" size="1">
+                                        <option value="0" selected>zwanzig vor zehn</option>
+                                        <option value="1">zehn nach halb zehn</option>
+                                    </select>
+                                    </div>
+                                    <!-- Specific UHR114_Alternative Start-->
+                                    <div class="pure-control-group specific-layout-2">
+                                        <label for="dialect-3">Um 9:45 ist es...</label><select name="dialect-3" id="dialect-3" size="1">
+                                        <option value="0" selected>viertel vor zehn</option>
+                                        <option value="1">dreiviertel zehn</option>
+                                    </select>
+                                    </div>
+                                    <!-- Specific UHR114_Alternative End-->
+                                    <div class="pure-controls">
+                                        <button id="dialect-button" class="pure-button">Optionen speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>Einstellung des LED-Typs</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="colortype">Änderung des Colortypes.</label><select name="colortype" id="colortype" size="1">
+                                        <option value="0" selected>WS2812 BRG</option>
+                                        <option value="1">WS2812 GRB</option>
+                                        <option value="2">WS2812 RGB</option>
+                                        <option value="3">WS2812 RBG</option>
+                                        <option value="4">SK6812 RGBW</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="colortype-button" class="pure-button">Colortype speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>Einstellung des LDR</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="ldr">Aktivieren der LDR Steuerung</label><select name="ldr" id="ldr" size="1">
+                                        <option value="0" selected>OFF</option>
+                                        <option value="1">ON</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <label for="ldr-cal">Kalibrierung</label><select name="ldr-cal" id="ldr-cal" size="1">
+                                        <option value="0">OFF</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="ldr-button" class="pure-button">LDR speichern</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>Neustart</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <legend>
+                                    Was soll beim Neustart passieren?
+                                    </legend>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-led-blink" />
+                                        <label for="boot-led-blink" class="pure-checkbox">LEDs kurz aufblitzen</label>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-led-sweep" />
+                                        <label for="boot-led-sweep" class="pure-checkbox">Alle LEDs einmal durchlaufen lassen</label>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-show-wifi" />
+                                        <label for="boot-show-wifi" class="pure-checkbox">WiFi Symbol während der Suche anzeigen</label>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-show-ip" />
+                                        <label for="boot-show-ip" class="pure-checkbox">IP Addresse anzeigen</label>
+                                    </div>
+                                    <div class="pure-controls">
+                                        <button id="boot-button" class="pure-button">Speichern</button>
+                                        <button id="reset-button" class="pure-button">Neu Starten</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1-2">
+
+                        <div class="box">
+                            <h2>WiFi</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <legend>
+                                    Neukonfiguration erstellt ein eigenes WLAN.
+                                    Mit diesem verbinden, dann kann das Zielnetz ausgewählt werden.
+                                    </legend>
+
+                                    <div class="pure-control-group">
+                                        <label for="ssid">SSID</label>
+                                        <input id="ssid" type="text" placeholder="SSID" readonly />
+                                    </div>
+
+                                    <div class="pure-control-group">
+                                        <label for="wifi-button">Anderes WLAN</label>
+                                        <button id="wifi-button" class="pure-button">Konfigurieren</button>
+                                    </div>
+
+                                    <div class="pure-control-group">
+                                        <label for="disable-button">Bis zum Neustart</label>
+                                        <button id="disable-button" class="pure-button">Ausschalten</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="pure-u-24-24 section section-smart-home">
+                <div class="header">
+                    <h1>Smart Home</h1>
+                </div>
+                <div class="box">
+                    <h2>Smart Home</h2>
+                    <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über die MQTT Schnittstelle. Hierbei kann man über sein bestehendes HomeAssistant Setup die Uhr einbinden, um rudimentäre Funktionen steuern zu können. Diese Funktion ist noch experimentell und wird stetig erweitert.</p>
+                </div>
+                <div class="pure-u-1 pure-u-lg-1-2">
+
+                    <div class="box">
+                        <h2>MQTT</h2>
+                        <form class="pure-form pure-form-aligned">
+                            <fieldset>
+                                <div class="pure-control-group">
+                                    <label for="mqtt-state">Aktiviere MQTT</label><select name="mqtt-state" id="mqtt-state" size="1">
+                                    <option value="0" selected>Off</option>
+                                    <option value="1">ON</option>
+                                </select>
+                                </div>
+                                <div class="pure-control-group">
+                                    <label for="mqtt-server">MQTT Serveradresse</label><input id="mqtt-server" type="MQTT_Server" placeholder="MQTT Server">
+                                </div>
+                                <div class="pure-control-group">
+                                    <label for="mqtt-port">MQTT Port</label><input id="mqtt-port" type="MQTT_Port" placeholder="MQTT Serverport">
+                                </div>
+                                <div class="pure-controls">
+                                    <button id="mqtt-button" class="pure-button">MQTT-Daten speichern</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="pure-u-24-24 section section-about">
+                <div class="header">
+                    <h1>Über</h1>
+                </div>
+                <div class="box">
+                    <p>Die Software dieser Wortuhr basiert auf der Wortuhr von <a href="https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu"> (Stand 2019) Ulrich Radig</a> und wird nun weiterentwickelt auf <a href="https://github.com/ESPWortuhr/Wortuhr">GitHub</a> von <a
+                            href="https://github.com/Eisbaeeer">Lars Weimar</a>, <a href="https://github.com/Wandmalfarbe">Pascal Wagler</a>, <a href="https://github.com/dbambus">dbambus</a>,
+                        <a href="https://github.com/Flo455">Flo455</a>, <a href="https://github.com/Elektron79">Elektron79</a>, <a href="https://github.com/tali">tali</a>, <a href="https://github.com/atho95">ATho95</a>  und <a href="https://github.com/masju1">masju1</a>.</p>
+                        <p>Ein Update der Software ist möglich, dazu bitte <a href="/update" onclick="javascript:event.target.port=81">hier</a> klicken.</p>
+                    <p>This project is open source licensed under the BSD 3-Clause License.</p>
+                </div>
+
+                <div class="box">
+                    <h2>Enthaltene Bibliotheken und Software</h2>
+
+                    <div class="pure-g">
+                        <div class="pure-u-1 pure-u-md-1-3"><p>Pure.css</p></div>
+                        <div class="pure-u-1 pure-u-md-2-3"><p><a href="https://purecss.io">https://purecss.io</a></p></div>
+                        <div class="pure-u-1 pure-u-md-1-3"><p>Minified.js</p></div>
+                        <div class="pure-u-1 pure-u-md-2-3"><p><a href="http://minifiedjs.com">http://minifiedjs.com</a></p></div>
+                    </div>
+                </div>
+
+                <div class="box box-debug">
+                    <h2>Debug-Ausgabe</h2>
+                    <div id="output"></div>
+                </div>
+            </div>
+        </div> <!--/pure-g-->
+
+        <div class="header">
+            <h2>V <span class="version">VERSION</span></h2>
+        </div>
+    </div> <!--/content-->
+</div>
+
+<!-- scripts -->
+<script src="minified-web.js"></script>
+<script src="iro.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
+
+
