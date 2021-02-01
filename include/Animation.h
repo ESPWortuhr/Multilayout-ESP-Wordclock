@@ -87,6 +87,7 @@ protected:
     uint animationDelay = 100;
     Animation_t previousAnimType = KEINE;
     uint32_t nextActionTime = 0;
+    uint8_t lastMinute = 100;
 
     RgbaColor _black = RgbaColor(0, 0, 0, 1.0);
     RgbaColor _white = RgbaColor(255, 255, 255, 1.0);
@@ -95,6 +96,7 @@ protected:
     RgbaColor _blue = RgbaColor(0, 0, 255, 1.0);
     RgbaColor _yellow = RgbaColor(255, 255, 0, 1.0);
 
+    RgbColor foregroundMinute = RgbColor(0);
     RgbaColor foreground = RgbaColor(0, true);
     RgbaColor background = RgbaColor(100, true);
     RgbaColor alt[MAX_ROWS][MAX_COL];
@@ -109,12 +111,14 @@ protected:
     inline bool isIdle() { return phase == 0; }
     Animation_t isSilvester(struct tm &tm);
     bool isColorization();
-    void changeBrightness();
+    bool changeBrightness();
     float pseudoRandomHue();
     float pseudoRandomHue(bool init);
+    void colorize(RgbaColor (*dest)[MAX_COL]);
     void saveMatrix();
     void analyzeColors(RgbaColor (*dest)[MAX_COL], RgbaColor (*source)[MAX_COL],
                        RgbaColor &foreground, RgbaColor &background);
+    void set_minutes(void);
     void copy2Stripe(RgbaColor (*source)[MAX_COL]);
     void copy2Work(RgbaColor (*source)[MAX_COL]);
     void copyBlock(RgbaColor color, uint block, bool fgbg, bool mirrored,
