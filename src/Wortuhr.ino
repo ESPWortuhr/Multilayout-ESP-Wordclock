@@ -85,8 +85,12 @@ NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
 
 WiFiClient client;
-WiFiUDP ntpUDP;
 PubSubClient mqttClient(client);
+
+//--OTA--
+ESP8266WebServer httpServer(81);
+ESP8266HTTPUpdateServer httpUpdater;
+//--OTA--
 
 // Timezone from
 // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
