@@ -173,6 +173,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         switch (command) {
         case COMMAND_MODE_WORD_CLOCK: { // Uhrzeit Vordergrund Farbe einstellen
             G.prog = COMMAND_MODE_WORD_CLOCK;
+            parameters_changed = true;
             G.rgb[Foreground][0] = split(payload, 9, 3);
             G.rgb[Foreground][1] = split(payload, 12, 3);
             G.rgb[Foreground][2] = split(payload, 15, 3);

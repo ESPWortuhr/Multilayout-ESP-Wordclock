@@ -289,11 +289,6 @@ void setup() {
     }
 
     //-------------------------------------
-    Serial.println("Starting Telnet server");
-    TelnetServer.begin();
-    TelnetServer.setNoDelay(true);
-
-    //-------------------------------------
     Serial.println("--------------------------------------");
     Serial.println("ESP Uhr");
     Serial.print("Version         : "), Serial.println(VER);
@@ -461,8 +456,6 @@ void loop() {
     //------------------------------------------------
     MDNS.update();
 
-    Telnet(); // Handle telnet connections
-
     httpServer.handleClient();
 
     webSocket.loop();
@@ -512,7 +505,7 @@ void loop() {
 
         if (G.prog == 0 && G.conf == 0) {
             led_clear();
-            show_zeit();
+            G.prog = COMMAND_MODE_WORD_CLOCK;
         }
         last_sekunde = _sekunde;
 
@@ -534,7 +527,6 @@ void loop() {
         char currentTime[80];
         strftime(currentTime, sizeof(currentTime), "%F %T (%z)\n", &tm);
         Serial.printf(currentTime);
-        TelnetMsg(currentTime);
     }
 
     animation.loop(tm); // muss periodisch aufgerufen werden
@@ -561,17 +553,6 @@ void loop() {
     Network_loop();
 
     switch (G.prog) {
-        //------------------------------------------------
-        // Farbe Uhr / Hintergrund / Rahmen einstellen
-        //------------------------------------------------
-    case COMMAND_MODE_WORD_CLOCK: {
-        show_zeit();
-        if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2) {
-            set_farbe_rahmen();
-        }
-        G.prog = COMMAND_IDLE;
-        break;
-    }
         //------------------------------------------------
         // Sekunden
         //------------------------------------------------
@@ -867,7 +848,7 @@ void loop() {
     case COMMAND_SET_LANGUAGE_VARIANT: {
         eeprom_write();
         led_clear();
-        show_zeit();
+        G.prog = COMMAND_MODE_WORD_CLOCK;
         G.conf = COMMAND_IDLE;
         break;
     }
@@ -891,7 +872,7 @@ void loop() {
     case COMMAND_SET_TIME_MANUAL: {
         Serial.println("Uhrzeit manuell eingstellt");
         led_clear();
-        show_zeit();
+        G.prog = COMMAND_MODE_WORD_CLOCK;
         G.conf = COMMAND_IDLE;
         break;
     }
@@ -951,9 +932,8 @@ void loop() {
         // Anzeige Sekunde speichern
         //------------------------------------------------
     case COMMAND_SET_SETTING_SECOND: {
-        show_zeit();
         eeprom_write();
-        delay(100);
+        G.prog = COMMAND_MODE_WORD_CLOCK;
         G.conf = COMMAND_IDLE;
         break;
     }
@@ -1012,6 +992,23 @@ void loop() {
         //------------------------------------------------
     default:
         break;
+    }
+
+    if (G.prog == COMMAND_MODE_WORD_CLOCK) {
+        calc_word_array();
+
+        if (changes_in_array()) {
+            copy_array(Word_array, Word_array_old);
+            led_set(true);
+        } else if (parameters_changed) {
+            led_set();
+        }
+        parameters_changed = false;
+
+        if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2) {
+            set_farbe_rahmen();
+        }
+        G.prog = COMMAND_IDLE;
     }
 
     if (count_delay > 10000) {
