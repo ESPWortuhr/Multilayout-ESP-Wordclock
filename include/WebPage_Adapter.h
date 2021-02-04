@@ -51,10 +51,10 @@ public:
                     "\r\n",
                     SIZE_OF_FAVICON);
             client->tcp->write(buf);
-            for (uint8_t i; i < SIZE_OF_FAVICON; i++) {
+            for (int i = 0; i < SIZE_OF_FAVICON; i++) {
                 buf[i] = pgm_read_byte(&favicon[i]);
             }
-            client->tcp->write(buf);
+            client->tcp->write(buf, SIZE_OF_FAVICON);
 
         } else {
             // ------------------------------------

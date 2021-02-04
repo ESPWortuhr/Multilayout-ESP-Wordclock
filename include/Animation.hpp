@@ -10,11 +10,10 @@ Animation::Animation_t Animation::isSilvester(struct tm &tm) {
         lastMinute = _minute;
         if ((tm.tm_mon == 12) && (tm.tm_mday == 31) && (tm.tm_hour == 23) &&
             (_minute == 59)) {
-            //			if ((month(ltime) == 12) && (day(ltime) == 12)
-            //&& (hour(ltime) == 14) && (_minute == 35)) {
+            // if ((month(ltime) == 12) && (day(ltime) == 12)
+            // && (hour(ltime) == 14) && (_minute == 35)) {
             // if (_minute ==
-            // G.autoLdrBright) {					// for
-            // testing
+            // G.autoLdrBright) { // for testing
             minutesActive = 0;
             previousAnimType = (Animation_t)G.animType;
             return COUNTDOWN;
@@ -32,13 +31,13 @@ Animation::Animation_t Animation::isSilvester(struct tm &tm) {
 //------------------------------------------------------------------------------
 
 bool Animation::isColorization() {
-    return (G.animColorize == WORDS) || (G.animColorize == CHARACTERS);
+    return ((G.animType != KEINE) &&
+            ((G.animColorize == WORDS) || (G.animColorize == CHARACTERS)));
 }
 
 //------------------------------------------------------------------------------
 
-void Animation::changeBrightness() {
-    int fgChanged = 0, bgChanged = 0;
+bool Animation::changeBrightness() {
     RgbaColor newForeground, newBackground;
     analyzeColors(
         NULL, STRIPE, newForeground,
@@ -49,24 +48,27 @@ void Animation::changeBrightness() {
     if (adjustFg || adjustBg) {
         HsbColor hsbColor;
         float brightness = HsbColor(newForeground).B;
-
-        for (int r = 0; r < MAX_ROWS; r++) {
-            for (int c = 0; c < MAX_COL; c++) {
-                if (adjustBg) {
-                    if (!work[r][c].Foreground) { // set colorBackground
-                        bgChanged++;
-                        work[r][c] = newBackground;
+        hsbColor = HsbColor(foregroundMinute);
+        hsbColor.B = brightness;
+        foregroundMinute = RgbColor(hsbColor);
+        RgbaColor(*matrix[3])[MAX_COL] = {neu, alt, work};
+        for (int m = 0; m < 3; m++) {
+            for (int r = 0; r < MAX_ROWS; r++) {
+                for (int c = 0; c < MAX_COL; c++) {
+                    if (adjustBg) {
+                        if (!matrix[m][r][c].Foreground) {
+                            matrix[m][r][c] = newBackground;
+                        }
                     }
-                }
-                if (adjustFg) {
-                    if (work[r][c].Foreground) { // set colorForeground
-                        fgChanged++;
-                        if (isColorization()) {
-                            hsbColor = HsbColor(work[r][c]);
-                            hsbColor.B = brightness;
-                            work[r][c] = RgbaColor(hsbColor, true);
-                        } else {
-                            work[r][c] = newForeground;
+                    if (adjustFg) {
+                        if (matrix[m][r][c].Foreground) {
+                            if (isColorization()) {
+                                hsbColor = HsbColor(matrix[m][r][c]);
+                                hsbColor.B = brightness;
+                                matrix[m][r][c] = RgbaColor(hsbColor, true);
+                            } else {
+                                matrix[m][r][c] = newForeground;
+                            }
                         }
                     }
                 }
@@ -75,6 +77,7 @@ void Animation::changeBrightness() {
         background = newBackground;
         foreground = newForeground;
     }
+    return (adjustFg || adjustBg);
 }
 
 //------------------------------------------------------------------------------
@@ -112,7 +115,7 @@ float Animation::pseudoRandomHue(bool init) {
         if (lastColors[i] == 9999) { // empty array element
             inUse = i;
             lastColor = lastColors[i] = hue;
-            return ((float)(hue - 1000)) / 1000.0; // 0.0 ... 1.0
+            return (static_cast<float>(hue - 1000)) / 1000.0; // 0.0 ... 1.0
         }
         if (((hue > (lastColors[i] - 100)) && (hue < (lastColors[i] + 100)))) {
             // hue matches an existing color, try new hue
@@ -129,27 +132,39 @@ float Animation::pseudoRandomHue(bool init) {
 
 //------------------------------------------------------------------------------
 
-void Animation::saveMatrix() {
+// colorize foreground
+void Animation::colorize(RgbaColor (*dest)[MAX_COL]) {
     bool changeColor = true;
-    //		Serial.println("Save Matrix");
+    HsbColor hsbColor = HsbColor(foreground);
+    hsbColor.H = pseudoRandomHue();
+    foregroundMinute =
+        isColorization() ? RgbaColor(hsbColor, true) : foreground;
+    hsbColor.H = pseudoRandomHue();
+    for (int r = 0; r < MAX_ROWS; r++) {
+        for (int c = 0; c < MAX_COL; c++) {
+            if (dest[r][c].Foreground) {
+                if ((G.animColorize == CHARACTERS) || changeColor) {
+                    changeColor = false;
+                    hsbColor.H = pseudoRandomHue();
+                }
+                dest[r][c] =
+                    isColorization() ? RgbaColor(hsbColor, true) : foreground;
+            } else {
+                changeColor = true;
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Animation::saveMatrix() {
     memcpy(alt, neu, sizeof(alt));
     analyzeColors(neu, STRIPE, foreground,
                   background); // copy from stripe to neu[][]
+    foregroundMinute = foreground;
     if (isColorization()) {
-        HsbColor hsbColor = HsbColor(foreground);
-        for (int r = 0; r < MAX_ROWS; r++) {
-            for (int c = 0; c < MAX_COL; c++) {
-                if (neu[r][c].Foreground) {
-                    if ((G.animColorize == CHARACTERS) || changeColor) {
-                        changeColor = false;
-                        hsbColor.H = pseudoRandomHue();
-                    }
-                    neu[r][c] = RgbaColor(hsbColor, true);
-                } else {
-                    changeColor = true;
-                }
-            }
-        }
+        colorize(neu);
     }
     return;
 }
@@ -212,16 +227,29 @@ void Animation::analyzeColors(RgbaColor (*dest)[MAX_COL],
 
 //------------------------------------------------------------------------------
 
+void Animation::set_minutes() {
+    if (G.zeige_min > 0) {
+        uint8_t m = lastMinute % 5;
+        led_set_pixel_Color_Object(usedUhrType->getMinArr(G.zeige_min - 1, 0),
+                                   m > 0 ? foregroundMinute : background);
+        led_set_pixel_Color_Object(usedUhrType->getMinArr(G.zeige_min - 1, 1),
+                                   m > 1 ? foregroundMinute : background);
+        led_set_pixel_Color_Object(usedUhrType->getMinArr(G.zeige_min - 1, 2),
+                                   m > 2 ? foregroundMinute : background);
+        led_set_pixel_Color_Object(usedUhrType->getMinArr(G.zeige_min - 1, 3),
+                                   m > 3 ? foregroundMinute : background);
+    }
+}
 // Ueberschreibe die LEDs mit interner Matrix
 void Animation::copy2Stripe(RgbaColor (*source)[MAX_COL]) {
     for (uint8_t row = 0; row < MAX_ROWS; row++) {
         for (uint8_t col = 0; col < MAX_COL; col++) {
-            RgbColor color = led_get_pixel(0);
             led_set_pixel_Color_Object(
                 usedUhrType->getFrontMatrix(row + ROW_START, col + COL_START),
                 source[row][col]);
         }
     }
+    set_minutes();
 }
 
 //------------------------------------------------------------------------------
@@ -247,26 +275,18 @@ void Animation::fillMatrix(RgbaColor (*matrix)[MAX_COL], RgbaColor color,
 // changed: 0   Aenderungen, z.B. Farbe, keine aenderung des Inhalts
 // changed: 1   Inhalt hat sich geaendert
 bool Animation::led_show_notify(bool changed, uint8_t minute) {
-    static uint8_t lastMinute = 99;
     bool led_show = true;
 
     if (G.animType == KEINE) {
         if ((changed == 1) && (lastMinute != minute)) {
             lastMinute = minute;
-            matrixChanged =
-                true; // fuer den Fall, dass die Animation eingeschaltet wird
+            // fuer den Fall, dass die Animation eingeschaltet wird
+            matrixChanged = true;
         }
     } else {
-        switch (changed) {
-        case 0:
-            if (isIdle()) {
-                changeBrightness(); // Helligkeit anpassen
-                copy2Stripe(work);
-            } else {
-                led_show = false;
-            }
-            break;
-        case 1: // matrix hat sich geaendert
+        bool brightnessChanged = changeBrightness(); // Helligkeit anpassen
+        if (changed) {
+            // matrix hat sich geaendert
             if (lastMinute != minute) {
                 lastMinute = minute;
                 matrixChanged = true;
@@ -274,7 +294,11 @@ bool Animation::led_show_notify(bool changed, uint8_t minute) {
                 phase = 1;          // -> starte Animation
                 led_show = false;   // ###################
             }
-            break;
+        } else {
+            if (brightnessChanged) {
+                copy2Stripe(work);
+            }
+            led_show = isIdle();
         }
     }
     return led_show;
@@ -298,11 +322,23 @@ void Animation::loop(struct tm &tm) {
         G.animType = isSilvester(tm);
 
         if (G.animType == KEINE) {
-            lastAnimType = KEINE;
+            if (lastAnimType != KEINE) {
+                lastAnimType = KEINE;
+                memcpy(work, neu, sizeof(work));
+                colorize(work);
+                copy2Stripe(work);
+                led_show();
+            }
         } else {
-            if (isIdle() && (G.animType != lastAnimType)) {
-                lastAnimType = (Animation_t)G.animType;
-                phase = 1;
+            if (isIdle()) {
+                if (G.animType != lastAnimType) {
+                    lastAnimType = (Animation_t)G.animType;
+                    phase = 1;
+                }
+                if (G.animColorize != lastAnimColor) {
+                    lastAnimColor = G.animColorize;
+                    colorize(work);
+                }
             }
 
             uint32_t now = millis();
@@ -317,9 +353,10 @@ void Animation::loop(struct tm &tm) {
                     lastAnimSpeed = G.animDuration;
                     lastAnimColor = G.animColorize;
                     phase = 1;
+                    colorize(neu);
                 }
-                //					Serial.printf("Anim:
-                // type %d phase %d\n", G.animType, phase);
+                //  Serial.printf("Anim:
+                //  type %d phase %d\n", G.animType, phase);
                 switch (G.animType) {
                 case HOCH_ROLLEN:
                     phase = animScrollDown(false);
@@ -377,7 +414,7 @@ void Animation::blockgrafik(uint8_t rot, uint8_t gruen, uint8_t blau,
     }
     led_show();
 }
-*/
+ */
 
 //------------------------------------------------------------------------------
 
@@ -578,7 +615,6 @@ uint16_t Animation::animBalls() {
     uint32_t timeDelta, now;
 
     if (phase == 1) {
-        //		copy2Work(alt);
         animationDelay = 50; // 20 Frames per second
         numBalls = 0;
         for (c = 0; (c < MAX_COL) && (numBalls < MAX_BAELLE); c++) {
@@ -615,7 +651,7 @@ uint16_t Animation::animBalls() {
         work[r][c] = baelle[b].color;
     }
     if (ballsDown >= numBalls) {
-        copy2Work(neu); // TODO schiess Baelle hoch
+        copy2Work(neu); // TODO(ATho95): schiess Baelle hoch
         return 0;
     }
     return phase + 1;
@@ -675,7 +711,7 @@ uint16_t Animation::animFire() {
     }
 
     RgbColor color;
-    float progress = (float)subPhase++ * (1.0 / blendingFrames);
+    float progress = static_cast<float>(subPhase++) * (1.0 / blendingFrames);
     if (progress > 1.0) {
         progress = 1.0;
     }
@@ -685,7 +721,6 @@ uint16_t Animation::animFire() {
                 if (tmp[row][col].Foreground) {
                     if (random(8) == 0) {
                         tmp[row][col].Foreground = false;
-                        ;
                         alt[row][col].Foreground = true;
                         work[row][col].changeRgb(_white); // _white on
                     }
@@ -748,8 +783,9 @@ uint16_t Animation::animCountdown(struct tm &tm) {
         hsbColor_1.H = pseudoRandomHue();
         hsbColor_2.H = pseudoRandomHue();
         char seconds[8];
-        sprintf(seconds, "%d", countDown); // start 23:59:00		60 - 0
-                                           // for (uint8_t i = 0; i < 5; i++) {
+        // start 23:59:00     60 - 0
+        snprintf(seconds, sizeof(seconds), "%d", countDown);
+        // for (uint8_t i = 0; i < 5; i++) {
         for (uint8_t col = 0; col < 5; col++) {     // column
             for (uint8_t row = 0; row < 8; row++) { // row
                 if (countDown >= 10) {
@@ -799,6 +835,9 @@ void Animation::animColorChange() {
                     }
                 }
             }
+            hsbColor = HsbColor(foregroundMinute);
+            hsbColor.H = fmod(hsbColor.H + deltaHue, 1.0);
+            foregroundMinute = RgbColor(hsbColor);
         }
     }
 }
@@ -852,7 +891,7 @@ uint16_t Animation::animFade() {
         animationDelay = calcDelay(frames);
         memcpy(alt, work, sizeof(alt));
     }
-    float progress = (float)phase / (float)frames;
+    float progress = static_cast<float>(phase) / static_cast<float>(frames);
 
     for (uint8_t col = 0; col < MAX_COL; col++) {
         for (uint8_t row = 0; row < MAX_ROWS; row++) {
@@ -871,7 +910,7 @@ uint16_t Animation::animFade() {
 
 uint16_t Animation::animMatrixRain() {
     uint frames = 100;
-    uint8_t row, col;
+    int row, col;
     RgbaColor fadeColor, rainColor;
 
     if (phase == 1) {
@@ -891,7 +930,7 @@ uint16_t Animation::animMatrixRain() {
             rain[col].begin(frames, stop, brightness);
         }
     }
-    float progress = ((float)phase) / frames;
+    float progress = static_cast<float>(phase) / static_cast<float>(frames);
     for (col = 0; col < MAX_COL; col++) {
         for (row = 0; row < MAX_ROWS; row++) {
             fadeColor =
