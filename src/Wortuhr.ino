@@ -344,6 +344,9 @@ void setup() {
 
     if (RTC.begin() == true) {
         Serial.println("External RealtimeClock found");
+        struct timeval tv;
+        tv.tv_sec = RTC.now().unixtime();
+        settimeofday(&tv, nullptr);
         externalRTC = true;
     } else {
         Serial.println("No external RealtimeClock found");
