@@ -125,12 +125,6 @@ uint16_t wetterswitch;
 // LDR
 uint8_t ldrVal = 100;
 
-// Telnet vars
-bool ConnectionEstablished; // Flag for successfully handled connection
-#define MAX_TELNET_CLIENTS 2
-WiFiServer TelnetServer(23);
-WiFiClient TelnetClient[MAX_TELNET_CLIENTS];
-
 unsigned char wlan_client = false;
 unsigned char wlan_status = 99;
 unsigned char wlan_ssid = false;
