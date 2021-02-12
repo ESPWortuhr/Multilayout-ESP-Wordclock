@@ -89,6 +89,11 @@ WiFiClient client;
 WiFiUDP ntpUDP;
 PubSubClient mqttClient(client);
 
+//--OTA--
+ESP8266WebServer httpServer(81);
+ESP8266HTTPUpdateServer httpUpdater;
+//--OTA--
+
 // Timezone from
 // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
