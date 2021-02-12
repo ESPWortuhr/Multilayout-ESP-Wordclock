@@ -533,105 +533,491 @@ static void zahlen(const char d1, const char d2) {
 static void set_stunde(uint8_t std, uint8_t voll) {
     switch (std) {
     case 0:
-        uhrzeit |= ((uint32_t)1 << H_ZWOELF);
+        usedUhrType->show(h_zwoelf);
         break;
     case 1:
         if (voll == 1) {
-            uhrzeit |= ((uint32_t)1 << H_EIN);
+            usedUhrType->show(h_ein);
         } else {
-            uhrzeit |= ((uint32_t)1 << EINS);
+            usedUhrType->show(eins);
         }
         break;
     case 2:
-        uhrzeit |= ((uint32_t)1 << H_ZWEI);
+        usedUhrType->show(h_zwei);
         break;
     case 3:
-        uhrzeit |= ((uint32_t)1 << H_DREI);
+        usedUhrType->show(h_drei);
         break;
     case 4:
-        uhrzeit |= ((uint32_t)1 << H_VIER);
+        usedUhrType->show(h_vier);
         break;
     case 5:
-        uhrzeit |= ((uint32_t)1 << H_FUENF);
+        usedUhrType->show(h_fuenf);
         break;
     case 6:
-        uhrzeit |= ((uint32_t)1 << H_SECHS);
+        usedUhrType->show(h_sechs);
         break;
     case 7:
-        uhrzeit |= ((uint32_t)1 << H_SIEBEN);
+        usedUhrType->show(h_sieben);
         break;
     case 8:
-        uhrzeit |= ((uint32_t)1 << H_ACHT);
+        usedUhrType->show(h_acht);
         break;
     case 9:
-        uhrzeit |= ((uint32_t)1 << H_NEUN);
+        usedUhrType->show(h_neun);
         break;
     case 10:
-        uhrzeit |= ((uint32_t)1 << H_ZEHN);
+        usedUhrType->show(h_zehn);
         break;
     case 11:
-        uhrzeit |= ((uint32_t)1 << H_ELF);
+        usedUhrType->show(h_elf);
         break;
     case 12:
-        uhrzeit |= ((uint32_t)1 << H_ZWOELF);
+        usedUhrType->show(h_zwoelf);
         break;
     case 13:
         if (voll == 1) {
-            uhrzeit |= ((uint32_t)1 << H_EIN);
+            usedUhrType->show(h_ein);
         } else {
-            uhrzeit |= ((uint32_t)1 << EINS);
+            usedUhrType->show(eins);
         }
         break;
     case 14:
-        uhrzeit |= ((uint32_t)1 << H_ZWEI);
+        usedUhrType->show(h_zwei);
         break;
     case 15:
-        uhrzeit |= ((uint32_t)1 << H_DREI);
+        usedUhrType->show(h_drei);
         break;
     case 16:
-        uhrzeit |= ((uint32_t)1 << H_VIER);
+        usedUhrType->show(h_vier);
         break;
     case 17:
-        uhrzeit |= ((uint32_t)1 << H_FUENF);
+        usedUhrType->show(h_fuenf);
         break;
     case 18:
-        uhrzeit |= ((uint32_t)1 << H_SECHS);
+        usedUhrType->show(h_sechs);
         break;
     case 19:
-        uhrzeit |= ((uint32_t)1 << H_SIEBEN);
+        usedUhrType->show(h_sieben);
         break;
     case 20:
-        uhrzeit |= ((uint32_t)1 << H_ACHT);
+        usedUhrType->show(h_acht);
         break;
     case 21:
-        uhrzeit |= ((uint32_t)1 << H_NEUN);
+        usedUhrType->show(h_neun);
         break;
     case 22:
-        uhrzeit |= ((uint32_t)1 << H_ZEHN);
+        usedUhrType->show(h_zehn);
         break;
     case 23:
-        uhrzeit |= ((uint32_t)1 << H_ELF);
+        usedUhrType->show(h_elf);
         break;
     case 24:
-        uhrzeit |= ((uint32_t)1 << H_ZWOELF);
+        usedUhrType->show(h_zwoelf);
         break;
     default:
         break;
     }
 }
+
 //------------------------------------------------------------------------------
 
 bool definedAndHasDreiviertel() {
-    return (G.Sprachvariation[ItIs45] == 1 &&
-            G.UhrtypeDef == Uhr_114_Alternative) ||
-           (G.Sprachvariation[ItIs45] == 1 && G.UhrtypeDef == Uhr_114_2Clock);
+    if (G.Sprachvariation[ItIs45] == 1) {
+        if (G.UhrtypeDef == Uhr_114_Alternative ||
+            G.UhrtypeDef == Uhr_114_2Clock || G.UhrtypeDef == Uhr_291) {
+            return true;
+        }
+    } else {
+        return false;
+    }
 }
 
 //------------------------------------------------------------------------------
 
-static void set_uhrzeit() {
-    uhrzeit = 0;
+void show_minuten(uint8_t min) {
+    if (G.zeige_min > 0) {
+        // Minuten / Sekunden-Animation
+        // Minute (1-4)  ermitteln
+        while (min > 4) {
+            min -= 5;
+        }
 
+        if (min > 0) {
+            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 0)] =
+                usedUhrType->getMinArr(G.zeige_min - 1, 0);
+        }
+        if (min > 1) {
+            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 1)] =
+                usedUhrType->getMinArr(G.zeige_min - 1, 1);
+        }
+        if (min > 2) {
+            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 2)] =
+                usedUhrType->getMinArr(G.zeige_min - 1, 2);
+        }
+        if (min > 3) {
+            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 3)] =
+                usedUhrType->getMinArr(G.zeige_min - 1, 3);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
+    if (G.UhrtypeDef != Uhr_291) {
+        show_minuten(min);
+        min /= 5;
+        min *= 5;
+    }
+    switch (min) {
+    case 0: // volle Stunde
+        usedUhrType->show(uhr);
+        voll = 1;
+        break;
+    case 1:
+        usedUhrType->show(m_eine);
+        usedUhrType->show(minute);
+        usedUhrType->show(nach);
+        break;
+    case 2:
+        usedUhrType->show(m_zwei);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 3:
+        usedUhrType->show(m_drei);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 4:
+        usedUhrType->show(m_vier);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 5:
+        usedUhrType->show(fuenf);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 6:
+        usedUhrType->show(m_sechs);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 7:
+        usedUhrType->show(m_sieben);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 8:
+        usedUhrType->show(m_acht);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 9:
+        usedUhrType->show(m_neun);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 10:
+        usedUhrType->show(zehn);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 11:
+        usedUhrType->show(m_elf);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 12:
+        usedUhrType->show(m_zwoelf);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 13:
+        usedUhrType->show(m_dreizehn);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 14:
+        usedUhrType->show(m_vierzehn);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        break;
+    case 15: // viertel nach
+        if (G.Sprachvariation[ItIs15] == 1) {
+            usedUhrType->show(viertel);
+            offsetH = 1;
+        } else {
+            usedUhrType->show(viertel);
+            usedUhrType->show(nach);
+        }
+        break;
+    case 16:
+        usedUhrType->show(m_sechzehn);
+        usedUhrType->show(nach);
+        break;
+    case 17:
+        usedUhrType->show(m_siebzehn);
+        usedUhrType->show(nach);
+        break;
+    case 18:
+        usedUhrType->show(m_achtzehn);
+        usedUhrType->show(nach);
+        break;
+    case 19:
+        usedUhrType->show(m_neunzehn);
+        usedUhrType->show(nach);
+        break;
+    case 20: // 20 nach
+        if (G.Sprachvariation[ItIs20] == 1) {
+            usedUhrType->show(zehn);
+            usedUhrType->show(vor);
+            usedUhrType->show(halb);
+            offsetH = 1;
+        } else {
+            usedUhrType->show(zwanzig);
+            usedUhrType->show(nach);
+        }
+        break;
+    case 21:
+        usedUhrType->show(m_neun);
+        usedUhrType->show(vor);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 22:
+        usedUhrType->show(m_acht);
+        usedUhrType->show(vor);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 23:
+        usedUhrType->show(m_sieben);
+        usedUhrType->show(vor);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 24:
+        usedUhrType->show(m_sechs);
+        usedUhrType->show(vor);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 25:
+        usedUhrType->show(fuenf);
+        usedUhrType->show(vor);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 26:
+        usedUhrType->show(m_vier);
+        usedUhrType->show(vor);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 27:
+        usedUhrType->show(m_drei);
+        usedUhrType->show(vor);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 28:
+        usedUhrType->show(m_zwei);
+        usedUhrType->show(vor);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 29:
+        usedUhrType->show(m_eine);
+        usedUhrType->show(minute);
+        usedUhrType->show(vor);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 30: // halb
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 31:
+        usedUhrType->show(m_eine);
+        usedUhrType->show(minute);
+        usedUhrType->show(nach);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 32:
+        usedUhrType->show(m_zwei);
+        usedUhrType->show(minuten);
+        usedUhrType->show(nach);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 33:
+        usedUhrType->show(m_drei);
+        usedUhrType->show(nach);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 34:
+        usedUhrType->show(m_vier);
+        usedUhrType->show(nach);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 35:
+        usedUhrType->show(fuenf);
+        usedUhrType->show(nach);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 36:
+        usedUhrType->show(m_sechs);
+        usedUhrType->show(nach);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 37:
+        usedUhrType->show(m_sieben);
+        usedUhrType->show(nach);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 38:
+        usedUhrType->show(m_acht);
+        usedUhrType->show(nach);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 39:
+        usedUhrType->show(m_neun);
+        usedUhrType->show(nach);
+        usedUhrType->show(halb);
+        offsetH = 1;
+        break;
+    case 40: // 20 vor
+        if (G.Sprachvariation[ItIs40] == 1) {
+            usedUhrType->show(zehn);
+            usedUhrType->show(nach);
+            usedUhrType->show(halb);
+        } else {
+            usedUhrType->show(zwanzig);
+            usedUhrType->show(vor);
+        }
+        offsetH = 1;
+        break;
+    case 41:
+        usedUhrType->show(m_neunzehn);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 42:
+        usedUhrType->show(m_achtzehn);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 43:
+        usedUhrType->show(m_siebzehn);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 44:
+        usedUhrType->show(m_sechzehn);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 45: // viertel vor
+        if (definedAndHasDreiviertel()) {
+            usedUhrType->show(dreiviertel);
+        } else {
+            usedUhrType->show(viertel);
+            usedUhrType->show(vor);
+        }
+        offsetH = 1;
+        break;
+    case 46:
+        usedUhrType->show(m_vierzehn);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 47:
+        usedUhrType->show(m_dreizehn);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 48:
+        usedUhrType->show(m_zwoelf);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 49:
+        usedUhrType->show(m_elf);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 50:
+        usedUhrType->show(zehn);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 51:
+        usedUhrType->show(m_neun);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 52:
+        usedUhrType->show(m_acht);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 53:
+        usedUhrType->show(m_sieben);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 54:
+        usedUhrType->show(m_sechs);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 55:
+        usedUhrType->show(fuenf);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 56:
+        usedUhrType->show(m_vier);
+        usedUhrType->show(minuten);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 57:
+        usedUhrType->show(m_drei);
+        usedUhrType->show(minuten);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 58:
+        usedUhrType->show(m_zwei);
+        usedUhrType->show(minuten);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    case 59:
+        usedUhrType->show(m_eine);
+        usedUhrType->show(minute);
+        usedUhrType->show(vor);
+        offsetH = 1;
+        break;
+    default:
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void countdownToMidnight() {
     if (_stunde == 23 && _minute == 59 && _sekunde >= 50) {
         Serial.printf("Count down: %d\n", 60 - _sekunde);
         switch (_sekunde) {
@@ -668,96 +1054,21 @@ static void set_uhrzeit() {
         }
         return;
     }
+}
 
-    uhrzeit |= ((uint32_t)1 << ESIST);
+//------------------------------------------------------------------------------
 
-    uint8_t m = _minute / 5;
-    switch (m) {
-    case 0: // volle Stunde
-        uhrzeit |= ((uint32_t)1 << UHR);
-        set_stunde(_stunde, 1);
-        break;
-    case 1: // 5 nach
-        uhrzeit |= ((uint32_t)1 << FUENF);
-        uhrzeit |= ((uint32_t)1 << NACH);
-        set_stunde(_stunde, 0);
-        break;
-    case 2: // 10 nach
-        uhrzeit |= ((uint32_t)1 << ZEHN);
-        uhrzeit |= ((uint32_t)1 << NACH);
-        set_stunde(_stunde, 0);
-        break;
-    case 3: // viertel nach
-        if (G.Sprachvariation[ItIs15] == 1) {
-            uhrzeit |= ((uint32_t)1 << VIERTEL);
-            set_stunde(_stunde + 1, 0);
-        } else {
-            uhrzeit |= ((uint32_t)1 << VIERTEL);
-            uhrzeit |= ((uint32_t)1 << NACH);
-            set_stunde(_stunde, 0);
-        }
-        break;
-    case 4: // 20 nach
-        if (G.Sprachvariation[ItIs20] == 1) {
-            uhrzeit |= ((uint32_t)1 << ZEHN);
-            uhrzeit |= ((uint32_t)1 << VOR);
-            uhrzeit |= ((uint32_t)1 << HALB);
-            set_stunde(_stunde + 1, 0);
-        } else {
-            uhrzeit |= ((uint32_t)1 << ZWANZIG);
-            uhrzeit |= ((uint32_t)1 << NACH);
-            set_stunde(_stunde, 0);
-        }
-        break;
-    case 5: // 5 vor halb
-        uhrzeit |= ((uint32_t)1 << FUENF);
-        uhrzeit |= ((uint32_t)1 << VOR);
-        uhrzeit |= ((uint32_t)1 << HALB);
-        set_stunde(_stunde + 1, 0);
-        break;
-    case 6: // halb
-        uhrzeit |= ((uint32_t)1 << HALB);
-        set_stunde(_stunde + 1, 0);
-        break;
-    case 7: // 5 nach halb
-        uhrzeit |= ((uint32_t)1 << FUENF);
-        uhrzeit |= ((uint32_t)1 << NACH);
-        uhrzeit |= ((uint32_t)1 << HALB);
-        set_stunde(_stunde + 1, 0);
-        break;
-    case 8: // 20 vor
-        if (G.Sprachvariation[ItIs40] == 1) {
-            uhrzeit |= ((uint32_t)1 << ZEHN);
-            uhrzeit |= ((uint32_t)1 << NACH);
-            uhrzeit |= ((uint32_t)1 << HALB);
-        } else {
-            uhrzeit |= ((uint32_t)1 << ZWANZIG);
-            uhrzeit |= ((uint32_t)1 << VOR);
-        }
-        set_stunde(_stunde + 1, 0);
-        break;
-    case 9: // viertel vor
-        if (definedAndHasDreiviertel()) {
-            uhrzeit |= ((uint32_t)1 << DREIVIERTEL);
-        } else {
-            uhrzeit |= ((uint32_t)1 << VIERTEL);
-            uhrzeit |= ((uint32_t)1 << VOR);
-        }
-        set_stunde(_stunde + 1, 0);
-        break;
-    case 10: // 10 vor
-        uhrzeit |= ((uint32_t)1 << ZEHN);
-        uhrzeit |= ((uint32_t)1 << VOR);
-        set_stunde(_stunde + 1, 0);
-        break;
-    case 11: // 5 vor
-        uhrzeit |= ((uint32_t)1 << FUENF);
-        uhrzeit |= ((uint32_t)1 << VOR);
-        set_stunde(_stunde + 1, 0);
-        break;
-    default:
-        break;
-    }
+static void set_uhrzeit() {
+    uhrzeit = 0;
+
+    countdownToMidnight();
+    usedUhrType->show(es_ist);
+
+    uint8_t offsetH = 0;
+    uint8_t voll = 0;
+
+    set_minute(_minute, offsetH, voll);
+    set_stunde(_stunde + offsetH, voll);
 }
 
 //------------------------------------------------------------------------------
@@ -770,42 +1081,12 @@ static void show_sekunde() {
 }
 
 //------------------------------------------------------------------------------
-
-static void show_minuten() {
-    if (G.zeige_min > 0) {
-        // Minuten / Sekunden-Animation
-        // Minute (1-4)  ermitteln
-        uint8_t m = _minute;
-        while (m > 4) {
-            m -= 5;
-        }
-
-        if (m > 0) {
-            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 0)] =
-                usedUhrType->getMinArr(G.zeige_min - 1, 0);
-        }
-        if (m > 1) {
-            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 1)] =
-                usedUhrType->getMinArr(G.zeige_min - 1, 1);
-        }
-        if (m > 2) {
-            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 2)] =
-                usedUhrType->getMinArr(G.zeige_min - 1, 2);
-        }
-        if (m > 3) {
-            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 3)] =
-                usedUhrType->getMinArr(G.zeige_min - 1, 3);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
 // Wetterdaten anzeigen
 //------------------------------------------------------------------------------
 static void show_wetter() {
 
     switch (wetterswitch) {
-    // +6h
+        // +6h
     case 1: {
         switch (wstunde) {
         case 1:
@@ -925,7 +1206,7 @@ static void show_wetter() {
             break;
         }
     } break;
-    // +12h
+        // +12h
     case 2: {
         switch (wstunde) {
         case 1:
@@ -1047,7 +1328,7 @@ static void show_wetter() {
         }
 
     } break;
-    // +18h
+        // +18h
     case 3: {
         switch (wstunde) {
         case 1:
@@ -1170,7 +1451,7 @@ static void show_wetter() {
         }
 
     } break;
-    // +24h
+        // +24h
     case 4: {
         switch (wstunde) {
         case 1: {
@@ -1329,78 +1610,6 @@ static void calc_word_array() {
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         led_set_pixel(rr, gg, bb, ww, i);
     }
-
-    if (uhrzeit & ((uint32_t)1 << ESIST)) {
-        usedUhrType->show(es_ist);
-    }
-    if (uhrzeit & ((uint32_t)1 << FUENF)) {
-        usedUhrType->show(fuenf);
-    }
-    if (uhrzeit & ((uint32_t)1 << ZEHN)) {
-        usedUhrType->show(zehn);
-    }
-    if (uhrzeit & ((uint32_t)1 << VIERTEL)) {
-        usedUhrType->show(viertel);
-    }
-    if (uhrzeit & ((uint32_t)1 << DREIVIERTEL)) {
-        usedUhrType->show(dreiviertel);
-    }
-    if (uhrzeit & ((uint32_t)1 << ZWANZIG)) {
-        usedUhrType->show(zwanzig);
-    }
-    if (uhrzeit & ((uint32_t)1 << HALB)) {
-        usedUhrType->show(halb);
-    }
-    if (uhrzeit & ((uint32_t)1 << EINS)) {
-        usedUhrType->show(eins);
-    }
-    if (uhrzeit & ((uint32_t)1 << VOR)) {
-        usedUhrType->show(vor);
-    }
-    if (uhrzeit & ((uint32_t)1 << NACH)) {
-        usedUhrType->show(nach);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_EIN)) {
-        usedUhrType->show(h_ein);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_ZWEI)) {
-        usedUhrType->show(h_zwei);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_DREI)) {
-        usedUhrType->show(h_drei);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_VIER)) {
-        usedUhrType->show(h_vier);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_FUENF)) {
-        usedUhrType->show(h_fuenf);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_SECHS)) {
-        usedUhrType->show(h_sechs);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_SIEBEN)) {
-        usedUhrType->show(h_sieben);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_ACHT)) {
-        usedUhrType->show(h_acht);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_NEUN)) {
-        usedUhrType->show(h_neun);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_ZEHN)) {
-        usedUhrType->show(h_zehn);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_ELF)) {
-        usedUhrType->show(h_elf);
-    }
-    if (uhrzeit & ((uint32_t)1 << H_ZWOELF)) {
-        usedUhrType->show(h_zwoelf);
-    }
-    if (uhrzeit & ((uint32_t)1 << UHR)) {
-        usedUhrType->show(uhr);
-    }
-
-    show_minuten();
 
     if (G.UhrtypeDef == Uhr_242) {
         show_wetter();

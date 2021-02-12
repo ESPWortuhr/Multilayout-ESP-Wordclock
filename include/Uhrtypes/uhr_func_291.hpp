@@ -68,118 +68,94 @@ public:
 
         switch (displayingText) // Minuten
         {
-        case 1:
+        case m_eine:
             Letter_set(33);
             Letter_set(32);
             Letter_set(31);
             Letter_set(30); // eine minute nach
-
-            displayingText = minute;
             break;
 
-        case 2:
+        case m_zwei:
             Letter_set(67);
             Letter_set(66);
             Letter_set(65);
             Letter_set(64); // zwei minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 3:
+        case m_drei:
             Letter_set(35);
             Letter_set(34);
             Letter_set(33);
             Letter_set(32); // drei minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 4:
+        case m_vier:
             Letter_set(49);
             Letter_set(48);
             Letter_set(47);
             Letter_set(46); // vier minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 5:
+        case fuenf:
             Letter_set(38);
             Letter_set(39);
             Letter_set(40);
             Letter_set(41); // fünf minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 6:
+        case m_sechs:
             Letter_set(24);
             Letter_set(25);
             Letter_set(26);
             Letter_set(27);
             Letter_set(28); // sechs minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 7:
+        case m_sieben:
             Letter_set(19);
             Letter_set(20);
             Letter_set(21);
             Letter_set(22);
             Letter_set(23);
             Letter_set(24); // sieben minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 8:
+        case m_acht:
             Letter_set(53);
             Letter_set(52);
             Letter_set(51);
             Letter_set(50); // acht minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 9:
+        case m_neun:
             Letter_set(42);
             Letter_set(43);
             Letter_set(44);
             Letter_set(45); // neun minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 10:
+        case zehn:
             Letter_set(54);
             Letter_set(55);
             Letter_set(56);
             Letter_set(57); // zehn minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 11:
+        case m_elf:
             Letter_set(36);
             Letter_set(37);
             Letter_set(37); // elf minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 12:
+        case m_zwoelf:
             Letter_set(58);
             Letter_set(59);
             Letter_set(60);
             Letter_set(61);
             Letter_set(62); // zwölf minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 13:
+        case m_dreizehn:
             Letter_set(35);
             Letter_set(34);
             Letter_set(33);
@@ -188,11 +164,9 @@ public:
             Letter_set(55);
             Letter_set(56);
             Letter_set(57); // dreizehn minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 14:
+        case m_vierzehn:
             Letter_set(49);
             Letter_set(48);
             Letter_set(47);
@@ -201,33 +175,21 @@ public:
             Letter_set(55);
             Letter_set(56);
             Letter_set(57); // vierzehn minuten nach
-
-            displayingText = minuten;
             break;
 
-        case 15:
-            Letter_set(7);
-            Letter_set(8);
-            Letter_set(9);
-            Letter_set(10);
-            Letter_set(11);
-            Letter_set(12);
-            Letter_set(13); // viertel nach
-            break;
+            // viertel nach
 
-        case 16:
+        case m_sechzehn:
             Letter_set(24);
             Letter_set(25);
             Letter_set(26);
             Letter_set(54);
             Letter_set(55);
             Letter_set(56);
-            Letter_set(57); // sechzehn minuten nach
-
-            displayingText = minuten;
+            Letter_set(57); // sechzehn nach
             break;
 
-        case 17:
+        case m_siebzehn:
             Letter_set(19);
             Letter_set(20);
             Letter_set(21);
@@ -238,7 +200,7 @@ public:
             Letter_set(57); // siebzehn nach
             break;
 
-        case 18:
+        case m_achtzehn:
             Letter_set(53);
             Letter_set(52);
             Letter_set(51);
@@ -249,7 +211,7 @@ public:
             Letter_set(57); // achtzehn nach
             break;
 
-        case 19:
+        case m_neunzehn:
             Letter_set(42);
             Letter_set(43);
             Letter_set(44);
@@ -260,7 +222,7 @@ public:
             Letter_set(50); // neunzehn nach
             break;
 
-        case 20:
+        case zwanzig:
             Letter_set(76);
             Letter_set(77);
             Letter_set(78);
@@ -270,307 +232,6 @@ public:
             Letter_set(82); // zwanzig nach
             break;
 
-        case 21:
-            Letter_set(42);
-            Letter_set(43);
-            Letter_set(44);
-            Letter_set(45); // neun vor halb
-            break;
-
-        case 22:
-            Letter_set(53);
-            Letter_set(52);
-            Letter_set(51);
-            Letter_set(50); // acht vor halb
-            break;
-
-        case 23:
-            Letter_set(19);
-            Letter_set(20);
-            Letter_set(21);
-            Letter_set(22);
-            Letter_set(23);
-            Letter_set(24); // sieben vor halb
-            break;
-
-        case 24:
-            Letter_set(24);
-            Letter_set(25);
-            Letter_set(26);
-            Letter_set(27);
-            Letter_set(28); // sechs vor halb
-            break;
-
-        case 25:
-            Letter_set(38);
-            Letter_set(39);
-            Letter_set(40);
-            Letter_set(41); // fünf vor halb
-            break;
-
-        case 26:
-            Letter_set(49);
-            Letter_set(48);
-            Letter_set(47);
-            Letter_set(46); // vier vor halb
-            break;
-
-        case 27:
-            Letter_set(35);
-            Letter_set(34);
-            Letter_set(33);
-            Letter_set(32); // drei vor halb
-            break;
-
-        case 28:
-            Letter_set(67);
-            Letter_set(66);
-            Letter_set(65);
-            Letter_set(64); // zwei vor halb
-            break;
-
-        case 29:
-            Letter_set(33);
-            Letter_set(32);
-            Letter_set(31);
-            Letter_set(30); // eine minute vor halb
-            break;
-
-        case 30:
-            Letter_set(126);
-            Letter_set(127);
-            Letter_set(128);
-            Letter_set(129); // halb
-            break;
-
-        case 31:
-            Letter_set(33);
-            Letter_set(32);
-            Letter_set(31);
-            Letter_set(30); // eine minute nach halb
-            break;
-
-        case 32:
-            Letter_set(67);
-            Letter_set(66);
-            Letter_set(65);
-            Letter_set(64); // zwei minuten nach halb
-            break;
-
-        case 33:
-            Letter_set(35);
-            Letter_set(34);
-            Letter_set(33);
-            Letter_set(32); // drei minuten nach halb
-            break;
-
-        case 34:
-            Letter_set(49);
-            Letter_set(48);
-            Letter_set(47);
-            Letter_set(46);
-            break;
-
-        case 35:
-            Letter_set(38);
-            Letter_set(39);
-            Letter_set(40);
-            Letter_set(41);
-            break;
-
-        case 36:
-            Letter_set(24);
-            Letter_set(25);
-            Letter_set(26);
-            Letter_set(27);
-            Letter_set(28);
-            break;
-
-        case 37:
-            Letter_set(19);
-            Letter_set(20);
-            Letter_set(21);
-            Letter_set(22);
-            Letter_set(23);
-            Letter_set(24);
-            break;
-
-        case 38:
-            Letter_set(53);
-            Letter_set(52);
-            Letter_set(51);
-            Letter_set(50);
-            break;
-
-        case 39:
-            Letter_set(42);
-            Letter_set(43);
-            Letter_set(44);
-            Letter_set(45);
-            break;
-
-        case 40:
-            Letter_set(54);
-            Letter_set(55);
-            Letter_set(56);
-            Letter_set(57);
-            break;
-
-        case 41:
-            Letter_set(36);
-            Letter_set(37);
-            Letter_set(37);
-            break;
-
-        case 42:
-            Letter_set(58);
-            Letter_set(59);
-            Letter_set(60);
-            Letter_set(61);
-            Letter_set(62);
-            break;
-
-        case 43:
-            Letter_set(35);
-            Letter_set(34);
-            Letter_set(33);
-            Letter_set(32);
-            Letter_set(54);
-            Letter_set(55);
-            Letter_set(56);
-            Letter_set(57);
-            break;
-
-        case 44:
-            Letter_set(49);
-            Letter_set(48);
-            Letter_set(47);
-            Letter_set(46);
-            Letter_set(54);
-            Letter_set(55);
-            Letter_set(56);
-            Letter_set(57);
-            break;
-
-        case 45:
-            // viertel vor
-
-        case 46:
-            Letter_set(49);
-            Letter_set(48);
-            Letter_set(47);
-            Letter_set(46);
-            Letter_set(54);
-            Letter_set(55);
-            Letter_set(56);
-            Letter_set(57); // vierzehn vor
-            break;
-
-        case 47:
-            Letter_set(35);
-            Letter_set(34);
-            Letter_set(33);
-            Letter_set(32);
-            Letter_set(54);
-            Letter_set(55);
-            Letter_set(56);
-            Letter_set(57);
-            break;
-
-        case 48:
-            Letter_set(58);
-            Letter_set(59);
-            Letter_set(60);
-            Letter_set(61);
-            Letter_set(62);
-            break;
-
-        case 49:
-            Letter_set(36);
-            Letter_set(37);
-            Letter_set(37);
-            break;
-
-        case 50:
-            Letter_set(54);
-            Letter_set(55);
-            Letter_set(56);
-            Letter_set(57);
-            break;
-
-        case 51:
-            Letter_set(42);
-            Letter_set(43);
-            Letter_set(44);
-            Letter_set(45);
-            break;
-
-        case 52:
-            Letter_set(53);
-            Letter_set(52);
-            Letter_set(51);
-            Letter_set(50);
-            break;
-
-        case 53:
-            Letter_set(19);
-            Letter_set(20);
-            Letter_set(21);
-            Letter_set(22);
-            Letter_set(23);
-            Letter_set(24);
-            break;
-
-        case 54:
-            Letter_set(24);
-            Letter_set(25);
-            Letter_set(26);
-            Letter_set(27);
-            Letter_set(28); // sechs minuten vor
-            break;
-
-        case 55:
-            Letter_set(38);
-            Letter_set(39);
-            Letter_set(40);
-            Letter_set(41); // fünf minuten vor
-            break;
-
-        case 56:
-            Letter_set(49);
-            Letter_set(48);
-            Letter_set(47);
-            Letter_set(46); // vier minuten vor
-            break;
-
-        case 57:
-            Letter_set(35);
-            Letter_set(34);
-            Letter_set(33);
-            Letter_set(32); // drei minuten vor
-            break;
-
-        case 58:
-            Letter_set(67);
-            Letter_set(66);
-            Letter_set(65);
-            Letter_set(64); // zwei minuten vor
-            break;
-
-        case 59:
-            Letter_set(33);
-            Letter_set(32);
-            Letter_set(31);
-            Letter_set(30); // eine minute vor
-
-            displayingText = minute;
-            break;
-
-        default:
-            break;
-        }
-
-        switch (displayingText) {
         case minute:
             Letter_set(108);
             Letter_set(109);
