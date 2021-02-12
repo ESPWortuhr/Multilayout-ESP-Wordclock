@@ -86,7 +86,6 @@ NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
 
 WiFiClient client;
-WiFiUDP ntpUDP;
 PubSubClient mqttClient(client);
 
 //--OTA--
