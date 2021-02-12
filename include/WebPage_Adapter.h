@@ -423,7 +423,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_COLORTYPE: { // ColorType speichern
             G.conf = COMMAND_SET_COLORTYPE;
-            G.Colortype = split(payload, 9, 3);
+            G.param1 = split(payload, 9, 3);
             break;
         }
 

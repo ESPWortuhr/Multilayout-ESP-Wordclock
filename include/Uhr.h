@@ -319,6 +319,7 @@ enum Icons {
     FIRE_4 = 9,
     FIRE_5 = 10,
     FIRE_6 = 11,
+    RGB_I = 12,
 };
 
 const uint8_t dim[20] = {30,  50,  70,  90,  110, 130, 140, 160, 200, 255,

@@ -81,7 +81,8 @@ UHR_291_t Uhr_291_type;
 
 iUhrType *usedUhrType = nullptr;
 
-NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod> *strip_RGB = NULL;
+#include "NeoMultiFeature.hpp"
+NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
 
 WiFiClient client;
@@ -135,20 +136,27 @@ iUhrType *getPointer(uint8_t num) {
 //------------------------------------------------------------------------------
 
 void InitLedStrip(uint8_t num) {
+    NeoMultiFeature::setColortype(num);
     if (num == Grbw) {
-        if (strip_RGBW != NULL) {
-            delete strip_RGBW; // delete the previous dynamically created strip
-        }
-        strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
-            usedUhrType->NUM_PIXELS());
-        strip_RGBW->Begin();
-    } else {
         if (strip_RGB != NULL) {
             delete strip_RGB; // delete the previous dynamically created strip
+            strip_RGB = NULL;
         }
-        strip_RGB = new NeoPixelBus<NeoBrgFeature, Neo800KbpsMethod>(
-            usedUhrType->NUM_PIXELS());
-        strip_RGB->Begin();
+        if (strip_RGBW == NULL) {
+            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
+                usedUhrType->NUM_PIXELS());
+            strip_RGBW->Begin();
+        }
+    } else {
+        if (strip_RGBW != NULL) {
+            delete strip_RGBW; // delete the previous dynamically created strip
+            strip_RGBW = NULL;
+        }
+        if (strip_RGB == NULL) {
+            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(
+                usedUhrType->NUM_PIXELS());
+            strip_RGB->Begin();
+        }
     }
 }
 
@@ -276,7 +284,8 @@ void setup() {
         eeprom_write();
         Serial.println("eeprom schreiben");
     }
-    // G.prog_init = 1;
+    // Initialisierung der COMMAND_MODE_xxx (Farbe)
+    G.prog_init = 1;
     //-------------------------------------
     // Start Serielle Schnittstelle bei Bedarf
     //-------------------------------------
@@ -884,13 +893,22 @@ void loop() {
         // Colortype der LED einstellen
         //------------------------------------------------
     case COMMAND_SET_COLORTYPE: {
+        // G.param1 enthält den neuen Colortype
+        Serial.printf("LED Colortype: %u\n", G.param1);
+
+        // if ((G.param1 != G.Colortype) && ((G.param1 == Grbw) ||
+        //    (G.Colortype == Grbw))) {
+        //    G.conf = COMMAND_RESET;
+        // } else {
+        G.conf = COMMAND_IDLE;
+        // }
+
+        // der G.Colortype muss zeitgleich zu InitLedStrip erfolgen,
+        // sonst wird über einen null-pointer referenziert
+        G.Colortype = G.param1;
         eeprom_write();
-        Serial.printf("LED Colortype: %u\n", G.Colortype);
-        if (G.Colortype == Grbw) {
-            G.conf = COMMAND_RESET;
-        } else {
-            G.conf = COMMAND_IDLE;
-        }
+        InitLedStrip(G.Colortype);
+        led_set_Icon(RGB_I, 100, true);
         break;
     }
 

@@ -3,29 +3,10 @@
 
 void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
 
-    switch (G.Colortype) {
-    case Brg: {
-        strip_RGB->SetPixelColor(i, RgbColor(bb, rr, gg));
-        break;
-    }
-    case Grb: {
-        strip_RGB->SetPixelColor(i, RgbColor(gg, rr, bb));
-        break;
-    }
-    case Rgb: {
-        strip_RGB->SetPixelColor(i, RgbColor(rr, gg, bb));
-        break;
-    }
-    case Rbg: {
-        strip_RGB->SetPixelColor(i, RgbColor(rr, bb, gg));
-        break;
-    }
-    case Grbw: {
+    if (G.Colortype == Grbw) {
         strip_RGBW->SetPixelColor(i, RgbwColor(rr, gg, bb, ww));
-        break;
-    }
-    default:
-        break;
+    } else {
+        strip_RGB->SetPixelColor(i, RgbColor(rr, gg, bb));
     }
 }
 
@@ -33,29 +14,10 @@ void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
 
 void led_set_pixel_Color_Object(uint16_t i, RgbColor color) {
 
-    switch (G.Colortype) {
-    case Brg: {
-        strip_RGB->SetPixelColor(i, color);
-        break;
-    }
-    case Grb: {
-        strip_RGB->SetPixelColor(i, color);
-        break;
-    }
-    case Rgb: {
-        strip_RGB->SetPixelColor(i, color);
-        break;
-    }
-    case Rbg: {
-        strip_RGB->SetPixelColor(i, color);
-        break;
-    }
-    case Grbw: {
+    if (G.Colortype == Grbw) {
         strip_RGBW->SetPixelColor(i, RgbwColor(color));
-        break;
-    }
-    default:
-        break;
+    } else {
+        strip_RGB->SetPixelColor(i, color);
     }
 }
 
@@ -68,26 +30,11 @@ void led_set_pixel_Color_Object_rgbw(uint16_t i, RgbwColor color) {
 //------------------------------------------------------------------------------
 
 RgbColor led_get_pixel(uint16_t i) {
-    switch (G.Colortype) {
-    case Brg: {
-        return strip_RGB->GetPixelColor(i);
-        break;
+    if (G.Colortype == Grbw) {
+        RgbwColor rgbw = strip_RGBW->GetPixelColor(i);
+        return RgbColor(rgbw.R, rgbw.G, rgbw.B);
     }
-    case Grb: {
-        return strip_RGB->GetPixelColor(i);
-        break;
-    }
-    case Rgb: {
-        return strip_RGB->GetPixelColor(i);
-        break;
-    }
-    case Rbg: {
-        return strip_RGB->GetPixelColor(i);
-        break;
-    }
-    default:
-        break;
-    }
+    return strip_RGB->GetPixelColor(i);
 }
 
 //------------------------------------------------------------------------------
@@ -232,11 +179,18 @@ bool changes_in_array() {
 
 //------------------------------------------------------------------------------
 
-void led_set_Icon(uint8 num_icon, uint8_t brightness = 100) {
+void led_set_Icon(uint8 num_icon, uint8_t brightness = 100,
+                  bool rgb_icon = false) {
     uint8_t rr, gg, bb, ww;
     set_helligkeit(rr, gg, bb, ww, Foreground, brightness);
-    for (uint8_t row = 0; row < MAX_ROWS; row++) {
-        for (uint8_t col = 0; col < MAX_COL; col++) {
+    for (uint8_t col = 0; col < MAX_COL; col++) {
+        if (rgb_icon) {
+            rr = col < 3 ? 255 : 0;
+            gg = (col > 3) && (col < 7) ? 255 : 0;
+            bb = col > 7 ? 255 : 0;
+            ww = 0;
+        }
+        for (uint8_t row = 0; row < MAX_ROWS; row++) {
             if (pgm_read_word(&(grafik_11x10[num_icon][row])) &
                 (1 << (MAX_COL - 1 - col))) {
                 led_set_pixel(rr, gg, bb, ww,
