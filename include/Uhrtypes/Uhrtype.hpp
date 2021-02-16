@@ -90,19 +90,19 @@ public:
 
     virtual void show(uint8_t text) = 0;
 
-    virtual inline const uint16_t NUM_PIXELS() = 0;
+    virtual inline const uint16_t NUM_PIXELS() { return 114; }
 
-    virtual inline const uint16_t NUM_SMATRIX() = 0;
+    virtual inline const uint16_t NUM_SMATRIX() { return 114; }
 
-    virtual inline const uint16_t ROWS_MATRIX() = 0;
+    virtual inline const uint16_t ROWS_MATRIX() { return 11; }
 
-    virtual inline const uint16_t COLS_MATRIX() = 0;
+    virtual inline const uint16_t COLS_MATRIX() { return 11; }
 
-    virtual inline const uint16_t NUM_RMATRIX() = 0;
+    virtual inline const uint16_t NUM_RMATRIX() { return 0; }
 
-    virtual const uint16_t getSMatrix(uint16_t index) = 0;
+    virtual const uint16_t getSMatrix(uint16_t index) { return index; }
 
-    virtual const uint16_t getRMatrix(uint16_t index) = 0;
+    virtual const uint16_t getRMatrix(uint16_t index) { return 0; }
 
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) {
         if (row % 2 != 0) {

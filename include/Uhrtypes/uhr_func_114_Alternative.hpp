@@ -34,36 +34,6 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getRMatrix(uint16_t index) override { return 0; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t getSMatrix(uint16_t index) override {
-        return index;
-    };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t NUM_PIXELS() override { return 114; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t NUM_SMATRIX() override { return 114; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t COLS_MATRIX() override { return 11; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t ROWS_MATRIX() override { return 11; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t NUM_RMATRIX() override { return 0; };
-
-    //------------------------------------------------------------------------------
-
     void show(uint8_t text) override {
         switch (text) {
 
