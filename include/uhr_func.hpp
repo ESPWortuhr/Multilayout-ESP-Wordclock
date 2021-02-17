@@ -530,7 +530,7 @@ static void zahlen(const char d1, const char d2) {
 
 //------------------------------------------------------------------------------
 
-static void set_stunde(uint8_t std, uint8_t voll) {
+static void set_stunde(const uint8_t std, const uint8_t voll) {
     switch (std) {
     case 0:
         usedUhrType->show(h_zwoelf);
@@ -1018,41 +1018,40 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
 //------------------------------------------------------------------------------
 
 static void countdownToMidnight() {
-    if (_stunde == 23 && _minute == 59 && _sekunde >= 50) {
-        Serial.printf("Count down: %d\n", 60 - _sekunde);
-        switch (_sekunde) {
-        case 50:
-            uhrzeit |= (1u << ZEHN);
-            break;
-        case 51:
-            uhrzeit |= (1u << H_NEUN);
-            break;
-        case 52:
-            uhrzeit |= (1u << H_ACHT);
-            break;
-        case 53:
-            uhrzeit |= (1u << H_SIEBEN);
-            break;
-        case 54:
-            uhrzeit |= (1u << H_SECHS);
-            break;
-        case 55:
-            uhrzeit |= (1u << FUENF);
-            break;
-        case 56:
-            uhrzeit |= (1u << H_VIER);
-            break;
-        case 57:
-            uhrzeit |= (1u << H_DREI);
-            break;
-        case 58:
-            uhrzeit |= (1u << H_ZWEI);
-            break;
-        case 59:
-            uhrzeit |= (1u << EINS);
-            break;
-        }
-        return;
+    Serial.printf("Count down: %d\n", 60 - _sekunde);
+    switch (_sekunde) {
+    case 50:
+        uhrzeit |= (1u << ZEHN);
+        break;
+    case 51:
+        uhrzeit |= (1u << H_NEUN);
+        break;
+    case 52:
+        uhrzeit |= (1u << H_ACHT);
+        break;
+    case 53:
+        uhrzeit |= (1u << H_SIEBEN);
+        break;
+    case 54:
+        uhrzeit |= (1u << H_SECHS);
+        break;
+    case 55:
+        uhrzeit |= (1u << FUENF);
+        break;
+    case 56:
+        uhrzeit |= (1u << H_VIER);
+        break;
+    case 57:
+        uhrzeit |= (1u << H_DREI);
+        break;
+    case 58:
+        uhrzeit |= (1u << H_ZWEI);
+        break;
+    case 59:
+        uhrzeit |= (1u << EINS);
+        break;
+    default:
+        break;
     }
 }
 
@@ -1061,7 +1060,6 @@ static void countdownToMidnight() {
 static void set_uhrzeit() {
     uhrzeit = 0;
 
-    countdownToMidnight();
     usedUhrType->show(es_ist);
 
     uint8_t offsetH = 0;
@@ -1583,7 +1581,11 @@ static void show_wetter() {
 static void calc_word_array() {
     uint8_t rr, gg, bb, ww;
 
-    set_uhrzeit();
+    if (_stunde == 23 && _minute == 59 && _sekunde >= 50) {
+        countdownToMidnight();
+    } else {
+        set_uhrzeit();
+    }
 
     // Helligkeitswert ermitteln
     if (_stunde < 6) {
