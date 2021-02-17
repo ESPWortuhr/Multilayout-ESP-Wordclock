@@ -622,7 +622,7 @@ static void set_stunde(uint8_t std, uint8_t voll) {
 
 //------------------------------------------------------------------------------
 
-bool definedAndHasDreiviertel() {
+static bool definedAndHasDreiviertel() {
     if (G.Sprachvariation[ItIs45] == 1) {
         if (G.UhrtypeDef == Uhr_114_Alternative ||
             G.UhrtypeDef == Uhr_114_2Clock || G.UhrtypeDef == Uhr_291) {
@@ -1017,7 +1017,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
 
 //------------------------------------------------------------------------------
 
-void countdownToMidnight() {
+static void countdownToMidnight() {
     if (_stunde == 23 && _minute == 59 && _sekunde >= 50) {
         Serial.printf("Count down: %d\n", 60 - _sekunde);
         switch (_sekunde) {
