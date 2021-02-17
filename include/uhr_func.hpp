@@ -681,67 +681,19 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(nach);
         break;
     case 2:
-        usedUhrType->show(m_zwei);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 3:
-        usedUhrType->show(m_drei);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 4:
-        usedUhrType->show(m_vier);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 5:
-        usedUhrType->show(fuenf);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 6:
-        usedUhrType->show(m_sechs);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 7:
-        usedUhrType->show(m_sieben);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 8:
-        usedUhrType->show(m_acht);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 9:
-        usedUhrType->show(m_neun);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 10:
-        usedUhrType->show(zehn);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 11:
-        usedUhrType->show(m_elf);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 12:
-        usedUhrType->show(m_zwoelf);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 13:
-        usedUhrType->show(m_dreizehn);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        break;
     case 14:
-        usedUhrType->show(m_vierzehn);
+        usedUhrType->show(min);
         usedUhrType->show(minuten);
         usedUhrType->show(nach);
         break;
@@ -755,19 +707,10 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         }
         break;
     case 16:
-        usedUhrType->show(m_sechzehn);
-        usedUhrType->show(nach);
-        break;
     case 17:
-        usedUhrType->show(m_siebzehn);
-        usedUhrType->show(nach);
-        break;
     case 18:
-        usedUhrType->show(m_achtzehn);
-        usedUhrType->show(nach);
-        break;
     case 19:
-        usedUhrType->show(m_neunzehn);
+        usedUhrType->show(min);
         usedUhrType->show(nach);
         break;
     case 20: // 20 nach
@@ -782,49 +725,14 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         }
         break;
     case 21:
-        usedUhrType->show(m_neun);
-        usedUhrType->show(vor);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 22:
-        usedUhrType->show(m_acht);
-        usedUhrType->show(vor);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 23:
-        usedUhrType->show(m_sieben);
-        usedUhrType->show(vor);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 24:
-        usedUhrType->show(m_sechs);
-        usedUhrType->show(vor);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 25:
-        usedUhrType->show(fuenf);
-        usedUhrType->show(vor);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 26:
-        usedUhrType->show(m_vier);
-        usedUhrType->show(vor);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 27:
-        usedUhrType->show(m_drei);
-        usedUhrType->show(vor);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 28:
-        usedUhrType->show(m_zwei);
+        usedUhrType->show(30 - min);
         usedUhrType->show(vor);
         usedUhrType->show(halb);
         offsetH = 1;
@@ -848,50 +756,14 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 32:
-        usedUhrType->show(m_zwei);
-        usedUhrType->show(minuten);
-        usedUhrType->show(nach);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 33:
-        usedUhrType->show(m_drei);
-        usedUhrType->show(nach);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 34:
-        usedUhrType->show(m_vier);
-        usedUhrType->show(nach);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 35:
-        usedUhrType->show(fuenf);
-        usedUhrType->show(nach);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 36:
-        usedUhrType->show(m_sechs);
-        usedUhrType->show(nach);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 37:
-        usedUhrType->show(m_sieben);
-        usedUhrType->show(nach);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 38:
-        usedUhrType->show(m_acht);
-        usedUhrType->show(nach);
-        usedUhrType->show(halb);
-        offsetH = 1;
-        break;
     case 39:
-        usedUhrType->show(m_neun);
+        usedUhrType->show(30 - min);
         usedUhrType->show(nach);
         usedUhrType->show(halb);
         offsetH = 1;
@@ -908,22 +780,10 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 41:
-        usedUhrType->show(m_neunzehn);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 42:
-        usedUhrType->show(m_achtzehn);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 43:
-        usedUhrType->show(m_siebzehn);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 44:
-        usedUhrType->show(m_sechzehn);
+        usedUhrType->show(60 - min);
         usedUhrType->show(vor);
         offsetH = 1;
         break;
@@ -937,69 +797,23 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 46:
-        usedUhrType->show(m_vierzehn);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 47:
-        usedUhrType->show(m_dreizehn);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 48:
-        usedUhrType->show(m_zwoelf);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 49:
-        usedUhrType->show(m_elf);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 50:
-        usedUhrType->show(zehn);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 51:
-        usedUhrType->show(m_neun);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 52:
-        usedUhrType->show(m_acht);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 53:
-        usedUhrType->show(m_sieben);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 54:
-        usedUhrType->show(m_sechs);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 55:
-        usedUhrType->show(fuenf);
+        usedUhrType->show(60 - min);
         usedUhrType->show(vor);
         offsetH = 1;
         break;
     case 56:
-        usedUhrType->show(m_vier);
-        usedUhrType->show(minuten);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 57:
-        usedUhrType->show(m_drei);
-        usedUhrType->show(minuten);
-        usedUhrType->show(vor);
-        offsetH = 1;
-        break;
     case 58:
-        usedUhrType->show(m_zwei);
+        usedUhrType->show(60 - min);
         usedUhrType->show(minuten);
         usedUhrType->show(vor);
         offsetH = 1;
