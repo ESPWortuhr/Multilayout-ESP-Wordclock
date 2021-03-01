@@ -335,14 +335,10 @@ function initWebsocket() {
 
 			$("#mqtt-port").set("value", data.MQTT_Port);
 			$("#mqtt-server").set("value", data.MQTT_Server);
-			$("#mqtt-topic").set("value", data.MQTT_Topic);
+			$("#mqtt-state").set("value", data.MQTT_State);
 
 			$("#front-layout").set("value", data.UhrtypeDef);
 			$("#colortype").set("value", data.colortype);
-
-			$("#mqtt-state").set("value", data.MQTTState);
-			$("#mqtt-port").set("value", data.MQTTPort);
-			$("#mqtt-server").set("value", data.MQTTServer);
 
 			$("#boot-led-blink").set("checked", data.bootLedBlink | 0);
 			$("#boot-led-sweep").set("checked", data.bootLedSweep | 0);
@@ -1014,9 +1010,9 @@ $.ready(function() {
 		debugMessage("Uhrzeit wurde manuell konfiguriert", data);
 	});
 	$("#mqtt-button").on("click", function() {
-		MQTTState = $("#mqtt_state").get("value");
-		MQTTPort = $("#mqtt_port").get("value");
-		MQTTServer = $("#mqtt_server").get("value");
+		MQTTState = $("#mqtt-state").get("value");
+		MQTTPort = $("#mqtt-port").get("value");
+		MQTTServer = $("#mqtt-server").get("value");
 
 		var data = CMDtoData(COMMAND_SET_MQTT, 0, 0);
 		data += nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTTSERVER_TEXT_LENGTH) + "999";

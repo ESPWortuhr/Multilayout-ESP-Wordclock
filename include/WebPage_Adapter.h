@@ -383,14 +383,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.conf = COMMAND_SET_MQTT;
             G.MQTT_State = split(payload, 9, 3);
             G.MQTT_Port = split(payload, 12, 5);
-            ii = 0;
-            for (uint8_t k = 17; k < 47; k++) {
-                if (payload[k] != ' ') {
-                    G.MQTT_Server[ii] = payload[k];
-                    ii++;
-                }
-            }
-            G.MQTT_Server[ii] = '\0';
+            payloadTextHandling(payload, G.MQTT_Server,
+                                sizeof(G.MQTT_Server) /
+                                    sizeof(G.MQTT_Server[0]));
             break;
         }
 
