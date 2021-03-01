@@ -48,7 +48,8 @@ RgbwColor led_get_pixel_rgbw(uint16_t i) {
 //------------------------------------------------------------------------------
 static uint8_t autoLdr(uint8_t val) {
     if (G.autoLdrEnabled) {
-        uint16_t u16 = val;
+        // G.hh enthaelt zeitabhaengige Helligkeitswerte in %
+        uint16_t u16 = (val * G.hh) / 100;
         return ((uint8_t)((u16 * ldrVal) / 100));
     }
     return val;
@@ -147,10 +148,17 @@ static inline void rahmen_clear() {
 
 static void led_set(bool changed = false) {
     uint8_t rr, gg, bb, ww;
-    bool use_new_array = false;
-    set_helligkeit(rr, gg, bb, ww, Foreground);
+    uint8_t r2, g2, b2, w2;
+    set_helligkeit_ldr(rr, gg, bb, ww, Foreground);
+    set_helligkeit_ldr(r2, g2, b2, w2, Background);
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        led_set_pixel(rr, gg, bb, ww, Word_array_old[i]);
+        if (Word_array_old[i] < usedUhrType->NUM_PIXELS()) {
+            // foreground
+            led_set_pixel(rr, gg, bb, ww, i);
+        } else {
+            // background
+            led_set_pixel(r2, g2, b2, w2, i);
+        }
     }
     if (animation.led_show_notify(changed, _minute)) {
         led_show();
@@ -324,6 +332,7 @@ static void set_farbe() {
 
 static void doLDRLogic() {
     int16_t lux = analogRead(A0); // Range 0-1023
+    uint8_t ldrValOld = ldrVal;
 
     if (G.autoLdrEnabled) {
         lux /= 4;
@@ -345,6 +354,10 @@ static void doLDRLogic() {
             } // Minimale Helligkeit
             ldrVal = map(lux, 1, 900, 1, 100);
         }
+    }
+    if (ldrValOld != ldrVal) {
+        // lass den LDR sofort wirken
+        led_set();
     }
 }
 
