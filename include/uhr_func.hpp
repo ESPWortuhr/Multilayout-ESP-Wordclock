@@ -763,7 +763,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
     case 37:
     case 38:
     case 39:
-        usedUhrType->show(30 - min);
+        usedUhrType->show(min - 30);
         usedUhrType->show(nach);
         usedUhrType->show(halb);
         offsetH = 1;
