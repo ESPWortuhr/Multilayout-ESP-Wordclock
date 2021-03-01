@@ -125,12 +125,6 @@ uint16_t wetterswitch;
 // LDR
 uint8_t ldrVal = 100;
 
-// Telnet vars
-bool ConnectionEstablished; // Flag for successfully handled connection
-#define MAX_TELNET_CLIENTS 2
-WiFiServer TelnetServer(23);
-WiFiClient TelnetClient[MAX_TELNET_CLIENTS];
-
 unsigned char wlan_client = false;
 unsigned char wlan_status = 99;
 unsigned char wlan_ssid = false;
@@ -229,73 +223,6 @@ enum Command {
 
 };
 
-enum ledText {
-
-    /* Numbers from 0 to 60 are reserved */
-
-    es_ist = 101,
-    nach = 102,
-    vor = 103,
-    viertel = 104,
-    dreiviertel = 105,
-    uhr = 106,
-    halb = 107,
-    fuenf = 108,
-    zehn = 109,
-    zwanzig = 110,
-    eins = 111,
-    frueh = 112,
-    minute = 113,
-    minuten = 114,
-    minuten_extra = 115,
-    abends = 116,
-    mitternacht = 117,
-    mittags = 118,
-    warm = 119,
-    morgens = 120,
-    und = 121,
-    minuten_uhr = 122,
-
-    h_ein = 151,
-    h_zwei = 152,
-    h_drei = 153,
-    h_vier = 154,
-    h_fuenf = 155,
-    h_sechs = 156,
-    h_sieben = 157,
-    h_acht = 158,
-    h_neun = 159,
-    h_zehn = 160,
-    h_elf = 161,
-    h_zwoelf = 162,
-    h_dreizehn = 163,
-
-    w_morgen = 200,
-    w_frueh = 201,
-    w_abend = 202,
-    w_mittag = 203,
-    w_nacht = 204,
-    w_schnee = 205,
-    w_klar = 206,
-    w_warnung = 207,
-    w_regen = 208,
-    w_wolken = 209,
-    w_gewitter = 210,
-    w_unter = 211,
-    w_ueber = 212,
-    w_minus = 213,
-    w_null = 214,
-    w_fuenf = 215,
-    w_zehn = 216,
-    w_und = 217,
-    w_zwanzig = 218,
-    w_dreissig = 219,
-    w_grad = 220,
-
-    h_droelf = 240,
-    happy_birthday = 241
-};
-
 enum UhrTypeDefinitions {
     Uhr_114 = 1,
     Uhr_114_Alternative = 2,
@@ -321,13 +248,3 @@ enum Icons {
     FIRE_6 = 11,
     RGB_I = 12,
 };
-
-const uint8_t dim[20] = {30,  50,  70,  90,  110, 130, 140, 160, 200, 255,
-                         255, 200, 160, 100, 80,  60,  40,  20,  10,  0};
-const int8_t diff[20] = {-30, -20, -20, -20, -20, -20, -10, -20, -40, -55,
-                         0,   55,  40,  60,  20,  20,  20,  20,  10,  10};
-
-//--OTA--
-ESP8266WebServer httpServer(81);
-ESP8266HTTPUpdateServer httpUpdater;
-//--OTA--
