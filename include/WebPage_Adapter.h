@@ -41,8 +41,12 @@ public:
             "[WS-Server][%d][handleHeader] no Websocket connection close.\n",
             client->num);
         char buf[200];
+        int index = client->cUrl.indexOf('?');
+        int length = index >= 0 ? index : client->cUrl.length();
+        // remove GET request data from URL
+        String url = client->cUrl.substring(0, length);
         // ----------------------------------------
-        if (client->cUrl.endsWith("favicon.ico")) {
+        if (url.endsWith("favicon.ico")) {
             sprintf(buf,
                     "HTTP/1.1 200 OK\r\n"
                     "Content-Type: image/x-ico\r\n"
@@ -58,7 +62,7 @@ public:
 
         } else {
             // ------------------------------------
-            if (client->cUrl.equals("/")) {
+            if (url.equals("/")) {
                 client->tcp->write(
                     "HTTP/1.1 200 OK\r\n"
                     "Server: arduino-WebSocket-Server\r\n"
