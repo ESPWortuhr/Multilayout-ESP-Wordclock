@@ -342,7 +342,12 @@ static void doLDRLogic() {
             lux = maximum;
         if (lux <= minimum)
             lux = minimum;
-        ldrVal = map(lux, G.autoLdrDark, G.autoLdrBright, 10, 100);
+        if (G.autoLdrDark == G.autoLdrBright) {
+            // map() wuerde mit division durch 0 crashen
+            ldrVal = 100;
+        } else {
+            ldrVal = map(lux, G.autoLdrDark, G.autoLdrBright, 10, 100);
+        }
     } else {
         if (G.ldr == 1) {
             lux = lux - (G.ldrCal * 20);
