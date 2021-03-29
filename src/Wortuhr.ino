@@ -676,6 +676,20 @@ void loop() {
         break;
     }
 
+    case COMMAND_REQUEST_MQTT_VALUES: {
+        DynamicJsonDocument config(1024);
+        config["command"] = "mqtt";
+        config["MQTT_State"] = G.MQTT_State;
+        config["MQTT_Port"] = G.MQTT_State;
+        config["MQTT_Server"] = G.MQTT_State;
+        serializeJson(config, str);
+        Serial.print("Sending Payload:");
+        Serial.println(str);
+        webSocket.sendTXT(G.client_nr, str, strlen(str));
+        G.conf = COMMAND_IDLE;
+        break;
+    }
+
         //------------------------------------------------
         // Config Senden
         //------------------------------------------------
@@ -707,9 +721,6 @@ void loop() {
         config["apikey"] = G.apikey;
         config["colortype"] = G.Colortype;
         config["UhrtypeDef"] = G.UhrtypeDef;
-        config["MQTT_State"] = G.MQTT_State;
-        config["MQTT_Port"] = G.MQTT_State;
-        config["MQTT_Server"] = G.MQTT_State;
         config["bootLedBlink"] = G.bootLedBlink;
         config["bootLedSweep"] = G.bootLedSweep;
         config["bootShowWifi"] = G.bootShowWifi;

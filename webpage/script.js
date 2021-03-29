@@ -148,6 +148,7 @@ var COMMAND_REQUEST_COLOR_VALUES = 201;
 var COMMAND_REQUEST_WIFI_LIST = 202;
 var COMMAND_REQUEST_AUTO_LDR = 203;
 var COMMAND_REQUEST_ANIMATION = 204;
+var COMMAND_REQUEST_MQTT_VALUES = 205;
 
 // colors
 var COLOR_FOREGROUND = 0;
@@ -300,6 +301,12 @@ function initWebsocket() {
 		var data = JSON.parse(event.data);
 
 		debugMessage("Webservice response arrived (Command " + data.command + ").", data);
+
+		if (data.command === "mqtt") {
+			$("#mqtt-port").set("value", data.MQTT_Port);
+			$("#mqtt-server").set("value", data.MQTT_Server);
+			$("#mqtt-state").set("value", data.MQTT_State);
+		}
 
 		if (data.command === "config") {
 
@@ -708,6 +715,9 @@ $.ready(function() {
 
 		if (navigation === "functions") {
 			setAnimation();
+		}
+		if (navigation === "smart-home") {
+			sendData(COMMAND_REQUEST_MQTT_VALUES, 0, 0);
 		}
 		if (navigation === "settings") {
 			sendData(COMMAND_REQUEST_CONFIG_VALUES, 0, 0);
