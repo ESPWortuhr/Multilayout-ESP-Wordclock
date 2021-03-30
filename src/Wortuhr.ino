@@ -32,7 +32,7 @@
 
 // um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere
 // Seriennummer eintragen!
-#define SERNR 122
+#define SERNR 100
 
 bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
@@ -676,12 +676,15 @@ void loop() {
         break;
     }
 
+        //------------------------------------------------
+        // MQTT Config Senden
+        //------------------------------------------------
     case COMMAND_REQUEST_MQTT_VALUES: {
         DynamicJsonDocument config(1024);
         config["command"] = "mqtt";
         config["MQTT_State"] = G.MQTT_State;
-        config["MQTT_Port"] = G.MQTT_State;
-        config["MQTT_Server"] = G.MQTT_State;
+        config["MQTT_Port"] = G.MQTT_Port;
+        config["MQTT_Server"] = G.MQTT_Server;
         serializeJson(config, str);
         Serial.print("Sending Payload:");
         Serial.println(str);
@@ -884,7 +887,7 @@ void loop() {
         // MQTT Einstellungen
         //------------------------------------------------
     case COMMAND_SET_MQTT: {
-        if (!mqttClient.connected()) {
+        if (!mqttClient.connected() && G.MQTT_State) {
             mqttClient.connect("Wortuhr");
             MQTT_reconnect();
         }

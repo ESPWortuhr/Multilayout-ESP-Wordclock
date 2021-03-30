@@ -124,9 +124,10 @@ uint16_t split(uint8_t *payload, uint8_t start, uint8_t lenght) {
 
 //------------------------------------------------------------------------------
 
-void payloadTextHandling(const uint8_t *payload, char *text, uint8_t length) {
+void payloadTextHandling(const uint8_t *payload, char *text, uint8_t length,
+                         uint8_t start = 9) {
     uint8_t ii = 0;
-    for (uint8_t k = 9; k < 9 + length - 1; k++) // need space for  '\0'
+    for (uint8_t k = start; k < start + length - 1; k++) // need space for  '\0'
     {
         text[ii] = payload[k];
         ii++;
@@ -387,9 +388,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.conf = COMMAND_SET_MQTT;
             G.MQTT_State = split(payload, 9, 3);
             G.MQTT_Port = split(payload, 12, 5);
-            payloadTextHandling(payload, G.MQTT_Server,
-                                sizeof(G.MQTT_Server) /
-                                    sizeof(G.MQTT_Server[0]));
+            payloadTextHandling(
+                payload, G.MQTT_Server,
+                sizeof(G.MQTT_Server) / sizeof(G.MQTT_Server[0]), 17);
             break;
         }
 
@@ -520,6 +521,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_RESET: { // Reset
             G.conf = COMMAND_RESET;
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_REQUEST_MQTT_VALUES: { // MQTT Config anfordern
+            G.conf = COMMAND_REQUEST_MQTT_VALUES;
+            G.client_nr = num;
             break;
         }
 
