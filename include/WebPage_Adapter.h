@@ -391,6 +391,18 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             payloadTextHandling(
                 payload, G.MQTT_Server,
                 sizeof(G.MQTT_Server) / sizeof(G.MQTT_Server[0]), 17);
+            payloadTextHandling(
+                payload, G.MQTT_User,
+                sizeof(G.MQTT_User) / sizeof(G.MQTT_User[0]), 47);
+            payloadTextHandling(
+                payload, G.MQTT_Pass,
+                sizeof(G.MQTT_Pass) / sizeof(G.MQTT_Pass[0]), 77);
+            payloadTextHandling(
+                payload, G.MQTT_ClientId,
+                sizeof(G.MQTT_ClientId) / sizeof(G.MQTT_ClientId[0]), 107);
+            payloadTextHandling(
+                payload, G.MQTT_Topic,
+                sizeof(G.MQTT_Topic) / sizeof(G.MQTT_Topic[0]), 137);
             break;
         }
 

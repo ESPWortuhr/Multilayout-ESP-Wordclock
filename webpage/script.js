@@ -91,6 +91,10 @@ var colortype = 0;
 var MQTTState = 0;
 var MQTTPort = 0;
 var MQTTServer = 0;
+var MQTTUser = 0;
+var MQTTPass = 0;
+var MQTTClientId = 0;
+var MQTTTopic = 0;
 var bootLedBlink = 0;
 var bootLedSweep = 0;
 var bootShowWifi = 0;
@@ -159,7 +163,7 @@ var DATA_MARQUEE_TEXT_LENGTH = 30;
 var DATA_SSID_TEXT_LENGTH = 32; // WL_SSID_MAX_LENGTH == 32
 var DATA_PASSWORT_TEXT_LENGTH = 63; // WL_WPA_KEY_MAX_LENGTH == 63
 var DATA_TIMESERVER_TEXT_LENGTH = 30;
-var DATA_MQTTSERVER_TEXT_LENGTH = 30;
+var DATA_MQTT_RESPONSE_TEXT_LENGTH = 30;
 var DATA_HOST_TEXT_LENGTH = 30;
 
 // color pickers
@@ -207,6 +211,10 @@ function initConfigValues() {
 	MQTTState = 0;
 	MQTTPort = 0;
 	MQTTServer = 0;
+	MQTTUser = 0;
+	MQTTPass = 0;
+	MQTTClientId = 0;
+	MQTTTopic = 0;
 	bootLedBlink = 0;
 	bootLedSweep = 0;
 	bootShowWifi = 0;
@@ -306,6 +314,10 @@ function initWebsocket() {
 			$("#mqtt-port").set("value", data.MQTT_Port);
 			$("#mqtt-server").set("value", data.MQTT_Server);
 			$("#mqtt-state").set("value", data.MQTT_State);
+			$("#mqtt-user").set("value", data.MQTT_User);
+			$("#mqtt-pass").set("value", data.MQTT_Pass);
+			$("#mqtt-clientid").set("value", data.MQTT_ClientId);
+			$("#mqtt-topic").set("value", data.MQTT_Topic);
 		}
 
 		if (data.command === "config") {
@@ -339,10 +351,6 @@ function initWebsocket() {
 
 			$("#owm-api-key").set("value", data.apiKey);
 			$("#owm-city-id").set("value", data.cityid);
-
-			$("#mqtt-port").set("value", data.MQTT_Port);
-			$("#mqtt-server").set("value", data.MQTT_Server);
-			$("#mqtt-state").set("value", data.MQTT_State);
 
 			$("#front-layout").set("value", data.UhrtypeDef);
 			$("#colortype").set("value", data.colortype);
@@ -557,7 +565,7 @@ function setAnimation() {
 function autoLdrValueUpdater() {
 	if (autoLdrInterval == null) {
 		autoLdrInterval = setInterval(function() {
-			// jede Sekunde ausfuehren 
+			// jede Sekunde ausfuehren
 			if ($("#auto-ldr-enabled").get("value") === "1") {
 				sendData(COMMAND_REQUEST_AUTO_LDR, 1, 0);
 			}
@@ -1021,9 +1029,13 @@ $.ready(function() {
 		MQTTState = $("#mqtt-state").get("value");
 		MQTTPort = $("#mqtt-port").get("value");
 		MQTTServer = $("#mqtt-server").get("value");
+		MQTTUser = $("#mqtt-user").get("value");
+		MQTTPass = $("#mqtt-pass").get("value");
+		MQTTClientId = $("#mqtt-clientid").get("value");
+		MQTTTopic = $("#mqtt-topic").get("value");
 
 		var data = CMDtoData(COMMAND_SET_MQTT, 0, 0);
-		data += nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTTSERVER_TEXT_LENGTH) + "999";
+		data += nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTUser, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTPass, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTClientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTTopic, DATA_MQTT_RESPONSE_TEXT_LENGTH) + "999";
 		websocket.send(data);
 		debugMessage("MQTT Server wurde konfiguriert", data);
 	});

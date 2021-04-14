@@ -86,6 +86,10 @@ struct GLOBAL {
     uint8_t Colortype;
     uint8_t MQTT_State;
     char MQTT_Server[30];
+    char MQTT_User[30];
+    char MQTT_Pass[30];
+    char MQTT_ClientId[30];
+    char MQTT_Topic[30];
     uint16_t MQTT_Port;
 
     uint8_t autoLdrEnabled;

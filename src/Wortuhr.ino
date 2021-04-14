@@ -268,6 +268,10 @@ void setup() {
         G.MQTT_State = 0;
         G.MQTT_Port = 1883;
         strcpy(G.MQTT_Server, "192.168.4.1");
+        strcpy(G.MQTT_User, "User");
+        strcpy(G.MQTT_Pass, "Passwort");
+        strcpy(G.MQTT_ClientId, "ClientId");
+        strcpy(G.MQTT_Topic, "Wortuhr");
 
         G.UhrtypeDef = DEFAULT_LAYOUT;
         G.Colortype = DEFAULT_LEDTYPE;
@@ -406,8 +410,8 @@ void setup() {
     if (G.MQTT_State == 1) {
         mqttClient.setServer(G.MQTT_Server, G.MQTT_Port);
         mqttClient.setCallback(MQTT_callback);
-        mqttClient.connect("Wortuhr");
-        mqttClient.subscribe("/Wortuhr");
+        mqttClient.connect(G.MQTT_ClientId, G.MQTT_User, G.MQTT_Pass);
+        mqttClient.subscribe(G.MQTT_Topic);
     }
 
     //-------------------------------------
@@ -685,6 +689,10 @@ void loop() {
         config["MQTT_State"] = G.MQTT_State;
         config["MQTT_Port"] = G.MQTT_Port;
         config["MQTT_Server"] = G.MQTT_Server;
+        config["MQTT_User"] = G.MQTT_User;
+        config["MQTT_Pass"] = G.MQTT_Pass;
+        config["MQTT_ClientId"] = G.MQTT_ClientId;
+        config["MQTT_Topic"] = G.MQTT_Topic;
         serializeJson(config, str);
         Serial.print("Sending Payload:");
         Serial.println(str);
@@ -888,7 +896,7 @@ void loop() {
         //------------------------------------------------
     case COMMAND_SET_MQTT: {
         if (!mqttClient.connected() && G.MQTT_State) {
-            mqttClient.connect("Wortuhr");
+            mqttClient.connect(G.MQTT_ClientId, G.MQTT_User, G.MQTT_Pass);
             MQTT_reconnect();
         }
         eeprom_write();
