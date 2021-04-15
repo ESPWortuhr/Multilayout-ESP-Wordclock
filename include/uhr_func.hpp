@@ -721,7 +721,11 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
             offsetH = 1;
         } else {
             usedUhrType->show(viertel);
-            usedUhrType->show(nach);
+            if (G.UhrtypeDef == Uhr_125_Type2) {
+                usedUhrType->show(v_nach);
+            } else {
+                usedUhrType->show(nach);
+            }
         }
         break;
     case 16:
@@ -732,7 +736,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(nach);
         break;
     case 20: // 20 nach
-        if (G.Sprachvariation[ItIs20] == 1) {
+        if (G.Sprachvariation[ItIs20] == 1 || G.UhrtypeDef == Uhr_125_Type2) {
             usedUhrType->show(zehn);
             usedUhrType->show(vor);
             usedUhrType->show(halb);
@@ -787,7 +791,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 40: // 20 vor
-        if (G.Sprachvariation[ItIs40] == 1) {
+        if (G.Sprachvariation[ItIs40] == 1 || G.UhrtypeDef == Uhr_125_Type2) {
             usedUhrType->show(zehn);
             usedUhrType->show(nach);
             usedUhrType->show(halb);
@@ -810,7 +814,11 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
             usedUhrType->show(dreiviertel);
         } else {
             usedUhrType->show(viertel);
-            usedUhrType->show(vor);
+            if (G.UhrtypeDef == Uhr_125_Type2) {
+                usedUhrType->show(v_vor);
+            } else {
+                usedUhrType->show(vor);
+            }
         }
         offsetH = 1;
         break;

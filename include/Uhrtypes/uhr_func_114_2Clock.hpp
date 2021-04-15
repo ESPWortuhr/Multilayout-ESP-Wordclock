@@ -8,7 +8,7 @@
  * D R E I V I E R T E L
  * V O R F U N K N A C H
  * H A L B A E L F Ü N F
- * E I N S X Ä M Z W E I
+ * E I N S X A M Z W E I
  * D R E I A U J V I E R
  * S E C H S N L A C H T
  * S I E B E N Z W Ö L F

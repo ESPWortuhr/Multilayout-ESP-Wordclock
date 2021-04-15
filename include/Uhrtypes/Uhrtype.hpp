@@ -41,6 +41,8 @@ enum ledText {
     morgens = 120,
     und = 121,
     minuten_uhr = 122,
+    v_vor = 123,
+    v_nach = 124,
 
     h_ein = 151,
     h_zwei = 152,
