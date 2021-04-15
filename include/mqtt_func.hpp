@@ -12,7 +12,7 @@ void MQTT_callback(char *topic, byte *payload, unsigned int length) {
     Serial.print(topic);
     Serial.print("] ");
     char msg[length + 1];
-    for (int i = 0; i < length; i++) {
+    for (uint32_t i = 0; i < length; i++) {
         Serial.print((char)payload[i]);
         msg[i] = (char)payload[i];
     }
@@ -59,6 +59,6 @@ void MQTT_callback(char *topic, byte *payload, unsigned int length) {
 }
 
 void MQTT_reconnect() {
-    mqttClient.subscribe("/Wortuhr");
+    mqttClient.subscribe(G.MQTT_Topic);
     Serial.println("MQTT Connected...");
 }
