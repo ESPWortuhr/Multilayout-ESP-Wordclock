@@ -86,6 +86,10 @@ struct GLOBAL {
     uint8_t Colortype;
     uint8_t MQTT_State;
     char MQTT_Server[30];
+    char MQTT_User[30];
+    char MQTT_Pass[30];
+    char MQTT_ClientId[30];
+    char MQTT_Topic[30];
     uint16_t MQTT_Port;
 
     uint8_t autoLdrEnabled;
@@ -220,6 +224,7 @@ enum Command {
     COMMAND_REQUEST_WIFI_LIST = 202,
     COMMAND_REQUEST_AUTO_LDR = 203,
     COMMAND_REQUEST_ANIMATION = 204,
+    COMMAND_REQUEST_MQTT_VALUES = 205,
 
 };
 

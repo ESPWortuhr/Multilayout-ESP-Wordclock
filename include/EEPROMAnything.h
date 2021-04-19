@@ -52,7 +52,7 @@ void eeprom_read() {
     Serial.printf("rgb.3.2   : %u\n", G.rgb[Effect][2]);
     Serial.printf("rgb.3.3   : %u\n", G.rgb[Effect][3]);
     Serial.printf("Zeitserver: %s\n", G.zeitserver);
-    Serial.printf("Text      : %s\n", G.ltext);
+    Serial.printf("Lauftext  : %s\n", G.ltext);
     Serial.printf("H6        : %u\n", G.h6);
     Serial.printf("H8        : %u\n", G.h8);
     Serial.printf("H12       : %u\n", G.h12);
@@ -63,6 +63,27 @@ void eeprom_read() {
     Serial.printf("LDR       : %u\n", G.ldr);
     Serial.printf("LDRCal    : %u\n", G.ldrCal);
     Serial.printf("Uhrtype    : %u\n", G.UhrtypeDef);
+    Serial.printf("MQTT_State    : %u\n", G.MQTT_State);
+    Serial.printf("MQTT_Server    : %s\n", G.MQTT_Server);
+    Serial.printf("MQTT_User    : %s\n", G.MQTT_User);
+    Serial.printf("MQTT_Pass    : %s\n", G.MQTT_Pass);
+    Serial.printf("MQTT_ClientId    : %s\n", G.MQTT_ClientId);
+    Serial.printf("MQTT_Topic    : %s\n", G.MQTT_Topic);
+    Serial.printf("MQTT_Port    : %u\n", G.MQTT_Port);
+
+    Serial.printf("autoLdrEnabled    : %u\n", G.autoLdrEnabled);
+    Serial.printf("autoLdrBright    : %u\n", G.autoLdrBright);
+    Serial.printf("autoLdrDark    : %u\n", G.autoLdrDark);
+    Serial.printf("animType    : %u\n", G.animType);
+    Serial.printf("Uhrtype    : %u\n", G.animDuration);
+    Serial.printf("animDuration    : %u\n", G.animSpeed);
+    Serial.printf("animColorize    : %u\n", G.animColorize);
+    Serial.printf("animDemo    : %u\n", G.animDemo);
+
+    Serial.printf("bootLedBlink    : %u\n", G.bootLedBlink);
+    Serial.printf("bootLedSweep    : %u\n", G.bootLedSweep);
+    Serial.printf("bootShowWifi    : %u\n", G.bootShowWifi);
+    Serial.printf("bootShowIP    : %u\n", G.bootShowIP);
     Serial.printf("Colortype    : %u\n", G.Colortype);
     Serial.print("OWM_apikey: ");
     Serial.println(G.apikey);
