@@ -121,6 +121,22 @@ public:
 
             //------------------------------------------------------------------------------
 
+        case dreiviertel:
+            Letter_set(LED_MAP(22));
+            Letter_set(LED_MAP(23));
+            Letter_set(LED_MAP(24));
+            Letter_set(LED_MAP(25));
+            Letter_set(LED_MAP(26));
+            Letter_set(LED_MAP(27));
+            Letter_set(LED_MAP(28));
+            Letter_set(LED_MAP(29));
+            Letter_set(LED_MAP(30));
+            Letter_set(LED_MAP(31));
+            Letter_set(LED_MAP(32));
+            break;
+
+            //------------------------------------------------------------------------------
+
         case fuenf:
             Letter_set(LED_MAP(7));
             Letter_set(LED_MAP(8));
