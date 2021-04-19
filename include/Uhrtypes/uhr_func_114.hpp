@@ -1,5 +1,20 @@
 #include "Uhrtype.hpp"
 
+/*
+ * Layout Front
+ *
+ * E S K I S T R F Ü N F
+ * Z E H N Z W A N Z I G
+ * D R E I V I E R T E L
+ * T G N A C H V O R U M
+ * H A L B G Z W Ö L F J
+ * Z W E I N S I E B E N
+ * K D R E I R H F Ü N F
+ * E L F N E U N V I E R
+ * N A C H T Z E H N B X
+ * U S E C H S F U H R Y
+ */
+
 #define LED_LAYOUT_REVERSE 0
 
 #define LED_MAP(x) (x)
@@ -7,20 +22,8 @@
 class UHR_114_t : public iUhrType {
 public:
 #if (LED_LAYOUT_REVERSE)
+
     /*
-     * Layout Front
-     *
-     * E S K I S T R F Ü N F
-     * Z E H N Z W A N Z I G
-     * D R E I V I E R T E L
-     * T G N A C H V O R U M
-     * H A L B G Z W Ö L F J
-     * Z W E I N S I E B E N
-     * K D R E I R H F Ü N F
-     * E L F N E U N V I E R
-     * N A C H T Z E H N B X
-     * U S E C H S F U H R Y
-     *
      * 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
      * 102, 101, 100,  99,  98,  97,  96,  95,  94,  93,  92,
      *  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,  91,
@@ -107,22 +110,6 @@ public:
             //------------------------------------------------------------------------------
 
         case viertel:
-            Letter_set(LED_MAP(26));
-            Letter_set(LED_MAP(27));
-            Letter_set(LED_MAP(28));
-            Letter_set(LED_MAP(29));
-            Letter_set(LED_MAP(30));
-            Letter_set(LED_MAP(31));
-            Letter_set(LED_MAP(32));
-            break;
-
-            //------------------------------------------------------------------------------
-
-        case dreiviertel:
-            Letter_set(LED_MAP(22));
-            Letter_set(LED_MAP(23));
-            Letter_set(LED_MAP(24));
-            Letter_set(LED_MAP(25));
             Letter_set(LED_MAP(26));
             Letter_set(LED_MAP(27));
             Letter_set(LED_MAP(28));
