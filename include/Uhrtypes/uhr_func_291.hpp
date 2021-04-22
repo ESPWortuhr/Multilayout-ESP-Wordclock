@@ -50,6 +50,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasDreiviertel() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(uint8_t displayingText) override {
 
         switch (displayingText) // Minuten

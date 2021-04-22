@@ -640,19 +640,6 @@ static void set_stunde(const uint8_t std, const uint8_t voll) {
 
 //------------------------------------------------------------------------------
 
-static bool definedAndHasDreiviertel() {
-    bool return_value = false;
-    if (G.Sprachvariation[ItIs45] == 1) {
-        if (G.UhrtypeDef == Uhr_114_Alternative ||
-            G.UhrtypeDef == Uhr_114_2Clock || G.UhrtypeDef == Uhr_291) {
-            return_value = true;
-        }
-    }
-    return return_value;
-}
-
-//------------------------------------------------------------------------------
-
 void show_minuten(uint8_t min) {
     if (G.zeige_min > 0) {
         // Minuten / Sekunden-Animation
@@ -716,7 +703,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(nach);
         break;
     case 15: // viertel nach
-        if (G.Sprachvariation[ItIs15] == 1) {
+        if (G.Sprachvariation[ItIs15]) {
             usedUhrType->show(viertel);
             offsetH = 1;
         } else {
@@ -732,7 +719,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(nach);
         break;
     case 20: // 20 nach
-        if (G.Sprachvariation[ItIs20] == 1 || G.UhrtypeDef == Uhr_125_Type2) {
+        if (usedUhrType->hasZwanzig() && G.Sprachvariation[ItIs20]) {
             usedUhrType->show(zehn);
             usedUhrType->show(vor);
             usedUhrType->show(halb);
@@ -787,7 +774,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 40: // 20 vor
-        if (G.Sprachvariation[ItIs40] == 1 || G.UhrtypeDef == Uhr_125_Type2) {
+        if (usedUhrType->hasZwanzig() && G.Sprachvariation[ItIs40]) {
             usedUhrType->show(zehn);
             usedUhrType->show(nach);
             usedUhrType->show(halb);
@@ -806,7 +793,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 45: // viertel vor
-        if (definedAndHasDreiviertel()) {
+        if (usedUhrType->hasDreiviertel() && G.Sprachvariation[ItIs45]) {
             usedUhrType->show(dreiviertel);
         } else {
             usedUhrType->show(viertel);

@@ -45,6 +45,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasZwanzig() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(uint8_t text) override {
 
         switch (text) {
