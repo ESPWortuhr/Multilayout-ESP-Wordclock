@@ -446,7 +446,7 @@ static void laufschrift(const char *buf) {
 
     shift_all_pixels_to_right();
 
-    if (G.UhrtypeDef == Uhr_291) {
+    if (usedUhrType->has24HourLayout()) {
         offsetRow = 4;
     }
 
@@ -527,7 +527,7 @@ static void zahlen(const char d1, const char d2) {
     static uint8_t offsetLetter1 = 6;
     static uint8_t offsetRow = 1;
 
-    if (G.UhrtypeDef == Uhr_291) {
+    if (usedUhrType->has24HourLayout()) {
         offsetLetter0 = 3;
         offsetLetter1 = 9;
         offsetRow = 4;
@@ -670,7 +670,7 @@ void show_minuten(uint8_t min) {
 //------------------------------------------------------------------------------
 
 void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
-    if (G.UhrtypeDef != Uhr_291) {
+    if (!usedUhrType->has24HourLayout()) {
         show_minuten(min);
         min /= 5;
         min *= 5;
@@ -1432,7 +1432,7 @@ static void calc_word_array() {
         led_set_pixel(rr, gg, bb, ww, i);
     }
 
-    if (G.UhrtypeDef == Uhr_242) {
+    if (usedUhrType->hasWeatherLayout()) {
         show_wetter();
     }
 }

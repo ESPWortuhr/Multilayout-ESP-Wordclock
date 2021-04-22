@@ -108,6 +108,12 @@ public:
 
     virtual const bool hasZwanzig() { return true; }
 
+    virtual const bool has24HourLayout() { return false; }
+
+    virtual const bool hasWeatherLayout() { return false; }
+
+    virtual const bool hasSecondsFrame() { return false; }
+
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) {
         if (row % 2 != 0) {
             col = COLS_MATRIX() - col - 1;

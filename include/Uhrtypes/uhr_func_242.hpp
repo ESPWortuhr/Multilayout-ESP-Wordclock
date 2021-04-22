@@ -27,6 +27,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasWeatherLayout() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(uint8_t text) override {
         switch (text) {
         case es_ist:

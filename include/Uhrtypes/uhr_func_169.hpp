@@ -80,6 +80,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasSecondsFrame() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(uint8_t text) override {
         switch (text) {
         case es_ist:

@@ -191,7 +191,7 @@ void time_is_set() {
     _sekunde = tm.tm_sec;
     _minute = tm.tm_min;
     _stunde = tm.tm_hour;
-    if (G.UhrtypeDef == Uhr_169) {
+    if (usedUhrType->hasSecondsFrame()) {
         _sekunde48 = _sekunde * 48 / 60;
     }
 
@@ -438,7 +438,7 @@ void setup() {
     MDNS.addService("http", "tcp", 81);
 
     // setup frame
-    if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2) {
+    if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 && G.zeige_min < 2) {
         set_farbe_rahmen();
     }
 }
@@ -450,7 +450,7 @@ void setup() {
 void loop() {
     unsigned long currentMillis = millis();
     count_delay += currentMillis - previousMillis;
-    if (G.UhrtypeDef == Uhr_169) {
+    if (usedUhrType->hasSecondsFrame()) {
         count_millis48 += currentMillis - previousMillis;
     }
     previousMillis = currentMillis;
@@ -467,7 +467,7 @@ void loop() {
     // lass die Zeit im Demo Mode der Animation schneller ablaufen
     animation.demoMode(_minute, _sekunde);
 
-    if (G.UhrtypeDef == Uhr_169) {
+    if (usedUhrType->hasSecondsFrame()) {
         if (count_millis48 >= interval48) {
             count_millis48 = 0;
             _sekunde48++;
@@ -497,7 +497,7 @@ void loop() {
     //------------------------------------------------
     // Sekunde48
     //------------------------------------------------
-    if (G.UhrtypeDef == Uhr_169) {
+    if (usedUhrType->hasSecondsFrame()) {
         if (last_sekunde48 != _sekunde48) {
             if (G.prog == 0 && G.conf == 0) {
                 if (G.zeige_sek == 1 || G.zeige_min == 2) {
@@ -518,7 +518,7 @@ void loop() {
     if (last_sekunde != _sekunde) {
 
         // Wetteruhr
-        if (G.UhrtypeDef == Uhr_242) {
+        if (usedUhrType->hasWeatherLayout()) {
             weather_tag++;
         }
 
@@ -533,7 +533,7 @@ void loop() {
         }
         last_sekunde = _sekunde;
 
-        if (G.UhrtypeDef == Uhr_242) {
+        if (usedUhrType->hasWeatherLayout()) {
             if ((_sekunde == 0) | (_sekunde == 10) | (_sekunde == 20) |
                 (_sekunde == 30) | (_sekunde == 40) | (_sekunde == 50)) {
                 wetterswitch++;
@@ -566,7 +566,7 @@ void loop() {
     //------------------------------------------------
     // Wetterdaten abrufen
     //------------------------------------------------
-    if (G.UhrtypeDef == Uhr_242 &&
+    if (usedUhrType->hasWeatherLayout() &&
         weather_tag >= 600) { // Eisbaeeer changed for Debug (soll 600)
         weather_tag = 0;
         if (WiFi.status() == WL_CONNECTED) {
@@ -1056,7 +1056,7 @@ void loop() {
         }
         parameters_changed = false;
 
-        if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2) {
+        if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 && G.zeige_min < 2) {
             set_farbe_rahmen();
         }
         G.prog = COMMAND_IDLE;

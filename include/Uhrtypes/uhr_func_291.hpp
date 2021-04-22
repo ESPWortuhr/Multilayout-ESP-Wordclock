@@ -54,6 +54,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool has24HourLayout() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(uint8_t displayingText) override {
 
         switch (displayingText) // Minuten
