@@ -104,9 +104,9 @@ public:
 
     virtual const uint16_t getRMatrix(uint16_t index) { return 0; }
 
-    virtual const bool hasDreiviertel() { return 0; }
+    virtual const bool hasDreiviertel() { return false; }
 
-    virtual const bool hasZwanzig() { return 0; }
+    virtual const bool hasZwanzig() { return true; }
 
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) {
         if (row % 2 != 0) {
