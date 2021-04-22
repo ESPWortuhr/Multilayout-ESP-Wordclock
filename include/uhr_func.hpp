@@ -641,14 +641,14 @@ static void set_stunde(const uint8_t std, const uint8_t voll) {
 //------------------------------------------------------------------------------
 
 static bool definedAndHasDreiviertel() {
+    bool return_value = false;
     if (G.Sprachvariation[ItIs45] == 1) {
         if (G.UhrtypeDef == Uhr_114_Alternative ||
             G.UhrtypeDef == Uhr_114_2Clock || G.UhrtypeDef == Uhr_291) {
-            return true;
+            return_value = true;
         }
-    } else {
-        return false;
     }
+    return return_value;
 }
 
 //------------------------------------------------------------------------------
