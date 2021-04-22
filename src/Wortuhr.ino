@@ -1056,7 +1056,8 @@ void loop() {
         }
         parameters_changed = false;
 
-        if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 && G.zeige_min < 2) {
+        if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 &&
+            G.zeige_min < 2) {
             set_farbe_rahmen();
         }
         G.prog = COMMAND_IDLE;
