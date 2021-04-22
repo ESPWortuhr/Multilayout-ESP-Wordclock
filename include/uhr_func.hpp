@@ -721,11 +721,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
             offsetH = 1;
         } else {
             usedUhrType->show(viertel);
-            if (G.UhrtypeDef == Uhr_125_Type2) {
-                usedUhrType->show(v_nach);
-            } else {
-                usedUhrType->show(nach);
-            }
+            usedUhrType->show(v_nach);
         }
         break;
     case 16:
@@ -814,11 +810,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
             usedUhrType->show(dreiviertel);
         } else {
             usedUhrType->show(viertel);
-            if (G.UhrtypeDef == Uhr_125_Type2) {
-                usedUhrType->show(v_vor);
-            } else {
-                usedUhrType->show(vor);
-            }
+            usedUhrType->show(v_vor);
         }
         offsetH = 1;
         break;

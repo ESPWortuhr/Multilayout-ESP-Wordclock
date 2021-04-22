@@ -94,6 +94,7 @@ public:
             break;
 
         case nach:
+        case v_nach:
             Letter_set(55);
             Letter_set(56);
             Letter_set(57);
@@ -101,6 +102,7 @@ public:
             break;
 
         case vor:
+        case v_vor:
             Letter_set(59);
             Letter_set(60);
             Letter_set(61);
@@ -128,6 +130,7 @@ public:
             Letter_set(29);
             Letter_set(30);
             break;
+
         case zwanzig:
             Letter_set(31);
             Letter_set(32);

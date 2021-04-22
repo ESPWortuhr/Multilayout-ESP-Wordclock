@@ -118,6 +118,7 @@ public:
             break;
 
         case nach:
+        case v_nach:
             Letter_set(38);
             Letter_set(39);
             Letter_set(40);
@@ -129,6 +130,7 @@ public:
             break;
 
         case vor:
+        case v_vor:
             Letter_set(35);
             Letter_set(36);
             Letter_set(37);
