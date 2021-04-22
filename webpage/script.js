@@ -360,10 +360,10 @@ function initWebsocket() {
 			$("#boot-show-wifi").set("checked", data.bootShowWifi | 0);
 			$("#boot-show-ip").set("checked", data.bootShowIP | 0);
 
-			enableSpecific("specific-layout-2", data.UhrtypeDef === 2 || data.UhrtypeDef === 6 || data.UhrtypeDef === 7);
-			enableSpecific("specific-layout-3", data.UhrtypeDef !== 8);
-			enableSpecific("specific-layout-4", data.UhrtypeDef === 4);
-			enableSpecific("specific-layout-5", data.UhrtypeDef === 5);
+			enableSpecific("specific-layout-2", data.hasDreiviertel);
+			enableSpecific("specific-layout-3", data.hasZwanzig);
+			enableSpecific("specific-layout-4", data.hasSecondsFrame);
+			enableSpecific("specific-layout-5", data.hasWeatherLayout);
 			enableSpecific("specific-colortype-4", data.colortype === 4);
 		}
 		if (data.command === "set") {

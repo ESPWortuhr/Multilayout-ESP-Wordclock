@@ -740,6 +740,10 @@ void loop() {
         config["bootLedSweep"] = G.bootLedSweep;
         config["bootShowWifi"] = G.bootShowWifi;
         config["bootShowIP"] = G.bootShowIP;
+        config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
+        config["hasZwanzig"] = usedUhrType->hasZwanzig();
+        config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
+        config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         serializeJson(config, str);
         Serial.print("Sending Payload:");
         Serial.println(str);
