@@ -719,7 +719,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(nach);
         break;
     case 20: // 20 nach
-        if (usedUhrType->hasZwanzig() && G.Sprachvariation[ItIs20]) {
+        if (!usedUhrType->hasZwanzig() || G.Sprachvariation[ItIs20]) {
             usedUhrType->show(zehn);
             usedUhrType->show(vor);
             usedUhrType->show(halb);
@@ -774,7 +774,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 40: // 20 vor
-        if (usedUhrType->hasZwanzig() && G.Sprachvariation[ItIs40]) {
+        if (!usedUhrType->hasZwanzig() || G.Sprachvariation[ItIs40]) {
             usedUhrType->show(zehn);
             usedUhrType->show(nach);
             usedUhrType->show(halb);
