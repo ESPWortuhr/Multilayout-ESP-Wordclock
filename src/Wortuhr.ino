@@ -576,89 +576,6 @@ void loop() {
 
     Network_loop();
 
-    switch (G.prog) {
-
-    case COMMAND_MODE_SECONDS: // Sekundenanzeige
-    {
-        if (G.prog_init == 1) {
-            led_clear();
-            G.prog_init = 0;
-        }
-        char d1[5];
-        char d2[5];
-        sprintf(d1, "%d", (int)(_sekunde / 10));
-        sprintf(d2, "%d", (int)(_sekunde % 10));
-        zahlen(d1[0], d2[0]);
-        break;
-    }
-
-    case COMMAND_MODE_MARQUEE: // Laufschriftanzeige
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            led_clear();
-            count_delay = (G.geschw + 1) * 20;
-        }
-        if (count_delay >= (G.geschw + 1u) * 20u) {
-            laufschrift(G.ltext);
-            count_delay = 0;
-        }
-        break;
-    }
-
-    case COMMAND_MODE_RAINBOW: // Regenbogenanzeige
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            uhr_clear();
-            count_delay = G.geschw * 7 + 1;
-        }
-        if (count_delay >= G.geschw * 7u + 1u) {
-            rainbowCycle();
-            count_delay = 0;
-        }
-        break;
-    }
-
-    case COMMAND_MODE_CHANGE: // Farbwechselanzeige
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            led_clear();
-            count_delay = G.geschw * 7 + 1;
-        }
-        if (count_delay >= G.geschw * 7u + 1u) {
-            rainbow();
-            count_delay = 0;
-        }
-        break;
-    }
-
-    case COMMAND_MODE_COLOR: // Farbe Rahmen
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            set_farbe();
-            led_show();
-        }
-        break;
-    }
-
-    case COMMAND_MODE_ANIMATION: // Animation
-    {
-        G.prog = COMMAND_MODE_WORD_CLOCK; // sonst laeuft die Zeit nicht weiter
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            eeprom_write();
-            delay(100);
-        }
-        break;
-    }
-
-    default:
-        break;
-    }
-
     switch (G.conf) {
 
     case COMMAND_RESET: // Reset
@@ -898,7 +815,87 @@ void loop() {
         break;
     }
 
-    if (G.prog == COMMAND_MODE_WORD_CLOCK) {
+    switch (G.prog) {
+
+    case COMMAND_MODE_SECONDS: // Sekundenanzeige
+    {
+        if (G.prog_init == 1) {
+            led_clear();
+            G.prog_init = 0;
+        }
+        char d1[5];
+        char d2[5];
+        sprintf(d1, "%d", (int)(_sekunde / 10));
+        sprintf(d2, "%d", (int)(_sekunde % 10));
+        zahlen(d1[0], d2[0]);
+        break;
+    }
+
+    case COMMAND_MODE_MARQUEE: // Laufschriftanzeige
+    {
+        if (G.prog_init == 1) {
+            G.prog_init = 0;
+            led_clear();
+            count_delay = (G.geschw + 1) * 20;
+        }
+        if (count_delay >= (G.geschw + 1u) * 20u) {
+            laufschrift(G.ltext);
+            count_delay = 0;
+        }
+        break;
+    }
+
+    case COMMAND_MODE_RAINBOW: // Regenbogenanzeige
+    {
+        if (G.prog_init == 1) {
+            G.prog_init = 0;
+            uhr_clear();
+            count_delay = G.geschw * 7 + 1;
+        }
+        if (count_delay >= G.geschw * 7u + 1u) {
+            rainbowCycle();
+            count_delay = 0;
+        }
+        break;
+    }
+
+    case COMMAND_MODE_CHANGE: // Farbwechselanzeige
+    {
+        if (G.prog_init == 1) {
+            G.prog_init = 0;
+            led_clear();
+            count_delay = G.geschw * 7 + 1;
+        }
+        if (count_delay >= G.geschw * 7u + 1u) {
+            rainbow();
+            count_delay = 0;
+        }
+        break;
+    }
+
+    case COMMAND_MODE_COLOR: // Farbe Rahmen
+    {
+        if (G.prog_init == 1) {
+            G.prog_init = 0;
+            set_farbe();
+            led_show();
+        }
+        break;
+    }
+
+    case COMMAND_MODE_ANIMATION: // Animation
+    {
+        if (G.prog_init == 1) {
+            G.prog_init = 0;
+            eeprom_write();
+            delay(100);
+        }
+        // Hier ist mit Absicht kein break, direkt nach dem Call
+        // COMMAND_MODE_ANIMATION muss COMMAND_MODE_WORD_CLOCK aufgerufen
+        // werden.
+    }
+
+    case COMMAND_MODE_WORD_CLOCK: {
         calc_word_array();
 
         if (changes_in_array()) {
@@ -914,6 +911,9 @@ void loop() {
             set_farbe_rahmen();
         }
         G.prog = COMMAND_IDLE;
+    }
+    default:
+        break;
     }
 
     if (count_delay > 10000) {
