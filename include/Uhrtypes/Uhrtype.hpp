@@ -41,6 +41,8 @@ enum ledText {
     morgens = 120,
     und = 121,
     minuten_uhr = 122,
+    v_vor = 123,
+    v_nach = 124,
 
     h_ein = 151,
     h_zwei = 152,
@@ -101,6 +103,16 @@ public:
     virtual const uint16_t getSMatrix(uint16_t index) { return index; }
 
     virtual const uint16_t getRMatrix(uint16_t index) { return 0; }
+
+    virtual const bool hasDreiviertel() { return false; }
+
+    virtual const bool hasZwanzig() { return true; }
+
+    virtual const bool has24HourLayout() { return false; }
+
+    virtual const bool hasWeatherLayout() { return false; }
+
+    virtual const bool hasSecondsFrame() { return false; }
 
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) {
         if (row % 2 != 0) {

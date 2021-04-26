@@ -67,6 +67,7 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include "Uhrtypes/uhr_func_114_2Clock.hpp"
 #include "Uhrtypes/uhr_func_114_Alternative.hpp"
 #include "Uhrtypes/uhr_func_125.hpp"
+#include "Uhrtypes/uhr_func_125_Type2.hpp"
 #include "Uhrtypes/uhr_func_169.hpp"
 #include "Uhrtypes/uhr_func_242.hpp"
 #include "Uhrtypes/uhr_func_291.hpp"
@@ -75,6 +76,7 @@ UHR_114_t Uhr_114_type;
 UHR_114_Alternative_t Uhr_114_Alternative_type;
 UHR_114_2Clock_t Uhr_114_2Clock_type;
 UHR_125_t Uhr_125_type;
+UHR_125_Type2_t Uhr_125_type2_type;
 UHR_169_t Uhr_169_type;
 UHR_242_t Uhr_242_type;
 UHR_291_t Uhr_291_type;
@@ -126,6 +128,8 @@ iUhrType *getPointer(uint8_t num) {
         return reinterpret_cast<iUhrType *>(&Uhr_114_2Clock_type);
     case 3:
         return reinterpret_cast<iUhrType *>(&Uhr_125_type);
+    case 8:
+        return reinterpret_cast<iUhrType *>(&Uhr_125_type2_type);
     case 4:
         return reinterpret_cast<iUhrType *>(&Uhr_169_type);
     case 5:
@@ -187,7 +191,7 @@ void time_is_set() {
     _sekunde = tm.tm_sec;
     _minute = tm.tm_min;
     _stunde = tm.tm_hour;
-    if (G.UhrtypeDef == Uhr_169) {
+    if (usedUhrType->hasSecondsFrame()) {
         _sekunde48 = _sekunde * 48 / 60;
     }
 
@@ -434,7 +438,7 @@ void setup() {
     MDNS.addService("http", "tcp", 81);
 
     // setup frame
-    if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2) {
+    if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 && G.zeige_min < 2) {
         set_farbe_rahmen();
     }
 }
@@ -446,7 +450,7 @@ void setup() {
 void loop() {
     unsigned long currentMillis = millis();
     count_delay += currentMillis - previousMillis;
-    if (G.UhrtypeDef == Uhr_169) {
+    if (usedUhrType->hasSecondsFrame()) {
         count_millis48 += currentMillis - previousMillis;
     }
     previousMillis = currentMillis;
@@ -463,7 +467,7 @@ void loop() {
     // lass die Zeit im Demo Mode der Animation schneller ablaufen
     animation.demoMode(_minute, _sekunde);
 
-    if (G.UhrtypeDef == Uhr_169) {
+    if (usedUhrType->hasSecondsFrame()) {
         if (count_millis48 >= interval48) {
             count_millis48 = 0;
             _sekunde48++;
@@ -493,7 +497,7 @@ void loop() {
     //------------------------------------------------
     // Sekunde48
     //------------------------------------------------
-    if (G.UhrtypeDef == Uhr_169) {
+    if (usedUhrType->hasSecondsFrame()) {
         if (last_sekunde48 != _sekunde48) {
             if (G.prog == 0 && G.conf == 0) {
                 if (G.zeige_sek == 1 || G.zeige_min == 2) {
@@ -514,7 +518,7 @@ void loop() {
     if (last_sekunde != _sekunde) {
 
         // Wetteruhr
-        if (G.UhrtypeDef == Uhr_242) {
+        if (usedUhrType->hasWeatherLayout()) {
             weather_tag++;
         }
 
@@ -529,7 +533,7 @@ void loop() {
         }
         last_sekunde = _sekunde;
 
-        if (G.UhrtypeDef == Uhr_242) {
+        if (usedUhrType->hasWeatherLayout()) {
             if ((_sekunde == 0) | (_sekunde == 10) | (_sekunde == 20) |
                 (_sekunde == 30) | (_sekunde == 40) | (_sekunde == 50)) {
                 wetterswitch++;
@@ -562,7 +566,7 @@ void loop() {
     //------------------------------------------------
     // Wetterdaten abrufen
     //------------------------------------------------
-    if (G.UhrtypeDef == Uhr_242 &&
+    if (usedUhrType->hasWeatherLayout() &&
         weather_tag >= 600) { // Eisbaeeer changed for Debug (soll 600)
         weather_tag = 0;
         if (WiFi.status() == WL_CONNECTED) {
@@ -736,6 +740,10 @@ void loop() {
         config["bootLedSweep"] = G.bootLedSweep;
         config["bootShowWifi"] = G.bootShowWifi;
         config["bootShowIP"] = G.bootShowIP;
+        config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
+        config["hasZwanzig"] = usedUhrType->hasZwanzig();
+        config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
+        config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         serializeJson(config, str);
         Serial.print("Sending Payload:");
         Serial.println(str);
@@ -1052,7 +1060,8 @@ void loop() {
         }
         parameters_changed = false;
 
-        if (G.UhrtypeDef == Uhr_169 && G.zeige_sek < 1 && G.zeige_min < 2) {
+        if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 &&
+            G.zeige_min < 2) {
             set_farbe_rahmen();
         }
         G.prog = COMMAND_IDLE;

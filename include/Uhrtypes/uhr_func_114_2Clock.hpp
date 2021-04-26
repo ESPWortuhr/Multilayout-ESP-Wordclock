@@ -8,7 +8,7 @@
  * D R E I V I E R T E L
  * V O R F U N K N A C H
  * H A L B A E L F Ü N F
- * E I N S X Ä M Z W E I
+ * E I N S X A M Z W E I
  * D R E I A U J V I E R
  * S E C H S N L A C H T
  * S I E B E N Z W Ö L F
@@ -28,6 +28,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasDreiviertel() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(uint8_t text) override {
         switch (text) {
 
@@ -43,6 +47,7 @@ public:
             break;
 
         case nach:
+        case v_nach:
             // NACH
             Letter_set(36);
             Letter_set(35);
@@ -51,6 +56,7 @@ public:
             break;
 
         case vor:
+        case v_vor:
             // Vor
             Letter_set(41);
             Letter_set(42);

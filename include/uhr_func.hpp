@@ -446,7 +446,7 @@ static void laufschrift(const char *buf) {
 
     shift_all_pixels_to_right();
 
-    if (G.UhrtypeDef == Uhr_291) {
+    if (usedUhrType->has24HourLayout()) {
         offsetRow = 4;
     }
 
@@ -527,7 +527,7 @@ static void zahlen(const char d1, const char d2) {
     static uint8_t offsetLetter1 = 6;
     static uint8_t offsetRow = 1;
 
-    if (G.UhrtypeDef == Uhr_291) {
+    if (usedUhrType->has24HourLayout()) {
         offsetLetter0 = 3;
         offsetLetter1 = 9;
         offsetRow = 4;
@@ -640,19 +640,6 @@ static void set_stunde(const uint8_t std, const uint8_t voll) {
 
 //------------------------------------------------------------------------------
 
-static bool definedAndHasDreiviertel() {
-    if (G.Sprachvariation[ItIs45] == 1) {
-        if (G.UhrtypeDef == Uhr_114_Alternative ||
-            G.UhrtypeDef == Uhr_114_2Clock || G.UhrtypeDef == Uhr_291) {
-            return true;
-        }
-    } else {
-        return false;
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void show_minuten(uint8_t min) {
     if (G.zeige_min > 0) {
         // Minuten / Sekunden-Animation
@@ -683,7 +670,7 @@ void show_minuten(uint8_t min) {
 //------------------------------------------------------------------------------
 
 void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
-    if (G.UhrtypeDef != Uhr_291) {
+    if (!usedUhrType->has24HourLayout()) {
         show_minuten(min);
         min /= 5;
         min *= 5;
@@ -716,12 +703,12 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(nach);
         break;
     case 15: // viertel nach
-        if (G.Sprachvariation[ItIs15] == 1) {
+        if (G.Sprachvariation[ItIs15]) {
             usedUhrType->show(viertel);
             offsetH = 1;
         } else {
             usedUhrType->show(viertel);
-            usedUhrType->show(nach);
+            usedUhrType->show(v_nach);
         }
         break;
     case 16:
@@ -732,7 +719,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(nach);
         break;
     case 20: // 20 nach
-        if (G.Sprachvariation[ItIs20] == 1) {
+        if (!usedUhrType->hasZwanzig() || G.Sprachvariation[ItIs20]) {
             usedUhrType->show(zehn);
             usedUhrType->show(vor);
             usedUhrType->show(halb);
@@ -787,7 +774,7 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 40: // 20 vor
-        if (G.Sprachvariation[ItIs40] == 1) {
+        if (!usedUhrType->hasZwanzig() || G.Sprachvariation[ItIs40]) {
             usedUhrType->show(zehn);
             usedUhrType->show(nach);
             usedUhrType->show(halb);
@@ -806,11 +793,11 @@ void set_minute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 45: // viertel vor
-        if (definedAndHasDreiviertel()) {
+        if (usedUhrType->hasDreiviertel() && G.Sprachvariation[ItIs45]) {
             usedUhrType->show(dreiviertel);
         } else {
             usedUhrType->show(viertel);
-            usedUhrType->show(vor);
+            usedUhrType->show(v_vor);
         }
         offsetH = 1;
         break;
@@ -1445,7 +1432,7 @@ static void calc_word_array() {
         led_set_pixel(rr, gg, bb, ww, i);
     }
 
-    if (G.UhrtypeDef == Uhr_242) {
+    if (usedUhrType->hasWeatherLayout()) {
         show_wetter();
     }
 }

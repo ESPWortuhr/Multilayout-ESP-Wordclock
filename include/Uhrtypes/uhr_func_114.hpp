@@ -76,6 +76,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasDreiviertel() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(uint8_t text) override {
 
         switch (text) {
@@ -94,6 +98,7 @@ public:
             //------------------------------------------------------------------------------
 
         case nach:
+        case v_nach:
             Letter_set(LED_MAP(38));
             Letter_set(LED_MAP(39));
             Letter_set(LED_MAP(40));
@@ -103,6 +108,7 @@ public:
             //------------------------------------------------------------------------------
 
         case vor:
+        case v_vor:
             Letter_set(LED_MAP(35));
             Letter_set(LED_MAP(36));
             Letter_set(LED_MAP(37));

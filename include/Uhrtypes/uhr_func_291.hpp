@@ -50,6 +50,14 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasDreiviertel() override { return true; }
+
+    //------------------------------------------------------------------------------
+
+    virtual const bool has24HourLayout() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(uint8_t displayingText) override {
 
         switch (displayingText) // Minuten
@@ -250,6 +258,7 @@ public:
             break;
 
         case nach:
+        case v_nach:
             Letter_set(122);
             Letter_set(123);
             Letter_set(124);
@@ -257,6 +266,7 @@ public:
             break;
 
         case vor:
+        case v_vor:
             Letter_set(116);
             Letter_set(117);
             Letter_set(118);
