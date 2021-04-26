@@ -577,10 +577,9 @@ void loop() {
     Network_loop();
 
     switch (G.prog) {
-        //------------------------------------------------
-        // Sekunden
-        //------------------------------------------------
-    case COMMAND_MODE_SECONDS: {
+
+    case COMMAND_MODE_SECONDS: // Sekundenanzeige
+    {
         if (G.prog_init == 1) {
             led_clear();
             G.prog_init = 0;
@@ -593,10 +592,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Laufschrift
-        //------------------------------------------------
-    case COMMAND_MODE_MARQUEE: {
+    case COMMAND_MODE_MARQUEE: // Laufschriftanzeige
+    {
         if (G.prog_init == 1) {
             G.prog_init = 0;
             led_clear();
@@ -609,10 +606,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Regenbogen
-        //------------------------------------------------
-    case COMMAND_MODE_RAINBOW: {
+    case COMMAND_MODE_RAINBOW: // Regenbogenanzeige
+    {
         if (G.prog_init == 1) {
             G.prog_init = 0;
             uhr_clear();
@@ -625,10 +620,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Farbwechsel
-        //------------------------------------------------
-    case COMMAND_MODE_CHANGE: {
+    case COMMAND_MODE_CHANGE: // Farbwechselanzeige
+    {
         if (G.prog_init == 1) {
             G.prog_init = 0;
             led_clear();
@@ -641,10 +634,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Farbe Rahmen
-        //------------------------------------------------
-    case COMMAND_MODE_COLOR: {
+    case COMMAND_MODE_COLOR: // Farbe Rahmen
+    {
         if (G.prog_init == 1) {
             G.prog_init = 0;
             set_farbe();
@@ -653,10 +644,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Animation
-        //------------------------------------------------
-    case COMMAND_MODE_ANIMATION: {
+    case COMMAND_MODE_ANIMATION: // Animation
+    {
         G.prog = COMMAND_MODE_WORD_CLOCK; // sonst laeuft die Zeit nicht weiter
         if (G.prog_init == 1) {
             G.prog_init = 0;
@@ -666,16 +655,14 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
     default:
         break;
     }
 
     switch (G.conf) {
-        //------------------------------------------------
-        // Reset
-        //------------------------------------------------
-    case COMMAND_RESET: {
+
+    case COMMAND_RESET: // Reset
+    {
         delay(500);
         ESP.reset();
         ESP.restart();
@@ -684,10 +671,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // MQTT Config Senden
-        //------------------------------------------------
-    case COMMAND_REQUEST_MQTT_VALUES: {
+    case COMMAND_REQUEST_MQTT_VALUES: // MQTT Config Senden
+    {
         DynamicJsonDocument config(1024);
         config["command"] = "mqtt";
         config["MQTT_State"] = G.MQTT_State;
@@ -705,10 +690,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Config Senden
-        //------------------------------------------------
-    case COMMAND_REQUEST_CONFIG_VALUES: {
+    case COMMAND_REQUEST_CONFIG_VALUES: // Config Senden
+    {
         DynamicJsonDocument config(1024);
         config["command"] = "config";
         config["ssid"] = Network_getSSID();
@@ -752,10 +735,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // conf Farbwerte senden
-        //------------------------------------------------
-    case COMMAND_REQUEST_COLOR_VALUES: {
+    case COMMAND_REQUEST_COLOR_VALUES: // Config Farbwerte senden
+    {
         DynamicJsonDocument config(1024);
         config["command"] = "set";
         for (uint8_t i = 0; i < 4; i++) {
@@ -774,10 +755,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Automatische Helligkeit
-        //------------------------------------------------
-    case COMMAND_REQUEST_AUTO_LDR: {
+    case COMMAND_REQUEST_AUTO_LDR: // Automatische Helligkeit
+    {
         DynamicJsonDocument config(1024);
         config["command"] = "autoLdr";
         if (G.param1 == 0) {
@@ -792,10 +771,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Animation
-        //------------------------------------------------
-    case COMMAND_REQUEST_ANIMATION: {
+    case COMMAND_REQUEST_ANIMATION: // Animation
+    {
         DynamicJsonDocument config(1024);
         config["command"] = "animation";
         config["animType"] = G.animType;
@@ -821,77 +798,26 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Uhrzeit setzen
-        //------------------------------------------------
-    case COMMAND_SET_TIME: {
+    case COMMAND_SET_TIME:           // Uhrzeit setzen
+    case COMMAND_SET_INITIAL_VALUES: // Startwerte speichern
+    case COMMAND_SET_BRIGHTNESS:     // Helligkeit speichern
+    case COMMAND_SET_MINUTE:         // Anzeige Minuten speichern
+    case COMMAND_SET_LDR:            // LDR Einstellung speichern
+    case COMMAND_SET_AUTO_LDR:       // Auto LDR Parameter speichern
+    case COMMAND_SET_WEATHER_DATA:   // OpenWeathermap Einstellung speichern
+    case COMMAND_SET_MARQUEE_TEXT:   // Lauftext speichern
+    case COMMAND_SET_BOOT:           // Bootoptionen speichern
+    {
         eeprom_write();
         delay(100);
         G.conf = COMMAND_IDLE;
         break;
     }
 
-        //------------------------------------------------
-        // Startwerte speichern
-        //------------------------------------------------
-    case COMMAND_SET_INITIAL_VALUES: {
-        Serial.println("Startwerte gespeichert");
-        Serial.println(G.rgb[Foreground][0]);
-        Serial.println(G.rgb[Foreground][1]);
-        Serial.println(G.rgb[Foreground][2]);
-        Serial.println(G.rgb[Foreground][3]);
-        eeprom_write();
-        delay(100);
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-        //------------------------------------------------
-        // Helligkeit speichern
-        //------------------------------------------------
-    case COMMAND_SET_BRIGHTNESS: {
-        eeprom_write();
-        delay(100);
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-        //------------------------------------------------
-        // Anzeige Minuten speichern
-        //------------------------------------------------
-    case COMMAND_SET_MINUTE: {
-        eeprom_write();
-        delay(100);
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-        //------------------------------------------------
-        // LDR Einstellung speichern
-        //------------------------------------------------
-    case COMMAND_SET_LDR: {
-        eeprom_write();
-        delay(100);
-        Serial.printf("LDR : %u\n\n", G.ldr);
-        Serial.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-        //------------------------------------------------
-        // Auto LDR Parameter speichern
-        //------------------------------------------------
-    case COMMAND_SET_AUTO_LDR: {
-        G.conf = COMMAND_IDLE;
-        eeprom_write();
-        delay(100);
-        break;
-    }
-
-        //------------------------------------------------
-        // Sprachvarianten Einstellungen
-        //------------------------------------------------
-    case COMMAND_SET_LANGUAGE_VARIANT: {
+    case COMMAND_SET_LANGUAGE_VARIANT: // Sprachvarianten Einstellungen
+    case COMMAND_SET_SETTING_SECOND:   // Anzeige Sekunde speichern
+    case COMMAND_SET_TIME_MANUAL:      // Uhrzeit manuell einstellen
+    {
         eeprom_write();
         led_clear();
         G.prog = COMMAND_MODE_WORD_CLOCK;
@@ -899,10 +825,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // MQTT Einstellungen
-        //------------------------------------------------
-    case COMMAND_SET_MQTT: {
+    case COMMAND_SET_MQTT: // MQTT Einstellungen
+    {
         if (!mqttClient.connected() && G.MQTT_State) {
             mqttClient.connect(G.MQTT_ClientId, G.MQTT_User, G.MQTT_Pass);
             MQTT_reconnect();
@@ -912,21 +836,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Uhrzeit manuell einstellen
-        //------------------------------------------------
-    case COMMAND_SET_TIME_MANUAL: {
-        Serial.println("Uhrzeit manuell eingstellt");
-        led_clear();
-        G.prog = COMMAND_MODE_WORD_CLOCK;
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-        //------------------------------------------------
-        // Colortype der LED einstellen
-        //------------------------------------------------
-    case COMMAND_SET_COLORTYPE: {
+    case COMMAND_SET_COLORTYPE: // Colortype der LED einstellen
+    {
         // G.param1 enthält den neuen Colortype
         Serial.printf("LED Colortype: %u\n", G.param1);
 
@@ -946,35 +857,17 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Uhrtype Layout einstellen
-        //------------------------------------------------
-    case COMMAND_SET_UHRTYPE: {
+    case COMMAND_SET_UHRTYPE: // Uhrtype Layout einstellen
+    {
         eeprom_write();
         Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
-        G.conf = COMMAND_RESET;
-        break;
-    }
-
-        //------------------------------------------------
-        // OpenWeathermap Einstellung speichern
-        //------------------------------------------------
-    case COMMAND_SET_WEATHER_DATA: {
-        Serial.println("write EEPROM!");
-        Serial.print("CityID : ");
-        Serial.println(G.cityid);
-        Serial.print("APIkey : ");
-        Serial.println(G.apikey);
-        eeprom_write();
-        delay(100);
+        usedUhrType = getPointer(G.UhrtypeDef);
         G.conf = COMMAND_IDLE;
         break;
     }
 
-        //------------------------------------------------
-        // Hostname speichern
-        //------------------------------------------------
-    case COMMAND_SET_HOSTNAME: {
+    case COMMAND_SET_HOSTNAME: // Hostname speichern
+    {
         Serial.print("Hostname: ");
         Serial.println(G.hostname);
         eeprom_write();
@@ -983,49 +876,8 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // Anzeige Sekunde speichern
-        //------------------------------------------------
-    case COMMAND_SET_SETTING_SECOND: {
-        eeprom_write();
-        G.prog = COMMAND_MODE_WORD_CLOCK;
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-        //------------------------------------------------
-        // Lauftext speichern
-        //------------------------------------------------
-    case COMMAND_SET_MARQUEE_TEXT: {
-        eeprom_write();
-        delay(100);
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-        //------------------------------------------------
-        // Zeitserver speichern
-        //------------------------------------------------
-    case COMMAND_SET_TIMESERVER: {
-        eeprom_write();
-        configTime(0, 0, G.zeitserver);
-        G.conf = COMMAND_SET_TIME;
-        break;
-    }
-
-        //------------------------------------------------
-        // Bootoptionen speichern
-        //------------------------------------------------
-    case COMMAND_SET_BOOT: {
-        eeprom_write();
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-        //------------------------------------------------
-        // WLAN-Daten speichern und neu starten
-        //------------------------------------------------
-    case COMMAND_SET_WIFI_DISABLED: {
+    case COMMAND_SET_WIFI_DISABLED: // WLAN-Daten speichern und neu starten
+    {
         eeprom_write();
         delay(100);
         Serial.println("Conf: WLAN Abgeschaltet");
@@ -1034,17 +886,14 @@ void loop() {
         break;
     }
 
-        //------------------------------------------------
-        // WLAN-Daten speichern und neu starten
-        //------------------------------------------------
-    case COMMAND_SET_WIFI_AND_RESTART: {
+    case COMMAND_SET_WIFI_AND_RESTART: // WLAN-Daten speichern und neu starten
+    {
         Serial.println("Conf: WLAN neu konfiguriert");
         Network_resetSettings();
         G.conf = COMMAND_IDLE;
         break;
     }
 
-        //------------------------------------------------
     default:
         break;
     }

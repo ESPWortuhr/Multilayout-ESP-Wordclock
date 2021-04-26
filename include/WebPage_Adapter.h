@@ -303,6 +303,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_INITIAL_VALUES: { // Startwerte speichern
+            Serial.println("Startwerte gespeichert");
+            Serial.println(G.rgb[Foreground][0]);
+            Serial.println(G.rgb[Foreground][1]);
+            Serial.println(G.rgb[Foreground][2]);
+            Serial.println(G.rgb[Foreground][3]);
             G.conf = COMMAND_SET_INITIAL_VALUES;
             break;
         }
@@ -358,6 +363,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.conf = COMMAND_SET_LDR;
             G.ldr = split(payload, 9, 3);
             G.ldrCal = split(payload, 12, 3);
+            Serial.printf("LDR : %u\n\n", G.ldr);
+            Serial.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
             break;
         }
 
@@ -419,6 +426,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             struct timeval tv;
             tv.tv_sec = mktime(&tm);
             tv.tv_usec = 0;
+            Serial.println("Uhrzeit manuell eingstellt");
             Serial.printf("Conf: Time: %ld\n", tv.tv_sec);
             settimeofday(&tv, nullptr);
             break;
@@ -468,6 +476,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 }
             }
             G.apikey[jj] = '\0';
+            Serial.println("write EEPROM!");
+            Serial.print("CityID : ");
+            Serial.println(G.cityid);
+            Serial.print("APIkey : ");
+            Serial.println(G.apikey);
             break;
         }
 
