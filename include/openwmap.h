@@ -39,7 +39,7 @@ void getweather() {
         // Reading stream and remove headers
         client.setTimeout(10000);
 
-        bool ok_header = ok_header = client.find("\r\n\r\n");
+        bool ok_header = client.find("\r\n\r\n");
 
         while (!ok_header) {
             // wait
