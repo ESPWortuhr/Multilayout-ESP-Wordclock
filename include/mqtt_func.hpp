@@ -30,20 +30,20 @@ void MQTT_callback(char *topic, byte *payload, unsigned int length) {
         return;
     }
 
-    if (doc["state"] == 'ON') {
+    if (doc["state"] == "ON") {
         const char *str_buff = doc["effect"];
         std::string str_buffer = str_buff;
-        if (str_buffer == "Wortuhr") {
+        if (str_buffer.compare("Wortuhr")) {
             G.prog = COMMAND_MODE_WORD_CLOCK;
-        } else if (str_buffer == "Sekundenanzeige") {
+        } else if (str_buffer.compare("Sekundenanzeige")) {
             G.prog = COMMAND_MODE_SECONDS;
-        } else if (str_buffer == "Laufschrift") {
+        } else if (str_buffer.compare("Laufschrift")) {
             G.prog = COMMAND_MODE_MARQUEE;
-        } else if (str_buffer == "Regenbogen") {
+        } else if (str_buffer.compare("Regenbogen")) {
             G.prog = COMMAND_MODE_RAINBOW;
-        } else if (str_buffer == "Farbwechsel") {
+        } else if (str_buffer.compare("Farbwechsel")) {
             G.prog = COMMAND_MODE_CHANGE;
-        } else if (str_buffer == "Farbe") {
+        } else if (str_buffer.compare("Farbe")) {
             G.prog = COMMAND_MODE_COLOR;
         }
         G.rgb[Foreground][0] = doc["color"][0];
