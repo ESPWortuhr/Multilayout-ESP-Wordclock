@@ -443,6 +443,7 @@ void shift_all_pixels_to_right() {
 static void laufschrift(const char *buf) {
     static uint8_t i = 0, ii = 0;
     static uint8_t offsetRow = 1;
+    uint8_t fontIndex = buf[ii];
 
     shift_all_pixels_to_right();
 
@@ -452,7 +453,7 @@ static void laufschrift(const char *buf) {
 
     if (i < 5) {
         for (uint8_t row = 0; row < 8; row++) {
-            if (pgm_read_byte(&(font_7x5[buf[ii]][i])) & (1u << row)) {
+            if (pgm_read_byte(&(font_7x5[fontIndex][i])) & (1u << row)) {
                 led_set_pixel(
                     G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2],
                     G.rgb[Effect][3],
