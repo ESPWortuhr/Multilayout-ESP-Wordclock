@@ -1,5 +1,33 @@
 #include "Uhrtype.hpp"
 
+/*
+ * Layout Front
+ *
+ * E S K I S T L F Ü N F
+ * Z E H N Z W A N Z I G
+ * D R E I V I E R T E L
+ * T G N A C H V O R J M
+ * H A L B Q Z W Ö L F P
+ * Z W E I N S I E B E N
+ * K D R E I R H F Ü N F
+ * E L F N E U N V I E R
+ * W A C H T Z E H N B X
+ * B S E C H S F M U H R
+ *
+ *
+ *
+ * M O R G E N X F R Ü H
+ * A B E N D M I T T A G
+ * N A C H T S C H N E E
+ * K L A R W A R N U N G
+ * R E G E N W O L K E N
+ * O G E W I T T E R B N
+ * U N T E R Z Ü B E R K
+ * Y M I N U S A N U L L
+ * H N Z W A N Z I G J T
+ * D R E I ẞ I G O ° C X
+ */
+
 class UHR_242_t : public iUhrType {
 public:
     const uint16_t min_arr[2][4] = {
