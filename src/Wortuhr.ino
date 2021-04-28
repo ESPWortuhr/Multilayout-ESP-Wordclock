@@ -467,17 +467,6 @@ void loop() {
     // lass die Zeit im Demo Mode der Animation schneller ablaufen
     animation.demoMode(_minute, _sekunde);
 
-    if (usedUhrType->hasSecondsFrame()) {
-        if (count_millis48 >= interval48) {
-            count_millis48 = 0;
-            _sekunde48++;
-            if (_sekunde48 > 47) {
-                _sekunde48 = 0;
-            }
-        }
-    }
-
-    //------------------------------------------------
     MDNS.update();
 
     httpServer.handleClient();
@@ -495,9 +484,16 @@ void loop() {
     }
 
     //------------------------------------------------
-    // Sekunde48
+    // SecondsFrame
     //------------------------------------------------
     if (usedUhrType->hasSecondsFrame()) {
+        if (count_millis48 >= interval48) {
+            count_millis48 = 0;
+            _sekunde48++;
+            if (_sekunde48 > 47) {
+                _sekunde48 = 0;
+            }
+        }
         if (last_sekunde48 != _sekunde48) {
             if (G.prog == 0 && G.conf == 0) {
                 if (G.zeige_sek == 1 || G.zeige_min == 2) {
