@@ -13,7 +13,7 @@
    width="300mm"
    version="1.1"
    id="svg918"
-   sodipodi:docname="UHR114_Front.svg"
+   sodipodi:docname="UHR114_2Clock_Front.svg"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
      id="metadata924">
@@ -43,8 +43,8 @@
      id="namedview920"
      showgrid="false"
      inkscape:zoom="0.31115"
-     inkscape:cx="1290.2155"
-     inkscape:cy="522.81117"
+     inkscape:cx="-90.764306"
+     inkscape:cy="1012.9005"
      inkscape:window-x="1920"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -57,27 +57,47 @@
        d="M 0,861.73194 H 1133.8582 V 1995.5902 H 0 Z"
        id="path2"
        inkscape:connector-curvature="0"
-       style="fill:#d6d694;fill-opacity:1;stroke-width:1.33317006" />
+       style="fill:#000055;fill-opacity:0.16470588;stroke-width:1.33317006" />
     <path
-       d="m 953.27735,1806.6423 c 0,4.6954 -3.80621,8.5043 -8.50297,8.5043 -4.69544,0 -8.50298,-3.8076 -8.50298,-8.5043 0,-4.6968 3.80754,-8.5043 8.50298,-8.5043 4.69676,0 8.50297,3.8088 8.50297,8.5043"
+       d="m 953.27735,1806.6423 c 0,4.6954 -3.80621,8.5043 -8.50297,8.5043 -4.69544,0 -8.50298,-3.8076 -8.50298,-8.5043 0,-4.6968 3.80754,-8.5043 8.50298,-8.5043 4.69676,10e-4 8.50297,3.8088 8.50297,8.5043"
        id="path4"
        inkscape:connector-curvature="0"
        style="stroke-width:1.33317304" />
+    <circle
+       cx="944.77441"
+       cy="1806.6422"
+       r="8.5029774"
+       id="circle6" />
     <path
-       d="m 197.46292,1806.6423 c 0,4.6954 -3.80621,8.5043 -8.50298,8.5043 -4.69544,0 -8.50298,-3.8076 -8.50298,-8.5043 0,-4.6968 3.80754,-8.5043 8.50298,-8.5043 4.69677,0 8.50298,3.8088 8.50298,8.5043"
+       d="m 197.46292,1806.6423 c 0,4.6954 -3.80621,8.5043 -8.50298,8.5043 -4.69543,0 -8.50298,-3.8076 -8.50298,-8.5043 0,-4.6968 3.80755,-8.5043 8.50298,-8.5043 4.69677,10e-4 8.50298,3.8088 8.50298,8.5043"
        id="path8"
        inkscape:connector-curvature="0"
        style="stroke-width:1.33317304" />
+    <circle
+       cx="188.95993"
+       cy="1806.6422"
+       r="8.5029774"
+       id="circle10" />
     <path
-       d="m 197.46292,1050.8305 c 0,4.6954 -3.80621,8.503 -8.50298,8.503 -4.69544,0 -8.50298,-3.8076 -8.50298,-8.503 0,-4.6954 3.80754,-8.503 8.50298,-8.503 4.69677,0 8.50298,3.8076 8.50298,8.503"
+       d="m 197.46292,1050.8305 c 0,4.6954 -3.80621,8.503 -8.50298,8.503 -4.69543,0 -8.50298,-3.8076 -8.50298,-8.503 0,-4.6954 3.80755,-8.503 8.50298,-8.503 4.69677,0 8.50298,3.8076 8.50298,8.503"
        id="path12"
        inkscape:connector-curvature="0"
        style="stroke-width:1.33317304" />
+    <circle
+       cx="188.95993"
+       cy="1050.8304"
+       r="8.5029774"
+       id="circle14" />
     <path
        d="m 953.27735,1050.8305 c 0,4.6954 -3.80621,8.503 -8.50297,8.503 -4.69544,0 -8.50298,-3.8076 -8.50298,-8.503 0,-4.6954 3.80754,-8.503 8.50298,-8.503 4.69676,0 8.50297,3.8076 8.50297,8.503"
        id="path16"
        inkscape:connector-curvature="0"
        style="stroke-width:1.33317304" />
+    <circle
+       cx="944.77441"
+       cy="1050.8304"
+       r="8.5029774"
+       id="circle18" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -147,7 +167,7 @@
          sodipodi:role="line"
          id="tspan79"
          x="608.06012"
-         y="1133.9248">R</tspan></text>
+         y="1133.9248">A</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -447,7 +467,7 @@
          sodipodi:role="line"
          id="tspan134"
          x="230.10657"
-         y="1343.6886">T</tspan></text>
+         y="1343.6886">V</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -457,7 +477,7 @@
          sodipodi:role="line"
          id="tspan138"
          x="293.09885"
-         y="1343.6886">G</tspan></text>
+         y="1343.6886">O</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -467,7 +487,7 @@
          sodipodi:role="line"
          id="tspan142"
          x="356.09106"
-         y="1343.6886">N</tspan></text>
+         y="1343.6886">R</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -477,7 +497,7 @@
          sodipodi:role="line"
          id="tspan146"
          x="419.08334"
-         y="1343.6886">A</tspan></text>
+         y="1343.6886">F</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -487,7 +507,7 @@
          sodipodi:role="line"
          id="tspan150"
          x="482.07559"
-         y="1343.6886">C</tspan></text>
+         y="1343.6886">U</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -497,7 +517,7 @@
          sodipodi:role="line"
          id="tspan154"
          x="545.06787"
-         y="1343.6886">H</tspan></text>
+         y="1343.6886">N</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -507,7 +527,7 @@
          sodipodi:role="line"
          id="tspan158"
          x="608.06012"
-         y="1343.6886">V</tspan></text>
+         y="1343.6886">K</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -517,7 +537,7 @@
          sodipodi:role="line"
          id="tspan162"
          x="671.05231"
-         y="1343.6886">O</tspan></text>
+         y="1343.6886">N</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -527,7 +547,7 @@
          sodipodi:role="line"
          id="tspan166"
          x="734.04456"
-         y="1343.6886">R</tspan></text>
+         y="1343.6886">A</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -537,7 +557,7 @@
          sodipodi:role="line"
          id="tspan170"
          x="797.03687"
-         y="1343.6886">U</tspan></text>
+         y="1343.6886">C</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -547,7 +567,7 @@
          sodipodi:role="line"
          id="tspan174"
          x="860.02911"
-         y="1343.6886">M</tspan></text>
+         y="1343.6886">H</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -607,7 +627,7 @@
          sodipodi:role="line"
          id="tspan198"
          x="482.07559"
-         y="1413.6099">G</tspan></text>
+         y="1413.6099">A</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -617,7 +637,7 @@
          sodipodi:role="line"
          id="tspan202"
          x="545.06787"
-         y="1413.6099">Z</tspan></text>
+         y="1413.6099">E</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -627,7 +647,7 @@
          sodipodi:role="line"
          id="tspan206"
          x="608.06012"
-         y="1413.6099">W</tspan></text>
+         y="1413.6099">L</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -637,7 +657,7 @@
          sodipodi:role="line"
          id="tspan210"
          x="671.05231"
-         y="1413.6099">Ö</tspan></text>
+         y="1413.6099">F</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -647,7 +667,7 @@
          sodipodi:role="line"
          id="tspan214"
          x="734.04456"
-         y="1413.6099">L</tspan></text>
+         y="1413.6099">Ü</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -657,17 +677,17 @@
          sodipodi:role="line"
          id="tspan218"
          x="797.03687"
-         y="1413.6099">F</tspan></text>
+         y="1413.6099">N</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="870.02911"
+       x="860.02911"
        y="1413.6099"
        id="text224"><tspan
          sodipodi:role="line"
          id="tspan222"
-         x="870.02911"
-         y="1413.6099">J</tspan></text>
+         x="860.02911"
+         y="1413.6099">F</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -687,17 +707,17 @@
          sodipodi:role="line"
          id="tspan230"
          x="230.10657"
-         y="1483.5311">Z</tspan></text>
+         y="1483.5311">E</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="293.09885"
+       x="301.03586"
        y="1483.5311"
        id="text236"><tspan
          sodipodi:role="line"
          id="tspan234"
-         x="293.09885"
-         y="1483.5311">W</tspan></text>
+         x="301.03586"
+         y="1483.5311">I</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -707,17 +727,17 @@
          sodipodi:role="line"
          id="tspan238"
          x="356.09106"
-         y="1483.5311">E</tspan></text>
+         y="1483.5311">N</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="427.02032"
+       x="419.08334"
        y="1483.5311"
        id="text244"><tspan
          sodipodi:role="line"
          id="tspan242"
-         x="427.02032"
-         y="1483.5311">I</tspan></text>
+         x="419.08334"
+         y="1483.5311">S</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -727,7 +747,7 @@
          sodipodi:role="line"
          id="tspan246"
          x="482.07559"
-         y="1483.5311">N</tspan></text>
+         y="1483.5311">X</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -737,17 +757,17 @@
          sodipodi:role="line"
          id="tspan250"
          x="545.06787"
-         y="1483.5311">S</tspan></text>
+         y="1483.5311">A</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="615.99707"
+       x="608.06012"
        y="1483.5311"
        id="text256"><tspan
          sodipodi:role="line"
          id="tspan254"
-         x="615.99707"
-         y="1483.5311">I</tspan></text>
+         x="608.06012"
+         y="1483.5311">M</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -757,7 +777,7 @@
          sodipodi:role="line"
          id="tspan258"
          x="671.05231"
-         y="1483.5311">E</tspan></text>
+         y="1483.5311">Z</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -767,7 +787,7 @@
          sodipodi:role="line"
          id="tspan262"
          x="734.04456"
-         y="1483.5311">B</tspan></text>
+         y="1483.5311">W</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -781,13 +801,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="860.02911"
+       x="867.96613"
        y="1483.5311"
        id="text272"><tspan
          sodipodi:role="line"
          id="tspan270"
-         x="860.02911"
-         y="1483.5311">N</tspan></text>
+         x="867.96613"
+         y="1483.5311">I</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -807,7 +827,7 @@
          sodipodi:role="line"
          id="tspan278"
          x="230.10657"
-         y="1553.4524">K</tspan></text>
+         y="1553.4524">D</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -817,7 +837,7 @@
          sodipodi:role="line"
          id="tspan282"
          x="293.09885"
-         y="1553.4524">D</tspan></text>
+         y="1553.4524">R</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -827,27 +847,27 @@
          sodipodi:role="line"
          id="tspan286"
          x="356.09106"
-         y="1553.4524">R</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="419.08334"
-       y="1553.4524"
-       id="text292"><tspan
-         sodipodi:role="line"
-         id="tspan290"
-         x="419.08334"
          y="1553.4524">E</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="490.01257"
+       x="427.02032"
+       y="1553.4524"
+       id="text292"><tspan
+         sodipodi:role="line"
+         id="tspan290"
+         x="427.02032"
+         y="1553.4524">I</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="482.07559"
        y="1553.4524"
        id="text296"><tspan
          sodipodi:role="line"
          id="tspan294"
-         x="490.01257"
-         y="1553.4524">I</tspan></text>
+         x="482.07559"
+         y="1553.4524">A</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -857,7 +877,7 @@
          sodipodi:role="line"
          id="tspan298"
          x="545.06787"
-         y="1553.4524">R</tspan></text>
+         y="1553.4524">U</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -867,7 +887,7 @@
          sodipodi:role="line"
          id="tspan302"
          x="608.06012"
-         y="1553.4524">H</tspan></text>
+         y="1553.4524">J</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -877,17 +897,17 @@
          sodipodi:role="line"
          id="tspan306"
          x="671.05231"
-         y="1553.4524">F</tspan></text>
+         y="1553.4524">V</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="734.04456"
+       x="741.98163"
        y="1553.4524"
        id="text312"><tspan
          sodipodi:role="line"
          id="tspan310"
-         x="734.04456"
-         y="1553.4524">Ü</tspan></text>
+         x="741.98163"
+         y="1553.4524">I</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -897,7 +917,7 @@
          sodipodi:role="line"
          id="tspan314"
          x="797.03687"
-         y="1553.4524">N</tspan></text>
+         y="1553.4524">E</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -907,7 +927,7 @@
          sodipodi:role="line"
          id="tspan318"
          x="860.02911"
-         y="1553.4524">F</tspan></text>
+         y="1553.4524">R</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -927,7 +947,7 @@
          sodipodi:role="line"
          id="tspan326"
          x="230.10657"
-         y="1623.3737">E</tspan></text>
+         y="1623.3737">S</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -937,7 +957,7 @@
          sodipodi:role="line"
          id="tspan330"
          x="293.09885"
-         y="1623.3737">L</tspan></text>
+         y="1623.3737">E</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -947,7 +967,7 @@
          sodipodi:role="line"
          id="tspan334"
          x="356.09106"
-         y="1623.3737">F</tspan></text>
+         y="1623.3737">C</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -957,7 +977,7 @@
          sodipodi:role="line"
          id="tspan338"
          x="419.08334"
-         y="1623.3737">N</tspan></text>
+         y="1623.3737">H</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -967,7 +987,7 @@
          sodipodi:role="line"
          id="tspan342"
          x="482.07559"
-         y="1623.3737">E</tspan></text>
+         y="1623.3737">S</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -977,7 +997,7 @@
          sodipodi:role="line"
          id="tspan346"
          x="545.06787"
-         y="1623.3737">U</tspan></text>
+         y="1623.3737">N</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -987,7 +1007,7 @@
          sodipodi:role="line"
          id="tspan350"
          x="608.06012"
-         y="1623.3737">N</tspan></text>
+         y="1623.3737">L</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -997,17 +1017,17 @@
          sodipodi:role="line"
          id="tspan354"
          x="671.05231"
-         y="1623.3737">V</tspan></text>
+         y="1623.3737">A</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="741.98163"
+       x="734.04456"
        y="1623.3737"
        id="text360"><tspan
          sodipodi:role="line"
          id="tspan358"
-         x="741.98163"
-         y="1623.3737">I</tspan></text>
+         x="734.04456"
+         y="1623.3737">C</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1017,7 +1037,7 @@
          sodipodi:role="line"
          id="tspan362"
          x="797.03687"
-         y="1623.3737">E</tspan></text>
+         y="1623.3737">H</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1027,7 +1047,7 @@
          sodipodi:role="line"
          id="tspan366"
          x="860.02911"
-         y="1623.3737">R</tspan></text>
+         y="1623.3737">T</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1047,17 +1067,17 @@
          sodipodi:role="line"
          id="tspan374"
          x="230.10657"
-         y="1693.2949">N</tspan></text>
+         y="1693.2949">S</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="293.09885"
+       x="301.03586"
        y="1693.2949"
        id="text380"><tspan
          sodipodi:role="line"
          id="tspan378"
-         x="293.09885"
-         y="1693.2949">A</tspan></text>
+         x="301.03586"
+         y="1693.2949">I</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1067,7 +1087,7 @@
          sodipodi:role="line"
          id="tspan382"
          x="356.09106"
-         y="1693.2949">C</tspan></text>
+         y="1693.2949">E</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1077,7 +1097,7 @@
          sodipodi:role="line"
          id="tspan386"
          x="419.08334"
-         y="1693.2949">H</tspan></text>
+         y="1693.2949">B</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1087,7 +1107,7 @@
          sodipodi:role="line"
          id="tspan390"
          x="482.07559"
-         y="1693.2949">T</tspan></text>
+         y="1693.2949">E</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1097,7 +1117,7 @@
          sodipodi:role="line"
          id="tspan394"
          x="545.06787"
-         y="1693.2949">Z</tspan></text>
+         y="1693.2949">N</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1107,7 +1127,7 @@
          sodipodi:role="line"
          id="tspan398"
          x="608.06012"
-         y="1693.2949">E</tspan></text>
+         y="1693.2949">Z</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1117,7 +1137,7 @@
          sodipodi:role="line"
          id="tspan402"
          x="671.05231"
-         y="1693.2949">H</tspan></text>
+         y="1693.2949">W</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1127,7 +1147,7 @@
          sodipodi:role="line"
          id="tspan406"
          x="734.04456"
-         y="1693.2949">N</tspan></text>
+         y="1693.2949">Ö</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1137,7 +1157,7 @@
          sodipodi:role="line"
          id="tspan410"
          x="797.03687"
-         y="1693.2949">B</tspan></text>
+         y="1693.2949">L</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1147,7 +1167,7 @@
          sodipodi:role="line"
          id="tspan414"
          x="860.02911"
-         y="1693.2949">X</tspan></text>
+         y="1693.2949">F</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1167,7 +1187,7 @@
          sodipodi:role="line"
          id="tspan422"
          x="230.10657"
-         y="1763.2162">U</tspan></text>
+         y="1763.2162">Z</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1177,7 +1197,7 @@
          sodipodi:role="line"
          id="tspan426"
          x="293.09885"
-         y="1763.2162">S</tspan></text>
+         y="1763.2162">E</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1187,7 +1207,7 @@
          sodipodi:role="line"
          id="tspan430"
          x="356.09106"
-         y="1763.2162">E</tspan></text>
+         y="1763.2162">H</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1197,7 +1217,7 @@
          sodipodi:role="line"
          id="tspan434"
          x="419.08334"
-         y="1763.2162">C</tspan></text>
+         y="1763.2162">N</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1207,7 +1227,7 @@
          sodipodi:role="line"
          id="tspan438"
          x="482.07559"
-         y="1763.2162">H</tspan></text>
+         y="1763.2162">E</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1217,7 +1237,7 @@
          sodipodi:role="line"
          id="tspan442"
          x="545.06787"
-         y="1763.2162">S</tspan></text>
+         y="1763.2162">U</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1227,7 +1247,7 @@
          sodipodi:role="line"
          id="tspan446"
          x="608.06012"
-         y="1763.2162">F</tspan></text>
+         y="1763.2162">N</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1237,7 +1257,7 @@
          sodipodi:role="line"
          id="tspan450"
          x="671.05231"
-         y="1763.2162">U</tspan></text>
+         y="1763.2162">K</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1247,7 +1267,7 @@
          sodipodi:role="line"
          id="tspan454"
          x="734.04456"
-         y="1763.2162">H</tspan></text>
+         y="1763.2162">U</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1257,7 +1277,7 @@
          sodipodi:role="line"
          id="tspan458"
          x="797.03687"
-         y="1763.2162">R</tspan></text>
+         y="1763.2162">H</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -1267,6 +1287,6 @@
          sodipodi:role="line"
          id="tspan462"
          x="860.02911"
-         y="1763.2162">Y</tspan></text>
+         y="1763.2162">R</tspan></text>
   </g>
 </svg>
