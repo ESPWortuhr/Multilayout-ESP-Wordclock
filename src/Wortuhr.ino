@@ -368,6 +368,7 @@ void setup() {
         struct timeval tv;
         tv.tv_sec = RTC.now().unixtime();
         settimeofday(&tv, nullptr);
+        Network_rtcMode();
         externalRTC = true;
     } else {
         Serial.println("No external RealtimeClock found");
@@ -386,13 +387,13 @@ void setup() {
     //-------------------------------------
     // Start WiFi
     //-------------------------------------
-    if (G.bootShowWifi) {
+    if (G.bootShowWifi && !externalRTC) {
         show_icon_wlan(0);
     }
     Network_setup(G.hostname);
     int strength = Network_getQuality();
     Serial.printf("Signal strength: %i\n", strength);
-    if (G.bootShowWifi) {
+    if (G.bootShowWifi && !externalRTC) {
         show_icon_wlan(strength);
     }
     WlanStart();
