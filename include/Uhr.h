@@ -4,20 +4,6 @@
 const char *VER = "2.6.0"; // Software Version
 
 #define MAX_ARRAY_SIZE 291
-#define ROW_START 0 /* Startindex der Reihe */
-#define MAX_ROWS 10 /* Anzahl der Reihen (Y-Richtung) */
-#define COL_START 0 /* Startindex der Spalte */
-#define MAX_COL 11 /* Anzahl der Spalten (X-Richtung) */
-
-#define MAX_BAELLE MAX_COL
-#define MAX_ANIM_PERIOD 5
-#define MAX_RANDOM 10
-#define STRIPE NULL
-
-#if (defined(UHR_125) || defined(UHR_242))
-#undef MAX_ROWS
-#define MAX_ROWS 11 /* Anzahl der Reihen (Y-Richtung) */
-#endif
 
 enum uhrzeit_t {
     ESIST = 0,

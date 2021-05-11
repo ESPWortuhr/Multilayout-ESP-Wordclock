@@ -2,43 +2,103 @@
 #include "Uhr.h"
 #include <Arduino.h>
 
-Animation::Animation_t Animation::isSilvester(struct tm &tm) {
-    static int lastMinute = 99;
-    static int minutesActive;
-    int _minute = tm.tm_min;
-    if (lastMinute != _minute) {
-        lastMinute = _minute;
+#define STRIPE NULL
+#define MAX_RANDOM 10
+
+Animation::Animation(uint16 frameH, uint16 frameV, uint16 rows, uint16 cols) {
+    row_start = frameH;
+    col_start = frameV;
+    max_rows = rows - 2 * frameH;
+    max_cols = cols - 2 * frameV;
+    sizeofColumn = max_cols * sizeof(RgbfColor);
+    old = new RgbfColor *[max_rows];
+    act = new RgbfColor *[max_rows];
+    work = new RgbfColor *[max_rows];
+    for (int row = 0; row < max_rows; row++) {
+        old[row] = new RgbfColor[max_cols];
+        act[row] = new RgbfColor[max_cols];
+        work[row] = new RgbfColor[max_cols];
+    }
+    rain = new Rain[max_cols];
+    balls = new Ball[max_cols];
+    for (int col = 0; col < max_cols; col++) {
+        rain[col] = Rain(max_rows, max_cols);
+        balls[col] = Ball(max_rows);
+    }
+    snake = new Snake(max_rows, max_cols);
+    firework = new Firework(max_rows, max_cols);
+    animType = (Animation_t)G.animType;
+    lastAnimType = (Animation_t)G.animType;
+    lastAnimDemo = G.animDemo;
+    lastAnimDuration = G.animDuration;
+    lastAnimColorize = G.animColorize;
+}
+
+Animation::~Animation() {
+#if 0
+    // matrix type changes during runtime forces a ESP reset
+    // probably to avoid reinitializing the Neopixelbus
+    for (int row = 0; row < max_rows; row++) {
+        delete[] old[row];
+        delete[] act[row];
+        delete[] work[row];
+    }
+    delete[] old;
+    delete[] act;
+    delete[] work;
+    delete[] tmp;
+    delete[] rain;
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+bool Animation::isSilvester(Animation_t &type, struct tm &tm, bool trigger) {
+    static uint8_t minutesAfterMidnight;
+
+    if (trigger) {
+#if 1
         if ((tm.tm_mon == 12) && (tm.tm_mday == 31) && (tm.tm_hour == 23) &&
-            (_minute == 59)) {
-            // if ((month(ltime) == 12) && (day(ltime) == 12)
-            // && (hour(ltime) == 14) && (_minute == 35)) {
-            // if (_minute ==
-            // G.autoLdrBright) { // for testing
-            minutesActive = 0;
-            previousAnimType = (Animation_t)G.animType;
-            return COUNTDOWN;
+            (tm.tm_min == 59))
+#else
+        if (tm.tm_min == G.autoLdrBright) // for testing
+#endif
+        {
+            minutesAfterMidnight = 0;
+            type = COUNTDOWN;
         } else {
-            minutesActive++;
+            minutesAfterMidnight++;
         }
-        if (silvester && (minutesActive >= 11)) {
-            silvester = false;
-            G.animType = previousAnimType;
+        if ((type == SILVESTER) && (minutesAfterMidnight >= 11)) {
+            type = getAnimationType(true);
+        }
+    }
+    return (type == COUNTDOWN) || (type == SILVESTER);
+}
+
+//------------------------------------------------------------------------------
+
+Animation::Animation_t Animation::getAnimationType(bool trigger) {
+    if (G.animType == RANDOM) {
+        if (trigger) {
+            return (Animation_t)random(animTypeFirst, animTypeLast + 1);
+        } else {
+            return animType;
         }
     }
     return (Animation_t)G.animType;
 }
 
 //------------------------------------------------------------------------------
-
 bool Animation::isColorization() {
-    return ((G.animType != KEINE) &&
+    return ((animType != KEINE) &&
             ((G.animColorize == WORDS) || (G.animColorize == CHARACTERS)));
 }
 
 //------------------------------------------------------------------------------
 
 bool Animation::changeBrightness() {
-    RgbaColor newForeground, newBackground;
+    RgbfColor newForeground, newBackground;
     analyzeColors(
         NULL, STRIPE, newForeground,
         newBackground); // nur Vorder- Hintergrund aus LED stripe ermitteln
@@ -51,23 +111,23 @@ bool Animation::changeBrightness() {
         hsbColor = HsbColor(foregroundMinute);
         hsbColor.B = brightness;
         foregroundMinute = RgbColor(hsbColor);
-        RgbaColor(*matrix[3])[MAX_COL] = {neu, alt, work};
+        RgbfColor **matrix[3] = {act, old, work};
         for (int m = 0; m < 3; m++) {
-            for (int r = 0; r < MAX_ROWS; r++) {
-                for (int c = 0; c < MAX_COL; c++) {
+            for (int r = 0; r < max_rows; r++) {
+                for (int c = 0; c < max_cols; c++) {
                     if (adjustBg) {
-                        if (!matrix[m][r][c].Foreground) {
+                        if (!matrix[m][r][c].isForeground()) {
                             matrix[m][r][c] = newBackground;
                         }
                     }
                     if (adjustFg) {
-                        if (matrix[m][r][c].Foreground) {
+                        if (matrix[m][r][c].isForeground()) {
                             if (isColorization()) {
                                 hsbColor = HsbColor(matrix[m][r][c]);
                                 hsbColor.B = brightness;
-                                matrix[m][r][c] = RgbaColor(hsbColor, true);
+                                matrix[m][r][c].changeRgb(hsbColor);
                             } else {
-                                matrix[m][r][c] = newForeground;
+                                matrix[m][r][c].changeRgb(newForeground);
                             }
                         }
                     }
@@ -133,22 +193,20 @@ float Animation::pseudoRandomHue(bool init) {
 //------------------------------------------------------------------------------
 
 // colorize foreground
-void Animation::colorize(RgbaColor (*dest)[MAX_COL]) {
+void Animation::colorize(RgbfColor **dest) {
     bool changeColor = true;
     HsbColor hsbColor = HsbColor(foreground);
     hsbColor.H = pseudoRandomHue();
-    foregroundMinute =
-        isColorization() ? RgbaColor(hsbColor, true) : foreground;
+    foregroundMinute = isColorization() ? RgbColor(hsbColor) : foreground;
     hsbColor.H = pseudoRandomHue();
-    for (int r = 0; r < MAX_ROWS; r++) {
-        for (int c = 0; c < MAX_COL; c++) {
-            if (dest[r][c].Foreground) {
+    for (int r = 0; r < max_rows; r++) {
+        for (int c = 0; c < max_cols; c++) {
+            if (dest[r][c].isForeground()) {
                 if ((G.animColorize == CHARACTERS) || changeColor) {
                     changeColor = false;
                     hsbColor.H = pseudoRandomHue();
                 }
-                dest[r][c] =
-                    isColorization() ? RgbaColor(hsbColor, true) : foreground;
+                dest[r][c].changeRgb(isColorization() ? hsbColor : foreground);
             } else {
                 changeColor = true;
             }
@@ -159,12 +217,16 @@ void Animation::colorize(RgbaColor (*dest)[MAX_COL]) {
 //------------------------------------------------------------------------------
 
 void Animation::saveMatrix() {
-    memcpy(alt, neu, sizeof(alt));
-    analyzeColors(neu, STRIPE, foreground,
-                  background); // copy from stripe to neu[][]
+    static bool firstRun = true;
+    copyMatrix(old, act);
+    analyzeColors(act, STRIPE, foreground, background);
     foregroundMinute = foreground;
     if (isColorization()) {
-        colorize(neu);
+        colorize(act);
+    }
+    if (firstRun) {
+        firstRun = false;
+        copyMatrix(work, act);
     }
     return;
 }
@@ -173,16 +235,15 @@ void Animation::saveMatrix() {
 
 // kopiere (interne Matrix oder vom LED Stripe) und ermittle Vorder- und
 // Hintergrundfarbe
-void Animation::analyzeColors(RgbaColor (*dest)[MAX_COL],
-                              RgbaColor (*source)[MAX_COL],
-                              RgbaColor &foreground, RgbaColor &background) {
-    RgbaColor color, color1(0), color2(0);
+void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
+                              RgbfColor &foreground, RgbfColor &background) {
+    RgbfColor color, color1(0), color2(0);
     int colorCounter1 = 0, colorCounter2 = 0;
-    for (int r = 0; r < MAX_ROWS; r++) {
-        for (int c = 0; c < MAX_COL; c++) {
+    for (int r = 0; r < max_rows; r++) {
+        for (int c = 0; c < max_cols; c++) {
             if (source == STRIPE) {
                 color = led_get_pixel(
-                    usedUhrType->getFrontMatrix(r + ROW_START, c + COL_START));
+                    usedUhrType->getFrontMatrix(r + row_start, c + col_start));
             } else {
                 color = source[r][c];
             }
@@ -214,12 +275,14 @@ void Animation::analyzeColors(RgbaColor (*dest)[MAX_COL],
         background = color2;
         foreground = color1;
     }
-    foreground.Foreground = true;
-    background.Foreground = false;
+    foreground.setForeground(true);
+    foreground.setOverlay(false);
+    background.setForeground(false);
+    background.setOverlay(false);
     if (dest != NULL) {
-        for (int r = 0; r < MAX_ROWS; r++) {
-            for (int c = 0; c < MAX_COL; c++) {
-                dest[r][c].Foreground = dest[r][c] == foreground;
+        for (int r = 0; r < max_rows; r++) {
+            for (int c = 0; c < max_cols; c++) {
+                dest[r][c].setForeground(dest[r][c] == foreground);
             }
         }
     }
@@ -241,11 +304,11 @@ void Animation::set_minutes() {
     }
 }
 // Ueberschreibe die LEDs mit interner Matrix
-void Animation::copy2Stripe(RgbaColor (*source)[MAX_COL]) {
-    for (uint8_t row = 0; row < MAX_ROWS; row++) {
-        for (uint8_t col = 0; col < MAX_COL; col++) {
+void Animation::copy2Stripe(RgbfColor **source) {
+    for (uint8_t row = 0; row < max_rows; row++) {
+        for (uint8_t col = 0; col < max_cols; col++) {
             led_set_pixel_Color_Object(
-                usedUhrType->getFrontMatrix(row + ROW_START, col + COL_START),
+                usedUhrType->getFrontMatrix(row + row_start, col + col_start),
                 source[row][col]);
         }
     }
@@ -254,18 +317,28 @@ void Animation::copy2Stripe(RgbaColor (*source)[MAX_COL]) {
 
 //------------------------------------------------------------------------------
 
-void Animation::copy2Work(RgbaColor (*source)[MAX_COL]) {
-    memcpy(work, source, sizeof(work));
+void Animation::copyMatrix(RgbfColor **dest, RgbfColor **source) {
+    for (int r = 0; r < max_rows; r++) {
+        memcpy(dest[r], source[r], sizeofColumn);
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void Animation::fillMatrix(RgbaColor (*matrix)[MAX_COL], RgbaColor color,
-                           bool fg) {
-    for (uint8_t row = 0; row < MAX_ROWS; row++) {
-        for (uint8_t col = 0; col < MAX_COL; col++) {
-            matrix[row][col].changeRgb(color);
-            matrix[row][col].Foreground = fg;
+void Animation::copyMatrixFlags(RgbfColor **dest, RgbfColor **source) {
+    for (int r = 0; r < max_rows; r++) {
+        for (int c = 0; c < max_cols; c++) {
+            dest[r][c].setFlags(source[r][c].getFlags());
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Animation::fillMatrix(RgbfColor **matrix, RgbfColor color) {
+    for (uint8_t row = 0; row < max_rows; row++) {
+        for (uint8_t col = 0; col < max_cols; col++) {
+            matrix[row][col] = color;
         }
     }
 }
@@ -277,8 +350,8 @@ void Animation::fillMatrix(RgbaColor (*matrix)[MAX_COL], RgbaColor color,
 bool Animation::led_show_notify(bool changed, uint8_t minute) {
     bool led_show = true;
 
-    if (G.animType == KEINE) {
-        if ((changed == 1) && (lastMinute != minute)) {
+    if (animType == KEINE) {
+        if (changed && (lastMinute != minute)) {
             lastMinute = minute;
             // fuer den Fall, dass die Animation eingeschaltet wird
             matrixChanged = true;
@@ -308,10 +381,8 @@ bool Animation::led_show_notify(bool changed, uint8_t minute) {
 
 // muss staendig aufgerufen werden!!
 void Animation::loop(struct tm &tm) {
-    static Animation_t lastAnimType = KEINE;
-    static uint8_t lastAnimDemo = 99;
-    static uint8_t lastAnimSpeed = 99;
-    static uint8_t lastAnimColor = 99;
+    static uint8_t lastMinute = 99;
+    bool minuteChange = false;
 
     if (matrixChanged) {
         matrixChanged = false;
@@ -319,45 +390,41 @@ void Animation::loop(struct tm &tm) {
     }
 
     if ((G.prog == COMMAND_IDLE) || (G.prog == COMMAND_MODE_WORD_CLOCK)) {
-        G.animType = isSilvester(tm);
+        if (lastMinute != _minute) {
+            lastMinute = _minute;
+            minuteChange = true;
+        }
+        if (!isSilvester(animType, tm, minuteChange)) {
+            animType = getAnimationType(minuteChange);
+        }
 
-        if (G.animType == KEINE) {
+        if (animType == KEINE) {
             if (lastAnimType != KEINE) {
                 lastAnimType = KEINE;
-                memcpy(work, neu, sizeof(work));
+                copyMatrix(work, act);
                 colorize(work);
                 copy2Stripe(work);
                 led_show();
             }
         } else {
-            if (isIdle()) {
-                if (G.animType != lastAnimType) {
-                    lastAnimType = (Animation_t)G.animType;
-                    phase = 1;
-                }
-                if (G.animColorize != lastAnimColor) {
-                    lastAnimColor = G.animColorize;
-                    colorize(work);
-                }
+            if ((animType != lastAnimType) ||
+                (G.animDuration != lastAnimDuration) ||
+                (G.animDemo != lastAnimDemo)) {
+                lastAnimType = animType;
+                lastAnimDemo = G.animDemo;
+                lastAnimDuration = G.animDuration;
+                phase = 1;
+            }
+            if (G.animColorize != lastAnimColorize) {
+                lastAnimColorize = G.animColorize;
+                colorize(isIdle() ? work : act);
             }
 
             uint32_t now = millis();
             if ((!isIdle()) && (now >= nextActionTime)) {
                 nextActionTime = now + animationDelay;
-                if ((G.animType != lastAnimType) ||
-                    (G.animDuration != lastAnimSpeed) ||
-                    (G.animColorize != lastAnimColor) ||
-                    (G.animDemo != lastAnimDemo)) {
-                    lastAnimType = (Animation_t)G.animType;
-                    lastAnimDemo = G.animDemo;
-                    lastAnimSpeed = G.animDuration;
-                    lastAnimColor = G.animColorize;
-                    phase = 1;
-                    colorize(neu);
-                }
-                //  Serial.printf("Anim:
-                //  type %d phase %d\n", G.animType, phase);
-                switch (G.animType) {
+                // Serial.printf("Anim: type %d phase %d\n", animType, phase);
+                switch (animType) {
                 case HOCH_ROLLEN:
                     phase = animScrollDown(false);
                     break;
@@ -382,11 +449,18 @@ void Animation::loop(struct tm &tm) {
                 case BAELLE:
                     phase = animBalls();
                     break;
+                case SILVESTER:
                 case FIRE:
                     phase = animFire();
                     break;
+                case SCHLANGE:
+                    phase = animSnake();
+                    break;
                 case COUNTDOWN:
                     phase = animCountdown(tm);
+                    break;
+                case RANDOM:
+                case KEINE:
                     break;
                 }
             }
@@ -396,25 +470,6 @@ void Animation::loop(struct tm &tm) {
         }
     }
 }
-
-//------------------------------------------------------------------------------
-/*
-void Animation::blockgrafik(uint8_t rot, uint8_t gruen, uint8_t blau,
-                            BLOCKS num) {
-    for (uint8_t row = 0; row < MAX_ROWS; row++) {
-        for (uint8_t col = 0; col < MAX_COL; col++) {
-            if (grafik_11x10[num][row] & (1 << (10 - col))) {
-                led_set_pixel(rot, gruen, blau, 0,
-                              usedUhrType->getFrontMatrix(row, col));
-            } else {
-                led_set_pixel(0, 0, 0, 0,
-                              usedUhrType->getFrontMatrix(row, col));
-            }
-        }
-    }
-    led_show();
-}
- */
 
 //------------------------------------------------------------------------------
 
@@ -430,33 +485,6 @@ uint16_t Animation::reverse(uint16_t num, bool mirrored) {
         num = res;
     }
     return num;
-}
-
-//------------------------------------------------------------------------------
-
-void Animation::copyBlock(RgbaColor color, uint block, bool fgbg, bool mirrored,
-                          bool init) {
-    if (!init) {
-        memcpy(alt, tmp, sizeof(alt));
-    }
-    uint16_t column;
-    for (int r = 0; r < MAX_ROWS; r++) {
-        for (int c = 0; c < MAX_COL; c++) {
-            column =
-                reverse(pgm_read_word(&(grafik_11x10[block][r])), mirrored);
-            if (column & (1 << (10 - c))) {
-                tmp[r][c] = color;
-                tmp[r][c].Foreground = true;
-            } else {
-                if (fgbg) {
-                    tmp[r][c].Foreground = false;
-                }
-            }
-        }
-    }
-    if (init) {
-        memcpy(alt, tmp, sizeof(alt));
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -507,7 +535,7 @@ uint16_t Animation::calcDelay(uint16_t frames) {
 
 // die neue matrix rutscht von oben rein     | unten rein
 //                      row                  |               row
-// phase | 9876543210   alt  neu   wechsel   | 9876543210   alt  neu   wechsel
+// phase | 9876543210   old  act   wechsel   | 9876543210   old  act   wechsel
 //       | unten oben                        | unten oben
 //   1   | aaaaaaaaan   0-8  9     0         | naaaaaaaaa   1-9  0     9
 //   2   | aaaaaaaann   0-7  8-9   1         | nnaaaaaaaa   2-9  0-1   8
@@ -525,24 +553,24 @@ uint16_t Animation::animScrollDown(bool dirDown) {
     bool copyFromNeu;
 
     if (phase == 1) {
-        animationDelay = calcDelay(MAX_ROWS);
+        animationDelay = calcDelay(max_rows) / 4;
     }
     if (dirDown) {
         wechsel = phase;
         rowAlt = 0;
-        rowNeu = MAX_ROWS - phase;
+        rowNeu = max_rows - phase;
     } else {
-        wechsel = MAX_ROWS - phase;
+        wechsel = max_rows - phase;
         rowAlt = phase;
         rowNeu = 0;
     }
-    for (uint8_t row = 0; row < MAX_ROWS; row++) {
+    for (uint8_t row = 0; row < max_rows; row++) {
         copyFromNeu = (row >= wechsel) ^ dirDown;
-        for (uint8_t col = 0; col < MAX_COL; col++) {
+        for (uint8_t col = 0; col < max_cols; col++) {
             if (copyFromNeu) {
-                work[row][col] = neu[rowNeu][col];
+                work[row][col] = act[rowNeu][col];
             } else {
-                work[row][col] = alt[rowAlt][col];
+                work[row][col] = old[rowAlt][col];
             }
         }
         if (copyFromNeu) {
@@ -551,7 +579,7 @@ uint16_t Animation::animScrollDown(bool dirDown) {
             rowAlt++;
         }
     }
-    if (phase >= MAX_ROWS) {
+    if (phase >= max_rows) {
         return 0;
     }
     return phase + 1;
@@ -561,7 +589,7 @@ uint16_t Animation::animScrollDown(bool dirDown) {
 
 // die neue matrix rutscht von rechts rein / links rein
 //                       col
-// phase | 01234567890   alt  neu   Wechsel  01234567890   alt  neu   Wechsel
+// phase | 01234567890   old  act   Wechsel  01234567890   old  act   Wechsel
 //   1   | aaaaaaaaaan   1-10 0      0       naaaaaaaaaa   0-9  10    10
 //   2   | aaaaaaaaann   2-10 0-1    1       nnaaaaaaaaa   0-8  9-10   9
 //   3   | aaaaaaaannn   3-10 0-2    2       nnnaaaaaaaa   0-7  8-10   8
@@ -573,24 +601,24 @@ uint16_t Animation::animScrollRight(bool dirRight) {
     bool copyFromNeu;
 
     if (phase == 1) {
-        animationDelay = calcDelay(MAX_COL);
+        animationDelay = calcDelay(max_cols) / 4;
     }
     if (dirRight) {
         wechsel = phase;
         colAlt = 0;
-        colNeu = MAX_COL - phase;
+        colNeu = max_cols - phase;
     } else {
-        wechsel = MAX_COL - phase;
+        wechsel = max_cols - phase;
         colAlt = phase;
         colNeu = 0;
     }
-    for (uint8_t col = 0; col < MAX_COL; col++) {
+    for (uint8_t col = 0; col < max_cols; col++) {
         copyFromNeu = (col >= wechsel) ^ dirRight;
-        for (uint8_t row = 0; row < MAX_ROWS; row++) {
+        for (uint8_t row = 0; row < max_rows; row++) {
             if (copyFromNeu) {
-                work[row][col] = neu[row][colNeu];
+                work[row][col] = act[row][colNeu];
             } else {
-                work[row][col] = alt[row][colAlt];
+                work[row][col] = old[row][colAlt];
             }
         }
         if (copyFromNeu) {
@@ -599,7 +627,7 @@ uint16_t Animation::animScrollRight(bool dirRight) {
             colAlt++;
         }
     }
-    if (phase >= MAX_COL) {
+    if (phase >= max_cols) {
         return 0;
     }
     return phase + 1;
@@ -617,11 +645,11 @@ uint16_t Animation::animBalls() {
     if (phase == 1) {
         animationDelay = 50; // 20 Frames per second
         numBalls = 0;
-        for (c = 0; (c < MAX_COL) && (numBalls < MAX_BAELLE); c++) {
-            for (r = 0; (r < MAX_ROWS) && (numBalls < MAX_BAELLE); r++) {
-                if (work[r][c].Foreground) {
-                    baelle[numBalls].begin(r, c, work[r][c], background,
-                                           100 * numBalls);
+        for (c = 0; (c < max_cols) && (numBalls < max_cols); c++) {
+            for (r = 0; (r < max_rows) && (numBalls < max_cols); r++) {
+                if (work[r][c].isForeground()) {
+                    balls[numBalls].begin(r, c, work[r][c], background,
+                                          100 * numBalls);
                     numBalls++;
                     break;
                 }
@@ -635,10 +663,10 @@ uint16_t Animation::animBalls() {
     starttime = now;
     ballsDown = 0;
     for (int b = 0; b < numBalls; b++) {
-        oldR = baelle[b].r;
-        ballsDown += baelle[b].move(timeDelta);
-        r = baelle[b].r; // r, c neue Koordinaten
-        c = baelle[b].c;
+        oldR = balls[b].r;
+        ballsDown += balls[b].move(timeDelta);
+        r = balls[b].r; // r, c neue Koordinaten
+        c = balls[b].c;
         if (r > oldR) { // abwaerts
             for (; r > oldR; oldR++) {
                 work[oldR][c] = background;
@@ -648,10 +676,10 @@ uint16_t Animation::animBalls() {
                 work[oldR][c] = background;
             }
         }
-        work[r][c] = baelle[b].color;
+        work[r][c] = balls[b].color;
     }
     if (ballsDown >= numBalls) {
-        copy2Work(neu); // TODO(ATho95): schiess Baelle hoch
+        copyMatrix(work, act); // TODO(ATho95): schiess Baelle hoch
         return 0;
     }
     return phase + 1;
@@ -660,103 +688,125 @@ uint16_t Animation::animBalls() {
 //------------------------------------------------------------------------------
 
 uint16_t Animation::animFire() {
-    static const bool blockInit = true;
-    static const bool blockFgOnly = false;
-    static const bool blockFgBg = true;
     static const uint blendingFrames = 20;
     static bool sparkle, mirrored = false;
     static uint subPhase;
 
     if (phase == 1) {
-        animationDelay = calcDelay(blendingFrames * 10) / 2; // FIRE_1 .. 6 + 4
+        // FIRE_1 .. 6 + 4 = 10
+        animationDelay = calcDelay(blendingFrames * 10) / 2;
         phase = FIRE_1;
         sparkle = false;
         subPhase = 1;
-        memcpy(tmp, neu, sizeof(tmp));
-        copyBlock(_white, phase, blockFgBg, mirrored, blockInit);
+        firework->prepare(0, _white, FIRE_1, mirrored);
+        // use current colors to be blended to act
+        copyMatrix(old, work);
+        copyMatrixFlags(work, act);
     }
 
+    bool lastSubPhase = subPhase == blendingFrames;
     if (subPhase > blendingFrames) {
         subPhase = 1;
         phase++;
         switch (phase) {
         case FIRE_4:
-            copyBlock(_red, FIRE_4, blockFgBg, mirrored);
+            firework->prepare(0, _red, FIRE_4, mirrored);
             break;
         case FIRE_5:
-            copyBlock(_red, FIRE_5, blockFgBg, mirrored);
+            firework->prepare(0, _red, FIRE_5, mirrored);
             break;
         case FIRE_6:
-            copyBlock(_red, FIRE_6, blockFgBg, mirrored);
+            firework->prepare(0, _red, FIRE_6, mirrored);
             break;
         case (FIRE_6 + 1):
-            copyBlock(_blue, FIRE_6, blockFgBg, mirrored);
-            copyBlock(_green, FIRE_4, blockFgOnly, mirrored);
-            copyBlock(_yellow, FIRE_5, blockFgOnly, mirrored);
+            firework->prepare(0, _blue, FIRE_6, mirrored);
+            firework->prepare(1, _green, FIRE_4, mirrored);
+            firework->prepare(2, _yellow, FIRE_5, mirrored);
             break;
         case (FIRE_6 + 2):
+            animationDelay *= 2;
             sparkle = true;
             break;
         case (FIRE_6 + 3):
             break;
         case (FIRE_6 + 4):
-            copy2Work(neu);
-            animationDelay = 1000;
             mirrored = !mirrored;
-            return silvester ? 1 : 0; // end of animation
+            copyMatrix(old, act); // old contains artefacts
+            if ((animType == SILVESTER)) {
+                animationDelay = 500;
+                return 1; // next animation in 500ms
+            }
+            return 0; // end of animation
             break;
         default:
-            copyBlock(_white, phase, blockFgBg, mirrored);
+            firework->prepare(0, _white, static_cast<Icons>(phase), mirrored);
         }
     }
 
-    RgbColor color;
-    float progress = static_cast<float>(subPhase++) * (1.0 / blendingFrames);
+    RgbColor overlayColor;
+    float progress = static_cast<float>(subPhase) / blendingFrames;
     if (progress > 1.0) {
         progress = 1.0;
     }
-    for (uint8_t col = 0; col < MAX_COL; col++) {
-        for (uint8_t row = 0; row < MAX_ROWS; row++) {
+    float fading =
+        static_cast<float>((phase - FIRE_1) * blendingFrames + subPhase) /
+        (blendingFrames * (FIRE_6 - FIRE_1 + 2));
+    if (fading > 1.0) {
+        fading = 1.0;
+    }
+    bool overlay;
+    for (uint8_t col = 0; col < max_cols; col++) {
+        for (uint8_t row = 0; row < max_rows; row++) {
+            overlay = firework->getPixel(row, col, overlayColor);
             if (sparkle) {
-                if (tmp[row][col].Foreground) {
-                    if (random(8) == 0) {
-                        tmp[row][col].Foreground = false;
-                        alt[row][col].Foreground = true;
-                        work[row][col].changeRgb(_white); // _white on
-                    }
+                if (work[row][col].isOverlay()) {
+                    // overlayed in previous run
+                    work[row][col] = old[row][col]; // restore color
+                    work[row][col].setOverlay(false);
                 } else {
-                    if (alt[row][col].Foreground) {
-                        tmp[row][col].Foreground = true;
-                        alt[row][col].Foreground = false;
-                        work[row][col].changeRgb(background); // _white off
+                    if (overlay && (random(10) == 0) && (!lastSubPhase)) {
+                        old[row][col] = work[row][col]; // save color
+                        work[row][col].changeRgb(_white);
+                        work[row][col].setOverlay();
                     }
                 }
             } else {
-                if (tmp[row][col].Foreground) {
-                    color = color.LinearBlend(background, tmp[row][col],
-                                              progress); // blend in
-                    work[row][col].changeRgb(color);
+                // blend old -> act
+                RgbColor color =
+                    color.LinearBlend(old[row][col], act[row][col], fading);
+                if (overlay && !lastSubPhase) {
+                    // blend in overlay
+                    overlayColor =
+                        overlayColor.LinearBlend(color, overlayColor, progress);
+                    work[row][col].changeRgb(overlayColor);
+                    work[row][col].setOverlay();
                 } else {
-                    if (alt[row][col].Foreground) {
-                        color = color.LinearBlend(alt[row][col], background,
-                                                  progress); // blend out
+                    if (work[row][col].isOverlay()) {
+                        // blend out overlay
+                        color =
+                            color.LinearBlend(overlayColor, color, progress);
                         work[row][col].changeRgb(color);
-                        tmp[row][col] = work[row][col];
+                        if (lastSubPhase) {
+                            work[row][col].setOverlay(false);
+                        }
+                    } else {
+                        // set mix of old and act
+                        work[row][col].changeRgb(color);
                     }
                 }
             }
         }
     }
+    subPhase++;
     return phase;
 }
 
 //------------------------------------------------------------------------------
 
 void Animation::set_pixel_for_char(uint8_t col, uint8_t row, uint8_t offsetCol,
-                                   uint8_t offsetRow, unsigned char unsigned_d1,
-                                   HsbColor color) {
+                                   unsigned char unsigned_d1, HsbColor color) {
     if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
-        work[row + 1][col + offsetCol] = RgbaColor(color, true);
+        work[row + 1][col + offsetCol].changeRgb(color);
     }
 }
 
@@ -772,12 +822,11 @@ uint16_t Animation::animCountdown(struct tm &tm) {
         if (countDown < 0) { // 60 - 0
             countDown = 60;
             lastSecond = 99;
-            silvester = true;
-            G.animType = FIRE;
+            animType = SILVESTER;
             return 1; // continue FIRE in phase 1
         }
         lastSecond = _second;
-        fillMatrix(work, background, false);
+        fillMatrix(work, background);
         HsbColor hsbColor_1 = HsbColor(foreground);
         HsbColor hsbColor_2 = HsbColor(foreground);
         hsbColor_1.H = pseudoRandomHue();
@@ -786,19 +835,19 @@ uint16_t Animation::animCountdown(struct tm &tm) {
         // start 23:59:00     60 - 0
         snprintf(seconds, sizeof(seconds), "%d", countDown);
         // for (uint8_t i = 0; i < 5; i++) {
-        for (uint8_t col = 0; col < 5; col++) {     // column
-            for (uint8_t row = 0; row < 8; row++) { // row
+        for (uint8_t row = 0; row < 8; row++) {     // row
+            for (uint8_t col = 0; col < 5; col++) { // column
                 if (countDown >= 10) {
                     // 1. Zahl ohne Offset
-                    set_pixel_for_char(col, row, 0, 0,
+                    set_pixel_for_char(col, row, 0,
                                        static_cast<unsigned char>(seconds[0]),
                                        hsbColor_1);
                     // 2. Zahl mit Offset
-                    set_pixel_for_char(col, row, 6, 0,
+                    set_pixel_for_char(col, row, 6,
                                        static_cast<unsigned char>(seconds[1]),
                                        hsbColor_2);
                 } else {
-                    set_pixel_for_char(col, row, 3, 0,
+                    set_pixel_for_char(col, row, 3,
                                        static_cast<unsigned char>(seconds[0]),
                                        hsbColor_1);
                 }
@@ -826,12 +875,12 @@ void Animation::animColorChange() {
                 fmod(1.0 / (G.animSpeed * 20.0),
                      1.0); // Alle Farben in 1 .. 60 Sekunden / 0 == aus
             HsbColor hsbColor;
-            for (uint8_t row = 0; row < MAX_ROWS; row++) {
-                for (uint8_t col = 0; col < MAX_COL; col++) {
-                    if (work[row][col].Foreground) {
+            for (uint8_t row = 0; row < max_rows; row++) {
+                for (uint8_t col = 0; col < max_cols; col++) {
+                    if (work[row][col].isForeground()) {
                         hsbColor = HsbColor(work[row][col]);
                         hsbColor.H = fmod(hsbColor.H + deltaHue, 1.0);
-                        work[row][col] = RgbaColor(hsbColor, true);
+                        work[row][col].changeRgb(hsbColor);
                     }
                 }
             }
@@ -847,28 +896,28 @@ void Animation::animColorChange() {
 uint16_t Animation::animLaser() {
     static uint8_t row = 0, col = 0;
     static bool loeschPhase = true;
-    static RgbaColor strahl(255, false);
+    static RgbfColor strahl(255);
 
     if (phase == 1) {
         // erster Durchgang loeschen
-        animationDelay = calcDelay(MAX_ROWS * MAX_COL * 2);
+        animationDelay = calcDelay(max_rows * max_cols * 2);
         row = 0;
         col = 0;
-        copy2Work(alt);
+        copyMatrix(work, old);
         loeschPhase = true;
     }
 
     if (loeschPhase) {
         work[row][col] = background;
     } else {
-        work[row][col] = neu[row][col];
+        work[row][col] = act[row][col];
     }
 
-    if (++col >= MAX_COL) {
+    if (++col >= max_cols) {
         col = 0;
         row++;
     }
-    if (row < MAX_ROWS) {
+    if (row < max_rows) {
         work[row][col] = strahl;
     } else {
         row = 0;
@@ -889,18 +938,18 @@ uint16_t Animation::animFade() {
 
     if (phase == 1) {
         animationDelay = calcDelay(frames);
-        memcpy(alt, work, sizeof(alt));
+        copyMatrix(old, work);
     }
     float progress = static_cast<float>(phase) / static_cast<float>(frames);
 
-    for (uint8_t col = 0; col < MAX_COL; col++) {
-        for (uint8_t row = 0; row < MAX_ROWS; row++) {
-            color = color.LinearBlend(alt[row][col], neu[row][col], progress);
+    for (uint8_t col = 0; col < max_cols; col++) {
+        for (uint8_t row = 0; row < max_rows; row++) {
+            color = color.LinearBlend(old[row][col], act[row][col], progress);
             work[row][col].changeRgb(color);
         }
     }
     if (phase >= frames) {
-        copy2Work(neu); // take all color.Foreground's from neu
+        copyMatrix(work, act); // take all color.Foreground's from act
         return 0;
     }
     return phase + 1;
@@ -911,18 +960,18 @@ uint16_t Animation::animFade() {
 uint16_t Animation::animMatrixRain() {
     uint frames = 100;
     int row, col;
-    RgbaColor fadeColor, rainColor;
+    RgbfColor fadeColor;
+    RgbaColor rainColor;
 
     if (phase == 1) {
         animationDelay = calcDelay(frames);
-        memcpy(alt, work,
-               sizeof(alt)); // work is still the previous animated array
+        copyMatrix(old, work); // work is still the previous animated array
         int stop;
         uint8_t brightness = foreground.CalculateBrightness();
-        for (col = 0; col < MAX_COL; col++) {
-            stop = MAX_ROWS - 1;
-            for (row = MAX_ROWS - 1; row >= 0; row--) {
-                if (work[row][col].Foreground) {
+        for (col = 0; col < max_cols; col++) {
+            stop = max_rows - 1;
+            for (row = max_rows - 1; row >= 0; row--) {
+                if (work[row][col].isForeground()) {
                     stop = row;
                     break;
                 }
@@ -931,18 +980,34 @@ uint16_t Animation::animMatrixRain() {
         }
     }
     float progress = static_cast<float>(phase) / static_cast<float>(frames);
-    for (col = 0; col < MAX_COL; col++) {
-        for (row = 0; row < MAX_ROWS; row++) {
+    for (col = 0; col < max_cols; col++) {
+        for (row = 0; row < max_rows; row++) {
             fadeColor =
-                fadeColor.LinearBlend(alt[row][col], neu[row][col], progress);
+                fadeColor.LinearBlend(old[row][col], act[row][col], progress);
             rainColor = rain[col].get(row);
-            rainColor =
-                rainColor.LinearBlend(fadeColor, rainColor, rainColor.Alpha);
+            rainColor = rainColor.LinearBlend(fadeColor, rainColor,
+                                              rainColor.getAlpha());
             work[row][col].changeRgb(rainColor);
         }
     }
     if (phase >= frames) {
-        copy2Work(neu); // take all color.Foreground's from neu
+        copyMatrix(work, act); // take all color.Foreground's from act
+        return 0;
+    }
+    return phase + 1;
+}
+
+//------------------------------------------------------------------------------
+
+uint16_t Animation::animSnake() {
+    uint food = 40;
+
+    if (phase == 1) {
+        animationDelay = calcDelay(food);
+        snake->begin(this);
+    }
+
+    if (!snake->drawSnake()) {
         return 0;
     }
     return phase + 1;
