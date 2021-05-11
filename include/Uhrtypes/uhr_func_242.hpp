@@ -12,7 +12,7 @@
  * K D R E I R H F Ü N F
  * E L F N E U N V I E R
  * W A C H T Z E H N B X
- * B S E C H S F M U H R
+ * B S E C H S F U H R M
  *
  *
  *
