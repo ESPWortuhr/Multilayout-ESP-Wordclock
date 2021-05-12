@@ -111,7 +111,7 @@ RTC_Type RTC;
 
 #include "Animation.hpp"
 
-Animation animation;
+Animation *animation;
 
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) <= EEPROM_SIZE,
@@ -214,6 +214,16 @@ void time_is_set() {
 
 void setup() {
     //-------------------------------------
+    // Start Serielle Schnittstelle bei Bedarf
+    //-------------------------------------
+    if (DEBUG == true) {
+        Serial.begin(115200);
+        Serial.println("");
+        Serial.println("--------------------------------------");
+        Serial.println("Begin Setup");
+        Serial.println("--------------------------------------");
+    }
+    //-------------------------------------
     // EEPROM lesen / initialisieren
     //-------------------------------------
     EEPROM.begin(EEPROM_SIZE);
@@ -298,48 +308,21 @@ void setup() {
     }
     // Initialisierung der COMMAND_MODE_xxx (Farbe)
     G.prog_init = 1;
-    //-------------------------------------
-    // Start Serielle Schnittstelle bei Bedarf
-    //-------------------------------------
-    if (DEBUG == true) {
-        Serial.begin(115200);
-        Serial.println("");
-        Serial.println("--------------------------------------");
-        Serial.println("Begin Setup");
-        Serial.println("--------------------------------------");
-    }
-
-    //-------------------------------------
-    Serial.println("--------------------------------------");
-    Serial.println("ESP Uhr");
-    Serial.print("Version         : "), Serial.println(VER);
-    Serial.printf("Chip ID         : %08X\n", ESP.getChipId());
-    Serial.printf("Flash ID        : %08X\n\n", ESP.getFlashChipId());
-    Serial.printf("CPU Speed       : %u MHz \n\n", ESP.getCpuFreqMHz());
-
-    Serial.printf("Flash real Size : %u KByte\n",
-                  ESP.getFlashChipRealSize() / 1024);
-    Serial.printf("Flash ide  Size : %u KByte\n",
-                  ESP.getFlashChipSize() / 1024);
-    Serial.printf("Flash ide Speed : %u\n\n", ESP.getFlashChipSpeed());
-
-    Serial.printf("Free Heap Size  : %u Byte\n", ESP.getFreeHeap());
-    Serial.printf("Sketch Size     : %u Byte \n", ESP.getSketchSize());
-    Serial.printf("Free Sketch Size: %u Byte \n\n", ESP.getFreeSketchSpace());
-
-    Serial.printf("SDK Version     : %s\n", ESP.getSdkVersion());
-    Serial.print("RESET Info      : ");
-    Serial.println(ESP.getResetInfo());
-    Serial.print("COMPILED        : ");
-    Serial.print(__DATE__);
-    Serial.print(" ");
-    Serial.println(__TIME__);
 
     //-------------------------------------
     // Get Pointer for Uhrtype
     //-------------------------------------
 
     usedUhrType = getPointer(G.UhrtypeDef);
+
+    // Bereich der animiert wird:
+    //     LED-Rahmen horizontal
+    //     LED-Rahmen vertical
+    //     Anzahl Reihen (einschliesslich Rahmen)
+    //     Anzahl Spalten (einschliesslich Rahmen)
+    // TODO Rahmenbreite aus usedUhrTyp holen
+    animation = new Animation(0, 0, usedUhrType->ROWS_MATRIX() - 1,
+                              usedUhrType->COLS_MATRIX());
 
     //-------------------------------------
     // LEDs initialisieren
@@ -405,6 +388,12 @@ void setup() {
     // OTA--
     //-------------------------------------
     httpUpdater.setup(&httpServer);
+    httpServer.onNotFound([]() {
+        // redirect port 81 not found pages to port 80
+        httpServer.sendHeader(
+            "Location", "http://" + WiFi.localIP().toString() + "/", true);
+        httpServer.send(308, "text/plain", "");
+    });
     httpServer.begin();
 
     //-------------------------------------
@@ -424,11 +413,7 @@ void setup() {
     webSocket.begin();
     webSocket.onEvent(webSocketEvent);
 
-    Serial.println("Websockest started");
-    Serial.println("--------------------------------------");
-    Serial.println("Ende Setup");
-    Serial.println("--------------------------------------");
-    Serial.println("");
+    Serial.println("Websocket started");
 
     //-------------------------------------
     // mDNS
@@ -441,6 +426,37 @@ void setup() {
     if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 && G.zeige_min < 2) {
         set_farbe_rahmen();
     }
+
+    //-------------------------------------
+    Serial.println("--------------------------------------");
+    Serial.println("ESP Uhr");
+    Serial.print("Version         : "), Serial.println(VER);
+    Serial.printf("Chip ID         : %08X\n", ESP.getChipId());
+    Serial.printf("Flash ID        : %08X\n\n", ESP.getFlashChipId());
+    Serial.printf("CPU Speed       : %u MHz \n\n", ESP.getCpuFreqMHz());
+
+    Serial.printf("Flash real Size : %u KByte\n",
+                  ESP.getFlashChipRealSize() / 1024);
+    Serial.printf("Flash ide  Size : %u KByte\n",
+                  ESP.getFlashChipSize() / 1024);
+    Serial.printf("Flash ide Speed : %u\n\n", ESP.getFlashChipSpeed());
+
+    Serial.printf("Free Heap Size  : %u Byte\n", ESP.getFreeHeap());
+    Serial.printf("Sketch Size     : %u Byte \n", ESP.getSketchSize());
+    Serial.printf("Free Sketch Size: %u Byte \n\n", ESP.getFreeSketchSpace());
+
+    Serial.printf("SDK Version     : %s\n", ESP.getSdkVersion());
+    Serial.print("RESET Info      : ");
+    Serial.println(ESP.getResetInfo());
+    Serial.print("COMPILED        : ");
+    Serial.print(__DATE__);
+    Serial.print(" ");
+    Serial.println(__TIME__);
+
+    Serial.println("--------------------------------------");
+    Serial.println("Ende Setup");
+    Serial.println("--------------------------------------");
+    Serial.println("");
 }
 
 //------------------------------------------------------------------------------
@@ -465,7 +481,7 @@ void loop() {
     }
 
     // lass die Zeit im Demo Mode der Animation schneller ablaufen
-    animation.demoMode(_minute, _sekunde);
+    animation->demoMode(_minute, _sekunde);
 
     MDNS.update();
 
@@ -549,7 +565,7 @@ void loop() {
         Serial.printf(currentTime);
     }
 
-    animation.loop(tm); // muss periodisch aufgerufen werden
+    animation->loop(tm); // muss periodisch aufgerufen werden
 
     //------------------------------------------------
     // Minute
@@ -700,11 +716,13 @@ void loop() {
         types.add("Runter rollen");
         types.add("Links schieben");
         types.add("Rechts schieben");
-        types.add("Ueberblenden");
+        types.add("Überblenden");
         types.add("Laser");
         types.add("Matrix");
         types.add("Baelle");
         types.add("Feuerwerk");
+        types.add("Schlange");
+        types.add("zufällig");
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
         G.conf = COMMAND_IDLE;

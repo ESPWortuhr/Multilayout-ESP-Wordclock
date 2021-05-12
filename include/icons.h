@@ -1,5 +1,8 @@
 #pragma once
 
+#define GRAFIK_11X10_ROWS 10
+#define GRAFIK_11X10_COLS 11
+
 const uint16_t grafik_11x10[][11] PROGMEM = {
 
     {0b10001010000,  // 0  WLANT    0: O . . . O . O . . . . : 10

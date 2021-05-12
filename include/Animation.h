@@ -1,60 +1,96 @@
 #pragma once
 
+#include "icons.h"
+#include <queue>
+
 // ###############################################################################
 // compare operators are derived from RgbColor which compare R, G, B only
-struct RgbaColor : RgbColor {
-    RgbaColor() : RgbColor() {
-        Alpha = 1.0;
-        Foreground = false;
+// one hot coding for F_xxx
+#define F_NULL 0
+#define F_FOREGROUND 1
+#define F_OVERLAY 2
+struct RgbfColor : RgbColor {
+    RgbfColor() : RgbColor() {
+        R = 0;
+        G = 0;
+        B = 0;
+        Flags = F_NULL;
     };
-    RgbaColor(RgbColor rgb) : RgbColor(rgb) {
-        Alpha = 1.0;
-        Foreground = false;
+    RgbfColor(RgbColor rgb) : RgbColor(rgb) { Flags = F_NULL; }
+    RgbfColor(uint8_t h) : RgbColor(h) { Flags = F_NULL; }
+    RgbfColor(uint8_t r, uint8_t g, uint8_t b) : RgbColor(r, g, b) {
+        Flags = F_NULL;
     }
-    RgbaColor(uint8_t h) : RgbColor(h) {
-        Alpha = 1.0;
-        Foreground = false;
-    }
-    RgbaColor(RgbColor rgb, bool f) : RgbColor(rgb) {
-        Alpha = 1.0;
-        Foreground = f;
-    }
-    RgbaColor(HsbColor hsb, bool f) : RgbColor(hsb) {
-        Alpha = 1.0;
-        Foreground = f;
-    }
-    RgbaColor(uint8_t h, bool f) : RgbColor(h) {
-        Alpha = 1.0;
-        Foreground = f;
-    }
-    // ---------------------
-    RgbaColor(RgbColor rgb, float a) : RgbColor(rgb) {
-        Alpha = a;
-        Foreground = false;
-    }
-    RgbaColor(uint8_t h, float a) : RgbColor(h) {
-        Alpha = a;
-        Foreground = false;
-    }
-    RgbaColor(uint8_t r, uint8_t g, uint8_t b, float a) : RgbColor(r, g, b) {
-        Alpha = a;
-        Foreground = false;
-    }
+    RgbfColor(RgbColor rgb, uint f) : RgbColor(rgb) { Flags = f; }
+    RgbfColor(HsbColor hsb, uint f) : RgbColor(hsb) { Flags = f; }
+    RgbfColor(uint8_t h, uint f) : RgbColor(h) { Flags = f; }
 
     void changeRgb(RgbColor color) {
         R = color.R;
         G = color.G;
         B = color.B;
     }
-    float Alpha;
-    bool Foreground;
+    void changeRgb(HsbColor hsb) {
+        RgbColor color = RgbColor(hsb);
+        R = color.R;
+        G = color.G;
+        B = color.B;
+    }
+    void setForeground(bool flag = true) {
+        if (flag) {
+            Flags |= F_FOREGROUND;
+        } else {
+            Flags &= ~F_FOREGROUND;
+        }
+    }
+    bool isForeground() { return (Flags & F_FOREGROUND) > 0; }
+    void setOverlay(bool flag = true) {
+        if (flag) {
+            Flags |= F_OVERLAY;
+        } else {
+            Flags &= ~F_OVERLAY;
+        }
+    }
+    bool isOverlay() { return (Flags & F_OVERLAY) > 0; }
+    void setFlags(uint8_t flags) { Flags = flags; }
+    uint8_t getFlags() { return Flags; }
+
+protected:
+    uint Flags;
+};
+struct RgbaColor : RgbfColor {
+    RgbaColor() : RgbfColor() { Alpha = 255; };
+    RgbaColor(RgbColor rgb) : RgbfColor(rgb) { Alpha = 255; }
+    RgbaColor(uint8_t h) : RgbfColor(h) { Alpha = 255; }
+    RgbaColor(RgbColor rgb, uint f) : RgbfColor(rgb, f) { Alpha = 255; }
+    RgbaColor(HsbColor hsb, uint f) : RgbfColor(hsb, f) { Alpha = 255; }
+    RgbaColor(uint8_t h, uint f) : RgbfColor(h, f) { Alpha = 255; }
+    // ---------------------
+    RgbaColor(RgbColor rgb, float a) : RgbfColor(rgb) {
+        Alpha = (uint8_t)(a * 255);
+    }
+    RgbaColor(uint8_t h, float a) : RgbfColor(h) { Alpha = (uint8_t)(a * 255); }
+    RgbaColor(uint8_t r, uint8_t g, uint8_t b, float a) : RgbfColor(r, g, b) {
+        Alpha = (uint8_t)(a * 255);
+    }
+    float getAlpha() { return Alpha / 255.0; }
+
+protected:
+    uint8_t Alpha;
 };
 // ###############################################################################
-
+class Snake;
+class Firework;
+class Rain;
+class Ball;
 class Animation {
+    friend class Snake;
+    friend class Firework;
+
 public:
-    Animation() = default;
-    virtual ~Animation() = default;
+    Animation(uint16 topLeftRow, uint16 topLeftCol, uint16 bottomRightRow,
+              uint16 bottomRightCol);
+    ~Animation();
 
     enum Animation_t {
         KEINE = 0,
@@ -67,9 +103,14 @@ public:
         MATRIX = 7,
         BAELLE = 8,
         FIRE = 9,
+        SCHLANGE = 10,
         // only internaly used
-        COUNTDOWN = 10
+        RANDOM = 11,
+        COUNTDOWN = 98,
+        SILVESTER = 99
     };
+    static const Animation_t animTypeFirst = HOCH_ROLLEN;
+    static const Animation_t animTypeLast = SCHLANGE;
 
     enum Colorize { OFF = 1, WORDS = 2, CHARACTERS = 3 };
 
@@ -79,51 +120,57 @@ public:
     void demoMode(uint8_t &_minute, uint8_t _sekunde);
     //------------------------------------------------------------------------------
 protected:
-    class Rain;
-    class Ball;
     uint16_t phase = 0;
-    bool silvester = false;
     bool matrixChanged = false;
     uint animationDelay = 100;
-    Animation_t previousAnimType = KEINE;
+    Animation_t animType = KEINE;
     uint32_t nextActionTime = 0;
     uint8_t lastMinute = 100;
 
-    RgbaColor _black = RgbaColor(0, 0, 0, 1.0);
-    RgbaColor _white = RgbaColor(255, 255, 255, 1.0);
-    RgbaColor _green = RgbaColor(0, 255, 0, 1.0);
-    RgbaColor _red = RgbaColor(255, 0, 0, 1.0);
-    RgbaColor _blue = RgbaColor(0, 0, 255, 1.0);
-    RgbaColor _yellow = RgbaColor(255, 255, 0, 1.0);
+    RgbColor _white = RgbColor(255, 255, 255);
+    RgbColor _green = RgbColor(0, 255, 0);
+    RgbColor _red = RgbColor(255, 0, 0);
+    RgbColor _blue = RgbColor(0, 0, 255);
+    RgbColor _yellow = RgbColor(255, 255, 0);
 
     RgbColor foregroundMinute = RgbColor(0);
-    RgbaColor foreground = RgbaColor(0, true);
-    RgbaColor background = RgbaColor(100, true);
-    RgbaColor alt[MAX_ROWS][MAX_COL];
-    RgbaColor neu[MAX_ROWS][MAX_COL];
-    RgbaColor work[MAX_ROWS][MAX_COL];
-    RgbaColor tmp[MAX_ROWS][MAX_COL];
+    RgbfColor foreground = RgbfColor(0, F_FOREGROUND);
+    RgbfColor background = RgbfColor(100, F_NULL);
+
+    Animation_t lastAnimType;
+    uint8_t lastAnimDemo;
+    uint8_t lastAnimDuration;
+    uint8_t lastAnimColorize;
+
+    uint8_t max_rows, max_cols, row_start, col_start;
+    uint16 sizeofColumn;
+    RgbfColor **old;
+    RgbfColor **act;
+    RgbfColor **work;
+    Rain *rain;
+    Snake *snake;
+    Ball *balls;
+    Firework *firework;
 
     uint16_t reverse(uint16_t num, bool mirror);
     void set_pixel_for_char(uint8_t col, uint8_t row, uint8_t offsetCol,
-                            uint8_t offsetRow, unsigned char unsigned_d1,
-                            HsbColor color);
+                            unsigned char unsigned_d1, HsbColor color);
     inline bool isIdle() { return phase == 0; }
-    Animation_t isSilvester(struct tm &tm);
+    bool isSilvester(Animation_t &type, struct tm &tm, bool trigger);
+    Animation_t getAnimationType(bool trigger);
     bool isColorization();
     bool changeBrightness();
     float pseudoRandomHue();
     float pseudoRandomHue(bool init);
-    void colorize(RgbaColor (*dest)[MAX_COL]);
+    void colorize(RgbfColor **dest);
     void saveMatrix();
-    void analyzeColors(RgbaColor (*dest)[MAX_COL], RgbaColor (*source)[MAX_COL],
-                       RgbaColor &foreground, RgbaColor &background);
+    void analyzeColors(RgbfColor **dest, RgbfColor **source,
+                       RgbfColor &foreground, RgbfColor &background);
     void set_minutes(void);
-    void copy2Stripe(RgbaColor (*source)[MAX_COL]);
-    void copy2Work(RgbaColor (*source)[MAX_COL]);
-    void copyBlock(RgbaColor color, uint block, bool fgbg, bool mirrored,
-                   bool init = false);
-    void fillMatrix(RgbaColor (*matrix)[MAX_COL], RgbaColor color, bool fg);
+    void copy2Stripe(RgbfColor **source);
+    void copyMatrix(RgbfColor **dest, RgbfColor **source);
+    void copyMatrixFlags(RgbfColor **dest, RgbfColor **source);
+    void fillMatrix(RgbfColor **matrix, RgbfColor color);
     uint16_t calcDelay(uint16_t phasen);
     uint16_t animScrollDown(bool dirDown);
     uint16_t animScrollRight(bool dirRight);
@@ -133,17 +180,22 @@ protected:
     uint16_t animLaser();
     uint16_t animCountdown(struct tm &tm);
     uint16_t animMatrixRain();
+    uint16_t animSnake();
 
     void animColorChange();
 };
 
-extern Animation animation;
+extern Animation *animation;
 
 // ###############################################################################
 
 class Rain {
 public:
     Rain(){};
+    Rain(uint8_t rows, uint8_t cols) {
+        max_rows = rows;
+        max_cols = cols;
+    }
     virtual ~Rain(){};
 
     void begin(int frames, int stop, uint8_t helligkeit) {
@@ -151,29 +203,29 @@ public:
         // white.Lighten(helligkeit);
         green = RgbaColor(0, helligkeit, 0, 0.5);
         // green.Lighten(helligkeit);
-        offset = -(MAX_ROWS - 1 - 3); // 3 = min deadtime
+        offset = -(max_rows - 1 - 3); // 3 = min deadtime
         speed = 1;
         stopping = false;
         speedlimit = random(1, 4);
-        lifetime = random(4, MAX_ROWS);
-        deadtime = random(3, MAX_ROWS); // min = 3, max deadtime
+        lifetime = random(4, max_rows);
+        deadtime = random(3, max_rows); // min = 3, max deadtime
         //    speedlimit = 2;
         //    lifetime = 4;
         //    deadtime = 3;
         phase = 1;
-        stopLine = MAX_ROWS - 1 - stop;
-        stopPhase = frames - speedlimit * MAX_ROWS;
+        stopLine = max_rows - 1 - stop;
+        stopPhase = frames - speedlimit * max_rows;
     }
 
     RgbaColor get(int r) {
-        int row = (MAX_ROWS - 1 - r);
-        // pro Bild laeuft row von (MAX_ROWS - 1) runter auf 0
+        int row = (max_rows - 1 - r);
+        // pro Bild laeuft row von (max_rows - 1) runter auf 0
 
         int pos = (row + offset) % (deadtime + lifetime);
 
         if (row == 0) { // letzte row faer dieses Bild
             if (phase++ == stopPhase) {
-                stopTop = MAX_ROWS;
+                stopTop = max_rows;
                 stopBottom = stopLine;
                 stopping = true;
             }
@@ -210,6 +262,7 @@ public:
     }
 
 protected:
+    uint8_t max_rows, max_cols;
     int speed, speedlimit, offset, lifetime, deadtime;
     int phase, frames, stopPhase, stopLine, stopTop, stopBottom;
     bool stopping;
@@ -217,18 +270,19 @@ protected:
     RgbaColor green = RgbaColor(0, 255, 0, 0.75);
     RgbaColor transparent = RgbaColor(0, 0, 0, 0.0);
 };
-Rain rain[MAX_COL] = {
-    Rain(),
-};
 
 // ###############################################################################
 
 class Ball {
 public:
     Ball(){};
+    Ball(uint8_t max_rows) {
+        unten = ((max_rows - 1) << 8);
+        lastPos = ((max_rows - 3) << 8);
+    }
     virtual ~Ball(){};
 
-    void begin(int row, int column, RgbaColor foreground, RgbaColor background,
+    void begin(int row, int column, RgbfColor foreground, RgbfColor background,
                int delay) {
         this->delay = delay;
         y = row << 8; // increase precision
@@ -272,18 +326,206 @@ public:
 
 public:
     int r, c; // after calling move() r and c contain new actual values
-    RgbaColor color;
+    RgbfColor color;
 
 protected:
-    static const int unten = ((MAX_ROWS - 1) << 8);
-    static const int lastPos = ((MAX_ROWS - 3) << 8);
-    ;
+    int unten;
+    int lastPos;
     int g, vy, y, end, delay;
     bool lastDown;
-    RgbaColor colorForeground, colorBackground;
-};
-Ball baelle[MAX_BAELLE] = {
-    Ball(),
+    RgbfColor colorForeground, colorBackground;
 };
 
 // ###############################################################################
+
+#define SNAKE_LENGTH 8
+
+class Snake {
+public:
+    Snake(uint8_t rows, uint8_t cols) {
+        max_rows = rows;
+        max_cols = cols;
+        motions = new GoToPos[rows * 2 + 2];
+    };
+    ~Snake() { delete[] motions; };
+
+protected:
+    struct Coord {
+        bool useAct;
+        int8 row;
+        int8 col;
+    };
+    struct GoToPos {
+        bool useAct;
+        int8 row;
+        int8 min;
+        int8 max;
+    };
+    uint8_t max_rows, max_cols;
+    GoToPos *motions;
+    Coord head;
+    bool goRight;
+    int index;
+    std::queue<Coord> snake;
+    RgbfColor **work;
+    RgbfColor **old;
+    RgbfColor **act;
+    RgbfColor snakeColor;
+    Animation *animation;
+
+public:
+    void begin(Animation *animation) {
+        this->old = animation->old;
+        this->act = animation->act;
+        this->work = animation->work;
+        this->animation = animation;
+        HsbColor hsbColor = HsbColor(animation->foreground);
+        hsbColor.H = fmodf(hsbColor.H + 0.5, 1.0);
+        snakeColor = RgbfColor(hsbColor, true);
+        goRight = true;
+        head = {false, 0, -1};
+        snake.empty();
+        index = 0;
+        getMotions(old, false, 0, 1);
+        getMotions(act, true, max_rows - 1, -1);
+        motions[index] = {false, -1, 0, 0}; // move out on left side
+        motions[index + 1] = {false, -2, 0,
+                              (int8)(max_cols - 1)}; // last on right side
+        index = 0;
+    }
+
+    bool drawSnake() {
+        Coord tail;
+        bool moving = getNextMove(head);
+
+        if ((moving && (snake.size() >= SNAKE_LENGTH)) ||
+            (!moving && snake.size())) {
+            tail = snake.front();
+            snake.pop();
+            work[tail.row][tail.col] =
+                tail.useAct ? act[tail.row][tail.col] : animation->background;
+        }
+        if (moving) {
+            snake.push(head);
+            work[head.row][head.col] = snakeColor;
+        }
+        return snake.size();
+    }
+
+protected:
+    void getMotions(RgbfColor **matrix, bool useAct, int8_t row, int8_t delta) {
+        // order in motions: old -> down, act -> up
+        int8_t left, right, rowCounter = max_rows;
+        while (rowCounter-- > 0) {
+            left = max_cols;
+            right = 0;
+            for (int col = 0; col < max_cols; col++) {
+                if (matrix[row][col].isForeground()) {
+                    // search for right most foreground
+                    right = col;
+                }
+                if (matrix[row][max_cols - 1 - col].isForeground()) {
+                    // search for left most foreground
+                    left = max_cols - 1 - col;
+                }
+            }
+            if (left <= right) {
+                motions[index] = {useAct, row, left, right};
+                if (useAct && (index > 0) && (row == motions[index - 1].row)) {
+                    // dont't increment index when
+                    // old and act have the same last row
+                    motions[index - 1].useAct = true;
+                    motions[index - 1].min = min(left, motions[index - 1].min);
+                    motions[index - 1].max = max(right, motions[index - 1].max);
+                } else {
+                    index++;
+                }
+            }
+            row += delta;
+        }
+    }
+
+    bool getNextMove(Coord &head) {
+        bool verticalMove = true;
+        int8_t left = motions[index].min;
+        int8_t right = motions[index].max;
+        int8_t leftNext = motions[index + 1].min;
+        int8_t rightNext = motions[index + 1].max;
+        int8_t rowNext = motions[index + 1].row;
+        if (head.row == motions[index].row) {
+            if (goRight) {
+                if (head.col < max(right, rightNext)) {
+                    head.col++;
+                    verticalMove = false;
+                }
+            } else {
+                if (head.col > min(left, leftNext)) {
+                    head.col--;
+                    verticalMove = false;
+                }
+            }
+        }
+        if (verticalMove) {
+            if (head.row != rowNext) {
+                head.row = head.row < rowNext ? head.row + 1 : head.row - 1;
+            }
+            if (head.row == rowNext) {
+                index++;
+            }
+            goRight = index % 2 ? false : true;
+        }
+        head.useAct = motions[index].useAct;
+        return (head.row >= 0) && (head.col >= 0);
+    }
+};
+
+// ###############################################################################
+
+class Firework {
+protected:
+    RgbColor colors[3];
+    Icons icons[3];
+    bool mirrored;
+    int maxLayer;
+    uint8_t max_rows, max_cols;
+
+public:
+    Firework(uint8_t rows, uint8_t cols) {
+        max_rows = rows;
+        max_cols = cols;
+    }
+
+    // layers must be prepared in ascending order !!!
+    void prepare(int layer, RgbColor &color, Icons icon, bool mirrored) {
+        if (layer == 0) {
+            icons[1] = static_cast<Icons>(0);
+            icons[2] = static_cast<Icons>(0);
+            this->mirrored = mirrored;
+        }
+        colors[layer] = color;
+        icons[layer] = icon;
+        maxLayer = layer;
+    }
+
+    bool getPixel(uint8_t r, uint8_t c, RgbColor &color) {
+        // void Animation::copyBlock(RgbfColor color, uint block, bool fgbg,
+        // bool mirrored,
+        //                          bool init) {
+
+        if ((r < 10) && (r < max_rows) && (c < 11) && (c < max_cols)) {
+            uint16_t pixels = 0;
+            for (int layer = 0; layer <= maxLayer; layer++) {
+                if (icons[layer] != static_cast<Icons>(0)) {
+                    pixels = animation->reverse(
+                        pgm_read_word(&(grafik_11x10[icons[layer]][r])),
+                        mirrored);
+                    if (pixels & (1 << c)) {
+                        color = colors[layer];
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+};

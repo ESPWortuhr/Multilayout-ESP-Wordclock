@@ -160,7 +160,7 @@ static void led_set(bool changed = false) {
             led_set_pixel(r2, g2, b2, w2, i);
         }
     }
-    if (animation.led_show_notify(changed, _minute)) {
+    if (animation->led_show_notify(changed, _minute)) {
         led_show();
     }
 }
@@ -191,16 +191,16 @@ void led_set_Icon(uint8 num_icon, uint8_t brightness = 100,
                   bool rgb_icon = false) {
     uint8_t rr, gg, bb, ww;
     set_helligkeit(rr, gg, bb, ww, Foreground, brightness);
-    for (uint8_t col = 0; col < MAX_COL; col++) {
+    for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
         if (rgb_icon) {
             rr = col < 3 ? 255 : 0;
             gg = (col > 3) && (col < 7) ? 255 : 0;
             bb = col > 7 ? 255 : 0;
             ww = 0;
         }
-        for (uint8_t row = 0; row < MAX_ROWS; row++) {
+        for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
             if (pgm_read_word(&(grafik_11x10[num_icon][row])) &
-                (1 << (MAX_COL - 1 - col))) {
+                (1 << (GRAFIK_11X10_COLS - 1 - col))) {
                 led_set_pixel(rr, gg, bb, ww,
                               usedUhrType->getFrontMatrix(row, col));
             } else {
