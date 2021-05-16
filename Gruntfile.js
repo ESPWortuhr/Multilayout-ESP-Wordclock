@@ -37,7 +37,8 @@ module.exports = function(grunt) {
 			files: ["<%= settings.srcDirectory %>/index.html"],
 			options: {
 				"id-class-style": "dash",
-				"attr-bans": ["align", "background", "bgcolor", "border", "frameborder", "longdesc", "marginwidth", "marginheight", "scrolling", "width"]
+				"attr-bans": ["align", "background", "bgcolor", "border", "frameborder", "longdesc", "marginwidth", "marginheight", "scrolling", "width"],
+				"line-end-style": false
 			}
 		},
 
