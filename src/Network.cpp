@@ -15,9 +15,7 @@ int Network_getQuality() {
     return wifiManager.getRSSIasQuality(rssi);
 }
 
-void Network_rtcMode() {
-    wifiManager.setConfigPortalTimeout(120);
-}
+void Network_rtcMode() { wifiManager.setConfigPortalTimeout(120); }
 
 void Network_disable() { wifiManager.disconnect(); }
 
