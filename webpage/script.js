@@ -285,8 +285,8 @@ function initWebsocket() {
 
 		debugMessage("Die Verbindung mit dem Websocket wurde aufgebaut.", event);
 
-		sendData(COMMAND_REQUEST_COLOR_VALUES, 0, 0);
-		sendData(COMMAND_REQUEST_ANIMATION, 0, 0);
+		SendCMD(COMMAND_REQUEST_COLOR_VALUES, 0, 0);
+		SendCMD(COMMAND_REQUEST_ANIMATION, 0, 0);
 	};
 
 	websocket.onclose = function(event) {
@@ -568,7 +568,7 @@ function autoLdrValueUpdater() {
 		autoLdrInterval = setInterval(function() {
 			// jede Sekunde ausfuehren
 			if ($("#auto-ldr-enabled").get("value") === "1") {
-				sendData(COMMAND_REQUEST_AUTO_LDR, 1, 0);
+				SendCMD(COMMAND_REQUEST_AUTO_LDR, 1, 0);
 			}
 		}, 1000);
 	}
@@ -654,6 +654,14 @@ function sendData(command, unknown2, unknown3) {
 	debugMessage("Send data: ", data);
 }
 
+function SendCMD(command, unknown2, unknown3) {
+	var data = nstr(command) +
+		nstr(unknown2) +
+		nstr(unknown3) + "999";
+	websocket.send(data);
+	debugMessage("Send data: ", data);
+}
+
 function CMDtoData(command, unknown2, unknown3) {
 	var data = nstr(command) +
         nstr(unknown2) +
@@ -716,11 +724,11 @@ $.ready(function() {
 			setAnimation();
 		}
 		if (navigation === "smart-home") {
-			sendData(COMMAND_REQUEST_MQTT_VALUES, 0, 0);
+			SendCMD(COMMAND_REQUEST_MQTT_VALUES, 0, 0);
 		}
 		if (navigation === "settings") {
-			sendData(COMMAND_REQUEST_CONFIG_VALUES, 0, 0);
-			sendData(COMMAND_REQUEST_AUTO_LDR, 0, 0);
+			SendCMD(COMMAND_REQUEST_CONFIG_VALUES, 0, 0);
+			SendCMD(COMMAND_REQUEST_AUTO_LDR, 0, 0);
 			autoLdrValueUpdater();
 		} else {
 			autoLdrStop();
@@ -859,16 +867,15 @@ $.ready(function() {
 		return false;
 	});
 	$("#initial-values-button").on("click", function() {
-		sendData(COMMAND_SET_INITIAL_VALUES, 0, 0);
+		SendCMD(COMMAND_SET_INITIAL_VALUES, 0, 0);
 	});
 	$("#wifi-button").on("click", function() {
-		sendData(COMMAND_SET_WIFI_AND_RESTART, 0, 0);
+		SendCMD(COMMAND_SET_WIFI_AND_RESTART, 0, 0);
 		debugMessage("WLAN wird neu konfiguriert");
 		return false;
 	});
 	$("#_wlanscan").on("click", function() {
-		var data = CMDtoData(COMMAND_REQUEST_WIFI_LIST, 0, 0);
-		websocket.send(data);
+		SendCMD(COMMAND_REQUEST_WIFI_LIST, 0, 0);
 		document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
 		return false;
 	});
@@ -900,7 +907,7 @@ $.ready(function() {
 		autoLdrDark = $("#auto-ldr-dark").get("value");
 		var data = CMDtoData(COMMAND_SET_AUTO_LDR, 0, 0) + nstr(autoLdrEnabled) + nstr(autoLdrBright) + nstr(autoLdrDark) + "999";
 		websocket.send(data);
-		sendData(COMMAND_REQUEST_AUTO_LDR, 0, 0);	// read back values
+		SendCMD(COMMAND_REQUEST_AUTO_LDR, 0, 0);	// read back values
 	});
 	$("#brightness-button").on("click", function() {
 
@@ -999,13 +1006,13 @@ $.ready(function() {
 		debugMessage("Bootoptionen wurden neu konfiguriert", data);
 	});
 	$("#disable-button").on("click", function() {
-		sendData(COMMAND_SET_WIFI_DISABLED, 0, 0);
+		SendCMD(COMMAND_SET_WIFI_DISABLED, 0, 0);
 	});
 	$("#wps-button").on("click", function() {
-		sendData(COMMAND_SET_WPS_MODE, 0, 0);
+		SendCMD(COMMAND_SET_WPS_MODE, 0, 0);
 	});
 	$("#reset-button").on("click", function() {
-		sendData(COMMAND_RESET, 0, 0);
+		SendCMD(COMMAND_RESET, 0, 0);
 	});
 	$("#uhrzeit-button").on("click", function() {
 		var stunde = $("#stunde").get("value");
