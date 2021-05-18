@@ -68,10 +68,8 @@ var rgb = [
 ];
 var hell = 2;
 var geschw = 10;
-var anzahl = 100;
 var sleep = 0;
 var sleeptime = 1;
-var position = 100;
 var color = 0;
 var h6 = 100;
 var h8 = 100;
@@ -145,7 +143,6 @@ var COMMAND_SET_AUTO_LDR = 102;
 var COMMAND_BRIGHTNESS = 151;
 var COMMAND_SPEED = 152;
 var COMMAND_LEDS = 153;
-var COMMAND_POSITION = 154;
 
 var COMMAND_REQUEST_CONFIG_VALUES = 200;
 var COMMAND_REQUEST_COLOR_VALUES = 201;
@@ -187,11 +184,8 @@ function initConfigValues() {
 	];
 	hell = 2;
 	geschw = 10;
-	anzahl = 100;
 	sleep = 0;
 	sleeptime = 1;
-	position = 100;
-	anzahl = 100;
 	color = 0;
 	h6 = 100;
 	h8 = 100;
@@ -463,8 +457,6 @@ function createColorPicker() {
 function getSliders() {
 	hell = $("#slider-brightness").get("value");
 	geschw = $("#slider-speed").get("value");
-	anzahl = $("#slider-leds").get("value");
-	position = $("#slider-position").get("value");
 }
 
 /**
@@ -535,14 +527,10 @@ function setSliders() {
 	// sliders
 	$("#slider-brightness").set("value", hell);
 	$("#slider-speed").set("value", geschw);
-	$("#slider-leds").set("value", anzahl);
-	$("#slider-position").set("value", position);
 
 	// labels
 	$("#slider-brightness-value").fill(hell);
 	$("#slider-speed-value").fill(geschw);
-	$("#slider-leds-value").fill(anzahl);
-	$("#slider-position-value").fill(position);
 }
 
 function setAnimation() {
@@ -823,12 +811,6 @@ $.ready(function() {
 			}
 			if (id === "slider-speed") {
 				sendData(COMMAND_SPEED, 0, 0);
-			}
-			if (id === "slider-leds") {
-				sendData(COMMAND_LEDS, 0, 0);
-			}
-			if (id === "slider-position") {
-				sendData(COMMAND_POSITION, 0, 0);
 			}
 			setSliders();
 
