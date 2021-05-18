@@ -647,18 +647,8 @@ function sendData(command, unknown2, unknown3) {
         nstr(rgb[COLOR_BACKGROUND][1]) +
         nstr(rgb[COLOR_BACKGROUND][2]) +
         nstr(rgb[COLOR_BACKGROUND][3]) +
-        nstr(rgb[COLOR_FOREGROUND][0]) + // 2 Removed the other colors because the were just confusing as hell
-        nstr(rgb[COLOR_FOREGROUND][1]) + // 2
-        nstr(rgb[COLOR_FOREGROUND][2]) + // 2
-        nstr(rgb[COLOR_FOREGROUND][3]) + // 2
-        nstr(rgb[COLOR_FOREGROUND][0]) + // 3
-        nstr(rgb[COLOR_FOREGROUND][1]) + // 3
-        nstr(rgb[COLOR_FOREGROUND][2]) + // 3
-        nstr(rgb[COLOR_FOREGROUND][3]) + // 3
         nstr(hell) +
-        nstr(geschw) +
-        nstr(anzahl) +
-        nstr(position) + "999";
+        nstr(geschw) + "999";
 
 	websocket.send(data);
 	debugMessage("Send data: ", data);

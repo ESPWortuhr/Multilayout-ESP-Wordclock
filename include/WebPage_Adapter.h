@@ -189,15 +189,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.rgb[Background][2] = split(payload, 27, 3);
             G.rgb[Background][3] = split(payload, 30, 3);
 
-            G.rgb[Frame][0] = split(payload, 33, 3);
-            G.rgb[Frame][1] = split(payload, 36, 3);
-            G.rgb[Frame][2] = split(payload, 39, 3);
-            G.rgb[Frame][3] = split(payload, 42, 3);
+            G.rgb[Frame][0] = split(payload, 9, 3);
+            G.rgb[Frame][1] = split(payload, 12, 3);
+            G.rgb[Frame][2] = split(payload, 15, 3);
+            G.rgb[Frame][3] = split(payload, 18, 3);
 
-            G.rgb[Effect][0] = split(payload, 45, 3);
-            G.rgb[Effect][1] = split(payload, 48, 3);
-            G.rgb[Effect][2] = split(payload, 51, 3);
-            G.rgb[Effect][3] = split(payload, 54, 3);
+            G.rgb[Effect][0] = split(payload, 9, 3);
+            G.rgb[Effect][1] = split(payload, 12, 3);
+            G.rgb[Effect][2] = split(payload, 15, 3);
+            G.rgb[Effect][3] = split(payload, 18, 3);
             break;
         }
 
@@ -209,12 +209,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.prog_init = 1;
             }
 
-            G.rgb[Effect][0] = split(payload, 45, 3);
-            G.rgb[Effect][1] = split(payload, 48, 3);
-            G.rgb[Effect][2] = split(payload, 51, 3);
-            G.rgb[Effect][3] = split(payload, 54, 3);
-            G.hell = split(payload, 57, 3);
-            G.geschw = split(payload, 60, 3);
+            G.rgb[Effect][0] = split(payload, 9, 3);
+            G.rgb[Effect][1] = split(payload, 12, 3);
+            G.rgb[Effect][2] = split(payload, 15, 3);
+            G.rgb[Effect][3] = split(payload, 18, 3);
+            G.hell = split(payload, 33, 3);
+            G.geschw = split(payload, 36, 3);
             break;
         }
 
@@ -226,12 +226,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.prog_init = 1;
             }
 
-            G.rgb[Effect][0] = split(payload, 45, 3);
-            G.rgb[Effect][1] = split(payload, 48, 3);
-            G.rgb[Effect][2] = split(payload, 51, 3);
-            G.rgb[Effect][3] = split(payload, 54, 3);
-            G.hell = split(payload, 57, 3);
-            G.geschw = split(payload, 60, 3);
+            G.rgb[Effect][0] = split(payload, 9, 3);
+            G.rgb[Effect][1] = split(payload, 12, 3);
+            G.rgb[Effect][2] = split(payload, 15, 3);
+            G.rgb[Effect][3] = split(payload, 18, 3);
+            G.hell = split(payload, 33, 3);
+            G.geschw = split(payload, 36, 3);
             break;
         }
 
@@ -241,8 +241,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_RAINBOW;
             G.prog_init = 1;
 
-            G.hell = split(payload, 57, 3);
-            G.geschw = split(payload, 60, 3);
+            G.hell = split(payload, 33, 3);
+            G.geschw = split(payload, 36, 3);
             break;
         }
 
@@ -252,8 +252,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_CHANGE;
             G.prog_init = 1;
 
-            G.hell = split(payload, 57, 3);
-            G.geschw = split(payload, 60, 3);
+            G.hell = split(payload, 33, 3);
+            G.geschw = split(payload, 36, 3);
             break;
         }
 
@@ -263,10 +263,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_COLOR;
             G.prog_init = 1;
 
-            G.rgb[Effect][0] = split(payload, 45, 3);
-            G.rgb[Effect][1] = split(payload, 48, 3);
-            G.rgb[Effect][2] = split(payload, 51, 3);
-            G.rgb[Effect][3] = split(payload, 54, 3);
+            G.rgb[Effect][0] = split(payload, 9, 3);
+            G.rgb[Effect][1] = split(payload, 12, 3);
+            G.rgb[Effect][2] = split(payload, 15, 3);
+            G.rgb[Effect][3] = split(payload, 18, 3);
             break;
         }
             //------------------------------------------------------------------------------
@@ -289,14 +289,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_BRIGHTNESS: { // Helligkeit
-            G.hell = split(payload, 57, 3);
+            G.hell = split(payload, 33, 3);
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SPEED: { // Geschwindigkeit
-            G.geschw = split(payload, 60, 3);
+            G.geschw = split(payload, 36, 3);
             break;
         }
 
