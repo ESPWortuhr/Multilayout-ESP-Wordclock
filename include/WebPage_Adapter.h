@@ -434,13 +434,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_WPS_MODE: { // Aktivieren des WPS Modus
-            G.conf = COMMAND_SET_WPS_MODE;
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
         case COMMAND_SET_COLORTYPE: { // ColorType speichern
             G.conf = COMMAND_SET_COLORTYPE;
             G.param1 = split(payload, 9, 3);
@@ -529,71 +522,23 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         }
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_WIFI_DISABLED: { // WLAN ausschalten
-            G.conf = COMMAND_SET_WIFI_DISABLED;
+        case COMMAND_SET_WIFI_DISABLED:    // WLAN ausschalten
+        case COMMAND_SET_WIFI_AND_RESTART: // WLAN-Daten löschen und neu starten
+        case COMMAND_SET_WPS_MODE:         // Aktivieren des WPS Modus
+        case COMMAND_RESET: {              // Reset
+            G.conf = command;
             break;
         }
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_WIFI_AND_RESTART: { // WLAN-Daten löschen und neu
-                                             // starten
-            G.conf = COMMAND_SET_WIFI_AND_RESTART;
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
-        case COMMAND_RESET: { // Reset
-            G.conf = COMMAND_RESET;
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
-        case COMMAND_REQUEST_MQTT_VALUES: { // MQTT Config anfordern
-            G.conf = COMMAND_REQUEST_MQTT_VALUES;
-            G.client_nr = num;
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
-        case COMMAND_REQUEST_CONFIG_VALUES: { // Config anfordern
-            G.conf = COMMAND_REQUEST_CONFIG_VALUES;
-            G.client_nr = num;
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
-        case COMMAND_REQUEST_COLOR_VALUES: { // Farbwerte anfordern
-            G.conf = COMMAND_REQUEST_COLOR_VALUES;
-            G.client_nr = num;
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
-        case COMMAND_REQUEST_WIFI_LIST: { // Wlan Liste anfordern
-            G.conf = COMMAND_REQUEST_WIFI_LIST;
-            G.client_nr = num;
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
-        case COMMAND_REQUEST_AUTO_LDR: { // Werte fuer automatische Helligkeit
-                                         // anfordern
-            G.conf = COMMAND_REQUEST_AUTO_LDR;
-            G.client_nr = num;
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
+        case COMMAND_REQUEST_MQTT_VALUES:   // MQTT Config anfordern
+        case COMMAND_REQUEST_CONFIG_VALUES: // Config anfordern
+        case COMMAND_REQUEST_COLOR_VALUES:  // Farbwerte anfordern
+        case COMMAND_REQUEST_WIFI_LIST:     // Wlan Liste anfordern
+        case COMMAND_REQUEST_AUTO_LDR: // Werte fuer Auto Helligkeit anfordern
         case COMMAND_REQUEST_ANIMATION: { // Werte fuer Animation anfordern
-            G.conf = COMMAND_REQUEST_ANIMATION;
+            G.conf = command;
             G.client_nr = num;
             break;
         }
