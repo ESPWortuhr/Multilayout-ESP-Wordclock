@@ -37,7 +37,6 @@ struct GLOBAL {
     uint8_t sernr;
     uint16_t prog;
     uint8_t param1;
-    uint8_t param2;
     uint8_t prog_init;
     uint16_t conf;
     uint8_t rgb[4][4];
