@@ -223,6 +223,7 @@ enum UhrTypeDefinitions {
     Uhr_169 = 4,
     Uhr_242 = 5,
     Uhr_291 = 7,
+    Uhr_114_mc = 9,
 };
 
 enum Icons {

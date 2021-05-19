@@ -12,6 +12,9 @@
 // - Uhr_114_2Clock
 //   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit dem Layout
 //   vom orginal Hersteller
+// - Uhr_114_mc
+//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit dem Layout
+//   von https://www.mikrocontroller.net/articles/Word_Clock
 // - Uhr_125
 //   11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 // - Uhr_169
@@ -64,6 +67,7 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include "WebPage_Adapter.h"
 
 #include "Uhrtypes/uhr_func_114.hpp"
+#include "Uhrtypes/uhr_func_114_mc.hpp"
 #include "Uhrtypes/uhr_func_114_2Clock.hpp"
 #include "Uhrtypes/uhr_func_114_Alternative.hpp"
 #include "Uhrtypes/uhr_func_125.hpp"
@@ -73,6 +77,7 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include "Uhrtypes/uhr_func_291.hpp"
 
 UHR_114_t Uhr_114_type;
+UHR_114_mc_t Uhr_114_mc_type;
 UHR_114_Alternative_t Uhr_114_Alternative_type;
 UHR_114_2Clock_t Uhr_114_2Clock_type;
 UHR_125_t Uhr_125_type;
@@ -122,6 +127,8 @@ iUhrType *getPointer(uint8_t num) {
     switch (num) {
     case 1:
         return reinterpret_cast<iUhrType *>(&Uhr_114_type);
+    case 9:
+        return reinterpret_cast<iUhrType *>(&Uhr_114_mc_type);
     case 2:
         return reinterpret_cast<iUhrType *>(&Uhr_114_Alternative_type);
     case 6:
@@ -459,6 +466,29 @@ void setup() {
     Serial.println("");
 }
 
+static void Uhr_debug_msg(void){
+    String matrix2 = "Word Array:";
+    String matrix3="Anzeige";
+
+    for (uint8_t row = 0; row < usedUhrType->ROWS_MATRIX(); row++) {
+        matrix2 = matrix2 +  "\n" + row + ": ";
+        matrix3 = matrix3 +  "\n" + row + ": ";
+        for (uint8_t col = 0; col < usedUhrType->COLS_MATRIX(); col++) {
+            matrix2 = matrix2 + Word_array_old[usedUhrType->getFrontMatrix(row, col)];
+            if (Word_array_old[usedUhrType->getFrontMatrix(row, col)] < usedUhrType->NUM_PIXELS()) {
+            //if (Word_array_old[usedUhrType->getFrontMatrix(row, col)] !=500 ){
+                matrix3 = matrix3 + usedUhrType->getCharFrontplate(row, col);
+                
+            }else{
+                matrix3 = matrix3 + " ";
+            }
+        }
+    }
+    //Serial.println(text);
+    Serial.println(matrix2);
+    Serial.println(matrix3);
+}
+
 //------------------------------------------------------------------------------
 // Start loop()
 //------------------------------------------------------------------------------
@@ -527,8 +557,7 @@ void loop() {
     //------------------------------------------------
     // Sekunde und LDR Regelung
     //------------------------------------------------
-    if (last_sekunde != _sekunde) {
-
+    if (last_sekunde != _sekunde) {        
         // Wetteruhr
         if (usedUhrType->hasWeatherLayout()) {
             weather_tag++;
@@ -573,6 +602,7 @@ void loop() {
     if (last_minute != _minute) {
         _sekunde48 = 0;
         last_minute = _minute;
+        Uhr_debug_msg();
     }
 
     //------------------------------------------------

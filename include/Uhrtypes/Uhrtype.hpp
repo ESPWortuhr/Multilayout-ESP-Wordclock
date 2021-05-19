@@ -114,6 +114,8 @@ public:
 
     virtual const bool hasSecondsFrame() { return false; }
 
+    virtual const char getCharFrontplate(uint8_t row, uint8_t col) { return '#'; }
+
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) {
         if (row % 2 != 0) {
             col = COLS_MATRIX() - col - 1;
@@ -126,4 +128,5 @@ public:
     };
 
     virtual const uint16_t getMinArr(uint8_t col, uint8_t row) = 0;
+
 };
