@@ -2,7 +2,7 @@
 	"name": "Wortuhr",
 	"version": "2.6.0",
 	"description": "For building a german layouted wordclock with an esp8266 module and WS2812/SK2812.",
-	"license" : "BSD-3-Clause",
+	"license": "BSD-3-Clause",
 	"contributors": [
 		{
 			"name": "Ulrich Radig",
