@@ -1,13 +1,10 @@
 #include "Network.h"
 
-#include <ESP8266HTTPUpdateServer.h>
-#include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
-#include <WiFiClient.h>
 #include <WiFiManager.h>
 
-WiFiManager wifiManager;
+WiFiManager wifiManager(Serial);
 
 const char *connectionSSID = "WortUhr_verbinden";
 
@@ -17,6 +14,8 @@ int Network_getQuality() {
     int rssi = WiFi.RSSI();
     return wifiManager.getRSSIasQuality(rssi);
 }
+
+void Network_rtcMode() { wifiManager.setConfigPortalTimeout(120); }
 
 void Network_disable() { wifiManager.disconnect(); }
 
