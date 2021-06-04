@@ -266,6 +266,53 @@ function enableSpecific(cls, enbl) {
 function initWebsocket() {
 	websocket = new WebSocket(ipEsp);
 
+	var ldrSelect = document.getElementById("ldr-cal");
+	var ldrIndex;
+	var ldrOption;
+	for (ldrIndex = 0; ldrIndex < 11; ldrIndex++) {
+		ldrOption = document.createElement("option");
+		ldrOption.value = ldrIndex;
+		ldrOption.text = ldrIndex;
+		ldrSelect.remove(ldrIndex);
+		ldrSelect.add(ldrOption);
+	}
+
+	var hourSelect = document.getElementById("stunde");
+	var hourIndex;
+	var hourOption;
+	for (hourIndex = 0; hourIndex < 24; hourIndex++) {
+		hourOption = document.createElement("option");
+		hourOption.value = hourIndex;
+		hourOption.text = hourIndex;
+		hourSelect.remove(hourIndex);
+		hourSelect.add(hourOption);
+	}
+
+	var minuteSelect = document.getElementById("minute");
+	var minuteIndex;
+	var minuteOption;
+	for (minuteIndex = 0; minuteIndex < 60; minuteIndex++) {
+		minuteOption = document.createElement("option");
+		minuteOption.value = minuteIndex;
+		minuteOption.text = minuteIndex;
+		minuteSelect.remove(minuteIndex);
+		minuteSelect.add(minuteOption);
+	}
+
+	var brightnessSelectIndex;
+	for (brightnessSelectIndex = 0; brightnessSelectIndex < 8; brightnessSelectIndex++) {
+		var brightnessSelect = document.getElementById("brightness-" + String(brightnessSelectIndex));
+		var brightnessIndex;
+		var brightnessOption;
+		for (brightnessIndex = 0; brightnessIndex < 6; brightnessIndex++) {
+			brightnessOption = document.createElement("option");
+			brightnessOption.value = brightnessIndex * 20;
+			brightnessOption.text = String(brightnessIndex * 20) + " %";
+			brightnessSelect.remove(brightnessIndex);
+			brightnessSelect.add(brightnessOption);
+		}
+	}
+
 	websocket.onopen = function(event) {
 
 		$("#status").set("+online");
@@ -322,14 +369,14 @@ function initWebsocket() {
 			$("#hostname").set("value", data.hostname);
 			$("#marquee").set("value", data.ltext);
 
-			$("#brightness-6").set("value", data.h6);
-			$("#brightness-8").set("value", data.h8);
-			$("#brightness-12").set("value", data.h12);
-			$("#brightness-16").set("value", data.h16);
-			$("#brightness-18").set("value", data.h18);
-			$("#brightness-20").set("value", data.h20);
-			$("#brightness-22").set("value", data.h22);
-			$("#brightness-24").set("value", data.h24);
+			$("#brightness-0").set("value", data.h6);
+			$("#brightness-1").set("value", data.h8);
+			$("#brightness-2").set("value", data.h12);
+			$("#brightness-3").set("value", data.h16);
+			$("#brightness-4").set("value", data.h18);
+			$("#brightness-5").set("value", data.h20);
+			$("#brightness-6").set("value", data.h22);
+			$("#brightness-7").set("value", data.h24);
 
 			$("#dialect-0").set("value", data.spv0);
 			$("#dialect-1").set("value", data.spv1);
@@ -860,14 +907,14 @@ $.ready(function() {
 	});
 	$("#brightness-button").on("click", function() {
 
-		h6 = $("#brightness-6").get("value");
-		h8 = $("#brightness-8").get("value");
-		h12 = $("#brightness-12").get("value");
-		h16 = $("#brightness-16").get("value");
-		h18 = $("#brightness-18").get("value");
-		h20 = $("#brightness-20").get("value");
-		h22 = $("#brightness-22").get("value");
-		h24 = $("#brightness-24").get("value");
+		h6 = $("#brightness-0").get("value");
+		h8 = $("#brightness-1").get("value");
+		h12 = $("#brightness-2").get("value");
+		h16 = $("#brightness-3").get("value");
+		h18 = $("#brightness-4").get("value");
+		h20 = $("#brightness-5").get("value");
+		h22 = $("#brightness-6").get("value");
+		h24 = $("#brightness-7").get("value");
 
 		SendCMD(COMMAND_SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24));
 		debugMessage("Helligkeit wurde neu konfiguriert");
