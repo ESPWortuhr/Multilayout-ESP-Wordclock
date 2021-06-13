@@ -68,10 +68,8 @@ var rgb = [
 ];
 var hell = 2;
 var geschw = 10;
-var anzahl = 100;
 var sleep = 0;
 var sleeptime = 1;
-var position = 100;
 var color = 0;
 var h6 = 100;
 var h8 = 100;
@@ -145,7 +143,6 @@ var COMMAND_SET_AUTO_LDR = 102;
 var COMMAND_BRIGHTNESS = 151;
 var COMMAND_SPEED = 152;
 var COMMAND_LEDS = 153;
-var COMMAND_POSITION = 154;
 
 var COMMAND_REQUEST_CONFIG_VALUES = 200;
 var COMMAND_REQUEST_COLOR_VALUES = 201;
@@ -160,8 +157,6 @@ var COLOR_BACKGROUND = 1;
 
 // data that gets send back to the esp
 var DATA_MARQUEE_TEXT_LENGTH = 30;
-var DATA_SSID_TEXT_LENGTH = 32; // WL_SSID_MAX_LENGTH == 32
-var DATA_PASSWORT_TEXT_LENGTH = 63; // WL_WPA_KEY_MAX_LENGTH == 63
 var DATA_TIMESERVER_TEXT_LENGTH = 30;
 var DATA_MQTT_RESPONSE_TEXT_LENGTH = 30;
 var DATA_HOST_TEXT_LENGTH = 30;
@@ -187,11 +182,8 @@ function initConfigValues() {
 	];
 	hell = 2;
 	geschw = 10;
-	anzahl = 100;
 	sleep = 0;
 	sleeptime = 1;
-	position = 100;
-	anzahl = 100;
 	color = 0;
 	h6 = 100;
 	h8 = 100;
@@ -229,21 +221,6 @@ function initConfigValues() {
 	animColorize = 1;
 	animDemo = false;
 }
-
-function hexToRgb(hex) {
-	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	return result ? {
-		red: parseInt(result[1], 16),
-		green: parseInt(result[2], 16),
-		blue: parseInt(result[3], 16)
-	} : null;
-}
-
-/**
- * Displays a debug message, if the global debug flag is set to true. Optionally
- * an object can be provided that will be printed on the console (when a console
- * is available).
- */
 
 /* eslint-disable no-console */
 function debugMessage(debugMessage, someObject) {
@@ -285,8 +262,8 @@ function initWebsocket() {
 
 		debugMessage("Die Verbindung mit dem Websocket wurde aufgebaut.", event);
 
-		sendData(COMMAND_REQUEST_COLOR_VALUES, 0, 0);
-		sendData(COMMAND_REQUEST_ANIMATION, 0, 0);
+		sendCmd(COMMAND_REQUEST_COLOR_VALUES);
+		sendCmd(COMMAND_REQUEST_ANIMATION);
 	};
 
 	websocket.onclose = function(event) {
@@ -433,7 +410,7 @@ function changeColor(color) {
 	rgb[color.index][1] = color.green;
 	rgb[color.index][2] = color.blue;
 	rgb[color.index][3] = Math.round(255 * (1.0 - color.alpha));
-	sendData(command, 1, 0);
+	sendData(command, nstr(1));
 }
 
 function createColorPicker() {
@@ -463,8 +440,6 @@ function createColorPicker() {
 function getSliders() {
 	hell = $("#slider-brightness").get("value");
 	geschw = $("#slider-speed").get("value");
-	anzahl = $("#slider-leds").get("value");
-	position = $("#slider-position").get("value");
 }
 
 /**
@@ -522,7 +497,7 @@ function toggleBackground() {
 		rgb[COLOR_BACKGROUND][3] = 0;
 	}
 	setColorPicker(withBackground);
-	sendData(command, 1, 0);
+	sendData(command, nstr(1));
 }
 
 /**
@@ -535,14 +510,10 @@ function setSliders() {
 	// sliders
 	$("#slider-brightness").set("value", hell);
 	$("#slider-speed").set("value", geschw);
-	$("#slider-leds").set("value", anzahl);
-	$("#slider-position").set("value", position);
 
 	// labels
 	$("#slider-brightness-value").fill(hell);
 	$("#slider-speed-value").fill(geschw);
-	$("#slider-leds-value").fill(anzahl);
-	$("#slider-position-value").fill(position);
 }
 
 function setAnimation() {
@@ -568,7 +539,7 @@ function autoLdrValueUpdater() {
 		autoLdrInterval = setInterval(function() {
 			// jede Sekunde ausfuehren
 			if ($("#auto-ldr-enabled").get("value") === "1") {
-				sendData(COMMAND_REQUEST_AUTO_LDR, 1, 0);
+				sendCmd(COMMAND_REQUEST_AUTO_LDR, 1);
 			}
 		}, 1000);
 	}
@@ -632,13 +603,9 @@ function getPaddedString(string, maxStringLength) {
  * Sends data to the esp via a websocket connection.
  *
  * @param  {int} The command that specifies what to do on the esp.
- * @param  {int} An unknown parameter.
- * @param  {int} An unknown parameter.
  */
-function sendData(command, unknown2, unknown3) {
+function sendData(command, addData = "") {
 	var data = nstr(command) +
-        nstr(unknown2) +
-        nstr(unknown3) +
         nstr(rgb[COLOR_FOREGROUND][0]) +
         nstr(rgb[COLOR_FOREGROUND][1]) +
         nstr(rgb[COLOR_FOREGROUND][2]) +
@@ -647,28 +614,17 @@ function sendData(command, unknown2, unknown3) {
         nstr(rgb[COLOR_BACKGROUND][1]) +
         nstr(rgb[COLOR_BACKGROUND][2]) +
         nstr(rgb[COLOR_BACKGROUND][3]) +
-        nstr(rgb[COLOR_FOREGROUND][0]) + // 2 Removed the other colors because the were just confusing as hell
-        nstr(rgb[COLOR_FOREGROUND][1]) + // 2
-        nstr(rgb[COLOR_FOREGROUND][2]) + // 2
-        nstr(rgb[COLOR_FOREGROUND][3]) + // 2
-        nstr(rgb[COLOR_FOREGROUND][0]) + // 3
-        nstr(rgb[COLOR_FOREGROUND][1]) + // 3
-        nstr(rgb[COLOR_FOREGROUND][2]) + // 3
-        nstr(rgb[COLOR_FOREGROUND][3]) + // 3
         nstr(hell) +
-        nstr(geschw) +
-        nstr(anzahl) +
-        nstr(position) + "999";
+        nstr(geschw) + addData + "999";
 
 	websocket.send(data);
 	debugMessage("Send data: ", data);
 }
 
-function CMDtoData(command, unknown2, unknown3) {
-	var data = nstr(command) +
-        nstr(unknown2) +
-        nstr(unknown3);
-	return data;
+function sendCmd(command, addData = "") {
+	var data = nstr(command) + addData + "999";
+	websocket.send(data);
+	debugMessage("Send data: ", data);
 }
 
 $.ready(function() {
@@ -704,12 +660,8 @@ $.ready(function() {
 		timeZoneOffset = timeZoneOffset / 60 * -1;
 		var time = date.getTime() / 1000;
 
-		var data = CMDtoData(COMMAND_SET_TIME, 0, 0);
-		data += getPaddedString(nstr(timeZoneOffset) + time, 21);
-		data += "999";
-
-		debugMessage("Clock data: ", data);
-		websocket.send(data);
+		sendCmd(COMMAND_SET_TIME, getPaddedString(nstr(timeZoneOffset) + time, 21));
+		debugMessage("Clock data: ");
 	});
 
 	/**
@@ -726,11 +678,11 @@ $.ready(function() {
 			setAnimation();
 		}
 		if (navigation === "smart-home") {
-			sendData(COMMAND_REQUEST_MQTT_VALUES, 0, 0);
+			sendCmd(COMMAND_REQUEST_MQTT_VALUES);
 		}
 		if (navigation === "settings") {
-			sendData(COMMAND_REQUEST_CONFIG_VALUES, 0, 0);
-			sendData(COMMAND_REQUEST_AUTO_LDR, 0, 0);
+			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
+			sendCmd(COMMAND_REQUEST_AUTO_LDR);
 			autoLdrValueUpdater();
 		} else {
 			autoLdrStop();
@@ -810,7 +762,7 @@ $.ready(function() {
 			});
 		}
 
-		sendData(command, 0, 0);
+		sendData(command);
 		setSliders();
 		setColors();
 	});
@@ -821,16 +773,10 @@ $.ready(function() {
 		if (sleep === 0) {
 			getSliders();
 			if (id === "slider-brightness") {
-				sendData(COMMAND_BRIGHTNESS, 0, 0);
+				sendData(COMMAND_BRIGHTNESS);
 			}
 			if (id === "slider-speed") {
-				sendData(COMMAND_SPEED, 0, 0);
-			}
-			if (id === "slider-leds") {
-				sendData(COMMAND_LEDS, 0, 0);
-			}
-			if (id === "slider-position") {
-				sendData(COMMAND_POSITION, 0, 0);
+				sendData(COMMAND_SPEED);
 			}
 			setSliders();
 
@@ -855,30 +801,22 @@ $.ready(function() {
 		animSpeed = $("#animation-speed").get("value");
 		animColorize = $("#animation-colorize").get("value");
 		animDemo = document.getElementById("animation-demo").checked;
-		var data = nstr(COMMAND_MODE_ANIMATION) +
-		nstr(animType) +
-		nstr(animDuration) +
-		nstr(animSpeed) +
-		nstr(animColorize) +
-		nstr(animDemo ? 1 : 0) +
-		"999";
 
-		websocket.send(data);
-		debugMessage("Animation wurde neu konfiguriert", data);
+		sendCmd(COMMAND_MODE_ANIMATION, nstr(animType) + nstr(animDuration) + nstr(animSpeed) + nstr(animColorize) + nstr(animDemo ? 1 : 0));
+		debugMessage("Animation wurde neu konfiguriert");
 		setAnimation();
 		return false;
 	});
 	$("#initial-values-button").on("click", function() {
-		sendData(COMMAND_SET_INITIAL_VALUES, 0, 0);
+		sendCmd(COMMAND_SET_INITIAL_VALUES);
 	});
 	$("#wifi-button").on("click", function() {
-		sendData(COMMAND_SET_WIFI_AND_RESTART, 0, 0);
+		sendCmd(COMMAND_SET_WIFI_AND_RESTART);
 		debugMessage("WLAN wird neu konfiguriert");
 		return false;
 	});
 	$("#_wlanscan").on("click", function() {
-		var data = CMDtoData(COMMAND_REQUEST_WIFI_LIST, 0, 0);
-		websocket.send(data);
+		sendCmd(COMMAND_REQUEST_WIFI_LIST);
 		document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
 		return false;
 	});
@@ -886,31 +824,22 @@ $.ready(function() {
 
 		var timeserverValue = $("#timeserver").get("value");
 
-		var data = CMDtoData(COMMAND_SET_TIMESERVER, 0, 0);
-		data += getPaddedString(timeserverValue, DATA_TIMESERVER_TEXT_LENGTH);
-		data += "999";
-
-		websocket.send(data);
-		debugMessage("Zeitserver wurde neu konfiguriert", data);
+		sendCmd(COMMAND_SET_TIMESERVER, getPaddedString(timeserverValue, DATA_TIMESERVER_TEXT_LENGTH));
+		debugMessage("Zeitserver wurde neu konfiguriert");
 		return false;
 	});
 	$("#marquee-button").on("click", function() {
 		var marqueeTextValue = $("#marquee").get("value");
 
-		var data = CMDtoData(COMMAND_SET_MARQUEE_TEXT, 0, 0);
-		data += getPaddedString(marqueeTextValue, DATA_MARQUEE_TEXT_LENGTH);
-		data += "999";
-
-		websocket.send(data);
-		debugMessage("Lauftext wurde neu konfiguriert", data);
+		sendCmd(COMMAND_SET_MARQUEE_TEXT, getPaddedString(marqueeTextValue, DATA_MARQUEE_TEXT_LENGTH));
+		debugMessage("Lauftext wurde neu konfiguriert");
 	});
 	$("#auto-ldr-button").on("click", function() {
 		autoLdrEnabled = $("#auto-ldr-enabled").get("value");
 		autoLdrBright = $("#auto-ldr-bright").get("value");
 		autoLdrDark = $("#auto-ldr-dark").get("value");
-		var data = CMDtoData(COMMAND_SET_AUTO_LDR, 0, 0) + nstr(autoLdrEnabled) + nstr(autoLdrBright) + nstr(autoLdrDark) + "999";
-		websocket.send(data);
-		sendData(COMMAND_REQUEST_AUTO_LDR, 0, 0);	// read back values
+		sendCmd(COMMAND_SET_AUTO_LDR, nstr(autoLdrEnabled) + nstr(autoLdrBright) + nstr(autoLdrDark));
+		sendCmd(COMMAND_REQUEST_AUTO_LDR);	// read back values
 	});
 	$("#brightness-button").on("click", function() {
 
@@ -923,77 +852,52 @@ $.ready(function() {
 		h22 = $("#brightness-22").get("value");
 		h24 = $("#brightness-24").get("value");
 
-		var data = CMDtoData(COMMAND_SET_BRIGHTNESS, 0, 0);
-		data += nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + "999";
-
-		websocket.send(data);
-		debugMessage("Helligkeit wurde neu konfiguriert", data);
+		sendCmd(COMMAND_SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24));
+		debugMessage("Helligkeit wurde neu konfiguriert");
 	});
 	$("#weather-button").on("click", function() {
 
 		var apiKey = $("#owm-api-key").get("value");
 		var cityId = $("#owm-city-id").get("value");
 
-		var data = CMDtoData(COMMAND_SET_WEATHER_DATA, 0, 0);
-		data += cityId + " " + apiKey + "  999";
-
-		websocket.send(data);
-		debugMessage("OpenWeatherMap Zugangsdaten wurden konfiguriert", data);
+		sendCmd(COMMAND_SET_WEATHER_DATA, cityId + " " + apiKey);
+		debugMessage("OpenWeatherMap Zugangsdaten wurden konfiguriert");
 	});
 	$("#show-minutesbutton").on("click", function() {
 		var showMinutesValue = $("#show-minutes").get("value");
 
-		var data = CMDtoData(COMMAND_SET_MINUTE, 0, 0);
-		data += showMinutesValue + "  999";
-
-		websocket.send(data);
-		debugMessage("Minutenanzeige wurde neu konfiguriert", data);
+		sendCmd(COMMAND_SET_MINUTE, nstr(showMinutesValue));
+		debugMessage("Minutenanzeige wurde neu konfiguriert");
 	});
 	$("#show-seconds-button").on("click", function() {
 		var showSecondsValue = $("#show-seconds").get("value");
 
-		var data = CMDtoData(COMMAND_SET_SETTING_SECOND, 0, 0);
-		data += showSecondsValue + "  999";
-
-		websocket.send(data);
-		debugMessage("Sekundenanzeige wurde neu konfiguriert", data);
+		sendCmd(COMMAND_SET_SETTING_SECOND, nstr(showSecondsValue));
+		debugMessage("Sekundenanzeige wurde neu konfiguriert");
 	});
 	$("#front-layout-button").on("click", function() {
 		var frontLayout = $("#front-layout").get("value");
 
-		var data = CMDtoData(COMMAND_SET_UHRTYPE, 0, 0);
-		data += frontLayout + "  999";
-
-		websocket.send(data);
-		debugMessage("frontLayout wurde neu konfiguriert", data);
+		sendCmd(COMMAND_SET_UHRTYPE, nstr(frontLayout));
+		debugMessage("frontLayout wurde neu konfiguriert");
 	});
 	$("#colortype-button").on("click", function() {
 		colortype = $("#colortype").get("value");
 
-		var data = CMDtoData(COMMAND_SET_COLORTYPE, 0, 0);
-		data += colortype + "  999";
-
-		websocket.send(data);
-		debugMessage("Colortype wurde neu konfiguriert", data);
+		sendCmd(COMMAND_SET_COLORTYPE, nstr(colortype));
+		debugMessage("Colortype wurde neu konfiguriert");
 	});
 	$("#ldr-button").on("click", function() {
 		ldr = $("#ldr").get("value");
 
-		var data = CMDtoData(COMMAND_SET_LDR, 0, 0);
-		data += nstr(ldr) + nstr(ldrCal) + "  999";
-
-		websocket.send(data);
-		debugMessage("LDR Steuerung wurde konfiguriert", data);
+		sendCmd(COMMAND_SET_LDR, nstr(ldr) + nstr(ldrCal));
+		debugMessage("LDR Steuerung wurde konfiguriert");
 	});
 	$("#hostname-button").on("click", function() {
 		var hostValue = $("#hostname").get("value");
 
-		var data = CMDtoData(COMMAND_SET_HOSTNAME, 0, 0);
-		data += getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH);
-		data += "999";
-
-		websocket.send(data);
-		debugMessage("Hostname wurde neu konfiguriert", data);
+		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH));
+		debugMessage("Hostname wurde neu konfiguriert");
 	});
 	$("#boot-button").on("click", function() {
 
@@ -1002,29 +906,24 @@ $.ready(function() {
 		bootShowWifi = $("#boot-show-wifi").get("checked") | 0;
 		bootShowIP = $("#boot-show-ip").get("checked") | 0;
 
-		var data = CMDtoData(COMMAND_SET_BOOT, 0, 0);
-		data += nstr(bootLedBlink) + nstr(bootLedSweep) + nstr(bootShowWifi) + nstr(bootShowIP) + "999";
-
-		websocket.send(data);
-		debugMessage("Bootoptionen wurden neu konfiguriert", data);
+		sendCmd(COMMAND_SET_BOOT, nstr(bootLedBlink) + nstr(bootLedSweep) + nstr(bootShowWifi) + nstr(bootShowIP));
+		debugMessage("Bootoptionen wurden neu konfiguriert");
 	});
 	$("#disable-button").on("click", function() {
-		sendData(COMMAND_SET_WIFI_DISABLED, 0, 0);
+		sendCmd(COMMAND_SET_WIFI_DISABLED);
 	});
 	$("#wps-button").on("click", function() {
-		sendData(COMMAND_SET_WPS_MODE, 0, 0);
+		sendCmd(COMMAND_SET_WPS_MODE);
 	});
 	$("#reset-button").on("click", function() {
-		sendData(COMMAND_RESET, 0, 0);
+		sendCmd(COMMAND_RESET);
 	});
 	$("#uhrzeit-button").on("click", function() {
 		var stunde = $("#stunde").get("value");
 		var minute = $("#minute").get("value");
 
-		var data = CMDtoData(COMMAND_SET_TIME_MANUAL, 0, 0);
-		data += nstr(stunde) + nstr(minute) + "999";
-		websocket.send(data);
-		debugMessage("Uhrzeit wurde manuell konfiguriert", data);
+		sendCmd(COMMAND_SET_TIME_MANUAL, nstr(stunde) + nstr(minute));
+		debugMessage("Uhrzeit wurde manuell konfiguriert");
 	});
 	$("#mqtt-button").on("click", function() {
 		MQTTState = $("#mqtt-state").get("value");
@@ -1035,19 +934,16 @@ $.ready(function() {
 		MQTTClientId = $("#mqtt-clientid").get("value");
 		MQTTTopic = $("#mqtt-topic").get("value");
 
-		var data = CMDtoData(COMMAND_SET_MQTT, 0, 0);
-		data += nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTUser, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTPass, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTClientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTTopic, DATA_MQTT_RESPONSE_TEXT_LENGTH) + "999";
-		websocket.send(data);
-		debugMessage("MQTT Server wurde konfiguriert", data);
+		sendCmd(COMMAND_SET_MQTT, nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTUser, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTPass, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTClientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTTopic, DATA_MQTT_RESPONSE_TEXT_LENGTH));
+		debugMessage("MQTT Server wurde konfiguriert");
 	});
 	$("#dialect-button").on("click", function() {
-		var data = CMDtoData(COMMAND_SET_LANGUAGE_VARIANT, 0, 0);
 		dialect[0] = $("#dialect-0").get("value");
 		dialect[1] = $("#dialect-1").get("value");
 		dialect[2] = $("#dialect-2").get("value");
 		dialect[3] = $("#dialect-3").get("value");
-		data += nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + "999";
-		websocket.send(data);
-		debugMessage("dialect wurde konfiguriert", data);
+
+		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]));
+		debugMessage("dialect wurde konfiguriert");
 	});
 });

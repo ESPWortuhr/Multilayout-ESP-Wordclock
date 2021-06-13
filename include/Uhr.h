@@ -37,7 +37,6 @@ struct GLOBAL {
     uint8_t sernr;
     uint16_t prog;
     uint8_t param1;
-    uint8_t param2;
     uint8_t prog_init;
     uint16_t conf;
     uint8_t rgb[4][4];
@@ -202,8 +201,6 @@ enum Command {
 
     COMMAND_BRIGHTNESS = 151,
     COMMAND_SPEED = 152,
-    COMMAND_LEDS = 153,
-    COMMAND_POSITION = 154,
 
     COMMAND_REQUEST_CONFIG_VALUES = 200,
     COMMAND_REQUEST_COLOR_VALUES = 201,

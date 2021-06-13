@@ -239,7 +239,6 @@ void setup() {
         G.sernr = SERNR;
         G.prog = 1;
         G.param1 = 0;
-        G.param2 = 0;
         G.prog_init = 1;
         G.conf = COMMAND_IDLE;
         for (uint8_t i = 0; i < 4; i++) {
