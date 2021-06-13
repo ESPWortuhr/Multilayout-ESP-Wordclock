@@ -157,8 +157,6 @@ var COLOR_BACKGROUND = 1;
 
 // data that gets send back to the esp
 var DATA_MARQUEE_TEXT_LENGTH = 30;
-var DATA_SSID_TEXT_LENGTH = 32; // WL_SSID_MAX_LENGTH == 32
-var DATA_PASSWORT_TEXT_LENGTH = 63; // WL_WPA_KEY_MAX_LENGTH == 63
 var DATA_TIMESERVER_TEXT_LENGTH = 30;
 var DATA_MQTT_RESPONSE_TEXT_LENGTH = 30;
 var DATA_HOST_TEXT_LENGTH = 30;
@@ -223,21 +221,6 @@ function initConfigValues() {
 	animColorize = 1;
 	animDemo = false;
 }
-
-function hexToRgb(hex) {
-	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	return result ? {
-		red: parseInt(result[1], 16),
-		green: parseInt(result[2], 16),
-		blue: parseInt(result[3], 16)
-	} : null;
-}
-
-/**
- * Displays a debug message, if the global debug flag is set to true. Optionally
- * an object can be provided that will be printed on the console (when a console
- * is available).
- */
 
 /* eslint-disable no-console */
 function debugMessage(debugMessage, someObject) {
