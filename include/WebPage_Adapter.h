@@ -112,10 +112,10 @@ WebPage_Adapter webSocket = WebPage_Adapter(80);
 
 //------------------------------------------------------------------------------
 
-uint16_t split(uint8_t *payload, uint8_t start, uint8_t lenght = 3) {
-    char buffer[lenght];
+uint16_t split(uint8_t *payload, uint8_t start, uint8_t length = 3) {
+    char buffer[length];
     uint8_t m = 0;
-    for (uint16_t k = start; k < (start + lenght); k++) {
+    for (uint16_t k = start; k < (start + length); k++) {
         buffer[m] = payload[k];
         m++;
     }
@@ -145,7 +145,7 @@ void payloadTextHandling(const uint8_t *payload, char *text, uint8_t length,
 //------------------------------------------------------------------------------
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
-                    size_t lenght) {
+                    size_t length) {
     // Disable Accesspoint Mode Disable Timer on Web Event
     if (AP_Status > 0) {
         AP_Status = 0;
@@ -169,7 +169,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         break;
     }
     case WStype_TEXT: {
-        Serial.printf("[%u] get Text: %s\n", lenght, payload);
+        Serial.printf("[%u] get Text: %s\n", length, payload);
 
         uint16_t command = split(payload, 0);
         G.param1 = 0;
@@ -565,10 +565,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         break;
     }
     case WStype_BIN: {
-        Serial.printf("[%u] get binary lenght: %u\n", num, lenght);
-        hexdump(payload, lenght);
+        Serial.printf("[%u] get binary length: %u\n", num, length);
+        hexdump(payload, length);
         //--echo data back to browser
-        // webSocket.sendBIN(num, payload, lenght);
+        // webSocket.sendBIN(num, payload, length);
         break;
     }
     default:
