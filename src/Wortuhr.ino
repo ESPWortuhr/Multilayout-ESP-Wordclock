@@ -430,7 +430,7 @@ void setup() {
     //-------------------------------------
     Serial.println("--------------------------------------");
     Serial.println("ESP Uhr");
-    Serial.print("Version         : "), Serial.println(VER);
+    Serial.printf("Version         : %s\n", VERSION);
     Serial.printf("Chip ID         : %08X\n", ESP.getChipId());
     Serial.printf("Flash ID        : %08X\n\n", ESP.getFlashChipId());
     Serial.printf("CPU Speed       : %u MHz \n\n", ESP.getCpuFreqMHz());

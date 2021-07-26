@@ -1,5 +1,30 @@
 Import("env")
 
+package_json = env.File("package.json")
+
+#
+# automatically generate `include/version.h`
+#
+def build_version_h(target, source, env):
+    import json
+
+    version = None
+    with open(str(source[0]), "r") as f:
+        version = json.load(f)["version"]
+
+    with open(str(target[0]), "w") as h:
+        h.write('// Automatically generated -- do not modify\n')
+        h.write('// Modify `package.json` instead.\n\n')
+        h.write('#define VERSION "' + version + '"\n')
+
+    return None
+
+env.Command(
+    target="include/version.gen.h",
+    source=package_json,
+    action=build_version_h
+)
+
 #
 # automatically build web page
 #
@@ -16,4 +41,5 @@ grunt_build = env.Command(
     action="npx --no-install grunt build"
 )
 env.Depends(grunt_build, npm_ci)
-env.Depends(grunt_build, Glob("webpage/*"))
+env.Depends(grunt_build, package_json)
+env.Depends(grunt_build, env.Glob("webpage/*"))

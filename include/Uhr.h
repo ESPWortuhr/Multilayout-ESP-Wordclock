@@ -1,7 +1,6 @@
 #pragma once
 #include "Arduino.h"
-
-const char *VER = "2.6.0"; // Software Version
+#include "version.gen.h"
 
 #define MAX_ARRAY_SIZE 291
 
