@@ -30,8 +30,7 @@ void eeprom_write() {
 void eeprom_read() {
     EEPROM_readAnything(0, G);
 
-    Serial.print("Version   : ");
-    Serial.println(VER);
+    Serial.printf("Version   : %s\n", VERSION);
     Serial.printf("Sernr     : %u\n", G.sernr);
     Serial.printf("Programm  : %u\n", G.prog);
     Serial.printf("Conf      : %u\n", G.conf);
