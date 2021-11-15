@@ -396,26 +396,31 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.conf = COMMAND_SET_MQTT;
             G.MQTT_State = split(payload, 3);
             G.MQTT_Port = split(payload, 6, 5);
-            const uint8_t index_start = 11;
+            uint8_t index_start = 11;
             payloadTextHandling(
                 payload, G.MQTT_Server,
                 sizeof(G.MQTT_Server) / sizeof(G.MQTT_Server[0]), index_start);
+            index_start =
+                index_start + sizeof(G.MQTT_Server) / sizeof(G.MQTT_Server[0]);
             payloadTextHandling(payload, G.MQTT_User,
                                 sizeof(G.MQTT_User) / sizeof(G.MQTT_User[0]),
-                                index_start + sizeof(G.MQTT_Server) /
-                                                  sizeof(G.MQTT_Server[0]));
+                                index_start);
+            index_start =
+                index_start + sizeof(G.MQTT_User) / sizeof(G.MQTT_User[0]);
             payloadTextHandling(payload, G.MQTT_Pass,
                                 sizeof(G.MQTT_Pass) / sizeof(G.MQTT_Pass[0]),
-                                index_start + sizeof(G.MQTT_User) /
-                                                  sizeof(G.MQTT_User[0]));
-            payloadTextHandling(
-                payload, G.MQTT_ClientId,
-                sizeof(G.MQTT_ClientId) / sizeof(G.MQTT_ClientId[0]),
-                index_start + sizeof(G.MQTT_Pass) / sizeof(G.MQTT_Pass[0]));
+                                index_start);
+            index_start =
+                index_start + sizeof(G.MQTT_Pass) / sizeof(G.MQTT_Pass[0]);
+            payloadTextHandling(payload, G.MQTT_ClientId,
+                                sizeof(G.MQTT_ClientId) /
+                                    sizeof(G.MQTT_ClientId[0]),
+                                index_start);
+            index_start = index_start +
+                          sizeof(G.MQTT_ClientId) / sizeof(G.MQTT_ClientId[0]);
             payloadTextHandling(payload, G.MQTT_Topic,
                                 sizeof(G.MQTT_Topic) / sizeof(G.MQTT_Topic[0]),
-                                index_start + sizeof(G.MQTT_ClientId) /
-                                                  sizeof(G.MQTT_ClientId[0]));
+                                index_start);
             break;
         }
 
