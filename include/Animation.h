@@ -384,7 +384,7 @@ public:
         snakeColor = RgbfColor(hsbColor, true);
         goRight = true;
         head = {false, 0, -1};
-        snake.empty();
+        (void) snake.empty();
         index = 0;
         getMotions(old, false, 0, 1);
         getMotions(act, true, max_rows - 1, -1);
