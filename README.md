@@ -65,6 +65,7 @@ pio run -t upload
 -   `src` enthält C Source Dateien
 -   `webpage` enthält das Webinterface
 -   `docs` enthält Anleitungen
+-   `vorlagen`enthält Fräs- und Laserdaten
 
 ## To DO & (Ideen):
 * Symbol zu einem bestimmten Datum/Uhrzeit
