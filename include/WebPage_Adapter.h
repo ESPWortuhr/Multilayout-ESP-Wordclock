@@ -328,7 +328,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             struct timeval tv;
             tv.tv_sec = atoi(tmp);
             tv.tv_usec = 0;
-            Serial.printf("Conf: Time: %ld\n", tv.tv_sec);
+            Serial.printf("Conf: Time: %lld\n", tv.tv_sec);
             settimeofday(&tv, nullptr);
             break;
         }
@@ -433,7 +433,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             tv.tv_sec = mktime(&tm);
             tv.tv_usec = 0;
             Serial.println("Uhrzeit manuell eingstellt");
-            Serial.printf("Conf: Time: %ld\n", tv.tv_sec);
+            Serial.printf("Conf: Time: %lld\n", tv.tv_sec);
             settimeofday(&tv, nullptr);
             break;
         }
