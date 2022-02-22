@@ -562,7 +562,7 @@ function nstr(number) {
 }
 
 function getPaddedString(string, maxStringLength) {
-	return string.padStart(maxStringLength, " ");
+	return string.padEnd(maxStringLength, " ");
 }
 
 function sendData(command, addData = "") {
