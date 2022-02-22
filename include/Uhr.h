@@ -1,6 +1,7 @@
 #pragma once
 #include "Arduino.h"
 #include "version.gen.h"
+#define PAYLOAD_LENGTH 30
 
 #define MAX_ARRAY_SIZE 291
 
@@ -52,9 +53,9 @@ struct GLOBAL {
     uint8_t client_nr;
     uint8_t zeige_sek;
     uint8_t zeige_min;
-    char zeitserver[30];
-    char hostname[30];
-    char ltext[30];
+    char zeitserver[PAYLOAD_LENGTH];
+    char hostname[PAYLOAD_LENGTH];
+    char ltext[PAYLOAD_LENGTH];
     uint8_t hh;
     uint8_t h6;
     uint8_t h8;
@@ -69,11 +70,11 @@ struct GLOBAL {
     uint8_t UhrtypeDef;
     uint8_t Colortype;
     uint8_t MQTT_State;
-    char MQTT_Server[30];
-    char MQTT_User[30];
-    char MQTT_Pass[30];
-    char MQTT_ClientId[30];
-    char MQTT_Topic[30];
+    char MQTT_Server[PAYLOAD_LENGTH];
+    char MQTT_User[PAYLOAD_LENGTH];
+    char MQTT_Pass[PAYLOAD_LENGTH];
+    char MQTT_ClientId[PAYLOAD_LENGTH];
+    char MQTT_Topic[PAYLOAD_LENGTH];
     uint16_t MQTT_Port;
 
     uint8_t autoLdrEnabled;
