@@ -554,56 +554,17 @@ function autoLdrStop() {
 }
 
 function nstr5(number) {
-	if (number < 10) {
-		number = "00" + number;
-	} else {
-		if (number < 100) {
-			number = "0" + number;
-		} else {
-			if (number < 1000) {
-				number = "0" + number;
-			} else {
-				if (number < 10000) {
-					number = "0" + number;
-				}
-			}
-		}
-	}
-	return number;
+	return number.toString().padStart(5, "0");
 }
 
 function nstr(number) {
-	if (number < 10) {
-		number = "00" + number;
-	} else {
-		if (number < 100) {
-			number = "0" + number;
-		}
-	}
-	return number;
+	return number.toString().padStart(3, "0");
 }
 
-/**
- * Returns the padding for the string that is send to the esp.
- * The string is padded until it has a length of exactly maxStringLength.
- *
- * @param  {string} string - The string that is padded with spaces.
- * @param  {int}    maxStringLength - The resulting length of the padded string.
- * @return {string} The padded string.
- */
 function getPaddedString(string, maxStringLength) {
-
-	while (string.length < maxStringLength) {
-		string += " ";
-	}
-	return string;
+	return string.padEnd(maxStringLength, " ");
 }
 
-/**
- * Sends data to the esp via a websocket connection.
- *
- * @param  {int} The command that specifies what to do on the esp.
- */
 function sendData(command, addData = "") {
 	var data = nstr(command) +
         nstr(rgb[COLOR_FOREGROUND][0]) +

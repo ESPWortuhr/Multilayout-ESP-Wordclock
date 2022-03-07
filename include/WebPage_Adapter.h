@@ -124,16 +124,17 @@ uint16_t split(uint8_t *payload, uint8_t start, uint8_t length = 3) {
 
 //------------------------------------------------------------------------------
 
-void payloadTextHandling(const uint8_t *payload, char *text, uint8_t length,
+void payloadTextHandling(const uint8_t *payload, char *text,
                          uint8_t start = 3) {
     uint8_t ii = 0;
-    for (uint8_t k = start; k < start + length - 1; k++) // need space for  '\0'
+    for (uint8_t k = start; k < start + PAYLOAD_LENGTH - 1;
+         k++) // need space for  '\0'
     {
         text[ii] = payload[k];
         ii++;
     }
-    uint8_t index = length - 1;
-    for (int8_t counter = length - 2; counter > -1; counter--) {
+    uint8_t index = PAYLOAD_LENGTH - 1;
+    for (int8_t counter = PAYLOAD_LENGTH - 2; counter > -1; counter--) {
         if (!isSpace(text[counter])) {
             index = counter + 1;
             break;
@@ -337,8 +338,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_HOSTNAME: { // Hostname speichern
             G.conf = COMMAND_SET_HOSTNAME;
-            payloadTextHandling(payload, G.hostname,
-                                sizeof(G.hostname) / sizeof(G.hostname[0]));
+            payloadTextHandling(payload, G.hostname);
             break;
         }
 
@@ -396,26 +396,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.conf = COMMAND_SET_MQTT;
             G.MQTT_State = split(payload, 3);
             G.MQTT_Port = split(payload, 6, 5);
-            const uint8_t index_start = 11;
-            payloadTextHandling(
-                payload, G.MQTT_Server,
-                sizeof(G.MQTT_Server) / sizeof(G.MQTT_Server[0]), index_start);
-            payloadTextHandling(payload, G.MQTT_User,
-                                sizeof(G.MQTT_User) / sizeof(G.MQTT_User[0]),
-                                index_start + sizeof(G.MQTT_Server) /
-                                                  sizeof(G.MQTT_Server[0]));
-            payloadTextHandling(payload, G.MQTT_Pass,
-                                sizeof(G.MQTT_Pass) / sizeof(G.MQTT_Pass[0]),
-                                index_start + sizeof(G.MQTT_User) /
-                                                  sizeof(G.MQTT_User[0]));
-            payloadTextHandling(
-                payload, G.MQTT_ClientId,
-                sizeof(G.MQTT_ClientId) / sizeof(G.MQTT_ClientId[0]),
-                index_start + sizeof(G.MQTT_Pass) / sizeof(G.MQTT_Pass[0]));
-            payloadTextHandling(payload, G.MQTT_Topic,
-                                sizeof(G.MQTT_Topic) / sizeof(G.MQTT_Topic[0]),
-                                index_start + sizeof(G.MQTT_ClientId) /
-                                                  sizeof(G.MQTT_ClientId[0]));
+            uint8_t index_start = 11;
+            payloadTextHandling(payload, G.MQTT_Server, index_start);
+            index_start += PAYLOAD_LENGTH;
+            payloadTextHandling(payload, G.MQTT_User, index_start);
+            index_start += PAYLOAD_LENGTH;
+            payloadTextHandling(payload, G.MQTT_Pass, index_start);
+            index_start += PAYLOAD_LENGTH;
+            payloadTextHandling(payload, G.MQTT_ClientId, index_start);
+            index_start += PAYLOAD_LENGTH;
+            payloadTextHandling(payload, G.MQTT_Topic, index_start);
             break;
         }
 
@@ -502,8 +492,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_MARQUEE_TEXT: { // Lauftext speichern
             G.conf = COMMAND_SET_MARQUEE_TEXT;
-            payloadTextHandling(payload, G.ltext,
-                                sizeof(G.ltext) / sizeof(G.ltext[0]));
+            payloadTextHandling(payload, G.ltext);
             break;
         }
 
@@ -511,8 +500,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_TIMESERVER: { // Zeitserver speichern
             G.conf = COMMAND_SET_TIMESERVER;
-            payloadTextHandling(payload, G.zeitserver,
-                                sizeof(G.zeitserver) / sizeof(G.zeitserver[0]));
+            payloadTextHandling(payload, G.zeitserver);
             break;
         }
 
