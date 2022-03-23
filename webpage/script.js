@@ -666,6 +666,7 @@ $.ready(function() {
 
 		var hasBrightness = false;
 		var hasSpeed = false;
+		var hasText = false;
 
 		if (id === "mode-wordclock") {
 			command = COMMAND_MODE_WORD_CLOCK;
@@ -678,6 +679,7 @@ $.ready(function() {
 		}
 		if (id === "mode-marquee") {
 			hasSpeed = true;
+			hasText = true;
 			command = COMMAND_MODE_MARQUEE;
 		}
 		if (id === "mode-rainbow") {
@@ -719,6 +721,15 @@ $.ready(function() {
 			});
 		} else {
 			$(".functions-settings").set({
+				$display: "none"
+			});
+		}
+		if (hasText === true) {
+			$(".text").set({
+				$display: "block"
+			});
+		} else {
+			$(".text").set({
 				$display: "none"
 			});
 		}
