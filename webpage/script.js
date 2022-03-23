@@ -290,7 +290,7 @@ function initWebsocket() {
 		if (data.command === "mqtt") {
 			$("#mqtt-port").set("value", data.MQTT_Port);
 			$("#mqtt-server").set("value", data.MQTT_Server);
-			$("#mqtt-state").set("value", data.MQTT_State);
+			document.getElementById("mqtt-state").checked = data.MQTT_State;
 			$("#mqtt-user").set("value", data.MQTT_User);
 			$("#mqtt-pass").set("value", data.MQTT_Pass);
 			$("#mqtt-clientid").set("value", data.MQTT_ClientId);
@@ -319,12 +319,12 @@ function initWebsocket() {
 			$("#dialect-2").set("value", data.spv2);
 			$("#dialect-3").set("value", data.spv3);
 
-			$("#ldr").set("value", data.ldr);
-			$("#ldr-cal").set("value", data.ldrCal);
+			document.getElementById("ldr").checked = data.ldr;
+			$("ldr-cal").set("value", data.ldrCal);
 			$("#slider-brightness").set("value", data.hell);
 			$("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
-			$("#show-seconds").set("value", data.zeige_sek);
-			$("#show-minutes").set("value", data.zeige_min);
+			document.getElementById("show-seconds").checked = data.zeige_sek;
+			$("show-minutes").set("value", data.zeige_min);
 
 			$("#owm-api-key").set("value", data.apiKey);
 			$("#owm-city-id").set("value", data.cityid);
@@ -332,10 +332,10 @@ function initWebsocket() {
 			$("#front-layout").set("value", data.UhrtypeDef);
 			$("#colortype").set("value", data.colortype);
 
-			$("#boot-led-blink").set("checked", data.bootLedBlink | 0);
-			$("#boot-led-sweep").set("checked", data.bootLedSweep | 0);
-			$("#boot-show-wifi").set("checked", data.bootShowWifi | 0);
-			$("#boot-show-ip").set("checked", data.bootShowIP | 0);
+			document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
+			document.getElementById("boot-show-led-sweep").checked = data.bootLedSweep;
+			document.getElementById("boot-show-wifi").checked = data.bootShowWifi;
+			document.getElementById("boot-show-ip").checked = data.bootShowIP;
 
 			enableSpecific("specific-layout-2", data.hasDreiviertel);
 			enableSpecific("specific-layout-3", data.hasZwanzig);
@@ -641,6 +641,9 @@ $.ready(function() {
 		if (navigation === "smart-home") {
 			sendCmd(COMMAND_REQUEST_MQTT_VALUES);
 		}
+		if (navigation === "frontoptions") {
+			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
+		}
 		if (navigation === "settings" || navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 			sendCmd(COMMAND_REQUEST_AUTO_LDR);
@@ -851,6 +854,7 @@ $.ready(function() {
 		var frontLayout = $("#front-layout").get("value");
 
 		sendCmd(COMMAND_SET_UHRTYPE, nstr(frontLayout));
+		sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 		debugMessage("frontLayout wurde neu konfiguriert");
 	});
 	$("#colortype-button").on("click", function() {
@@ -859,8 +863,9 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_COLORTYPE, nstr(colortype));
 		debugMessage("Colortype wurde neu konfiguriert");
 	});
-	$("#ldr-button").on("click", function() {
-		ldr = $("#ldr").get("value");
+	$("[id*='ldr']").on("change", function() {
+		ldr = $("#ldr").get("checked") | 0;
+		ldrCal = $("#ldr-cal").get("value");
 
 		sendCmd(COMMAND_SET_LDR, nstr(ldr) + nstr(ldrCal));
 		debugMessage("LDR Steuerung wurde konfiguriert");
@@ -897,7 +902,7 @@ $.ready(function() {
 		debugMessage("Uhrzeit wurde manuell konfiguriert");
 	});
 	$("#mqtt-button").on("click", function() {
-		MQTTState = $("#mqtt-state").get("value");
+		MQTTState = $("#mqtt-state").get("checked") | 0;
 		MQTTPort = $("#mqtt-port").get("value");
 		MQTTServer = $("#mqtt-server").get("value");
 		MQTTUser = $("#mqtt-user").get("value");
