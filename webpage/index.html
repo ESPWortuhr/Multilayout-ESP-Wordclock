@@ -26,6 +26,7 @@
             <ul class="pure-menu-list">
                 <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="main">Farben</a></li>
                 <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="functions">Funktionen</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="frontoptions">Anzeigeoptionen</a></li>
                 <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="settings">Einstellungen</a></li>
                 <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="smart-home">Smart Home</a></li>
                 <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="about">Über</a></li>
@@ -151,6 +152,135 @@
                 </div>
 
             </div>
+            <div class="pure-u-24-24 section section-frontoptions">
+                <div class="header">
+                    <h1>Anzeigeoptinen</h1>
+                </div>
+                <div class="pure-g">
+                    <!-- Specific UHR169 Start-->
+                    <div class="pure-u-1 pure-u-lg-1 specific-layout-4">
+                        <div class="box">
+                            <h2>Minuten-Anzeige</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="show-minutes">Sollen bei dieser Uhr die Minuten angezeigt werden
+                                            ?</label><select name="show-minutes" id="show-minutes" size="1">
+                                        <option value="0" selected>Off</option>
+                                        <option value="1">als Zeile</option>
+                                        <option value="2">in den Ecken</option>
+                                    </select>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1 specific-layout-4">
+                        <div class="box">
+                            <h2>Sekunden-Anzeige</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="show-seconds">Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden
+                                            ?</label><select name="show-seconds" id="show-seconds" size="1">
+                                        <option value="0" selected>Off</option>
+                                        <option value="1">On</option>
+                                    </select>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <!-- Specific UHR169 End-->
+                    <div class="pure-u-1 pure-u-lg-1">
+                        <div class="box">
+                            <h2>Typ der Uhr</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="front-layout">Änderung des Uhrentypes.</label><select name="front-layout" id="front-layout" size="1">
+                                        <option value="1" selected>Uhr 114</option>
+                                        <option value="2">Uhr 114 Alternative</option>
+                                        <option value="6">Uhr 114 2Clock</option>
+                                        <option value="3">Uhr 125</option>
+                                        <option value="8">Uhr 125 Type2</option>
+                                        <option value="4">Uhr 169</option>
+                                        <option value="5">Uhr 242</option>
+                                        <option value="7">Uhr 291</option>
+                                    </select>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1">
+                        <div class="box">
+                            <h2>Sprachoptionen</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <div class="pure-control-group">
+                                        <label for="dialect-0">Um 9:15 ist es...</label><select name="dialect-0" id="dialect-0" size="1">
+                                        <option value="0" selected>viertel nach neun</option>
+                                        <option value="1">viertel zehn</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group specific-layout-3">
+                                        <label for="dialect-1">Um 9:20 ist es...</label><select name="dialect-1" id="dialect-1" size="1">
+                                        <option value="0" selected>zwanzig nach neun</option>
+                                        <option value="1">zehn vor halb zehn</option>
+                                    </select>
+                                    </div>
+                                    <div class="pure-control-group specific-layout-3">
+                                        <label for="dialect-2">Um 9:40 ist es...</label><select name="dialect-2" id="dialect-2" size="1">
+                                        <option value="0" selected>zwanzig vor zehn</option>
+                                        <option value="1">zehn nach halb zehn</option>
+                                    </select>
+                                    </div>
+                                    <!-- Specific UHR114_Alternative Start-->
+                                    <div class="pure-control-group specific-layout-2">
+                                        <label for="dialect-3">Um 9:45 ist es...</label><select name="dialect-3" id="dialect-3" size="1">
+                                        <option value="0" selected>viertel vor zehn</option>
+                                        <option value="1">dreiviertel zehn</option>
+                                    </select>
+                                    </div>
+                                    <!-- Specific UHR114_Alternative End-->
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="pure-u-1 pure-u-lg-1">
+                        <div class="box">
+                            <h2>Bootverhalten</h2>
+                            <form class="pure-form pure-form-aligned">
+                                <fieldset>
+                                    <legend>
+                                    Was soll beim Neustart passieren?
+                                    </legend>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-show-led-blink" />
+                                        <label for="boot-show-led-blink" class="pure-checkbox">LEDs kurz aufblitzen</label>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-show-led-sweep" />
+                                        <label for="boot-show-led-sweep" class="pure-checkbox">Alle LEDs einmal durchlaufen lassen</label>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-show-wifi" />
+                                        <label for="boot-show-wifi" class="pure-checkbox">WiFi Symbol während der Suche anzeigen</label>
+                                    </div>
+                                    <div class="pure-control-group">
+                                        <input type="checkbox" id="boot-show-ip" />
+                                        <label for="boot-show-ip" class="pure-checkbox">IP Addresse anzeigen</label>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
             <div class="pure-u-24-24 section section-settings">
                 <div class="header">
                     <h1>Einstellungen</h1>
@@ -181,6 +311,7 @@
                                 <fieldset>
                                     <div class="pure-controls">
                                         <button id="initial-values-button" class="pure-button-rounded">Startwerte speichern</button>
+                                        <button id="reset-button" class="pure-button-rounded">Neustarten</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -476,119 +607,7 @@
                         </div>
 
                     </div>
-                    <!-- Specific UHR242 End--><!-- Specific UHR169 Start-->
-                    <div class="pure-u-1 pure-u-lg-1-2 specific-layout-4">
-
-                        <div class="box">
-                            <h2>Minuten-Anzeige</h2>
-                            <form class="pure-form pure-form-aligned">
-                                <fieldset>
-                                    <div class="pure-control-group">
-                                        <label for="show-minutes">Sollen bei dieser Uhr die Minuten angezeigt werden
-                                            ?</label><select name="show-minutes" id="show-minutes" size="1">
-                                        <option value="0" selected>Off</option>
-                                        <option value="1">als Zeile</option>
-                                        <option value="2">in den Ecken</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-controls">
-                                        <button id="show-minutes-button" class="pure-button-rounded">Einstellung speichern</button>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-
-                    </div>
-                    <div class="pure-u-1 pure-u-lg-1-2 specific-layout-4">
-
-                        <div class="box">
-                            <h2>Sekunden-Anzeige</h2>
-                            <form class="pure-form pure-form-aligned">
-                                <fieldset>
-                                    <div class="pure-control-group">
-                                        <label for="show-seconds">Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden
-                                            ?</label><select name="show-seconds" id="show-seconds" size="1">
-                                        <option value="0" selected>Off</option>
-                                        <option value="1">On</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-controls">
-                                        <button id="show-seconds-button" class="pure-button-rounded">Einstellung speichern</button>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-
-                    </div>
-                    <!-- Specific UHR169 End-->
-
-                    <div class="pure-u-1 pure-u-lg-1-2">
-
-                        <div class="box">
-                            <h2>Typ der Uhr</h2>
-                            <form class="pure-form pure-form-aligned">
-                                <fieldset>
-                                    <div class="pure-control-group">
-                                        <label for="front-layout">Änderung des Uhrentypes.</label><select name="front-layout" id="front-layout" size="1">
-                                        <option value="1" selected>Uhr 114</option>
-                                        <option value="2">Uhr 114 Alternative</option>
-                                        <option value="6">Uhr 114 2Clock</option>
-                                        <option value="3">Uhr 125</option>
-                                        <option value="8">Uhr 125 Type2</option>
-                                        <option value="4">Uhr 169</option>
-                                        <option value="5">Uhr 242</option>
-                                        <option value="7">Uhr 291</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-controls">
-                                        <button id="front-layout-button" class="pure-button-rounded">Einstellung speichern</button>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-
-                    </div>
-
-                    <div class="pure-u-1 pure-u-lg-1-2">
-
-                        <div class="box">
-                            <h2>Sprachoptionen</h2>
-                            <form class="pure-form pure-form-aligned">
-                                <fieldset>
-                                    <div class="pure-control-group">
-                                        <label for="dialect-0">Um 9:15 ist es...</label><select name="dialect-0" id="dialect-0" size="1">
-                                        <option value="0" selected>viertel nach neun</option>
-                                        <option value="1">viertel zehn</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-control-group specific-layout-3">
-                                        <label for="dialect-1">Um 9:20 ist es...</label><select name="dialect-1" id="dialect-1" size="1">
-                                        <option value="0" selected>zwanzig nach neun</option>
-                                        <option value="1">zehn vor halb zehn</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-control-group specific-layout-3">
-                                        <label for="dialect-2">Um 9:40 ist es...</label><select name="dialect-2" id="dialect-2" size="1">
-                                        <option value="0" selected>zwanzig vor zehn</option>
-                                        <option value="1">zehn nach halb zehn</option>
-                                    </select>
-                                    </div>
-                                    <!-- Specific UHR114_Alternative Start-->
-                                    <div class="pure-control-group specific-layout-2">
-                                        <label for="dialect-3">Um 9:45 ist es...</label><select name="dialect-3" id="dialect-3" size="1">
-                                        <option value="0" selected>viertel vor zehn</option>
-                                        <option value="1">dreiviertel zehn</option>
-                                    </select>
-                                    </div>
-                                    <!-- Specific UHR114_Alternative End-->
-                                    <div class="pure-controls">
-                                        <button id="dialect-button" class="pure-button-rounded">Einstellung speichern</button>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-
-                    </div>
+                    <!-- Specific UHR242 End-->
                     <div class="pure-u-1 pure-u-lg-1-2">
 
                         <div class="box">
@@ -650,40 +669,6 @@
                     <div class="pure-u-1 pure-u-lg-1-2">
 
                         <div class="box">
-                            <h2>Neustart</h2>
-                            <form class="pure-form pure-form-aligned">
-                                <fieldset>
-                                    <legend>
-                                    Was soll beim Neustart passieren?
-                                    </legend>
-                                    <div class="pure-control-group">
-                                        <input type="checkbox" id="boot-led-blink" />
-                                        <label for="boot-led-blink" class="pure-checkbox">LEDs kurz aufblitzen</label>
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <input type="checkbox" id="boot-led-sweep" />
-                                        <label for="boot-led-sweep" class="pure-checkbox">Alle LEDs einmal durchlaufen lassen</label>
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <input type="checkbox" id="boot-show-wifi" />
-                                        <label for="boot-show-wifi" class="pure-checkbox">WiFi Symbol während der Suche anzeigen</label>
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <input type="checkbox" id="boot-show-ip" />
-                                        <label for="boot-show-ip" class="pure-checkbox">IP Addresse anzeigen</label>
-                                    </div>
-                                    <div class="pure-controls">
-                                        <button id="boot-button" class="pure-button-rounded">Speichern</button>
-                                        <button id="reset-button" class="pure-button-rounded">Neustarten</button>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-
-                    </div>
-                    <div class="pure-u-1 pure-u-lg-1-2">
-
-                        <div class="box">
                             <h2>WiFi</h2>
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
@@ -721,7 +706,7 @@
                 <div class="box">
                     <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über die MQTT Schnittstelle. Hierbei kann man über sein bestehendes HomeAssistant Setup die Uhr einbinden, um rudimentäre Funktionen steuern zu können. Diese Funktion ist noch experimentell und wird stetig erweitert.</p>
                 </div>
-                <div class="pure-u-1 pure-u-lg-1-2">
+                <div class="pure-u-1 pure-u-lg-1">
 
                     <div class="box">
                         <h2>MQTT</h2>

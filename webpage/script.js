@@ -641,7 +641,7 @@ $.ready(function() {
 		if (navigation === "smart-home") {
 			sendCmd(COMMAND_REQUEST_MQTT_VALUES);
 		}
-		if (navigation === "settings") {
+		if (navigation === "settings" || navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 			sendCmd(COMMAND_REQUEST_AUTO_LDR);
 			autoLdrValueUpdater();
@@ -835,19 +835,19 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_WEATHER_DATA, cityId + " " + apiKey);
 		debugMessage("OpenWeatherMap Zugangsdaten wurden konfiguriert");
 	});
-	$("#show-minutesbutton").on("click", function() {
+	$("#show-minutes").on("change", function() {
 		var showMinutesValue = $("#show-minutes").get("value");
 
 		sendCmd(COMMAND_SET_MINUTE, nstr(showMinutesValue));
 		debugMessage("Minutenanzeige wurde neu konfiguriert");
 	});
-	$("#show-seconds-button").on("click", function() {
+	$("#show-seconds").on("change", function() {
 		var showSecondsValue = $("#show-seconds").get("value");
 
 		sendCmd(COMMAND_SET_SETTING_SECOND, nstr(showSecondsValue));
 		debugMessage("Sekundenanzeige wurde neu konfiguriert");
 	});
-	$("#front-layout-button").on("click", function() {
+	$("#front-layout").on("change", function() {
 		var frontLayout = $("#front-layout").get("value");
 
 		sendCmd(COMMAND_SET_UHRTYPE, nstr(frontLayout));
@@ -871,10 +871,9 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH));
 		debugMessage("Hostname wurde neu konfiguriert");
 	});
-	$("#boot-button").on("click", function() {
-
-		bootLedBlink = $("#boot-led-blink").get("checked") | 0;
-		bootLedSweep = $("#boot-led-sweep").get("checked") | 0;
+	$("[id*='boot-show']").on("change", function() {
+		bootLedBlink = $("#boot-show-led-blink").get("checked") | 0;
+		bootLedSweep = $("#boot-show-led-sweep").get("checked") | 0;
 		bootShowWifi = $("#boot-show-wifi").get("checked") | 0;
 		bootShowIP = $("#boot-show-ip").get("checked") | 0;
 
@@ -909,7 +908,7 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_MQTT, nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTUser, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTPass, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTClientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTTopic, DATA_MQTT_RESPONSE_TEXT_LENGTH));
 		debugMessage("MQTT Server wurde konfiguriert");
 	});
-	$("#dialect-button").on("click", function() {
+	$("[id*='dialect']").on("change", function() {
 		dialect[0] = $("#dialect-0").get("value");
 		dialect[1] = $("#dialect-1").get("value");
 		dialect[2] = $("#dialect-2").get("value");
