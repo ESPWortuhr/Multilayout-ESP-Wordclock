@@ -65,7 +65,7 @@ struct GLOBAL {
     uint8_t h20;
     uint8_t h22;
     uint8_t h24;
-    uint8_t Sprachvariation[4];
+    bool Sprachvariation[5];
 
     uint8_t UhrtypeDef;
     uint8_t Colortype;
@@ -164,6 +164,7 @@ enum Sprachvariationen {
     ItIs20 = 1,
     ItIs40 = 2,
     ItIs45 = 3,
+    NotShowItIs = 4,
 };
 
 enum Command {

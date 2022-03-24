@@ -387,6 +387,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.Sprachvariation[ItIs20] = split(payload, 6);
             G.Sprachvariation[ItIs40] = split(payload, 9);
             G.Sprachvariation[ItIs45] = split(payload, 12);
+            G.Sprachvariation[NotShowItIs] = split(payload, 15);
             break;
         }
 
