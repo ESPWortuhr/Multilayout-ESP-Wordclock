@@ -274,8 +274,8 @@ void setup() {
         G.h20 = 100;
         G.h22 = 100;
         G.h24 = 100;
-        for (uint8_t i = 0; i < 4; i++) {
-            G.Sprachvariation[i] = 0;
+        for (uint8_t i = 0; i < 5; i++) {
+            G.Sprachvariation[i] = false;
         }
 
         G.MQTT_State = 0;
@@ -635,7 +635,7 @@ void loop() {
         config["h20"] = G.h20;
         config["h22"] = G.h22;
         config["h24"] = G.h24;
-        for (uint8_t i = 0; i < 4; i++) {
+        for (uint8_t i = 0; i < 5; i++) {
             sprintf(s, "spv%d", i);
             config[s] = G.Sprachvariation[i];
         }

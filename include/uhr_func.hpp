@@ -880,7 +880,9 @@ static void countdownToMidnight() {
 static void set_uhrzeit() {
     uhrzeit = 0;
 
-    usedUhrType->show(es_ist);
+    if (!G.Sprachvariation[NotShowItIs]) {
+        usedUhrType->show(es_ist);
+    }
 
     uint8_t offsetH = 0;
     uint8_t voll = 0;
