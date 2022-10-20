@@ -74,6 +74,6 @@
 	"dependencies": {
 		"@jaames/iro": "^5.5.2",
 		"minified": "^1.0.1",
-		"purecss": "^2.1.0"
+		"purecss": "^2.2.0"
 	}
 }
