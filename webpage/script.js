@@ -318,6 +318,7 @@ function initWebsocket() {
 			$("#dialect-1").set("value", data.spv1);
 			$("#dialect-2").set("value", data.spv2);
 			$("#dialect-3").set("value", data.spv3);
+			$("#dialect-4").set("value", data.spv4);
 
 			document.getElementById("ldr").checked = data.ldr;
 			$("ldr-cal").set("value", data.ldrCal);
@@ -918,8 +919,9 @@ $.ready(function() {
 		dialect[1] = $("#dialect-1").get("value");
 		dialect[2] = $("#dialect-2").get("value");
 		dialect[3] = $("#dialect-3").get("value");
+		dialect[4] = $("#dialect-4").get("value");
 
-		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]));
+		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]));
 		debugMessage("dialect wurde konfiguriert");
 	});
 });
