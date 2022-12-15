@@ -131,8 +131,8 @@
                         <div class="pure-u-1 pure-u-lg-1-4">
                             <form class="pure-form pure-form-aligned">
                                 <label for="marquee"></label>
-                                <input id="marquee" type="text" class="pure-input-rounded" placeholder="Lauftext">
-                                <button id="marquee-button" class="pure-button-rounded">Speichern</button>
+                                <input id="marquee" type="text" class="pure-input-rounded" placeholder="Lauftext"><p></p>
+                                <button id="marquee-button" class="pure-button-rounded">Speichern</button><p></p>
                             </form>
                         </div>
                     </div>
@@ -181,11 +181,11 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-control-group">
-                                        <label for="show-seconds">Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden
-                                            ?</label><select name="show-seconds" id="show-seconds" size="1">
-                                        <option value="0" selected>Off</option>
-                                        <option value="1">On</option>
-                                    </select>
+                                        <label for="show-seconds">Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden?</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="show-seconds">
+                                            <span class="slider round"></span>
+                                        </label>
                                     </div>
                                 </fieldset>
                             </form>
@@ -268,20 +268,32 @@
                                     Was soll beim Neustart passieren?
                                     </legend>
                                     <div class="pure-control-group">
-                                        <input type="checkbox" id="boot-show-led-blink" />
                                         <label for="boot-show-led-blink" class="pure-checkbox">LEDs kurz aufblitzen</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="boot-show-led-blink">
+                                            <span class="slider round"></span>
+                                        </label>
                                     </div>
                                     <div class="pure-control-group">
-                                        <input type="checkbox" id="boot-show-led-sweep" />
                                         <label for="boot-show-led-sweep" class="pure-checkbox">Alle LEDs einmal durchlaufen lassen</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="boot-show-led-sweep">
+                                            <span class="slider round"></span>
+                                        </label>
                                     </div>
                                     <div class="pure-control-group">
-                                        <input type="checkbox" id="boot-show-wifi" />
                                         <label for="boot-show-wifi" class="pure-checkbox">WiFi Symbol während der Suche anzeigen</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="boot-show-wifi">
+                                            <span class="slider round"></span>
+                                        </label>
                                     </div>
                                     <div class="pure-control-group">
-                                        <input type="checkbox" id="boot-show-ip" />
                                         <label for="boot-show-ip" class="pure-checkbox">IP Addresse anzeigen</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="boot-show-ip">
+                                            <span class="slider round"></span>
+                                        </label>
                                     </div>
                                 </fieldset>
                             </form>
@@ -647,10 +659,11 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-control-group">
-                                        <label for="ldr">Aktivieren der LDR Steuerung</label><select name="ldr" id="ldr" size="1">
-                                        <option value="0" selected>Off</option>
-                                        <option value="1">On</option>
-                                    </select>
+                                        <label for="ldr">Aktivieren der LDR Steuerung</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="ldr">
+                                            <span class="slider round"></span>
+                                        </label>
                                     </div>
                                     <div class="pure-control-group">
                                         <label for="ldr-cal">Kalibrierung</label><select name="ldr-cal" id="ldr-cal" size="1">
@@ -666,9 +679,6 @@
                                         <option value="9">9</option>
                                         <option value="10">10</option>
                                     </select>
-                                    </div>
-                                    <div class="pure-controls">
-                                        <button id="ldr-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -722,10 +732,11 @@
                         <form class="pure-form pure-form-aligned">
                             <fieldset>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-state">Aktiviere MQTT</label><select name="mqtt-state" id="mqtt-state" size="1">
-                                    <option value="0" selected>Off</option>
-                                    <option value="1">On</option>
-                                </select>
+                                <label for="mqtt-state">Aktiviere MQTT</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="mqtt-state">
+                                    <span class="slider round"></span>
+                                </label>
                                 </div>
                                 <div class="pure-control-group">
                                     <label for="mqtt-server">Serveradresse</label><input id="mqtt-server" type="text" class="pure-input-rounded" placeholder="Server">
