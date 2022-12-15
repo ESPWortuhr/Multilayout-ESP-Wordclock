@@ -79,7 +79,7 @@ var h18 = 100;
 var h20 = 100;
 var h22 = 100;
 var h24 = 100;
-var dialect = [0, 0, 0, 0];
+var dialect = [0, 0, 0, 0, 0];
 var ldr = 0;
 var ldrCal = 0;
 var showSeconds = 0;
@@ -195,7 +195,7 @@ function initConfigValues() {
 	h24 = 100;
 	ldr = 0;
 	ldrCal = 10;
-	dialect = [0, 0, 0, 0];
+	dialect = [0, 0, 0, 0, 0];
 	showSeconds = 0;
 	showMinutes = 0;
 	UhrtypeDef = 0;
@@ -290,7 +290,7 @@ function initWebsocket() {
 		if (data.command === "mqtt") {
 			$("#mqtt-port").set("value", data.MQTT_Port);
 			$("#mqtt-server").set("value", data.MQTT_Server);
-			$("#mqtt-state").set("value", data.MQTT_State);
+			document.getElementById("mqtt-state").checked = data.MQTT_State;
 			$("#mqtt-user").set("value", data.MQTT_User);
 			$("#mqtt-pass").set("value", data.MQTT_Pass);
 			$("#mqtt-clientid").set("value", data.MQTT_ClientId);
@@ -320,12 +320,12 @@ function initWebsocket() {
 			$("#dialect-3").set("value", data.spv3);
 			$("#dialect-4").set("value", data.spv4);
 
-			$("#ldr").set("value", data.ldr);
-			$("#ldr-cal").set("value", data.ldrCal);
+			document.getElementById("ldr").checked = data.ldr;
+			$("ldr-cal").set("value", data.ldrCal);
 			$("#slider-brightness").set("value", data.hell);
 			$("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
-			$("#show-seconds").set("value", data.zeige_sek);
-			$("#show-minutes").set("value", data.zeige_min);
+			document.getElementById("show-seconds").checked = data.zeige_sek;
+			$("show-minutes").set("value", data.zeige_min);
 
 			$("#owm-api-key").set("value", data.apiKey);
 			$("#owm-city-id").set("value", data.cityid);
@@ -333,10 +333,10 @@ function initWebsocket() {
 			$("#front-layout").set("value", data.UhrtypeDef);
 			$("#colortype").set("value", data.colortype);
 
-			$("#boot-led-blink").set("checked", data.bootLedBlink | 0);
-			$("#boot-led-sweep").set("checked", data.bootLedSweep | 0);
-			$("#boot-show-wifi").set("checked", data.bootShowWifi | 0);
-			$("#boot-show-ip").set("checked", data.bootShowIP | 0);
+			document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
+			document.getElementById("boot-show-led-sweep").checked = data.bootLedSweep;
+			document.getElementById("boot-show-wifi").checked = data.bootShowWifi;
+			document.getElementById("boot-show-ip").checked = data.bootShowIP;
 
 			enableSpecific("specific-layout-2", data.hasDreiviertel);
 			enableSpecific("specific-layout-3", data.hasZwanzig);
@@ -642,7 +642,10 @@ $.ready(function() {
 		if (navigation === "smart-home") {
 			sendCmd(COMMAND_REQUEST_MQTT_VALUES);
 		}
-		if (navigation === "settings") {
+		if (navigation === "frontoptions") {
+			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
+		}
+		if (navigation === "settings" || navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 			sendCmd(COMMAND_REQUEST_AUTO_LDR);
 			autoLdrValueUpdater();
@@ -667,6 +670,7 @@ $.ready(function() {
 
 		var hasBrightness = false;
 		var hasSpeed = false;
+		var hasText = false;
 
 		if (id === "mode-wordclock") {
 			command = COMMAND_MODE_WORD_CLOCK;
@@ -679,6 +683,7 @@ $.ready(function() {
 		}
 		if (id === "mode-marquee") {
 			hasSpeed = true;
+			hasText = true;
 			command = COMMAND_MODE_MARQUEE;
 		}
 		if (id === "mode-rainbow") {
@@ -720,6 +725,15 @@ $.ready(function() {
 			});
 		} else {
 			$(".functions-settings").set({
+				$display: "none"
+			});
+		}
+		if (hasText === true) {
+			$(".text").set({
+				$display: "block"
+			});
+		} else {
+			$(".text").set({
 				$display: "none"
 			});
 		}
@@ -825,22 +839,23 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_WEATHER_DATA, cityId + " " + apiKey);
 		debugMessage("OpenWeatherMap Zugangsdaten wurden konfiguriert");
 	});
-	$("#show-minutesbutton").on("click", function() {
+	$("#show-minutes").on("change", function() {
 		var showMinutesValue = $("#show-minutes").get("value");
 
 		sendCmd(COMMAND_SET_MINUTE, nstr(showMinutesValue));
 		debugMessage("Minutenanzeige wurde neu konfiguriert");
 	});
-	$("#show-seconds-button").on("click", function() {
+	$("#show-seconds").on("change", function() {
 		var showSecondsValue = $("#show-seconds").get("value");
 
 		sendCmd(COMMAND_SET_SETTING_SECOND, nstr(showSecondsValue));
 		debugMessage("Sekundenanzeige wurde neu konfiguriert");
 	});
-	$("#front-layout-button").on("click", function() {
+	$("#front-layout").on("change", function() {
 		var frontLayout = $("#front-layout").get("value");
 
 		sendCmd(COMMAND_SET_UHRTYPE, nstr(frontLayout));
+		sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 		debugMessage("frontLayout wurde neu konfiguriert");
 	});
 	$("#colortype-button").on("click", function() {
@@ -849,8 +864,9 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_COLORTYPE, nstr(colortype));
 		debugMessage("Colortype wurde neu konfiguriert");
 	});
-	$("#ldr-button").on("click", function() {
-		ldr = $("#ldr").get("value");
+	$("[id*='ldr']").on("change", function() {
+		ldr = $("#ldr").get("checked") | 0;
+		ldrCal = $("#ldr-cal").get("value");
 
 		sendCmd(COMMAND_SET_LDR, nstr(ldr) + nstr(ldrCal));
 		debugMessage("LDR Steuerung wurde konfiguriert");
@@ -861,10 +877,9 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH));
 		debugMessage("Hostname wurde neu konfiguriert");
 	});
-	$("#boot-button").on("click", function() {
-
-		bootLedBlink = $("#boot-led-blink").get("checked") | 0;
-		bootLedSweep = $("#boot-led-sweep").get("checked") | 0;
+	$("[id*='boot-show']").on("change", function() {
+		bootLedBlink = $("#boot-show-led-blink").get("checked") | 0;
+		bootLedSweep = $("#boot-show-led-sweep").get("checked") | 0;
 		bootShowWifi = $("#boot-show-wifi").get("checked") | 0;
 		bootShowIP = $("#boot-show-ip").get("checked") | 0;
 
@@ -888,7 +903,7 @@ $.ready(function() {
 		debugMessage("Uhrzeit wurde manuell konfiguriert");
 	});
 	$("#mqtt-button").on("click", function() {
-		MQTTState = $("#mqtt-state").get("value");
+		MQTTState = $("#mqtt-state").get("checked") | 0;
 		MQTTPort = $("#mqtt-port").get("value");
 		MQTTServer = $("#mqtt-server").get("value");
 		MQTTUser = $("#mqtt-user").get("value");
@@ -899,7 +914,7 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_MQTT, nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTUser, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTPass, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTClientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTTopic, DATA_MQTT_RESPONSE_TEXT_LENGTH));
 		debugMessage("MQTT Server wurde konfiguriert");
 	});
-	$("#dialect-button").on("click", function() {
+	$("[id*='dialect']").on("change", function() {
 		dialect[0] = $("#dialect-0").get("value");
 		dialect[1] = $("#dialect-1").get("value");
 		dialect[2] = $("#dialect-2").get("value");
