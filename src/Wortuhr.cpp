@@ -736,10 +736,6 @@ void loop() {
 
     case COMMAND_SET_TIME:           // Uhrzeit setzen
     case COMMAND_SET_INITIAL_VALUES: // Startwerte speichern
-    case COMMAND_SET_BRIGHTNESS:     // Helligkeit speichern
-    case COMMAND_SET_MINUTE:         // Anzeige Minuten speichern
-    case COMMAND_SET_LDR:            // LDR Einstellung speichern
-    case COMMAND_SET_AUTO_LDR:       // Auto LDR Parameter speichern
     case COMMAND_SET_WEATHER_DATA:   // OpenWeathermap Einstellung speichern
     case COMMAND_SET_MARQUEE_TEXT:   // Lauftext speichern
     case COMMAND_SET_BOOT:           // Bootoptionen speichern
@@ -750,12 +746,17 @@ void loop() {
         break;
     }
 
+    case COMMAND_SET_MINUTE:         // Anzeige Minuten speichern
+    case COMMAND_SET_BRIGHTNESS:     // Helligkeit speichern
+    case COMMAND_SET_LDR:            // LDR Einstellung speichern
+    case COMMAND_SET_AUTO_LDR:       // Auto LDR Parameter speichern
     case COMMAND_SET_LANGUAGE_VARIANT: // Sprachvarianten Einstellungen
     case COMMAND_SET_SETTING_SECOND:   // Anzeige Sekunde speichern
     case COMMAND_SET_TIME_MANUAL:      // Uhrzeit manuell einstellen
     {
         eeprom_write();
         led_clear();
+        parameters_changed = true;
         G.prog = COMMAND_MODE_WORD_CLOCK;
         G.conf = COMMAND_IDLE;
         break;
