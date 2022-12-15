@@ -216,6 +216,7 @@ enum UhrTypeDefinitions {
     Uhr_114 = 1,
     Uhr_114_Alternative = 2,
     Uhr_114_2Clock = 6,
+    Uhr_114_Dutch = 9,
     Uhr_125 = 3,
     Uhr_125_Type2 = 8,
     Uhr_169 = 4,

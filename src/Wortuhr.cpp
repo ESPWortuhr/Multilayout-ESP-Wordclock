@@ -12,6 +12,9 @@
 // - Uhr_114_2Clock
 //   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit dem Layout
 //   vom orginal Hersteller
+// - Uhr_114_Dutch
+//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem
+//   Layout für die niederländische Sprache
 // - Uhr_125
 //   11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 // - Uhr_169
@@ -70,6 +73,7 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include "Uhrtypes/uhr_func_114.hpp"
 #include "Uhrtypes/uhr_func_114_2Clock.hpp"
 #include "Uhrtypes/uhr_func_114_Alternative.hpp"
+#include "Uhrtypes/uhr_func_114_dutch.hpp"
 #include "Uhrtypes/uhr_func_125.hpp"
 #include "Uhrtypes/uhr_func_125_Type2.hpp"
 #include "Uhrtypes/uhr_func_169.hpp"
@@ -79,6 +83,7 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 UHR_114_t Uhr_114_type;
 UHR_114_Alternative_t Uhr_114_Alternative_type;
 UHR_114_2Clock_t Uhr_114_2Clock_type;
+UHR_114_dutch_t Uhr_114_dutch_type;
 UHR_125_t Uhr_125_type;
 UHR_125_Type2_t Uhr_125_type2_type;
 UHR_169_t Uhr_169_type;
@@ -130,6 +135,8 @@ iUhrType *getPointer(uint8_t num) {
         return reinterpret_cast<iUhrType *>(&Uhr_114_Alternative_type);
     case 6:
         return reinterpret_cast<iUhrType *>(&Uhr_114_2Clock_type);
+    case 9:
+        return reinterpret_cast<iUhrType *>(&Uhr_114_dutch_type);
     case 3:
         return reinterpret_cast<iUhrType *>(&Uhr_125_type);
     case 8:
