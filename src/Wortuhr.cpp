@@ -641,7 +641,7 @@ void loop() {
         config["h24"] = G.h24;
         for (uint8_t i = 0; i < 5; i++) {
             sprintf(s, "spv%d", i);
-            config[s] = G.Sprachvariation[i];
+            config[s] = static_cast<uint8_t>(G.Sprachvariation[i]);
         }
         config["hell"] = G.hell;
         config["zeige_sek"] = G.zeige_sek;
