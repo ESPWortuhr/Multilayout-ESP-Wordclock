@@ -12,6 +12,9 @@
 // - Uhr_114_2Clock
 //   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit dem Layout
 //   vom orginal Hersteller
+// - Uhr_114_Dutch
+//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem
+//   Layout für die niederländische Sprache
 // - Uhr_125
 //   11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
 // - Uhr_169
@@ -32,10 +35,14 @@
 
 // um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere
 // Seriennummer eintragen!
-#define SERNR 100
+#define SERNR 62
 
 bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
+
+#define MANUAL_WIFI_SETTINGS false
+#define WIFI_SSID "Wifi-SSID"
+#define WIFI_PASSWORD "Wifi-Pwd"
 
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
@@ -66,6 +73,7 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include "Uhrtypes/uhr_func_114.hpp"
 #include "Uhrtypes/uhr_func_114_2Clock.hpp"
 #include "Uhrtypes/uhr_func_114_Alternative.hpp"
+#include "Uhrtypes/uhr_func_114_dutch.hpp"
 #include "Uhrtypes/uhr_func_125.hpp"
 #include "Uhrtypes/uhr_func_125_Type2.hpp"
 #include "Uhrtypes/uhr_func_169.hpp"
@@ -75,6 +83,7 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 UHR_114_t Uhr_114_type;
 UHR_114_Alternative_t Uhr_114_Alternative_type;
 UHR_114_2Clock_t Uhr_114_2Clock_type;
+UHR_114_dutch_t Uhr_114_dutch_type;
 UHR_125_t Uhr_125_type;
 UHR_125_Type2_t Uhr_125_type2_type;
 UHR_169_t Uhr_169_type;
@@ -126,6 +135,8 @@ iUhrType *getPointer(uint8_t num) {
         return reinterpret_cast<iUhrType *>(&Uhr_114_Alternative_type);
     case 6:
         return reinterpret_cast<iUhrType *>(&Uhr_114_2Clock_type);
+    case 9:
+        return reinterpret_cast<iUhrType *>(&Uhr_114_dutch_type);
     case 3:
         return reinterpret_cast<iUhrType *>(&Uhr_125_type);
     case 8:
@@ -637,7 +648,7 @@ void loop() {
         config["h24"] = G.h24;
         for (uint8_t i = 0; i < 5; i++) {
             sprintf(s, "spv%d", i);
-            config[s] = G.Sprachvariation[i];
+            config[s] = static_cast<uint8_t>(G.Sprachvariation[i]);
         }
         config["hell"] = G.hell;
         config["zeige_sek"] = G.zeige_sek;
@@ -652,6 +663,7 @@ void loop() {
         config["bootLedSweep"] = G.bootLedSweep;
         config["bootShowWifi"] = G.bootShowWifi;
         config["bootShowIP"] = G.bootShowIP;
+        config["autoLdrEnabled"] = G.autoLdrEnabled;
         config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
         config["hasZwanzig"] = usedUhrType->hasZwanzig();
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
@@ -731,10 +743,6 @@ void loop() {
 
     case COMMAND_SET_TIME:           // Uhrzeit setzen
     case COMMAND_SET_INITIAL_VALUES: // Startwerte speichern
-    case COMMAND_SET_BRIGHTNESS:     // Helligkeit speichern
-    case COMMAND_SET_MINUTE:         // Anzeige Minuten speichern
-    case COMMAND_SET_LDR:            // LDR Einstellung speichern
-    case COMMAND_SET_AUTO_LDR:       // Auto LDR Parameter speichern
     case COMMAND_SET_WEATHER_DATA:   // OpenWeathermap Einstellung speichern
     case COMMAND_SET_MARQUEE_TEXT:   // Lauftext speichern
     case COMMAND_SET_BOOT:           // Bootoptionen speichern
@@ -745,12 +753,17 @@ void loop() {
         break;
     }
 
+    case COMMAND_SET_MINUTE:           // Anzeige Minuten speichern
+    case COMMAND_SET_BRIGHTNESS:       // Helligkeit speichern
+    case COMMAND_SET_LDR:              // LDR Einstellung speichern
+    case COMMAND_SET_AUTO_LDR:         // Auto LDR Parameter speichern
     case COMMAND_SET_LANGUAGE_VARIANT: // Sprachvarianten Einstellungen
     case COMMAND_SET_SETTING_SECOND:   // Anzeige Sekunde speichern
     case COMMAND_SET_TIME_MANUAL:      // Uhrzeit manuell einstellen
     {
         eeprom_write();
         led_clear();
+        parameters_changed = true;
         G.prog = COMMAND_MODE_WORD_CLOCK;
         G.conf = COMMAND_IDLE;
         break;

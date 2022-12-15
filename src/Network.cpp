@@ -30,6 +30,9 @@ String Network_getSSID() { return wifiManager.getWiFiSSID(); }
 
 void Network_setup(const char *hostname) {
     wifiManager.setHostname(hostname);
+#ifdef MANUAL_WIFI_SETTINGS
+    wifiManager.preloadWiFi(WIFI_SSID, WIFI_PASSWORD);
+#endif
     wifiManager.autoConnect(connectionSSID);
     // explicitly disable AP, esp defaults to STA+AP
     WiFi.enableAP(false);

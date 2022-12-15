@@ -187,7 +187,7 @@ bool changes_in_array() {
 
 //------------------------------------------------------------------------------
 
-void led_set_Icon(uint8 num_icon, uint8_t brightness = 100,
+void led_set_Icon(uint8_t num_icon, uint8_t brightness = 100,
                   bool rgb_icon = false) {
     uint8_t rr, gg, bb, ww;
     set_helligkeit(rr, gg, bb, ww, Foreground, brightness);

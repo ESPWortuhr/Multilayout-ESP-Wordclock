@@ -21,9 +21,9 @@ struct RgbfColor : RgbColor {
     RgbfColor(uint8_t r, uint8_t g, uint8_t b) : RgbColor(r, g, b) {
         Flags = F_NULL;
     }
-    RgbfColor(RgbColor rgb, uint f) : RgbColor(rgb) { Flags = f; }
-    RgbfColor(HsbColor hsb, uint f) : RgbColor(hsb) { Flags = f; }
-    RgbfColor(uint8_t h, uint f) : RgbColor(h) { Flags = f; }
+    RgbfColor(RgbColor rgb, uint32_t f) : RgbColor(rgb) { Flags = f; }
+    RgbfColor(HsbColor hsb, uint32_t f) : RgbColor(hsb) { Flags = f; }
+    RgbfColor(uint8_t h, uint32_t f) : RgbColor(h) { Flags = f; }
 
     void changeRgb(RgbColor color) {
         R = color.R;
@@ -56,15 +56,15 @@ struct RgbfColor : RgbColor {
     uint8_t getFlags() { return Flags; }
 
 protected:
-    uint Flags;
+    uint32_t Flags;
 };
 struct RgbaColor : RgbfColor {
     RgbaColor() : RgbfColor() { Alpha = 255; };
     RgbaColor(RgbColor rgb) : RgbfColor(rgb) { Alpha = 255; }
     RgbaColor(uint8_t h) : RgbfColor(h) { Alpha = 255; }
-    RgbaColor(RgbColor rgb, uint f) : RgbfColor(rgb, f) { Alpha = 255; }
-    RgbaColor(HsbColor hsb, uint f) : RgbfColor(hsb, f) { Alpha = 255; }
-    RgbaColor(uint8_t h, uint f) : RgbfColor(h, f) { Alpha = 255; }
+    RgbaColor(RgbColor rgb, uint32_t f) : RgbfColor(rgb, f) { Alpha = 255; }
+    RgbaColor(HsbColor hsb, uint32_t f) : RgbfColor(hsb, f) { Alpha = 255; }
+    RgbaColor(uint8_t h, uint32_t f) : RgbfColor(h, f) { Alpha = 255; }
     // ---------------------
     RgbaColor(RgbColor rgb, float a) : RgbfColor(rgb) {
         Alpha = (uint8_t)(a * 255);
@@ -122,7 +122,7 @@ public:
 protected:
     uint16_t phase = 0;
     bool matrixChanged = false;
-    uint animationDelay = 100;
+    uint32_t animationDelay = 100;
     Animation_t animType = KEINE;
     uint32_t nextActionTime = 0;
     uint8_t lastMinute = 100;
@@ -198,7 +198,7 @@ public:
     }
     virtual ~Rain(){};
 
-    void begin(int frames, int stop, uint8_t helligkeit) {
+    void begin(int32_t frames, int32_t stop, uint8_t helligkeit) {
         white = RgbaColor(helligkeit, 1.0f);
         // white.Lighten(helligkeit);
         green = RgbaColor(0, helligkeit, 0, 0.5);
@@ -217,11 +217,11 @@ public:
         stopPhase = frames - speedlimit * max_rows;
     }
 
-    RgbaColor get(int r) {
-        int row = (max_rows - 1 - r);
+    RgbaColor get(int32_t r) {
+        int32_t row = (max_rows - 1 - r);
         // pro Bild laeuft row von (max_rows - 1) runter auf 0
 
-        int pos = (row + offset) % (deadtime + lifetime);
+        int32_t pos = (row + offset) % (deadtime + lifetime);
 
         if (row == 0) { // letzte row faer dieses Bild
             if (phase++ == stopPhase) {
@@ -263,8 +263,8 @@ public:
 
 protected:
     uint8_t max_rows, max_cols;
-    int speed, speedlimit, offset, lifetime, deadtime;
-    int phase, frames, stopPhase, stopLine, stopTop, stopBottom;
+    int32_t speed, speedlimit, offset, lifetime, deadtime;
+    int32_t phase, frames, stopPhase, stopLine, stopTop, stopBottom;
     bool stopping;
     RgbaColor white = RgbaColor(255, 255, 255, 0.9);
     RgbaColor green = RgbaColor(0, 255, 0, 0.75);
@@ -282,8 +282,8 @@ public:
     }
     virtual ~Ball(){};
 
-    void begin(int row, int column, RgbfColor foreground, RgbfColor background,
-               int delay) {
+    void begin(int32_t row, int32_t column, RgbfColor foreground,
+               RgbfColor background, int32_t delay) {
         this->delay = delay;
         y = row << 8; // increase precision
         r = row;
@@ -300,11 +300,11 @@ public:
     // x =  0, y = 0 -> links oben
     // x = 10, y = 9 -> rechts unten
     // v positiv    -> nach unten
-    int move(int timedelta) {
+    int32_t move(int32_t timedelta) {
         if (!end) {
             delay -= timedelta;
             if (delay <= 0) {
-                int _vy = vy;
+                int32_t _vy = vy;
                 y += (((g * timedelta) / 1000) * timedelta) / 2000 +
                      (vy * timedelta) / 1000;
                 vy += (g * timedelta) / 1000;
@@ -325,13 +325,13 @@ public:
     }
 
 public:
-    int r, c; // after calling move() r and c contain new actual values
+    int32_t r, c; // after calling move() r and c contain new actual values
     RgbfColor color;
 
 protected:
-    int unten;
-    int lastPos;
-    int g, vy, y, end, delay;
+    int32_t unten;
+    int32_t lastPos;
+    int32_t g, vy, y, end, delay;
     bool lastDown;
     RgbfColor colorForeground, colorBackground;
 };
@@ -365,7 +365,7 @@ protected:
     GoToPos *motions;
     Coord head;
     bool goRight;
-    int index;
+    int32_t index;
     std::queue<Coord> snake;
     RgbfColor **work;
     RgbfColor **old;
@@ -418,7 +418,7 @@ protected:
         while (rowCounter-- > 0) {
             left = max_cols;
             right = 0;
-            for (int col = 0; col < max_cols; col++) {
+            for (int32_t col = 0; col < max_cols; col++) {
                 if (matrix[row][col].isForeground()) {
                     // search for right most foreground
                     right = col;
@@ -485,7 +485,7 @@ protected:
     RgbColor colors[3];
     Icons icons[3];
     bool mirrored;
-    int maxLayer;
+    int32_t maxLayer;
     uint8_t max_rows, max_cols;
 
 public:
@@ -495,7 +495,7 @@ public:
     }
 
     // layers must be prepared in ascending order !!!
-    void prepare(int layer, RgbColor &color, Icons icon, bool mirrored) {
+    void prepare(int32_t layer, RgbColor &color, Icons icon, bool mirrored) {
         if (layer == 0) {
             icons[1] = static_cast<Icons>(0);
             icons[2] = static_cast<Icons>(0);
@@ -507,13 +507,13 @@ public:
     }
 
     bool getPixel(uint8_t r, uint8_t c, RgbColor &color) {
-        // void Animation::copyBlock(RgbfColor color, uint block, bool fgbg,
+        // void Animation::copyBlock(RgbfColor color, uint32_t block, bool fgbg,
         // bool mirrored,
         //                          bool init) {
 
         if ((r < 10) && (r < max_rows) && (c < 11) && (c < max_cols)) {
             uint16_t pixels = 0;
-            for (int layer = 0; layer <= maxLayer; layer++) {
+            for (int32_t layer = 0; layer <= maxLayer; layer++) {
                 if (icons[layer] != static_cast<Icons>(0)) {
                     pixels = animation->reverse(
                         pgm_read_word(&(grafik_11x10[icons[layer]][r])),
