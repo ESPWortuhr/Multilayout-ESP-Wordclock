@@ -32,10 +32,14 @@
 
 // um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere
 // Seriennummer eintragen!
-#define SERNR 100
+#define SERNR 62
 
 bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
+
+#define MANUAL_WIFI_SETTINGS false
+#define WIFI_SSID "Wifi-SSID"
+#define WIFI_PASSWORD "Wifi-Pwd"
 
 /*--------------------------------------------------------------------------
  * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
