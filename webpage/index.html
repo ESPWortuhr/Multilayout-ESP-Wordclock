@@ -37,7 +37,7 @@
         <div class="pure-g">
             <div class="pure-u-24-24 section-connection-lost" id="section-connection-lost">
                 <div class="box">
-                    <button class="pure-button status-button">Verbinden</button>
+                    <button class="pure-button-rounded status-button">Verbinden</button>
                     <p>Die Verbindung zur Wortuhr wurde unterbrochen.</p>
                 </div>
             </div>
@@ -48,6 +48,7 @@
                     <label for="with-background" class="pure-checkbox">
                         <input type="checkbox" id="with-background" value="" /> Mit Hintergrundfarbe
                     </label>
+                    <p></p>
                     <div id="color-picker" class="color-picker"></div>
                 </div>
             </div>
@@ -58,10 +59,9 @@
                 </div>
 
                 <div class="box">
-                    <h2>Funktion</h2>
                     <form name="prog">
                     <label for="mode-wordclock" class="pure-radio">
-                        <input id="mode-wordclock" type="radio" name="mode" value="color" checked> Wort Uhr
+                        <input id="mode-wordclock" type="radio" name="mode" value="color" checked> Wortuhr
                     </label>
                     <label for="mode-color" class="pure-radio">
                         <input id="mode-color" type="radio" name="mode" value="color"> Farbe
@@ -126,6 +126,15 @@
                         </div>
                         <div class="pure-u-1 pure-u-lg-3-4"><input id="slider-brightness" type="range" min="1" max="10" value="1"></div>
                     </div>
+                    <div class="pure-g text">
+                        <div class="pure-u-1 pure-u-lg-1-4">
+                            <form class="pure-form pure-form-aligned">
+                                <label for="marquee"></label>
+                                <input id="marquee" type="text" class="pure-input-rounded" placeholder="Lauftext">
+                                <button id="marquee-button" class="pure-button-rounded">Speichern</button>
+                            </form>
+                        </div>
+                    </div>
                     <div class="pure-g speed">
                         <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="slider-speed">Geschwindigkeit <span class="value" id="slider-speed-value">0</span></label></div>
                         <div class="pure-u-1 pure-u-lg-3-4"><input id="slider-speed" type="range" min="0" max="40" value="0"></div>
@@ -157,7 +166,7 @@
                                         <label for="status">Verbindungsstatus</label><input id="status" class="status" value="Loading ...">
                                     </div>
                                     <div class="pure-controls">
-                                        <button class="pure-button">Verbinden</button>
+                                        <button class="pure-button-rounded">Verbinden</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -171,7 +180,7 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-controls">
-                                        <button id="initial-values-button" class="pure-button">Startwerte speichern</button>
+                                        <button id="initial-values-button" class="pure-button-rounded">Startwerte speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -188,7 +197,7 @@
                                         <label for="timeserver">Zeitserver</label><input id="timeserver" type="text" placeholder="Zeitserver">
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="timeserver-button" class="pure-button">Zeitserver speichern</button>
+                                        <button id="timeserver-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -294,24 +303,7 @@
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="uhrzeit-button" class="pure-button">Uhrzeit speichern</button>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-
-                    </div>
-                    <div class="pure-u-1 pure-u-lg-1-2">
-
-                        <div class="box">
-                            <h2>Lauftext</h2>
-                            <form class="pure-form pure-form-aligned">
-                                <fieldset>
-                                    <div class="pure-control-group">
-                                        <label for="marquee">Lauftext</label><input id="marquee" type="text" placeholder="Lauftext">
-                                    </div>
-                                    <div class="pure-controls">
-                                        <button id="marquee-button" class="pure-button">Lauftext speichern</button>
+                                        <button id="uhrzeit-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -345,7 +337,7 @@
                                         <input id="auto-ldr-dark" type="text">
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="auto-ldr-button" class="pure-button">Werte speichern</button>
+                                        <button id="auto-ldr-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -358,87 +350,87 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-control-group">
-                                        <label for="brightness-6">6 Uhr</label><select name="brightness-6" id="brightness-6" size="1">
+                                        <label for="brightness-24">0:00 - 5:59</label><select name="brightness-24" id="brightness-24" size="1">
                                         <option value="100">100 %</option>
                                         <option value="80">80 %</option>
                                         <option value="60">60 %</option>
                                         <option value="40">40 %</option>
                                         <option value="20">20 %</option>
-                                        <option value="0">Aus</option>
+                                        <option value="0">Off</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="brightness-8">8 Uhr</label><select name="brightness-8" id="brightness-8" size="1">
+                                        <label for="brightness-6">6:00 - 7:59</label><select name="brightness-6" id="brightness-6" size="1">
                                         <option value="100">100 %</option>
                                         <option value="80">80 %</option>
                                         <option value="60">60 %</option>
                                         <option value="40">40 %</option>
                                         <option value="20">20 %</option>
-                                        <option value="0">Aus</option>
+                                        <option value="0">Off</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="brightness-12">12 Uhr</label><select name="brightness-12" id="brightness-12" size="1">
+                                        <label for="brightness-8">8:00 - 11:59</label><select name="brightness-8" id="brightness-8" size="1">
                                         <option value="100">100 %</option>
                                         <option value="80">80 %</option>
                                         <option value="60">60 %</option>
                                         <option value="40">40 %</option>
                                         <option value="20">20 %</option>
-                                        <option value="0">Aus</option>
+                                        <option value="0">Off</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="brightness-16">16 Uhr</label><select name="brightness-16" id="brightness-16" size="1">
+                                        <label for="brightness-12">12:00 - 15:59</label><select name="brightness-12" id="brightness-12" size="1">
                                         <option value="100">100 %</option>
                                         <option value="80">80 %</option>
                                         <option value="60">60 %</option>
                                         <option value="40">40 %</option>
                                         <option value="20">20 %</option>
-                                        <option value="0">Aus</option>
+                                        <option value="0">Off</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="brightness-18">18 Uhr</label><select name="brightness-18" id="brightness-18" size="1">
+                                        <label for="brightness-16">16:00 - 17:59</label><select name="brightness-16" id="brightness-16" size="1">
                                         <option value="100">100 %</option>
                                         <option value="80">80 %</option>
                                         <option value="60">60 %</option>
                                         <option value="40">40 %</option>
                                         <option value="20">20 %</option>
-                                        <option value="0">Aus</option>
+                                        <option value="0">Off</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="brightness-20">20 Uhr</label><select name="brightness-20" id="brightness-20" size="1">
+                                        <label for="brightness-18">18:00 - 19:59</label><select name="brightness-18" id="brightness-18" size="1">
                                         <option value="100">100 %</option>
                                         <option value="80">80 %</option>
                                         <option value="60">60 %</option>
                                         <option value="40">40 %</option>
                                         <option value="20">20 %</option>
-                                        <option value="0">Aus</option>
+                                        <option value="0">Off</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="brightness-22">22 Uhr</label><select name="brightness-22" id="brightness-22" size="1">
+                                        <label for="brightness-20">20:00 - 21:59</label><select name="brightness-20" id="brightness-20" size="1">
                                         <option value="100">100 %</option>
                                         <option value="80">80 %</option>
                                         <option value="60">60 %</option>
                                         <option value="40">40 %</option>
                                         <option value="20">20 %</option>
-                                        <option value="0">Aus</option>
+                                        <option value="0">Off</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="brightness-24">24 Uhr</label><select name="brightness-24" id="brightness-24" size="1">
+                                        <label for="brightness-22">22:00 - 23:59</label><select name="brightness-22" id="brightness-22" size="1">
                                         <option value="100">100 %</option>
                                         <option value="80">80 %</option>
                                         <option value="60">60 %</option>
                                         <option value="40">40 %</option>
                                         <option value="20">20 %</option>
-                                        <option value="0">Aus</option>
+                                        <option value="0">Off</option>
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="brightness-button" class="pure-button">Helligkeit speichern</button>
+                                        <button id="brightness-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -455,7 +447,7 @@
                                         <label for="hostname">Hostname</label><input id="hostname" type="text" placeholder="Hostname">
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="hostname-button" class="pure-button">Hostname speichern</button>
+                                        <button id="hostname-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -477,7 +469,7 @@
                                         <label for="owm-city-id">OpenWeatherMap City ID</label><input id="owm-city-id" type="text" minlength="7" maxlength="7" placeholder="City ID">
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="weather-button" class="pure-button">Daten speichern</button>
+                                        <button id="weather-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -492,15 +484,15 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-control-group">
-                                        <label for="show-minutes">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Minuten angezeigt werden
+                                        <label for="show-minutes">Sollen bei dieser Uhr die Minuten angezeigt werden
                                             ?</label><select name="show-minutes" id="show-minutes" size="1">
-                                        <option value="0" selected>Nein</option>
+                                        <option value="0" selected>Off</option>
                                         <option value="1">als Zeile</option>
                                         <option value="2">in den Ecken</option>
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="show-minutes-button" class="pure-button">Minuten-Anzeige speichern</button>
+                                        <button id="show-minutes-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -514,14 +506,14 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-control-group">
-                                        <label for="show-seconds">Exklusive Einstellung für die Uhr des Types UHR_169. Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden
+                                        <label for="show-seconds">Sollen bei dieser Uhr die Sekunden im Rahmen angezeigt werden
                                             ?</label><select name="show-seconds" id="show-seconds" size="1">
-                                        <option value="0" selected>Nein</option>
-                                        <option value="1">Ja</option>
+                                        <option value="0" selected>Off</option>
+                                        <option value="1">On</option>
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="show-seconds-button" class="pure-button">Sekunden-Anzeige speichern</button>
+                                        <button id="show-seconds-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -549,7 +541,7 @@
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="front-layout-button" class="pure-button">UhrtypeDef speichern</button>
+                                        <button id="front-layout-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -596,7 +588,7 @@
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="dialect-button" class="pure-button">Optionen speichern</button>
+                                        <button id="dialect-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -619,7 +611,7 @@
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="colortype-button" class="pure-button">Colortype speichern</button>
+                                        <button id="colortype-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -634,13 +626,13 @@
                                 <fieldset>
                                     <div class="pure-control-group">
                                         <label for="ldr">Aktivieren der LDR Steuerung</label><select name="ldr" id="ldr" size="1">
-                                        <option value="0" selected>OFF</option>
-                                        <option value="1">ON</option>
+                                        <option value="0" selected>Off</option>
+                                        <option value="1">On</option>
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
                                         <label for="ldr-cal">Kalibrierung</label><select name="ldr-cal" id="ldr-cal" size="1">
-                                        <option value="0">OFF</option>
+                                        <option value="0">Off</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -654,7 +646,7 @@
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="ldr-button" class="pure-button">LDR speichern</button>
+                                        <button id="ldr-button" class="pure-button-rounded">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -687,8 +679,8 @@
                                         <label for="boot-show-ip" class="pure-checkbox">IP Addresse anzeigen</label>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="boot-button" class="pure-button">Speichern</button>
-                                        <button id="reset-button" class="pure-button">Neu Starten</button>
+                                        <button id="boot-button" class="pure-button-rounded">Speichern</button>
+                                        <button id="reset-button" class="pure-button-rounded">Neustarten</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -713,12 +705,12 @@
 
                                     <div class="pure-control-group">
                                         <label for="wifi-button">Anderes WLAN</label>
-                                        <button id="wifi-button" class="pure-button">Konfigurieren</button>
+                                        <button id="wifi-button" class="pure-button-rounded">Konfigurieren</button>
                                     </div>
 
                                     <div class="pure-control-group">
                                         <label for="disable-button">Bis zum Neustart</label>
-                                        <button id="disable-button" class="pure-button">Ausschalten</button>
+                                        <button id="disable-button" class="pure-button-rounded">Ausschalten</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -733,7 +725,6 @@
                     <h1>Smart Home</h1>
                 </div>
                 <div class="box">
-                    <h2>Smart Home</h2>
                     <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über die MQTT Schnittstelle. Hierbei kann man über sein bestehendes HomeAssistant Setup die Uhr einbinden, um rudimentäre Funktionen steuern zu können. Diese Funktion ist noch experimentell und wird stetig erweitert.</p>
                 </div>
                 <div class="pure-u-1 pure-u-lg-1-2">
@@ -745,29 +736,29 @@
                                 <div class="pure-control-group">
                                     <label for="mqtt-state">Aktiviere MQTT</label><select name="mqtt-state" id="mqtt-state" size="1">
                                     <option value="0" selected>Off</option>
-                                    <option value="1">ON</option>
+                                    <option value="1">On</option>
                                 </select>
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-server">MQTT Serveradresse</label><input id="mqtt-server" type="mqtt-server" placeholder="MQTT Server">
+                                    <label for="mqtt-server">Serveradresse</label><input id="mqtt-server" type="text" class="pure-input-rounded" placeholder="Server">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-port">MQTT Port</label><input id="mqtt-port" type="mqtt-port" placeholder="MQTT Serverport">
+                                    <label for="mqtt-port">Port</label><input id="mqtt-port" type="text" class="pure-input-rounded" placeholder="Serverport">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-user">MQTT User</label><input id="mqtt-user" type="mqtt-user" placeholder="MQTT User">
+                                    <label for="mqtt-user">User</label><input id="mqtt-user" type="text" class="pure-input-rounded" placeholder="User">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-pass">MQTT Passwort</label><input id="mqtt-pass" type="mqtt-pass" placeholder="MQTT Passwort">
+                                    <label for="mqtt-pass">Passwort</label><input id="mqtt-pass" type="text" class="pure-input-rounded" placeholder="Passwort">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-clientid">MQTT ClientID</label><input id="mqtt-clientid" type="mqtt-clientid" placeholder="MQTT ClientID">
+                                    <label for="mqtt-clientid">ClientID</label><input id="mqtt-clientid" type="text" class="pure-input-rounded" placeholder="ClientID">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-topic">MQTT Topic</label><input id="mqtt-topic" type="mqtt-topic" placeholder="MQTT Topic">
+                                    <label for="mqtt-topic">Topic</label><input id="mqtt-topic" type="text" class="pure-input-rounded" placeholder="Topic">
                                 </div>
                                 <div class="pure-controls">
-                                    <button id="mqtt-button" class="pure-button">MQTT-Daten speichern</button>
+                                    <button id="mqtt-button" class="pure-button-rounded">Einstellung speichern</button>
                                 </div>
                             </fieldset>
                         </form>
@@ -819,5 +810,3 @@
 
 </body>
 </html>
-
-

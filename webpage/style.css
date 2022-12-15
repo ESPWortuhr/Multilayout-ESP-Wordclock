@@ -447,6 +447,7 @@ input[type=range]::-moz-range-thumb {
 .section-connection-lost .status-button{
     float: right;
     color: #fff;
+    border-radius: 2em;
     background-color: #d9534f;
     border-color: #d9534f;
     margin-left: 20px;
@@ -524,4 +525,22 @@ input[type=range]::-moz-range-thumb {
 .color-picker {
 	width: 300px;
 	margin: auto;
+}
+
+.pure-button-rounded {
+    font-family: inherit;
+    font-size: 100%;
+    padding: 0.5em 1em;
+    color: #fff;
+    border: none rgba(0, 0, 0, 0);
+    background-color: #5992aa;
+    text-decoration: none;
+    border-radius: 2em;
+}
+
+.pure-control-group-switch label {
+    text-align: right;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 1em 0;
 }

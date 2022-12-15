@@ -667,6 +667,7 @@ $.ready(function() {
 
 		var hasBrightness = false;
 		var hasSpeed = false;
+		var hasText = false;
 
 		if (id === "mode-wordclock") {
 			command = COMMAND_MODE_WORD_CLOCK;
@@ -679,6 +680,7 @@ $.ready(function() {
 		}
 		if (id === "mode-marquee") {
 			hasSpeed = true;
+			hasText = true;
 			command = COMMAND_MODE_MARQUEE;
 		}
 		if (id === "mode-rainbow") {
@@ -720,6 +722,15 @@ $.ready(function() {
 			});
 		} else {
 			$(".functions-settings").set({
+				$display: "none"
+			});
+		}
+		if (hasText === true) {
+			$(".text").set({
+				$display: "block"
+			});
+		} else {
+			$(".text").set({
 				$display: "none"
 			});
 		}
@@ -904,9 +915,8 @@ $.ready(function() {
 		dialect[1] = $("#dialect-1").get("value");
 		dialect[2] = $("#dialect-2").get("value");
 		dialect[3] = $("#dialect-3").get("value");
-		dialect[4] = $("#dialect-4").get("value");
 
-		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]));
+		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]));
 		debugMessage("dialect wurde konfiguriert");
 	});
 });
