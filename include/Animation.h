@@ -282,8 +282,8 @@ public:
     }
     virtual ~Ball(){};
 
-    void begin(int32_t row, int32_t column, RgbfColor foreground, RgbfColor background,
-               int32_t delay) {
+    void begin(int32_t row, int32_t column, RgbfColor foreground,
+               RgbfColor background, int32_t delay) {
         this->delay = delay;
         y = row << 8; // increase precision
         r = row;
