@@ -99,6 +99,7 @@ var bootShowWifi = 0;
 var bootShowIP = 0;
 var autoLdrInterval = null;
 var autoLdrEnabled = 0;
+var displayAutoLdr = 0;
 var autoLdrBright = " ";
 var autoLdrDark = " ";
 var animType = 0;
@@ -211,6 +212,7 @@ function initConfigValues() {
 	bootLedSweep = 0;
 	bootShowWifi = 0;
 	bootShowIP = 0;
+	displayAutoLdr = 0;
 	autoLdrEnabled = 0;
 	autoLdrBright = " ";
 	autoLdrDark = " ";
@@ -242,7 +244,7 @@ function debugMessage(debugMessage, someObject) {
 function enableSpecific(cls, enbl) {
 	let items = document.getElementsByClassName(cls);
 	for (var item of items) {
-		item.style.display = enbl ? null : "none";
+		item.style.display = enbl ? "block" : "none";
 	}
 }
 
@@ -343,6 +345,11 @@ function initWebsocket() {
 			enableSpecific("specific-layout-4", data.hasSecondsFrame);
 			enableSpecific("specific-layout-5", data.hasWeatherLayout);
 			enableSpecific("specific-colortype-4", data.colortype === 4);
+
+			autoLdrEnabled = data.autoLdrEnabled;
+			$("#auto-ldr-enabled").set("value", autoLdrEnabled);
+			enableSpecific("specific-layout-brightness-man", autoLdrEnabled === 0);
+			enableSpecific("specific-layout-brightness-auto", autoLdrEnabled === 1);
 		}
 		if (data.command === "set") {
 			rgb[0][0] = data.rgb00;
@@ -536,7 +543,7 @@ function setAnimation() {
 }
 
 function autoLdrValueUpdater() {
-	if (autoLdrInterval == null) {
+	if (autoLdrInterval == null && autoLdrEnabled === 1) {
 		autoLdrInterval = setInterval(function() {
 			// jede Sekunde ausfuehren
 			if ($("#auto-ldr-enabled").get("value") === "1") {
@@ -791,6 +798,18 @@ $.ready(function() {
 		debugMessage("WLAN wird neu konfiguriert");
 		return false;
 	});
+	$("[id*='auto-ldr']").on("change", function() {
+		autoLdrEnabled = $("#auto-ldr-enabled").get("value");
+		autoLdrBright = $("#auto-ldr-bright").get("value");
+		autoLdrDark = $("#auto-ldr-dark").get("value");
+		sendCmd(COMMAND_SET_AUTO_LDR, nstr(autoLdrEnabled) + nstr(autoLdrBright) + nstr(autoLdrDark));
+		sendCmd(COMMAND_REQUEST_AUTO_LDR);	// read back values
+
+		displayAutoLdr = Number($("#auto-ldr-enabled").get("value"));
+		enableSpecific("specific-layout-brightness-man", !displayAutoLdr);
+		enableSpecific("specific-layout-brightness-auto", displayAutoLdr);
+		return false;
+	});
 	$("#_wlanscan").on("click", function() {
 		sendCmd(COMMAND_REQUEST_WIFI_LIST);
 		document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
@@ -810,15 +829,7 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_MARQUEE_TEXT, getPaddedString(marqueeTextValue, DATA_MARQUEE_TEXT_LENGTH));
 		debugMessage("Lauftext wurde neu konfiguriert");
 	});
-	$("#auto-ldr-button").on("click", function() {
-		autoLdrEnabled = $("#auto-ldr-enabled").get("value");
-		autoLdrBright = $("#auto-ldr-bright").get("value");
-		autoLdrDark = $("#auto-ldr-dark").get("value");
-		sendCmd(COMMAND_SET_AUTO_LDR, nstr(autoLdrEnabled) + nstr(autoLdrBright) + nstr(autoLdrDark));
-		sendCmd(COMMAND_REQUEST_AUTO_LDR);	// read back values
-	});
-	$("#brightness-button").on("click", function() {
-
+	$("[id*='brightness']").on("change", function() {
 		h6 = $("#brightness-6").get("value");
 		h8 = $("#brightness-8").get("value");
 		h12 = $("#brightness-12").get("value");

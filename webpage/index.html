@@ -462,126 +462,122 @@
                     </div>
                     <div class="pure-u-1 pure-u-lg-1-2">
                         <div class="box">
-                            <h2>Automatische Helligkeit</h2>
-                            <form class="pure-form pure-form-aligned">
-                                <fieldset>
-                                    <div class="pure-control-group">
-                                        <label for="auto-ldr-enabled">Aktiviert</label>
-                                        <select id="auto-ldr-enabled" size="1">
-                                        <option value="1">Ja</option>
-                                        <option value="0">Nein</option>
-                                    </select>
-                                    </div>
-                                    <br>
-                                    <div class="pure-control-group">
-                                        <label for="auto-ldr-value">Aktueller Wert:</label>
-                                        <input id="auto-ldr-value" type="text" value=" " disabled style="color:black">
-                                    </div>
-                                    <br>
-                                    <div class="pure-control-group">
-                                        <label for="auto-ldr-bright">Wert hell (0 - 255)</label>
-                                        <input id="auto-ldr-bright" type="text">
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <label for="auto-ldr-dark">Wert dunkel (0 - 255)</label>
-                                        <input id="auto-ldr-dark" type="text">
-                                    </div>
-                                    <div class="pure-controls">
-                                        <button id="auto-ldr-button" class="pure-button-rounded">Einstellung speichern</button>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="pure-u-1 pure-u-md-1-2">
-
-                        <div class="box">
                             <h2>Helligkeit</h2>
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
-                                    <div class="pure-control-group">
-                                        <label for="brightness-24">0:00 - 5:59</label><select name="brightness-24" id="brightness-24" size="1">
-                                        <option value="100">100 %</option>
-                                        <option value="80">80 %</option>
-                                        <option value="60">60 %</option>
-                                        <option value="40">40 %</option>
-                                        <option value="20">20 %</option>
-                                        <option value="0">Off</option>
+                                    <div class="pure-form-aligned">
+                                        <label for="auto-ldr-enabled">Modus</label>
+                                        <select id="auto-ldr-enabled" size="1">
+                                        <option value="1">Automatisch</option>
+                                        <option value="0">Manuell</option>
                                     </select>
                                     </div>
-                                    <div class="pure-control-group">
-                                        <label for="brightness-6">6:00 - 7:59</label><select name="brightness-6" id="brightness-6" size="1">
-                                        <option value="100">100 %</option>
-                                        <option value="80">80 %</option>
-                                        <option value="60">60 %</option>
-                                        <option value="40">40 %</option>
-                                        <option value="20">20 %</option>
-                                        <option value="0">Off</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <label for="brightness-8">8:00 - 11:59</label><select name="brightness-8" id="brightness-8" size="1">
-                                        <option value="100">100 %</option>
-                                        <option value="80">80 %</option>
-                                        <option value="60">60 %</option>
-                                        <option value="40">40 %</option>
-                                        <option value="20">20 %</option>
-                                        <option value="0">Off</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <label for="brightness-12">12:00 - 15:59</label><select name="brightness-12" id="brightness-12" size="1">
-                                        <option value="100">100 %</option>
-                                        <option value="80">80 %</option>
-                                        <option value="60">60 %</option>
-                                        <option value="40">40 %</option>
-                                        <option value="20">20 %</option>
-                                        <option value="0">Off</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <label for="brightness-16">16:00 - 17:59</label><select name="brightness-16" id="brightness-16" size="1">
-                                        <option value="100">100 %</option>
-                                        <option value="80">80 %</option>
-                                        <option value="60">60 %</option>
-                                        <option value="40">40 %</option>
-                                        <option value="20">20 %</option>
-                                        <option value="0">Off</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <label for="brightness-18">18:00 - 19:59</label><select name="brightness-18" id="brightness-18" size="1">
-                                        <option value="100">100 %</option>
-                                        <option value="80">80 %</option>
-                                        <option value="60">60 %</option>
-                                        <option value="40">40 %</option>
-                                        <option value="20">20 %</option>
-                                        <option value="0">Off</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <label for="brightness-20">20:00 - 21:59</label><select name="brightness-20" id="brightness-20" size="1">
-                                        <option value="100">100 %</option>
-                                        <option value="80">80 %</option>
-                                        <option value="60">60 %</option>
-                                        <option value="40">40 %</option>
-                                        <option value="20">20 %</option>
-                                        <option value="0">Off</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <label for="brightness-22">22:00 - 23:59</label><select name="brightness-22" id="brightness-22" size="1">
-                                        <option value="100">100 %</option>
-                                        <option value="80">80 %</option>
-                                        <option value="60">60 %</option>
-                                        <option value="40">40 %</option>
-                                        <option value="20">20 %</option>
-                                        <option value="0">Off</option>
-                                    </select>
-                                    </div>
-                                    <div class="pure-controls">
-                                        <button id="brightness-button" class="pure-button-rounded">Einstellung speichern</button>
-                                    </div>
+                                    <!-- Specific Brightness-manuall Start-->
+                                    <div class="specific-layout-brightness-man">
+                                        <form class="pure-form pure-form-aligned">
+                                            <fieldset>
+                                                <div class="pure-control-group">
+                                                    <label for="brightness-24">0:00 - 5:59</label><select name="brightness-24" id="brightness-24" size="1">
+                                                    <option value="100">100 %</option>
+                                                    <option value="80">80 %</option>
+                                                    <option value="60">60 %</option>
+                                                    <option value="40">40 %</option>
+                                                    <option value="20">20 %</option>
+                                                    <option value="0">Off</option>
+                                                </select>
+                                                </div>
+                                                <div class="pure-control-group">
+                                                    <label for="brightness-6">6:00 - 7:59</label><select name="brightness-6" id="brightness-6" size="1">
+                                                    <option value="100">100 %</option>
+                                                    <option value="80">80 %</option>
+                                                    <option value="60">60 %</option>
+                                                    <option value="40">40 %</option>
+                                                    <option value="20">20 %</option>
+                                                    <option value="0">Off</option>
+                                                </select>
+                                                </div>
+                                                <div class="pure-control-group">
+                                                    <label for="brightness-8">8:00 - 11:59</label><select name="brightness-8" id="brightness-8" size="1">
+                                                    <option value="100">100 %</option>
+                                                    <option value="80">80 %</option>
+                                                    <option value="60">60 %</option>
+                                                    <option value="40">40 %</option>
+                                                    <option value="20">20 %</option>
+                                                    <option value="0">Off</option>
+                                                </select>
+                                                </div>
+                                                <div class="pure-control-group">
+                                                    <label for="brightness-12">12:00 - 15:59</label><select name="brightness-12" id="brightness-12" size="1">
+                                                    <option value="100">100 %</option>
+                                                    <option value="80">80 %</option>
+                                                    <option value="60">60 %</option>
+                                                    <option value="40">40 %</option>
+                                                    <option value="20">20 %</option>
+                                                    <option value="0">Off</option>
+                                                </select>
+                                                </div>
+                                                <div class="pure-control-group">
+                                                    <label for="brightness-16">16:00 - 17:59</label><select name="brightness-16" id="brightness-16" size="1">
+                                                    <option value="100">100 %</option>
+                                                    <option value="80">80 %</option>
+                                                    <option value="60">60 %</option>
+                                                    <option value="40">40 %</option>
+                                                    <option value="20">20 %</option>
+                                                    <option value="0">Off</option>
+                                                </select>
+                                                </div>
+                                                <div class="pure-control-group">
+                                                    <label for="brightness-18">18:00 - 19:59</label><select name="brightness-18" id="brightness-18" size="1">
+                                                    <option value="100">100 %</option>
+                                                    <option value="80">80 %</option>
+                                                    <option value="60">60 %</option>
+                                                    <option value="40">40 %</option>
+                                                    <option value="20">20 %</option>
+                                                    <option value="0">Off</option>
+                                                </select>
+                                                </div>
+                                                <div class="pure-control-group">
+                                                    <label for="brightness-20">20:00 - 21:59</label><select name="brightness-20" id="brightness-20" size="1">
+                                                    <option value="100">100 %</option>
+                                                    <option value="80">80 %</option>
+                                                    <option value="60">60 %</option>
+                                                    <option value="40">40 %</option>
+                                                    <option value="20">20 %</option>
+                                                    <option value="0">Off</option>
+                                                </select>
+                                                </div>
+                                                <div class="pure-control-group">
+                                                    <label for="brightness-22">22:00 - 23:59</label><select name="brightness-22" id="brightness-22" size="1">
+                                                    <option value="100">100 %</option>
+                                                    <option value="80">80 %</option>
+                                                    <option value="60">60 %</option>
+                                                    <option value="40">40 %</option>
+                                                    <option value="20">20 %</option>
+                                                    <option value="0">Off</option>
+                                                </select>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+
+                                        </div>
+                                        <!-- Specific Brightness-manuall End--><!-- Specific Brightness-automatic Start-->
+                                        <div class="specific-layout-brightness-auto">
+                                            <br>
+                                            <div class="pure-control-group">
+                                                <label for="auto-ldr-value">Aktueller Wert:</label>
+                                                <input id="auto-ldr-value" type="text" class="pure-input-rounded" value=" " disabled style="color:black">
+                                            </div>
+                                            <br>
+                                            <div class="pure-control-group">
+                                                <label for="auto-ldr-bright">Wert hell (0 - 255)</label>
+                                                <input id="auto-ldr-bright" type="text" class="pure-input-rounded">
+                                            </div>
+                                            <div class="pure-control-group">
+                                                <label for="auto-ldr-dark">Wert dunkel (0 - 255)</label>
+                                                <input id="auto-ldr-dark" type="text" class="pure-input-rounded">
+                                            </div>
+                                            <!-- Specific Brightness-automatic End-->
+                                        </div>
                                 </fieldset>
                             </form>
                         </div>
