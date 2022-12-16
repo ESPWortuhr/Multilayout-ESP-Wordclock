@@ -11,7 +11,7 @@
 
 //------------------------------------------------------------------------------
 
-class NeoMultiFeature : public Neo3ElementsNoSettings {
+class NeoMultiFeature : public Neo3ByteElementsNoSettings {
 protected:
     static uint8_t _colortype;
 
