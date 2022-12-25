@@ -59,6 +59,6 @@ void MQTT_callback(char *topic, byte *payload, unsigned int length) {
 }
 
 void MQTT_reconnect() {
-    mqttClient.subscribe(G.MQTT_Topic);
+    mqttClient.subscribe(G.mqtt.topic);
     Serial.println("MQTT Connected...");
 }

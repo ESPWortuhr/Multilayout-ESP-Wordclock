@@ -270,8 +270,8 @@ void setup() {
         G.zeige_min = 1;
         G.ldr = 0;
         G.ldrCal = 0;
-        strcpy(G.cityid, "");
-        strcpy(G.apikey, "");
+        strcpy(G.openWeatherMap.cityid, "");
+        strcpy(G.openWeatherMap.apikey, "");
         strcpy(G.zeitserver, "europe.pool.ntp.org");
         strcpy(G.hostname, "uhr");
         strcpy(G.ltext, "HELLO WORLD ");
@@ -289,13 +289,13 @@ void setup() {
             G.Sprachvariation[i] = false;
         }
 
-        G.MQTT_State = 0;
-        G.MQTT_Port = 1883;
-        strcpy(G.MQTT_Server, "192.168.4.1");
-        strcpy(G.MQTT_User, "User");
-        strcpy(G.MQTT_Pass, "Passwort");
-        strcpy(G.MQTT_ClientId, "ClientId");
-        strcpy(G.MQTT_Topic, "Wortuhr");
+        G.mqtt.state = 0;
+        G.mqtt.port = 1883;
+        strcpy(G.mqtt.serverAdress, "192.168.4.1");
+        strcpy(G.mqtt.user, "User");
+        strcpy(G.mqtt.password, "Passwort");
+        strcpy(G.mqtt.clientId, "ClientId");
+        strcpy(G.mqtt.topic, "Wortuhr");
 
         G.UhrtypeDef = DEFAULT_LAYOUT;
         G.Colortype = DEFAULT_LEDTYPE;
@@ -411,11 +411,11 @@ void setup() {
     // MQTT
     //-------------------------------------
 
-    if (G.MQTT_State == 1) {
-        mqttClient.setServer(G.MQTT_Server, G.MQTT_Port);
+    if (G.mqtt.state == 1) {
+        mqttClient.setServer(G.mqtt.serverAdress, G.mqtt.port);
         mqttClient.setCallback(MQTT_callback);
-        mqttClient.connect(G.MQTT_ClientId, G.MQTT_User, G.MQTT_Pass);
-        mqttClient.subscribe(G.MQTT_Topic);
+        mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
+        mqttClient.subscribe(G.mqtt.topic);
     }
 
     //-------------------------------------
@@ -503,7 +503,7 @@ void loop() {
     //------------------------------------------------
     // MQTT
     //------------------------------------------------
-    if (G.MQTT_State == 1 && WiFi.status() == WL_CONNECTED) {
+    if (G.mqtt.state == 1 && WiFi.status() == WL_CONNECTED) {
         if (!mqttClient.connected()) {
             MQTT_reconnect();
         }
@@ -615,13 +615,13 @@ void loop() {
     {
         DynamicJsonDocument config(1024);
         config["command"] = "mqtt";
-        config["MQTT_State"] = G.MQTT_State;
-        config["MQTT_Port"] = G.MQTT_Port;
-        config["MQTT_Server"] = G.MQTT_Server;
-        config["MQTT_User"] = G.MQTT_User;
-        config["MQTT_Pass"] = G.MQTT_Pass;
-        config["MQTT_ClientId"] = G.MQTT_ClientId;
-        config["MQTT_Topic"] = G.MQTT_Topic;
+        config["MQTT_State"] = G.mqtt.state;
+        config["MQTT_Port"] = G.mqtt.port;
+        config["MQTT_Server"] = G.mqtt.serverAdress;
+        config["MQTT_User"] = G.mqtt.user;
+        config["MQTT_Pass"] = G.mqtt.password;
+        config["MQTT_ClientId"] = G.mqtt.clientId;
+        config["MQTT_Topic"] = G.mqtt.topic;
         serializeJson(config, str);
         Serial.print("Sending Payload:");
         Serial.println(str);
@@ -655,8 +655,8 @@ void loop() {
         config["zeige_min"] = G.zeige_min;
         config["ldr"] = G.ldr;
         config["ldrCal"] = G.ldrCal;
-        config["cityid"] = G.cityid;
-        config["apikey"] = G.apikey;
+        config["cityid"] = G.openWeatherMap.cityid;
+        config["apikey"] = G.openWeatherMap.apikey;
         config["colortype"] = G.Colortype;
         config["UhrtypeDef"] = G.UhrtypeDef;
         config["bootLedBlink"] = G.bootLedBlink;
@@ -771,8 +771,8 @@ void loop() {
 
     case COMMAND_SET_MQTT: // MQTT Einstellungen
     {
-        if (!mqttClient.connected() && G.MQTT_State) {
-            mqttClient.connect(G.MQTT_ClientId, G.MQTT_User, G.MQTT_Pass);
+        if (!mqttClient.connected() && G.mqtt.state) {
+            mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
             MQTT_reconnect();
         }
         eeprom_write();

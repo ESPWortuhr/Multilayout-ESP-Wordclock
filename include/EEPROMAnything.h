@@ -62,13 +62,14 @@ void eeprom_read() {
     Serial.printf("LDR       : %u\n", G.ldr);
     Serial.printf("LDRCal    : %u\n", G.ldrCal);
     Serial.printf("Uhrtype    : %u\n", G.UhrtypeDef);
-    Serial.printf("MQTT_State    : %u\n", G.MQTT_State);
-    Serial.printf("MQTT_Server    : %s\n", G.MQTT_Server);
-    Serial.printf("MQTT_User    : %s\n", G.MQTT_User);
-    Serial.printf("MQTT_Pass    : %s\n", G.MQTT_Pass);
-    Serial.printf("MQTT_ClientId    : %s\n", G.MQTT_ClientId);
-    Serial.printf("MQTT_Topic    : %s\n", G.MQTT_Topic);
-    Serial.printf("MQTT_Port    : %u\n", G.MQTT_Port);
+    
+    Serial.printf("MQTT_State    : %u\n", G.mqtt.state);
+    Serial.printf("MQTT_Server    : %s\n", G.mqtt.serverAdress);
+    Serial.printf("MQTT_User    : %s\n", G.mqtt.user);
+    Serial.printf("MQTT_Pass    : %s\n", G.mqtt.password);
+    Serial.printf("MQTT_ClientId    : %s\n", G.mqtt.clientId);
+    Serial.printf("MQTT_Topic    : %s\n", G.mqtt.topic);
+    Serial.printf("MQTT_Port    : %u\n", G.mqtt.port);
 
     Serial.printf("autoLdrEnabled    : %u\n", G.autoLdrEnabled);
     Serial.printf("autoLdrBright    : %u\n", G.autoLdrBright);
@@ -85,9 +86,9 @@ void eeprom_read() {
     Serial.printf("bootShowIP    : %u\n", G.bootShowIP);
     Serial.printf("Colortype    : %u\n", G.Colortype);
     Serial.print("OWM_apikey: ");
-    Serial.println(G.apikey);
+    Serial.println(G.openWeatherMap.apikey);
     Serial.print("OWM_city  : ");
-    Serial.println(G.cityid);
+    Serial.println(G.openWeatherMap.cityid);
 
     delay(100);
 }
