@@ -12,6 +12,17 @@ void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
 
 //------------------------------------------------------------------------------
 
+void led_set_pixel_hsb(uint16_t hue, uint8_t sat, uint8_t bri, uint16_t i) {
+
+    if (G.Colortype == Grbw) {
+        strip_RGBW->SetPixelColor(i, HsbColor(hue / 360, sat / 255, bri / 255));
+    } else {
+        strip_RGB->SetPixelColor(i, HsbColor(hue / 255, sat / 255, bri / 255));
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void led_set_pixel_Color_Object(uint16_t i, RgbColor color) {
 
     if (G.Colortype == Grbw) {
@@ -206,99 +217,25 @@ void led_set_Icon(uint8_t num_icon, uint8_t brightness = 100,
 }
 
 //------------------------------------------------------------------------------
-// HSV to RGB 8Bit
-// Farbkreis hue = 0 bis 360 (Farbwert)
-//          bri = 0 bis 255 (Dunkelstufe)
-//          sat = 0 bis 255 (Farbsättigung)
-//------------------------------------------------------------------------------
 
-void hsv_to_rgb(double hue, float sat, float bri, uint8_t *c) {
-    hue = 3.14159F * hue / 180.0F;           // convert to radians.
-    sat /= 255.0F;                           // from percentage to ratio
-    bri /= 255.0F;                           // from percentage to ratio
-    sat = sat > 0 ? (sat < 1 ? sat : 1) : 0; // clamp s and i to interval [0,1]
-    bri = bri > 0 ? (bri < 1 ? bri : 1) : 0; // clamp s and i to interval [0,1]
-    bri = bri *
-          std::sqrt(bri); // shape intensity to have finer granularity near 0
-
-    if (G.Colortype == Grbw) {
-        if (hue < 2.09439) {
-            c[0] = sat * 255.0 * bri / 3.0 *
-                   (1 + std::cos(hue) / std::cos(1.047196667 - hue));
-            c[1] = sat * 255.0 * bri / 3.0 *
-                   (1 + (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
-            c[2] = 0;
-            c[3] = 255.0 * (1.0 - sat) * bri;
-        } else if (hue < 4.188787) {
-            hue = hue - 2.09439;
-            c[1] = sat * 255.0 * bri / 3.0 *
-                   (1 + std::cos(hue) / std::cos(1.047196667 - hue));
-            c[2] = sat * 255.0 * bri / 3.0 *
-                   (1 + (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
-            c[0] = 0;
-            c[3] = 255.0 * (1.0 - sat) * bri;
-        } else {
-            hue = hue - 4.188787;
-            c[2] = sat * 255.0 * bri / 3.0 *
-                   (1 + std::cos(hue) / std::cos(1.047196667 - hue));
-            c[0] = sat * 255.0 * bri / 3.0 *
-                   (1 + (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
-            c[1] = 0;
-            c[3] = 255.0 * (1 - sat) * bri;
-        }
-    } else {
-        while (hue < 0) {
-            hue += 360.0F;
-        } // cycle h around to 0-360 degrees
-        while (hue >= 360) {
-            hue -= 360.0F;
-        }
-
-        if (hue < 2.09439) {
-            c[0] = 255 * bri / 3 *
-                   (1 + sat * std::cos(hue) / std::cos(1.047196667 - hue));
-            c[1] =
-                255 * bri / 3 *
-                (1 + sat * (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
-            c[2] = 255 * bri / 3 * (1 - sat);
-        } else if (hue < 4.188787) {
-            hue = hue - 2.09439;
-            c[1] = 255 * bri / 3 *
-                   (1 + sat * std::cos(hue) / std::cos(1.047196667 - hue));
-            c[2] =
-                255 * bri / 3 *
-                (1 + sat * (1 - std::cos(hue) / std::cos(1.047196667 - hue)));
-            c[0] = 255 * bri / 3 * (1 - sat);
-        } else {
-            hue = hue - 4.188787;
-            c[2] =
-                255 * bri / 3 * (1 + sat * cos(hue) / cos(1.047196667 - hue));
-            c[0] = 255 * bri / 3 *
-                   (1 + sat * (1 - cos(hue) / cos(1.047196667 - hue)));
-            c[1] = 255 * bri / 3 * (1 - sat);
-        }
-        c[3] = 0;
+static inline void checkIfHueIsOutOfBound(float &hue) {
+    if (hue > 360) {
+        hue = 0;
     }
 }
 
 //------------------------------------------------------------------------------
 
 static void led_single(uint8_t wait) {
-
-    float h;
-    uint8_t c[4];
+    float hue;
 
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-
-        h = 360.0 * i / (usedUhrType->NUM_PIXELS() - 1);
-        h = h + 360.0 / usedUhrType->NUM_PIXELS();
-        if (h > 360) {
-            h = 0;
-        }
+        hue = 360.0 * i / (usedUhrType->NUM_PIXELS() - 1);
+        hue = hue + 360.0 / usedUhrType->NUM_PIXELS();
+        checkIfHueIsOutOfBound(hue);
 
         led_clear();
-        hsv_to_rgb(h, 255, 255, c);
-        led_set_pixel(c[0], c[1], c[2], c[3], i);
+        led_set_pixel_hsb(hue, 255, 255, i);
         led_show();
         delay(wait);
     }
@@ -374,42 +311,32 @@ static void set_farbe_rahmen() {
 //------------------------------------------------------------------------------
 
 static void rainbow() {
-
-    static float h = 0.0;
-    uint8_t c[4];
-    hsv_to_rgb(h, 255, G.hell * 10, c);
+    static float hue = 0;
 
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        led_set_pixel(c[0], c[1], c[2], c[3], i);
+        led_set_pixel_hsb(hue, 255, G.hell * 10, i);
     }
     led_show();
-    h++;
-    if (h > 359) {
-        h = 0.0;
-    }
+    hue++;
+    checkIfHueIsOutOfBound(hue);
 }
 
 //-----------------------------------------------------------------------------
 
 static void rainbowCycle() {
-    static float h = 0;
-    float hh;
-    uint8_t c[4];
+    static float hue = 0;
+    float displayedHue;
 
-    hh = h;
+    displayedHue = hue;
     for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
-        hsv_to_rgb(hh, 255, G.hell * 10, c);
-        led_set_pixel(c[0], c[1], c[2], c[3], usedUhrType->getSMatrix(i));
-        hh = hh + 360.0 / usedUhrType->NUM_SMATRIX();
-        if (hh > 360) {
-            hh = 0;
-        }
+        led_set_pixel_hsb(displayedHue, 255, G.hell * 10,
+                          usedUhrType->getSMatrix(i));
+        displayedHue = displayedHue + 360.0 / usedUhrType->NUM_SMATRIX();
+        checkIfHueIsOutOfBound(displayedHue);
     }
     led_show();
-    h++;
-    if (h > 360) {
-        h = 0.0;
-    }
+    hue++;
+    checkIfHueIsOutOfBound(hue);
 }
 
 //------------------------------------------------------------------------------
