@@ -119,8 +119,6 @@ static inline void led_clear_pixel(uint16_t i) {
 void led_clear() {
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         Word_array[i] = 500;
-    }
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         led_clear_pixel(i);
     }
 }
