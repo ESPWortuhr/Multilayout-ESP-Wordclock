@@ -176,13 +176,12 @@ void copy_array(const uint16_t source[], uint16_t destination[]) {
 //------------------------------------------------------------------------------
 
 bool changes_in_array() {
-    bool return_value = false;
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         if (Word_array[i] != Word_array_old[i]) {
-            return_value = true;
+            return true;
         }
     }
-    return return_value;
+    return false;
 }
 
 //------------------------------------------------------------------------------
