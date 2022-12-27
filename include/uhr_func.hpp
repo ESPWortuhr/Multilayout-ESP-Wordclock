@@ -47,12 +47,9 @@ RgbwColor led_get_pixel_rgbw(uint16_t i) {
 // Helligkeitsregelung nach Uhrzeiten oder per LDR
 //------------------------------------------------------------------------------
 static uint8_t autoLdr(uint8_t val) {
-    if (G.autoLdrEnabled) {
-        // G.hh enthaelt zeitabhaengige Helligkeitswerte in %
-        uint16_t u16 = (val * G.hh) / 100;
-        return ((uint8_t)((u16 * ldrVal) / 100));
-    }
-    return val;
+    // G.hh enthaelt zeitabhaengige Helligkeitswerte in %
+    uint16_t u16 = (val * G.hh) / 100;
+    return (static_cast<uint8_t>((u16 * ldrVal) / 100));
 }
 
 //------------------------------------------------------------------------------
