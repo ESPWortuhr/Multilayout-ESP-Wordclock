@@ -289,13 +289,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_BRIGHTNESS: { // Helligkeit
-            G.hell = split(payload, 27);
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
         case COMMAND_SPEED: { // Geschwindigkeit
             G.geschw = split(payload, 30);
             break;
@@ -485,6 +478,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.h20 = split(payload, 18);
             G.h22 = split(payload, 21);
             G.h24 = split(payload, 24);
+            G.hell = split(payload, 27);
             break;
         }
 

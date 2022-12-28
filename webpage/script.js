@@ -596,6 +596,21 @@ function sendCmd(command, addData = "") {
 	debugMessage("Send data: ", data);
 }
 
+function sendBrightnessData(command, addData = "") {
+	h6 = $("#brightness-6").get("value");
+	h8 = $("#brightness-8").get("value");
+	h12 = $("#brightness-12").get("value");
+	h16 = $("#brightness-16").get("value");
+	h18 = $("#brightness-18").get("value");
+	h20 = $("#brightness-20").get("value");
+	h22 = $("#brightness-22").get("value");
+	h24 = $("#brightness-24").get("value");
+	hell = $("#slider-brightness").get("value");
+
+	sendCmd(COMMAND_SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + nstr(hell));
+	debugMessage("Helligkeit wurde neu konfiguriert");
+}
+
 $.ready(function() {
 
 	initConfigValues();
@@ -756,7 +771,7 @@ $.ready(function() {
 		if (sleep === 0) {
 			getSliders();
 			if (id === "slider-brightness") {
-				sendData(COMMAND_BRIGHTNESS);
+				sendBrightnessData(COMMAND_SET_BRIGHTNESS);
 			}
 			if (id === "slider-speed") {
 				sendData(COMMAND_SPEED);
@@ -830,17 +845,7 @@ $.ready(function() {
 		debugMessage("Lauftext wurde neu konfiguriert");
 	});
 	$("[id*='brightness']").on("change", function() {
-		h6 = $("#brightness-6").get("value");
-		h8 = $("#brightness-8").get("value");
-		h12 = $("#brightness-12").get("value");
-		h16 = $("#brightness-16").get("value");
-		h18 = $("#brightness-18").get("value");
-		h20 = $("#brightness-20").get("value");
-		h22 = $("#brightness-22").get("value");
-		h24 = $("#brightness-24").get("value");
-
-		sendCmd(COMMAND_SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24));
-		debugMessage("Helligkeit wurde neu konfiguriert");
+		sendBrightnessData(COMMAND_SET_BRIGHTNESS);
 	});
 	$("#weather-button").on("click", function() {
 

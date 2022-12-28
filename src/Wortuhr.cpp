@@ -764,7 +764,6 @@ void loop() {
         eeprom_write();
         led_clear();
         parameters_changed = true;
-        G.prog = COMMAND_MODE_WORD_CLOCK;
         G.conf = COMMAND_IDLE;
         break;
     }
