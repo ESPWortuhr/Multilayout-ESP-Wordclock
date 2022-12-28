@@ -12,12 +12,17 @@ void led_set_pixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
 
 //------------------------------------------------------------------------------
 
-void led_set_pixel_hsb(uint16_t hue, uint8_t sat, uint8_t bri, uint16_t i) {
+void led_set_pixel_hsb(uint16_t ledIndex, float hue, float sat, float bri,
+                       uint8_t alpha = 0) {
+    HsbColor hsbColor = HsbColor(hue / 360, sat / 100, bri / 100);
 
     if (G.Colortype == Grbw) {
-        strip_RGBW->SetPixelColor(i, HsbColor(hue / 360, sat / 255, bri / 255));
+        RgbColor rgbColor = RgbColor(hsbColor);
+
+        strip_RGBW->SetPixelColor(
+            ledIndex, RgbwColor(rgbColor.R, rgbColor.G, rgbColor.B, alpha));
     } else {
-        strip_RGB->SetPixelColor(i, HsbColor(hue / 255, sat / 255, bri / 255));
+        strip_RGB->SetPixelColor(ledIndex, hsbColor);
     }
 }
 
@@ -235,7 +240,7 @@ static void led_single(uint8_t wait) {
         checkIfHueIsOutOfBound(hue);
 
         led_clear();
-        led_set_pixel_hsb(hue, 255, 255, i);
+        led_set_pixel_hsb(i, hue, 100, 100);
         led_show();
         delay(wait);
     }
@@ -314,7 +319,7 @@ static void rainbow() {
     static float hue = 0;
 
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        led_set_pixel_hsb(hue, 255, G.hell * 10, i);
+        led_set_pixel_hsb(i, hue, 100, G.hell);
     }
     led_show();
     hue++;
@@ -329,8 +334,8 @@ static void rainbowCycle() {
 
     displayedHue = hue;
     for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
-        led_set_pixel_hsb(displayedHue, 255, G.hell * 10,
-                          usedUhrType->getSMatrix(i));
+        led_set_pixel_hsb(usedUhrType->getSMatrix(i), displayedHue, 100,
+                          G.hell);
         displayedHue = displayedHue + 360.0 / usedUhrType->NUM_SMATRIX();
         checkIfHueIsOutOfBound(displayedHue);
     }
