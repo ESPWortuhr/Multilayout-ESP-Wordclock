@@ -857,43 +857,31 @@ void loop() {
         break;
     }
 
-    case COMMAND_MODE_MARQUEE: // Laufschriftanzeige
-    {
+    case COMMAND_MODE_SCROLLINGTEXT:
+    case COMMAND_MODE_RAINBOWCYCLE:
+    case COMMAND_MODE_RAINBOW: {
         if (G.prog_init == 1) {
             G.prog_init = 0;
             led_clear();
-            count_delay = (G.geschw + 1) * 20;
+            count_delay = (11u - G.geschw) * 30u;
         }
-        if (count_delay >= (G.geschw + 1u) * 20u) {
+        if (count_delay >= (11u - G.geschw) * 30u) {
+            switch (G.prog) {
+            case COMMAND_MODE_SCROLLINGTEXT: {
             laufschrift(G.ltext);
-            count_delay = 0;
-        }
         break;
     }
-
-    case COMMAND_MODE_RAINBOW: // Regenbogenanzeige
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            uhr_clear();
-            count_delay = G.geschw * 7 + 1;
-        }
-        if (count_delay >= G.geschw * 7u + 1u) {
+            case COMMAND_MODE_RAINBOWCYCLE: {
             rainbowCycle();
-            count_delay = 0;
+                break;
         }
+            case COMMAND_MODE_RAINBOW: {
+                rainbow();
         break;
     }
-
-    case COMMAND_MODE_CHANGE: // Farbwechselanzeige
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            led_clear();
-            count_delay = G.geschw * 7 + 1;
+            default:
+                break;
         }
-        if (count_delay >= G.geschw * 7u + 1u) {
-            rainbow();
             count_delay = 0;
         }
         break;

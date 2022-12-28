@@ -204,10 +204,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_MODE_SECONDS: { // Sekunden
             G.prog = COMMAND_MODE_SECONDS;
-            G.param1 = split(payload, 33);
-            if (G.param1 == 0) {
                 G.prog_init = 1;
-            }
 
             G.rgb[Effect][0] = split(payload, 3);
             G.rgb[Effect][1] = split(payload, 6);
@@ -220,12 +217,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_MARQUEE: { // Laufschrift
-            G.prog = COMMAND_MODE_MARQUEE;
-            G.param1 = split(payload, 33);
-            if (G.param1 == 0) {
+        case COMMAND_MODE_SCROLLINGTEXT: { 
+            G.prog = COMMAND_MODE_SCROLLINGTEXT;
                 G.prog_init = 1;
-            }
 
             G.rgb[Effect][0] = split(payload, 3);
             G.rgb[Effect][1] = split(payload, 6);
@@ -238,8 +232,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_RAINBOW: { // Regenbogen
-            G.prog = COMMAND_MODE_RAINBOW;
+        case COMMAND_MODE_RAINBOWCYCLE: {
+            G.prog = COMMAND_MODE_RAINBOWCYCLE;
             G.prog_init = 1;
 
             G.hell = split(payload, 27);
@@ -249,8 +243,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_CHANGE: { // Farbwechsel
-            G.prog = COMMAND_MODE_CHANGE;
+        case COMMAND_MODE_RAINBOW: {
+            G.prog = COMMAND_MODE_RAINBOW;
             G.prog_init = 1;
 
             G.hell = split(payload, 27);
@@ -290,7 +284,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SPEED: { // Geschwindigkeit
-            G.geschw = split(payload, 30);
+            G.geschw = split(payload, 3);
             break;
         }
 

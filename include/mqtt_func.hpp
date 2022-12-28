@@ -38,11 +38,11 @@ void MQTT_callback(char *topic, byte *payload, unsigned int length) {
         } else if (str_buffer.compare("Sekundenanzeige")) {
             G.prog = COMMAND_MODE_SECONDS;
         } else if (str_buffer.compare("Laufschrift")) {
-            G.prog = COMMAND_MODE_MARQUEE;
+            G.prog = COMMAND_MODE_SCROLLINGTEXT;
         } else if (str_buffer.compare("Regenbogen")) {
-            G.prog = COMMAND_MODE_RAINBOW;
+            G.prog = COMMAND_MODE_RAINBOWCYCLE;
         } else if (str_buffer.compare("Farbwechsel")) {
-            G.prog = COMMAND_MODE_CHANGE;
+            G.prog = COMMAND_MODE_RAINBOW;
         } else if (str_buffer.compare("Farbe")) {
             G.prog = COMMAND_MODE_COLOR;
         }
