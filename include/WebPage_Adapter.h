@@ -204,10 +204,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_MODE_SECONDS: { // Sekunden
             G.prog = COMMAND_MODE_SECONDS;
-            G.param1 = split(payload, 33);
-            if (G.param1 == 0) {
                 G.prog_init = 1;
-            }
 
             G.rgb[Effect][0] = split(payload, 3);
             G.rgb[Effect][1] = split(payload, 6);
@@ -220,12 +217,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_MARQUEE: { // Laufschrift
-            G.prog = COMMAND_MODE_MARQUEE;
-            G.param1 = split(payload, 33);
-            if (G.param1 == 0) {
+        case COMMAND_MODE_SCROLLINGTEXT: { 
+            G.prog = COMMAND_MODE_SCROLLINGTEXT;
                 G.prog_init = 1;
-            }
 
             G.rgb[Effect][0] = split(payload, 3);
             G.rgb[Effect][1] = split(payload, 6);
@@ -238,8 +232,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_RAINBOW: { // Regenbogen
-            G.prog = COMMAND_MODE_RAINBOW;
+        case COMMAND_MODE_RAINBOWCYCLE: {
+            G.prog = COMMAND_MODE_RAINBOWCYCLE;
             G.prog_init = 1;
 
             G.hell = split(payload, 27);
@@ -249,8 +243,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_CHANGE: { // Farbwechsel
-            G.prog = COMMAND_MODE_CHANGE;
+        case COMMAND_MODE_RAINBOW: {
+            G.prog = COMMAND_MODE_RAINBOW;
             G.prog_init = 1;
 
             G.hell = split(payload, 27);
@@ -289,15 +283,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_BRIGHTNESS: { // Helligkeit
-            G.hell = split(payload, 27);
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
         case COMMAND_SPEED: { // Geschwindigkeit
-            G.geschw = split(payload, 30);
+            G.geschw = split(payload, 3);
             break;
         }
 
@@ -394,18 +381,18 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_MQTT: { // MQTT Daten speichern
             G.conf = COMMAND_SET_MQTT;
-            G.MQTT_State = split(payload, 3);
-            G.MQTT_Port = split(payload, 6, 5);
+            G.mqtt.state = split(payload, 3);
+            G.mqtt.port = split(payload, 6, 5);
             uint8_t index_start = 11;
-            payloadTextHandling(payload, G.MQTT_Server, index_start);
+            payloadTextHandling(payload, G.mqtt.serverAdress, index_start);
             index_start += PAYLOAD_LENGTH;
-            payloadTextHandling(payload, G.MQTT_User, index_start);
+            payloadTextHandling(payload, G.mqtt.user, index_start);
             index_start += PAYLOAD_LENGTH;
-            payloadTextHandling(payload, G.MQTT_Pass, index_start);
+            payloadTextHandling(payload, G.mqtt.password, index_start);
             index_start += PAYLOAD_LENGTH;
-            payloadTextHandling(payload, G.MQTT_ClientId, index_start);
+            payloadTextHandling(payload, G.mqtt.clientId, index_start);
             index_start += PAYLOAD_LENGTH;
-            payloadTextHandling(payload, G.MQTT_Topic, index_start);
+            payloadTextHandling(payload, G.mqtt.topic, index_start);
             break;
         }
 
@@ -451,25 +438,25 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             ii = 0;
             for (uint8_t k = 3; k < 10; k++) {
                 if (payload[k] != ' ') {
-                    G.cityid[ii] = payload[k];
+                    G.openWeatherMap.cityid[ii] = payload[k];
                     ii++;
                 }
             }
-            G.cityid[ii] = '\0';
+            G.openWeatherMap.cityid[ii] = '\0';
             //
             jj = 0;
             for (uint8_t l = 11; l < 43; l++) {
                 if (payload[l] != ' ') {
-                    G.apikey[jj] = payload[l];
+                    G.openWeatherMap.apikey[jj] = payload[l];
                     jj++;
                 }
             }
-            G.apikey[jj] = '\0';
+            G.openWeatherMap.apikey[jj] = '\0';
             Serial.println("write EEPROM!");
             Serial.print("CityID : ");
-            Serial.println(G.cityid);
+            Serial.println(G.openWeatherMap.cityid);
             Serial.print("APIkey : ");
-            Serial.println(G.apikey);
+            Serial.println(G.openWeatherMap.apikey);
             break;
         }
 
@@ -485,6 +472,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.h20 = split(payload, 18);
             G.h22 = split(payload, 21);
             G.h24 = split(payload, 24);
+            G.hell = split(payload, 27);
             break;
         }
 

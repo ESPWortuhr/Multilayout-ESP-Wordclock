@@ -33,6 +33,21 @@ enum uhrzeit_t {
     H_ZWOELF = 21
 };
 
+struct MqttData {
+    uint8_t state;
+    char serverAdress[PAYLOAD_LENGTH];
+    char user[PAYLOAD_LENGTH];
+    char password[PAYLOAD_LENGTH];
+    char clientId[PAYLOAD_LENGTH];
+    char topic[PAYLOAD_LENGTH];
+    uint16_t port;
+};
+
+struct OpenWeatherMapData {
+    char apikey[35];
+    char cityid[8];
+};
+
 struct GLOBAL {
     uint8_t sernr;
     uint16_t prog;
@@ -47,8 +62,6 @@ struct GLOBAL {
     uint8_t hell;
     uint16_t ldr;
     uint16_t ldrCal;
-    char apikey[35];
-    char cityid[8];
     int geschw;
     uint8_t client_nr;
     uint8_t zeige_sek;
@@ -69,13 +82,10 @@ struct GLOBAL {
 
     uint8_t UhrtypeDef;
     uint8_t Colortype;
-    uint8_t MQTT_State;
-    char MQTT_Server[PAYLOAD_LENGTH];
-    char MQTT_User[PAYLOAD_LENGTH];
-    char MQTT_Pass[PAYLOAD_LENGTH];
-    char MQTT_ClientId[PAYLOAD_LENGTH];
-    char MQTT_Topic[PAYLOAD_LENGTH];
-    uint16_t MQTT_Port;
+
+    MqttData mqtt;
+
+    OpenWeatherMapData openWeatherMap;
 
     uint8_t autoLdrEnabled;
     uint8_t autoLdrBright;
@@ -172,9 +182,9 @@ enum Command {
 
     COMMAND_MODE_WORD_CLOCK = 1,
     COMMAND_MODE_SECONDS = 2,
-    COMMAND_MODE_MARQUEE = 3,
-    COMMAND_MODE_RAINBOW = 4,
-    COMMAND_MODE_CHANGE = 5,
+    COMMAND_MODE_SCROLLINGTEXT = 3,
+    COMMAND_MODE_RAINBOWCYCLE = 4,
+    COMMAND_MODE_RAINBOW = 5,
     COMMAND_MODE_COLOR = 6,
 
     COMMAND_MODE_ANIMATION = 10,
@@ -200,7 +210,6 @@ enum Command {
     COMMAND_SET_BOOT = 101,
     COMMAND_SET_AUTO_LDR = 102,
 
-    COMMAND_BRIGHTNESS = 151,
     COMMAND_SPEED = 152,
 
     COMMAND_REQUEST_CONFIG_VALUES = 200,
