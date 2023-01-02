@@ -111,16 +111,16 @@ const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
 RTC_Type RTC;
 
 #include "Animation.h"
-#include "font.h"
+#include "clockWork.h"
+Animation *animation;
+ClockWork clockWork;
+
+#include "Animation.hpp"
+#include "clockWork.hpp"
 #include "icons.h"
 #include "mqtt_func.hpp"
 #include "openwmap.h"
-#include "uhr_func.hpp"
 #include "wifi_func.hpp"
-
-#include "Animation.hpp"
-
-Animation *animation;
 
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) <= EEPROM_SIZE,
@@ -340,15 +340,15 @@ void setup() {
     Serial.println("LED Init");
     InitLedStrip(G.Colortype);
     if (G.bootLedBlink) {
-        led_set_all(0x40, 0x40, 0x40, 0x40);
-        led_show();
+        clockWork.ledSetAllPixels(0x40, 0x40, 0x40, 0x40);
+        clockWork.ledShow();
         delay(20);
     }
     if (G.bootLedSweep) {
-        led_single(20);
+        clockWork.ledSingle(20);
     }
-    led_clear();
-    led_show();
+    clockWork.ledClear();
+    clockWork.ledShow();
 
     G.conf = COMMAND_IDLE;
 
@@ -381,13 +381,13 @@ void setup() {
     // Start WiFi
     //-------------------------------------
     if (G.bootShowWifi) {
-        show_icon_wlan(0);
+        clockWork.showWifiSignalStrength(0);
     }
     Network_setup(G.hostname);
     int strength = Network_getQuality();
     Serial.printf("Signal strength: %i\n", strength);
     if (G.bootShowWifi) {
-        show_icon_wlan(strength);
+        clockWork.showWifiSignalStrength(strength);
     }
     WlanStart();
     configTime(0, 0, G.zeitserver);
@@ -435,7 +435,7 @@ void setup() {
 
     // setup frame
     if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 && G.zeige_min < 2) {
-        set_farbe_rahmen();
+        clockWork.ledSetFrameColor();
     }
 
     //-------------------------------------
@@ -524,12 +524,12 @@ void loop() {
         if (last_sekunde48 != _sekunde48) {
             if (G.prog == 0 && G.conf == 0) {
                 if (G.zeige_sek == 1 || G.zeige_min == 2) {
-                    rahmen_clear();
+                    clockWork.ledClearFrame();
                 }
                 if (G.zeige_sek > 0) {
-                    show_sekunde();
+                    clockWork.ledShowSeconds();
                 }
-                led_show();
+                clockWork.ledShow();
             }
             last_sekunde48 = _sekunde48;
         }
@@ -547,11 +547,11 @@ void loop() {
 
         //--- LDR Regelung
         if ((G.ldr == 1) || G.autoLdrEnabled) {
-            doLDRLogic();
+            clockWork.doLDRLogic();
         }
 
         if (G.prog == 0 && G.conf == 0) {
-            led_clear();
+            clockWork.ledClear();
             G.prog = COMMAND_MODE_WORD_CLOCK;
         }
         last_sekunde = _sekunde;
@@ -560,7 +560,7 @@ void loop() {
             if ((_sekunde == 0) | (_sekunde == 10) | (_sekunde == 20) |
                 (_sekunde == 30) | (_sekunde == 40) | (_sekunde == 50)) {
                 wetterswitch++;
-                led_clear();
+                clockWork.ledClear();
                 if (wetterswitch > 4) {
                     wetterswitch = 1;
                 }
@@ -762,7 +762,7 @@ void loop() {
     case COMMAND_SET_TIME_MANUAL:      // Uhrzeit manuell einstellen
     {
         eeprom_write();
-        led_clear();
+        clockWork.ledClear();
         parameters_changed = true;
         G.conf = COMMAND_IDLE;
         break;
@@ -796,7 +796,7 @@ void loop() {
         G.Colortype = G.param1;
         eeprom_write();
         InitLedStrip(G.Colortype);
-        led_set_Icon(RGB_I, 100, true);
+        clockWork.ledSetIcon(RGB_I, 100, true);
         break;
     }
 
@@ -846,14 +846,14 @@ void loop() {
     case COMMAND_MODE_SECONDS: // Sekundenanzeige
     {
         if (G.prog_init == 1) {
-            led_clear();
+            clockWork.ledClear();
             G.prog_init = 0;
         }
         char d1[5];
         char d2[5];
         sprintf(d1, "%d", (int)(_sekunde / 10));
         sprintf(d2, "%d", (int)(_sekunde % 10));
-        zahlen(d1[0], d2[0]);
+        clockWork.ledShowNumbers(d1[0], d2[0]);
         break;
     }
 
@@ -862,26 +862,26 @@ void loop() {
     case COMMAND_MODE_RAINBOW: {
         if (G.prog_init == 1) {
             G.prog_init = 0;
-            led_clear();
+            clockWork.ledClear();
             count_delay = (11u - G.geschw) * 30u;
         }
         if (count_delay >= (11u - G.geschw) * 30u) {
             switch (G.prog) {
             case COMMAND_MODE_SCROLLINGTEXT: {
-            laufschrift(G.ltext);
-        break;
-    }
-            case COMMAND_MODE_RAINBOWCYCLE: {
-            rainbowCycle();
+                clockWork.scrollingText(G.ltext);
                 break;
-        }
+            }
+            case COMMAND_MODE_RAINBOWCYCLE: {
+                clockWork.rainbowCycle();
+                break;
+            }
             case COMMAND_MODE_RAINBOW: {
-                rainbow();
-        break;
-    }
+                clockWork.rainbow();
+                break;
+            }
             default:
                 break;
-        }
+            }
             count_delay = 0;
         }
         break;
@@ -891,8 +891,8 @@ void loop() {
     {
         if (G.prog_init == 1) {
             G.prog_init = 0;
-            set_farbe();
-            led_show();
+            clockWork.ledSetColor();
+            clockWork.ledShow();
         }
         break;
     }
@@ -910,19 +910,19 @@ void loop() {
     }
 
     case COMMAND_MODE_WORD_CLOCK: {
-        calc_word_array();
+        clockWork.calcClockFace();
 
-        if (changes_in_array()) {
-            copy_array(Word_array, Word_array_old);
-            led_set(true);
+        if (clockWork.changesInClockface()) {
+            clockWork.copyClockface(Word_array, Word_array_old);
+            clockWork.ledSet(true);
         } else if (parameters_changed) {
-            led_set();
+            clockWork.ledSet();
         }
         parameters_changed = false;
 
         if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 &&
             G.zeige_min < 2) {
-            set_farbe_rahmen();
+            clockWork.ledSetFrameColor();
         }
         G.prog = COMMAND_IDLE;
     }

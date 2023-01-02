@@ -420,7 +420,6 @@ function changeColor(color) {
 	rgb[color.index][3] = Math.round(255 * (1.0 - color.alpha));
 	sendColorData(command, nstr(1));
 }
-}
 
 function createColorPicker() {
 	colorPicker = new iro.ColorPicker("#color-picker", {
