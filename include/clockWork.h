@@ -26,6 +26,8 @@ private:
 
     inline void ledClearClock();
     inline void ledClearPixel(uint16_t i);
+    inline void ledClearRow(uint8_t row);
+    inline void ledClearFrontExeptofFontspace(uint8_t offsetRow);
 
     void ledShiftColumnToRight();
 
