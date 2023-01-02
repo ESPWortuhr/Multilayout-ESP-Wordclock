@@ -857,6 +857,16 @@ void loop() {
         break;
     }
 
+    case COMMAND_MODE_DIGITAL: // Sekundenanzeige
+    {
+        if (G.prog_init == 1) {
+            clockWork.ledClear();
+            G.prog_init = 0;
+        }
+        clockWork.loopDigitalWatchface();
+        break;
+    }
+
     case COMMAND_MODE_SCROLLINGTEXT:
     case COMMAND_MODE_RAINBOWCYCLE:
     case COMMAND_MODE_RAINBOW: {

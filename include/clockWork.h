@@ -16,7 +16,12 @@ private:
                         uint8_t alpha);
 
     void ledSetPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                            uint8_t offsetRow, unsigned char unsigned_d1);
+                            uint8_t offsetRow, unsigned char unsigned_d1,
+                            fontSize font);
+    bool getCharCol(fontSize font, uint8_t col, uint8_t row,
+                    unsigned char unsigned_d1);
+    void ledShowDigitalClock(const char min1, const char min0, const char h1,
+                             const char h0);
 
     uint8_t setBrightnessAuto(uint8_t val);
     void setBrightnessLdr(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
@@ -27,7 +32,7 @@ private:
     inline void ledClearClock();
     inline void ledClearPixel(uint16_t i);
     inline void ledClearRow(uint8_t row);
-    inline void ledClearFrontExeptofFontspace(uint8_t offsetRow);
+    inline void ledClearFrontExeptofFontspace(uint8_t offsetRow, fontSize font);
 
     void ledShiftColumnToRight();
 
@@ -46,6 +51,8 @@ public:
 
     void ledSetPixelColorObject(uint16_t i, RgbColor color);
     void ledSetPixelColorObjectRgbw(uint16_t i, RgbwColor color);
+
+    void loopDigitalWatchface();
 
     void ledShow();
     void ledClear();

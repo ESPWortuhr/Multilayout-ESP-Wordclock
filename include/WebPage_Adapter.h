@@ -202,9 +202,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_SECONDS: { // Sekunden
+        case COMMAND_MODE_SECONDS: {
             G.prog = COMMAND_MODE_SECONDS;
-                G.prog_init = 1;
+            G.prog_init = 1;
 
             G.rgb[Effect][0] = split(payload, 3);
             G.rgb[Effect][1] = split(payload, 6);
@@ -217,9 +217,24 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_SCROLLINGTEXT: { 
+        case COMMAND_MODE_DIGITAL: {
+            G.prog = COMMAND_MODE_DIGITAL;
+            G.prog_init = 1;
+
+            G.rgb[Effect][0] = split(payload, 3);
+            G.rgb[Effect][1] = split(payload, 6);
+            G.rgb[Effect][2] = split(payload, 9);
+            G.rgb[Effect][3] = split(payload, 12);
+            G.hell = split(payload, 27);
+            G.geschw = split(payload, 30);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_MODE_SCROLLINGTEXT: {
             G.prog = COMMAND_MODE_SCROLLINGTEXT;
-                G.prog_init = 1;
+            G.prog_init = 1;
 
             G.rgb[Effect][0] = split(payload, 3);
             G.rgb[Effect][1] = split(payload, 6);

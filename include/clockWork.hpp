@@ -171,13 +171,15 @@ inline void ClockWork::ledClearRow(uint8_t row) {
 
 //------------------------------------------------------------------------------
 
-inline void ClockWork::ledClearFrontExeptofFontspace(uint8_t offsetRow) {
+inline void
+ClockWork::ledClearFrontExeptofFontspace(uint8_t offsetRow,
+                                         fontSize font = normalSizeASCII) {
     for (uint8_t i = 0; i < offsetRow; i++) {
         ledClearRow(i);
     }
 
-    for (uint8_t i = usedUhrType->ROWS_MATRIX() - 1; i > offsetRow + fontHeight;
-         i--) {
+    for (uint8_t i = usedUhrType->ROWS_MATRIX() - 1;
+         i > offsetRow + fontHeight[font]; i--) {
         ledClearRow(i - 1);
     }
 }
@@ -394,14 +396,15 @@ void ClockWork::ledShiftColumnToRight() {
 
 void ClockWork::scrollingText(const char *buf) {
     static uint8_t i = 0, ii = 0;
-    uint8_t offsetRow = (usedUhrType->ROWS_MATRIX() - fontHeight - 1) / 2;
+    uint8_t offsetRow =
+        (usedUhrType->ROWS_MATRIX() - fontHeight[normalSizeASCII] - 1) / 2;
     uint8_t fontIndex = buf[ii];
 
     ledShiftColumnToRight();
     ledClearFrontExeptofFontspace(offsetRow);
 
-    if (i < fontWidth) {
-        for (uint8_t row = 0; row < fontHeight; row++) {
+    if (i < fontWidth[normalSizeASCII]) {
+        for (uint8_t row = 0; row < fontHeight[normalSizeASCII]; row++) {
             if (pgm_read_byte(&(font_7x5[fontIndex][i])) & (1u << row)) {
                 ledSetPixel(
                     G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2],
@@ -414,7 +417,7 @@ void ClockWork::scrollingText(const char *buf) {
             }
         }
     } else {
-        for (uint8_t row = 0; row < fontHeight; row++) {
+        for (uint8_t row = 0; row < fontHeight[normalSizeASCII]; row++) {
             ledClearPixel(usedUhrType->getFrontMatrix(
                 row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
         }
@@ -422,13 +425,50 @@ void ClockWork::scrollingText(const char *buf) {
     ledShow();
 
     i++;
-    if (i > fontWidth) {
+    if (i > fontWidth[normalSizeASCII]) {
         i = 0;
         ii++;
         if (ii > strlen(buf)) {
             ii = 0;
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::ledShowDigitalClock(const char min1, const char min0,
+                                    const char h1, const char h0) {
+    static uint8_t offsetLetterH0 =
+        usedUhrType->COLS_MATRIX() / 2 - fontWidth[smallSizeNumbers] - 1;
+    static uint8_t offsetLetterH1 =
+        offsetLetterH0 + fontWidth[smallSizeNumbers] + 2;
+    static uint8_t offsetLetterMin0 = 1;
+    static uint8_t offsetLetterMin1 =
+        offsetLetterMin0 + fontWidth[smallSizeNumbers] + 2;
+
+    uint8_t offsetRow0 =
+        (usedUhrType->ROWS_MATRIX() - 1) / 2 - fontHeight[smallSizeNumbers];
+    uint8_t offsetRow1 = offsetRow0 + fontHeight[smallSizeNumbers]; // +1 for Clocks with Rows greater 10 
+
+    for (uint8_t col = 0; col < 3; col++) {
+        for (uint8_t row = 0; row < 5; row++) {
+            // 1. Row
+            ledSetPixelForChar(col, row, offsetLetterH1, offsetRow0,
+                               static_cast<unsigned char>(h1),
+                               smallSizeNumbers);
+            ledSetPixelForChar(col, row, offsetLetterH0, offsetRow0,
+                               static_cast<unsigned char>(h0),
+                               smallSizeNumbers);
+            // 2. Row
+            ledSetPixelForChar(col, row, offsetLetterMin1, offsetRow1,
+                               static_cast<unsigned char>(min1),
+                               smallSizeNumbers);
+            ledSetPixelForChar(col, row, offsetLetterMin0, offsetRow1,
+                               static_cast<unsigned char>(min0),
+                               smallSizeNumbers);
+        }
+    }
+    ledShow();
 }
 
 //------------------------------------------------------------------------------
@@ -446,13 +486,32 @@ void ClockWork::showIp(const char *buf) {
 //------------------------------------------------------------------------------
 
 void ClockWork::ledSetPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                                   uint8_t offsetRow,
-                                   unsigned char unsigned_d1) {
-    if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
+                                   uint8_t offsetRow, unsigned char unsigned_d1,
+                                   fontSize font = normalSizeASCII) {
+    if (getCharCol(font, col, row, unsigned_d1)) {
         ledSetPixel(
             G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2],
             G.rgb[Effect][3],
             usedUhrType->getFrontMatrix(row + offsetRow, col + offsetCol));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+bool ClockWork::getCharCol(fontSize font, uint8_t col, uint8_t row,
+                           unsigned char unsigned_d1) {
+    switch (font) {
+    case normalSizeASCII:
+        return pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row);
+        break;
+
+    case smallSizeNumbers:
+        return pgm_read_byte(&(font_5x3[unsigned_d1][col])) & (1u << row);
+        break;
+
+    default:
+        return false;
+        break;
     }
 }
 
@@ -475,16 +534,17 @@ void ClockWork::showWifiSignalStrength(int strength) {
 void ClockWork::ledShowNumbers(const char d1, const char d2) {
     ledClearClock();
     static uint8_t offsetLetter0 = 0;
-    static uint8_t offsetLetter1 = fontWidth + 1;
-    uint8_t offsetRow = (usedUhrType->ROWS_MATRIX() - fontHeight - 1) / 2;
+    static uint8_t offsetLetter1 = fontWidth[normalSizeASCII] + 1;
+    uint8_t offsetRow =
+        (usedUhrType->ROWS_MATRIX() - fontHeight[normalSizeASCII] - 1) / 2;
 
     if (usedUhrType->has24HourLayout()) {
         offsetLetter0 = 3;
-        offsetLetter1 = fontWidth + 4;
+        offsetLetter1 = fontWidth[normalSizeASCII] + 4;
     }
 
-    for (uint8_t col = 0; col < fontWidth; col++) {
-        for (uint8_t row = 0; row < fontHeight; row++) {
+    for (uint8_t col = 0; col < fontWidth[normalSizeASCII]; col++) {
+        for (uint8_t row = 0; row < fontHeight[normalSizeASCII]; row++) {
             // 1. Zahl ohne Offset
             ledSetPixelForChar(col, row, offsetLetter0, offsetRow,
                                static_cast<unsigned char>(d1));
@@ -838,6 +898,12 @@ void ClockWork::clockSetClock() {
 
     clockSetMinute(_minute, offsetH, voll);
     clockSetHour(_stunde + offsetH, voll);
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::loopDigitalWatchface() {
+    ledShowDigitalClock(_minute % 10, _minute / 10, _stunde % 10, _stunde / 10);
 }
 
 //------------------------------------------------------------------------------

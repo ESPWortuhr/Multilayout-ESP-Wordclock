@@ -116,6 +116,7 @@ var COMMAND_MODE_SCROLLINGTEXT = 3;
 var COMMAND_MODE_RAINBOWCYCLE = 4;
 var COMMAND_MODE_RAINBOW = 5;
 var COMMAND_MODE_COLOR = 6;
+var COMMAND_MODE_DIGITAL = 7;
 var COMMAND_MODE_ANIMATION = 10;
 
 // other commands
@@ -704,6 +705,9 @@ $.ready(function() {
 			hasBrightness = true;
 			hasSpeed = true;
 			command = COMMAND_MODE_RAINBOW;
+		}
+		if (id === "mode-digital") {
+			command = COMMAND_MODE_DIGITAL;
 		}
 
 		setAnimation();

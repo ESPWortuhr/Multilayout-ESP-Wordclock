@@ -177,6 +177,11 @@ enum Sprachvariationen {
     NotShowItIs = 4,
 };
 
+enum fontSize {
+    normalSizeASCII = 0,
+    smallSizeNumbers = 1,
+};
+
 enum Command {
     COMMAND_IDLE = 0,
 
@@ -186,8 +191,9 @@ enum Command {
     COMMAND_MODE_RAINBOWCYCLE = 4,
     COMMAND_MODE_RAINBOW = 5,
     COMMAND_MODE_COLOR = 6,
-
+    COMMAND_MODE_DIGITAL = 7,
     COMMAND_MODE_ANIMATION = 10,
+
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
     COMMAND_SET_LANGUAGE_VARIANT = 84,
