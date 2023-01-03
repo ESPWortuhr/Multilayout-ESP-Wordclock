@@ -57,7 +57,6 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include <ESP8266mDNS.h>
 #include <Hash.h>
 #include <NeoPixelBus.h>
-#include <PubSubClient.h>
 #include <RTClib.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
@@ -97,7 +96,6 @@ NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
 
 WiFiClient client;
-PubSubClient mqttClient(client);
 
 //--OTA--
 ESP8266WebServer httpServer(81);
@@ -112,13 +110,16 @@ RTC_Type RTC;
 
 #include "Animation.h"
 #include "clockWork.h"
+#include "mqtt.h"
+
 Animation *animation;
 ClockWork clockWork;
+Mqtt mqtt;
 
 #include "Animation.hpp"
 #include "clockWork.hpp"
 #include "icons.h"
-#include "mqtt_func.hpp"
+#include "mqtt.hpp"
 #include "openwmap.h"
 #include "wifi_func.hpp"
 
@@ -412,10 +413,7 @@ void setup() {
     //-------------------------------------
 
     if (G.mqtt.state == 1) {
-        mqttClient.setServer(G.mqtt.serverAdress, G.mqtt.port);
-        mqttClient.setCallback(MQTT_callback);
-        mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
-        mqttClient.subscribe(G.mqtt.topic);
+        mqtt.init();
     }
 
     //-------------------------------------
@@ -504,10 +502,7 @@ void loop() {
     // MQTT
     //------------------------------------------------
     if (G.mqtt.state == 1 && WiFi.status() == WL_CONNECTED) {
-        if (!mqttClient.connected()) {
-            MQTT_reconnect();
-        }
-        mqttClient.loop();
+        mqtt.loop();
     }
 
     //------------------------------------------------
@@ -770,9 +765,8 @@ void loop() {
 
     case COMMAND_SET_MQTT: // MQTT Einstellungen
     {
-        if (!mqttClient.connected() && G.mqtt.state) {
-            mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
-            MQTT_reconnect();
+        if (G.mqtt.state && !mqtt.getConnected()) {
+            mqtt.reInit();
         }
         eeprom_write();
         G.conf = COMMAND_IDLE;
