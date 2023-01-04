@@ -28,8 +28,30 @@ private:
     inline void ledClearPixel(uint16_t i);
     inline void ledClearRow(uint8_t row);
     inline void ledClearFrontExeptofFontspace(uint8_t offsetRow);
-
+    inline void ledClearFrame();
     void ledShiftColumnToRight();
+    void ledShowSeconds();
+    void ledShowNumbers(const char d1, const char d2);
+    void ledSet(bool changed = false);
+    void ledSetColor();
+    void ledSetIcon(uint8_t num_icon, uint8_t brightness, bool rgb_icon);
+    void ledSetFrameColor();
+
+    void ledClear();
+    void ledSingle(uint8_t wait);
+    void ledSetAllPixels(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww);
+
+    void loopSecondsFrame();
+    void loopWeather();
+    void loopLdrLogic();
+
+    void rainbow();
+    void rainbowCycle();
+    void scrollingText(const char *buf);
+
+    bool changesInClockface();
+    void copyClockface(const uint16_t source[], uint16_t destination[]);
+    void calcClockFace();
 
     void clockSetHour(const uint8_t std, const uint8_t voll);
     void clockSetMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll);
@@ -41,36 +63,22 @@ public:
     ClockWork() = default;
     ~ClockWork() = default;
 
+    iUhrType *getPointer(uint8_t num);
+    void initLedStrip(uint8_t num);
+
+    void ledShow();
+
     RgbColor ledGetPixel(uint16_t i);
     RgbwColor ledGetPixelRgbw(uint16_t i);
 
     void ledSetPixelColorObject(uint16_t i, RgbColor color);
     void ledSetPixelColorObjectRgbw(uint16_t i, RgbwColor color);
 
-    void ledShow();
-    void ledClear();
-    inline void ledClearFrame();
-    void ledSet(bool changed = false);
+    void loop(struct tm &tm);
 
-    bool changesInClockface();
-    void copyClockface(const uint16_t source[], uint16_t destination[]);
-    void calcClockFace();
-
-    void ledSetIcon(uint8_t num_icon, uint8_t brightness, bool rgb_icon);
-    void ledSingle(uint8_t wait);
-    void ledSetAllPixels(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww);
-
-    void ledSetColor();
-    void doLDRLogic();
-    void ledSetFrameColor();
-
-    void rainbow();
-    void rainbowCycle();
-    void scrollingText(const char *buf);
-    void showIp(const char *buf);
-
-    void showWifiSignalStrength(int strength);
-    void ledShowNumbers(const char d1, const char d2);
-
-    void ledShowSeconds();
+    void initBootLed();
+    void initBootLedBlink();
+    void initBootLedSweep();
+    void initBootShowIp(const char *buf);
+    void initBootWifiSignalStrength(int strength);
 };

@@ -37,7 +37,7 @@ void WlanStart() {
     Serial.println("");
     // IP-Adresse als Laufschrift anzeigen
     if (G.bootShowIP) {
-        clockWork.showIp(ip_adress);
+        clockWork.initBootShowIp(ip_adress);
     }
 
     Serial.printf("-- Ende  WlanStart -- \n\n");
