@@ -54,8 +54,6 @@ void getweather() {
         int eol = sizeof(response);
         Serial.print("Length = ");
         Serial.println(eol);
-        // TelnetMsg("Antwort: ");
-        // TelnetMsg(response);
 
         // process JSON
         DynamicJsonDocument doc(6144);
@@ -103,7 +101,7 @@ void getweather() {
             // TelnetMsg("JSON parsing worked!");
         }
 
-        // Variable mit json Wert forecast füllen
+        // Fill Variable with json information
         const char *location = doc["city"]["name"];
         const char *wetter_6 = doc["list"][1]["weather"][0]["description"];
         const int wetterid_6 = doc["list"][1]["weather"][0]["id"];
@@ -122,13 +120,13 @@ void getweather() {
         List of Conditions http://openweathermap.org/weather-conditions
         Weather condition code (wetterid):
 
-        2xx Thunderstorm = Gewitter
-        3xx Drizzle = Nieselregen
-        5xx Rain = Regen
-        6xx Snow = Schnee
-        7xx Clouds = Warung
-        800 Clear = Klar
-        80x Clouds = Wolken
+        2xx Thunderstorm
+        3xx Drizzle
+        5xx Rain
+        6xx Snow
+        7xx Clouds (Warning)
+        800 Clear
+        80x Clouds
         --------------------------------------------------*/
 
         // Print data to Serial
@@ -175,9 +173,7 @@ void getweather() {
         Serial.println(_stunde);
         Serial.println("----------");
 
-        // Wetterdaten auf LED Matrix ausgeben
-
-        // Wetterdaten in Variable speichern
+        // Save Weatherdate to variables
         if (temp_6 >= 35) {
             wtemp_6 = 35;
         }
@@ -434,7 +430,7 @@ void getweather() {
             wwetter_24 = 801;
         }
 
-        // Tageszeit bestimmen
+        // Determine Datetime
         if ((_stunde >= 3) && (_stunde <= 9)) {
             wstunde = 1;
         }
