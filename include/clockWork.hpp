@@ -1305,7 +1305,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_WEATHER_DATA:
     case COMMAND_SET_MARQUEE_TEXT:
     case COMMAND_SET_BOOT: {
-        eeprom_write();
+        eeprom::write();
         delay(100);
         G.conf = COMMAND_IDLE;
         break;
@@ -1318,7 +1318,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_LANGUAGE_VARIANT:
     case COMMAND_SET_SETTING_SECOND:
     case COMMAND_SET_TIME_MANUAL: {
-        eeprom_write();
+        eeprom::write();
         led.clear();
         parameters_changed = true;
         G.conf = COMMAND_IDLE;
@@ -1330,7 +1330,7 @@ void ClockWork::loop(struct tm &tm) {
             mqtt.reInit();
         }
 
-        eeprom_write();
+        eeprom::write();
         G.conf = COMMAND_IDLE;
         break;
     }
@@ -1349,14 +1349,14 @@ void ClockWork::loop(struct tm &tm) {
         // the G.Colortype must be called at the same time as initLedStrip,
         // otherwise it is referenced via a null-pointer.
         G.Colortype = G.param1;
-        eeprom_write();
+        eeprom::write();
         initLedStrip(G.Colortype);
         led.setIcon(RGB_I, 100, true);
         break;
     }
 
     case COMMAND_SET_UHRTYPE: {
-        eeprom_write();
+        eeprom::write();
         Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
         usedUhrType = getPointer(G.UhrtypeDef);
         G.conf = COMMAND_IDLE;
@@ -1366,14 +1366,14 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_HOSTNAME: {
         Serial.print("Hostname: ");
         Serial.println(G.hostname);
-        eeprom_write();
+        eeprom::write();
         network.reboot();
         G.conf = COMMAND_IDLE;
         break;
     }
 
     case COMMAND_SET_WIFI_DISABLED: {
-        eeprom_write();
+        eeprom::write();
         delay(100);
         Serial.println("Conf: WLAN off");
         network.disable();
@@ -1449,7 +1449,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_ANIMATION: {
         if (G.prog_init == 1) {
             G.prog_init = 0;
-            eeprom_write();
+            eeprom::write();
             delay(100);
         }
         // There is no break here on purpose, directly after the call

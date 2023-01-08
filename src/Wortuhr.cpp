@@ -196,7 +196,7 @@ void setup() {
     //-------------------------------------
     EEPROM.begin(EEPROM_SIZE);
 
-    eeprom_read();
+    eeprom::read();
 
     if (G.sernr != SERNR) {
         for (uint16_t i = 0; i < EEPROM_SIZE; i++) {
@@ -270,7 +270,7 @@ void setup() {
         G.animColorize = 1;
         G.animDemo = false;
 
-        eeprom_write();
+        eeprom::write();
         Serial.println("eeprom schreiben");
     }
     // Initialisierung der COMMAND_MODE_xxx (Farbe)

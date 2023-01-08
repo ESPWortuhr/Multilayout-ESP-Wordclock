@@ -1,16 +1,21 @@
+#include <Arduino.h>
 #include <EEPROM.h>
 
-#include <Arduino.h> // for type definitions
+namespace eeprom {
 
-template <class T> int EEPROM_writeAnything(int ee, const T &value) {
+//------------------------------------------------------------------------------
+
+template <class T> int writeAnything(int ee, const T &value) {
     const byte *p = (const byte *)(const void *)&value;
-    unsigned int i;
+    uint32_t i;
     for (i = 0; i < sizeof(value); i++)
         EEPROM.write(ee++, *p++);
     return i;
 }
 
-template <class T> int EEPROM_readAnything(int ee, T &value) {
+//------------------------------------------------------------------------------
+
+template <class T> int readAnything(int ee, T &value) {
     byte *p = (byte *)(void *)&value;
     unsigned int i;
     for (i = 0; i < sizeof(value); i++)
@@ -20,15 +25,15 @@ template <class T> int EEPROM_readAnything(int ee, T &value) {
 
 //------------------------------------------------------------------------------
 
-void eeprom_write() {
-    EEPROM_writeAnything(0, G);
+void write() {
+    writeAnything(0, G);
     EEPROM.commit();
 }
 
 //------------------------------------------------------------------------------
 
-void eeprom_read() {
-    EEPROM_readAnything(0, G);
+void read() {
+    readAnything(0, G);
 
     Serial.printf("Version   : %s\n", VERSION);
     Serial.printf("Sernr     : %u\n", G.sernr);
@@ -92,3 +97,4 @@ void eeprom_read() {
 
     delay(100);
 }
+} // namespace eeprom
