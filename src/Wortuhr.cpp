@@ -110,15 +110,18 @@ RTC_Type RTC;
 
 #include "Animation.h"
 #include "clockWork.h"
+#include "led.h"
 #include "mqtt.h"
 
 Animation *animation;
+Led led;
 ClockWork clockWork;
 Mqtt mqtt;
 
 #include "Animation.hpp"
 #include "clockWork.hpp"
 #include "icons.h"
+#include "led.hpp"
 #include "mqtt.hpp"
 #include "wifi_func.hpp"
 
@@ -295,7 +298,7 @@ void setup() {
         delay(20);
     }
     if (G.bootLedSweep) {
-        clockWork.initBootLedSweep();
+        clockWork.initBootLedSweep(20);
     }
     clockWork.initBootLed();
 
@@ -382,7 +385,7 @@ void setup() {
     /*
     // setup frame
     if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 && G.zeige_min < 2) {
-        clockWork.ledSetFrameColor();
+        led.setFrameColor();
     }
     */
 

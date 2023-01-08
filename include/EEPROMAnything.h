@@ -62,7 +62,7 @@ void eeprom_read() {
     Serial.printf("LDR       : %u\n", G.ldr);
     Serial.printf("LDRCal    : %u\n", G.ldrCal);
     Serial.printf("Uhrtype    : %u\n", G.UhrtypeDef);
-    
+
     Serial.printf("MQTT_State    : %u\n", G.mqtt.state);
     Serial.printf("MQTT_Server    : %s\n", G.mqtt.serverAdress);
     Serial.printf("MQTT_User    : %s\n", G.mqtt.user);
