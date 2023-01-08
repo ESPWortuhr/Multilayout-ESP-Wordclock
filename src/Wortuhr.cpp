@@ -67,7 +67,7 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include "Uhr.h"
 
 #include "EEPROMAnything.h"
-#include "WebPage_Adapter.h"
+#include "webPageAdapter.h"
 
 #include "Uhrtypes/uhr_func_114.hpp"
 #include "Uhrtypes/uhr_func_114_2Clock.hpp"

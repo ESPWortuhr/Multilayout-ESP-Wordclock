@@ -25,11 +25,11 @@ const char favicon[] PROGMEM = {
     0x26, 0x21, 0xD5, 0x10, 0xB0, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E,
     0x44, 0xAE, 0x42, 0x60, 0x82};
 
-class WebPage_Adapter : public WebSocketsServer {
+class WebPageAdapter : public WebSocketsServer {
 
 public:
     // forward the port to the parent class constructor
-    WebPage_Adapter(int port) : WebSocketsServer(port) {}
+    WebPageAdapter(int port) : WebSocketsServer(port) {}
 
     /**
      * @param client WSclient_t *  ptr to the client struct
@@ -69,7 +69,7 @@ public:
                     "Connection: close\r\n"
                     //--                    "Sec-WebSocket-Version: 13\r\n"
                     "\r\n");
-                Send_HTML_Code(client, html_code, html_size);
+                sendHtmlCode(client, html_code, html_size);
             } else {
 
                 // --------------------------------
@@ -85,8 +85,8 @@ public:
         clientDisconnect(client);
     }
 
-    void Send_HTML_Code(const WSclient_t *client, const char *data,
-                        uint32_t size) const {
+    void sendHtmlCode(const WSclient_t *client, const char *data,
+                      uint32_t size) const {
         char buf[RESPONSE_SIZE];
         unsigned sent = 0;
         unsigned blen = 0;
@@ -106,7 +106,7 @@ public:
 };
 
 //-- WebSocketserver
-WebPage_Adapter webSocket = WebPage_Adapter(80);
+WebPageAdapter webSocket = WebPageAdapter(80);
 
 //------------------------------------------------------------------------------
 
@@ -174,7 +174,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         G.param1 = 0;
 
         switch (command) {
-        case COMMAND_MODE_WORD_CLOCK: { // Uhrzeit Vordergrund Farbe einstellen
+        case COMMAND_MODE_WORD_CLOCK: {
             G.prog = COMMAND_MODE_WORD_CLOCK;
             parameters_changed = true;
             G.rgb[Foreground][0] = split(payload, 3);
@@ -201,7 +201,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_SECONDS: { // Sekunden
+        case COMMAND_MODE_SECONDS: {
             G.prog = COMMAND_MODE_SECONDS;
             G.prog_init = 1;
 
@@ -253,7 +253,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_COLOR: { // Farbe
+        case COMMAND_MODE_COLOR: {
             G.prog = COMMAND_MODE_COLOR;
             G.prog_init = 1;
 
@@ -265,7 +265,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         }
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_ANIMATION: { // Animation
+        case COMMAND_MODE_ANIMATION: {
             G.prog = COMMAND_MODE_ANIMATION;
             G.prog_init = 1;
             G.animType = split(payload, 3);
@@ -282,14 +282,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SPEED: { // Geschwindigkeit
+        case COMMAND_SPEED: {
             G.geschw = split(payload, 3);
             break;
         }
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_INITIAL_VALUES: { // Startwerte speichern
+        case COMMAND_SET_INITIAL_VALUES: {
             Serial.println("Startwerte gespeichert");
             Serial.println(G.rgb[Foreground][0]);
             Serial.println(G.rgb[Foreground][1]);
@@ -301,7 +301,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_TIME: { // Uhrzeit setzen
+        case COMMAND_SET_TIME: {
             G.conf = COMMAND_SET_TIME;
             ii = 0;
             tmp[0] = '\0';
@@ -321,7 +321,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_HOSTNAME: { // Hostname speichern
+        case COMMAND_SET_HOSTNAME: {
             G.conf = COMMAND_SET_HOSTNAME;
             payloadTextHandling(payload, G.hostname);
             break;
@@ -329,7 +329,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_SETTING_SECOND: { // Anzeige Sekunden speichern
+        case COMMAND_SET_SETTING_SECOND: {
             G.conf = COMMAND_SET_SETTING_SECOND;
             G.zeige_sek = split(payload, 3);
             break;
@@ -337,7 +337,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_MINUTE: { // Anzeige Minuten speichern
+        case COMMAND_SET_MINUTE: {
             G.conf = COMMAND_SET_MINUTE;
             G.zeige_min = split(payload, 3);
             break;
@@ -345,7 +345,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_LDR: { // LDR speichern
+        case COMMAND_SET_LDR: {
             G.conf = COMMAND_SET_LDR;
             G.ldr = split(payload, 3);
             G.ldrCal = split(payload, 6);
@@ -356,7 +356,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_AUTO_LDR: { // Automatische Helligkeit
+        case COMMAND_SET_AUTO_LDR: {
             G.conf = COMMAND_SET_AUTO_LDR;
             G.autoLdrEnabled = split(payload, 3);
             G.autoLdrBright = split(payload, 6);
@@ -366,7 +366,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_LANGUAGE_VARIANT: { // LDR speichern
+        case COMMAND_SET_LANGUAGE_VARIANT: {
             G.conf = COMMAND_SET_LANGUAGE_VARIANT;
             G.Sprachvariation[ItIs15] = split(payload, 3);
             G.Sprachvariation[ItIs20] = split(payload, 6);
@@ -378,7 +378,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_MQTT: { // MQTT Daten speichern
+        case COMMAND_SET_MQTT: {
             G.conf = COMMAND_SET_MQTT;
             G.mqtt.state = split(payload, 3);
             G.mqtt.port = split(payload, 6, 5);
@@ -397,7 +397,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_TIME_MANUAL: { // Uhrzeit manuell setzen
+        case COMMAND_SET_TIME_MANUAL: {
             G.conf = COMMAND_SET_TIME_MANUAL;
             time_t old = time(nullptr);
             struct tm tm;
@@ -408,7 +408,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             struct timeval tv;
             tv.tv_sec = mktime(&tm);
             tv.tv_usec = 0;
-            Serial.println("Uhrzeit manuell eingstellt");
+            Serial.println("Time manually set");
             Serial.printf("Conf: Time: %lld\n", tv.tv_sec);
             settimeofday(&tv, nullptr);
             break;
@@ -416,7 +416,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_COLORTYPE: { // ColorType speichern
+        case COMMAND_SET_COLORTYPE: {
             G.conf = COMMAND_SET_COLORTYPE;
             G.param1 = split(payload, 3);
             break;
@@ -424,7 +424,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_UHRTYPE: { // UhrType speichern
+        case COMMAND_SET_UHRTYPE: {
             G.conf = COMMAND_SET_UHRTYPE;
             G.UhrtypeDef = split(payload, 3);
             break;
@@ -432,7 +432,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_WEATHER_DATA: { // Openweathermap speichern
+        case COMMAND_SET_WEATHER_DATA: {
             G.conf = COMMAND_SET_WEATHER_DATA;
             ii = 0;
             for (uint8_t k = 3; k < 10; k++) {
@@ -461,7 +461,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_BRIGHTNESS: { // Helligkeit speichern
+        case COMMAND_SET_BRIGHTNESS: {
             G.conf = COMMAND_SET_BRIGHTNESS;
             G.h6 = split(payload, 3);
             G.h8 = split(payload, 6);
@@ -477,7 +477,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_MARQUEE_TEXT: { // Lauftext speichern
+        case COMMAND_SET_MARQUEE_TEXT: {
             G.conf = COMMAND_SET_MARQUEE_TEXT;
             payloadTextHandling(payload, G.ltext);
             break;
@@ -485,7 +485,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_TIMESERVER: { // Zeitserver speichern
+        case COMMAND_SET_TIMESERVER: {
             G.conf = COMMAND_SET_TIMESERVER;
             payloadTextHandling(payload, G.zeitserver);
             break;
@@ -493,7 +493,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_BOOT: { // Bootoptionen speichern
+        case COMMAND_SET_BOOT: {
             G.conf = COMMAND_SET_BOOT;
             G.bootLedBlink = split(payload, 3);
             G.bootLedSweep = split(payload, 6);
@@ -503,21 +503,21 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         }
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_WIFI_DISABLED:    // WLAN ausschalten
-        case COMMAND_SET_WIFI_AND_RESTART: // WLAN-Daten löschen und neu starten
-        case COMMAND_SET_WPS_MODE:         // Aktivieren des WPS Modus
-        case COMMAND_RESET: {              // Reset
+        case COMMAND_SET_WIFI_DISABLED:
+        case COMMAND_SET_WIFI_AND_RESTART:
+        case COMMAND_SET_WPS_MODE:
+        case COMMAND_RESET: {
             G.conf = command;
             break;
         }
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_REQUEST_MQTT_VALUES:   // MQTT Config anfordern
-        case COMMAND_REQUEST_CONFIG_VALUES: // Config anfordern
-        case COMMAND_REQUEST_COLOR_VALUES:  // Farbwerte anfordern
-        case COMMAND_REQUEST_WIFI_LIST:     // Wlan Liste anfordern
-        case COMMAND_REQUEST_ANIMATION: {   // Werte fuer Animation anfordern
+        case COMMAND_REQUEST_MQTT_VALUES:
+        case COMMAND_REQUEST_CONFIG_VALUES:
+        case COMMAND_REQUEST_COLOR_VALUES:
+        case COMMAND_REQUEST_WIFI_LIST:
+        case COMMAND_REQUEST_ANIMATION: {
             G.conf = command;
             G.client_nr = num;
             break;
@@ -525,7 +525,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_REQUEST_AUTO_LDR: { // Werte fuer Auto Helligkeit anfordern
+        case COMMAND_REQUEST_AUTO_LDR: {
             G.param1 = split(payload, 3);
             G.conf = command;
             G.client_nr = num;
