@@ -57,7 +57,6 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include <ESP8266mDNS.h>
 #include <Hash.h>
 #include <NeoPixelBus.h>
-#include <PubSubClient.h>
 #include <RTClib.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
@@ -97,7 +96,6 @@ NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
 
 WiFiClient client;
-PubSubClient mqttClient(client);
 
 //--OTA--
 ESP8266WebServer httpServer(81);
@@ -111,73 +109,30 @@ const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
 RTC_Type RTC;
 
 #include "Animation.h"
-#include "font.h"
-#include "icons.h"
-#include "mqtt_func.hpp"
-#include "openwmap.h"
-#include "uhr_func.hpp"
-#include "wifi_func.hpp"
-
-#include "Animation.hpp"
+#include "clockWork.h"
+#include "led.h"
+#include "mqtt.h"
+#include "network.h"
 
 Animation *animation;
+Led led;
+ClockWork clockWork;
+Mqtt mqtt;
+Network network;
+
+#include "Animation.hpp"
+#include "clockWork.hpp"
+#include "icons.h"
+#include "led.hpp"
+#include "mqtt.hpp"
+#include "network.hpp"
+#include "wifi_func.hpp"
 
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) <= EEPROM_SIZE,
                "Datenstruktur G zu gross für reservierten EEPROM Bereich");
-//------------------------------------------------------------------------------
-
-iUhrType *getPointer(uint8_t num) {
-    switch (num) {
-    case 1:
-        return reinterpret_cast<iUhrType *>(&Uhr_114_type);
-    case 2:
-        return reinterpret_cast<iUhrType *>(&Uhr_114_Alternative_type);
-    case 6:
-        return reinterpret_cast<iUhrType *>(&Uhr_114_2Clock_type);
-    case 9:
-        return reinterpret_cast<iUhrType *>(&Uhr_114_dutch_type);
-    case 3:
-        return reinterpret_cast<iUhrType *>(&Uhr_125_type);
-    case 8:
-        return reinterpret_cast<iUhrType *>(&Uhr_125_type2_type);
-    case 4:
-        return reinterpret_cast<iUhrType *>(&Uhr_169_type);
-    case 5:
-        return reinterpret_cast<iUhrType *>(&Uhr_242_type);
-    case 7:
-        return reinterpret_cast<iUhrType *>(&Uhr_291_type);
-    default:
-        return nullptr;
-    }
-}
 
 //------------------------------------------------------------------------------
-
-void InitLedStrip(uint8_t num) {
-    NeoMultiFeature::setColortype(num);
-    if (num == Grbw) {
-        if (strip_RGB != NULL) {
-            delete strip_RGB; // delete the previous dynamically created strip
-            strip_RGB = NULL;
-        }
-        if (strip_RGBW == NULL) {
-            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
-                usedUhrType->NUM_PIXELS());
-            strip_RGBW->Begin();
-        }
-    } else {
-        if (strip_RGBW != NULL) {
-            delete strip_RGBW; // delete the previous dynamically created strip
-            strip_RGBW = NULL;
-        }
-        if (strip_RGB == NULL) {
-            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(
-                usedUhrType->NUM_PIXELS());
-            strip_RGB->Begin();
-        }
-    }
-}
 
 uint32_t sntp_startup_delay_MS_rfc_not_less_than_60000() {
     if (externalRTC) {
@@ -190,6 +145,8 @@ uint32_t sntp_startup_delay_MS_rfc_not_less_than_60000() {
         return 500;
     }
 }
+
+//------------------------------------------------------------------------------
 
 void time_is_set() {
     time_t utc = time(nullptr);
@@ -270,8 +227,8 @@ void setup() {
         G.zeige_min = 1;
         G.ldr = 0;
         G.ldrCal = 0;
-        strcpy(G.cityid, "");
-        strcpy(G.apikey, "");
+        strcpy(G.openWeatherMap.cityid, "");
+        strcpy(G.openWeatherMap.apikey, "");
         strcpy(G.zeitserver, "europe.pool.ntp.org");
         strcpy(G.hostname, "uhr");
         strcpy(G.ltext, "HELLO WORLD ");
@@ -289,13 +246,13 @@ void setup() {
             G.Sprachvariation[i] = false;
         }
 
-        G.MQTT_State = 0;
-        G.MQTT_Port = 1883;
-        strcpy(G.MQTT_Server, "192.168.4.1");
-        strcpy(G.MQTT_User, "User");
-        strcpy(G.MQTT_Pass, "Passwort");
-        strcpy(G.MQTT_ClientId, "ClientId");
-        strcpy(G.MQTT_Topic, "Wortuhr");
+        G.mqtt.state = 0;
+        G.mqtt.port = 1883;
+        strcpy(G.mqtt.serverAdress, "192.168.4.1");
+        strcpy(G.mqtt.user, "User");
+        strcpy(G.mqtt.password, "Passwort");
+        strcpy(G.mqtt.clientId, "ClientId");
+        strcpy(G.mqtt.topic, "Wortuhr");
 
         G.UhrtypeDef = DEFAULT_LAYOUT;
         G.Colortype = DEFAULT_LEDTYPE;
@@ -323,7 +280,7 @@ void setup() {
     // Get Pointer for Uhrtype
     //-------------------------------------
 
-    usedUhrType = getPointer(G.UhrtypeDef);
+    usedUhrType = clockWork.getPointer(G.UhrtypeDef);
 
     // Bereich der animiert wird:
     //     LED-Rahmen horizontal
@@ -338,17 +295,15 @@ void setup() {
     // LEDs initialisieren
     //-------------------------------------
     Serial.println("LED Init");
-    InitLedStrip(G.Colortype);
+    clockWork.initLedStrip(G.Colortype);
     if (G.bootLedBlink) {
-        led_set_all(0x40, 0x40, 0x40, 0x40);
-        led_show();
+        clockWork.initBootLedBlink();
         delay(20);
     }
     if (G.bootLedSweep) {
-        led_single(20);
+        clockWork.initBootLedSweep(20);
     }
-    led_clear();
-    led_show();
+    clockWork.initBootLed();
 
     G.conf = COMMAND_IDLE;
 
@@ -361,7 +316,7 @@ void setup() {
         struct timeval tv;
         tv.tv_sec = RTC.now().unixtime();
         settimeofday(&tv, nullptr);
-        Network_rtcMode();
+        network.rtcMode();
         externalRTC = true;
     } else {
         Serial.println("No external RealtimeClock found");
@@ -381,13 +336,13 @@ void setup() {
     // Start WiFi
     //-------------------------------------
     if (G.bootShowWifi) {
-        show_icon_wlan(0);
+        clockWork.initBootWifiSignalStrength(0);
     }
-    Network_setup(G.hostname);
-    int strength = Network_getQuality();
+    network.setup(G.hostname);
+    int strength = network.getQuality();
     Serial.printf("Signal strength: %i\n", strength);
     if (G.bootShowWifi) {
-        show_icon_wlan(strength);
+        clockWork.initBootWifiSignalStrength(strength);
     }
     WlanStart();
     configTime(0, 0, G.zeitserver);
@@ -411,11 +366,8 @@ void setup() {
     // MQTT
     //-------------------------------------
 
-    if (G.MQTT_State == 1) {
-        mqttClient.setServer(G.MQTT_Server, G.MQTT_Port);
-        mqttClient.setCallback(MQTT_callback);
-        mqttClient.connect(G.MQTT_ClientId, G.MQTT_User, G.MQTT_Pass);
-        mqttClient.subscribe(G.MQTT_Topic);
+    if (G.mqtt.state == 1) {
+        mqtt.init();
     }
 
     //-------------------------------------
@@ -433,10 +385,12 @@ void setup() {
     MDNS.addService("http", "tcp", 80);
     MDNS.addService("http", "tcp", 81);
 
+    /*
     // setup frame
     if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 && G.zeige_min < 2) {
-        set_farbe_rahmen();
+        led.setFrameColor();
     }
+    */
 
     //-------------------------------------
     Serial.println("--------------------------------------");
@@ -475,13 +429,6 @@ void setup() {
 //------------------------------------------------------------------------------
 
 void loop() {
-    unsigned long currentMillis = millis();
-    count_delay += currentMillis - previousMillis;
-    if (usedUhrType->hasSecondsFrame()) {
-        count_millis48 += currentMillis - previousMillis;
-    }
-    previousMillis = currentMillis;
-
     time_t utc = time(nullptr);
     struct tm tm;
     localtime_r(&utc, &tm);
@@ -491,8 +438,7 @@ void loop() {
         _stunde = tm.tm_hour;
     }
 
-    // lass die Zeit im Demo Mode der Animation schneller ablaufen
-    animation->demoMode(_minute, _sekunde);
+    network.loop();
 
     MDNS.update();
 
@@ -503,447 +449,14 @@ void loop() {
     //------------------------------------------------
     // MQTT
     //------------------------------------------------
-    if (G.MQTT_State == 1 && WiFi.status() == WL_CONNECTED) {
-        if (!mqttClient.connected()) {
-            MQTT_reconnect();
-        }
-        mqttClient.loop();
-    }
-
-    //------------------------------------------------
-    // SecondsFrame
-    //------------------------------------------------
-    if (usedUhrType->hasSecondsFrame()) {
-        if (count_millis48 >= interval48) {
-            count_millis48 = 0;
-            _sekunde48++;
-            if (_sekunde48 > 47) {
-                _sekunde48 = 0;
-            }
-        }
-        if (last_sekunde48 != _sekunde48) {
-            if (G.prog == 0 && G.conf == 0) {
-                if (G.zeige_sek == 1 || G.zeige_min == 2) {
-                    rahmen_clear();
-                }
-                if (G.zeige_sek > 0) {
-                    show_sekunde();
-                }
-                led_show();
-            }
-            last_sekunde48 = _sekunde48;
-        }
-    }
-
-    //------------------------------------------------
-    // Sekunde und LDR Regelung
-    //------------------------------------------------
-    if (last_sekunde != _sekunde) {
-
-        // Wetteruhr
-        if (usedUhrType->hasWeatherLayout()) {
-            weather_tag++;
-        }
-
-        //--- LDR Regelung
-        if ((G.ldr == 1) || G.autoLdrEnabled) {
-            doLDRLogic();
-        }
-
-        if (G.prog == 0 && G.conf == 0) {
-            led_clear();
-            G.prog = COMMAND_MODE_WORD_CLOCK;
-        }
-        last_sekunde = _sekunde;
-
-        if (usedUhrType->hasWeatherLayout()) {
-            if ((_sekunde == 0) | (_sekunde == 10) | (_sekunde == 20) |
-                (_sekunde == 30) | (_sekunde == 40) | (_sekunde == 50)) {
-                wetterswitch++;
-                led_clear();
-                if (wetterswitch > 4) {
-                    wetterswitch = 1;
-                }
-                Serial.print("Wetterswitch: ");
-                Serial.println(wetterswitch);
-                Serial.print("WStunde: ");
-                Serial.println(wstunde);
-            }
-        }
-
-        char currentTime[80];
-        strftime(currentTime, sizeof(currentTime), "%F %T (%z)\n", &tm);
-        Serial.printf(currentTime);
+    if (G.mqtt.state == 1 && WiFi.status() == WL_CONNECTED) {
+        mqtt.loop();
     }
 
     animation->loop(tm); // muss periodisch aufgerufen werden
 
-    //------------------------------------------------
-    // Minute
-    //------------------------------------------------
-    if (last_minute != _minute) {
-        _sekunde48 = 0;
-        last_minute = _minute;
-    }
+    // lass die Zeit im Demo Mode der Animation schneller ablaufen
+    animation->demoMode(_minute, _sekunde);
 
-    //------------------------------------------------
-    // Wetterdaten abrufen
-    //------------------------------------------------
-    if (usedUhrType->hasWeatherLayout() &&
-        weather_tag >= 600) { // Eisbaeeer changed for Debug (soll 600)
-        weather_tag = 0;
-        if (WiFi.status() == WL_CONNECTED) {
-            getweather();
-        }
-    }
-
-    Network_loop();
-
-    switch (G.conf) {
-
-    case COMMAND_RESET: // Reset
-    {
-        delay(500);
-        ESP.reset();
-        ESP.restart();
-        while (true) {
-        }
-        break;
-    }
-
-    case COMMAND_REQUEST_MQTT_VALUES: // MQTT Config Senden
-    {
-        DynamicJsonDocument config(1024);
-        config["command"] = "mqtt";
-        config["MQTT_State"] = G.MQTT_State;
-        config["MQTT_Port"] = G.MQTT_Port;
-        config["MQTT_Server"] = G.MQTT_Server;
-        config["MQTT_User"] = G.MQTT_User;
-        config["MQTT_Pass"] = G.MQTT_Pass;
-        config["MQTT_ClientId"] = G.MQTT_ClientId;
-        config["MQTT_Topic"] = G.MQTT_Topic;
-        serializeJson(config, str);
-        Serial.print("Sending Payload:");
-        Serial.println(str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_REQUEST_CONFIG_VALUES: // Config Senden
-    {
-        DynamicJsonDocument config(1024);
-        config["command"] = "config";
-        config["ssid"] = Network_getSSID();
-        config["zeitserver"] = G.zeitserver;
-        config["hostname"] = G.hostname;
-        config["ltext"] = G.ltext;
-        config["h6"] = G.h6;
-        config["h8"] = G.h8;
-        config["h12"] = G.h12;
-        config["h16"] = G.h16;
-        config["h18"] = G.h18;
-        config["h20"] = G.h20;
-        config["h22"] = G.h22;
-        config["h24"] = G.h24;
-        for (uint8_t i = 0; i < 5; i++) {
-            sprintf(s, "spv%d", i);
-            config[s] = static_cast<uint8_t>(G.Sprachvariation[i]);
-        }
-        config["hell"] = G.hell;
-        config["zeige_sek"] = G.zeige_sek;
-        config["zeige_min"] = G.zeige_min;
-        config["ldr"] = G.ldr;
-        config["ldrCal"] = G.ldrCal;
-        config["cityid"] = G.cityid;
-        config["apikey"] = G.apikey;
-        config["colortype"] = G.Colortype;
-        config["UhrtypeDef"] = G.UhrtypeDef;
-        config["bootLedBlink"] = G.bootLedBlink;
-        config["bootLedSweep"] = G.bootLedSweep;
-        config["bootShowWifi"] = G.bootShowWifi;
-        config["bootShowIP"] = G.bootShowIP;
-        config["autoLdrEnabled"] = G.autoLdrEnabled;
-        config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
-        config["hasZwanzig"] = usedUhrType->hasZwanzig();
-        config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
-        config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
-        serializeJson(config, str);
-        Serial.print("Sending Payload:");
-        Serial.println(str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_REQUEST_COLOR_VALUES: // Config Farbwerte senden
-    {
-        DynamicJsonDocument config(1024);
-        config["command"] = "set";
-        for (uint8_t i = 0; i < 4; i++) {
-            for (uint8_t ii = 0; ii < 4; ii++) {
-                sprintf(s, "rgb%d%d", i, ii);
-                config[s] = G.rgb[i][ii];
-            }
-        }
-        config["hell"] = G.hell;
-        config["geschw"] = G.geschw;
-        config["colortype"] = G.Colortype;
-        config["prog"] = G.prog;
-        serializeJson(config, str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_REQUEST_AUTO_LDR: // Automatische Helligkeit
-    {
-        DynamicJsonDocument config(1024);
-        config["command"] = "autoLdr";
-        if (G.param1 == 0) {
-            config["autoLdrEnabled"] = G.autoLdrEnabled;
-            config["autoLdrBright"] = G.autoLdrBright;
-            config["autoLdrDark"] = G.autoLdrDark;
-        }
-        config["autoLdrValue"] = map(analogRead(A0), 0, 1023, 0, 255);
-        serializeJson(config, str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_REQUEST_ANIMATION: // Animation
-    {
-        DynamicJsonDocument config(1024);
-        config["command"] = "animation";
-        config["animType"] = G.animType;
-        config["animDuration"] = G.animDuration;
-        config["animSpeed"] = G.animSpeed;
-        config["animDemo"] = G.animDemo;
-        config["animColorize"] = G.animColorize;
-        JsonArray types = config.createNestedArray("animTypes");
-        // Reihenfolge muss zu enum Ani passen!
-        types.add("keine");
-        types.add("Hoch rollen");
-        types.add("Runter rollen");
-        types.add("Links schieben");
-        types.add("Rechts schieben");
-        types.add("Überblenden");
-        types.add("Laser");
-        types.add("Matrix");
-        types.add("Baelle");
-        types.add("Feuerwerk");
-        types.add("Schlange");
-        types.add("zufällig");
-        serializeJson(config, str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_SET_TIME:           // Uhrzeit setzen
-    case COMMAND_SET_INITIAL_VALUES: // Startwerte speichern
-    case COMMAND_SET_WEATHER_DATA:   // OpenWeathermap Einstellung speichern
-    case COMMAND_SET_MARQUEE_TEXT:   // Lauftext speichern
-    case COMMAND_SET_BOOT:           // Bootoptionen speichern
-    {
-        eeprom_write();
-        delay(100);
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_SET_MINUTE:           // Anzeige Minuten speichern
-    case COMMAND_SET_BRIGHTNESS:       // Helligkeit speichern
-    case COMMAND_SET_LDR:              // LDR Einstellung speichern
-    case COMMAND_SET_AUTO_LDR:         // Auto LDR Parameter speichern
-    case COMMAND_SET_LANGUAGE_VARIANT: // Sprachvarianten Einstellungen
-    case COMMAND_SET_SETTING_SECOND:   // Anzeige Sekunde speichern
-    case COMMAND_SET_TIME_MANUAL:      // Uhrzeit manuell einstellen
-    {
-        eeprom_write();
-        led_clear();
-        parameters_changed = true;
-        G.prog = COMMAND_MODE_WORD_CLOCK;
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_SET_MQTT: // MQTT Einstellungen
-    {
-        if (!mqttClient.connected() && G.MQTT_State) {
-            mqttClient.connect(G.MQTT_ClientId, G.MQTT_User, G.MQTT_Pass);
-            MQTT_reconnect();
-        }
-        eeprom_write();
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_SET_COLORTYPE: // Colortype der LED einstellen
-    {
-        // G.param1 enthält den neuen Colortype
-        Serial.printf("LED Colortype: %u\n", G.param1);
-
-        // if ((G.param1 != G.Colortype) && ((G.param1 == Grbw) ||
-        //    (G.Colortype == Grbw))) {
-        //    G.conf = COMMAND_RESET;
-        // } else {
-        G.conf = COMMAND_IDLE;
-        // }
-
-        // der G.Colortype muss zeitgleich zu InitLedStrip erfolgen,
-        // sonst wird über einen null-pointer referenziert
-        G.Colortype = G.param1;
-        eeprom_write();
-        InitLedStrip(G.Colortype);
-        led_set_Icon(RGB_I, 100, true);
-        break;
-    }
-
-    case COMMAND_SET_UHRTYPE: // Uhrtype Layout einstellen
-    {
-        eeprom_write();
-        Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
-        usedUhrType = getPointer(G.UhrtypeDef);
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_SET_HOSTNAME: // Hostname speichern
-    {
-        Serial.print("Hostname: ");
-        Serial.println(G.hostname);
-        eeprom_write();
-        Network_reboot();
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_SET_WIFI_DISABLED: // WLAN-Daten speichern und neu starten
-    {
-        eeprom_write();
-        delay(100);
-        Serial.println("Conf: WLAN Abgeschaltet");
-        Network_disable();
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    case COMMAND_SET_WIFI_AND_RESTART: // WLAN-Daten speichern und neu starten
-    {
-        Serial.println("Conf: WLAN neu konfiguriert");
-        Network_resetSettings();
-        G.conf = COMMAND_IDLE;
-        break;
-    }
-
-    default:
-        break;
-    }
-
-    switch (G.prog) {
-
-    case COMMAND_MODE_SECONDS: // Sekundenanzeige
-    {
-        if (G.prog_init == 1) {
-            led_clear();
-            G.prog_init = 0;
-        }
-        char d1[5];
-        char d2[5];
-        sprintf(d1, "%d", (int)(_sekunde / 10));
-        sprintf(d2, "%d", (int)(_sekunde % 10));
-        zahlen(d1[0], d2[0]);
-        break;
-    }
-
-    case COMMAND_MODE_MARQUEE: // Laufschriftanzeige
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            led_clear();
-            count_delay = (G.geschw + 1) * 20;
-        }
-        if (count_delay >= (G.geschw + 1u) * 20u) {
-            laufschrift(G.ltext);
-            count_delay = 0;
-        }
-        break;
-    }
-
-    case COMMAND_MODE_RAINBOW: // Regenbogenanzeige
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            uhr_clear();
-            count_delay = G.geschw * 7 + 1;
-        }
-        if (count_delay >= G.geschw * 7u + 1u) {
-            rainbowCycle();
-            count_delay = 0;
-        }
-        break;
-    }
-
-    case COMMAND_MODE_CHANGE: // Farbwechselanzeige
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            led_clear();
-            count_delay = G.geschw * 7 + 1;
-        }
-        if (count_delay >= G.geschw * 7u + 1u) {
-            rainbow();
-            count_delay = 0;
-        }
-        break;
-    }
-
-    case COMMAND_MODE_COLOR: // Farbe Rahmen
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            set_farbe();
-            led_show();
-        }
-        break;
-    }
-
-    case COMMAND_MODE_ANIMATION: // Animation
-    {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
-            eeprom_write();
-            delay(100);
-        }
-        // Hier ist mit Absicht kein break, direkt nach dem Call
-        // COMMAND_MODE_ANIMATION muss COMMAND_MODE_WORD_CLOCK aufgerufen
-        // werden.
-    }
-
-    case COMMAND_MODE_WORD_CLOCK: {
-        calc_word_array();
-
-        if (changes_in_array()) {
-            copy_array(Word_array, Word_array_old);
-            led_set(true);
-        } else if (parameters_changed) {
-            led_set();
-        }
-        parameters_changed = false;
-
-        if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 &&
-            G.zeige_min < 2) {
-            set_farbe_rahmen();
-        }
-        G.prog = COMMAND_IDLE;
-    }
-    default:
-        break;
-    }
-
-    if (count_delay > 10000) {
-        count_delay = 0;
-    }
+    clockWork.loop(tm);
 }

@@ -1,9 +1,46 @@
-#pragma once
-// ===========================================================
-// Callback Funktion von MQTT. Die Funktion wird aufgerufen
-// wenn ein Wert empfangen wurde.
-// ===========================================================
-void MQTT_callback(char *topic, byte *payload, unsigned int length) {
+
+#include "Uhr.h"
+#include "mqtt.h"
+#include <ArduinoJson.h>
+#include <PubSubClient.h>
+#include <WiFiClient.h>
+
+extern WiFiClient client;
+
+PubSubClient mqttClient(client);
+
+//------------------------------------------------------------------------------
+
+void Mqtt::init() {
+    mqttClient.setServer(G.mqtt.serverAdress, G.mqtt.port);
+    mqttClient.setCallback(callback);
+    mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
+    mqttClient.subscribe(G.mqtt.topic);
+}
+
+//------------------------------------------------------------------------------
+
+void Mqtt::reInit() {
+    mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
+    reconnect();
+}
+
+//------------------------------------------------------------------------------
+
+bool Mqtt::getConnected() { return mqttClient.connected(); }
+
+//------------------------------------------------------------------------------
+
+void Mqtt::loop() {
+    if (!mqttClient.connected()) {
+        reconnect();
+    }
+    mqttClient.loop();
+}
+
+//------------------------------------------------------------------------------
+
+void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     //{"state": "on", "brightness": 255, "color": [255, 255, 255], "effect":
     //"rainbow"}
     StaticJsonDocument<200> doc;
@@ -38,11 +75,11 @@ void MQTT_callback(char *topic, byte *payload, unsigned int length) {
         } else if (str_buffer.compare("Sekundenanzeige")) {
             G.prog = COMMAND_MODE_SECONDS;
         } else if (str_buffer.compare("Laufschrift")) {
-            G.prog = COMMAND_MODE_MARQUEE;
+            G.prog = COMMAND_MODE_SCROLLINGTEXT;
         } else if (str_buffer.compare("Regenbogen")) {
-            G.prog = COMMAND_MODE_RAINBOW;
+            G.prog = COMMAND_MODE_RAINBOWCYCLE;
         } else if (str_buffer.compare("Farbwechsel")) {
-            G.prog = COMMAND_MODE_CHANGE;
+            G.prog = COMMAND_MODE_RAINBOW;
         } else if (str_buffer.compare("Farbe")) {
             G.prog = COMMAND_MODE_COLOR;
         }
@@ -58,7 +95,9 @@ void MQTT_callback(char *topic, byte *payload, unsigned int length) {
     }
 }
 
-void MQTT_reconnect() {
-    mqttClient.subscribe(G.MQTT_Topic);
+//------------------------------------------------------------------------------
+
+void Mqtt::reconnect() {
+    mqttClient.subscribe(G.mqtt.topic);
     Serial.println("MQTT Connected...");
 }

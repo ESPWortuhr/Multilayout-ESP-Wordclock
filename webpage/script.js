@@ -112,9 +112,9 @@ var animDemo = false;
 // operation modes
 var COMMAND_MODE_WORD_CLOCK = 1;
 var COMMAND_MODE_SECONDS = 2;
-var COMMAND_MODE_MARQUEE = 3;
-var COMMAND_MODE_RAINBOW = 4;
-var COMMAND_MODE_CHANGE = 5;
+var COMMAND_MODE_SCROLLINGTEXT = 3;
+var COMMAND_MODE_RAINBOWCYCLE = 4;
+var COMMAND_MODE_RAINBOW = 5;
 var COMMAND_MODE_COLOR = 6;
 var COMMAND_MODE_ANIMATION = 10;
 
@@ -418,7 +418,7 @@ function changeColor(color) {
 	rgb[color.index][1] = color.green;
 	rgb[color.index][2] = color.blue;
 	rgb[color.index][3] = Math.round(255 * (1.0 - color.alpha));
-	sendData(command, nstr(1));
+	sendColorData(command, nstr(1));
 }
 
 function createColorPicker() {
@@ -440,14 +440,6 @@ function createColorPicker() {
 	// attach extra attribute to the alpha slider to only show it for RGBW LEDs
 	const alphaSlider = colorPicker.el.lastElementChild.lastElementChild;
 	alphaSlider.classList.add("specific-colortype-4");
-}
-
-/**
- * Gets all the values from the sliders and puts them in the config variables.
- */
-function getSliders() {
-	hell = $("#slider-brightness").get("value");
-	geschw = $("#slider-speed").get("value");
 }
 
 /**
@@ -505,7 +497,7 @@ function toggleBackground() {
 		rgb[COLOR_BACKGROUND][3] = 0;
 	}
 	setColorPicker(withBackground);
-	sendData(command, nstr(1));
+	sendColorData(command, nstr(1));
 }
 
 /**
@@ -573,27 +565,37 @@ function getPaddedString(string, maxStringLength) {
 	return string.padEnd(maxStringLength, " ");
 }
 
-function sendData(command, addData = "") {
-	var data = nstr(command) +
-        nstr(rgb[COLOR_FOREGROUND][0]) +
-        nstr(rgb[COLOR_FOREGROUND][1]) +
-        nstr(rgb[COLOR_FOREGROUND][2]) +
-        nstr(rgb[COLOR_FOREGROUND][3]) +
-        nstr(rgb[COLOR_BACKGROUND][0]) +
-        nstr(rgb[COLOR_BACKGROUND][1]) +
-        nstr(rgb[COLOR_BACKGROUND][2]) +
-        nstr(rgb[COLOR_BACKGROUND][3]) +
-        nstr(hell) +
-        nstr(geschw) + addData + "999";
-
-	websocket.send(data);
-	debugMessage("Send data: ", data);
-}
-
 function sendCmd(command, addData = "") {
 	var data = nstr(command) + addData + "999";
 	websocket.send(data);
 	debugMessage("Send data: ", data);
+}
+
+function sendBrightnessData(command, addData = "") {
+	h6 = $("#brightness-6").get("value");
+	h8 = $("#brightness-8").get("value");
+	h12 = $("#brightness-12").get("value");
+	h16 = $("#brightness-16").get("value");
+	h18 = $("#brightness-18").get("value");
+	h20 = $("#brightness-20").get("value");
+	h22 = $("#brightness-22").get("value");
+	h24 = $("#brightness-24").get("value");
+
+	sendCmd(COMMAND_SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + nstr(hell));
+	debugMessage("Helligkeit wurde neu konfiguriert");
+}
+
+function sendColorData(command, addData = "") {
+	sendCmd(command, nstr(rgb[COLOR_FOREGROUND][0]) +
+	nstr(rgb[COLOR_FOREGROUND][1]) +
+	nstr(rgb[COLOR_FOREGROUND][2]) +
+	nstr(rgb[COLOR_FOREGROUND][3]) +
+	nstr(rgb[COLOR_BACKGROUND][0]) +
+	nstr(rgb[COLOR_BACKGROUND][1]) +
+	nstr(rgb[COLOR_BACKGROUND][2]) +
+	nstr(rgb[COLOR_BACKGROUND][3]) +
+	nstr(hell) +
+	nstr(geschw));
 }
 
 $.ready(function() {
@@ -691,17 +693,17 @@ $.ready(function() {
 		if (id === "mode-marquee") {
 			hasSpeed = true;
 			hasText = true;
-			command = COMMAND_MODE_MARQUEE;
+			command = COMMAND_MODE_SCROLLINGTEXT;
 		}
 		if (id === "mode-rainbow") {
 			hasBrightness = true;
 			hasSpeed = true;
-			command = COMMAND_MODE_RAINBOW;
+			command = COMMAND_MODE_RAINBOWCYCLE;
 		}
 		if (id === "mode-change") {
 			hasBrightness = true;
 			hasSpeed = true;
-			command = COMMAND_MODE_CHANGE;
+			command = COMMAND_MODE_RAINBOW;
 		}
 
 		setAnimation();
@@ -745,7 +747,7 @@ $.ready(function() {
 			});
 		}
 
-		sendData(command);
+		sendColorData(command);
 		setSliders();
 		setColors();
 	});
@@ -754,12 +756,13 @@ $.ready(function() {
 		var id = $(this).get("id");
 
 		if (sleep === 0) {
-			getSliders();
 			if (id === "slider-brightness") {
-				sendData(COMMAND_BRIGHTNESS);
+				hell = $("#slider-brightness").get("value");
+				sendBrightnessData(COMMAND_SET_BRIGHTNESS);
 			}
 			if (id === "slider-speed") {
-				sendData(COMMAND_SPEED);
+				geschw = $("#slider-speed").get("value");
+				sendCmd(COMMAND_SPEED, nstr(geschw));
 			}
 			setSliders();
 
@@ -830,17 +833,7 @@ $.ready(function() {
 		debugMessage("Lauftext wurde neu konfiguriert");
 	});
 	$("[id*='brightness']").on("change", function() {
-		h6 = $("#brightness-6").get("value");
-		h8 = $("#brightness-8").get("value");
-		h12 = $("#brightness-12").get("value");
-		h16 = $("#brightness-16").get("value");
-		h18 = $("#brightness-18").get("value");
-		h20 = $("#brightness-20").get("value");
-		h22 = $("#brightness-22").get("value");
-		h24 = $("#brightness-24").get("value");
-
-		sendCmd(COMMAND_SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24));
-		debugMessage("Helligkeit wurde neu konfiguriert");
+		sendBrightnessData(COMMAND_SET_BRIGHTNESS);
 	});
 	$("#weather-button").on("click", function() {
 

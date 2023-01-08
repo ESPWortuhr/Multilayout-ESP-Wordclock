@@ -242,7 +242,7 @@ void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
     for (int r = 0; r < max_rows; r++) {
         for (int c = 0; c < max_cols; c++) {
             if (source == STRIPE) {
-                color = led_get_pixel(
+                color = led.getPixel(
                     usedUhrType->getFrontMatrix(r + row_start, c + col_start));
             } else {
                 color = source[r][c];
@@ -293,21 +293,21 @@ void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
 void Animation::set_minutes() {
     if (G.zeige_min > 0) {
         uint8_t m = lastMinute % 5;
-        led_set_pixel_Color_Object(usedUhrType->getMinArr(G.zeige_min - 1, 0),
-                                   m > 0 ? foregroundMinute : background);
-        led_set_pixel_Color_Object(usedUhrType->getMinArr(G.zeige_min - 1, 1),
-                                   m > 1 ? foregroundMinute : background);
-        led_set_pixel_Color_Object(usedUhrType->getMinArr(G.zeige_min - 1, 2),
-                                   m > 2 ? foregroundMinute : background);
-        led_set_pixel_Color_Object(usedUhrType->getMinArr(G.zeige_min - 1, 3),
-                                   m > 3 ? foregroundMinute : background);
+        led.setPixelColorObject(usedUhrType->getMinArr(G.zeige_min - 1, 0),
+                                m > 0 ? foregroundMinute : background);
+        led.setPixelColorObject(usedUhrType->getMinArr(G.zeige_min - 1, 1),
+                                m > 1 ? foregroundMinute : background);
+        led.setPixelColorObject(usedUhrType->getMinArr(G.zeige_min - 1, 2),
+                                m > 2 ? foregroundMinute : background);
+        led.setPixelColorObject(usedUhrType->getMinArr(G.zeige_min - 1, 3),
+                                m > 3 ? foregroundMinute : background);
     }
 }
 // Ueberschreibe die LEDs mit interner Matrix
 void Animation::copy2Stripe(RgbfColor **source) {
     for (uint8_t row = 0; row < max_rows; row++) {
         for (uint8_t col = 0; col < max_cols; col++) {
-            led_set_pixel_Color_Object(
+            led.setPixelColorObject(
                 usedUhrType->getFrontMatrix(row + row_start, col + col_start),
                 source[row][col]);
         }
@@ -404,7 +404,7 @@ void Animation::loop(struct tm &tm) {
                 copyMatrix(work, act);
                 colorize(work);
                 copy2Stripe(work);
-                led_show();
+                led.show();
             }
         } else {
             if ((animType != lastAnimType) ||
@@ -466,7 +466,7 @@ void Animation::loop(struct tm &tm) {
             }
             animColorChange();
             copy2Stripe(work);
-            led_show();
+            led.show();
         }
     }
 }
