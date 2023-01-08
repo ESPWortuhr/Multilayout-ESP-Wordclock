@@ -1,15 +1,22 @@
 #pragma once
 
-#include <Arduino.h>
+class Network {
+private:
+    const char *connectionSSID = "WortUhr_verbinden";
 
-void Network_info();
-int Network_getQuality();
-void Network_disable();
-void Network_reboot();
-void Network_resetSettings();
-String Network_getSSID();
-void Network_rtcMode();
-void Network_changeHostname(const char *hostname);
+public:
+    Network(/* args */) = default;
+    ~Network() = default;
 
-void Network_setup(const char *hostname);
-void Network_loop();
+    void info();
+    int getQuality();
+    void disable();
+    void reboot();
+    void resetSettings();
+    String getSSID();
+    void rtcMode();
+    void changeHostname(const char *hostname);
+
+    void setup(const char *hostname);
+    void loop();
+};

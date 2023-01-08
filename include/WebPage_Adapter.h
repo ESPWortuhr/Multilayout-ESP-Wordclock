@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Network.h"
 #include "Uhr.h"
 #include "WebPageContent.h"
 #include "WebSocketsServer.h"

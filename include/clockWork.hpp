@@ -1196,7 +1196,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_CONFIG_VALUES: {
         DynamicJsonDocument config(1024);
         config["command"] = "config";
-        config["ssid"] = Network_getSSID();
+        config["ssid"] = network.getSSID();
         config["zeitserver"] = G.zeitserver;
         config["hostname"] = G.hostname;
         config["ltext"] = G.ltext;
@@ -1367,7 +1367,7 @@ void ClockWork::loop(struct tm &tm) {
         Serial.print("Hostname: ");
         Serial.println(G.hostname);
         eeprom_write();
-        Network_reboot();
+        network.reboot();
         G.conf = COMMAND_IDLE;
         break;
     }
@@ -1376,14 +1376,14 @@ void ClockWork::loop(struct tm &tm) {
         eeprom_write();
         delay(100);
         Serial.println("Conf: WLAN off");
-        Network_disable();
+        network.disable();
         G.conf = COMMAND_IDLE;
         break;
     }
 
     case COMMAND_SET_WIFI_AND_RESTART: {
         Serial.println("Conf: new Wifi Config");
-        Network_resetSettings();
+        network.resetSettings();
         G.conf = COMMAND_IDLE;
         break;
     }

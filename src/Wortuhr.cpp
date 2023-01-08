@@ -112,17 +112,20 @@ RTC_Type RTC;
 #include "clockWork.h"
 #include "led.h"
 #include "mqtt.h"
+#include "network.h"
 
 Animation *animation;
 Led led;
 ClockWork clockWork;
 Mqtt mqtt;
+Network network;
 
 #include "Animation.hpp"
 #include "clockWork.hpp"
 #include "icons.h"
 #include "led.hpp"
 #include "mqtt.hpp"
+#include "network.hpp"
 #include "wifi_func.hpp"
 
 #define EEPROM_SIZE 512
@@ -313,7 +316,7 @@ void setup() {
         struct timeval tv;
         tv.tv_sec = RTC.now().unixtime();
         settimeofday(&tv, nullptr);
-        Network_rtcMode();
+        network.rtcMode();
         externalRTC = true;
     } else {
         Serial.println("No external RealtimeClock found");
@@ -335,8 +338,8 @@ void setup() {
     if (G.bootShowWifi) {
         clockWork.initBootWifiSignalStrength(0);
     }
-    Network_setup(G.hostname);
-    int strength = Network_getQuality();
+    network.setup(G.hostname);
+    int strength = network.getQuality();
     Serial.printf("Signal strength: %i\n", strength);
     if (G.bootShowWifi) {
         clockWork.initBootWifiSignalStrength(strength);
@@ -435,7 +438,7 @@ void loop() {
         _stunde = tm.tm_hour;
     }
 
-    Network_loop();
+    network.loop();
 
     MDNS.update();
 
