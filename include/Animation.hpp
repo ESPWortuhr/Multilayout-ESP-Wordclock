@@ -800,7 +800,7 @@ uint16_t Animation::animFire() {
 
 //------------------------------------------------------------------------------
 
-void Animation::set_pixel_for_char(uint8_t col, uint8_t row, uint8_t offsetCol,
+void Animation::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                                    unsigned char unsigned_d1, HsbColor color) {
     if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
         work[row + 1][col + offsetCol].changeRgb(color);
@@ -836,15 +836,15 @@ uint16_t Animation::animCountdown(struct tm &tm) {
             for (uint8_t col = 0; col < 5; col++) { // column
                 if (countDown >= 10) {
                     // 1. Number without Offset
-                    set_pixel_for_char(col, row, 0,
+                    setPixelForChar(col, row, 0,
                                        static_cast<unsigned char>(seconds[0]),
                                        hsbColor_1);
                     // 2. Number with Offset
-                    set_pixel_for_char(col, row, 6,
+                    setPixelForChar(col, row, 6,
                                        static_cast<unsigned char>(seconds[1]),
                                        hsbColor_2);
                 } else {
-                    set_pixel_for_char(col, row, 3,
+                    setPixelForChar(col, row, 3,
                                        static_cast<unsigned char>(seconds[0]),
                                        hsbColor_1);
                 }

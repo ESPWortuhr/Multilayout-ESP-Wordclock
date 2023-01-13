@@ -154,8 +154,8 @@ protected:
     Firework *firework;
 
     uint16_t reverse(uint16_t num, bool mirror);
-    void set_pixel_for_char(uint8_t col, uint8_t row, uint8_t offsetCol,
-                            unsigned char unsigned_d1, HsbColor color);
+    void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
+                         unsigned char unsigned_d1, HsbColor color);
     inline bool isIdle() { return phase == 0; }
     bool isSilvester(Animation_t &type, struct tm &tm, bool trigger);
     Animation_t getAnimationType(bool trigger);
