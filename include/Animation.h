@@ -220,11 +220,11 @@ public:
 
     RgbaColor get(int32_t r) {
         int32_t row = (max_rows - 1 - r);
-        // pro Bild laeuft row von (max_rows - 1) runter auf 0
+        // per image row runs from (max_rows - 1) down to 0
 
         int32_t pos = (row + offset) % (deadtime + lifetime);
 
-        if (row == 0) { // letzte row faer dieses Bild
+        if (row == 0) { // last row for this image
             if (phase++ == stopPhase) {
                 stopTop = max_rows;
                 stopBottom = stopLine;
@@ -298,9 +298,9 @@ public:
     }
 
     // ###############################################################################
-    // x =  0, y = 0 -> links oben
-    // x = 10, y = 9 -> rechts unten
-    // v positiv    -> nach unten
+    // x =  0, y = 0 -> left down
+    // x = 10, y = 9 -> right down
+    // v positiv    -> down
     int32_t move(int32_t timedelta) {
         if (!end) {
             delay -= timedelta;
@@ -309,15 +309,15 @@ public:
                 y += (((g * timedelta) / 1000) * timedelta) / 2000 +
                      (vy * timedelta) / 1000;
                 vy += (g * timedelta) / 1000;
-                if ((vy > 0) && (y >= unten)) { // unterer Wendepunkt
+                if ((vy > 0) && (y >= unten)) { // lower turning point
                     y = unten;                  // - (y - unten);
-                    vy = -(vy * 6) / 10;        // Energie vernichten
+                    vy = -(vy * 6) / 10;        // Destroy energy
                     if (lastDown) {
                         end = 1;
                     }
                 }
                 lastDown |= (_vy < 0) && (vy >= 0) &&
-                            (y > lastPos); // oberer Wendepunkt
+                            (y > lastPos); // upper turning point
                 r = y >> 8;
             }
             color = end ? colorBackground : colorForeground;

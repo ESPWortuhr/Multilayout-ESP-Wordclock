@@ -99,9 +99,8 @@ bool Animation::isColorization() {
 
 bool Animation::changeBrightness() {
     RgbfColor newForeground, newBackground;
-    analyzeColors(
-        NULL, STRIPE, newForeground,
-        newBackground); // nur Vorder- Hintergrund aus LED stripe ermitteln
+    // determine only foreground and background from LED stripe
+    analyzeColors(NULL, STRIPE, newForeground, newBackground);
     bool adjustFg = newForeground != foreground,
          adjustBg = newBackground != background;
 
@@ -233,8 +232,8 @@ void Animation::saveMatrix() {
 
 //------------------------------------------------------------------------------
 
-// kopiere (interne Matrix oder vom LED Stripe) und ermittle Vorder- und
-// Hintergrundfarbe
+// copy (internal matrix or from LED stripe) and determine foreground and
+// background color
 void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
                               RgbfColor &foreground, RgbfColor &background) {
     RgbfColor color, color1(0), color2(0);
@@ -256,7 +255,7 @@ void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
                 if (color == color2) {
                     colorCounter2++;
                 } else {
-                    // noch keine Farbe zugewiesen
+                    // no color assigned yet
                     if (colorCounter1 > 0) {
                         color2 = color;
                         colorCounter2 = 1;
@@ -268,7 +267,7 @@ void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
             }
         }
     }
-    if (colorCounter1 > colorCounter2) { // Mehrheitsentscheid ?!
+    if (colorCounter1 > colorCounter2) { // Majority vote ?!
         background = color1;
         foreground = color2;
     } else {
@@ -303,7 +302,7 @@ void Animation::set_minutes() {
                                 m > 3 ? foregroundMinute : background);
     }
 }
-// Ueberschreibe die LEDs mit interner Matrix
+// Overwrite the LEDs with internal matrix
 void Animation::copy2Stripe(RgbfColor **source) {
     for (uint8_t row = 0; row < max_rows; row++) {
         for (uint8_t col = 0; col < max_cols; col++) {
@@ -345,26 +344,25 @@ void Animation::fillMatrix(RgbfColor **matrix, RgbfColor color) {
 
 //------------------------------------------------------------------------------
 
-// changed: 0   Aenderungen, z.B. Farbe, keine aenderung des Inhalts
-// changed: 1   Inhalt hat sich geaendert
+// changed: 0 changes, e.g. color, no change of content
+// changed: 1 content has changed
 bool Animation::led_show_notify(bool changed, uint8_t minute) {
     bool led_show = true;
 
     if (animType == KEINE) {
         if (changed && (lastMinute != minute)) {
             lastMinute = minute;
-            // fuer den Fall, dass die Animation eingeschaltet wird
+            // in case the animation is switched on
             matrixChanged = true;
         }
     } else {
-        bool brightnessChanged = changeBrightness(); // Helligkeit anpassen
+        bool brightnessChanged = changeBrightness(); // Adapt brightness
         if (changed) {
-            // matrix hat sich geaendert
             if (lastMinute != minute) {
                 lastMinute = minute;
                 matrixChanged = true;
                 nextActionTime = 0; // ###################
-                phase = 1;          // -> starte Animation
+                phase = 1;          // -> start Animation
                 led_show = false;   // ###################
             }
         } else {
@@ -379,7 +377,6 @@ bool Animation::led_show_notify(bool changed, uint8_t minute) {
 
 //------------------------------------------------------------------------------
 
-// muss staendig aufgerufen werden!!
 void Animation::loop(struct tm &tm) {
     static uint8_t lastMinute = 99;
     bool minuteChange = false;
@@ -432,7 +429,7 @@ void Animation::loop(struct tm &tm) {
                     phase = animScrollDown(true);
                     break;
                 case LINKS_SCHIEBEN:
-                    phase = animScrollRight(false); // links schieben
+                    phase = animScrollRight(false); // shift left
                     break;
                 case RECHTS_SCHIEBEN:
                     phase = animScrollRight(true);
@@ -506,9 +503,9 @@ void Animation::demoMode(uint8_t &_minute, uint8_t _sekunde) {
 
 //------------------------------------------------------------------------------
 
-// langsam == 1 -> 5s
-// mittel  == 2 -> 3.5s
-// schnell == 3 -> 2s
+// slow == 1 -> 5s
+// mid  == 2 -> 3.5s
+// fast == 3 -> 2s
 uint16_t Animation::calcDelay(uint16_t frames) {
     uint32_t pause;
     if (frames == 0) { // avoid div 0
@@ -533,7 +530,7 @@ uint16_t Animation::calcDelay(uint16_t frames) {
 
 //------------------------------------------------------------------------------
 
-// die neue matrix rutscht von oben rein     | unten rein
+// the new matrix slides in from above       | below
 //                      row                  |               row
 // phase | 9876543210   old  act   wechsel   | 9876543210   old  act   wechsel
 //       | unten oben                        | unten oben
@@ -587,7 +584,7 @@ uint16_t Animation::animScrollDown(bool dirDown) {
 
 //------------------------------------------------------------------------------
 
-// die neue matrix rutscht von rechts rein / links rein
+// the new matrix slides in from the right / in from the left
 //                       col
 // phase | 01234567890   old  act   Wechsel  01234567890   old  act   Wechsel
 //   1   | aaaaaaaaaan   1-10 0      0       naaaaaaaaaa   0-9  10    10
@@ -635,7 +632,7 @@ uint16_t Animation::animScrollRight(bool dirRight) {
 
 //------------------------------------------------------------------------------
 
-// In jeder Spalte fällt ein Ball jeweils vom hoechsten Buchstaben.
+// In each column, one ball falls from the highest letter.
 uint16_t Animation::animBalls() {
     static uint32_t starttime;
     static uint32_t numBalls;
@@ -665,13 +662,13 @@ uint16_t Animation::animBalls() {
     for (uint8_t b = 0; b < numBalls; b++) {
         oldR = balls[b].r;
         ballsDown += balls[b].move(timeDelta);
-        r = balls[b].r; // r, c neue Koordinaten
+        r = balls[b].r; // r, c new coordinates
         c = balls[b].c;
-        if (r > oldR) { // abwaerts
+        if (r > oldR) { // down
             for (; r > oldR; oldR++) {
                 work[oldR][c] = background;
             }
-        } else { // aufwaerts
+        } else { // up
             for (; r < oldR; oldR--) {
                 work[oldR][c] = background;
             }
@@ -679,7 +676,7 @@ uint16_t Animation::animBalls() {
         work[r][c] = balls[b].color;
     }
     if (ballsDown >= numBalls) {
-        copyMatrix(work, act); // TODO(ATho95): schiess Baelle hoch
+        copyMatrix(work, act); // TODO(ATho95): shot Balls up
         return 0;
     }
     return phase + 1;
@@ -838,11 +835,11 @@ uint16_t Animation::animCountdown(struct tm &tm) {
         for (uint8_t row = 0; row < 8; row++) {     // row
             for (uint8_t col = 0; col < 5; col++) { // column
                 if (countDown >= 10) {
-                    // 1. Zahl ohne Offset
+                    // 1. Number without Offset
                     set_pixel_for_char(col, row, 0,
                                        static_cast<unsigned char>(seconds[0]),
                                        hsbColor_1);
-                    // 2. Zahl mit Offset
+                    // 2. Number with Offset
                     set_pixel_for_char(col, row, 6,
                                        static_cast<unsigned char>(seconds[1]),
                                        hsbColor_2);
@@ -863,17 +860,13 @@ uint16_t Animation::animCountdown(struct tm &tm) {
 
 void Animation::animColorChange() {
     static uint32_t lastTimeColor = 0;
-    static uint32_t pauseZeitColor =
-        50; // 20 Wechsel / Sekunde -> 1200 W. / Minute
+    static uint32_t pauseZeitColor = 50;
 
     if (isColorization() && (G.animSpeed > 0)) {
         uint32_t now = millis();
         if (now >= (lastTimeColor + pauseZeitColor)) {
             lastTimeColor = now;
-            // Farbwinkel 0.0 - 1.0
-            float deltaHue =
-                fmod(1.0 / (G.animSpeed * 20.0),
-                     1.0); // Alle Farben in 1 .. 60 Sekunden / 0 == aus
+            float deltaHue = fmod(1.0 / (G.animSpeed * 20.0), 1.0);
             HsbColor hsbColor;
             for (uint8_t row = 0; row < max_rows; row++) {
                 for (uint8_t col = 0; col < max_cols; col++) {
@@ -899,7 +892,6 @@ uint16_t Animation::animLaser() {
     static RgbfColor strahl(255);
 
     if (phase == 1) {
-        // erster Durchgang loeschen
         animationDelay = calcDelay(max_rows * max_cols * 2);
         row = 0;
         col = 0;
@@ -924,7 +916,6 @@ uint16_t Animation::animLaser() {
         if (loeschPhase == false) {
             return 0;
         }
-        // starte zweiten Durchgang
         loeschPhase = false;
     }
     return phase + 1;
