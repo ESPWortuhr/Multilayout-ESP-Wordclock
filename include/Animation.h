@@ -143,7 +143,7 @@ protected:
     uint8_t lastAnimDuration;
     uint8_t lastAnimColorize;
 
-    uint8_t max_rows, max_cols, row_start, col_start;
+    uint8_t maxRows, maxCols, rowStart, colStart;
     uint16 sizeofColumn;
     RgbfColor **old;
     RgbfColor **act;
@@ -194,8 +194,8 @@ class Rain {
 public:
     Rain(){};
     Rain(uint8_t rows, uint8_t cols) {
-        max_rows = rows;
-        max_cols = cols;
+        maxRows = rows;
+        maxCols = cols;
     }
     virtual ~Rain(){};
 
@@ -204,29 +204,29 @@ public:
         // white.Lighten(helligkeit);
         green = RgbaColor(0, helligkeit, 0, 0.5);
         // green.Lighten(helligkeit);
-        offset = -(max_rows - 1 - 3); // 3 = min deadtime
+        offset = -(maxRows - 1 - 3); // 3 = min deadtime
         speed = 1;
         stopping = false;
         speedlimit = random(1, 4);
-        lifetime = random(4, max_rows);
-        deadtime = random(3, max_rows); // min = 3, max deadtime
+        lifetime = random(4, maxRows);
+        deadtime = random(3, maxRows); // min = 3, max deadtime
         //    speedlimit = 2;
         //    lifetime = 4;
         //    deadtime = 3;
         phase = 1;
-        stopLine = max_rows - 1 - stop;
-        stopPhase = frames - speedlimit * max_rows;
+        stopLine = maxRows - 1 - stop;
+        stopPhase = frames - speedlimit * maxRows;
     }
 
     RgbaColor get(int32_t r) {
-        int32_t row = (max_rows - 1 - r);
-        // per image row runs from (max_rows - 1) down to 0
+        int32_t row = (maxRows - 1 - r);
+        // per image row runs from (maxRows - 1) down to 0
 
         int32_t pos = (row + offset) % (deadtime + lifetime);
 
         if (row == 0) { // last row for this image
             if (phase++ == stopPhase) {
-                stopTop = max_rows;
+                stopTop = maxRows;
                 stopBottom = stopLine;
                 stopping = true;
             }
@@ -263,7 +263,7 @@ public:
     }
 
 protected:
-    uint8_t max_rows, max_cols;
+    uint8_t maxRows, maxCols;
     int32_t speed, speedlimit, offset, lifetime, deadtime;
     int32_t phase, frames, stopPhase, stopLine, stopTop, stopBottom;
     bool stopping;
@@ -345,7 +345,7 @@ class Snake {
 public:
     Snake(uint8_t rows, uint8_t cols) {
         max_rows = rows;
-        max_cols = cols;
+        maxCols = cols;
         motions = new GoToPos[rows * 2 + 2];
     };
     ~Snake() { delete[] motions; };
@@ -362,7 +362,7 @@ protected:
         int8 min;
         int8 max;
     };
-    uint8_t max_rows, max_cols;
+    uint8_t max_rows, maxCols;
     GoToPos *motions;
     Coord head;
     bool goRight;
@@ -390,7 +390,7 @@ public:
         getMotions(act, true, max_rows - 1, -1);
         motions[index] = {false, -1, 0, 0}; // move out on left side
         motions[index + 1] = {false, -2, 0,
-                              (int8)(max_cols - 1)}; // last on right side
+                              (int8)(maxCols - 1)}; // last on right side
         index = 0;
     }
 
@@ -417,16 +417,16 @@ protected:
         // order in motions: old -> down, act -> up
         int8_t left, right, rowCounter = max_rows;
         while (rowCounter-- > 0) {
-            left = max_cols;
+            left = maxCols;
             right = 0;
-            for (int32_t col = 0; col < max_cols; col++) {
+            for (int32_t col = 0; col < maxCols; col++) {
                 if (matrix[row][col].isForeground()) {
                     // search for right most foreground
                     right = col;
                 }
-                if (matrix[row][max_cols - 1 - col].isForeground()) {
+                if (matrix[row][maxCols - 1 - col].isForeground()) {
                     // search for left most foreground
-                    left = max_cols - 1 - col;
+                    left = maxCols - 1 - col;
                 }
             }
             if (left <= right) {
@@ -487,12 +487,12 @@ protected:
     Icons icons[3];
     bool mirrored;
     int32_t maxLayer;
-    uint8_t max_rows, max_cols;
+    uint8_t max_rows, maxCols;
 
 public:
     Firework(uint8_t rows, uint8_t cols) {
         max_rows = rows;
-        max_cols = cols;
+        maxCols = cols;
     }
 
     // layers must be prepared in ascending order !!!
@@ -512,7 +512,7 @@ public:
         // bool mirrored,
         //                          bool init) {
 
-        if ((r < 10) && (r < max_rows) && (c < 11) && (c < max_cols)) {
+        if ((r < 10) && (r < max_rows) && (c < 11) && (c < maxCols)) {
             uint16_t pixels = 0;
             for (int32_t layer = 0; layer <= maxLayer; layer++) {
                 if (icons[layer] != static_cast<Icons>(0)) {
