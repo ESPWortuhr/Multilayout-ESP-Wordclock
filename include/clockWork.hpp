@@ -6,6 +6,8 @@
 #include "openwmap.h"
 #include <Arduino.h>
 
+OpenWMap weather;
+
 //------------------------------------------------------------------------------
 
 void ClockWork::copyClockface(const uint16_t source[], uint16_t destination[]) {
@@ -1160,7 +1162,7 @@ void ClockWork::loop(struct tm &tm) {
         weather_tag >= 600) { // @Eisbaeeer changed for Debug (should be 600)
         weather_tag = 0;
         if (WiFi.status() == WL_CONNECTED) {
-            getweather();
+            weather.loop();
         }
     }
 
