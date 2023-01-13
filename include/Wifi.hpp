@@ -27,20 +27,20 @@ char wstatus[7][25] = {
 
 //------------------------------------------------------------------------------
 
-void WlanStart() {
-    Serial.printf("\n-- Begin WlanStart -- \n");
+void wifiStart() {
+    Serial.printf("\n-- Begin Wlan -- \n");
 
     char ip_adress[20];
     sprintf(ip_adress, "IP:%d.%d.%d.%d", WiFi.localIP()[0], WiFi.localIP()[1],
             WiFi.localIP()[2], WiFi.localIP()[3]);
     Serial.println(ip_adress);
     Serial.println("");
-    // IP-Adresse als Laufschrift anzeigen
+    // Show IP as scrollingtext
     if (G.bootShowIP) {
         clockWork.initBootShowIp(ip_adress);
     }
 
-    Serial.printf("-- Ende  WlanStart -- \n\n");
+    Serial.printf("-- End  Wlan -- \n\n");
 }
 
 //------------------------------------------------------------------------------
