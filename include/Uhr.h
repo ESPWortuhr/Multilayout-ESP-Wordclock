@@ -110,10 +110,10 @@ const char *resource3 = "&cnt=8"; // Openweather API forecast time
 char resource[100];
 char response[3500];        // fixed size buffer
 uint16_t weather_tag = 600; // counter fuer Wetterdaten abrufen
-int16_t wtemp_6;
-int16_t wtemp_12;
-int16_t wtemp_18;
-int16_t wtemp_24;
+int8_t wtemp_6;
+int8_t wtemp_12;
+int8_t wtemp_18;
+int8_t wtemp_24;
 uint16_t wwetter_6;
 uint16_t wwetter_12;
 uint16_t wwetter_18;
