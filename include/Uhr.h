@@ -1,11 +1,11 @@
 #pragma once
 #include "Arduino.h"
 #include "version.gen.h"
-#define PAYLOAD_LENGTH 30
 
+#define PAYLOAD_LENGTH 30
 #define MAX_ARRAY_SIZE 291
 
-enum uhrzeit_t {
+enum ClockWords {
     ESIST = 0,
     VOR = 1,
     NACH = 2,
@@ -159,9 +159,14 @@ char s[6];
 
 bool externalRTC = false;
 
-enum ledPositions { Foreground = 0, Background = 1, Frame = 2, Effect = 3 };
+enum ColorPosition {
+    Foreground = 0,
+    Background = 1,
+    Frame = 2,
+    Effect = 3,
+};
 
-enum ledColortypes {
+enum LedColorVariants {
     Brg = 0,
     Grb = 1,
     Rgb = 2,
@@ -169,7 +174,7 @@ enum ledColortypes {
     Grbw = 4,
 };
 
-enum Sprachvariationen {
+enum LanguageDialects {
     ItIs15 = 0,
     ItIs20 = 1,
     ItIs40 = 2,
@@ -177,7 +182,7 @@ enum Sprachvariationen {
     NotShowItIs = 4,
 };
 
-enum Command {
+enum CommandWords {
     COMMAND_IDLE = 0,
 
     COMMAND_MODE_WORD_CLOCK = 1,
@@ -221,7 +226,7 @@ enum Command {
 
 };
 
-enum UhrTypeDefinitions {
+enum ClockType {
     Uhr_114 = 1,
     Uhr_114_Alternative = 2,
     Uhr_114_2Clock = 6,
