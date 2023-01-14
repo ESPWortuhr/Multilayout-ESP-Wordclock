@@ -110,22 +110,15 @@ unsigned char wlan_client = false;
 unsigned char wlan_status = 99;
 unsigned char wlan_ssid = false;
 
-uint8_t _sekunde = 0;
+uint8_t _second = 0;
+uint8_t _second48 = 0;
 uint8_t _minute = 0;
-uint8_t _stunde = 0;
-uint8_t last_sekunde = 0;
-uint8_t last_minute = 0;
-uint8_t last_stunde = 0;
-
-unsigned long count_millis48 = 0;
-unsigned long previous48 = 0;
-unsigned long transitionDelay = 0;
-const long interval48 = 1250;
-uint8_t _sekunde48 = 0;
-uint8_t last_sekunde48 = 100;
+uint8_t _hour = 0;
+uint8_t lastSecond = 0;
+uint8_t lastMinute = 0;
+uint8_t lastHour = 0;
 
 unsigned int count_delay = 0;
-
 unsigned long previousMillis = 0;
 
 uint32_t clockTime;

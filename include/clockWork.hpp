@@ -448,8 +448,8 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
 //------------------------------------------------------------------------------
 
 static void countdownToMidnight() {
-    Serial.printf("Count down: %d\n", 60 - _sekunde);
-    switch (_sekunde) {
+    Serial.printf("Count down: %d\n", 60 - _second);
+    switch (_second) {
     case 50:
         usedUhrType->show(zehn);
         break;
@@ -498,7 +498,7 @@ void ClockWork::setClock() {
     uint8_t voll = 0;
 
     setMinute(_minute, offsetH, voll);
-    setHour(_stunde + offsetH, voll);
+    setHour(_hour + offsetH, voll);
 }
 
 //------------------------------------------------------------------------------
@@ -506,28 +506,28 @@ void ClockWork::setClock() {
 void ClockWork::calcClockface() {
     uint8_t rr, gg, bb, ww;
 
-    if (_stunde == 23 && _minute == 59 && _sekunde >= 50) {
+    if (_hour == 23 && _minute == 59 && _second >= 50) {
         countdownToMidnight();
     } else {
         setClock();
     }
 
     // Set Brighness hour dependent
-    if (_stunde < 6) {
+    if (_hour < 6) {
         G.hh = G.h24;
-    } else if (_stunde < 8) {
+    } else if (_hour < 8) {
         G.hh = G.h6;
-    } else if (_stunde < 12) {
+    } else if (_hour < 12) {
         G.hh = G.h8;
-    } else if (_stunde < 16) {
+    } else if (_hour < 16) {
         G.hh = G.h12;
-    } else if (_stunde < 18) {
+    } else if (_hour < 18) {
         G.hh = G.h16;
-    } else if (_stunde < 20) {
+    } else if (_hour < 20) {
         G.hh = G.h18;
-    } else if (_stunde < 22) {
+    } else if (_hour < 22) {
         G.hh = G.h20;
-    } else if (_stunde < 24) {
+    } else if (_hour < 24) {
         G.hh = G.h22;
     }
 
@@ -608,7 +608,7 @@ void ClockWork::loop(struct tm &tm) {
     previousMillis = currentMillis;
 
     // Faster runtime for demo
-    animation->demoMode(_minute, _sekunde);
+    animation->demoMode(_minute, _second);
 
     //------------------------------------------------
     // SecondsFrame
@@ -620,7 +620,7 @@ void ClockWork::loop(struct tm &tm) {
     //------------------------------------------------
     // Secounds and LDR Routine
     //------------------------------------------------
-    if (last_sekunde != _sekunde) {
+    if (lastSecond != _second) {
 
         if (DEBUG == true) {
             char currentTime[80];
@@ -647,15 +647,15 @@ void ClockWork::loop(struct tm &tm) {
             G.prog = COMMAND_MODE_WORD_CLOCK;
         }
 
-        last_sekunde = _sekunde;
+        lastSecond = _second;
     }
 
     //------------------------------------------------
     // Minute
     //------------------------------------------------
-    if (last_minute != _minute) {
-        _sekunde48 = 0;
-        last_minute = _minute;
+    if (lastMinute != _minute) {
+        _second48 = 0;
+        lastMinute = _minute;
     }
 
     switch (G.conf) {
@@ -897,8 +897,8 @@ void ClockWork::loop(struct tm &tm) {
         }
         char d1[5];
         char d2[5];
-        sprintf(d1, "%d", (int)(_sekunde / 10));
-        sprintf(d2, "%d", (int)(_sekunde % 10));
+        sprintf(d1, "%d", (int)(_second / 10));
+        sprintf(d2, "%d", (int)(_second % 10));
         led.showNumbers(d1[0], d2[0]);
         break;
     }
@@ -983,12 +983,12 @@ void ClockWork::loop(struct tm &tm) {
 void ClockWork::loopSecondsFrame() {
     if (count_millis48 >= interval48) {
         count_millis48 = 0;
-        _sekunde48++;
-        if (_sekunde48 > 47) {
-            _sekunde48 = 0;
+        _second48++;
+        if (_second48 > 47) {
+            _second48 = 0;
         }
     }
-    if (last_sekunde48 != _sekunde48) {
+    if (lastSecond48 != _second48) {
         if (G.prog == 0 && G.conf == 0) {
             if (G.zeige_sek == 1 || G.zeige_min == 2) {
                 led.clearFrame();
@@ -998,7 +998,7 @@ void ClockWork::loopSecondsFrame() {
             }
             led.show();
         }
-        last_sekunde48 = _sekunde48;
+        lastSecond48 = _second48;
     }
 }
 

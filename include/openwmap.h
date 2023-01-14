@@ -273,8 +273,8 @@ private:
             Serial.print("Temp: ");
             Serial.print(temp_24);
             Serial.println("°C");
-            Serial.println("Stunde");
-            Serial.println(_stunde);
+            Serial.println("Hour");
+            Serial.println(_hour);
             Serial.println("----------");
 
             determineWTemp(temp_6, wTemp6);
@@ -289,7 +289,7 @@ private:
             determineWTemp(temp_24, wTemp24);
             determineWid(wetterid_24, wWeather24);
 
-            determineDaytime(_stunde);
+            determineDaytime(_hour);
 
             printDeterminedData();
         }
@@ -810,15 +810,15 @@ public:
     //------------------------------------------------------------------------------
 
     void loop() {
-        if (_sekunde % 10 == 0) {
+        if (_second % 10 == 0) {
             wWeatherSwitch++;
             led.clear();
             if (wWeatherSwitch > 4) {
                 wWeatherSwitch = 1;
             }
-            Serial.print("Wetterswitch: ");
+            Serial.print("wWeatherSwitch: ");
             Serial.println(wWeatherSwitch);
-            Serial.print("WStunde: ");
+            Serial.print("wHour: ");
             Serial.println(wHour);
         }
 

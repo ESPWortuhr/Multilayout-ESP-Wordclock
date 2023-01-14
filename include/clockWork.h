@@ -4,6 +4,12 @@
 
 class ClockWork {
 private:
+    uint8_t count_millis48 = 0;
+    unsigned long previous48 = 0;
+    const uint16_t interval48 = 1250; // 60000/48
+    uint8_t lastSecond48 = 48;
+
+private:
     void loopSecondsFrame();
     void loopWeather();
     void loopLdrLogic();

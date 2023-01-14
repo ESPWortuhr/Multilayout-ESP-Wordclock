@@ -486,18 +486,18 @@ uint16_t Animation::reverse(uint16_t num, bool mirrored) {
 
 //------------------------------------------------------------------------------
 
-void Animation::demoMode(uint8_t &_minute, uint8_t _sekunde) {
+void Animation::demoMode(uint8_t &_minute, uint8_t _second) {
     static uint8_t test_second = 0;
     static uint8_t test_minute = 45;
     if (G.animDemo) {
-        if (isIdle() && ((_sekunde % 10) == 0) && (test_second != _sekunde)) {
+        if (isIdle() && ((_second % 10) == 0) && (test_second != _second)) {
             test_minute += 5;
             if (test_minute >= 60) {
                 test_minute = _minute % 5;
             }
         }
         _minute = test_minute;
-        test_second = _sekunde;
+        test_second = _second;
     }
 }
 
@@ -801,7 +801,7 @@ uint16_t Animation::animFire() {
 //------------------------------------------------------------------------------
 
 void Animation::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                                   unsigned char unsigned_d1, HsbColor color) {
+                                unsigned char unsigned_d1, HsbColor color) {
     if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
         work[row + 1][col + offsetCol].changeRgb(color);
     }
@@ -837,16 +837,16 @@ uint16_t Animation::animCountdown(struct tm &tm) {
                 if (countDown >= 10) {
                     // 1. Number without Offset
                     setPixelForChar(col, row, 0,
-                                       static_cast<unsigned char>(seconds[0]),
-                                       hsbColor_1);
+                                    static_cast<unsigned char>(seconds[0]),
+                                    hsbColor_1);
                     // 2. Number with Offset
                     setPixelForChar(col, row, 6,
-                                       static_cast<unsigned char>(seconds[1]),
-                                       hsbColor_2);
+                                    static_cast<unsigned char>(seconds[1]),
+                                    hsbColor_2);
                 } else {
                     setPixelForChar(col, row, 3,
-                                       static_cast<unsigned char>(seconds[0]),
-                                       hsbColor_1);
+                                    static_cast<unsigned char>(seconds[0]),
+                                    hsbColor_1);
                 }
             }
         }

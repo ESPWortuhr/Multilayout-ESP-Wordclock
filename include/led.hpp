@@ -338,7 +338,7 @@ void Led::showSeconds() {
     uint8_t rr, gg, bb, ww;
     setBrightness(rr, gg, bb, ww, Effect);
 
-    setPixel(rr, gg, bb, ww, usedUhrType->getRMatrix(_sekunde48));
+    setPixel(rr, gg, bb, ww, usedUhrType->getRMatrix(_second48));
 }
 
 //------------------------------------------------------------------------------

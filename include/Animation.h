@@ -118,7 +118,7 @@ public:
     void begin();
     void loop(struct tm &tm);
     bool led_show_notify(bool flag, uint8_t minute);
-    void demoMode(uint8_t &_minute, uint8_t _sekunde);
+    void demoMode(uint8_t &_minute, uint8_t _second);
     //------------------------------------------------------------------------------
 protected:
     uint16_t phase = 0;
