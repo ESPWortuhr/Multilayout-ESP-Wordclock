@@ -145,7 +145,7 @@ inline void Led::clearPixel(uint16_t i) {
 
 inline void Led::clear() {
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        Word_array[i] = 500;
+        frontMatrix[i] = 500;
         clearPixel(i);
     }
 }
@@ -195,7 +195,7 @@ void Led::set(bool changed) {
     setBrightnessLdr(rr, gg, bb, ww, Foreground);
     setBrightnessLdr(r2, g2, b2, w2, Background);
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        if (Word_array_old[i] < usedUhrType->NUM_PIXELS()) {
+        if (lastFrontMatrix[i] < usedUhrType->NUM_PIXELS()) {
             // foreground
             setPixel(rr, gg, bb, ww, i);
         } else {

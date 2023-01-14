@@ -20,7 +20,7 @@ void ClockWork::copyClockface(const uint16_t source[], uint16_t destination[]) {
 
 bool ClockWork::changesInClockface() {
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        if (Word_array[i] != Word_array_old[i]) {
+        if (frontMatrix[i] != lastFrontMatrix[i]) {
             return true;
         }
     }
@@ -260,19 +260,19 @@ void ClockWork::showMinute(uint8_t min) {
         }
 
         if (min > 0) {
-            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 0)] =
+            frontMatrix[usedUhrType->getMinArr(G.zeige_min - 1, 0)] =
                 usedUhrType->getMinArr(G.zeige_min - 1, 0);
         }
         if (min > 1) {
-            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 1)] =
+            frontMatrix[usedUhrType->getMinArr(G.zeige_min - 1, 1)] =
                 usedUhrType->getMinArr(G.zeige_min - 1, 1);
         }
         if (min > 2) {
-            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 2)] =
+            frontMatrix[usedUhrType->getMinArr(G.zeige_min - 1, 2)] =
                 usedUhrType->getMinArr(G.zeige_min - 1, 2);
         }
         if (min > 3) {
-            Word_array[usedUhrType->getMinArr(G.zeige_min - 1, 3)] =
+            frontMatrix[usedUhrType->getMinArr(G.zeige_min - 1, 3)] =
                 usedUhrType->getMinArr(G.zeige_min - 1, 3);
         }
     }
@@ -488,7 +488,7 @@ static void countdownToMidnight() {
 //------------------------------------------------------------------------------
 
 void ClockWork::setClock() {
-    uhrzeit = 0;
+    clockTime = 0;
 
     if (!G.Sprachvariation[NotShowItIs]) {
         usedUhrType->show(es_ist);
@@ -1324,7 +1324,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_TIME_MANUAL: {
         eeprom::write();
         led.clear();
-        parameters_changed = true;
+        parametersChanged = true;
         G.conf = COMMAND_IDLE;
         break;
     }
@@ -1464,12 +1464,12 @@ void ClockWork::loop(struct tm &tm) {
         calcClockface();
 
         if (changesInClockface()) {
-            copyClockface(Word_array, Word_array_old);
+            copyClockface(frontMatrix, lastFrontMatrix);
             led.set(true);
-        } else if (parameters_changed) {
+        } else if (parametersChanged) {
             led.set();
         }
-        parameters_changed = false;
+        parametersChanged = false;
 
         if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 &&
             G.zeige_min < 2) {

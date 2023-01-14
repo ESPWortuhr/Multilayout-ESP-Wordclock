@@ -146,8 +146,8 @@ void payloadTextHandling(const uint8_t *payload, char *text,
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                     size_t length) {
     // Disable Accesspoint Mode Disable Timer on Web Event
-    if (AP_Status > 0) {
-        AP_Status = 0;
+    if (statusAccessPoint > 0) {
+        statusAccessPoint = 0;
     }
     int ii;
     int jj;
@@ -176,7 +176,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         switch (command) {
         case COMMAND_MODE_WORD_CLOCK: {
             G.prog = COMMAND_MODE_WORD_CLOCK;
-            parameters_changed = true;
+            parametersChanged = true;
             G.rgb[Foreground][0] = split(payload, 3);
             G.rgb[Foreground][1] = split(payload, 6);
             G.rgb[Foreground][2] = split(payload, 9);

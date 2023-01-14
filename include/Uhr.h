@@ -147,11 +147,11 @@ unsigned int count_delay = 0;
 
 unsigned long previousMillis = 0;
 
-uint32_t uhrzeit;
-uint16_t Word_array[MAX_ARRAY_SIZE] = {0};
-uint16_t Word_array_old[MAX_ARRAY_SIZE] = {0};
-bool parameters_changed = false;
-uint8_t AP_Status = 0;
+uint32_t clockTime;
+uint16_t frontMatrix[MAX_ARRAY_SIZE] = {0};
+uint16_t lastFrontMatrix[MAX_ARRAY_SIZE] = {0};
+bool parametersChanged = false;
+uint8_t statusAccessPoint = 0;
 
 char str[1024];
 

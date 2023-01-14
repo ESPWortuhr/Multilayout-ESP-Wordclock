@@ -329,7 +329,7 @@ void setup() {
     //-------------------------------------
 
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        Word_array_old[i] = 500;
+        lastFrontMatrix[i] = 500;
     }
 
     //-------------------------------------
