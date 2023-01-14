@@ -103,24 +103,6 @@ struct GLOBAL {
 };
 GLOBAL G = {};
 
-const char *server = "api.openweathermap.org"; // Openweather server's address
-const char *resource1 = "/data/2.5/forecast?id="; // Openweather API URL part 1
-const char *resource2 = "&units=metric&APPID=";   // Openweather API URL part 2
-const char *resource3 = "&cnt=8"; // Openweather API forecast time
-char resource[100];
-char response[3500];        // fixed size buffer
-uint16_t weather_tag = 600; // counter fuer Wetterdaten abrufen
-int8_t wtemp_6;
-int8_t wtemp_12;
-int8_t wtemp_18;
-int8_t wtemp_24;
-uint16_t wwetter_6;
-uint16_t wwetter_12;
-uint16_t wwetter_18;
-uint16_t wwetter_24;
-uint16_t wstunde;
-uint16_t wetterswitch;
-
 // LDR
 uint8_t ldrVal = 100;
 
