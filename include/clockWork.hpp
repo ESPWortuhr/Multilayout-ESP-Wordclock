@@ -1211,8 +1211,9 @@ void ClockWork::loop(struct tm &tm) {
         config["h22"] = G.h22;
         config["h24"] = G.h24;
         for (uint8_t i = 0; i < 5; i++) {
-            sprintf(s, "spv%d", i);
-            config[s] = static_cast<uint8_t>(G.Sprachvariation[i]);
+            char stringToSend[6];
+            sprintf(stringToSend, "spv%d", i);
+            config[stringToSend] = static_cast<uint8_t>(G.Sprachvariation[i]);
         }
         config["hell"] = G.hell;
         config["zeige_sek"] = G.zeige_sek;
@@ -1245,8 +1246,9 @@ void ClockWork::loop(struct tm &tm) {
         config["command"] = "set";
         for (uint8_t i = 0; i < 4; i++) {
             for (uint8_t ii = 0; ii < 4; ii++) {
-                sprintf(s, "rgb%d%d", i, ii);
-                config[s] = G.rgb[i][ii];
+                char stringToSend[6];
+                sprintf(stringToSend, "rgb%d%d", i, ii);
+                config[stringToSend] = G.rgb[i][ii];
             }
         }
         config["hell"] = G.hell;

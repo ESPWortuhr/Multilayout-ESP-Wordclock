@@ -155,7 +155,6 @@ bool parameters_changed = false;
 uint8_t AP_Status = 0;
 
 char str[1024];
-char s[6];
 
 bool externalRTC = false;
 
