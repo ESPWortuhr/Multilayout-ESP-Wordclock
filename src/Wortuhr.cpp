@@ -211,11 +211,11 @@ void setup() {
         G.conf = COMMAND_IDLE;
         for (uint8_t i = 0; i < 4; i++) {
             for (uint8_t ii = 0; ii < 4; ii++) {
-                G.rgb[i][ii] = 0;
+                G.rgbw[i][ii] = 0;
             }
         }
-        G.rgb[Foreground][2] = 100;
-        G.rgb[Effect][1] = 100;
+        G.rgbw[Foreground][2] = 100;
+        G.rgbw[Effect][1] = 100;
         G.rr = 0;
         G.gg = 0;
         G.bb = 0;

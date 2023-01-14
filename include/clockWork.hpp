@@ -108,8 +108,8 @@ void ClockWork::scrollingText(const char *buf) {
         for (uint8_t row = 0; row < fontHeight; row++) {
             if (pgm_read_byte(&(font_7x5[fontIndex][i])) & (1u << row)) {
                 led.setPixel(
-                    G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2],
-                    G.rgb[Effect][3],
+                    G.rgbw[Effect][0], G.rgbw[Effect][1], G.rgbw[Effect][2],
+                    G.rgbw[Effect][3],
                     usedUhrType->getFrontMatrix(
                         row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
             } else {
@@ -701,7 +701,7 @@ void ClockWork::loop(struct tm &tm) {
         config["h22"] = G.h22;
         config["h24"] = G.h24;
         for (uint8_t i = 0; i < 5; i++) {
-            char stringToSend[6];
+            char stringToSend[5];
             sprintf(stringToSend, "spv%d", i);
             config[stringToSend] = static_cast<uint8_t>(G.Sprachvariation[i]);
         }
@@ -736,9 +736,9 @@ void ClockWork::loop(struct tm &tm) {
         config["command"] = "set";
         for (uint8_t i = 0; i < 4; i++) {
             for (uint8_t ii = 0; ii < 4; ii++) {
-                char stringToSend[6];
-                sprintf(stringToSend, "rgb%d%d", i, ii);
-                config[stringToSend] = G.rgb[i][ii];
+                char stringToSend[7];
+                sprintf(stringToSend, "rgbw%d%d", i, ii);
+                config[stringToSend] = G.rgbw[i][ii];
             }
         }
         config["hell"] = G.hell;

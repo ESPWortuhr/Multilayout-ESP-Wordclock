@@ -60,7 +60,7 @@ var websocket;
 var ipEsp = "ws://192.168.4.1";
 var debug = true;
 var command = 1;
-var rgb = [
+var rgbw = [
 	[0, 0, 100, 0],
 	[0, 10, 0, 0],
 	[10, 0, 0, 0],
@@ -175,7 +175,7 @@ function initConfigValues() {
 
 	debug = true;
 	command = 1;
-	rgb = [
+	rgbw = [
 		[0, 0, 100, 0],
 		[0, 10, 0, 0],
 		[10, 0, 0, 0],
@@ -352,22 +352,22 @@ function initWebsocket() {
 			enableSpecific("specific-layout-brightness-auto", autoLdrEnabled === 1);
 		}
 		if (data.command === "set") {
-			rgb[0][0] = data.rgb00;
-			rgb[0][1] = data.rgb01;
-			rgb[0][2] = data.rgb02;
-			rgb[0][3] = data.rgb03;
-			rgb[1][0] = data.rgb10;
-			rgb[1][1] = data.rgb11;
-			rgb[1][2] = data.rgb12;
-			rgb[1][3] = data.rgb13;
-			rgb[2][0] = data.rgb20;
-			rgb[2][1] = data.rgb21;
-			rgb[2][2] = data.rgb22;
-			rgb[2][3] = data.rgb23;
-			rgb[3][0] = data.rgb30;
-			rgb[3][1] = data.rgb31;
-			rgb[3][2] = data.rgb32;
-			rgb[3][3] = data.rgb33;
+			rgbw[0][0] = data.rgbw00;
+			rgbw[0][1] = data.rgbw01;
+			rgbw[0][2] = data.rgbw02;
+			rgbw[0][3] = data.rgbw03;
+			rgbw[1][0] = data.rgbw10;
+			rgbw[1][1] = data.rgbw11;
+			rgbw[1][2] = data.rgbw12;
+			rgbw[1][3] = data.rgbw13;
+			rgbw[2][0] = data.rgbw20;
+			rgbw[2][1] = data.rgbw21;
+			rgbw[2][2] = data.rgbw22;
+			rgbw[2][3] = data.rgbw23;
+			rgbw[3][0] = data.rgbw30;
+			rgbw[3][1] = data.rgbw31;
+			rgbw[3][2] = data.rgbw32;
+			rgbw[3][3] = data.rgbw33;
 			hell = data.hell;
 			geschw = data.geschw;
 			colortype = data.colortype;
@@ -414,10 +414,10 @@ function initWebsocket() {
 }
 
 function changeColor(color) {
-	rgb[color.index][0] = color.red;
-	rgb[color.index][1] = color.green;
-	rgb[color.index][2] = color.blue;
-	rgb[color.index][3] = Math.round(255 * (1.0 - color.alpha));
+	rgbw[color.index][0] = color.red;
+	rgbw[color.index][1] = color.green;
+	rgbw[color.index][2] = color.blue;
+	rgbw[color.index][3] = Math.round(255 * (1.0 - color.alpha));
 	sendColorData(command, nstr(1));
 }
 
@@ -447,16 +447,16 @@ function createColorPicker() {
  */
 function setColorPicker(withBackground) {
 	var rgbaFg = {
-		r: rgb[COLOR_FOREGROUND][0],
-		g: rgb[COLOR_FOREGROUND][1],
-		b: rgb[COLOR_FOREGROUND][2],
-		a: 1.0 - rgb[COLOR_FOREGROUND][3] / 255.0
+		r: rgbw[COLOR_FOREGROUND][0],
+		g: rgbw[COLOR_FOREGROUND][1],
+		b: rgbw[COLOR_FOREGROUND][2],
+		a: 1.0 - rgbw[COLOR_FOREGROUND][3] / 255.0
 	};
 	var rgbaBg = {
-		r: rgb[COLOR_BACKGROUND][0],
-		g: rgb[COLOR_BACKGROUND][1],
-		b: rgb[COLOR_BACKGROUND][2],
-		a: 1.0 - rgb[COLOR_BACKGROUND][3] / 255.0
+		r: rgbw[COLOR_BACKGROUND][0],
+		g: rgbw[COLOR_BACKGROUND][1],
+		b: rgbw[COLOR_BACKGROUND][2],
+		a: 1.0 - rgbw[COLOR_BACKGROUND][3] / 255.0
 	};
 	var colors = [rgbaFg];
 	if (withBackground) {
@@ -470,10 +470,10 @@ function setColorPicker(withBackground) {
  */
 function setColors() {
 	var withBackground =
-		rgb[COLOR_BACKGROUND][0] ||
-		rgb[COLOR_BACKGROUND][1] ||
-		rgb[COLOR_BACKGROUND][2] ||
-		rgb[COLOR_BACKGROUND][3];
+		rgbw[COLOR_BACKGROUND][0] ||
+		rgbw[COLOR_BACKGROUND][1] ||
+		rgbw[COLOR_BACKGROUND][2] ||
+		rgbw[COLOR_BACKGROUND][3];
 	setColorPicker(withBackground);
 	$("#with-background").set("checked", withBackground);
 }
@@ -485,16 +485,16 @@ function toggleBackground() {
 	var withBackground = $("#with-background").get("checked") | 0;
 	if (withBackground) {
 		// set to dark gray
-		rgb[COLOR_BACKGROUND][0] = 5;
-		rgb[COLOR_BACKGROUND][1] = 5;
-		rgb[COLOR_BACKGROUND][2] = 5;
-		rgb[COLOR_BACKGROUND][3] = 5;
+		rgbw[COLOR_BACKGROUND][0] = 5;
+		rgbw[COLOR_BACKGROUND][1] = 5;
+		rgbw[COLOR_BACKGROUND][2] = 5;
+		rgbw[COLOR_BACKGROUND][3] = 5;
 	} else {
 		// set to black
-		rgb[COLOR_BACKGROUND][0] = 0;
-		rgb[COLOR_BACKGROUND][1] = 0;
-		rgb[COLOR_BACKGROUND][2] = 0;
-		rgb[COLOR_BACKGROUND][3] = 0;
+		rgbw[COLOR_BACKGROUND][0] = 0;
+		rgbw[COLOR_BACKGROUND][1] = 0;
+		rgbw[COLOR_BACKGROUND][2] = 0;
+		rgbw[COLOR_BACKGROUND][3] = 0;
 	}
 	setColorPicker(withBackground);
 	sendColorData(command, nstr(1));
@@ -504,7 +504,7 @@ function toggleBackground() {
  * Sets all sliders (the values) and their corresponsding labels to
  * the currently stored config values.
  *
- * This function also updated the color area with the current rgb values.
+ * This function also updated the color area with the current rgbw values.
  */
 function setSliders() {
 	// sliders
@@ -586,14 +586,14 @@ function sendBrightnessData(command, addData = "") {
 }
 
 function sendColorData(command, addData = "") {
-	sendCmd(command, nstr(rgb[COLOR_FOREGROUND][0]) +
-	nstr(rgb[COLOR_FOREGROUND][1]) +
-	nstr(rgb[COLOR_FOREGROUND][2]) +
-	nstr(rgb[COLOR_FOREGROUND][3]) +
-	nstr(rgb[COLOR_BACKGROUND][0]) +
-	nstr(rgb[COLOR_BACKGROUND][1]) +
-	nstr(rgb[COLOR_BACKGROUND][2]) +
-	nstr(rgb[COLOR_BACKGROUND][3]) +
+	sendCmd(command, nstr(rgbw[COLOR_FOREGROUND][0]) +
+	nstr(rgbw[COLOR_FOREGROUND][1]) +
+	nstr(rgbw[COLOR_FOREGROUND][2]) +
+	nstr(rgbw[COLOR_FOREGROUND][3]) +
+	nstr(rgbw[COLOR_BACKGROUND][0]) +
+	nstr(rgbw[COLOR_BACKGROUND][1]) +
+	nstr(rgbw[COLOR_BACKGROUND][2]) +
+	nstr(rgbw[COLOR_BACKGROUND][3]) +
 	nstr(hell) +
 	nstr(geschw));
 }

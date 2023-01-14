@@ -177,25 +177,25 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_MODE_WORD_CLOCK: {
             G.prog = COMMAND_MODE_WORD_CLOCK;
             parametersChanged = true;
-            G.rgb[Foreground][0] = split(payload, 3);
-            G.rgb[Foreground][1] = split(payload, 6);
-            G.rgb[Foreground][2] = split(payload, 9);
-            G.rgb[Foreground][3] = split(payload, 12);
+            G.rgbw[Foreground][0] = split(payload, 3);
+            G.rgbw[Foreground][1] = split(payload, 6);
+            G.rgbw[Foreground][2] = split(payload, 9);
+            G.rgbw[Foreground][3] = split(payload, 12);
 
-            G.rgb[Background][0] = split(payload, 15);
-            G.rgb[Background][1] = split(payload, 18);
-            G.rgb[Background][2] = split(payload, 21);
-            G.rgb[Background][3] = split(payload, 24);
+            G.rgbw[Background][0] = split(payload, 15);
+            G.rgbw[Background][1] = split(payload, 18);
+            G.rgbw[Background][2] = split(payload, 21);
+            G.rgbw[Background][3] = split(payload, 24);
 
-            G.rgb[Frame][0] = split(payload, 3);
-            G.rgb[Frame][1] = split(payload, 6);
-            G.rgb[Frame][2] = split(payload, 9);
-            G.rgb[Frame][3] = split(payload, 12);
+            G.rgbw[Frame][0] = split(payload, 3);
+            G.rgbw[Frame][1] = split(payload, 6);
+            G.rgbw[Frame][2] = split(payload, 9);
+            G.rgbw[Frame][3] = split(payload, 12);
 
-            G.rgb[Effect][0] = split(payload, 3);
-            G.rgb[Effect][1] = split(payload, 6);
-            G.rgb[Effect][2] = split(payload, 9);
-            G.rgb[Effect][3] = split(payload, 12);
+            G.rgbw[Effect][0] = split(payload, 3);
+            G.rgbw[Effect][1] = split(payload, 6);
+            G.rgbw[Effect][2] = split(payload, 9);
+            G.rgbw[Effect][3] = split(payload, 12);
             break;
         }
 
@@ -205,10 +205,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_SECONDS;
             G.prog_init = 1;
 
-            G.rgb[Effect][0] = split(payload, 3);
-            G.rgb[Effect][1] = split(payload, 6);
-            G.rgb[Effect][2] = split(payload, 9);
-            G.rgb[Effect][3] = split(payload, 12);
+            G.rgbw[Effect][0] = split(payload, 3);
+            G.rgbw[Effect][1] = split(payload, 6);
+            G.rgbw[Effect][2] = split(payload, 9);
+            G.rgbw[Effect][3] = split(payload, 12);
             G.hell = split(payload, 27);
             G.geschw = split(payload, 30);
             break;
@@ -220,10 +220,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_SCROLLINGTEXT;
             G.prog_init = 1;
 
-            G.rgb[Effect][0] = split(payload, 3);
-            G.rgb[Effect][1] = split(payload, 6);
-            G.rgb[Effect][2] = split(payload, 9);
-            G.rgb[Effect][3] = split(payload, 12);
+            G.rgbw[Effect][0] = split(payload, 3);
+            G.rgbw[Effect][1] = split(payload, 6);
+            G.rgbw[Effect][2] = split(payload, 9);
+            G.rgbw[Effect][3] = split(payload, 12);
             G.hell = split(payload, 27);
             G.geschw = split(payload, 30);
             break;
@@ -257,10 +257,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_COLOR;
             G.prog_init = 1;
 
-            G.rgb[Effect][0] = split(payload, 3);
-            G.rgb[Effect][1] = split(payload, 6);
-            G.rgb[Effect][2] = split(payload, 9);
-            G.rgb[Effect][3] = split(payload, 12);
+            G.rgbw[Effect][0] = split(payload, 3);
+            G.rgbw[Effect][1] = split(payload, 6);
+            G.rgbw[Effect][2] = split(payload, 9);
+            G.rgbw[Effect][3] = split(payload, 12);
             break;
         }
             //------------------------------------------------------------------------------
@@ -291,10 +291,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_INITIAL_VALUES: {
             Serial.println("Startwerte gespeichert");
-            Serial.println(G.rgb[Foreground][0]);
-            Serial.println(G.rgb[Foreground][1]);
-            Serial.println(G.rgb[Foreground][2]);
-            Serial.println(G.rgb[Foreground][3]);
+            Serial.println(G.rgbw[Foreground][0]);
+            Serial.println(G.rgbw[Foreground][1]);
+            Serial.println(G.rgbw[Foreground][2]);
+            Serial.println(G.rgbw[Foreground][3]);
             G.conf = COMMAND_SET_INITIAL_VALUES;
             break;
         }
