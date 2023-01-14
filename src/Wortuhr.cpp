@@ -121,12 +121,12 @@ Mqtt mqtt;
 Network network;
 
 #include "Animation.hpp"
+#include "Wifi.hpp"
 #include "clockWork.hpp"
 #include "icons.h"
 #include "led.hpp"
 #include "mqtt.hpp"
 #include "network.hpp"
-#include "Wifi.hpp"
 
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) <= EEPROM_SIZE,
@@ -156,11 +156,11 @@ void time_is_set() {
 
     struct tm tm;
     localtime_r(&utc, &tm);
-    _sekunde = tm.tm_sec;
+    _second = tm.tm_sec;
     _minute = tm.tm_min;
-    _stunde = tm.tm_hour;
+    _hour = tm.tm_hour;
     if (usedUhrType->hasSecondsFrame()) {
-        _sekunde48 = _sekunde * 48 / 60;
+        _second48 = _second * 48 / 60;
     }
 
     String origin;
@@ -172,8 +172,8 @@ void time_is_set() {
     } else {
         origin = "SNTP not reachable";
     }
-    Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _stunde, _minute,
-                  _sekunde, origin.c_str());
+    Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _hour, _minute,
+                  _second, origin.c_str());
 }
 
 //------------------------------------------------------------------------------
@@ -433,9 +433,9 @@ void loop() {
     struct tm tm;
     localtime_r(&utc, &tm);
     if (utc > 100000000) {
-        _sekunde = tm.tm_sec;
+        _second = tm.tm_sec;
         _minute = tm.tm_min;
-        _stunde = tm.tm_hour;
+        _hour = tm.tm_hour;
     }
 
     network.loop();
@@ -456,7 +456,7 @@ void loop() {
     animation->loop(tm); // muss periodisch aufgerufen werden
 
     // lass die Zeit im Demo Mode der Animation schneller ablaufen
-    animation->demoMode(_minute, _sekunde);
+    animation->demoMode(_minute, _second);
 
     clockWork.loop(tm);
 }
