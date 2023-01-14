@@ -112,9 +112,7 @@ uint8_t _minute = 0;
 uint8_t _hour = 0;
 uint8_t lastSecond = 0;
 uint8_t lastMinute = 0;
-uint8_t lastHour = 0;
 
-uint32_t clockTime;
 uint16_t frontMatrix[MAX_ARRAY_SIZE] = {0};
 uint16_t lastFrontMatrix[MAX_ARRAY_SIZE] = {0};
 bool parametersChanged = false;

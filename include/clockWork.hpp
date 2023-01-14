@@ -488,8 +488,6 @@ static void countdownToMidnight() {
 //------------------------------------------------------------------------------
 
 void ClockWork::setClock() {
-    clockTime = 0;
-
     if (!G.Sprachvariation[NotShowItIs]) {
         usedUhrType->show(es_ist);
     }
