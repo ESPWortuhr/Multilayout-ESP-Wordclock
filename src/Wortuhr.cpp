@@ -126,7 +126,7 @@ Network network;
 #include "led.hpp"
 #include "mqtt.hpp"
 #include "network.hpp"
-#include "wifi_func.hpp"
+#include "Wifi.hpp"
 
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) <= EEPROM_SIZE,
@@ -344,7 +344,7 @@ void setup() {
     if (G.bootShowWifi) {
         clockWork.initBootWifiSignalStrength(strength);
     }
-    WlanStart();
+    wifiStart();
     configTime(0, 0, G.zeitserver);
     setenv("TZ", TZ_Europe_Berlin, true);
     tzset();
