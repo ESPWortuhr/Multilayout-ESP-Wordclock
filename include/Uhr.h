@@ -146,7 +146,6 @@ unsigned int count_millis = 0;
 unsigned int count_delay = 0;
 
 unsigned long previousMillis = 0;
-const long interval = 1000; // 1 Sekunde
 
 uint32_t uhrzeit;
 uint16_t Word_array[MAX_ARRAY_SIZE] = {0};
