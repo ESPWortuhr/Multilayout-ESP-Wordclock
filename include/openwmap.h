@@ -68,8 +68,9 @@ private:
             destTemp = -1;
         } else if (srctemp <= -25) {
             destTemp = -25;
+        } else {
+            destTemp = static_cast<int8_t>(srctemp - fmod(srctemp, 5));
         }
-        destTemp = static_cast<int8_t>(srctemp - fmod(srctemp, 5));
     }
 
     //------------------------------------------------------------------------------
@@ -297,10 +298,12 @@ private:
 
     //------------------------------------------------------------------------------
 
-    void checkIfWeatherCounterIsOutOfBounds() {
-        if (weatherCounter >= 600) {
-            weatherCounter = 0;
+    bool checkWeatherCounter() {
+        if (weatherCounter == 0) {
+            weatherCounter = 600;
+            return true;
         }
+        return false;
     }
 
 public:
@@ -807,12 +810,7 @@ public:
     //------------------------------------------------------------------------------
 
     void loop() {
-        weatherCounter++;
-
-        checkIfWeatherCounterIsOutOfBounds();
-
-        if ((_sekunde == 0) | (_sekunde == 10) | (_sekunde == 20) |
-            (_sekunde == 30) | (_sekunde == 40) | (_sekunde == 50)) {
+        if (_sekunde % 10 == 0) {
             wWeatherSwitch++;
             led.clear();
             if (wWeatherSwitch > 4) {
@@ -824,8 +822,9 @@ public:
             Serial.println(wHour);
         }
 
-        if (WiFi.status() == WL_CONNECTED) {
+        if (WiFi.status() == WL_CONNECTED && checkWeatherCounter()) {
             pullWeatherData();
         }
+        weatherCounter--;
     }
 };
