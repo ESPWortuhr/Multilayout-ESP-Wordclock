@@ -601,9 +601,9 @@ void ClockWork::initLedStrip(uint8_t num) {
 
 void ClockWork::loop(struct tm &tm) {
     unsigned long currentMillis = millis();
-    count_delay += currentMillis - previousMillis;
+    countMillisSpeed += currentMillis - previousMillis;
     if (usedUhrType->hasSecondsFrame()) {
-        count_millis48 += currentMillis - previousMillis;
+        countMillis48 += currentMillis - previousMillis;
     }
     previousMillis = currentMillis;
 
@@ -909,9 +909,9 @@ void ClockWork::loop(struct tm &tm) {
         if (G.prog_init == 1) {
             G.prog_init = 0;
             led.clear();
-            count_delay = (11u - G.geschw) * 30u;
+            countMillisSpeed = (11u - G.geschw) * 30u;
         }
-        if (count_delay >= (11u - G.geschw) * 30u) {
+        if (countMillisSpeed >= (11u - G.geschw) * 30u) {
             switch (G.prog) {
             case COMMAND_MODE_SCROLLINGTEXT: {
                 scrollingText(G.ltext);
@@ -928,7 +928,7 @@ void ClockWork::loop(struct tm &tm) {
             default:
                 break;
             }
-            count_delay = 0;
+            countMillisSpeed = 0;
         }
         break;
     }
@@ -973,16 +973,16 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
-    if (count_delay > 10000) {
-        count_delay = 0;
+    if (countMillisSpeed > 10000) {
+        countMillisSpeed = 0;
     }
 }
 
 //------------------------------------------------------------------------------
 
 void ClockWork::loopSecondsFrame() {
-    if (count_millis48 >= interval48) {
-        count_millis48 = 0;
+    if (countMillis48 >= interval48) {
+        countMillis48 = 0;
         _second48++;
         if (_second48 > 47) {
             _second48 = 0;

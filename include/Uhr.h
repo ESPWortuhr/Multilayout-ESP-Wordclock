@@ -114,9 +114,6 @@ uint8_t lastSecond = 0;
 uint8_t lastMinute = 0;
 uint8_t lastHour = 0;
 
-unsigned int count_delay = 0;
-unsigned long previousMillis = 0;
-
 uint32_t clockTime;
 uint16_t frontMatrix[MAX_ARRAY_SIZE] = {0};
 uint16_t lastFrontMatrix[MAX_ARRAY_SIZE] = {0};

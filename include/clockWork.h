@@ -4,10 +4,13 @@
 
 class ClockWork {
 private:
-    uint8_t count_millis48 = 0;
-    unsigned long previous48 = 0;
+    uint8_t countMillis48 = 0;
+    uint32_t previous48 = 0;
     const uint16_t interval48 = 1250; // 60000/48
     uint8_t lastSecond48 = 48;
+
+    uint16_t countMillisSpeed = 0;
+    uint32_t previousMillis = 0;
 
 private:
     void loopSecondsFrame();
