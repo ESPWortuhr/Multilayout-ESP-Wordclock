@@ -106,10 +106,6 @@ GLOBAL G = {};
 // LDR
 uint8_t ldrVal = 100;
 
-unsigned char wlan_client = false;
-unsigned char wlan_status = 99;
-unsigned char wlan_ssid = false;
-
 uint8_t _second = 0;
 uint8_t _second48 = 0;
 uint8_t _minute = 0;
