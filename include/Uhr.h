@@ -142,7 +142,6 @@ const long interval48 = 1250;
 uint8_t _sekunde48 = 0;
 uint8_t last_sekunde48 = 100;
 
-unsigned int count_millis = 0;
 unsigned int count_delay = 0;
 
 unsigned long previousMillis = 0;
