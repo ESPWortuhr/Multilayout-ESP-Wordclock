@@ -277,9 +277,9 @@ protected:
 class Ball {
 public:
     Ball(){};
-    Ball(uint8_t max_rows) {
-        unten = ((max_rows - 1) << 8);
-        lastPos = ((max_rows - 3) << 8);
+    Ball(uint8_t maxRows) {
+        unten = ((maxRows - 1) << 8);
+        lastPos = ((maxRows - 3) << 8);
     }
     virtual ~Ball(){};
 
@@ -344,7 +344,7 @@ protected:
 class Snake {
 public:
     Snake(uint8_t rows, uint8_t cols) {
-        max_rows = rows;
+        maxRows = rows;
         maxCols = cols;
         motions = new GoToPos[rows * 2 + 2];
     };
@@ -362,7 +362,7 @@ protected:
         int8 min;
         int8 max;
     };
-    uint8_t max_rows, maxCols;
+    uint8_t maxRows, maxCols;
     GoToPos *motions;
     Coord head;
     bool goRight;
@@ -387,7 +387,7 @@ public:
         head = {false, 0, -1};
         index = 0;
         getMotions(old, false, 0, 1);
-        getMotions(act, true, max_rows - 1, -1);
+        getMotions(act, true, maxRows - 1, -1);
         motions[index] = {false, -1, 0, 0}; // move out on left side
         motions[index + 1] = {false, -2, 0,
                               (int8)(maxCols - 1)}; // last on right side
@@ -415,7 +415,7 @@ public:
 protected:
     void getMotions(RgbfColor **matrix, bool useAct, int8_t row, int8_t delta) {
         // order in motions: old -> down, act -> up
-        int8_t left, right, rowCounter = max_rows;
+        int8_t left, right, rowCounter = maxRows;
         while (rowCounter-- > 0) {
             left = maxCols;
             right = 0;
@@ -487,11 +487,11 @@ protected:
     Icons icons[3];
     bool mirrored;
     int32_t maxLayer;
-    uint8_t max_rows, maxCols;
+    uint8_t maxRows, maxCols;
 
 public:
     Firework(uint8_t rows, uint8_t cols) {
-        max_rows = rows;
+        maxRows = rows;
         maxCols = cols;
     }
 
@@ -512,7 +512,7 @@ public:
         // bool mirrored,
         //                          bool init) {
 
-        if ((r < 10) && (r < max_rows) && (c < 11) && (c < maxCols)) {
+        if ((r < 10) && (r < maxRows) && (c < 11) && (c < maxCols)) {
             uint16_t pixels = 0;
             for (int32_t layer = 0; layer <= maxLayer; layer++) {
                 if (icons[layer] != static_cast<Icons>(0)) {
