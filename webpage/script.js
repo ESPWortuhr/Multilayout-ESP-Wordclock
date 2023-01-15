@@ -327,7 +327,7 @@ function initWebsocket() {
 			$("#slider-brightness").set("value", data.effectBri);
 			$("#slider-speed").set("value", data.effectSpeed); // TODO: there is no property effectSpeed!
 			document.getElementById("show-seconds").checked = data.secondVariant;
-			$("show-minutes").set("value", data.zeige_min);
+			$("show-minutes").set("value", data.minuteVariant);
 
 			$("#owm-api-key").set("value", data.apiKey);
 			$("#owm-city-id").set("value", data.cityid);

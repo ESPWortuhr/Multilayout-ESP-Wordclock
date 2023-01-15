@@ -65,7 +65,7 @@ struct GLOBAL {
     uint8_t effectSpeed;
     uint8_t client_nr;
     uint8_t secondVariant;
-    uint8_t zeige_min;
+    uint8_t minuteVariant;
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char scrollingText[PAYLOAD_LENGTH];

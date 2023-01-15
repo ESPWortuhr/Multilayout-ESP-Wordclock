@@ -174,7 +174,7 @@ void setup() {
         G.effectSpeed = 10;
         G.client_nr = 0;
         G.secondVariant = 0;
-        G.zeige_min = 1;
+        G.minuteVariant = 1;
         G.ldr = 0;
         G.ldrCal = 0;
         strcpy(G.openWeatherMap.cityid, "");
@@ -343,8 +343,8 @@ void setup() {
 
     /*
     // setup frame
-    if (usedUhrType->hasSecondsFrame() && G.secondVariant < 1 && G.zeige_min < 2) {
-        led.setFrameColor();
+    if (usedUhrType->hasSecondsFrame() && G.secondVariant < 1 && G.minuteVariant
+    < 2) { led.setFrameColor();
     }
     */
 

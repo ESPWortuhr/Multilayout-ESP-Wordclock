@@ -290,15 +290,15 @@ void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
 //------------------------------------------------------------------------------
 
 void Animation::set_minutes() {
-    if (G.zeige_min > 0) {
+    if (G.minuteVariant > 0) {
         uint8_t m = lastMinute % 5;
-        led.setPixelColorObject(usedUhrType->getMinArr(G.zeige_min - 1, 0),
+        led.setPixelColorObject(usedUhrType->getMinArr(G.minuteVariant - 1, 0),
                                 m > 0 ? foregroundMinute : background);
-        led.setPixelColorObject(usedUhrType->getMinArr(G.zeige_min - 1, 1),
+        led.setPixelColorObject(usedUhrType->getMinArr(G.minuteVariant - 1, 1),
                                 m > 1 ? foregroundMinute : background);
-        led.setPixelColorObject(usedUhrType->getMinArr(G.zeige_min - 1, 2),
+        led.setPixelColorObject(usedUhrType->getMinArr(G.minuteVariant - 1, 2),
                                 m > 2 ? foregroundMinute : background);
-        led.setPixelColorObject(usedUhrType->getMinArr(G.zeige_min - 1, 3),
+        led.setPixelColorObject(usedUhrType->getMinArr(G.minuteVariant - 1, 3),
                                 m > 3 ? foregroundMinute : background);
     }
 }

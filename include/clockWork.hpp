@@ -85,7 +85,8 @@ void ClockWork::rainbowCycle() {
 
     displayedHue = hue;
     for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
-        led.setPixelHsb(usedUhrType->getSMatrix(i), displayedHue, 100, G.effectBri);
+        led.setPixelHsb(usedUhrType->getSMatrix(i), displayedHue, 100,
+                        G.effectBri);
         displayedHue = displayedHue + 360.0 / usedUhrType->NUM_SMATRIX();
         led.checkIfHueIsOutOfBound(displayedHue);
     }
@@ -254,26 +255,26 @@ void ClockWork::setHour(const uint8_t std, const uint8_t voll) {
 //------------------------------------------------------------------------------
 
 void ClockWork::showMinute(uint8_t min) {
-    if (G.zeige_min > 0) {
+    if (G.minuteVariant > 0) {
         while (min > 4) {
             min -= 5;
         }
 
         if (min > 0) {
-            frontMatrix[usedUhrType->getMinArr(G.zeige_min - 1, 0)] =
-                usedUhrType->getMinArr(G.zeige_min - 1, 0);
+            frontMatrix[usedUhrType->getMinArr(G.minuteVariant - 1, 0)] =
+                usedUhrType->getMinArr(G.minuteVariant - 1, 0);
         }
         if (min > 1) {
-            frontMatrix[usedUhrType->getMinArr(G.zeige_min - 1, 1)] =
-                usedUhrType->getMinArr(G.zeige_min - 1, 1);
+            frontMatrix[usedUhrType->getMinArr(G.minuteVariant - 1, 1)] =
+                usedUhrType->getMinArr(G.minuteVariant - 1, 1);
         }
         if (min > 2) {
-            frontMatrix[usedUhrType->getMinArr(G.zeige_min - 1, 2)] =
-                usedUhrType->getMinArr(G.zeige_min - 1, 2);
+            frontMatrix[usedUhrType->getMinArr(G.minuteVariant - 1, 2)] =
+                usedUhrType->getMinArr(G.minuteVariant - 1, 2);
         }
         if (min > 3) {
-            frontMatrix[usedUhrType->getMinArr(G.zeige_min - 1, 3)] =
-                usedUhrType->getMinArr(G.zeige_min - 1, 3);
+            frontMatrix[usedUhrType->getMinArr(G.minuteVariant - 1, 3)] =
+                usedUhrType->getMinArr(G.minuteVariant - 1, 3);
         }
     }
 }
@@ -707,7 +708,7 @@ void ClockWork::loop(struct tm &tm) {
         }
         config["effectBri"] = G.effectBri;
         config["secondVariant"] = G.secondVariant;
-        config["zeige_min"] = G.zeige_min;
+        config["minuteVariant"] = G.minuteVariant;
         config["ldr"] = G.ldr;
         config["ldrCal"] = G.ldrCal;
         config["cityid"] = G.openWeatherMap.cityid;
@@ -962,7 +963,7 @@ void ClockWork::loop(struct tm &tm) {
         parametersChanged = false;
 
         if (usedUhrType->hasSecondsFrame() && G.secondVariant < 1 &&
-            G.zeige_min < 2) {
+            G.minuteVariant < 2) {
             led.setFrameColor();
         }
         G.prog = COMMAND_IDLE;
@@ -988,7 +989,7 @@ void ClockWork::loopSecondsFrame() {
     }
     if (lastSecond48 != _second48) {
         if (G.prog == 0 && G.conf == 0) {
-            if (G.secondVariant == 1 || G.zeige_min == 2) {
+            if (G.secondVariant == 1 || G.minuteVariant == 2) {
                 led.clearFrame();
             }
             if (G.secondVariant > 0) {
