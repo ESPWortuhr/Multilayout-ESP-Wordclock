@@ -10,7 +10,7 @@ OpenWMap weather;
 
 //------------------------------------------------------------------------------
 
-void ClockWork::copyClockface(const uint16_t source[], uint16_t destination[]) {
+void ClockWork::copyClockface(const bool source[], bool destination[]) {
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
         destination[i] = source[i];
     }
@@ -259,22 +259,8 @@ void ClockWork::showMinute(uint8_t min) {
         while (min > 4) {
             min -= 5;
         }
-
-        if (min > 0) {
-            frontMatrix[usedUhrType->getMinArr(G.minuteVariant - 1, 0)] =
-                usedUhrType->getMinArr(G.minuteVariant - 1, 0);
-        }
-        if (min > 1) {
-            frontMatrix[usedUhrType->getMinArr(G.minuteVariant - 1, 1)] =
-                usedUhrType->getMinArr(G.minuteVariant - 1, 1);
-        }
-        if (min > 2) {
-            frontMatrix[usedUhrType->getMinArr(G.minuteVariant - 1, 2)] =
-                usedUhrType->getMinArr(G.minuteVariant - 1, 2);
-        }
-        if (min > 3) {
-            frontMatrix[usedUhrType->getMinArr(G.minuteVariant - 1, 3)] =
-                usedUhrType->getMinArr(G.minuteVariant - 1, 3);
+        for (uint8_t i = 0; i < min; i++) {
+            frontMatrix[usedUhrType->getMinArr(G.minuteVariant - 1, i)] = true;
         }
     }
 }

@@ -86,9 +86,7 @@ enum ledText {
 
 class iUhrType {
 public:
-    virtual void Letter_set(const uint16_t index) {
-        frontMatrix[index] = index;
-    }
+    virtual void Letter_set(const uint16_t index) { frontMatrix[index] = true; }
 
     virtual void show(uint8_t text) = 0;
 
