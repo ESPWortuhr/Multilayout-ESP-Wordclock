@@ -1,11 +1,11 @@
 #pragma once
 #include "Arduino.h"
 #include "version.gen.h"
-#define PAYLOAD_LENGTH 30
 
+#define PAYLOAD_LENGTH 30
 #define MAX_ARRAY_SIZE 291
 
-enum uhrzeit_t {
+enum ClockWords {
     ESIST = 0,
     VOR = 1,
     NACH = 2,
@@ -52,23 +52,24 @@ struct GLOBAL {
     uint8_t sernr;
     uint16_t prog;
     uint8_t param1;
-    uint8_t prog_init;
+    uint8_t progInit;
     uint16_t conf;
-    uint8_t rgb[4][4];
+    uint8_t rgbw[4][4];
     uint8_t rr;
     uint8_t gg;
     uint8_t bb;
     uint8_t ww;
-    uint8_t hell;
+    uint8_t effectBri;
+    uint8_t effectSpeed;
+    uint8_t client_nr;
+    uint8_t secondVariant;
+    uint8_t minuteVariant;
+    bool languageVariant[5];
+    char timeserver[PAYLOAD_LENGTH];
+    char hostname[PAYLOAD_LENGTH];
+    char scrollingText[PAYLOAD_LENGTH];
     uint16_t ldr;
     uint16_t ldrCal;
-    int geschw;
-    uint8_t client_nr;
-    uint8_t zeige_sek;
-    uint8_t zeige_min;
-    char zeitserver[PAYLOAD_LENGTH];
-    char hostname[PAYLOAD_LENGTH];
-    char ltext[PAYLOAD_LENGTH];
     uint8_t hh;
     uint8_t h6;
     uint8_t h8;
@@ -78,7 +79,6 @@ struct GLOBAL {
     uint8_t h20;
     uint8_t h22;
     uint8_t h24;
-    bool Sprachvariation[5];
 
     uint8_t UhrtypeDef;
     uint8_t Colortype;
@@ -103,65 +103,33 @@ struct GLOBAL {
 };
 GLOBAL G = {};
 
-const char *server = "api.openweathermap.org"; // Openweather server's address
-const char *resource1 = "/data/2.5/forecast?id="; // Openweather API URL part 1
-const char *resource2 = "&units=metric&APPID=";   // Openweather API URL part 2
-const char *resource3 = "&cnt=8"; // Openweather API forecast time
-char resource[100];
-char response[3500];        // fixed size buffer
-uint16_t weather_tag = 600; // counter fuer Wetterdaten abrufen
-int16_t wtemp_6;
-int16_t wtemp_12;
-int16_t wtemp_18;
-int16_t wtemp_24;
-uint16_t wwetter_6;
-uint16_t wwetter_12;
-uint16_t wwetter_18;
-uint16_t wwetter_24;
-uint16_t wstunde;
-uint16_t wetterswitch;
-
 // LDR
 uint8_t ldrVal = 100;
 
-unsigned char wlan_client = false;
-unsigned char wlan_status = 99;
-unsigned char wlan_ssid = false;
-
-uint8_t _sekunde = 0;
+uint8_t _second = 0;
+uint8_t _second48 = 0;
 uint8_t _minute = 0;
-uint8_t _stunde = 0;
-uint8_t last_sekunde = 0;
-uint8_t last_minute = 0;
-uint8_t last_stunde = 0;
+uint8_t _hour = 0;
+uint8_t lastSecond = 0;
+uint8_t lastMinute = 0;
 
-unsigned long count_millis48 = 0;
-unsigned long previous48 = 0;
-unsigned long transitionDelay = 0;
-const long interval48 = 1250;
-uint8_t _sekunde48 = 0;
-uint8_t last_sekunde48 = 100;
-
-unsigned int count_millis = 0;
-unsigned int count_delay = 0;
-
-unsigned long previousMillis = 0;
-const long interval = 1000; // 1 Sekunde
-
-uint32_t uhrzeit;
-uint16_t Word_array[MAX_ARRAY_SIZE] = {0};
-uint16_t Word_array_old[MAX_ARRAY_SIZE] = {0};
-bool parameters_changed = false;
-uint8_t AP_Status = 0;
+uint16_t frontMatrix[MAX_ARRAY_SIZE] = {0};
+uint16_t lastFrontMatrix[MAX_ARRAY_SIZE] = {0};
+bool parametersChanged = false;
+uint8_t statusAccessPoint = 0;
 
 char str[1024];
-char s[6];
 
 bool externalRTC = false;
 
-enum ledPositions { Foreground = 0, Background = 1, Frame = 2, Effect = 3 };
+enum ColorPosition {
+    Foreground = 0,
+    Background = 1,
+    Frame = 2,
+    Effect = 3,
+};
 
-enum ledColortypes {
+enum LedColorVariants {
     Brg = 0,
     Grb = 1,
     Rgb = 2,
@@ -169,7 +137,7 @@ enum ledColortypes {
     Grbw = 4,
 };
 
-enum Sprachvariationen {
+enum LanguageDialects {
     ItIs15 = 0,
     ItIs20 = 1,
     ItIs40 = 2,
@@ -177,7 +145,7 @@ enum Sprachvariationen {
     NotShowItIs = 4,
 };
 
-enum Command {
+enum CommandWords {
     COMMAND_IDLE = 0,
 
     COMMAND_MODE_WORD_CLOCK = 1,
@@ -221,7 +189,7 @@ enum Command {
 
 };
 
-enum UhrTypeDefinitions {
+enum ClockType {
     Uhr_114 = 1,
     Uhr_114_Alternative = 2,
     Uhr_114_2Clock = 6,

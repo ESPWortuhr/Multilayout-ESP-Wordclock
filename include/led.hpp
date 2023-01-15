@@ -84,21 +84,21 @@ uint8_t Led::setBrightnessAuto(uint8_t val) {
 void Led::setBrightnessLdr(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
                            uint8_t position) {
     if (G.autoLdrEnabled) {
-        rr = setBrightnessAuto(G.rgb[position][0]);
-        gg = setBrightnessAuto(G.rgb[position][1]);
-        bb = setBrightnessAuto(G.rgb[position][2]);
-        ww = setBrightnessAuto(G.rgb[position][3]);
+        rr = setBrightnessAuto(G.rgbw[position][0]);
+        gg = setBrightnessAuto(G.rgbw[position][1]);
+        bb = setBrightnessAuto(G.rgbw[position][2]);
+        ww = setBrightnessAuto(G.rgbw[position][3]);
     } else {
         if (G.ldr == 1) {
-            rr = G.rgb[position][0] * ldrVal / 100;
-            gg = G.rgb[position][1] * ldrVal / 100;
-            bb = G.rgb[position][2] * ldrVal / 100;
-            ww = G.rgb[position][3] * ldrVal / 100;
+            rr = G.rgbw[position][0] * ldrVal / 100;
+            gg = G.rgbw[position][1] * ldrVal / 100;
+            bb = G.rgbw[position][2] * ldrVal / 100;
+            ww = G.rgbw[position][3] * ldrVal / 100;
         } else {
-            rr = G.rgb[position][0] * G.hh / 100;
-            gg = G.rgb[position][1] * G.hh / 100;
-            bb = G.rgb[position][2] * G.hh / 100;
-            ww = G.rgb[position][3] * G.hh / 100;
+            rr = G.rgbw[position][0] * G.hh / 100;
+            gg = G.rgbw[position][1] * G.hh / 100;
+            bb = G.rgbw[position][2] * G.hh / 100;
+            ww = G.rgbw[position][3] * G.hh / 100;
         }
     }
 }
@@ -107,10 +107,10 @@ void Led::setBrightnessLdr(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
 
 void Led::setBrightness(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
                         uint8_t position, uint8_t percentage = 100) {
-    rr = G.rgb[position][0] * percentage / 100;
-    gg = G.rgb[position][1] * percentage / 100;
-    bb = G.rgb[position][2] * percentage / 100;
-    ww = G.rgb[position][3] * percentage / 100;
+    rr = G.rgbw[position][0] * percentage / 100;
+    gg = G.rgbw[position][1] * percentage / 100;
+    bb = G.rgbw[position][2] * percentage / 100;
+    ww = G.rgbw[position][3] * percentage / 100;
     uint16_t zz = rr + gg + bb;
     if (zz > 150) {
         zz = zz * 10 / 150;
@@ -145,7 +145,7 @@ inline void Led::clearPixel(uint16_t i) {
 
 inline void Led::clear() {
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        Word_array[i] = 500;
+        frontMatrix[i] = 500;
         clearPixel(i);
     }
 }
@@ -195,7 +195,7 @@ void Led::set(bool changed) {
     setBrightnessLdr(rr, gg, bb, ww, Foreground);
     setBrightnessLdr(r2, g2, b2, w2, Background);
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        if (Word_array_old[i] < usedUhrType->NUM_PIXELS()) {
+        if (lastFrontMatrix[i] < usedUhrType->NUM_PIXELS()) {
             // foreground
             setPixel(rr, gg, bb, ww, i);
         } else {
@@ -300,8 +300,8 @@ void Led::shiftColumnToRight() {
 void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                           uint8_t offsetRow, unsigned char unsigned_d1) {
     if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
-        setPixel(G.rgb[Effect][0], G.rgb[Effect][1], G.rgb[Effect][2],
-                 G.rgb[Effect][3],
+        setPixel(G.rgbw[Effect][0], G.rgbw[Effect][1], G.rgbw[Effect][2],
+                 G.rgbw[Effect][3],
                  usedUhrType->getFrontMatrix(row + offsetRow, col + offsetCol));
     }
 }
@@ -338,7 +338,7 @@ void Led::showSeconds() {
     uint8_t rr, gg, bb, ww;
     setBrightness(rr, gg, bb, ww, Effect);
 
-    setPixel(rr, gg, bb, ww, usedUhrType->getRMatrix(_sekunde48));
+    setPixel(rr, gg, bb, ww, usedUhrType->getRMatrix(_second48));
 }
 
 //------------------------------------------------------------------------------

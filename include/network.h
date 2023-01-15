@@ -2,7 +2,7 @@
 
 class Network {
 private:
-    const char *connectionSSID = "WortUhr_verbinden";
+    const char *connectionSSID = "Connect_to_Wordclock";
 
 public:
     Network(/* args */) = default;

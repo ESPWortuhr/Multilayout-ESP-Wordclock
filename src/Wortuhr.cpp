@@ -1,54 +1,3 @@
-/*
- * Standard Wortuhr Konfiguration. Kann später in den Einstellungen auf der
- * Webseite geändert werden.
- */
-
-// Layout der Frontplatte:
-// - Uhr_114
-//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-// - Uhr_114_Alternative
-//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem
-//   Layout für extra Wörter in der Matrix
-// - Uhr_114_2Clock
-//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit dem Layout
-//   vom orginal Hersteller
-// - Uhr_114_Dutch
-//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem
-//   Layout für die niederländische Sprache
-// - Uhr_125
-//   11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-// - Uhr_169
-//   mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
-// - Uhr_242
-//   Uhr mit Wettervorhersage 242 LED's
-// - Uhr_291
-//   Uhr mit 24 Stunden Anzeige 18x16
-#define DEFAULT_LAYOUT Uhr_114
-
-// Typ der LEDs:
-// - Brg, Grb, Rgb, Rbg (WS2812b)
-// - Grbw (SK6812)
-#define DEFAULT_LEDTYPE Brg
-
-// External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
-#define RTC_Type RTC_DS3231
-
-// um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere
-// Seriennummer eintragen!
-#define SERNR 62
-
-bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
-//#define VERBOSE          // DEBUG VERBOSE Openweathermap
-
-#define MANUAL_WIFI_SETTINGS false
-#define WIFI_SSID "Wifi-SSID"
-#define WIFI_PASSWORD "Wifi-Pwd"
-
-/*--------------------------------------------------------------------------
- * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
- *--------------------------------------------------------------------------
- */
-
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ESP8266HTTPUpdateServer.h>
@@ -67,7 +16,8 @@ bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
 #include "Uhr.h"
 
 #include "EEPROMAnything.h"
-#include "WebPage_Adapter.h"
+#include "config.h"
+#include "webPageAdapter.h"
 
 #include "Uhrtypes/uhr_func_114.hpp"
 #include "Uhrtypes/uhr_func_114_2Clock.hpp"
@@ -121,12 +71,12 @@ Mqtt mqtt;
 Network network;
 
 #include "Animation.hpp"
+#include "Wifi.hpp"
 #include "clockWork.hpp"
 #include "icons.h"
 #include "led.hpp"
 #include "mqtt.hpp"
 #include "network.hpp"
-#include "wifi_func.hpp"
 
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) <= EEPROM_SIZE,
@@ -156,11 +106,11 @@ void time_is_set() {
 
     struct tm tm;
     localtime_r(&utc, &tm);
-    _sekunde = tm.tm_sec;
+    _second = tm.tm_sec;
     _minute = tm.tm_min;
-    _stunde = tm.tm_hour;
+    _hour = tm.tm_hour;
     if (usedUhrType->hasSecondsFrame()) {
-        _sekunde48 = _sekunde * 48 / 60;
+        _second48 = _second * 48 / 60;
     }
 
     String origin;
@@ -172,8 +122,8 @@ void time_is_set() {
     } else {
         origin = "SNTP not reachable";
     }
-    Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _stunde, _minute,
-                  _sekunde, origin.c_str());
+    Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _hour, _minute,
+                  _second, origin.c_str());
 }
 
 //------------------------------------------------------------------------------
@@ -182,7 +132,7 @@ void time_is_set() {
 
 void setup() {
     //-------------------------------------
-    // Start Serielle Schnittstelle bei Bedarf
+    // Start serial interface if required
     //-------------------------------------
     if (DEBUG == true) {
         Serial.begin(115200);
@@ -192,11 +142,11 @@ void setup() {
         Serial.println("--------------------------------------");
     }
     //-------------------------------------
-    // EEPROM lesen / initialisieren
+    // Read / initialize EEPROM
     //-------------------------------------
     EEPROM.begin(EEPROM_SIZE);
 
-    eeprom_read();
+    eeprom::read();
 
     if (G.sernr != SERNR) {
         for (uint16_t i = 0; i < EEPROM_SIZE; i++) {
@@ -207,31 +157,31 @@ void setup() {
         G.sernr = SERNR;
         G.prog = 1;
         G.param1 = 0;
-        G.prog_init = 1;
+        G.progInit = 1;
         G.conf = COMMAND_IDLE;
         for (uint8_t i = 0; i < 4; i++) {
             for (uint8_t ii = 0; ii < 4; ii++) {
-                G.rgb[i][ii] = 0;
+                G.rgbw[i][ii] = 0;
             }
         }
-        G.rgb[Foreground][2] = 100;
-        G.rgb[Effect][1] = 100;
+        G.rgbw[Foreground][2] = 100;
+        G.rgbw[Effect][1] = 100;
         G.rr = 0;
         G.gg = 0;
         G.bb = 0;
         G.ww = 0;
-        G.hell = 2;
-        G.geschw = 10;
+        G.effectBri = 2;
+        G.effectSpeed = 10;
         G.client_nr = 0;
-        G.zeige_sek = 0;
-        G.zeige_min = 1;
+        G.secondVariant = 0;
+        G.minuteVariant = 1;
         G.ldr = 0;
         G.ldrCal = 0;
         strcpy(G.openWeatherMap.cityid, "");
         strcpy(G.openWeatherMap.apikey, "");
-        strcpy(G.zeitserver, "europe.pool.ntp.org");
+        strcpy(G.timeserver, "europe.pool.ntp.org");
         strcpy(G.hostname, "uhr");
-        strcpy(G.ltext, "HELLO WORLD ");
+        strcpy(G.scrollingText, "HELLO WORLD ");
 
         G.hh = 100;
         G.h6 = 100;
@@ -243,16 +193,16 @@ void setup() {
         G.h22 = 100;
         G.h24 = 100;
         for (uint8_t i = 0; i < 5; i++) {
-            G.Sprachvariation[i] = false;
+            G.languageVariant[i] = false;
         }
 
         G.mqtt.state = 0;
         G.mqtt.port = 1883;
         strcpy(G.mqtt.serverAdress, "192.168.4.1");
         strcpy(G.mqtt.user, "User");
-        strcpy(G.mqtt.password, "Passwort");
+        strcpy(G.mqtt.password, "Password");
         strcpy(G.mqtt.clientId, "ClientId");
-        strcpy(G.mqtt.topic, "Wortuhr");
+        strcpy(G.mqtt.topic, "ESPWordclock");
 
         G.UhrtypeDef = DEFAULT_LAYOUT;
         G.Colortype = DEFAULT_LEDTYPE;
@@ -270,11 +220,12 @@ void setup() {
         G.animColorize = 1;
         G.animDemo = false;
 
-        eeprom_write();
+        eeprom::write();
         Serial.println("eeprom schreiben");
     }
-    // Initialisierung der COMMAND_MODE_xxx (Farbe)
-    G.prog_init = 1;
+
+    // Initialization of COMMAND_MODE_xxx (color)
+    G.progInit = 1;
 
     //-------------------------------------
     // Get Pointer for Uhrtype
@@ -282,18 +233,19 @@ void setup() {
 
     usedUhrType = clockWork.getPointer(G.UhrtypeDef);
 
-    // Bereich der animiert wird:
-    //     LED-Rahmen horizontal
-    //     LED-Rahmen vertical
-    //     Anzahl Reihen (einschliesslich Rahmen)
-    //     Anzahl Spalten (einschliesslich Rahmen)
-    // TODO Rahmenbreite aus usedUhrTyp holen
+    // Area that will be animated:
+    //         LED frame horizontal
+    //         LED frame vertical
+    //         Number of rows (including frames)
+    //         Number of columns (including frames)
+    // Get TODO frame width from usedUhrTyp
     animation = new Animation(0, 0, usedUhrType->ROWS_MATRIX() - 1,
                               usedUhrType->COLS_MATRIX());
 
     //-------------------------------------
-    // LEDs initialisieren
+    // Initialize LEDs
     //-------------------------------------
+
     Serial.println("LED Init");
     clockWork.initLedStrip(G.Colortype);
     if (G.bootLedBlink) {
@@ -308,33 +260,34 @@ void setup() {
     G.conf = COMMAND_IDLE;
 
     //-------------------------------------
-    // Start External RealtimeClock
+    // Start external real-time clock
     //-------------------------------------
 
     if (RTC.begin() == true) {
-        Serial.println("External RealtimeClock found");
+        Serial.println("External real-time clock found");
         struct timeval tv;
         tv.tv_sec = RTC.now().unixtime();
         settimeofday(&tv, nullptr);
         network.rtcMode();
         externalRTC = true;
     } else {
-        Serial.println("No external RealtimeClock found");
+        Serial.println("No external real-time clock found");
         externalRTC = false;
     }
     settimeofday_cb(time_is_set);
 
     //-------------------------------------
-    // Init Array
+    // Init frontMatrix
     //-------------------------------------
 
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        Word_array_old[i] = 500;
+        lastFrontMatrix[i] = 500;
     }
 
     //-------------------------------------
     // Start WiFi
     //-------------------------------------
+
     if (G.bootShowWifi) {
         clockWork.initBootWifiSignalStrength(0);
     }
@@ -344,15 +297,17 @@ void setup() {
     if (G.bootShowWifi) {
         clockWork.initBootWifiSignalStrength(strength);
     }
-    WlanStart();
-    configTime(0, 0, G.zeitserver);
+    wifiStart();
+    configTime(0, 0, G.timeserver);
     setenv("TZ", TZ_Europe_Berlin, true);
     tzset();
 
     delay(50);
+
     //-------------------------------------
-    // OTA--
+    // OTA
     //-------------------------------------
+
     httpUpdater.setup(&httpServer);
     httpServer.onNotFound([]() {
         // redirect port 81 not found pages to port 80
@@ -373,6 +328,7 @@ void setup() {
     //-------------------------------------
     // Start Websocket
     //-------------------------------------
+
     webSocket.begin();
     webSocket.onEvent(webSocketEvent);
 
@@ -387,8 +343,8 @@ void setup() {
 
     /*
     // setup frame
-    if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 && G.zeige_min < 2) {
-        led.setFrameColor();
+    if (usedUhrType->hasSecondsFrame() && G.secondVariant < 1 && G.minuteVariant
+    < 2) { led.setFrameColor();
     }
     */
 
@@ -433,9 +389,9 @@ void loop() {
     struct tm tm;
     localtime_r(&utc, &tm);
     if (utc > 100000000) {
-        _sekunde = tm.tm_sec;
+        _second = tm.tm_sec;
         _minute = tm.tm_min;
-        _stunde = tm.tm_hour;
+        _hour = tm.tm_hour;
     }
 
     network.loop();
@@ -453,10 +409,10 @@ void loop() {
         mqtt.loop();
     }
 
-    animation->loop(tm); // muss periodisch aufgerufen werden
+    animation->loop(tm); // must be called periodically
 
-    // lass die Zeit im Demo Mode der Animation schneller ablaufen
-    animation->demoMode(_minute, _sekunde);
+    // make the time run faster in the demo mode of the animation
+    animation->demoMode(_minute, _second);
 
     clockWork.loop(tm);
 }
