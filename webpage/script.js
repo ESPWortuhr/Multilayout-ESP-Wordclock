@@ -56,6 +56,7 @@ var _ = MINI._,
 	EE = MINI.EE,
 	HTML = MINI.HTML;
 
+var debugMessageReconfigured = " was reconfigured.";
 var websocket;
 var ipEsp = "ws://192.168.4.1";
 var debug = true;
@@ -262,7 +263,7 @@ function initWebsocket() {
 			$display: "none"
 		});
 
-		debugMessage("Die Verbindung mit dem Websocket wurde aufgebaut.", event);
+		debugMessage("The connection with the websocket has been established.", event);
 
 		sendCmd(COMMAND_REQUEST_COLOR_VALUES);
 		sendCmd(COMMAND_REQUEST_ANIMATION);
@@ -280,7 +281,7 @@ function initWebsocket() {
 		});
 		autoLdrStop();
 
-		debugMessage("Die Verbindung mit dem Websocket wurde geschlossen (Code " + event.code + ").", event);
+		debugMessage("The connection with the websocket was closed (code " + event.code + ").", event);
 	};
 
 	websocket.onmessage = function(event) {
@@ -409,7 +410,7 @@ function initWebsocket() {
 		}
 	};
 	websocket.onerror = function(event) {
-		debugMessage("Bei der Verbindung mit dem Websocket ist ein Fehler aufgetreten.", event);
+		debugMessage("An error occurred while connecting to the websocket.", event);
 	};
 }
 
@@ -549,7 +550,7 @@ function autoLdrStop() {
 	if (autoLdrInterval != null) {
 		clearInterval(autoLdrInterval);
 		autoLdrInterval = null;
-		debugMessage("LDR Requests stopped", null);
+		debugMessage("LDR requests stopped", null);
 	}
 }
 
@@ -582,7 +583,7 @@ function sendBrightnessData(command, addData = "") {
 	h24 = $("#brightness-24").get("value");
 
 	sendCmd(COMMAND_SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + nstr(effectBri));
-	debugMessage("Helligkeit wurde neu konfiguriert");
+	debugMessage("Brightness" + debugMessageReconfigured);
 }
 
 function sendColorData(command, addData = "") {
@@ -789,7 +790,7 @@ $.ready(function() {
 		animDemo = document.getElementById("animation-demo").checked;
 
 		sendCmd(COMMAND_MODE_ANIMATION, nstr(animType) + nstr(animDuration) + nstr(animSpeed) + nstr(animColorize) + nstr(animDemo ? 1 : 0));
-		debugMessage("Animation wurde neu konfiguriert");
+		debugMessage("Animation" + debugMessageReconfigured);
 		setAnimation();
 		return false;
 	});
@@ -798,7 +799,7 @@ $.ready(function() {
 	});
 	$("#wifi-button").on("click", function() {
 		sendCmd(COMMAND_SET_WIFI_AND_RESTART);
-		debugMessage("WLAN wird neu konfiguriert");
+		debugMessage("WiFi" + debugMessageReconfigured);
 		return false;
 	});
 	$("[id*='auto-ldr']").on("change", function() {
@@ -823,14 +824,14 @@ $.ready(function() {
 		var timeserverValue = $("#timeserver").get("value");
 
 		sendCmd(COMMAND_SET_TIMESERVER, getPaddedString(timeserverValue, DATA_TIMESERVER_TEXT_LENGTH));
-		debugMessage("Zeitserver wurde neu konfiguriert");
+		debugMessage("Timeserver" + debugMessageReconfigured);
 		return false;
 	});
 	$("#marquee-button").on("click", function() {
 		var marqueeTextValue = $("#marquee").get("value");
 
 		sendCmd(COMMAND_SET_MARQUEE_TEXT, getPaddedString(marqueeTextValue, DATA_MARQUEE_TEXT_LENGTH));
-		debugMessage("Lauftext wurde neu konfiguriert");
+		debugMessage("ScrollingText" + debugMessageReconfigured);
 	});
 	$("[id*='brightness']").on("change", function() {
 		sendBrightnessData(COMMAND_SET_BRIGHTNESS);
@@ -841,45 +842,45 @@ $.ready(function() {
 		var cityId = $("#owm-city-id").get("value");
 
 		sendCmd(COMMAND_SET_WEATHER_DATA, cityId + " " + apiKey);
-		debugMessage("OpenWeatherMap Zugangsdaten wurden konfiguriert");
+		debugMessage("OpenWeatherMap Login" + debugMessageReconfigured);
 	});
 	$("#show-minutes").on("change", function() {
 		var showMinutesValue = $("#show-minutes").get("value");
 
 		sendCmd(COMMAND_SET_MINUTE, nstr(showMinutesValue));
-		debugMessage("Minutenanzeige wurde neu konfiguriert");
+		debugMessage("MinuteVariant" + debugMessageReconfigured);
 	});
 	$("#show-seconds").on("change", function() {
 		var showSecondsValue = $("#show-seconds").get("checked") | 0;
 
 		sendCmd(COMMAND_SET_SETTING_SECOND, nstr(showSecondsValue));
-		debugMessage("Sekundenanzeige wurde neu konfiguriert");
+		debugMessage("SecondVariant" + debugMessageReconfigured);
 	});
 	$("#front-layout").on("change", function() {
 		var frontLayout = $("#front-layout").get("value");
 
 		sendCmd(COMMAND_SET_UHRTYPE, nstr(frontLayout));
 		sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
-		debugMessage("frontLayout wurde neu konfiguriert");
+		debugMessage("FrontLayout" + debugMessageReconfigured);
 	});
 	$("#colortype-button").on("click", function() {
 		colortype = $("#colortype").get("value");
 
 		sendCmd(COMMAND_SET_COLORTYPE, nstr(colortype));
-		debugMessage("Colortype wurde neu konfiguriert");
+		debugMessage("Colortype" + debugMessageReconfigured);
 	});
 	$("[id*='ldr']").on("change", function() {
 		ldr = $("#ldr").get("checked") | 0;
 		ldrCal = $("#ldr-cal").get("value");
 
 		sendCmd(COMMAND_SET_LDR, nstr(ldr) + nstr(ldrCal));
-		debugMessage("LDR Steuerung wurde konfiguriert");
+		debugMessage("LDR mode" + debugMessageReconfigured);
 	});
 	$("#hostname-button").on("click", function() {
 		var hostValue = $("#hostname").get("value");
 
 		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH));
-		debugMessage("Hostname wurde neu konfiguriert");
+		debugMessage("Hostname" + debugMessageReconfigured);
 	});
 	$("[id*='boot-show']").on("change", function() {
 		bootLedBlink = $("#boot-show-led-blink").get("checked") | 0;
@@ -888,7 +889,7 @@ $.ready(function() {
 		bootShowIP = $("#boot-show-ip").get("checked") | 0;
 
 		sendCmd(COMMAND_SET_BOOT, nstr(bootLedBlink) + nstr(bootLedSweep) + nstr(bootShowWifi) + nstr(bootShowIP));
-		debugMessage("Bootoptionen wurden neu konfiguriert");
+		debugMessage("Bootoption" + debugMessageReconfigured);
 	});
 	$("#disable-button").on("click", function() {
 		sendCmd(COMMAND_SET_WIFI_DISABLED);
@@ -904,7 +905,7 @@ $.ready(function() {
 		var minute = $("#minute").get("value");
 
 		sendCmd(COMMAND_SET_TIME_MANUAL, nstr(stunde) + nstr(minute));
-		debugMessage("Uhrzeit wurde manuell konfiguriert");
+		debugMessage("Time manually set");
 	});
 	$("#mqtt-button").on("click", function() {
 		MQTTState = $("#mqtt-state").get("checked") | 0;
@@ -916,7 +917,7 @@ $.ready(function() {
 		MQTTTopic = $("#mqtt-topic").get("value");
 
 		sendCmd(COMMAND_SET_MQTT, nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTUser, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTPass, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTClientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTTopic, DATA_MQTT_RESPONSE_TEXT_LENGTH));
-		debugMessage("MQTT Server wurde konfiguriert");
+		debugMessage("MQTT config" + debugMessageReconfigured);
 	});
 	$("[id*='dialect']").on("change", function() {
 		dialect[0] = $("#dialect-0").get("value");
@@ -926,6 +927,6 @@ $.ready(function() {
 		dialect[4] = $("#dialect-4").get("checked") | 0;
 
 		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]));
-		debugMessage("dialect wurde konfiguriert");
+		debugMessage("langVar" + debugMessageReconfigured);
 	});
 });
