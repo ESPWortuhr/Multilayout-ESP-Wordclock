@@ -706,7 +706,7 @@ void ClockWork::loop(struct tm &tm) {
             config[stringToSend] = static_cast<uint8_t>(G.Sprachvariation[i]);
         }
         config["effectBri"] = G.effectBri;
-        config["zeige_sek"] = G.zeige_sek;
+        config["secondVariant"] = G.secondVariant;
         config["zeige_min"] = G.zeige_min;
         config["ldr"] = G.ldr;
         config["ldrCal"] = G.ldrCal;
@@ -961,7 +961,7 @@ void ClockWork::loop(struct tm &tm) {
         }
         parametersChanged = false;
 
-        if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 &&
+        if (usedUhrType->hasSecondsFrame() && G.secondVariant < 1 &&
             G.zeige_min < 2) {
             led.setFrameColor();
         }
@@ -988,10 +988,10 @@ void ClockWork::loopSecondsFrame() {
     }
     if (lastSecond48 != _second48) {
         if (G.prog == 0 && G.conf == 0) {
-            if (G.zeige_sek == 1 || G.zeige_min == 2) {
+            if (G.secondVariant == 1 || G.zeige_min == 2) {
                 led.clearFrame();
             }
-            if (G.zeige_sek > 0) {
+            if (G.secondVariant > 0) {
                 led.showSeconds();
             }
             led.show();

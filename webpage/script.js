@@ -326,7 +326,7 @@ function initWebsocket() {
 			$("ldr-cal").set("value", data.ldrCal);
 			$("#slider-brightness").set("value", data.effectBri);
 			$("#slider-speed").set("value", data.effectSpeed); // TODO: there is no property effectSpeed!
-			document.getElementById("show-seconds").checked = data.zeige_sek;
+			document.getElementById("show-seconds").checked = data.secondVariant;
 			$("show-minutes").set("value", data.zeige_min);
 
 			$("#owm-api-key").set("value", data.apiKey);
@@ -850,7 +850,7 @@ $.ready(function() {
 		debugMessage("Minutenanzeige wurde neu konfiguriert");
 	});
 	$("#show-seconds").on("change", function() {
-		var showSecondsValue = $("#show-seconds").get("value");
+		var showSecondsValue = $("#show-seconds").get("checked") | 0;
 
 		sendCmd(COMMAND_SET_SETTING_SECOND, nstr(showSecondsValue));
 		debugMessage("Sekundenanzeige wurde neu konfiguriert");

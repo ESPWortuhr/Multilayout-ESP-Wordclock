@@ -64,7 +64,7 @@ struct GLOBAL {
     uint16_t ldrCal;
     uint8_t effectSpeed;
     uint8_t client_nr;
-    uint8_t zeige_sek;
+    uint8_t secondVariant;
     uint8_t zeige_min;
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];

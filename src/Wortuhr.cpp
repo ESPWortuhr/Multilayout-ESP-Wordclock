@@ -173,7 +173,7 @@ void setup() {
         G.effectBri = 2;
         G.effectSpeed = 10;
         G.client_nr = 0;
-        G.zeige_sek = 0;
+        G.secondVariant = 0;
         G.zeige_min = 1;
         G.ldr = 0;
         G.ldrCal = 0;
@@ -343,7 +343,7 @@ void setup() {
 
     /*
     // setup frame
-    if (usedUhrType->hasSecondsFrame() && G.zeige_sek < 1 && G.zeige_min < 2) {
+    if (usedUhrType->hasSecondsFrame() && G.secondVariant < 1 && G.zeige_min < 2) {
         led.setFrameColor();
     }
     */

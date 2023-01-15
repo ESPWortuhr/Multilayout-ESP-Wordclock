@@ -331,7 +331,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_SETTING_SECOND: {
             G.conf = COMMAND_SET_SETTING_SECOND;
-            G.zeige_sek = split(payload, 3);
+            G.secondVariant = split(payload, 3);
             break;
         }
 
