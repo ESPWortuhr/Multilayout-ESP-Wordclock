@@ -66,7 +66,7 @@ var rgbw = [
 	[10, 0, 0, 0],
 	[5, 5, 5, 0]
 ];
-var hell = 2;
+var effectBri = 2;
 var geschw = 10;
 var sleep = 0;
 var sleeptime = 1;
@@ -181,7 +181,7 @@ function initConfigValues() {
 		[10, 0, 0, 0],
 		[5, 5, 5, 0]
 	];
-	hell = 2;
+	effectBri = 2;
 	geschw = 10;
 	sleep = 0;
 	sleeptime = 1;
@@ -324,7 +324,7 @@ function initWebsocket() {
 
 			document.getElementById("ldr").checked = data.ldr;
 			$("ldr-cal").set("value", data.ldrCal);
-			$("#slider-brightness").set("value", data.hell);
+			$("#slider-brightness").set("value", data.effectBri);
 			$("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
 			document.getElementById("show-seconds").checked = data.zeige_sek;
 			$("show-minutes").set("value", data.zeige_min);
@@ -368,7 +368,7 @@ function initWebsocket() {
 			rgbw[3][1] = data.rgbw31;
 			rgbw[3][2] = data.rgbw32;
 			rgbw[3][3] = data.rgbw33;
-			hell = data.hell;
+			effectBri = data.effectBri;
 			geschw = data.geschw;
 			colortype = data.colortype;
 			var map = [0, 0, 2, 3, 4, 5, 1];	// see COMMAND_MODE_XX
@@ -508,11 +508,11 @@ function toggleBackground() {
  */
 function setSliders() {
 	// sliders
-	$("#slider-brightness").set("value", hell);
+	$("#slider-brightness").set("value", effectBri);
 	$("#slider-speed").set("value", geschw);
 
 	// labels
-	$("#slider-brightness-value").fill(hell);
+	$("#slider-brightness-value").fill(effectBri);
 	$("#slider-speed-value").fill(geschw);
 }
 
@@ -581,7 +581,7 @@ function sendBrightnessData(command, addData = "") {
 	h22 = $("#brightness-22").get("value");
 	h24 = $("#brightness-24").get("value");
 
-	sendCmd(COMMAND_SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + nstr(hell));
+	sendCmd(COMMAND_SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + nstr(effectBri));
 	debugMessage("Helligkeit wurde neu konfiguriert");
 }
 
@@ -594,7 +594,7 @@ function sendColorData(command, addData = "") {
 	nstr(rgbw[COLOR_BACKGROUND][1]) +
 	nstr(rgbw[COLOR_BACKGROUND][2]) +
 	nstr(rgbw[COLOR_BACKGROUND][3]) +
-	nstr(hell) +
+	nstr(effectBri) +
 	nstr(geschw));
 }
 
@@ -757,7 +757,7 @@ $.ready(function() {
 
 		if (sleep === 0) {
 			if (id === "slider-brightness") {
-				hell = $("#slider-brightness").get("value");
+				effectBri = $("#slider-brightness").get("value");
 				sendBrightnessData(COMMAND_SET_BRIGHTNESS);
 			}
 			if (id === "slider-speed") {

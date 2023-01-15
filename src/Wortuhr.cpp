@@ -170,7 +170,7 @@ void setup() {
         G.gg = 0;
         G.bb = 0;
         G.ww = 0;
-        G.hell = 2;
+        G.effectBri = 2;
         G.geschw = 10;
         G.client_nr = 0;
         G.zeige_sek = 0;

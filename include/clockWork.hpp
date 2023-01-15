@@ -70,7 +70,7 @@ void ClockWork::rainbow() {
     static float hue = 0;
 
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        led.setPixelHsb(i, hue, 100, G.hell);
+        led.setPixelHsb(i, hue, 100, G.effectBri);
     }
     led.show();
     hue++;
@@ -85,7 +85,7 @@ void ClockWork::rainbowCycle() {
 
     displayedHue = hue;
     for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
-        led.setPixelHsb(usedUhrType->getSMatrix(i), displayedHue, 100, G.hell);
+        led.setPixelHsb(usedUhrType->getSMatrix(i), displayedHue, 100, G.effectBri);
         displayedHue = displayedHue + 360.0 / usedUhrType->NUM_SMATRIX();
         led.checkIfHueIsOutOfBound(displayedHue);
     }
@@ -705,7 +705,7 @@ void ClockWork::loop(struct tm &tm) {
             sprintf(stringToSend, "spv%d", i);
             config[stringToSend] = static_cast<uint8_t>(G.Sprachvariation[i]);
         }
-        config["hell"] = G.hell;
+        config["effectBri"] = G.effectBri;
         config["zeige_sek"] = G.zeige_sek;
         config["zeige_min"] = G.zeige_min;
         config["ldr"] = G.ldr;
@@ -741,7 +741,7 @@ void ClockWork::loop(struct tm &tm) {
                 config[stringToSend] = G.rgbw[i][ii];
             }
         }
-        config["hell"] = G.hell;
+        config["effectBri"] = G.effectBri;
         config["geschw"] = G.geschw;
         config["colortype"] = G.Colortype;
         config["prog"] = G.prog;
