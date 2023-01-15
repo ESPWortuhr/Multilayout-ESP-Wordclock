@@ -313,3 +313,5 @@ public:
         };
     };
 };
+
+UHR_114_t Uhr_114_type;

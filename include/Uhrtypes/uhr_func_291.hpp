@@ -489,3 +489,5 @@ public:
         };
     };
 };
+
+UHR_291_t Uhr_291_type;

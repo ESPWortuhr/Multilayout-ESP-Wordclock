@@ -190,3 +190,5 @@ public:
         };
     };
 };
+
+UHR_114_dutch_t Uhr_114_dutch_type;

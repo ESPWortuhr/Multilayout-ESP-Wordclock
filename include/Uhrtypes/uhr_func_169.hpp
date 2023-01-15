@@ -256,3 +256,5 @@ public:
         };
     };
 };
+
+UHR_169_t Uhr_169_type;

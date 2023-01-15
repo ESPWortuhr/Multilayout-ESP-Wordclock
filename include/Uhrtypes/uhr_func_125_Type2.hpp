@@ -281,3 +281,5 @@ public:
         };
     };
 };
+
+UHR_125_Type2_t Uhr_125_type2_type;

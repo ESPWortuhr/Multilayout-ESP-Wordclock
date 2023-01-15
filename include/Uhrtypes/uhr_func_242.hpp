@@ -578,3 +578,5 @@ public:
         }
     };
 };
+
+UHR_242_t Uhr_242_type;
