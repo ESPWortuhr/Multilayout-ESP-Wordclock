@@ -691,7 +691,7 @@ void ClockWork::loop(struct tm &tm) {
         config["ssid"] = network.getSSID();
         config["timeserver"] = G.timeserver;
         config["hostname"] = G.hostname;
-        config["ltext"] = G.ltext;
+        config["scrollingText"] = G.scrollingText;
         config["h6"] = G.h6;
         config["h8"] = G.h8;
         config["h12"] = G.h12;
@@ -912,7 +912,7 @@ void ClockWork::loop(struct tm &tm) {
         if (countMillisSpeed >= (11u - G.geschw) * 30u) {
             switch (G.prog) {
             case COMMAND_MODE_SCROLLINGTEXT: {
-                scrollingText(G.ltext);
+                scrollingText(G.scrollingText);
                 break;
             }
             case COMMAND_MODE_RAINBOWCYCLE: {

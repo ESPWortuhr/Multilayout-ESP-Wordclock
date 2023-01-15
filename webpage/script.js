@@ -305,7 +305,7 @@ function initWebsocket() {
 
 			$("#timeserver").set("value", data.timeserver);
 			$("#hostname").set("value", data.hostname);
-			$("#marquee").set("value", data.ltext);
+			$("#marquee").set("value", data.scrollingText);
 
 			$("#brightness-6").set("value", data.h6);
 			$("#brightness-8").set("value", data.h8);

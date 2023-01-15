@@ -479,7 +479,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_MARQUEE_TEXT: {
             G.conf = COMMAND_SET_MARQUEE_TEXT;
-            payloadTextHandling(payload, G.ltext);
+            payloadTextHandling(payload, G.scrollingText);
             break;
         }
 

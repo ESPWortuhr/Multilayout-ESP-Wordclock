@@ -56,7 +56,7 @@ void read() {
     Serial.printf("rgbw.3.2   : %u\n", G.rgbw[Effect][2]);
     Serial.printf("rgbw.3.3   : %u\n", G.rgbw[Effect][3]);
     Serial.printf("Zeitserver: %s\n", G.timeserver);
-    Serial.printf("Lauftext  : %s\n", G.ltext);
+    Serial.printf("Lauftext  : %s\n", G.scrollingText);
     Serial.printf("H6        : %u\n", G.h6);
     Serial.printf("H8        : %u\n", G.h8);
     Serial.printf("H12       : %u\n", G.h12);

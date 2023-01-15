@@ -68,7 +68,7 @@ struct GLOBAL {
     uint8_t zeige_min;
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
-    char ltext[PAYLOAD_LENGTH];
+    char scrollingText[PAYLOAD_LENGTH];
     uint8_t hh;
     uint8_t h6;
     uint8_t h8;
