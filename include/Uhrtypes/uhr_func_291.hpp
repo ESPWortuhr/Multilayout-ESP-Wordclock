@@ -24,16 +24,6 @@
 
 class UHR_291_t : public iUhrType {
 public:
-    const uint16_t min_arr[2][4] = {{288, 289, 290, 290}, {288, 289, 290, 290}};
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t getMinArr(uint8_t col, uint8_t row) override {
-        return min_arr[col][row];
-    };
-
-    //------------------------------------------------------------------------------
-
     virtual const uint16_t NUM_PIXELS() override { return 291; };
 
     //------------------------------------------------------------------------------

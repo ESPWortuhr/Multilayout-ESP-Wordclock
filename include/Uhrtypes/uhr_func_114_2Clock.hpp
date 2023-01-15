@@ -18,16 +18,6 @@
 
 class UHR_114_2Clock_t : public iUhrType {
 public:
-    const uint16_t min_arr[2][4] = {{110, 111, 112, 113}, {110, 111, 112, 113}};
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t getMinArr(uint8_t col, uint8_t row) override {
-        return min_arr[col][row];
-    };
-
-    //------------------------------------------------------------------------------
-
     virtual const bool hasDreiviertel() override { return true; }
 
     //------------------------------------------------------------------------------

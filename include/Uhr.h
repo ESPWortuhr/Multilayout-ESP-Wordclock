@@ -113,8 +113,8 @@ uint8_t _hour = 0;
 uint8_t lastSecond = 0;
 uint8_t lastMinute = 0;
 
-uint16_t frontMatrix[MAX_ARRAY_SIZE] = {0};
-uint16_t lastFrontMatrix[MAX_ARRAY_SIZE] = {0};
+bool frontMatrix[MAX_ARRAY_SIZE] = {false};
+bool lastFrontMatrix[MAX_ARRAY_SIZE] = {false};
 bool parametersChanged = false;
 uint8_t statusAccessPoint = 0;
 

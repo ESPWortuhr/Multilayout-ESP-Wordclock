@@ -14,7 +14,6 @@ private:
 
 private:
     void loopSecondsFrame();
-    void loopWeather();
     void loopLdrLogic();
 
     void rainbow();
@@ -22,14 +21,13 @@ private:
     void scrollingText(const char *buf);
 
     bool changesInClockface();
-    void copyClockface(const uint16_t source[], uint16_t destination[]);
+    void copyClockface(const bool source[], bool destination[]);
     void calcClockface();
 
     void setClock();
     void setHour(const uint8_t std, const uint8_t voll);
     void setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll);
     void showMinute(uint8_t min);
-    void showWeather();
 
 public:
     ClockWork() = default;

@@ -1,38 +1,24 @@
 #include "Uhrtype.hpp"
 
+/*
+ * Layout Front
+ *
+ * E S K I S T A F Ü N F
+ * Z E H N D A U V O R G
+ * N A C H V I E R T E L
+ * H A L B V O R N A C H
+ * E I N S K U R Z W E I
+ * D R E I A U J V I E R
+ * F Ü N F T O S E C H S
+ * S I E B E N L A C H T
+ * A N E U N M H Z E H N
+ * Z W Ö L F D T F E L F
+ * W A S D F U N K U H R
+ * + + + +
+ */
+
 class UHR_125_Type2_t : public iUhrType {
 public:
-    /*
-     * Layout Front
-     *
-     * E S K I S T A F Ü N F
-     * Z E H N D A U V O R G
-     * N A C H V I E R T E L
-     * H A L B V O R N A C H
-     * E I N S K U R Z W E I
-     * D R E I A U J V I E R
-     * F Ü N F T O S E C H S
-     * S I E B E N L A C H T
-     * A N E U N M H Z E H N
-     * Z W Ö L F D T F E L F
-     * W A S D F U N K U H R
-     * + + + +
-     */
-
-    const uint16_t min_arr[2][4] = {
-        // ergänzt aus "Uhr func 169"-datei
-        {121, 122, 123, 124}, // LED für Minuten Anzeige Zeile
-        {121, 122, 123, 124}  // LED für Minuten Anzeige Ecken
-    };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t getMinArr(uint8_t col, uint8_t row) override {
-        return min_arr[col][row];
-    };
-
-    //------------------------------------------------------------------------------
-
     virtual const uint16_t NUM_PIXELS() override { return 125; };
 
     //------------------------------------------------------------------------------
