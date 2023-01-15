@@ -14,8 +14,9 @@
 #include <sntp.h>
 
 #include "Uhr.h"
-#include "config.h"
+
 #include "EEPROMAnything.h"
+#include "config.h"
 #include "webPageAdapter.h"
 
 #include "Uhrtypes/uhr_func_114.hpp"
@@ -131,7 +132,7 @@ void time_is_set() {
 
 void setup() {
     //-------------------------------------
-    // Start Serielle Schnittstelle bei Bedarf
+    // Start serial interface if required
     //-------------------------------------
     if (DEBUG == true) {
         Serial.begin(115200);
@@ -141,7 +142,7 @@ void setup() {
         Serial.println("--------------------------------------");
     }
     //-------------------------------------
-    // EEPROM lesen / initialisieren
+    // Read / initialize EEPROM
     //-------------------------------------
     EEPROM.begin(EEPROM_SIZE);
 
@@ -199,9 +200,9 @@ void setup() {
         G.mqtt.port = 1883;
         strcpy(G.mqtt.serverAdress, "192.168.4.1");
         strcpy(G.mqtt.user, "User");
-        strcpy(G.mqtt.password, "Passwort");
+        strcpy(G.mqtt.password, "Password");
         strcpy(G.mqtt.clientId, "ClientId");
-        strcpy(G.mqtt.topic, "Wortuhr");
+        strcpy(G.mqtt.topic, "ESPWordclock");
 
         G.UhrtypeDef = DEFAULT_LAYOUT;
         G.Colortype = DEFAULT_LEDTYPE;
@@ -222,7 +223,8 @@ void setup() {
         eeprom::write();
         Serial.println("eeprom schreiben");
     }
-    // Initialisierung der COMMAND_MODE_xxx (Farbe)
+
+    // Initialization of COMMAND_MODE_xxx (color)
     G.prog_init = 1;
 
     //-------------------------------------
@@ -231,18 +233,19 @@ void setup() {
 
     usedUhrType = clockWork.getPointer(G.UhrtypeDef);
 
-    // Bereich der animiert wird:
-    //     LED-Rahmen horizontal
-    //     LED-Rahmen vertical
-    //     Anzahl Reihen (einschliesslich Rahmen)
-    //     Anzahl Spalten (einschliesslich Rahmen)
-    // TODO Rahmenbreite aus usedUhrTyp holen
+    // Area that will be animated:
+    //         LED frame horizontal
+    //         LED frame vertical
+    //         Number of rows (including frames)
+    //         Number of columns (including frames)
+    // Get TODO frame width from usedUhrTyp
     animation = new Animation(0, 0, usedUhrType->ROWS_MATRIX() - 1,
                               usedUhrType->COLS_MATRIX());
 
     //-------------------------------------
-    // LEDs initialisieren
+    // Initialize LEDs
     //-------------------------------------
+
     Serial.println("LED Init");
     clockWork.initLedStrip(G.Colortype);
     if (G.bootLedBlink) {
@@ -257,24 +260,24 @@ void setup() {
     G.conf = COMMAND_IDLE;
 
     //-------------------------------------
-    // Start External RealtimeClock
+    // Start external real-time clock
     //-------------------------------------
 
     if (RTC.begin() == true) {
-        Serial.println("External RealtimeClock found");
+        Serial.println("External real-time clock found");
         struct timeval tv;
         tv.tv_sec = RTC.now().unixtime();
         settimeofday(&tv, nullptr);
         network.rtcMode();
         externalRTC = true;
     } else {
-        Serial.println("No external RealtimeClock found");
+        Serial.println("No external real-time clock found");
         externalRTC = false;
     }
     settimeofday_cb(time_is_set);
 
     //-------------------------------------
-    // Init Array
+    // Init frontMatrix
     //-------------------------------------
 
     for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
@@ -284,6 +287,7 @@ void setup() {
     //-------------------------------------
     // Start WiFi
     //-------------------------------------
+
     if (G.bootShowWifi) {
         clockWork.initBootWifiSignalStrength(0);
     }
@@ -299,9 +303,11 @@ void setup() {
     tzset();
 
     delay(50);
+
     //-------------------------------------
-    // OTA--
+    // OTA
     //-------------------------------------
+
     httpUpdater.setup(&httpServer);
     httpServer.onNotFound([]() {
         // redirect port 81 not found pages to port 80
@@ -322,6 +328,7 @@ void setup() {
     //-------------------------------------
     // Start Websocket
     //-------------------------------------
+
     webSocket.begin();
     webSocket.onEvent(webSocketEvent);
 
@@ -402,9 +409,9 @@ void loop() {
         mqtt.loop();
     }
 
-    animation->loop(tm); // muss periodisch aufgerufen werden
+    animation->loop(tm); // must be called periodically
 
-    // lass die Zeit im Demo Mode der Animation schneller ablaufen
+    // make the time run faster in the demo mode of the animation
     animation->demoMode(_minute, _second);
 
     clockWork.loop(tm);
