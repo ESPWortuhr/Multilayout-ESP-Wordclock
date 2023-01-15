@@ -157,7 +157,7 @@ void setup() {
         G.sernr = SERNR;
         G.prog = 1;
         G.param1 = 0;
-        G.prog_init = 1;
+        G.progInit = 1;
         G.conf = COMMAND_IDLE;
         for (uint8_t i = 0; i < 4; i++) {
             for (uint8_t ii = 0; ii < 4; ii++) {
@@ -225,7 +225,7 @@ void setup() {
     }
 
     // Initialization of COMMAND_MODE_xxx (color)
-    G.prog_init = 1;
+    G.progInit = 1;
 
     //-------------------------------------
     // Get Pointer for Uhrtype

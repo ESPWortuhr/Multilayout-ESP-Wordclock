@@ -890,9 +890,9 @@ void ClockWork::loop(struct tm &tm) {
     switch (G.prog) {
 
     case COMMAND_MODE_SECONDS: {
-        if (G.prog_init == 1) {
+        if (G.progInit == 1) {
             led.clear();
-            G.prog_init = 0;
+            G.progInit = 0;
         }
         char d1[5];
         char d2[5];
@@ -905,8 +905,8 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_SCROLLINGTEXT:
     case COMMAND_MODE_RAINBOWCYCLE:
     case COMMAND_MODE_RAINBOW: {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
+        if (G.progInit == 1) {
+            G.progInit = 0;
             led.clear();
             countMillisSpeed = (11u - G.effectSpeed) * 30u;
         }
@@ -933,8 +933,8 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_MODE_COLOR: {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
+        if (G.progInit == 1) {
+            G.progInit = 0;
             led.setColor();
             led.show();
         }
@@ -942,8 +942,8 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_MODE_ANIMATION: {
-        if (G.prog_init == 1) {
-            G.prog_init = 0;
+        if (G.progInit == 1) {
+            G.progInit = 0;
             eeprom::write();
             delay(100);
         }
