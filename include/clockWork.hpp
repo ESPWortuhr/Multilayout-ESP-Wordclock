@@ -689,7 +689,7 @@ void ClockWork::loop(struct tm &tm) {
         DynamicJsonDocument config(1024);
         config["command"] = "config";
         config["ssid"] = network.getSSID();
-        config["zeitserver"] = G.zeitserver;
+        config["timeserver"] = G.timeserver;
         config["hostname"] = G.hostname;
         config["ltext"] = G.ltext;
         config["h6"] = G.h6;

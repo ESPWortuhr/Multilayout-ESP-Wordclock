@@ -303,7 +303,7 @@ function initWebsocket() {
 
 			$("#ssid").set("value", data.ssid);
 
-			$("#timeserver").set("value", data.zeitserver);
+			$("#timeserver").set("value", data.timeserver);
 			$("#hostname").set("value", data.hostname);
 			$("#marquee").set("value", data.ltext);
 

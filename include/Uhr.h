@@ -66,7 +66,7 @@ struct GLOBAL {
     uint8_t client_nr;
     uint8_t zeige_sek;
     uint8_t zeige_min;
-    char zeitserver[PAYLOAD_LENGTH];
+    char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char ltext[PAYLOAD_LENGTH];
     uint8_t hh;

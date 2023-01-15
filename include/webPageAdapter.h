@@ -487,7 +487,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_TIMESERVER: {
             G.conf = COMMAND_SET_TIMESERVER;
-            payloadTextHandling(payload, G.zeitserver);
+            payloadTextHandling(payload, G.timeserver);
             break;
         }
 

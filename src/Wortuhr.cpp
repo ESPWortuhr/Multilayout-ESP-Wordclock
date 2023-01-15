@@ -179,7 +179,7 @@ void setup() {
         G.ldrCal = 0;
         strcpy(G.openWeatherMap.cityid, "");
         strcpy(G.openWeatherMap.apikey, "");
-        strcpy(G.zeitserver, "europe.pool.ntp.org");
+        strcpy(G.timeserver, "europe.pool.ntp.org");
         strcpy(G.hostname, "uhr");
         strcpy(G.ltext, "HELLO WORLD ");
 
@@ -298,7 +298,7 @@ void setup() {
         clockWork.initBootWifiSignalStrength(strength);
     }
     wifiStart();
-    configTime(0, 0, G.zeitserver);
+    configTime(0, 0, G.timeserver);
     setenv("TZ", TZ_Europe_Berlin, true);
     tzset();
 
