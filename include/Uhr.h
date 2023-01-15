@@ -59,10 +59,10 @@ struct GLOBAL {
     uint8_t gg;
     uint8_t bb;
     uint8_t ww;
-    uint8_t hell;
+    uint8_t effectBri;
     uint16_t ldr;
     uint16_t ldrCal;
-    int geschw;
+    uint8_t effectSpeed;
     uint8_t client_nr;
     uint8_t zeige_sek;
     uint8_t zeige_min;

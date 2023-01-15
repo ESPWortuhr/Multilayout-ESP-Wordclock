@@ -171,7 +171,7 @@ void setup() {
         G.bb = 0;
         G.ww = 0;
         G.effectBri = 2;
-        G.geschw = 10;
+        G.effectSpeed = 10;
         G.client_nr = 0;
         G.zeige_sek = 0;
         G.zeige_min = 1;

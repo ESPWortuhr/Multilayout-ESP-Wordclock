@@ -742,7 +742,7 @@ void ClockWork::loop(struct tm &tm) {
             }
         }
         config["effectBri"] = G.effectBri;
-        config["geschw"] = G.geschw;
+        config["effectSpeed"] = G.effectSpeed;
         config["colortype"] = G.Colortype;
         config["prog"] = G.prog;
         serializeJson(config, str);
@@ -907,9 +907,9 @@ void ClockWork::loop(struct tm &tm) {
         if (G.prog_init == 1) {
             G.prog_init = 0;
             led.clear();
-            countMillisSpeed = (11u - G.geschw) * 30u;
+            countMillisSpeed = (11u - G.effectSpeed) * 30u;
         }
-        if (countMillisSpeed >= (11u - G.geschw) * 30u) {
+        if (countMillisSpeed >= (11u - G.effectSpeed) * 30u) {
             switch (G.prog) {
             case COMMAND_MODE_SCROLLINGTEXT: {
                 scrollingText(G.scrollingText);

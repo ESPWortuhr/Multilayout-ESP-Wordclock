@@ -67,7 +67,7 @@ var rgbw = [
 	[5, 5, 5, 0]
 ];
 var effectBri = 2;
-var geschw = 10;
+var effectSpeed = 10;
 var sleep = 0;
 var sleeptime = 1;
 var color = 0;
@@ -182,7 +182,7 @@ function initConfigValues() {
 		[5, 5, 5, 0]
 	];
 	effectBri = 2;
-	geschw = 10;
+	effectSpeed = 10;
 	sleep = 0;
 	sleeptime = 1;
 	color = 0;
@@ -325,7 +325,7 @@ function initWebsocket() {
 			document.getElementById("ldr").checked = data.ldr;
 			$("ldr-cal").set("value", data.ldrCal);
 			$("#slider-brightness").set("value", data.effectBri);
-			$("#slider-speed").set("value", data.geschw); // TODO: there is no property geschw!
+			$("#slider-speed").set("value", data.effectSpeed); // TODO: there is no property effectSpeed!
 			document.getElementById("show-seconds").checked = data.zeige_sek;
 			$("show-minutes").set("value", data.zeige_min);
 
@@ -369,7 +369,7 @@ function initWebsocket() {
 			rgbw[3][2] = data.rgbw32;
 			rgbw[3][3] = data.rgbw33;
 			effectBri = data.effectBri;
-			geschw = data.geschw;
+			effectSpeed = data.effectSpeed;
 			colortype = data.colortype;
 			var map = [0, 0, 2, 3, 4, 5, 1];	// see COMMAND_MODE_XX
 			var prog = data.prog;
@@ -509,11 +509,11 @@ function toggleBackground() {
 function setSliders() {
 	// sliders
 	$("#slider-brightness").set("value", effectBri);
-	$("#slider-speed").set("value", geschw);
+	$("#slider-speed").set("value", effectSpeed);
 
 	// labels
 	$("#slider-brightness-value").fill(effectBri);
-	$("#slider-speed-value").fill(geschw);
+	$("#slider-speed-value").fill(effectSpeed);
 }
 
 function setAnimation() {
@@ -595,7 +595,7 @@ function sendColorData(command, addData = "") {
 	nstr(rgbw[COLOR_BACKGROUND][2]) +
 	nstr(rgbw[COLOR_BACKGROUND][3]) +
 	nstr(effectBri) +
-	nstr(geschw));
+	nstr(effectSpeed));
 }
 
 $.ready(function() {
@@ -761,8 +761,8 @@ $.ready(function() {
 				sendBrightnessData(COMMAND_SET_BRIGHTNESS);
 			}
 			if (id === "slider-speed") {
-				geschw = $("#slider-speed").get("value");
-				sendCmd(COMMAND_SPEED, nstr(geschw));
+				effectSpeed = $("#slider-speed").get("value");
+				sendCmd(COMMAND_SPEED, nstr(effectSpeed));
 			}
 			setSliders();
 

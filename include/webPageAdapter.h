@@ -210,7 +210,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.rgbw[Effect][2] = split(payload, 9);
             G.rgbw[Effect][3] = split(payload, 12);
             G.effectBri = split(payload, 27);
-            G.geschw = split(payload, 30);
+            G.effectSpeed = split(payload, 30);
             break;
         }
 
@@ -225,7 +225,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.rgbw[Effect][2] = split(payload, 9);
             G.rgbw[Effect][3] = split(payload, 12);
             G.effectBri = split(payload, 27);
-            G.geschw = split(payload, 30);
+            G.effectSpeed = split(payload, 30);
             break;
         }
 
@@ -236,7 +236,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog_init = 1;
 
             G.effectBri = split(payload, 27);
-            G.geschw = split(payload, 30);
+            G.effectSpeed = split(payload, 30);
             break;
         }
 
@@ -247,7 +247,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog_init = 1;
 
             G.effectBri = split(payload, 27);
-            G.geschw = split(payload, 30);
+            G.effectSpeed = split(payload, 30);
             break;
         }
 
@@ -283,7 +283,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SPEED: {
-            G.geschw = split(payload, 3);
+            G.effectSpeed = split(payload, 3);
             break;
         }
 
