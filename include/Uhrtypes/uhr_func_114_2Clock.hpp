@@ -223,3 +223,5 @@ public:
         };
     };
 };
+
+UHR_114_2Clock_t Uhr_114_2Clock_type;

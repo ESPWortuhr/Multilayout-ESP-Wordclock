@@ -253,3 +253,5 @@ public:
         };
     };
 };
+
+UHR_114_Alternative_t Uhr_114_Alternative_type;

@@ -17,27 +17,8 @@
 
 #include "EEPROMAnything.h"
 #include "config.h"
+#include "uhrtype.gen.h"
 #include "webPageAdapter.h"
-
-#include "Uhrtypes/uhr_func_114.hpp"
-#include "Uhrtypes/uhr_func_114_2Clock.hpp"
-#include "Uhrtypes/uhr_func_114_Alternative.hpp"
-#include "Uhrtypes/uhr_func_114_dutch.hpp"
-#include "Uhrtypes/uhr_func_125.hpp"
-#include "Uhrtypes/uhr_func_125_Type2.hpp"
-#include "Uhrtypes/uhr_func_169.hpp"
-#include "Uhrtypes/uhr_func_242.hpp"
-#include "Uhrtypes/uhr_func_291.hpp"
-
-UHR_114_t Uhr_114_type;
-UHR_114_Alternative_t Uhr_114_Alternative_type;
-UHR_114_2Clock_t Uhr_114_2Clock_type;
-UHR_114_dutch_t Uhr_114_dutch_type;
-UHR_125_t Uhr_125_type;
-UHR_125_Type2_t Uhr_125_type2_type;
-UHR_169_t Uhr_169_type;
-UHR_242_t Uhr_242_type;
-UHR_291_t Uhr_291_type;
 
 iUhrType *usedUhrType = nullptr;
 

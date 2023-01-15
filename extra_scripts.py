@@ -19,6 +19,25 @@ def build_version_h(target, source, env):
 
     return None
 
+#
+# automatically generate `include/uhrtype.h`
+#
+def build_uhrtype_h(target, source, env):
+    import glob
+
+    with open(str(target[0]), "w") as h:
+        h.write('// Automatically generated -- do not modify\n\n')
+        for file in glob.glob("include/Uhrtypes/*.hpp"):
+            h.write('#include "' + file.replace('include/','') + '"\n')
+
+    return None
+
+env.Command(
+    target="include/uhrtype.gen.h",
+    source=package_json,
+    action=build_uhrtype_h
+)
+
 env.Command(
     target="include/version.gen.h",
     source=package_json,
