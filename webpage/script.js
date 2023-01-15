@@ -257,7 +257,7 @@ function initWebsocket() {
 		$("#status").set("+online");
 		$("#status").set("-offline");
 		$("#status").set("@value", "Online");
-		$(".status-button").fill("Verbindung trennen");
+		$(".status-button").fill("Disconnect");
 		$(".status-button").set("@value", "1");
 		$("#section-connection-lost").set({
 			$display: "none"
@@ -877,9 +877,9 @@ $.ready(function() {
 		debugMessage("LDR mode" + debugMessageReconfigured);
 	});
 	$("#hostname-button").on("click", function() {
-		var hostValue = $("#hostname").get("value");
+		var hostname = $("#hostname").get("value");
 
-		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString(hostValue, DATA_HOST_TEXT_LENGTH));
+		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString(hostname, DATA_HOST_TEXT_LENGTH));
 		debugMessage("Hostname" + debugMessageReconfigured);
 	});
 	$("[id*='boot-show']").on("change", function() {
@@ -901,10 +901,10 @@ $.ready(function() {
 		sendCmd(COMMAND_RESET);
 	});
 	$("#uhrzeit-button").on("click", function() {
-		var stunde = $("#stunde").get("value");
+		var hour = $("#hour").get("value");
 		var minute = $("#minute").get("value");
 
-		sendCmd(COMMAND_SET_TIME_MANUAL, nstr(stunde) + nstr(minute));
+		sendCmd(COMMAND_SET_TIME_MANUAL, nstr(hour) + nstr(minute));
 		debugMessage("Time manually set");
 	});
 	$("#mqtt-button").on("click", function() {
