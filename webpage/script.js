@@ -316,18 +316,18 @@ function initWebsocket() {
 			$("#brightness-22").set("value", data.h22);
 			$("#brightness-24").set("value", data.h24);
 
-			$("#dialect-0").set("value", data.spv0);
-			$("#dialect-1").set("value", data.spv1);
-			$("#dialect-2").set("value", data.spv2);
-			$("#dialect-3").set("value", data.spv3);
-			document.getElementById("dialect-4").checked = data.spv4;
+			$("#dialect-0").set("value", data.langVar0);
+			$("#dialect-1").set("value", data.langVar1);
+			$("#dialect-2").set("value", data.langVar2);
+			$("#dialect-3").set("value", data.langVar3);
+			document.getElementById("dialect-4").checked = data.langVar4;
 
 			document.getElementById("ldr").checked = data.ldr;
 			$("ldr-cal").set("value", data.ldrCal);
 			$("#slider-brightness").set("value", data.effectBri);
 			$("#slider-speed").set("value", data.effectSpeed); // TODO: there is no property effectSpeed!
 			document.getElementById("show-seconds").checked = data.secondVariant;
-			$("show-minutes").set("value", data.minuteVariant);
+			$("#show-minutes").set("value", data.minuteVariant);
 
 			$("#owm-api-key").set("value", data.apiKey);
 			$("#owm-city-id").set("value", data.cityid);

@@ -315,7 +315,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(nach);
         break;
     case 15: // quarter past
-        if (G.Sprachvariation[ItIs15]) {
+        if (G.languageVariant[ItIs15]) {
             usedUhrType->show(viertel);
             offsetH = 1;
         } else {
@@ -331,7 +331,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(nach);
         break;
     case 20: // 20 past
-        if (!usedUhrType->hasZwanzig() || G.Sprachvariation[ItIs20]) {
+        if (!usedUhrType->hasZwanzig() || G.languageVariant[ItIs20]) {
             usedUhrType->show(zehn);
             usedUhrType->show(vor);
             usedUhrType->show(halb);
@@ -386,7 +386,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 40: // 20 to
-        if (!usedUhrType->hasZwanzig() || G.Sprachvariation[ItIs40]) {
+        if (!usedUhrType->hasZwanzig() || G.languageVariant[ItIs40]) {
             usedUhrType->show(zehn);
             usedUhrType->show(nach);
             usedUhrType->show(halb);
@@ -405,7 +405,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 45: // quarter to
-        if (usedUhrType->hasDreiviertel() && G.Sprachvariation[ItIs45]) {
+        if (usedUhrType->hasDreiviertel() && G.languageVariant[ItIs45]) {
             usedUhrType->show(dreiviertel);
         } else {
             usedUhrType->show(viertel);
@@ -489,7 +489,7 @@ static void countdownToMidnight() {
 //------------------------------------------------------------------------------
 
 void ClockWork::setClock() {
-    if (!G.Sprachvariation[NotShowItIs]) {
+    if (!G.languageVariant[NotShowItIs]) {
         usedUhrType->show(es_ist);
     }
 
@@ -702,9 +702,9 @@ void ClockWork::loop(struct tm &tm) {
         config["h22"] = G.h22;
         config["h24"] = G.h24;
         for (uint8_t i = 0; i < 5; i++) {
-            char stringToSend[5];
-            sprintf(stringToSend, "spv%d", i);
-            config[stringToSend] = static_cast<uint8_t>(G.Sprachvariation[i]);
+            char stringToSend[11];
+            sprintf(stringToSend, "langVar%d", i);
+            config[stringToSend] = static_cast<uint8_t>(G.languageVariant[i]);
         }
         config["effectBri"] = G.effectBri;
         config["secondVariant"] = G.secondVariant;

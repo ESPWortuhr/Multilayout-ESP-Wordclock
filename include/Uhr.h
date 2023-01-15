@@ -60,15 +60,16 @@ struct GLOBAL {
     uint8_t bb;
     uint8_t ww;
     uint8_t effectBri;
-    uint16_t ldr;
-    uint16_t ldrCal;
     uint8_t effectSpeed;
     uint8_t client_nr;
     uint8_t secondVariant;
     uint8_t minuteVariant;
+    bool languageVariant[5];
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char scrollingText[PAYLOAD_LENGTH];
+    uint16_t ldr;
+    uint16_t ldrCal;
     uint8_t hh;
     uint8_t h6;
     uint8_t h8;
@@ -78,7 +79,6 @@ struct GLOBAL {
     uint8_t h20;
     uint8_t h22;
     uint8_t h24;
-    bool Sprachvariation[5];
 
     uint8_t UhrtypeDef;
     uint8_t Colortype;

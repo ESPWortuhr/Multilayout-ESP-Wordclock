@@ -193,7 +193,7 @@ void setup() {
         G.h22 = 100;
         G.h24 = 100;
         for (uint8_t i = 0; i < 5; i++) {
-            G.Sprachvariation[i] = false;
+            G.languageVariant[i] = false;
         }
 
         G.mqtt.state = 0;
