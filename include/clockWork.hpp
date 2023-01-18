@@ -168,7 +168,7 @@ void ClockWork::setHour(const uint8_t std, const uint8_t voll) {
         usedUhrType->show(h_zwoelf);
         break;
     case 1:
-        if (voll == 1) {
+        if (voll == 1 || G.UhrtypeDef == Eng10x11) {
             usedUhrType->show(h_ein);
         } else {
             usedUhrType->show(eins);
@@ -208,7 +208,7 @@ void ClockWork::setHour(const uint8_t std, const uint8_t voll) {
         usedUhrType->show(h_zwoelf);
         break;
     case 13:
-        if (voll == 1) {
+        if (voll == 1 || G.UhrtypeDef == Eng10x11) {
             usedUhrType->show(h_ein);
         } else {
             usedUhrType->show(eins);
@@ -305,7 +305,12 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
             usedUhrType->show(viertel);
             offsetH = 1;
         } else {
-            usedUhrType->show(viertel);
+            // A Quarter past
+            if (G.languageVariant[ENG_Aquarter]) {
+                usedUhrType->show(a_quarter);
+            } else {
+                usedUhrType->show(viertel);
+            }
             usedUhrType->show(v_nach);
         }
         break;
@@ -332,6 +337,16 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
     case 23:
     case 24:
     case 25:
+        if (usedUhrType->hasTwentyfive()) {
+            usedUhrType->show(twentyfive);
+            usedUhrType->show(nach);
+        } else {
+            usedUhrType->show(fuenf);
+            usedUhrType->show(vor);
+            usedUhrType->show(halb);
+            offsetH = 1;
+        }
+        break;
     case 26:
     case 27:
     case 28:
@@ -348,8 +363,13 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         offsetH = 1;
         break;
     case 30: // half
-        usedUhrType->show(halb);
-        offsetH = 1;
+        if (G.UhrtypeDef == Eng10x11) {
+            usedUhrType->show(halb);
+            usedUhrType->show(nach);
+        } else {
+            usedUhrType->show(halb);
+            offsetH = 1;
+        }
         break;
     case 31:
         usedUhrType->show(m_eine);
@@ -362,6 +382,17 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
     case 33:
     case 34:
     case 35:
+        if (usedUhrType->hasTwentyfive()) {
+            usedUhrType->show(twentyfive);
+            usedUhrType->show(vor);
+            offsetH = 1;
+        } else {
+            usedUhrType->show(fuenf);
+            usedUhrType->show(nach);
+            usedUhrType->show(halb);
+            offsetH = 1;
+        }
+        break;
     case 36:
     case 37:
     case 38:
@@ -394,8 +425,17 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         if (usedUhrType->hasDreiviertel() && G.languageVariant[ItIs45]) {
             usedUhrType->show(dreiviertel);
         } else {
-            usedUhrType->show(viertel);
-            usedUhrType->show(v_vor);
+            // A Quarter to
+            if (G.languageVariant[ENG_Aquarter]) {
+                usedUhrType->show(a_quarter);
+            } else {
+                usedUhrType->show(viertel);
+            }
+            if (G.UhrtypeDef == Eng10x11) {
+                usedUhrType->show(vor);
+            } else {
+                usedUhrType->show(v_vor);
+            }
         }
         offsetH = 1;
         break;
@@ -532,24 +572,26 @@ void ClockWork::calcClockface() {
 
 iUhrType *ClockWork::getPointer(uint8_t type) {
     switch (type) {
-    case Uhr_114:
-        return &Uhr_114_type;
-    case Uhr_114_Alternative:
-        return &Uhr_114_Alternative_type;
-    case Uhr_114_2Clock:
-        return &Uhr_114_2Clock_type;
-    case Uhr_114_Dutch:
-        return &Uhr_114_dutch_type;
-    case Uhr_125:
-        return &Uhr_125_type;
-    case Uhr_125_Type2:
-        return &Uhr_125_type2_type;
-    case Uhr_169:
-        return &Uhr_169_type;
-    case Uhr_242:
-        return &Uhr_242_type;
-    case Uhr_291:
-        return &Uhr_291_type;
+    case Ger10x11:
+        return &_de10x11;
+    case Ger10x11Alternative:
+        return &_de10x11Alternative;
+    case Ger10x11Clock:
+        return &_de10x11Clock;
+    case Nl10x11:
+        return &_nl10x11;
+    case Ger11x11:
+        return &_de11x11;
+    case Ger11x11V2:
+        return &_de11x11V2;
+    case Ger10x11Frame:
+        return &_de10x11frame;
+    case Ger21x11Weather:
+        return &_de21x11Weather;
+    case Ger17x17:
+        return &_de17x17;
+    case Eng10x11:
+        return &_en10x11;
     default:
         return nullptr;
     }
@@ -561,7 +603,8 @@ void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
     if (num == Grbw) {
         if (strip_RGB != NULL) {
-            delete strip_RGB; // delete the previous dynamically created strip
+            delete strip_RGB; // delete the previous dynamically created
+                              // strip
             strip_RGB = NULL;
         }
         if (strip_RGBW == NULL) {
@@ -571,7 +614,8 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
     } else {
         if (strip_RGBW != NULL) {
-            delete strip_RGBW; // delete the previous dynamically created strip
+            delete strip_RGBW; // delete the previous dynamically created
+                               // strip
             strip_RGBW = NULL;
         }
         if (strip_RGB == NULL) {
@@ -687,7 +731,7 @@ void ClockWork::loop(struct tm &tm) {
         config["h20"] = G.h20;
         config["h22"] = G.h22;
         config["h24"] = G.h24;
-        for (uint8_t i = 0; i < 5; i++) {
+        for (uint8_t i = 0; i < 6; i++) {
             char stringToSend[11];
             sprintf(stringToSend, "langVar%d", i);
             config[stringToSend] = static_cast<uint8_t>(G.languageVariant[i]);

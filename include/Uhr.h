@@ -64,7 +64,7 @@ struct GLOBAL {
     uint8_t client_nr;
     uint8_t secondVariant;
     uint8_t minuteVariant;
-    bool languageVariant[5];
+    bool languageVariant[6];
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char scrollingText[PAYLOAD_LENGTH];
@@ -143,6 +143,7 @@ enum LanguageDialects {
     ItIs40 = 2,
     ItIs45 = 3,
     NotShowItIs = 4,
+    ENG_Aquarter = 5,
 };
 
 enum CommandWords {
@@ -190,15 +191,16 @@ enum CommandWords {
 };
 
 enum ClockType {
-    Uhr_114 = 1,
-    Uhr_114_Alternative = 2,
-    Uhr_114_2Clock = 6,
-    Uhr_114_Dutch = 9,
-    Uhr_125 = 3,
-    Uhr_125_Type2 = 8,
-    Uhr_169 = 4,
-    Uhr_242 = 5,
-    Uhr_291 = 7,
+    Ger10x11 = 1,
+    Ger10x11Alternative = 2,
+    Ger10x11Clock = 6,
+    Nl10x11 = 9,
+    Ger11x11 = 3,
+    Ger11x11V2 = 8,
+    Ger10x11Frame = 4,
+    Ger21x11Weather = 5,
+    Ger17x17 = 7,
+    Eng10x11 = 10,
 };
 
 enum Icons {

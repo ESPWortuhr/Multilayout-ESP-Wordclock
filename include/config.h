@@ -4,26 +4,29 @@
  */
 
 // Layout der Frontplatte:
-// - Uhr_114
+// - Ger10x11
 //   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-// - Uhr_114_Alternative
+// - Ger10x11Alternative
 //   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem
 //   Layout für extra Wörter in der Matrix
-// - Uhr_114_2Clock
+// - Ger10x11Clock
 //   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit dem Layout
 //   vom orginal Hersteller
-// - Uhr_114_Dutch
+// - Nl10x11
 //   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem
 //   Layout für die niederländische Sprache
-// - Uhr_125
+// - Eng10x11
+//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem
+//   Layout für die englische Sprache
+// - Ger11x11
 //   11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-// - Uhr_169
+// - Ger10x11Frame
 //   mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
-// - Uhr_242
+// - Ger21x11Weather
 //   Uhr mit Wettervorhersage 242 LED's
-// - Uhr_291
+// - Ger17x17
 //   Uhr mit 24 Stunden Anzeige 18x16
-#define DEFAULT_LAYOUT Uhr_114
+#define DEFAULT_LAYOUT Ger10x11Alternative
 
 // Typ der LEDs:
 // - Brg, Grb, Rgb, Rbg (WS2812b)

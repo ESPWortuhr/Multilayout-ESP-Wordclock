@@ -18,7 +18,7 @@
 
 #define USE_DREIVIERTEL
 
-class UHR_114_Alternative_t : public iUhrType {
+class De10x11Alternative_t : public iUhrType {
 public:
     virtual const bool hasDreiviertel() override { return true; }
 
@@ -240,4 +240,4 @@ public:
     };
 };
 
-UHR_114_Alternative_t Uhr_114_Alternative_type;
+De10x11Alternative_t _de10x11Alternative;

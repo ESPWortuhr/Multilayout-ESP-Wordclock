@@ -80,7 +80,7 @@ var h18 = 100;
 var h20 = 100;
 var h22 = 100;
 var h24 = 100;
-var dialect = [0, 0, 0, 0, 0];
+var dialect = [0, 0, 0, 0, 0, 0];
 var ldr = 0;
 var ldrCal = 0;
 var showSeconds = 0;
@@ -197,7 +197,7 @@ function initConfigValues() {
 	h24 = 100;
 	ldr = 0;
 	ldrCal = 10;
-	dialect = [0, 0, 0, 0, 0];
+	dialect = [0, 0, 0, 0, 0, 0];
 	showSeconds = 0;
 	showMinutes = 0;
 	UhrtypeDef = 0;
@@ -322,6 +322,7 @@ function initWebsocket() {
 			$("#dialect-2").set("value", data.langVar2);
 			$("#dialect-3").set("value", data.langVar3);
 			document.getElementById("dialect-4").checked = data.langVar4;
+			$("#dialect-5").set("value", data.langVar5);
 
 			document.getElementById("ldr").checked = data.ldr;
 			$("ldr-cal").set("value", data.ldrCal);
@@ -345,6 +346,7 @@ function initWebsocket() {
 			enableSpecific("specific-layout-3", data.hasZwanzig);
 			enableSpecific("specific-layout-4", data.hasSecondsFrame);
 			enableSpecific("specific-layout-5", data.hasWeatherLayout);
+			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // En10x11
 			enableSpecific("specific-colortype-4", data.colortype === 4);
 
 			autoLdrEnabled = data.autoLdrEnabled;
@@ -925,8 +927,9 @@ $.ready(function() {
 		dialect[2] = $("#dialect-2").get("value");
 		dialect[3] = $("#dialect-3").get("value");
 		dialect[4] = $("#dialect-4").get("checked") | 0;
+		dialect[5] = $("#dialect-5").get("value");
 
-		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]));
+		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]) + nstr(dialect[5]));
 		debugMessage("langVar" + debugMessageReconfigured);
 	});
 });

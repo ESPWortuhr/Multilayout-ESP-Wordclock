@@ -17,7 +17,7 @@
  * + + + +
  */
 
-class UHR_125_t : public iUhrType {
+class De11x11_t : public iUhrType {
 public:
     const uint16_t min_arr[2][4] = {
         {110, 111, 112, 113}, // LED für Minuten Anzeige Zeile
@@ -218,4 +218,4 @@ public:
     };
 };
 
-UHR_125_t Uhr_125_type;
+De11x11_t _de11x11;

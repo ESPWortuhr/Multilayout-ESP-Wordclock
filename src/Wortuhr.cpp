@@ -173,7 +173,7 @@ void setup() {
         G.h20 = 100;
         G.h22 = 100;
         G.h24 = 100;
-        for (uint8_t i = 0; i < 5; i++) {
+        for (uint8_t i = 0; i < 6; i++) {
             G.languageVariant[i] = false;
         }
 
