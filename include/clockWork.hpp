@@ -259,8 +259,13 @@ void ClockWork::showMinute(uint8_t min) {
         while (min > 4) {
             min -= 5;
         }
+        uint16_t minArray[4];
+        usedUhrType->getMinArr(minArray, G.minuteVariant - 1);
+        if (G.layoutVariant[ReverseMinDirection]) {
+            std::reverse(std::begin(minArray), std::end(minArray));
+        }
         for (uint8_t i = 0; i < min; i++) {
-            frontMatrix[usedUhrType->getMinArr(G.minuteVariant - 1, i)] = true;
+            frontMatrix[minArray[i]] = true;
         }
     }
 }
@@ -731,10 +736,18 @@ void ClockWork::loop(struct tm &tm) {
         config["h20"] = G.h20;
         config["h22"] = G.h22;
         config["h24"] = G.h24;
-        for (uint8_t i = 0; i < 6; i++) {
+        for (uint8_t i = 0;
+             i < sizeof(G.languageVariant) / sizeof(G.languageVariant[0]);
+             i++) {
             char stringToSend[11];
             sprintf(stringToSend, "langVar%d", i);
             config[stringToSend] = static_cast<uint8_t>(G.languageVariant[i]);
+        }
+        for (uint8_t i = 0;
+             i < sizeof(G.layoutVariant) / sizeof(G.layoutVariant[0]); i++) {
+            char stringToSend[11];
+            sprintf(stringToSend, "layVar%d", i);
+            config[stringToSend] = static_cast<uint8_t>(G.layoutVariant[i]);
         }
         config["effectBri"] = G.effectBri;
         config["secondVariant"] = G.secondVariant;
@@ -841,6 +854,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_LDR:
     case COMMAND_SET_AUTO_LDR:
     case COMMAND_SET_LANGUAGE_VARIANT:
+    case COMMAND_SET_LAYOUT_VARIANT:
     case COMMAND_SET_SETTING_SECOND:
     case COMMAND_SET_TIME_MANUAL: {
         eeprom::write();

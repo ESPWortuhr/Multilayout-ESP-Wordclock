@@ -19,15 +19,17 @@
 
 class De11x11_t : public iUhrType {
 public:
-    const uint16_t min_arr[2][4] = {
+    const uint16_t minArr[2][4] = {
         {110, 111, 112, 113}, // LED für Minuten Anzeige Zeile
         {121, 122, 123, 124}  // LED für Minuten Anzeige Ecken
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getMinArr(uint8_t col, uint8_t row) override {
-        return min_arr[col][row];
+    virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
+        for (uint8_t i = 0; i < 4; i++) {
+            returnArr[i] = minArr[col][i];
+        }
     };
 
     //------------------------------------------------------------------------------

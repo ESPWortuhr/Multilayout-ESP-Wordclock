@@ -26,14 +26,16 @@ public:
 
     //------------------------------------------------------------------------------
 
-    const uint16_t min_arr[2][4] = {
+    const uint16_t minArr[2][4] = {
 
         {152, 150, 148, 146}, {0, 12, 168, 156}};
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getMinArr(uint8_t col, uint8_t row) override {
-        return min_arr[col][row];
+    virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
+        for (uint8_t i = 0; i < 4; i++) {
+            returnArr[i] = minArr[col][i];
+        }
     };
 
     //------------------------------------------------------------------------------

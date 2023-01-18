@@ -81,6 +81,7 @@ var h20 = 100;
 var h22 = 100;
 var h24 = 100;
 var dialect = [0, 0, 0, 0, 0, 0];
+var layVar = [0];
 var ldr = 0;
 var ldrCal = 0;
 var showSeconds = 0;
@@ -141,6 +142,7 @@ var COMMAND_SET_WIFI_AND_RESTART = 99;
 var COMMAND_RESET = 100;
 var COMMAND_SET_BOOT = 101;
 var COMMAND_SET_AUTO_LDR = 102;
+var COMMAND_SET_LAYOUT_VARIANT = 103;
 
 var COMMAND_BRIGHTNESS = 151;
 var COMMAND_SPEED = 152;
@@ -198,6 +200,7 @@ function initConfigValues() {
 	ldr = 0;
 	ldrCal = 10;
 	dialect = [0, 0, 0, 0, 0, 0];
+	layVar = [0];
 	showSeconds = 0;
 	showMinutes = 0;
 	UhrtypeDef = 0;
@@ -323,6 +326,8 @@ function initWebsocket() {
 			$("#dialect-3").set("value", data.langVar3);
 			document.getElementById("dialect-4").checked = data.langVar4;
 			$("#dialect-5").set("value", data.langVar5);
+
+			document.getElementById("layvar-0").checked = data.layVar0;
 
 			document.getElementById("ldr").checked = data.ldr;
 			$("ldr-cal").set("value", data.ldrCal);
@@ -931,5 +936,11 @@ $.ready(function() {
 
 		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]) + nstr(dialect[5]));
 		debugMessage("langVar" + debugMessageReconfigured);
+	});
+	$("[id*='layvar']").on("change", function() {
+		layVar[0] = $("#layvar-0").get("checked") | 0;
+
+		sendCmd(COMMAND_SET_LAYOUT_VARIANT, nstr(layVar[0]));
+		debugMessage("layVar" + debugMessageReconfigured);
 	});
 });
