@@ -60,18 +60,15 @@ public:
 
     //------------------------------------------------------------------------------
 
-    uint16_t min_arr[2][4] = {
-        // ergänzt aus "Uhr func 169"-datei
-        {LED_MAP(110), LED_MAP(111), LED_MAP(112),
-         LED_MAP(113)}, // LED für Minuten Anzeige Zeile
-        {LED_MAP(110), LED_MAP(111), LED_MAP(112),
-         LED_MAP(113)} // LED für Minuten Anzeige Ecken
-    };
+    uint16_t minArr[4] = {LED_MAP(110), LED_MAP(111), LED_MAP(112),
+                          LED_MAP(113)};
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getMinArr(uint8_t col, uint8_t row) override {
-        return min_arr[col][row];
+    virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
+        for (uint8_t i = 0; i < 4; i++) {
+            returnArr[i] = minArr[i];
+        }
     };
 
     //------------------------------------------------------------------------------

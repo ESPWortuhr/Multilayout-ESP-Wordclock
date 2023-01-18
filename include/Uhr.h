@@ -65,6 +65,7 @@ struct GLOBAL {
     uint8_t secondVariant;
     uint8_t minuteVariant;
     bool languageVariant[6];
+    bool layoutVariant[1];
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char scrollingText[PAYLOAD_LENGTH];
@@ -146,6 +147,10 @@ enum LanguageDialects {
     ENG_Aquarter = 5,
 };
 
+enum LayoutVariants {
+    ReverseMinDirection = 0,
+};
+
 enum CommandWords {
     COMMAND_IDLE = 0,
 
@@ -159,6 +164,7 @@ enum CommandWords {
     COMMAND_MODE_ANIMATION = 10,
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
+
     COMMAND_SET_LANGUAGE_VARIANT = 84,
     COMMAND_SET_MQTT = 85,
     COMMAND_SET_TIME_MANUAL = 86,
@@ -178,6 +184,7 @@ enum CommandWords {
     COMMAND_RESET = 100,
     COMMAND_SET_BOOT = 101,
     COMMAND_SET_AUTO_LDR = 102,
+    COMMAND_SET_LAYOUT_VARIANT = 103,
 
     COMMAND_SPEED = 152,
 

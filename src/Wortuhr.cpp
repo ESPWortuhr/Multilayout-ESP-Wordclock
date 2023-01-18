@@ -173,10 +173,15 @@ void setup() {
         G.h20 = 100;
         G.h22 = 100;
         G.h24 = 100;
-        for (uint8_t i = 0; i < 6; i++) {
+        for (uint8_t i = 0;
+             i < sizeof(G.layoutVariant) / sizeof(G.layoutVariant[0]); i++) {
+            G.layoutVariant[i] = false;
+        }
+        for (uint8_t i = 0;
+             i < sizeof(G.languageVariant) / sizeof(G.languageVariant[0]);
+             i++) {
             G.languageVariant[i] = false;
         }
-
         G.mqtt.state = 0;
         G.mqtt.port = 1883;
         strcpy(G.mqtt.serverAdress, "192.168.4.1");

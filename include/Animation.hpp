@@ -292,16 +292,20 @@ void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
 void Animation::set_minutes() {
     if (G.minuteVariant > 0) {
         uint8_t m = lastMinute % 5;
-        led.setPixelColorObject(usedUhrType->getMinArr(G.minuteVariant - 1, 0),
-                                m > 0 ? foregroundMinute : background);
-        led.setPixelColorObject(usedUhrType->getMinArr(G.minuteVariant - 1, 1),
-                                m > 1 ? foregroundMinute : background);
-        led.setPixelColorObject(usedUhrType->getMinArr(G.minuteVariant - 1, 2),
-                                m > 2 ? foregroundMinute : background);
-        led.setPixelColorObject(usedUhrType->getMinArr(G.minuteVariant - 1, 3),
-                                m > 3 ? foregroundMinute : background);
+        uint16_t minArray[4];
+        usedUhrType->getMinArr(minArray, G.minuteVariant - 1);
+        if (G.layoutVariant[ReverseMinDirection]) {
+            std::reverse(std::begin(minArray), std::end(minArray));
+        }
+        for (uint8_t i = 0; i < 4; i++) {
+            led.setPixelColorObject(minArray[i],
+                                    m > i ? foregroundMinute : background);
+        }
     }
 }
+
+//------------------------------------------------------------------------------
+
 // Overwrite the LEDs with internal matrix
 void Animation::copy2Stripe(RgbfColor **source) {
     for (uint8_t row = 0; row < maxRows; row++) {

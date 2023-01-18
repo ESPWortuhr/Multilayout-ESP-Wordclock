@@ -129,7 +129,9 @@ public:
         return returnValue;
     };
 
-    virtual const uint16_t getMinArr(uint8_t col, uint8_t row) {
-        return NUM_PIXELS() - (4 - row);
+    virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
+        for (uint8_t i = 0; i < 4; i++) {
+            returnArr[i] = NUM_PIXELS() - (4 - i);
+        }
     };
 };

@@ -30,12 +30,14 @@
 
 class De21x11Weather_t : public iUhrType {
 public:
-    const uint16_t min_arr[4] = {112, 114, 116, 118}; // Minuten LED´s für Zeile
+    const uint16_t minArr[4] = {112, 114, 116, 118}; // Minuten LED´s für Zeile
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getMinArr(uint8_t col, uint8_t row) override {
-        return min_arr[row];
+    virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
+        for (uint8_t i = 0; i < 4; i++) {
+            returnArr[i] = minArr[i];
+        }
     };
 
     //------------------------------------------------------------------------------
