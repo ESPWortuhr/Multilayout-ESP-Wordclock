@@ -16,7 +16,7 @@
  *
  */
 
-class UHR_114_2Clock_t : public iUhrType {
+class De10x11Clock_t : public iUhrType {
 public:
     virtual const bool hasDreiviertel() override { return true; }
 
@@ -214,4 +214,4 @@ public:
     };
 };
 
-UHR_114_2Clock_t Uhr_114_2Clock_type;
+De10x11Clock_t _de10x11Clock;

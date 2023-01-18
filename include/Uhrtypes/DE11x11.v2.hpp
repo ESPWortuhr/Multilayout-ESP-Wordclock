@@ -17,7 +17,7 @@
  * + + + +
  */
 
-class UHR_125_Type2_t : public iUhrType {
+class De11x11V2_t : public iUhrType {
 public:
     virtual const uint16_t NUM_PIXELS() override { return 125; };
 
@@ -268,4 +268,4 @@ public:
     };
 };
 
-UHR_125_Type2_t Uhr_125_type2_type;
+De11x11V2_t _de11x11V2;

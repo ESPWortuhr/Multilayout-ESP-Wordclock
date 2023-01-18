@@ -19,7 +19,7 @@
 
 #define LED_MAP(x) (x)
 
-class UHR_114_t : public iUhrType {
+class De10x11_t : public iUhrType {
 public:
 #if (LED_LAYOUT_REVERSE)
 
@@ -314,4 +314,4 @@ public:
     };
 };
 
-UHR_114_t Uhr_114_type;
+De10x11_t _de10x11;

@@ -16,7 +16,7 @@
 156,157,158,159,160,161,162,163,164,165,166,167,168
 */
 
-class UHR_169_t : public iUhrType {
+class De10x11frame_t : public iUhrType {
 public:
     const uint16_t rmatrix[48] = {
         0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,
@@ -257,4 +257,4 @@ public:
     };
 };
 
-UHR_169_t Uhr_169_type;
+De10x11frame_t _de10x11frame;

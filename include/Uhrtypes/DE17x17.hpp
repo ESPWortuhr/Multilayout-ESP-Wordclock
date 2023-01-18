@@ -22,7 +22,7 @@
  *
  */
 
-class UHR_291_t : public iUhrType {
+class De17x17_t : public iUhrType {
 public:
     virtual const uint16_t NUM_PIXELS() override { return 291; };
 
@@ -480,4 +480,4 @@ public:
     };
 };
 
-UHR_291_t Uhr_291_type;
+De17x17_t _de17x17;

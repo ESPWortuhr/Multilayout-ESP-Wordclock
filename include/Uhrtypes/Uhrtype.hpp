@@ -21,6 +21,7 @@ enum ledText {
     m_achtzehn = 18,
     m_neunzehn = 19,
     zwanzig = 20,
+    twentyfive = 25,
 
     es_ist = 101,
     nach = 102,
@@ -43,6 +44,7 @@ enum ledText {
     minuten_uhr = 122,
     v_vor = 123,
     v_nach = 124,
+    a_quarter = 125,
 
     h_ein = 151,
     h_zwei = 152,
@@ -107,6 +109,8 @@ public:
     virtual const bool hasDreiviertel() { return false; }
 
     virtual const bool hasZwanzig() { return true; }
+
+    virtual const bool hasTwentyfive() { return false; }
 
     virtual const bool has24HourLayout() { return false; }
 

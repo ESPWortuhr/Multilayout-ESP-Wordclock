@@ -28,7 +28,7 @@
  * D R E I ẞ I G O ° C X
  */
 
-class UHR_242_t : public iUhrType {
+class De21x11Weather_t : public iUhrType {
 public:
     const uint16_t min_arr[4] = {112, 114, 116, 118}; // Minuten LED´s für Zeile
 
@@ -576,4 +576,4 @@ public:
     };
 };
 
-UHR_242_t Uhr_242_type;
+De21x11Weather_t _de21x11Weather;

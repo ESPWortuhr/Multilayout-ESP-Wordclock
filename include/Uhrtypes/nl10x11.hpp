@@ -16,7 +16,7 @@
  *
  */
 
-class UHR_114_dutch_t : public iUhrType {
+class Nl10x11_t : public iUhrType {
 public:
     virtual const bool hasZwanzig() override { return false; }
 
@@ -177,4 +177,4 @@ public:
     };
 };
 
-UHR_114_dutch_t Uhr_114_dutch_type;
+Nl10x11_t _nl10x11;
