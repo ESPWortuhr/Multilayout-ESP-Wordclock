@@ -271,10 +271,30 @@ uint8_t ClockWork::determineWhichMinuteVariant() {
 
 //------------------------------------------------------------------------------
 
+void ClockWork::showMinuteInWords(uint8_t min) {
+    switch (min) {
+    case 0:
+        usedUhrType->show(nur);
+        break;
+    case 1:
+    case 2:
+        usedUhrType->show(gewesen);
+        break;
+    case 3:
+    case 4:
+        usedUhrType->show(beina);
+        break;
+    default:
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::showMinute(uint8_t min) {
     if (G.minuteVariant != MinuteVariant::Off) {
         min %= 5;
-        
+
         uint16_t minArray[4];
         usedUhrType->getMinArr(minArray, determineWhichMinuteVariant());
         if (G.layoutVariant[ReverseMinDirection]) {
@@ -283,6 +303,9 @@ void ClockWork::showMinute(uint8_t min) {
         for (uint8_t i = 0; i < min; i++) {
             frontMatrix[minArray[i]] = true;
         }
+    } else if (G.UhrtypeDef == Nl10x11 &&
+               G.minuteVariant == MinuteVariant::InWords) {
+        showMinuteInWords(min);
     }
 }
 
@@ -649,6 +672,17 @@ void ClockWork::initLedStrip(uint8_t num) {
 
 //------------------------------------------------------------------------------
 
+void resetMinVariantIfNotAvailable() {
+    if (G.UhrtypeDef != Nl10x11 && G.minuteVariant == MinuteVariant::InWords) {
+        G.minuteVariant = MinuteVariant::Off;
+    } else if (G.UhrtypeDef != Ger10x11Frame &&
+               G.minuteVariant == MinuteVariant::Row) {
+        G.minuteVariant = MinuteVariant::Off;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::loop(struct tm &tm) {
     unsigned long currentMillis = millis();
     countMillisSpeed += currentMillis - previousMillis;
@@ -914,6 +948,7 @@ void ClockWork::loop(struct tm &tm) {
         eeprom::write();
         Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
         usedUhrType = getPointer(G.UhrtypeDef);
+        resetMinVariantIfNotAvailable();
         G.conf = COMMAND_IDLE;
         break;
     }
@@ -1049,7 +1084,8 @@ void ClockWork::loopSecondsFrame() {
     }
     if (lastSecond48 != _second48) {
         if (G.prog == 0 && G.conf == 0) {
-            if (G.secondVariant == 1 || G.minuteVariant == MinuteVariant::Corners) {
+            if (G.secondVariant == 1 ||
+                G.minuteVariant == MinuteVariant::Corners) {
                 led.clearFrame();
             }
             if (G.secondVariant > 0) {

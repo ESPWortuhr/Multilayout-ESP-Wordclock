@@ -29,21 +29,22 @@ private:
 
     void setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll);
     void showMinute(uint8_t min);
+    void showMinuteInWords(uint8_t min);
     uint8_t determineWhichMinuteVariant();
 
-    public:
-        ClockWork() = default;
-        ~ClockWork() = default;
+public:
+    ClockWork() = default;
+    ~ClockWork() = default;
 
-        iUhrType *getPointer(uint8_t type);
+    iUhrType *getPointer(uint8_t type);
 
-        void loop(struct tm & tm);
+    void loop(struct tm &tm);
 
-        void initBootLed();
-        void initBootLedBlink();
-        void initBootLedSweep(uint32_t delay);
-        void initBootShowIp(const char *buf);
-        void initBootWifiSignalStrength(int strength);
+    void initBootLed();
+    void initBootLedBlink();
+    void initBootLedSweep(uint32_t delay);
+    void initBootShowIp(const char *buf);
+    void initBootWifiSignalStrength(int strength);
 
-        void initLedStrip(uint8_t num);
-    };
+    void initLedStrip(uint8_t num);
+};

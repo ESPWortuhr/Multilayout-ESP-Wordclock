@@ -45,6 +45,9 @@ enum ledText {
     v_vor = 123,
     v_nach = 124,
     a_quarter = 125,
+    nur = 126,
+    beina = 127,
+    gewesen = 128,
 
     h_ein = 151,
     h_zwei = 152,

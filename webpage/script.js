@@ -252,7 +252,6 @@ function enableSpecific(cls, enbl) {
 	}
 }
 
-/// only shows elements of class `cls` if `enbl` is true.
 function removeSpecificOption(cls, val, bool) {
 	if (bool) {
 		var selectobject = document.getElementById(cls);
@@ -366,6 +365,7 @@ function initWebsocket() {
 			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // En10x11
 			enableSpecific("specific-colortype-4", data.colortype === 4);
 			removeSpecificOption("show-minutes", "2", data.UhrtypeDef !== 4); // MinuteVariant "Row"
+			removeSpecificOption("show-minutes", "3", data.UhrtypeDef !== 9); // MinuteVariant "In Words"
 
 			autoLdrEnabled = data.autoLdrEnabled;
 			$("#auto-ldr-enabled").set("value", autoLdrEnabled);

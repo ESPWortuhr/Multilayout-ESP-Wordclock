@@ -52,6 +52,7 @@ enum class MinuteVariant {
     Off = 0,
     Corners = 1,
     Row = 2,
+    InWords = 3,
 };
 
 struct GLOBAL {
