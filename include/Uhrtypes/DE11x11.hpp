@@ -20,8 +20,8 @@
 class De11x11_t : public iUhrType {
 public:
     const uint16_t minArr[2][4] = {
-        {110, 111, 112, 113}, // LED für Minuten Anzeige Zeile
-        {121, 122, 123, 124}  // LED für Minuten Anzeige Ecken
+        {121, 122, 123, 124}, // LEDs for "Normal" minute display
+        {110, 111, 112, 113}  // LEDs für "Row" type minute display
     };
 
     //------------------------------------------------------------------------------

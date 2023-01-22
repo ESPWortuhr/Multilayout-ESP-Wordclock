@@ -30,7 +30,7 @@
 
 class De21x11Weather_t : public iUhrType {
 public:
-    const uint16_t minArr[4] = {112, 114, 116, 118}; // Minuten LED´s für Zeile
+    const uint16_t minArr[4] = {112, 114, 116, 118};
 
     //------------------------------------------------------------------------------
 

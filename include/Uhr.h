@@ -50,8 +50,8 @@ struct OpenWeatherMapData {
 
 enum class MinuteVariant {
     Off = 0,
-    Row = 1,
-    Corners = 2,
+    Corners = 1,
+    Row = 2,
 };
 
 struct GLOBAL {
