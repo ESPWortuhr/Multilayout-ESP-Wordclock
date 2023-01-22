@@ -350,7 +350,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
             offsetH = 1;
         } else {
             // A Quarter past
-            if (G.languageVariant[ENG_Aquarter]) {
+            if (G.languageVariant[EN_ShowAQuarter]) {
                 usedUhrType->show(a_quarter);
             } else {
                 usedUhrType->show(viertel);
@@ -470,7 +470,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
             usedUhrType->show(dreiviertel);
         } else {
             // A Quarter to
-            if (G.languageVariant[ENG_Aquarter]) {
+            if (G.languageVariant[EN_ShowAQuarter]) {
                 usedUhrType->show(a_quarter);
             } else {
                 usedUhrType->show(viertel);

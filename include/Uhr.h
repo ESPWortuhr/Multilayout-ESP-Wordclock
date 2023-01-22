@@ -151,7 +151,7 @@ enum LanguageDialects {
     ItIs40 = 2,
     ItIs45 = 3,
     NotShowItIs = 4,
-    ENG_Aquarter = 5,
+    EN_ShowAQuarter = 5,
 };
 
 enum LayoutVariants {

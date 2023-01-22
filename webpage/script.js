@@ -362,7 +362,7 @@ function initWebsocket() {
 			enableSpecific("specific-layout-3", data.hasZwanzig);
 			enableSpecific("specific-layout-4", data.hasSecondsFrame);
 			enableSpecific("specific-layout-5", data.hasWeatherLayout);
-			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // En10x11
+			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // EN10x11
 			enableSpecific("specific-colortype-4", data.colortype === 4);
 			removeSpecificOption("show-minutes", "2", data.UhrtypeDef !== 4); // MinuteVariant "Row"
 			removeSpecificOption("show-minutes", "3", data.UhrtypeDef !== 9); // MinuteVariant "In Words"
