@@ -155,7 +155,7 @@ void setup() {
         G.effectSpeed = 10;
         G.client_nr = 0;
         G.secondVariant = 0;
-        G.minuteVariant = 1;
+        G.minuteVariant = MinuteVariant::Row;
         G.ldr = 0;
         G.ldrCal = 0;
         strcpy(G.openWeatherMap.cityid, "");

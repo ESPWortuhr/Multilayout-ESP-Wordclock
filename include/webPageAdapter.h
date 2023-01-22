@@ -339,7 +339,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_MINUTE: {
             G.conf = COMMAND_SET_MINUTE;
-            G.minuteVariant = split(payload, 3);
+            G.minuteVariant = static_cast<MinuteVariant>(split(payload, 3));
             break;
         }
 

@@ -289,11 +289,28 @@ void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
 
 //------------------------------------------------------------------------------
 
+uint8_t Animation::determineWhichMinuteVariant() {
+    switch (G.minuteVariant) {
+    case MinuteVariant::Row:
+        return 0;
+        break;
+    case MinuteVariant::Corners:
+        return 1;
+        break;
+    default:
+        Serial.println("[ERROR] G.minuteVariant undefined");
+        return 0;
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Animation::set_minutes() {
-    if (G.minuteVariant > 0) {
+    if (G.minuteVariant != MinuteVariant::Off) {
         uint8_t m = lastMinute % 5;
         uint16_t minArray[4];
-        usedUhrType->getMinArr(minArray, G.minuteVariant - 1);
+        usedUhrType->getMinArr(minArray, determineWhichMinuteVariant());
         if (G.layoutVariant[ReverseMinDirection]) {
             std::reverse(std::begin(minArray), std::end(minArray));
         }

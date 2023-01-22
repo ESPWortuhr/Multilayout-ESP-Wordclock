@@ -254,13 +254,30 @@ void ClockWork::setHour(const uint8_t std, const uint8_t voll) {
 
 //------------------------------------------------------------------------------
 
+uint8_t ClockWork::determineWhichMinuteVariant() {
+    switch (G.minuteVariant) {
+    case MinuteVariant::Row:
+        return 0;
+        break;
+    case MinuteVariant::Corners:
+        return 1;
+        break;
+    default:
+        Serial.println("[ERROR] G.minuteVariant undefined");
+        return 0;
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::showMinute(uint8_t min) {
-    if (G.minuteVariant > 0) {
+    if (G.minuteVariant != MinuteVariant::Off) {
         while (min > 4) {
             min -= 5;
         }
         uint16_t minArray[4];
-        usedUhrType->getMinArr(minArray, G.minuteVariant - 1);
+        usedUhrType->getMinArr(minArray, determineWhichMinuteVariant());
         if (G.layoutVariant[ReverseMinDirection]) {
             std::reverse(std::begin(minArray), std::end(minArray));
         }
@@ -751,7 +768,7 @@ void ClockWork::loop(struct tm &tm) {
         }
         config["effectBri"] = G.effectBri;
         config["secondVariant"] = G.secondVariant;
-        config["minuteVariant"] = G.minuteVariant;
+        config["minuteVariant"] = static_cast<uint8_t>(G.minuteVariant);
         config["ldr"] = G.ldr;
         config["ldrCal"] = G.ldrCal;
         config["cityid"] = G.openWeatherMap.cityid;
@@ -1007,7 +1024,7 @@ void ClockWork::loop(struct tm &tm) {
         parametersChanged = false;
 
         if (usedUhrType->hasSecondsFrame() && G.secondVariant < 1 &&
-            G.minuteVariant < 2) {
+            G.minuteVariant != MinuteVariant::Corners) {
             led.setFrameColor();
         }
         G.prog = COMMAND_IDLE;
@@ -1033,7 +1050,7 @@ void ClockWork::loopSecondsFrame() {
     }
     if (lastSecond48 != _second48) {
         if (G.prog == 0 && G.conf == 0) {
-            if (G.secondVariant == 1 || G.minuteVariant == 2) {
+            if (G.secondVariant == 1 || G.minuteVariant == MinuteVariant::Corners) {
                 led.clearFrame();
             }
             if (G.secondVariant > 0) {

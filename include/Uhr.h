@@ -48,6 +48,12 @@ struct OpenWeatherMapData {
     char cityid[8];
 };
 
+enum class MinuteVariant {
+    Off = 0,
+    Row = 1,
+    Corners = 2,
+};
+
 struct GLOBAL {
     uint8_t sernr;
     uint16_t prog;
@@ -63,7 +69,7 @@ struct GLOBAL {
     uint8_t effectSpeed;
     uint8_t client_nr;
     uint8_t secondVariant;
-    uint8_t minuteVariant;
+    MinuteVariant minuteVariant;
     bool languageVariant[6];
     bool layoutVariant[1];
     char timeserver[PAYLOAD_LENGTH];
