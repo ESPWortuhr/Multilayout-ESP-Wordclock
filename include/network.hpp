@@ -28,7 +28,7 @@ String Network::getSSID() { return wifiManager.getWiFiSSID(); }
 
 void Network::setup(const char *hostname) {
     wifiManager.setHostname(hostname);
-#ifdef MANUAL_WIFI_SETTINGS
+#if MANUAL_WIFI_SETTINGS
     wifiManager.preloadWiFi(WIFI_SSID, WIFI_PASSWORD);
 #endif
     wifiManager.autoConnect(connectionSSID);
