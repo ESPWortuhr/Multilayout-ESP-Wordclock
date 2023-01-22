@@ -273,9 +273,8 @@ uint8_t ClockWork::determineWhichMinuteVariant() {
 
 void ClockWork::showMinute(uint8_t min) {
     if (G.minuteVariant != MinuteVariant::Off) {
-        while (min > 4) {
-            min -= 5;
-        }
+        min %= 5;
+        
         uint16_t minArray[4];
         usedUhrType->getMinArr(minArray, determineWhichMinuteVariant());
         if (G.layoutVariant[ReverseMinDirection]) {
