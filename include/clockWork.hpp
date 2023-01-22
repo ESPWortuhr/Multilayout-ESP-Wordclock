@@ -292,9 +292,10 @@ void ClockWork::showMinuteInWords(uint8_t min) {
 //------------------------------------------------------------------------------
 
 void ClockWork::showMinute(uint8_t min) {
-    if (G.minuteVariant != MinuteVariant::Off) {
-        min %= 5;
-
+    min %= 5;
+    if (G.UhrtypeDef == Nl10x11 && G.minuteVariant == MinuteVariant::InWords) {
+        showMinuteInWords(min);
+    } else if (G.minuteVariant != MinuteVariant::Off) {
         uint16_t minArray[4];
         usedUhrType->getMinArr(minArray, determineWhichMinuteVariant());
         if (G.layoutVariant[ReverseMinDirection]) {
@@ -303,9 +304,6 @@ void ClockWork::showMinute(uint8_t min) {
         for (uint8_t i = 0; i < min; i++) {
             frontMatrix[minArray[i]] = true;
         }
-    } else if (G.UhrtypeDef == Nl10x11 &&
-               G.minuteVariant == MinuteVariant::InWords) {
-        showMinuteInWords(min);
     }
 }
 
