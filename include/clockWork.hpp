@@ -162,13 +162,13 @@ void ClockWork::initBootWifiSignalStrength(int strength) {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::setHour(const uint8_t std, const uint8_t voll) {
-    switch (std) {
+void ClockWork::setHour(const uint8_t hour, const bool fullHour) {
+    switch (hour % 12) {
     case 0:
         usedUhrType->show(h_zwoelf);
         break;
     case 1:
-        if (voll == 1 || G.UhrtypeDef == Eng10x11) {
+        if (fullHour || G.UhrtypeDef == Eng10x11) {
             usedUhrType->show(h_ein);
         } else {
             usedUhrType->show(eins);
@@ -205,46 +205,6 @@ void ClockWork::setHour(const uint8_t std, const uint8_t voll) {
         usedUhrType->show(h_elf);
         break;
     case 12:
-        usedUhrType->show(h_zwoelf);
-        break;
-    case 13:
-        if (voll == 1 || G.UhrtypeDef == Eng10x11) {
-            usedUhrType->show(h_ein);
-        } else {
-            usedUhrType->show(eins);
-        }
-        break;
-    case 14:
-        usedUhrType->show(h_zwei);
-        break;
-    case 15:
-        usedUhrType->show(h_drei);
-        break;
-    case 16:
-        usedUhrType->show(h_vier);
-        break;
-    case 17:
-        usedUhrType->show(h_fuenf);
-        break;
-    case 18:
-        usedUhrType->show(h_sechs);
-        break;
-    case 19:
-        usedUhrType->show(h_sieben);
-        break;
-    case 20:
-        usedUhrType->show(h_acht);
-        break;
-    case 21:
-        usedUhrType->show(h_neun);
-        break;
-    case 22:
-        usedUhrType->show(h_zehn);
-        break;
-    case 23:
-        usedUhrType->show(h_elf);
-        break;
-    case 24:
         usedUhrType->show(h_zwoelf);
         break;
     default:
@@ -309,7 +269,7 @@ void ClockWork::showMinute(uint8_t min) {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
+void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     if (!usedUhrType->has24HourLayout()) {
         showMinute(min);
         min /= 5;
@@ -318,7 +278,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
     switch (min) {
     case 0: // full hour
         usedUhrType->show(uhr);
-        voll = 1;
+        fullHour = true;
         break;
     case 1:
         usedUhrType->show(m_eine);
@@ -345,7 +305,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
     case 15: // quarter past
         if (G.languageVariant[ItIs15]) {
             usedUhrType->show(viertel);
-            offsetH = 1;
+            offsetHour = 1;
         } else {
             // A Quarter past
             if (G.languageVariant[EN_ShowAQuarter]) {
@@ -386,7 +346,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
             usedUhrType->show(fuenf);
             usedUhrType->show(vor);
             usedUhrType->show(halb);
-            offsetH = 1;
+            offsetHour = 1;
         }
         break;
     case 26:
@@ -395,14 +355,14 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(30 - min);
         usedUhrType->show(vor);
         usedUhrType->show(halb);
-        offsetH = 1;
+        offsetHour = 1;
         break;
     case 29:
         usedUhrType->show(m_eine);
         usedUhrType->show(minute);
         usedUhrType->show(vor);
         usedUhrType->show(halb);
-        offsetH = 1;
+        offsetHour = 1;
         break;
     case 30: // half
         if (G.UhrtypeDef == Eng10x11) {
@@ -410,7 +370,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
             usedUhrType->show(nach);
         } else {
             usedUhrType->show(halb);
-            offsetH = 1;
+            offsetHour = 1;
         }
         break;
     case 31:
@@ -418,7 +378,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(minute);
         usedUhrType->show(nach);
         usedUhrType->show(halb);
-        offsetH = 1;
+        offsetHour = 1;
         break;
     case 32:
     case 33:
@@ -427,13 +387,12 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         if (usedUhrType->hasTwentyfive()) {
             usedUhrType->show(twentyfive);
             usedUhrType->show(vor);
-            offsetH = 1;
         } else {
             usedUhrType->show(fuenf);
             usedUhrType->show(nach);
             usedUhrType->show(halb);
-            offsetH = 1;
         }
+        offsetHour = 1;
         break;
     case 36:
     case 37:
@@ -442,7 +401,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(min - 30);
         usedUhrType->show(nach);
         usedUhrType->show(halb);
-        offsetH = 1;
+        offsetHour = 1;
         break;
     case 40: // 20 to
         if (!usedUhrType->hasZwanzig() || G.languageVariant[ItIs40]) {
@@ -453,7 +412,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
             usedUhrType->show(zwanzig);
             usedUhrType->show(vor);
         }
-        offsetH = 1;
+        offsetHour = 1;
         break;
     case 41:
     case 42:
@@ -461,7 +420,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
     case 44:
         usedUhrType->show(60 - min);
         usedUhrType->show(vor);
-        offsetH = 1;
+        offsetHour = 1;
         break;
     case 45: // quarter to
         if (usedUhrType->hasDreiviertel() && G.languageVariant[ItIs45]) {
@@ -479,7 +438,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
                 usedUhrType->show(v_vor);
             }
         }
-        offsetH = 1;
+        offsetHour = 1;
         break;
     case 46:
     case 47:
@@ -493,7 +452,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
     case 55:
         usedUhrType->show(60 - min);
         usedUhrType->show(vor);
-        offsetH = 1;
+        offsetHour = 1;
         break;
     case 56:
     case 57:
@@ -501,13 +460,13 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll) {
         usedUhrType->show(60 - min);
         usedUhrType->show(minuten);
         usedUhrType->show(vor);
-        offsetH = 1;
+        offsetHour = 1;
         break;
     case 59:
         usedUhrType->show(m_eine);
         usedUhrType->show(minute);
         usedUhrType->show(vor);
-        offsetH = 1;
+        offsetHour = 1;
         break;
     default:
         break;
@@ -561,11 +520,11 @@ void ClockWork::setClock() {
         usedUhrType->show(es_ist);
     }
 
-    uint8_t offsetH = 0;
-    uint8_t voll = 0;
+    uint8_t offsetHour = 0;
+    bool fullHour = 0;
 
-    setMinute(_minute, offsetH, voll);
-    setHour(_hour + offsetH, voll);
+    setMinute(_minute, offsetHour, fullHour);
+    setHour(_hour + offsetHour, fullHour);
 }
 
 //------------------------------------------------------------------------------

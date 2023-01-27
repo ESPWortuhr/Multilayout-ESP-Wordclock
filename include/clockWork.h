@@ -25,9 +25,9 @@ private:
     void calcClockface();
 
     void setClock();
-    void setHour(const uint8_t std, const uint8_t voll);
+    void setHour(const uint8_t std, const bool fullHour);
 
-    void setMinute(uint8_t min, uint8_t &offsetH, uint8_t &voll);
+    void setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour);
     void showMinute(uint8_t min);
     void showMinuteInWords(uint8_t min);
     uint8_t determineWhichMinuteVariant();
