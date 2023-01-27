@@ -31,6 +31,7 @@ private:
     void showMinute(uint8_t min);
     void showMinuteInWords(uint8_t min);
     uint8_t determineWhichMinuteVariant();
+    FrontWord getFrontWordForNum(uint8_t min);
 
 public:
     ClockWork() = default;

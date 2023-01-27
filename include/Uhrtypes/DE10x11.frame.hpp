@@ -93,171 +93,172 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void show(uint8_t text) override {
-        switch (text) {
-        case es_ist:
+    void show(FrontWord word) override {
+        switch (word) {
+
+        case FrontWord::es_ist:
             // Es
-            Letter_set(24);
-            Letter_set(23);
+            setLetter(24);
+            setLetter(23);
 
             // Ist
-            Letter_set(21);
-            Letter_set(20);
-            Letter_set(19);
+            setLetter(21);
+            setLetter(20);
+            setLetter(19);
             break;
 
-        case nach:
-        case v_nach:
-            Letter_set(55);
-            Letter_set(56);
-            Letter_set(57);
-            Letter_set(58);
+        case FrontWord::nach:
+        case FrontWord::v_nach:
+            setLetter(55);
+            setLetter(56);
+            setLetter(57);
+            setLetter(58);
             break;
 
-        case vor:
-        case v_vor:
-            Letter_set(59);
-            Letter_set(60);
-            Letter_set(61);
+        case FrontWord::vor:
+        case FrontWord::v_vor:
+            setLetter(59);
+            setLetter(60);
+            setLetter(61);
 
-        case viertel:
-            Letter_set(40);
-            Letter_set(41);
-            Letter_set(42);
-            Letter_set(43);
-            Letter_set(44);
-            Letter_set(45);
-            Letter_set(46);
+        case FrontWord::viertel:
+            setLetter(40);
+            setLetter(41);
+            setLetter(42);
+            setLetter(43);
+            setLetter(44);
+            setLetter(45);
+            setLetter(46);
             break;
 
-        case fuenf:
-            Letter_set(14);
-            Letter_set(15);
-            Letter_set(16);
-            Letter_set(17);
+        case FrontWord::fuenf:
+            setLetter(14);
+            setLetter(15);
+            setLetter(16);
+            setLetter(17);
             break;
 
-        case zehn:
-            Letter_set(27);
-            Letter_set(28);
-            Letter_set(29);
-            Letter_set(30);
+        case FrontWord::zehn:
+            setLetter(27);
+            setLetter(28);
+            setLetter(29);
+            setLetter(30);
             break;
 
-        case zwanzig:
-            Letter_set(31);
-            Letter_set(32);
-            Letter_set(33);
-            Letter_set(34);
-            Letter_set(35);
-            Letter_set(36);
-            Letter_set(37);
+        case FrontWord::zwanzig:
+            setLetter(31);
+            setLetter(32);
+            setLetter(33);
+            setLetter(34);
+            setLetter(35);
+            setLetter(36);
+            setLetter(37);
             break;
 
-        case halb:
-            Letter_set(73);
-            Letter_set(74);
-            Letter_set(75);
-            Letter_set(76);
+        case FrontWord::halb:
+            setLetter(73);
+            setLetter(74);
+            setLetter(75);
+            setLetter(76);
             break;
 
-        case eins:
-            Letter_set(81);
-            Letter_set(82);
-            Letter_set(83);
-            Letter_set(84);
+        case FrontWord::eins:
+            setLetter(81);
+            setLetter(82);
+            setLetter(83);
+            setLetter(84);
             break;
 
-        case uhr:
-            Letter_set(138);
-            Letter_set(139);
-            Letter_set(140);
+        case FrontWord::uhr:
+            setLetter(138);
+            setLetter(139);
+            setLetter(140);
             break;
 
-        case h_ein:
-            Letter_set(81);
-            Letter_set(82);
-            Letter_set(83);
+        case FrontWord::h_ein:
+            setLetter(81);
+            setLetter(82);
+            setLetter(83);
             break;
 
-        case h_zwei:
-            Letter_set(79);
-            Letter_set(80);
-            Letter_set(81);
-            Letter_set(82);
+        case FrontWord::h_zwei:
+            setLetter(79);
+            setLetter(80);
+            setLetter(81);
+            setLetter(82);
             break;
 
-        case h_drei:
-            Letter_set(98);
-            Letter_set(99);
-            Letter_set(100);
-            Letter_set(101);
+        case FrontWord::h_drei:
+            setLetter(98);
+            setLetter(99);
+            setLetter(100);
+            setLetter(101);
             break;
 
-        case h_vier:
-            Letter_set(112);
-            Letter_set(113);
-            Letter_set(114);
-            Letter_set(115);
+        case FrontWord::h_vier:
+            setLetter(112);
+            setLetter(113);
+            setLetter(114);
+            setLetter(115);
             break;
 
-        case h_fuenf:
-            Letter_set(92);
-            Letter_set(93);
-            Letter_set(94);
-            Letter_set(95);
+        case FrontWord::h_fuenf:
+            setLetter(92);
+            setLetter(93);
+            setLetter(94);
+            setLetter(95);
             break;
 
-        case h_sechs:
-            Letter_set(132);
-            Letter_set(133);
-            Letter_set(134);
-            Letter_set(135);
-            Letter_set(136);
+        case FrontWord::h_sechs:
+            setLetter(132);
+            setLetter(133);
+            setLetter(134);
+            setLetter(135);
+            setLetter(136);
             break;
 
-        case h_sieben:
-            Letter_set(84);
-            Letter_set(85);
-            Letter_set(86);
-            Letter_set(87);
-            Letter_set(88);
-            Letter_set(89);
+        case FrontWord::h_sieben:
+            setLetter(84);
+            setLetter(85);
+            setLetter(86);
+            setLetter(87);
+            setLetter(88);
+            setLetter(89);
             break;
 
-        case h_acht:
-            Letter_set(124);
-            Letter_set(125);
-            Letter_set(126);
-            Letter_set(127);
+        case FrontWord::h_acht:
+            setLetter(124);
+            setLetter(125);
+            setLetter(126);
+            setLetter(127);
             break;
 
-        case h_neun:
-            Letter_set(108);
-            Letter_set(109);
-            Letter_set(110);
-            Letter_set(111);
+        case FrontWord::h_neun:
+            setLetter(108);
+            setLetter(109);
+            setLetter(110);
+            setLetter(111);
             break;
 
-        case h_zehn:
-            Letter_set(120);
-            Letter_set(121);
-            Letter_set(122);
-            Letter_set(123);
+        case FrontWord::h_zehn:
+            setLetter(120);
+            setLetter(121);
+            setLetter(122);
+            setLetter(123);
             break;
 
-        case h_elf:
-            Letter_set(105);
-            Letter_set(106);
-            Letter_set(107);
+        case FrontWord::h_elf:
+            setLetter(105);
+            setLetter(106);
+            setLetter(107);
             break;
 
-        case h_zwoelf:
-            Letter_set(67);
-            Letter_set(68);
-            Letter_set(69);
-            Letter_set(70);
-            Letter_set(71);
+        case FrontWord::h_zwoelf:
+            setLetter(67);
+            setLetter(68);
+            setLetter(69);
+            setLetter(70);
+            setLetter(71);
             break;
 
         default:
