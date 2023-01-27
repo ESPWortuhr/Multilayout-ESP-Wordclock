@@ -397,9 +397,8 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             // A Quarter past
             if (G.languageVariant[EN_ShowAQuarter]) {
                 usedUhrType->show(FrontWord::a_quarter);
-            } else {
-                usedUhrType->show(FrontWord::viertel);
             }
+            usedUhrType->show(FrontWord::viertel);
             usedUhrType->show(FrontWord::v_nach);
         }
         break;
@@ -516,9 +515,8 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             // A Quarter to
             if (G.languageVariant[EN_ShowAQuarter]) {
                 usedUhrType->show(FrontWord::a_quarter);
-            } else {
-                usedUhrType->show(FrontWord::viertel);
             }
+            usedUhrType->show(FrontWord::viertel);
             if (G.UhrtypeDef == Eng10x11) {
                 usedUhrType->show(FrontWord::vor);
             } else {
