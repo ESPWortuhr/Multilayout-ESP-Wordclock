@@ -24,6 +24,12 @@
 
 class De17x17_t : public iUhrType {
 public:
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::DE;
+    };
+
+    //------------------------------------------------------------------------------
+
     virtual const uint16_t NUM_PIXELS() override { return 291; };
 
     //------------------------------------------------------------------------------

@@ -21,6 +21,12 @@
 
 class De10x11_t : public iUhrType {
 public:
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::DE;
+    };
+
+        //------------------------------------------------------------------------------
+
 #if (LED_LAYOUT_REVERSE)
 
     /*

@@ -19,6 +19,12 @@
 
 class De11x11V2_t : public iUhrType {
 public:
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::DE;
+    };
+
+    //------------------------------------------------------------------------------
+
     virtual const uint16_t NUM_PIXELS() override { return 125; };
 
     //------------------------------------------------------------------------------

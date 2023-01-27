@@ -18,6 +18,12 @@
 
 class De10x11frame_t : public iUhrType {
 public:
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::DE;
+    };
+
+    //------------------------------------------------------------------------------
+
     const uint16_t rmatrix[48] = {
         0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,
         12,  13,  38,  39,  64,  65,  90,  91,  116, 117, 142, 143,

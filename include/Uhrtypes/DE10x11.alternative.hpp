@@ -20,6 +20,12 @@
 
 class De10x11Alternative_t : public iUhrType {
 public:
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::DE;
+    };
+
+    //------------------------------------------------------------------------------
+
     virtual const bool hasDreiviertel() override { return true; }
 
     //------------------------------------------------------------------------------

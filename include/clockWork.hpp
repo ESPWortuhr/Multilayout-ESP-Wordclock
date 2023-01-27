@@ -168,7 +168,7 @@ void ClockWork::setHour(const uint8_t hour, const bool fullHour) {
         usedUhrType->show(h_zwoelf);
         break;
     case 1:
-        if (fullHour || G.UhrtypeDef == Eng10x11) {
+        if (fullHour || usedUhrType->usedLang() != LanguageAbbreviation::DE) {
             usedUhrType->show(h_ein);
         } else {
             usedUhrType->show(eins);

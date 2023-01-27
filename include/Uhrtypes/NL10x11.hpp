@@ -18,8 +18,9 @@
 
 class NL10x11_t : public iUhrType {
 public:
-    void show(uint8_t text) override {
-        switch (text) {
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::NL;
+    };
 
         case es_ist:
             // Es

@@ -20,6 +20,12 @@
 
 class En10x11_t : public iUhrType {
 public:
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::EN;
+    };
+
+    //------------------------------------------------------------------------------
+
     virtual const bool hasZwanzig() override { return true; }
 
     //------------------------------------------------------------------------------

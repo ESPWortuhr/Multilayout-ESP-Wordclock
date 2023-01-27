@@ -30,6 +30,12 @@
 
 class De21x11Weather_t : public iUhrType {
 public:
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::DE;
+    };
+
+    //------------------------------------------------------------------------------
+
     const uint16_t minArr[4] = {112, 114, 116, 118};
 
     //------------------------------------------------------------------------------

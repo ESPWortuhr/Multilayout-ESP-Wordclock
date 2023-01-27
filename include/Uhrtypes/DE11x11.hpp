@@ -19,6 +19,12 @@
 
 class De11x11_t : public iUhrType {
 public:
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::DE;
+    };
+
+    //------------------------------------------------------------------------------
+
     const uint16_t minArr[2][4] = {
         {121, 122, 123, 124}, // LEDs for "Normal" minute display
         {110, 111, 112, 113}  // LEDs für "Row" type minute display

@@ -1,6 +1,6 @@
 #pragma once
 
-enum ledText {
+enum class LanguageAbbreviation { EN, DE, NL };
 
     m_eine = 1,
     m_zwei = 2,
