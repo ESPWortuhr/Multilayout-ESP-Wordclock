@@ -23,6 +23,7 @@ private:
     bool changesInClockface();
     void copyClockface(const bool source[], bool destination[]);
     void calcClockface();
+    void countdownToMidnight();
 
     void setClock();
     void setHour(const uint8_t std, const bool fullHour);

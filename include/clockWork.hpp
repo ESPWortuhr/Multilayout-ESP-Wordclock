@@ -562,7 +562,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
 
 //------------------------------------------------------------------------------
 
-static void countdownToMidnight() {
+void ClockWork::countdownToMidnight() {
     Serial.printf("Count down: %d\n", 60 - _second);
     switch (_second) {
     case 50:
