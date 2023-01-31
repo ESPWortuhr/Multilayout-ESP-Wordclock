@@ -236,14 +236,14 @@ void ClockWork::showMinuteInWords(uint8_t min) {
     case 0:
         usedUhrType->show(FrontWord::nur);
         break;
+
     case 1:
     case 2:
-        usedUhrType->show(FrontWord::gewesen);
-        break;
     case 3:
     case 4:
-        usedUhrType->show(FrontWord::beina);
+        usedUhrType->show(FrontWord::gewesen);
         break;
+
     default:
         break;
     }

@@ -48,7 +48,6 @@ enum class FrontWord {
     v_nach,
     a_quarter,
     nur,
-    beina,
     gewesen,
 
     h_ein,
