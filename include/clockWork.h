@@ -26,6 +26,7 @@ private:
     void countdownToMidnight();
 
     void setClock();
+    void setItIs(const uint8_t min);
     void setHour(const uint8_t std, const bool fullHour);
 
     void setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour);
