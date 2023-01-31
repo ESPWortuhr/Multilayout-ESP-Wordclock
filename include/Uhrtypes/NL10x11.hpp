@@ -76,6 +76,16 @@ public:
             setLetter(11);
             break;
 
+        case FrontWord::zwanzig:
+            setLetter(21);
+            setLetter(20);
+            setLetter(19);
+            setLetter(18);
+            setLetter(17);
+            setLetter(16);
+            setLetter(15);
+            break;
+
         case FrontWord::halb:
             setLetter(44);
             setLetter(45);
