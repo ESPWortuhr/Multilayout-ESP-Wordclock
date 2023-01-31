@@ -517,11 +517,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
                 usedUhrType->show(FrontWord::a_quarter);
             }
             usedUhrType->show(FrontWord::viertel);
-            if (G.UhrtypeDef == Eng10x11) {
-                usedUhrType->show(FrontWord::vor);
-            } else {
-                usedUhrType->show(FrontWord::v_vor);
-            }
+            usedUhrType->show(FrontWord::v_vor);
         }
         offsetHour = 1;
         break;
