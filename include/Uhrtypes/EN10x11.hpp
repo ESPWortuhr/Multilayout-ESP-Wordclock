@@ -216,6 +216,7 @@ public:
             break;
 
         case FrontWord::nach:
+        case FrontWord::v_nach:
             // Past
             setLetter(44);
             setLetter(45);
@@ -224,6 +225,7 @@ public:
             break;
 
         case FrontWord::vor:
+        case FrontWord::v_vor:
             // To
             setLetter(34);
             setLetter(33);
