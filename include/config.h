@@ -110,3 +110,16 @@
 #define MANUAL_WIFI_SETTINGS true
 #define WIFI_SSID "WIFI SSID"
 #define WIFI_PASSWORD "WIFI PWD"
+
+//--------------------------------------------------------------------------
+// Settings for Boot sequence
+//--------------------------------------------------------------------------
+/*
+ * Show Ip Adress of clock on boot, with BOOT_SHOWIP
+ * Light up LEDs on boot, with BOOT_LEDSWEEP
+ * 
+ * Valid values BOOT_SHOWIP [true, false]
+ * Valid values BOOT_LEDSWEEP [true, false]
+ */
+#define BOOT_SHOWIP true
+#define BOOT_LEDSWEEP false

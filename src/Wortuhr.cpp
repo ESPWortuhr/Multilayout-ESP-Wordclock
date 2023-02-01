@@ -193,9 +193,9 @@ void setup() {
         G.UhrtypeDef = DEFAULT_LAYOUT;
         G.Colortype = DEFAULT_LEDTYPE;
         G.bootLedBlink = false;
-        G.bootLedSweep = false;
+        G.bootLedSweep = BOOT_LEDSWEEP;
         G.bootShowWifi = true;
-        G.bootShowIP = false;
+        G.bootShowIP = BOOT_SHOWIP;
 
         G.autoLdrEnabled = 0;
         G.autoLdrBright = 100;
