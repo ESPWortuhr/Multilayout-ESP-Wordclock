@@ -107,7 +107,7 @@
  * Valid values WIFI_PASSWORD [up to 64 Alphanumeric Letters]
  * 
  */
-#define MANUAL_WIFI_SETTINGS true
+#define MANUAL_WIFI_SETTINGS false
 #define WIFI_SSID "WIFI SSID"
 #define WIFI_PASSWORD "WIFI PWD"
 
