@@ -161,7 +161,7 @@ void setup() {
         strcpy(G.openWeatherMap.cityid, "");
         strcpy(G.openWeatherMap.apikey, "");
         strcpy(G.timeserver, "europe.pool.ntp.org");
-        strcpy(G.hostname, "uhr");
+        strcpy(G.hostname, "ESPWordclock");
         strcpy(G.scrollingText, "HELLO WORLD ");
 
         G.hh = 100;
