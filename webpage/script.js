@@ -263,6 +263,20 @@ function removeSpecificOption(cls, val, bool) {
 	}
 }
 
+// handle click events on the swatch
+
+var swatchGrid = document.getElementById("swatch-grid");
+
+swatchGrid.addEventListener("click", function(ext) {
+	var clickTarget = ext.target;
+	// read data-color attribute
+	if (clickTarget.dataset.color) {
+	// update the color picker
+		colorPicker.color.set(clickTarget.dataset.color);
+		changeColor(colorPicker.color);
+	}
+});
+
 function initWebsocket() {
 	websocket = new WebSocket(ipEsp);
 

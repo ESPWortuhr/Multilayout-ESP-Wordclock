@@ -608,3 +608,20 @@ input[type=range]::-moz-range-thumb {
   .slider.round:before {
     border-radius: 50%;
   }
+
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 50px);
+    grid-template-rows: repeat(2, 50px);
+    grid-gap: 10px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    justify-content: center;
+  }
+  
+  .swatch {
+    border: 2px solid gray;
+    border-width: 1px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
