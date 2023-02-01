@@ -115,13 +115,13 @@ void setup() {
     //-------------------------------------
     // Start serial interface if required
     //-------------------------------------
-    if (DEBUG == true) {
-        Serial.begin(115200);
-        Serial.println("");
-        Serial.println("--------------------------------------");
-        Serial.println("Begin Setup");
-        Serial.println("--------------------------------------");
-    }
+#if GENERAL_VERBOSE
+    Serial.begin(115200);
+    Serial.println("");
+    Serial.println("--------------------------------------");
+    Serial.println("Begin Setup");
+    Serial.println("--------------------------------------");
+#endif
     //-------------------------------------
     // Read / initialize EEPROM
     //-------------------------------------

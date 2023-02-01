@@ -40,7 +40,7 @@
 // Seriennummer eintragen!
 #define SERNR 70
 
-bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
+#define GENERAL_VERBOSE true
 //#define VERBOSE          // DEBUG VERBOSE Openweathermap
 
 #define MANUAL_WIFI_SETTINGS false

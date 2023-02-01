@@ -751,11 +751,11 @@ void ClockWork::loop(struct tm &tm) {
     //------------------------------------------------
     if (lastSecond != _second) {
 
-        if (DEBUG == true) {
-            char currentTime[80];
-            strftime(currentTime, sizeof(currentTime), "%F %T (%z)\n", &tm);
-            Serial.printf(currentTime);
-        }
+#if GENERAL_VERBOSE
+        char currentTime[80];
+        strftime(currentTime, sizeof(currentTime), "%F %T (%z)\n", &tm);
+        Serial.printf(currentTime);
+#endif
 
         //--------------------------------------------
         // Weather Loop
