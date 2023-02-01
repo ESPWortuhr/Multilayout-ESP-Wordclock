@@ -77,7 +77,7 @@ public:
             setLetter(4);
             setLetter(5);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("");
             Serial.print("Es ist ");
 #endif
@@ -92,7 +92,7 @@ public:
             setLetter(31);
             setLetter(32);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("viertel ");
 #endif
             break;
@@ -103,7 +103,7 @@ public:
             setLetter(9);
             setLetter(10);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Fünf ");
 #endif
             break;
@@ -114,7 +114,7 @@ public:
             setLetter(20);
             setLetter(21);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("zehn ");
 #endif
             break;
@@ -128,7 +128,7 @@ public:
             setLetter(16);
             setLetter(17);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("zwanzig ");
 #endif
             break;
@@ -139,7 +139,7 @@ public:
             setLetter(46);
             setLetter(47);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("halb ");
 #endif
             break;
@@ -150,7 +150,7 @@ public:
             setLetter(62);
             setLetter(63);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Eins ");
 #endif
             break;
@@ -162,7 +162,7 @@ public:
             setLetter(40);
             setLetter(41);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("nach ");
 #endif
             break;
@@ -173,7 +173,7 @@ public:
             setLetter(36);
             setLetter(37);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("vor ");
 #endif
 
@@ -182,7 +182,7 @@ public:
             setLetter(101);
             setLetter(102);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Uhr ");
 #endif
             break;
@@ -192,7 +192,7 @@ public:
             setLetter(62);
             setLetter(63);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Eins ");
 #endif
             break;
@@ -203,7 +203,7 @@ public:
             setLetter(64);
             setLetter(65);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Zwei ");
 #endif
             break;
@@ -214,7 +214,7 @@ public:
             setLetter(69);
             setLetter(70);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Drei ");
 #endif
             break;
@@ -225,7 +225,7 @@ public:
             setLetter(79);
             setLetter(80);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Vier ");
 #endif
             break;
@@ -236,7 +236,7 @@ public:
             setLetter(75);
             setLetter(76);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Fünf ");
 #endif
             break;
@@ -248,7 +248,7 @@ public:
             setLetter(107);
             setLetter(108);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Sechs ");
 #endif
             break;
@@ -261,7 +261,7 @@ public:
             setLetter(59);
             setLetter(60);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Sieben ");
 #endif
             break;
@@ -272,7 +272,7 @@ public:
             setLetter(91);
             setLetter(92);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Acht ");
 #endif
             break;
@@ -283,7 +283,7 @@ public:
             setLetter(83);
             setLetter(84);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Neun ");
 #endif
             break;
@@ -294,7 +294,7 @@ public:
             setLetter(95);
             setLetter(96);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Zehn ");
 #endif
             break;
@@ -304,7 +304,7 @@ public:
             setLetter(86);
             setLetter(87);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Elf ");
 #endif
             break;
@@ -316,7 +316,7 @@ public:
             setLetter(52);
             setLetter(53);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("Zwölf ");
 #endif
             break;
@@ -333,7 +333,7 @@ public:
             setLetter(127);
             setLetter(126);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Morgen ");
 #endif
             break;
@@ -344,7 +344,7 @@ public:
             setLetter(122);
             setLetter(121);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Früh ");
 #endif
             break;
@@ -356,7 +356,7 @@ public:
             setLetter(135);
             setLetter(136);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Abend ");
 #endif
             break;
@@ -369,7 +369,7 @@ public:
             setLetter(141);
             setLetter(142);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Mittag ");
 #endif
             break;
@@ -381,7 +381,7 @@ public:
             setLetter(150);
             setLetter(149);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Nacht ");
 #endif
             break;
@@ -394,7 +394,7 @@ public:
             setLetter(144);
             setLetter(143);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Schnee ");
 #endif
             break;
@@ -405,7 +405,7 @@ public:
             setLetter(156);
             setLetter(157);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("klar ");
 #endif
             break;
@@ -419,7 +419,7 @@ public:
             setLetter(163);
             setLetter(164);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Warnung ");
 #endif
             break;
@@ -431,7 +431,7 @@ public:
             setLetter(172);
             setLetter(171);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Regen ");
 #endif
             break;
@@ -444,7 +444,7 @@ public:
             setLetter(166);
             setLetter(165);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Wolken ");
 #endif
             break;
@@ -459,7 +459,7 @@ public:
             setLetter(183);
             setLetter(184);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Gewitter ");
 #endif
             break;
@@ -471,7 +471,7 @@ public:
             setLetter(194);
             setLetter(193);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("unter ");
 #endif
             break;
@@ -482,7 +482,7 @@ public:
             setLetter(189);
             setLetter(188);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("über ");
 #endif
             break;
@@ -494,7 +494,7 @@ public:
             setLetter(202);
             setLetter(203);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("minus ");
 #endif
             break;
@@ -505,7 +505,7 @@ public:
             setLetter(207);
             setLetter(208);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Null ");
 #endif
             break;
@@ -516,7 +516,7 @@ public:
             setLetter(217);
             setLetter(216);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Fünf ");
 #endif
             break;
@@ -527,7 +527,7 @@ public:
             setLetter(213);
             setLetter(212);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Zehn ");
 #endif
             break;
@@ -537,7 +537,7 @@ public:
             setLetter(210);
             setLetter(209);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("und ");
 #endif
             break;
@@ -551,7 +551,7 @@ public:
             setLetter(227);
             setLetter(228);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Zwanzig ");
 #endif
             break;
@@ -565,7 +565,7 @@ public:
             setLetter(236);
             setLetter(235);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.print("Dreißig ");
 #endif
             break;
@@ -574,7 +574,7 @@ public:
             setLetter(233);
             setLetter(232);
 
-#ifdef VERBOSE
+#if WEATHER_VERBOSE
             Serial.println("°C ");
 #endif
             break;

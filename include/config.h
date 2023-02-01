@@ -41,8 +41,7 @@
 #define SERNR 70
 
 #define GENERAL_VERBOSE true
-//#define VERBOSE          // DEBUG VERBOSE Openweathermap
-
+//#define WEATHER_VERBOSE true
 #define MANUAL_WIFI_SETTINGS false
 #define WIFI_SSID "Wifi-SSID"
 #define WIFI_PASSWORD "Wifi-Pwd"
