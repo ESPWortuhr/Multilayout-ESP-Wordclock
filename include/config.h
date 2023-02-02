@@ -1,6 +1,6 @@
 /*
- * This is the default word clock configuration. You can also change it later in
- * the settings menu on the clock's hosted website.
+ * This is the default word clock configuration. You can also change it later
+ * in the settings menu on the clock's hosted website.
  */
 
 //--------------------------------------------------------------------------
@@ -24,8 +24,12 @@
 // #define DEFAULT_LAYOUT Ger11x11
 // 11 rows, each 11 LED's per row + 4 LED's for minutes
 //
-// #define DEFAULT_LAYOUT Ger10x11Frame
-// with additional LED's to illuminate the frame from the side
+// #define DEFAULT_LAYOUT Ger11x11V2
+// 11 rows, each 11 LED's per row + 4 LED's for minutes plus twenty word
+//
+// #define DEFAULT_LAYOUT Ger11x11Frame
+// Same Layout as Ger11x11, but with additional LED's to illuminate the frame
+// from the side
 //
 // #define DEFAULT_LAYOUT Ger21x11Weather
 // clock with weather forecast 242 LED's
@@ -105,7 +109,7 @@
  * Valid values MANUAL_WIFI_SETTINGS [true, false]
  * Valid values WIFI_SSID [up to 64 Alphanumeric Letters]
  * Valid values WIFI_PASSWORD [up to 64 Alphanumeric Letters]
- * 
+ *
  */
 #define MANUAL_WIFI_SETTINGS false
 #define WIFI_SSID "WIFI SSID"
@@ -117,7 +121,7 @@
 /*
  * Show Ip Adress of clock on boot, with BOOT_SHOWIP
  * Light up LEDs on boot, with BOOT_LEDSWEEP
- * 
+ *
  * Valid values BOOT_SHOWIP [true, false]
  * Valid values BOOT_LEDSWEEP [true, false]
  */

@@ -666,8 +666,8 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_de11x11;
     case Ger11x11V2:
         return &_de11x11V2;
-    case Ger10x11Frame:
-        return &_de10x11frame;
+    case Ger11x11Frame:
+        return &_de11x11frame;
     case Ger21x11Weather:
         return &_de21x11Weather;
     case Ger17x17:
@@ -713,7 +713,7 @@ void ClockWork::initLedStrip(uint8_t num) {
 void resetMinVariantIfNotAvailable() {
     if (G.UhrtypeDef != Nl10x11 && G.minuteVariant == MinuteVariant::InWords) {
         G.minuteVariant = MinuteVariant::Off;
-    } else if (G.UhrtypeDef != Ger10x11Frame &&
+    } else if (G.UhrtypeDef != Ger11x11Frame &&
                G.minuteVariant == MinuteVariant::Row) {
         G.minuteVariant = MinuteVariant::Off;
     }
