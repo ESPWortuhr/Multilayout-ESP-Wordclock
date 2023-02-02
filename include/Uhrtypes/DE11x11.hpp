@@ -3,16 +3,16 @@
 /*
  * Layout Front
  *
- * E S K I S T A F Ü N F
- * Z E H N D A U V O R G
- * N A C H V I E R T E L
- * H A L B V O R N A C H
- * E I N S K U R Z W E I
- * D R E I A U J V I E R
- * F Ü N F T O S E C H S
- * S I E B E N L A C H T
- * A N E U N M H Z E H N
- * Z W Ö L F D T F E L F
+ * E S K I S T R F Ü N F
+ * Z E H N Z W A N Z I G
+ * D R E I V I E R T E L
+ * T G N A C H V O R U M
+ * H A L B G Z W Ö L F J
+ * Z W E I N S I E B E N
+ * K D R E I R H F Ü N F
+ * E L F N E U N V I E R
+ * N A C H T Z E H N B X
+ * U S E C H S F U E R Y
  * W A S D F U N K U H R
  * + + + +
  */
@@ -52,6 +52,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasDreiviertel() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(FrontWord word) override {
         switch (word) {
 
@@ -67,6 +71,20 @@ public:
             break;
 
         case FrontWord::viertel:
+            setLetter(26);
+            setLetter(27);
+            setLetter(28);
+            setLetter(29);
+            setLetter(30);
+            setLetter(31);
+            setLetter(32);
+            break;
+
+        case FrontWord::dreiviertel:
+            setLetter(22);
+            setLetter(23);
+            setLetter(24);
+            setLetter(25);
             setLetter(26);
             setLetter(27);
             setLetter(28);
@@ -129,9 +147,9 @@ public:
             setLetter(37);
 
         case FrontWord::uhr:
-            setLetter(100);
-            setLetter(101);
-            setLetter(102);
+            setLetter(120);
+            setLetter(119);
+            setLetter(118);
             break;
 
         case FrontWord::h_ein:
@@ -218,6 +236,13 @@ public:
             setLetter(51);
             setLetter(52);
             setLetter(53);
+            break;
+
+        case FrontWord::funk:
+            setLetter(114);
+            setLetter(115);
+            setLetter(116);
+            setLetter(117);
             break;
 
         default:
