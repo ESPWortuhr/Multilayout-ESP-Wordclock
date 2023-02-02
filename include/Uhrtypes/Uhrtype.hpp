@@ -86,6 +86,7 @@ enum class FrontWord {
     w_dreissig,
     w_grad,
 
+    funk,
     h_droelf,
     happy_birthday
 };

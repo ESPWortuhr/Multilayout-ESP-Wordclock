@@ -92,21 +92,11 @@ public:
             setLetter(21);
             break;
 
-        case FrontWord::zwanzig:
-            setLetter(11);
-            setLetter(12);
-            setLetter(13);
-            setLetter(14);
-            setLetter(15);
-            setLetter(16);
-            setLetter(17);
-            break;
-
         case FrontWord::halb:
-            setLetter(44);
-            setLetter(45);
-            setLetter(46);
-            setLetter(47);
+            setLetter(43);
+            setLetter(42);
+            setLetter(41);
+            setLetter(40);
             break;
 
         case FrontWord::eins:
@@ -214,12 +204,18 @@ public:
             break;
 
         case FrontWord::h_zwoelf:
-
             setLetter(105);
             setLetter(106);
             setLetter(107);
             setLetter(108);
             setLetter(109);
+            break;
+
+        case FrontWord::funk:
+            setLetter(114);
+            setLetter(115);
+            setLetter(116);
+            setLetter(117);
             break;
 
         default:
