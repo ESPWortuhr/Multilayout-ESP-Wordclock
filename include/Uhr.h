@@ -71,7 +71,7 @@ struct GLOBAL {
     uint8_t client_nr;
     uint8_t secondVariant;
     MinuteVariant minuteVariant;
-    bool languageVariant[7];
+    bool languageVariant[6];
     bool layoutVariant[1];
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
@@ -151,8 +151,7 @@ enum LanguageDialects {
     ItIs40 = 2,
     ItIs45 = 3,
     NotShowItIs = 4,
-    NotShowPuristMode = 5,
-    EN_ShowAQuarter = 6,
+    EN_ShowAQuarter = 5,
 };
 
 enum LayoutVariants {

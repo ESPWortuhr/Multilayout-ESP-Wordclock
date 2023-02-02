@@ -162,16 +162,6 @@ void ClockWork::initBootWifiSignalStrength(int strength) {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::setItIs(const uint8_t min) {
-    if (!G.languageVariant[NotShowItIs]) {
-        usedUhrType->show(FrontWord::es_ist);
-    } else if (!G.languageVariant[NotShowPuristMode] && min % 30 == 0) {
-        usedUhrType->show(FrontWord::es_ist);
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void ClockWork::setHour(const uint8_t hour, const bool fullHour) {
     switch (hour % 12) {
     case 0:
@@ -607,10 +597,13 @@ void ClockWork::countdownToMidnight() {
 //------------------------------------------------------------------------------
 
 void ClockWork::setClock() {
+    if (!G.languageVariant[NotShowItIs]) {
+        usedUhrType->show(FrontWord::es_ist);
+    }
+
     uint8_t offsetHour = 0;
     bool fullHour = 0;
 
-    setItIs(_minute);
     setMinute(_minute, offsetHour, fullHour);
     setHour(_hour + offsetHour, fullHour);
 }

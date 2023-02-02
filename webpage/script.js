@@ -80,7 +80,7 @@ var h18 = 100;
 var h20 = 100;
 var h22 = 100;
 var h24 = 100;
-var dialect = [0, 0, 0, 0, 0, 0, 0];
+var dialect = [0, 0, 0, 0, 0, 0];
 var layVar = [0];
 var ldr = 0;
 var ldrCal = 0;
@@ -199,7 +199,7 @@ function initConfigValues() {
 	h24 = 100;
 	ldr = 0;
 	ldrCal = 10;
-	dialect = [0, 0, 0, 0, 0, 0, 0];
+	dialect = [0, 0, 0, 0, 0, 0];
 	layVar = [0];
 	showSeconds = 0;
 	showMinutes = 0;
@@ -351,7 +351,6 @@ function initWebsocket() {
 			$("#dialect-3").set("value", data.langVar3);
 			document.getElementById("dialect-4").checked = data.langVar4;
 			$("#dialect-5").set("value", data.langVar5);
-			document.getElementById("dialect-6").checked = data.langVar6;
 
 			document.getElementById("layvar-0").checked = data.layVar0;
 
@@ -961,9 +960,8 @@ $.ready(function() {
 		dialect[3] = $("#dialect-3").get("value");
 		dialect[4] = $("#dialect-4").get("checked") | 0;
 		dialect[5] = $("#dialect-5").get("value");
-		dialect[6] = $("#dialect-6").get("checked") | 0;
 
-		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]) + nstr(dialect[5]) + nstr(dialect[6]));
+		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]) + nstr(dialect[5]));
 		debugMessage("langVar" + debugMessageReconfigured);
 	});
 	$("[id*='layvar']").on("change", function() {
