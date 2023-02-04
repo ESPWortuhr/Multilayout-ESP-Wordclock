@@ -214,6 +214,13 @@ public:
             setLetter(98);
             break;
 
+        case FrontWord::funk:
+            setLetter(40);
+            setLetter(39);
+            setLetter(38);
+            setLetter(37);
+            break;
+
         default:
             break;
         };
