@@ -239,6 +239,9 @@ public:
             setLetter(113);
             setLetter(114);
             break;
+            
+        default:
+            break;
         }
 
         switch (word) {
