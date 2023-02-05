@@ -971,7 +971,7 @@ uint16_t Animation::animFade() {
 
 uint16_t Animation::animMatrixRain() {
     uint16_t frames = 100;
-    uint8_t row, col;
+    int8_t row, col;
     RgbfColor fadeColor;
     RgbaColor rainColor;
 
