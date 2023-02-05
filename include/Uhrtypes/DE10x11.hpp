@@ -21,21 +21,27 @@
 
 class De10x11_t : public iUhrType {
 public:
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::DE;
+    };
+
+        //------------------------------------------------------------------------------
+
 #if (LED_LAYOUT_REVERSE)
 
-    /*
-     * 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
-     * 102, 101, 100,  99,  98,  97,  96,  95,  94,  93,  92,
-     *  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,  91,
-     *  80,  79,  78,  77,  76,  75,  74,  73,  72,  71,  70,
-     *  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,
-     *  58,  57,  56,  55,  54,  53,  52,  51,  50,  49,  48,
-     *  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
-     *  36,  35,  34,  33,  32,  31,  30,  29,  28,  27,  26,
-     *  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
-     *  14,  13,  12,  11,  10,   9,   8,   7,   6,   5,   4,
-     *                      0, 1, 2, 3
-     */
+        /*
+         * 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
+         * 102, 101, 100,  99,  98,  97,  96,  95,  94,  93,  92,
+         *  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,  91,
+         *  80,  79,  78,  77,  76,  75,  74,  73,  72,  71,  70,
+         *  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,
+         *  58,  57,  56,  55,  54,  53,  52,  51,  50,  49,  48,
+         *  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
+         *  36,  35,  34,  33,  32,  31,  30,  29,  28,  27,  26,
+         *  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
+         *  14,  13,  12,  11,  10,   9,   8,   7,   6,   5,   4,
+         *                      0, 1, 2, 3
+         */
 #undef LED_MAP
 #define LED_MAP(x)                                                             \
     (x > 109 ? x - 110 : 113 - (((x / 11) * 11) + (10 - (x % 11))))
@@ -77,231 +83,230 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void show(uint8_t text) override {
+    void show(FrontWord word) override {
+        switch (word) {
 
-        switch (text) {
-
-        case es_ist:
+        case FrontWord::es_ist:
             // Es
-            Letter_set(LED_MAP(0));
-            Letter_set(LED_MAP(1));
+            setLetter(LED_MAP(0));
+            setLetter(LED_MAP(1));
 
             // Ist
-            Letter_set(LED_MAP(3));
-            Letter_set(LED_MAP(4));
-            Letter_set(LED_MAP(5));
+            setLetter(LED_MAP(3));
+            setLetter(LED_MAP(4));
+            setLetter(LED_MAP(5));
             break;
 
             //------------------------------------------------------------------------------
 
-        case nach:
-        case v_nach:
-            Letter_set(LED_MAP(38));
-            Letter_set(LED_MAP(39));
-            Letter_set(LED_MAP(40));
-            Letter_set(LED_MAP(41));
+        case FrontWord::nach:
+        case FrontWord::v_nach:
+            setLetter(LED_MAP(38));
+            setLetter(LED_MAP(39));
+            setLetter(LED_MAP(40));
+            setLetter(LED_MAP(41));
             break;
 
             //------------------------------------------------------------------------------
 
-        case vor:
-        case v_vor:
-            Letter_set(LED_MAP(35));
-            Letter_set(LED_MAP(36));
-            Letter_set(LED_MAP(37));
+        case FrontWord::vor:
+        case FrontWord::v_vor:
+            setLetter(LED_MAP(35));
+            setLetter(LED_MAP(36));
+            setLetter(LED_MAP(37));
             break;
             //------------------------------------------------------------------------------
 
-        case viertel:
-            Letter_set(LED_MAP(26));
-            Letter_set(LED_MAP(27));
-            Letter_set(LED_MAP(28));
-            Letter_set(LED_MAP(29));
-            Letter_set(LED_MAP(30));
-            Letter_set(LED_MAP(31));
-            Letter_set(LED_MAP(32));
-            break;
-
-            //------------------------------------------------------------------------------
-
-        case dreiviertel:
-            Letter_set(LED_MAP(22));
-            Letter_set(LED_MAP(23));
-            Letter_set(LED_MAP(24));
-            Letter_set(LED_MAP(25));
-            Letter_set(LED_MAP(26));
-            Letter_set(LED_MAP(27));
-            Letter_set(LED_MAP(28));
-            Letter_set(LED_MAP(29));
-            Letter_set(LED_MAP(30));
-            Letter_set(LED_MAP(31));
-            Letter_set(LED_MAP(32));
+        case FrontWord::viertel:
+            setLetter(LED_MAP(26));
+            setLetter(LED_MAP(27));
+            setLetter(LED_MAP(28));
+            setLetter(LED_MAP(29));
+            setLetter(LED_MAP(30));
+            setLetter(LED_MAP(31));
+            setLetter(LED_MAP(32));
             break;
 
             //------------------------------------------------------------------------------
 
-        case fuenf:
-            Letter_set(LED_MAP(7));
-            Letter_set(LED_MAP(8));
-            Letter_set(LED_MAP(9));
-            Letter_set(LED_MAP(10));
+        case FrontWord::dreiviertel:
+            setLetter(LED_MAP(22));
+            setLetter(LED_MAP(23));
+            setLetter(LED_MAP(24));
+            setLetter(LED_MAP(25));
+            setLetter(LED_MAP(26));
+            setLetter(LED_MAP(27));
+            setLetter(LED_MAP(28));
+            setLetter(LED_MAP(29));
+            setLetter(LED_MAP(30));
+            setLetter(LED_MAP(31));
+            setLetter(LED_MAP(32));
             break;
 
             //------------------------------------------------------------------------------
 
-        case zehn:
-            Letter_set(LED_MAP(18));
-            Letter_set(LED_MAP(19));
-            Letter_set(LED_MAP(20));
-            Letter_set(LED_MAP(21));
-            break;
-
-            //------------------------------------------------------------------------------
-        case zwanzig:
-            Letter_set(LED_MAP(11));
-            Letter_set(LED_MAP(12));
-            Letter_set(LED_MAP(13));
-            Letter_set(LED_MAP(14));
-            Letter_set(LED_MAP(15));
-            Letter_set(LED_MAP(16));
-            Letter_set(LED_MAP(17));
+        case FrontWord::fuenf:
+            setLetter(LED_MAP(7));
+            setLetter(LED_MAP(8));
+            setLetter(LED_MAP(9));
+            setLetter(LED_MAP(10));
             break;
 
             //------------------------------------------------------------------------------
 
-        case halb:
-            Letter_set(LED_MAP(44));
-            Letter_set(LED_MAP(45));
-            Letter_set(LED_MAP(46));
-            Letter_set(LED_MAP(47));
+        case FrontWord::zehn:
+            setLetter(LED_MAP(18));
+            setLetter(LED_MAP(19));
+            setLetter(LED_MAP(20));
+            setLetter(LED_MAP(21));
+            break;
+
+            //------------------------------------------------------------------------------
+        case FrontWord::zwanzig:
+            setLetter(LED_MAP(11));
+            setLetter(LED_MAP(12));
+            setLetter(LED_MAP(13));
+            setLetter(LED_MAP(14));
+            setLetter(LED_MAP(15));
+            setLetter(LED_MAP(16));
+            setLetter(LED_MAP(17));
             break;
 
             //------------------------------------------------------------------------------
 
-        case eins:
-            Letter_set(LED_MAP(60));
-            Letter_set(LED_MAP(61));
-            Letter_set(LED_MAP(62));
-            Letter_set(LED_MAP(63));
+        case FrontWord::halb:
+            setLetter(LED_MAP(44));
+            setLetter(LED_MAP(45));
+            setLetter(LED_MAP(46));
+            setLetter(LED_MAP(47));
             break;
 
             //------------------------------------------------------------------------------
 
-        case uhr:
-            Letter_set(LED_MAP(100));
-            Letter_set(LED_MAP(101));
-            Letter_set(LED_MAP(102));
+        case FrontWord::eins:
+            setLetter(LED_MAP(60));
+            setLetter(LED_MAP(61));
+            setLetter(LED_MAP(62));
+            setLetter(LED_MAP(63));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_ein:
-            Letter_set(LED_MAP(61));
-            Letter_set(LED_MAP(62));
-            Letter_set(LED_MAP(63));
+        case FrontWord::uhr:
+            setLetter(LED_MAP(100));
+            setLetter(LED_MAP(101));
+            setLetter(LED_MAP(102));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_zwei:
-            Letter_set(LED_MAP(62));
-            Letter_set(LED_MAP(63));
-            Letter_set(LED_MAP(64));
-            Letter_set(LED_MAP(65));
+        case FrontWord::h_ein:
+            setLetter(LED_MAP(61));
+            setLetter(LED_MAP(62));
+            setLetter(LED_MAP(63));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_drei:
-            Letter_set(LED_MAP(67));
-            Letter_set(LED_MAP(68));
-            Letter_set(LED_MAP(69));
-            Letter_set(LED_MAP(70));
+        case FrontWord::h_zwei:
+            setLetter(LED_MAP(62));
+            setLetter(LED_MAP(63));
+            setLetter(LED_MAP(64));
+            setLetter(LED_MAP(65));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_vier:
-            Letter_set(LED_MAP(77));
-            Letter_set(LED_MAP(78));
-            Letter_set(LED_MAP(79));
-            Letter_set(LED_MAP(80));
+        case FrontWord::h_drei:
+            setLetter(LED_MAP(67));
+            setLetter(LED_MAP(68));
+            setLetter(LED_MAP(69));
+            setLetter(LED_MAP(70));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_fuenf:
-            Letter_set(LED_MAP(73));
-            Letter_set(LED_MAP(74));
-            Letter_set(LED_MAP(75));
-            Letter_set(LED_MAP(76));
+        case FrontWord::h_vier:
+            setLetter(LED_MAP(77));
+            setLetter(LED_MAP(78));
+            setLetter(LED_MAP(79));
+            setLetter(LED_MAP(80));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_sechs:
-            Letter_set(LED_MAP(104));
-            Letter_set(LED_MAP(105));
-            Letter_set(LED_MAP(106));
-            Letter_set(LED_MAP(107));
-            Letter_set(LED_MAP(108));
+        case FrontWord::h_fuenf:
+            setLetter(LED_MAP(73));
+            setLetter(LED_MAP(74));
+            setLetter(LED_MAP(75));
+            setLetter(LED_MAP(76));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_sieben:
-            Letter_set(LED_MAP(55));
-            Letter_set(LED_MAP(56));
-            Letter_set(LED_MAP(57));
-            Letter_set(LED_MAP(58));
-            Letter_set(LED_MAP(59));
-            Letter_set(LED_MAP(60));
+        case FrontWord::h_sechs:
+            setLetter(LED_MAP(104));
+            setLetter(LED_MAP(105));
+            setLetter(LED_MAP(106));
+            setLetter(LED_MAP(107));
+            setLetter(LED_MAP(108));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_acht:
-            Letter_set(LED_MAP(89));
-            Letter_set(LED_MAP(90));
-            Letter_set(LED_MAP(91));
-            Letter_set(LED_MAP(92));
+        case FrontWord::h_sieben:
+            setLetter(LED_MAP(55));
+            setLetter(LED_MAP(56));
+            setLetter(LED_MAP(57));
+            setLetter(LED_MAP(58));
+            setLetter(LED_MAP(59));
+            setLetter(LED_MAP(60));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_neun:
-            Letter_set(LED_MAP(81));
-            Letter_set(LED_MAP(82));
-            Letter_set(LED_MAP(83));
-            Letter_set(LED_MAP(84));
+        case FrontWord::h_acht:
+            setLetter(LED_MAP(89));
+            setLetter(LED_MAP(90));
+            setLetter(LED_MAP(91));
+            setLetter(LED_MAP(92));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_zehn:
-            Letter_set(LED_MAP(93));
-            Letter_set(LED_MAP(94));
-            Letter_set(LED_MAP(95));
-            Letter_set(LED_MAP(96));
+        case FrontWord::h_neun:
+            setLetter(LED_MAP(81));
+            setLetter(LED_MAP(82));
+            setLetter(LED_MAP(83));
+            setLetter(LED_MAP(84));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_elf:
-            Letter_set(LED_MAP(85));
-            Letter_set(LED_MAP(86));
-            Letter_set(LED_MAP(87));
+        case FrontWord::h_zehn:
+            setLetter(LED_MAP(93));
+            setLetter(LED_MAP(94));
+            setLetter(LED_MAP(95));
+            setLetter(LED_MAP(96));
             break;
 
             //------------------------------------------------------------------------------
 
-        case h_zwoelf:
+        case FrontWord::h_elf:
+            setLetter(LED_MAP(85));
+            setLetter(LED_MAP(86));
+            setLetter(LED_MAP(87));
+            break;
 
-            Letter_set(LED_MAP(49));
-            Letter_set(LED_MAP(50));
-            Letter_set(LED_MAP(51));
-            Letter_set(LED_MAP(52));
-            Letter_set(LED_MAP(53));
+            //------------------------------------------------------------------------------
+
+        case FrontWord::h_zwoelf:
+
+            setLetter(LED_MAP(49));
+            setLetter(LED_MAP(50));
+            setLetter(LED_MAP(51));
+            setLetter(LED_MAP(52));
+            setLetter(LED_MAP(53));
             break;
 
         default:

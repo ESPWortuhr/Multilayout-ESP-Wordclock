@@ -1,53 +1,129 @@
 /*
- * Standard Wortuhr Konfiguration. Kann später in den Einstellungen auf der
- * Webseite geändert werden.
+ * This is the default word clock configuration. You can also change it later
+ * in the settings menu on the clock's hosted website.
  */
 
-// Layout der Frontplatte:
-// - Ger10x11
-//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-// - Ger10x11Alternative
-//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem
-//   Layout für extra Wörter in der Matrix
-// - Ger10x11Clock
-//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit dem Layout
-//   vom orginal Hersteller
-// - Nl10x11
-//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem
-//   Layout für die niederländische Sprache
-// - Eng10x11
-//   10 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten, mit geändertem
-//   Layout für die englische Sprache
-// - Ger11x11
-//   11 Reihen, jeweils 11 LED's pro Reihe + 4 LED's für Minuten
-// - Ger10x11Frame
-//   mit zusätzlichen LED's um den Rahmen seitlich zu beleuchten
-// - Ger21x11Weather
-//   Uhr mit Wettervorhersage 242 LED's
-// - Ger17x17
-//   Uhr mit 24 Stunden Anzeige 18x16
-#define DEFAULT_LAYOUT Ger10x11Alternative
+//--------------------------------------------------------------------------
+// Front panel layout
+//--------------------------------------------------------------------------
+/**********************/
+/*       German       */
+/**********************/
+//
+#define DEFAULT_LAYOUT Ger10x11
+// 10 rows, 11 LEDs per row + 4 LEDs for minutes
+//
+// #define DEFAULT_LAYOUT Ger10x11Alternative
+// 10 rows, each 11 LED's per row + 4 LED's for minutes, with modified
+// layout for extra words in the matrix
+//
+// #define DEFAULT_LAYOUT Ger10x11Clock
+// 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
+// from the original manufacturer
+//
+// #define DEFAULT_LAYOUT Ger11x11
+// 11 rows, each 11 LED's per row + 4 LED's for minutes
+//
+// #define DEFAULT_LAYOUT Ger11x11V2
+// 11 rows, each 11 LED's per row + 4 LED's for minutes plus twenty word
+//
+// #define DEFAULT_LAYOUT Ger11x11Frame
+// Same Layout as Ger11x11, but with additional LED's to illuminate the frame
+// from the side
+//
+// #define DEFAULT_LAYOUT Ger21x11Weather
+// clock with weather forecast 242 LED's
+//
+// #define DEFAULT_LAYOUT Ger17x17
+// Clock with 24 hours display 18x16
+//
+/**********************/
+/*       Dutch        */
+/**********************/
+//
+// #define DEFAULT_LAYOUT  Nl10x11
+// 10 rows, each 11 LED's per row + 4 LED's for minutes, with changed
+// layout for Dutch language
+//
+/**********************/
+/*       English      */
+/**********************/
+//
+// #define DEFAULT_LAYOUT  Eng10x11
+// 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
+// layout for the English language
 
-// Typ der LEDs:
-// - Brg, Grb, Rgb, Rbg (WS2812b)
-// - Grbw (SK6812)
+//--------------------------------------------------------------------------
+// Define LED Type
+//--------------------------------------------------------------------------
+/*
+ * Currently only WS2812 or SK6812 LEDs are supported.
+ * Different manufacturers use different layout, so you can change it
+ * accordingly.
+ *
+ * Valid values [Brg, Grb, Rgb, Rbg, Grbw]
+ */
 #define DEFAULT_LEDTYPE Brg
 
-// External Realtime Clock: RTC_DS1307, RTC_PCF8523 oder RTC_DS3231
+//--------------------------------------------------------------------------
+// Define External Realtime Clock
+//--------------------------------------------------------------------------
+/*
+ * If you want to use an external RTC it must be defined here, for examle for
+ * Wifi less Operation of the clock.
+ * However, one must always be defined, even if none is installed.
+ *
+ * Valid values [RTC_DS1307, RTC_PCF8523, RTC_DS3231]
+ */
 #define RTC_Type RTC_DS3231
 
-// um das eeprom zu löschen, bzw. zu initialisieren, hier eine andere
-// Seriennummer eintragen!
+//--------------------------------------------------------------------------
+// Serial Number
+//--------------------------------------------------------------------------
+/*
+ * To delete or initialize the EEPROM, enter another serial number here.
+ *
+ * Valid values [0 ... 255]
+ */
 #define SERNR 70
 
-bool DEBUG = true; // DEBUG ON|OFF wenn auskommentiert
-//#define VERBOSE          // DEBUG VERBOSE Openweathermap
-
-#define MANUAL_WIFI_SETTINGS false
-#define WIFI_SSID "Wifi-SSID"
-#define WIFI_PASSWORD "Wifi-Pwd"
-
-/*--------------------------------------------------------------------------
- * ENDE Hardware Konfiguration. Ab hier nichts mehr aendern!!!
- *--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+// Toggle Serial DEBUG Output
+//--------------------------------------------------------------------------
+/*
+ * To delete or initialize the EEPROM, enter another serial number here.
+ *
+ * Valid values [true, false]
  */
+#define GENERAL_VERBOSE true
+#define WEATHER_VERBOSE false
+
+//--------------------------------------------------------------------------
+// Manual Wifi settings
+//--------------------------------------------------------------------------
+/*
+ * Here you can set the WiFi connection settings manually. The clock can be
+ * paired with a new WiFi, but the setting made here is set again when the
+ * clock is restarted.
+ *
+ * Valid values MANUAL_WIFI_SETTINGS [true, false]
+ * Valid values WIFI_SSID [up to 64 Alphanumeric Letters]
+ * Valid values WIFI_PASSWORD [up to 64 Alphanumeric Letters]
+ *
+ */
+#define MANUAL_WIFI_SETTINGS false
+#define WIFI_SSID "WIFI SSID"
+#define WIFI_PASSWORD "WIFI PWD"
+
+//--------------------------------------------------------------------------
+// Settings for Boot sequence
+//--------------------------------------------------------------------------
+/*
+ * Show Ip Adress of clock on boot, with BOOT_SHOWIP
+ * Light up LEDs on boot, with BOOT_LEDSWEEP
+ *
+ * Valid values BOOT_SHOWIP [true, false]
+ * Valid values BOOT_LEDSWEEP [true, false]
+ */
+#define BOOT_SHOWIP true
+#define BOOT_LEDSWEEP false

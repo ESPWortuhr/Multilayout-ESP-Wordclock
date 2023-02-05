@@ -115,13 +115,13 @@ void setup() {
     //-------------------------------------
     // Start serial interface if required
     //-------------------------------------
-    if (DEBUG == true) {
-        Serial.begin(115200);
-        Serial.println("");
-        Serial.println("--------------------------------------");
-        Serial.println("Begin Setup");
-        Serial.println("--------------------------------------");
-    }
+#if GENERAL_VERBOSE
+    Serial.begin(115200);
+    Serial.println("");
+    Serial.println("--------------------------------------");
+    Serial.println("Begin Setup");
+    Serial.println("--------------------------------------");
+#endif
     //-------------------------------------
     // Read / initialize EEPROM
     //-------------------------------------
@@ -155,13 +155,13 @@ void setup() {
         G.effectSpeed = 10;
         G.client_nr = 0;
         G.secondVariant = 0;
-        G.minuteVariant = 1;
+        G.minuteVariant = MinuteVariant::Corners;
         G.ldr = 0;
         G.ldrCal = 0;
         strcpy(G.openWeatherMap.cityid, "");
         strcpy(G.openWeatherMap.apikey, "");
         strcpy(G.timeserver, "europe.pool.ntp.org");
-        strcpy(G.hostname, "uhr");
+        strcpy(G.hostname, "ESPWordclock");
         strcpy(G.scrollingText, "HELLO WORLD ");
 
         G.hh = 100;
@@ -193,9 +193,9 @@ void setup() {
         G.UhrtypeDef = DEFAULT_LAYOUT;
         G.Colortype = DEFAULT_LEDTYPE;
         G.bootLedBlink = false;
-        G.bootLedSweep = false;
+        G.bootLedSweep = BOOT_LEDSWEEP;
         G.bootShowWifi = true;
-        G.bootShowIP = false;
+        G.bootShowIP = BOOT_SHOWIP;
 
         G.autoLdrEnabled = 0;
         G.autoLdrBright = 100;

@@ -20,6 +20,12 @@
 
 class En10x11_t : public iUhrType {
 public:
+    virtual LanguageAbbreviation usedLang() override {
+        return LanguageAbbreviation::EN;
+    };
+
+    //------------------------------------------------------------------------------
+
     virtual const bool hasZwanzig() override { return true; }
 
     //------------------------------------------------------------------------------
@@ -28,188 +34,213 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void show(uint8_t text) override {
-        switch (text) {
+    void show(FrontWord word) override {
+        switch (word) {
 
-        case es_ist:
-            // Es
-            Letter_set(0); // I
-            Letter_set(1); // T
-            // Ist
-            Letter_set(3); // I
-            Letter_set(4); // S
+        case FrontWord::es_ist:
+            // It
+            setLetter(0);
+            setLetter(1);
+            // is
+            setLetter(3);
+            setLetter(4);
             break;
-        case h_ein:
+
+        case FrontWord::h_ein:
             // One
-            Letter_set(65); // O
-            Letter_set(64); // N
-            Letter_set(63); // E
+            setLetter(65);
+            setLetter(64);
+            setLetter(63);
             break;
-        case h_zwei:
+
+        case FrontWord::h_zwei:
             // Two
-            Letter_set(74); // T
-            Letter_set(75); // W
-            Letter_set(76); // O
+            setLetter(74);
+            setLetter(75);
+            setLetter(76);
             break;
-        case h_drei:
+
+        case FrontWord::h_drei:
             // Three
-            Letter_set(59); // T
-            Letter_set(58); // H
-            Letter_set(57); // R
-            Letter_set(56); // E
-            Letter_set(55); // E
+            setLetter(59);
+            setLetter(58);
+            setLetter(57);
+            setLetter(56);
+            setLetter(55);
             break;
-        case h_vier:
+
+        case FrontWord::h_vier:
             // Four
-            Letter_set(66); // F
-            Letter_set(67); // O
-            Letter_set(68); // U
-            Letter_set(69); // R
+            setLetter(66);
+            setLetter(67);
+            setLetter(68);
+            setLetter(69);
             break;
-        case h_fuenf:
+
+        case FrontWord::h_fuenf:
             // Five
-            Letter_set(70); // F
-            Letter_set(71); // I
-            Letter_set(72); // V
-            Letter_set(73); // E
+            setLetter(70);
+            setLetter(71);
+            setLetter(72);
+            setLetter(73);
             break;
-        case h_sechs:
+
+        case FrontWord::h_sechs:
             // Six
-            Letter_set(62); // S
-            Letter_set(61); // I
-            Letter_set(60); // X
+            setLetter(62);
+            setLetter(61);
+            setLetter(60);
             break;
-        case h_sieben:
+
+        case FrontWord::h_sieben:
             // Seven
-            Letter_set(88); // S
-            Letter_set(89); // E
-            Letter_set(90); // V
-            Letter_set(91); // E
-            Letter_set(92); // N
+            setLetter(88);
+            setLetter(89);
+            setLetter(90);
+            setLetter(91);
+            setLetter(92);
             break;
-        case h_acht:
+
+        case FrontWord::h_acht:
             // Eight
-            Letter_set(87); // E
-            Letter_set(86); // I
-            Letter_set(85); // G
-            Letter_set(84); // H
-            Letter_set(83); // T
+            setLetter(87);
+            setLetter(86);
+            setLetter(85);
+            setLetter(84);
+            setLetter(83);
             break;
-        case h_neun:
+
+        case FrontWord::h_neun:
             // Nine
-            Letter_set(51); // N
-            Letter_set(52); // I
-            Letter_set(53); // N
-            Letter_set(54); // E
+            setLetter(51);
+            setLetter(52);
+            setLetter(53);
+            setLetter(54);
             break;
-        case h_zehn:
+
+        case FrontWord::h_zehn:
             // Ten
-            Letter_set(109); // T
-            Letter_set(108); // E
-            Letter_set(107); // N
+            setLetter(109);
+            setLetter(108);
+            setLetter(107);
             break;
-        case h_elf:
+
+        case FrontWord::h_elf:
             // Eleven
-            Letter_set(82); // E
-            Letter_set(81); // L
-            Letter_set(80); // E
-            Letter_set(79); // V
-            Letter_set(78); // E
-            Letter_set(77); // N
+            setLetter(82);
+            setLetter(81);
+            setLetter(80);
+            setLetter(79);
+            setLetter(78);
+            setLetter(77);
             break;
-        case h_zwoelf:
+
+        case FrontWord::h_zwoelf:
             // Twelve
-            Letter_set(93); // T
-            Letter_set(94); // W
-            Letter_set(95); // E
-            Letter_set(96); // L
-            Letter_set(97); // V
-            Letter_set(98); // E
+            setLetter(93);
+            setLetter(94);
+            setLetter(95);
+            setLetter(96);
+            setLetter(97);
+            setLetter(98);
             break;
-        case fuenf:
+
+        case FrontWord::fuenf:
             // Five
-            Letter_set(28); // F
-            Letter_set(29); // I
-            Letter_set(30); // V
-            Letter_set(31); // E
+            setLetter(28);
+            setLetter(29);
+            setLetter(30);
+            setLetter(31);
             break;
-        case zehn:
+
+        case FrontWord::zehn:
             // Ten
-            Letter_set(38); // T
-            Letter_set(37); // E
-            Letter_set(36); // N
+            setLetter(38);
+            setLetter(37);
+            setLetter(36);
             break;
-        case a_quarter:
+
+        case FrontWord::a_quarter:
             // A Quater
-            Letter_set(21); // A
-            Letter_set(13); // Q
-            Letter_set(14); // U
-            Letter_set(15); // A
-            Letter_set(16); // R
-            Letter_set(17); // T
-            Letter_set(18); // E
-            Letter_set(19); // R
+            setLetter(21);
+            setLetter(13);
+            setLetter(14);
+            setLetter(15);
+            setLetter(16);
+            setLetter(17);
+            setLetter(18);
+            setLetter(19);
             break;
-        case viertel:
+
+        case FrontWord::viertel:
             // Quater
-            Letter_set(13); // Q
-            Letter_set(14); // U
-            Letter_set(15); // A
-            Letter_set(16); // R
-            Letter_set(17); // T
-            Letter_set(18); // E
-            Letter_set(19); // R
+            setLetter(13);
+            setLetter(14);
+            setLetter(15);
+            setLetter(16);
+            setLetter(17);
+            setLetter(18);
+            setLetter(19);
             break;
-        case zwanzig:
+
+        case FrontWord::zwanzig:
             // Twenty
-            Letter_set(22); // T
-            Letter_set(23); // W
-            Letter_set(24); // E
-            Letter_set(25); // N
-            Letter_set(26); // T
-            Letter_set(27); // Y
+            setLetter(22);
+            setLetter(23);
+            setLetter(24);
+            setLetter(25);
+            setLetter(26);
+            setLetter(27);
             break;
-        case twentyfive:
+
+        case FrontWord::twentyfive:
             // Twentyfive
-            Letter_set(22); // T
-            Letter_set(23); // W
-            Letter_set(24); // E
-            Letter_set(25); // N
-            Letter_set(26); // T
-            Letter_set(27); // Y
-            Letter_set(28); // F
-            Letter_set(29); // I
-            Letter_set(30); // V
-            Letter_set(31); // E
+            setLetter(22);
+            setLetter(23);
+            setLetter(24);
+            setLetter(25);
+            setLetter(26);
+            setLetter(27);
+            setLetter(28);
+            setLetter(29);
+            setLetter(30);
+            setLetter(31);
             break;
-        case halb:
+
+        case FrontWord::halb:
             // Half
-            Letter_set(43); // H
-            Letter_set(42); // A
-            Letter_set(41); // L
-            Letter_set(40); // F
+            setLetter(43);
+            setLetter(42);
+            setLetter(41);
+            setLetter(40);
             break;
-        case nach:
+
+        case FrontWord::nach:
+        case FrontWord::v_nach:
             // Past
-            Letter_set(44); // P
-            Letter_set(45); // A
-            Letter_set(46); // S
-            Letter_set(47); // T
+            setLetter(44);
+            setLetter(45);
+            setLetter(46);
+            setLetter(47);
             break;
-        case vor:
+
+        case FrontWord::vor:
+        case FrontWord::v_vor:
             // To
-            Letter_set(34); // T
-            Letter_set(33); // O
+            setLetter(34);
+            setLetter(33);
             break;
-        case uhr:
+
+        case FrontWord::uhr:
             // O'Clock
-            Letter_set(104); // O'
-            Letter_set(103); // C
-            Letter_set(102); // L
-            Letter_set(101); // O
-            Letter_set(100); // C
-            Letter_set(99);  // K
+            setLetter(104);
+            setLetter(103);
+            setLetter(102);
+            setLetter(101);
+            setLetter(100);
+            setLetter(99);
             break;
+
         default:
             break;
         };

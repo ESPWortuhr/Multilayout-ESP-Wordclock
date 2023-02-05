@@ -48,6 +48,13 @@ struct OpenWeatherMapData {
     char cityid[8];
 };
 
+enum class MinuteVariant {
+    Off = 0,
+    Corners = 1,
+    Row = 2,
+    InWords = 3,
+};
+
 struct GLOBAL {
     uint8_t sernr;
     uint16_t prog;
@@ -63,7 +70,7 @@ struct GLOBAL {
     uint8_t effectSpeed;
     uint8_t client_nr;
     uint8_t secondVariant;
-    uint8_t minuteVariant;
+    MinuteVariant minuteVariant;
     bool languageVariant[6];
     bool layoutVariant[1];
     char timeserver[PAYLOAD_LENGTH];
@@ -144,7 +151,7 @@ enum LanguageDialects {
     ItIs40 = 2,
     ItIs45 = 3,
     NotShowItIs = 4,
-    ENG_Aquarter = 5,
+    EN_ShowAQuarter = 5,
 };
 
 enum LayoutVariants {
@@ -204,7 +211,7 @@ enum ClockType {
     Nl10x11 = 9,
     Ger11x11 = 3,
     Ger11x11V2 = 8,
-    Ger10x11Frame = 4,
+    Ger11x11Frame = 4,
     Ger21x11Weather = 5,
     Ger17x17 = 7,
     Eng10x11 = 10,
