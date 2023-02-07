@@ -154,7 +154,7 @@ void setup() {
         G.effectBri = 2;
         G.effectSpeed = 10;
         G.client_nr = 0;
-        G.secondVariant = 0;
+        G.secondVariant = SecondVariant::Off;
         G.minuteVariant = MinuteVariant::Corners;
         G.ldr = 0;
         G.ldrCal = 0;

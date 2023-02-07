@@ -55,6 +55,12 @@ enum class MinuteVariant {
     InWords = 3,
 };
 
+enum class SecondVariant {
+    Off = 0,
+    FrameDot = 1,
+    FrameToggle = 2,
+};
+
 struct GLOBAL {
     uint8_t sernr;
     uint16_t prog;
@@ -69,7 +75,7 @@ struct GLOBAL {
     uint8_t effectBri;
     uint8_t effectSpeed;
     uint8_t client_nr;
-    uint8_t secondVariant;
+    SecondVariant secondVariant;
     MinuteVariant minuteVariant;
     bool languageVariant[6];
     bool layoutVariant[1];
