@@ -211,16 +211,17 @@ enum CommandWords {
 };
 
 enum ClockType {
+    Eng10x11 = 10,
     Ger10x11 = 1,
     Ger10x11Alternative = 2,
     Ger10x11Clock = 6,
-    Nl10x11 = 9,
+    Ger10x11Nero = 11,
     Ger11x11 = 3,
     Ger11x11V2 = 8,
     Ger11x11Frame = 4,
     Ger21x11Weather = 5,
     Ger17x17 = 7,
-    Eng10x11 = 10,
+    Nl10x11 = 9,
 };
 
 enum Icons {
