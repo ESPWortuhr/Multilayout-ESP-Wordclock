@@ -327,13 +327,6 @@ void setup() {
     MDNS.addService("http", "tcp", 80);
     MDNS.addService("http", "tcp", 81);
 
-    /*
-    // setup frame
-    if (usedUhrType->hasSecondsFrame() && G.secondVariant < 1 && G.minuteVariant
-    < 2) { led.setFrameColor();
-    }
-    */
-
     //-------------------------------------
     Serial.println("--------------------------------------");
     Serial.println("ESP Uhr");
