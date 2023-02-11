@@ -38,7 +38,7 @@
         <div class="pure-g">
             <div class="pure-u-24-24 section-connection-lost" id="section-connection-lost">
                 <div class="box">
-                    <button class="pure-button-rounded status-button">Verbinden</button>
+                    <button class="pure-button status-button">Verbinden</button>
                     <p>Die Verbindung zur Wortuhr wurde unterbrochen.</p>
                 </div>
             </div>
@@ -116,10 +116,9 @@
                                     <option value="3">Bunte Buchstaben</option>
                                 </select>
                             </div>
-                            <div class="pure-g">
-                                <div class="pure-u-1 pure-u-lg-1-4"><label class="slider-label" for="animation-speed">Farbwechsel <span class="value" id="animation-speed-value">30</span></label>
-                                </div>
-                                <div class="pure-u-1 pure-u-lg-3-4"><input id="animation-speed" type="range" min="0" max="60" value="0"></div>
+                            <div class="pure-control-group">
+                                <label class="slider-label" for="animation-speed">Farbwechsel <span class="value" id="animation-speed-value">30</span></label>
+                                <input id="animation-speed" type="range" min="0" max="60" value="0">
                             </div>
                             <div class="pure-control-group">
                                 <label for="animation-demo">Demo</label>
@@ -141,8 +140,8 @@
                         <div class="pure-u-1 pure-u-lg-1-4">
                             <form class="pure-form pure-form-aligned">
                                 <label for="marquee"></label>
-                                <input id="marquee" type="text" class="pure-input-rounded" placeholder="Lauftext"><p></p>
-                                <button id="marquee-button" class="pure-button-rounded">Speichern</button><p></p>
+                                <input id="marquee" type="text" placeholder="Lauftext"><p></p>
+                                <button id="marquee-button" class="pure-button">Speichern</button><p></p>
                             </form>
                         </div>
                     </div>
@@ -187,7 +186,7 @@
                                     </select>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="layvar-0">Minutenzählrichtung Invertieren</label>
+                                        <label for="layvar-0">Minutenzählrichtung invertieren</label>
                                         <label class="switch">
                                             <input type="checkbox" id="layvar-0">
                                             <span class="slider round"></span>
@@ -203,7 +202,7 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-control-group">
-                                        <label for="dialect-4">"Es ist" ausblenden</label>
+                                        <label for="dialect-4">„Es ist“ ausblenden</label>
                                         <label class="switch">
                                             <input type="checkbox" id="dialect-4">
                                             <span class="slider round"></span>
@@ -254,7 +253,7 @@
                                 <fieldset>
                                     <div class="pure-control-group">
                                         <label for="show-minutes">Minuten Anzeigemodus</label><select name="show-minutes" id="show-minutes" size="1">
-                                        <option value="0" selected>Off</option>
+                                        <option value="0" selected>Aus</option>
                                         <option value="1">Normal</option>
                                         <option value="2">Reihe</option>
                                         <option value="3">In Worten</option>
@@ -306,7 +305,7 @@
                                         </label>
                                     </div>
                                     <div class="pure-control-group">
-                                        <label for="boot-show-wifi" class="pure-checkbox">WiFi Symbol während der Suche anzeigen</label>
+                                        <label for="boot-show-wifi" class="pure-checkbox">WiFi-Symbol während der Suche anzeigen</label>
                                         <label class="switch">
                                             <input type="checkbox" id="boot-show-wifi">
                                             <span class="slider round"></span>
@@ -340,7 +339,7 @@
                                         <label for="status">Verbindungsstatus</label><input id="status" class="status" value="Loading ...">
                                     </div>
                                     <div class="pure-controls">
-                                        <button class="pure-button-rounded">Verbinden</button>
+                                        <button class="pure-button">Verbinden</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -358,7 +357,7 @@
                                         G-Grün / B-Blau / R-Rot / W-Weiß
                                     </legend>
                                     <div class="pure-control-group">
-                                        <label for="colortype">Änderung des Colortypes.</label><select name="colortype" id="colortype" size="1">
+                                        <label for="colortype">Änderung des Colortypes</label><select name="colortype" id="colortype" size="1">
                                         <option value="0" selected>WS2812 BRG</option>
                                         <option value="1">WS2812 GRB</option>
                                         <option value="2">WS2812 RGB</option>
@@ -367,7 +366,7 @@
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="colortype-button" class="pure-button-rounded">Einstellung speichern</button>
+                                        <button id="colortype-button" class="pure-button">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -382,7 +381,7 @@
                                         <label for="timeserver">Zeitserver</label><input id="timeserver" type="text" placeholder="Zeitserver">
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="timeserver-button" class="pure-button-rounded">Einstellung speichern</button>
+                                        <button id="timeserver-button" class="pure-button">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -486,7 +485,7 @@
                                     </select>
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="uhrzeit-button" class="pure-button-rounded">Einstellung speichern</button>
+                                        <button id="uhrzeit-button" class="pure-button">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -497,95 +496,95 @@
                             <h2>Helligkeit</h2>
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
-                                    <div class="pure-form-aligned">
-                                        <label for="auto-ldr-enabled">Modus</label>
-                                        <select id="auto-ldr-enabled" size="1">
-                                        <option value="1">Automatisch</option>
-                                        <option value="0">Manuell</option>
-                                    </select>
+                                    <div class="pure-control-group">
+                                        <label for="auto-ldr-enabled">Modus</label><select id="auto-ldr-enabled" size="1">
+                                            <option value="1">Automatisch</option>
+                                            <option value="0">Manuell</option>
+                                        </select>
                                     </div>
+                                    <br>
                                     <!-- Specific Brightness-manuall Start-->
                                     <div class="specific-layout-brightness-man">
                                         <form class="pure-form pure-form-aligned">
                                             <fieldset>
                                                 <div class="pure-control-group">
-                                                    <label for="brightness-24">0:00 - 5:59</label><select name="brightness-24" id="brightness-24" size="1">
+                                                    <label for="brightness-24">0:00 – 5:59</label><select name="brightness-24" id="brightness-24" size="1">
                                                     <option value="100">100 %</option>
                                                     <option value="80">80 %</option>
                                                     <option value="60">60 %</option>
                                                     <option value="40">40 %</option>
                                                     <option value="20">20 %</option>
-                                                    <option value="0">Off</option>
+                                                    <option value="0">Aus</option>
                                                 </select>
                                                 </div>
                                                 <div class="pure-control-group">
-                                                    <label for="brightness-6">6:00 - 7:59</label><select name="brightness-6" id="brightness-6" size="1">
+                                                    <label for="brightness-6">6:00 – 7:59</label><select name="brightness-6" id="brightness-6" size="1">
                                                     <option value="100">100 %</option>
                                                     <option value="80">80 %</option>
                                                     <option value="60">60 %</option>
                                                     <option value="40">40 %</option>
                                                     <option value="20">20 %</option>
-                                                    <option value="0">Off</option>
+                                                    <option value="0">Aus</option>
                                                 </select>
                                                 </div>
                                                 <div class="pure-control-group">
-                                                    <label for="brightness-8">8:00 - 11:59</label><select name="brightness-8" id="brightness-8" size="1">
+                                                    <label for="brightness-8">8:00 – 11:59</label><select name="brightness-8" id="brightness-8" size="1">
                                                     <option value="100">100 %</option>
                                                     <option value="80">80 %</option>
                                                     <option value="60">60 %</option>
                                                     <option value="40">40 %</option>
                                                     <option value="20">20 %</option>
-                                                    <option value="0">Off</option>
+                                                    <option value="0">Aus</option>
                                                 </select>
                                                 </div>
                                                 <div class="pure-control-group">
-                                                    <label for="brightness-12">12:00 - 15:59</label><select name="brightness-12" id="brightness-12" size="1">
+                                                    <label for="brightness-12">12:00 – 15:59</label><select name="brightness-12" id="brightness-12" size="1">
                                                     <option value="100">100 %</option>
                                                     <option value="80">80 %</option>
                                                     <option value="60">60 %</option>
                                                     <option value="40">40 %</option>
                                                     <option value="20">20 %</option>
-                                                    <option value="0">Off</option>
+                                                    <option value="0">Aus</option>
                                                 </select>
                                                 </div>
                                                 <div class="pure-control-group">
-                                                    <label for="brightness-16">16:00 - 17:59</label><select name="brightness-16" id="brightness-16" size="1">
+                                                    <label for="brightness-16">16:00 – 17:59</label><select name="brightness-16" id="brightness-16" size="1">
                                                     <option value="100">100 %</option>
                                                     <option value="80">80 %</option>
                                                     <option value="60">60 %</option>
                                                     <option value="40">40 %</option>
                                                     <option value="20">20 %</option>
-                                                    <option value="0">Off</option>
+                                                    <option value="0">Aus</option>
                                                 </select>
                                                 </div>
                                                 <div class="pure-control-group">
-                                                    <label for="brightness-18">18:00 - 19:59</label><select name="brightness-18" id="brightness-18" size="1">
+                                                    <label for="brightness-18">18:00 – 19:59</label><select name="brightness-18" id="brightness-18" size="1">
                                                     <option value="100">100 %</option>
                                                     <option value="80">80 %</option>
                                                     <option value="60">60 %</option>
                                                     <option value="40">40 %</option>
                                                     <option value="20">20 %</option>
-                                                    <option value="0">Off</option>
+                                                    <option value="0">Aus</option>
                                                 </select>
                                                 </div>
                                                 <div class="pure-control-group">
-                                                    <label for="brightness-20">20:00 - 21:59</label><select name="brightness-20" id="brightness-20" size="1">
+                                                    <label for="brightness-20">20:00 – 21:59</label><select name="brightness-20" id="brightness-20" size="1">
                                                     <option value="100">100 %</option>
                                                     <option value="80">80 %</option>
                                                     <option value="60">60 %</option>
                                                     <option value="40">40 %</option>
                                                     <option value="20">20 %</option>
-                                                    <option value="0">Off</option>
+                                                    <option value="0">Aus</option>
                                                 </select>
                                                 </div>
                                                 <div class="pure-control-group">
-                                                    <label for="brightness-22">22:00 - 23:59</label><select name="brightness-22" id="brightness-22" size="1">
+                                                    <label for="brightness-22">22:00 – 23:59</label><select name="brightness-22" id="brightness-22" size="1">
                                                     <option value="100">100 %</option>
                                                     <option value="80">80 %</option>
                                                     <option value="60">60 %</option>
                                                     <option value="40">40 %</option>
                                                     <option value="20">20 %</option>
-                                                    <option value="0">Off</option>
+                                                    <option value="0">Aus</option>
                                                 </select>
                                                 </div>
                                             </fieldset>
@@ -596,17 +595,14 @@
                                         <div class="specific-layout-brightness-auto">
                                             <br>
                                             <div class="pure-control-group">
-                                                <label for="auto-ldr-value">Aktueller Wert:</label>
-                                                <input id="auto-ldr-value" type="text" class="pure-input-rounded" value=" " disabled style="color:black">
+                                                <label for="auto-ldr-value">Aktueller Wert:</label><input id="auto-ldr-value" type="text" value=" " disabled style="color:black">
                                             </div>
                                             <br>
                                             <div class="pure-control-group">
-                                                <label for="auto-ldr-bright">Wert hell (0 - 255)</label>
-                                                <input id="auto-ldr-bright" type="text" class="pure-input-rounded">
+                                                <label for="auto-ldr-bright">Wert hell (0 – 255)</label><input id="auto-ldr-bright" type="text">
                                             </div>
                                             <div class="pure-control-group">
-                                                <label for="auto-ldr-dark">Wert dunkel (0 - 255)</label>
-                                                <input id="auto-ldr-dark" type="text" class="pure-input-rounded">
+                                                <label for="auto-ldr-dark">Wert dunkel (0 – 255)</label><input id="auto-ldr-dark" type="text">
                                             </div>
                                             <!-- Specific Brightness-automatic End-->
                                         </div>
@@ -623,7 +619,7 @@
                                         <label for="hostname">Hostname</label><input id="hostname" type="text" placeholder="Hostname">
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="hostname-button" class="pure-button-rounded">Einstellung speichern</button>
+                                        <button id="hostname-button" class="pure-button">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -642,7 +638,7 @@
                                         <label for="owm-city-id">OpenWeatherMap City ID</label><input id="owm-city-id" type="text" minlength="7" maxlength="7" placeholder="City ID">
                                     </div>
                                     <div class="pure-controls">
-                                        <button id="weather-button" class="pure-button-rounded">Einstellung speichern</button>
+                                        <button id="weather-button" class="pure-button">Einstellung speichern</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -663,7 +659,7 @@
                                     </div>
                                     <div class="pure-control-group">
                                         <label for="ldr-cal">Kalibrierung</label><select name="ldr-cal" id="ldr-cal" size="1">
-                                        <option value="0">Off</option>
+                                        <option value="0">Aus</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -695,11 +691,11 @@
                                     </div>
                                     <div class="pure-control-group">
                                         <label for="wifi-button">Anderes WLAN</label>
-                                        <button id="wifi-button" class="pure-button-rounded">Konfigurieren</button>
+                                        <button id="wifi-button" class="pure-button">Konfigurieren</button>
                                     </div>
                                     <div class="pure-control-group">
                                         <label for="disable-button">Bis zum Neustart</label>
-                                        <button id="disable-button" class="pure-button-rounded">Ausschalten</button>
+                                        <button id="disable-button" class="pure-button">Ausschalten</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -711,8 +707,8 @@
                             <form class="pure-form pure-form-aligned">
                                 <fieldset>
                                     <div class="pure-controls">
-                                        <button id="initial-values-button" class="pure-button-rounded">Startwerte speichern</button>
-                                        <button id="reset-button" class="pure-button-rounded">Neustarten</button>
+                                        <button id="initial-values-button" class="pure-button">Startwerte speichern</button>
+                                        <button id="reset-button" class="pure-button">Neustarten</button>
                                     </div>
                                 </fieldset>
                             </form>
@@ -725,7 +721,7 @@
                     <h1>Smart Home</h1>
                 </div>
                 <div class="box">
-                    <p>Die Software der Wordclock bietet die Möglichkeit der Steuerung über die MQTT Schnittstelle. Hierbei kann man über sein bestehendes HomeAssistant Setup die Uhr einbinden, um rudimentäre Funktionen steuern zu können. Diese Funktion ist noch experimentell und wird stetig erweitert.</p>
+                    <p>Die Software der Wortuhr bietet die Möglichkeit der Steuerung über die MQTT-Schnittstelle. Hierbei kann man über sein bestehendes Home-Assistant-Setup die Uhr einbinden, um rudimentäre Funktionen steuern zu können. Diese Funktion ist noch experimentell und wird stetig erweitert.</p>
                 </div>
                 <div class="pure-u-1 pure-u-lg-1">
 
@@ -741,25 +737,25 @@
                                 </label>
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-server">Serveradresse</label><input id="mqtt-server" type="text" class="pure-input-rounded" placeholder="Server">
+                                    <label for="mqtt-server">Serveradresse</label><input id="mqtt-server" type="text" placeholder="Server">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-port">Port</label><input id="mqtt-port" type="text" class="pure-input-rounded" placeholder="Serverport">
+                                    <label for="mqtt-port">Port</label><input id="mqtt-port" type="text" placeholder="Serverport">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-user">User</label><input id="mqtt-user" type="text" class="pure-input-rounded" placeholder="User">
+                                    <label for="mqtt-user">Benutzer</label><input id="mqtt-user" type="text" placeholder="User">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-pass">Passwort</label><input id="mqtt-pass" type="text" class="pure-input-rounded" placeholder="Passwort">
+                                    <label for="mqtt-pass">Passwort</label><input id="mqtt-pass" type="text" placeholder="Passwort">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-clientid">ClientID</label><input id="mqtt-clientid" type="text" class="pure-input-rounded" placeholder="ClientID">
+                                    <label for="mqtt-clientid">Client-ID</label><input id="mqtt-clientid" type="text" placeholder="Client-ID">
                                 </div>
                                 <div class="pure-control-group">
-                                    <label for="mqtt-topic">Topic</label><input id="mqtt-topic" type="text" class="pure-input-rounded" placeholder="Topic">
+                                    <label for="mqtt-topic">Topic</label><input id="mqtt-topic" type="text" placeholder="Topic">
                                 </div>
                                 <div class="pure-controls">
-                                    <button id="mqtt-button" class="pure-button-rounded">Einstellung speichern</button>
+                                    <button id="mqtt-button" class="pure-button">Einstellungen speichern</button>
                                 </div>
                             </fieldset>
                         </form>
@@ -773,10 +769,10 @@
                     <h1>Über</h1>
                 </div>
                 <div class="box">
-                    <p>Die Software dieser Wortuhr basiert auf der Wortuhr von <a href="https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu"> (Stand 2019) Ulrich Radig</a> und wird nun weiterentwickelt auf <a href="https://github.com/ESPWortuhr/Wortuhr">GitHub</a> von <a
+                    <p>Die Software dieser Wortuhr basiert auf der Wortuhr von <a href="https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu">Ulrich Radig (Stand 2019)</a> und wird nun weiterentwickelt auf <a href="https://github.com/ESPWortuhr/Wortuhr">GitHub</a> von <a
                             href="https://github.com/Eisbaeeer">Lars Weimar</a>, <a href="https://github.com/Wandmalfarbe">Pascal Wagler</a>, <a href="https://github.com/dbambus">dbambus</a>, <a href="https://github.com/shortN0te">shortN0te</a>,
                         <a href="https://github.com/Flo455">Flo455</a>, <a href="https://github.com/Elektron79">Elektron79</a>, <a href="https://github.com/tali">tali</a>, <a href="https://github.com/atho95">ATho95</a>  und <a href="https://github.com/masju1">masju1</a>.</p>
-                        <p>Ein Update der Software ist möglich, dazu bitte <a href="/update" onmouseover="javascript:event.target.port=81">hier</a> klicken.</p>
+                        <p>Ein Update der Software ist möglich, dazu bitte <a href="/update" onmouseover="javascript:event.target.port=81">auf die Update-Seite wechseln</a>.</p>
                     <p>This project is open source licensed under the BSD 3-Clause License.</p>
                 </div>
 
@@ -798,9 +794,7 @@
             </div>
         </div> <!--/pure-g-->
 
-        <div class="header">
-            <h2>V <span class="version">VERSION</span></h2>
-        </div>
+        <div class="footer">Version <span class="version">UNBEKANNT</span></div>
     </div> <!--/content-->
 </div>
 
