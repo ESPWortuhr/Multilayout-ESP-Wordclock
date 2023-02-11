@@ -43,8 +43,7 @@ The content `<div>` is where all your content goes.
 .header {
      margin: 0;
      color: #333;
-     text-align: center;
-     padding: 2.5em 2em 0;
+     padding: 1.8em 1.8em 0;
      border-bottom: 1px solid #eee;
  }
     .header h1 {
@@ -63,6 +62,11 @@ The content `<div>` is where all your content goes.
     margin: 50px 0 20px 0;
     font-weight: 300;
     color: #888;
+}
+
+.footer {
+    text-align: right;
+    margin-right: 10px;
 }
 
 
@@ -362,7 +366,6 @@ input[type="range"]::-moz-focus-outer{
 
 
 input[type="range"] {
-    width: 100%;
     -webkit-appearance: none;
     -moz-appearance: none;
     margin-top: 8px;
@@ -425,7 +428,7 @@ input[type=range]::-moz-range-thumb {
 
 .slider-label .value {
     float: right;
-    margin-right: 15px;
+    margin-left: 15px;
 }
 
 /**
@@ -503,7 +506,6 @@ input[type=range]::-moz-range-thumb {
 .box {
     padding: 20px;
     margin: 10px;
-    text-align: center;
     box-shadow: 0 1px 1px 0 rgba(60,64,67,.08),0 1px 3px 1px rgba(60,64,67,.16);
     background: #fff;
     border-radius: 3px;
@@ -527,15 +529,10 @@ input[type=range]::-moz-range-thumb {
 	margin: auto;
 }
 
-.pure-button-rounded {
-    font-family: inherit;
-    font-size: 100%;
-    padding: 0.5em 1em;
-    color: #fff;
-    border: none rgba(0, 0, 0, 0);
-    background-color: #5992aa;
-    text-decoration: none;
+.pure-button {
+    background-color: #1f8dd6;
     border-radius: 2em;
+    color: white;
 }
 
 .pure-control-group-switch label {
