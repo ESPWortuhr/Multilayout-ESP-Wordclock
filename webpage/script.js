@@ -429,7 +429,7 @@ function initWebsocket() {
 			var option;
 
 			while (animSelect.options.length > 0) {
-				select.remove(0);
+				animSelect.remove(0);
 			}
 
 			for (index = 0; index < animTypes.length; index++) {
