@@ -58,7 +58,8 @@ enum class MinuteVariant {
 enum class SecondVariant {
     Off = 0,
     FrameDot = 1,
-    FrameToggle = 2,
+    FrameSector = 2,
+    FrameSectorToggle = 3,
 };
 
 struct GLOBAL {
