@@ -41,11 +41,13 @@ RTC_Type RTC;
 
 #include "Animation.h"
 #include "clockWork.h"
+#include "frame.h"
 #include "led.h"
 #include "mqtt.h"
 #include "network.h"
 
 Animation *animation;
+SecondsFrame *secondsFrame;
 Led led;
 ClockWork clockWork;
 Mqtt mqtt;
@@ -90,8 +92,8 @@ void time_is_set() {
     _second = tm.tm_sec;
     _minute = tm.tm_min;
     _hour = tm.tm_hour;
-    if (usedUhrType->hasSecondsFrame()) {
-        _second48 = _second * 48 / 60;
+    if (usedUhrType->NUM_RMATRIX() != 0) {
+        _secondFrame = _second / (usedUhrType->NUM_RMATRIX() / 60.f);
     }
 
     String origin;
@@ -227,6 +229,12 @@ void setup() {
     // Get TODO frame width from usedUhrTyp
     animation = new Animation(0, 0, usedUhrType->ROWS_MATRIX() - 1,
                               usedUhrType->COLS_MATRIX());
+
+    if (usedUhrType->NUM_RMATRIX() != 0) {
+        secondsFrame = new SecondsFrame(usedUhrType->NUM_RMATRIX());
+    } else {
+        secondsFrame = NULL;
+    }
 
     //-------------------------------------
     // Initialize LEDs
@@ -392,6 +400,10 @@ void loop() {
 
     // make the time run faster in the demo mode of the animation
     animation->demoMode(_minute, _second);
+
+    if (usedUhrType->NUM_RMATRIX() != 0) {
+        secondsFrame->loop();
+    }
 
     clockWork.loop(tm);
 }

@@ -726,20 +726,10 @@ void resetMinVariantIfNotAvailable() {
 void ClockWork::loop(struct tm &tm) {
     unsigned long currentMillis = millis();
     countMillisSpeed += currentMillis - previousMillis;
-    if (usedUhrType->hasSecondsFrame()) {
-        countMillis48 += currentMillis - previousMillis;
-    }
     previousMillis = currentMillis;
 
     // Faster runtime for demo
     animation->demoMode(_minute, _second);
-
-    //------------------------------------------------
-    // SecondsFrame
-    //------------------------------------------------
-    if (usedUhrType->hasSecondsFrame()) {
-        loopSecondsFrame();
-    }
 
     //------------------------------------------------
     // Secounds and LDR Routine
@@ -778,7 +768,6 @@ void ClockWork::loop(struct tm &tm) {
     // Minute
     //------------------------------------------------
     if (lastMinute != _minute) {
-        _second48 = 0;
         lastMinute = _minute;
     }
 
@@ -986,9 +975,17 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_SET_UHRTYPE: {
         eeprom::write();
+        if (usedUhrType->NUM_RMATRIX() != 0) {
+            led.clearFrame();
+        }
         Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
         usedUhrType = getPointer(G.UhrtypeDef);
         resetMinVariantIfNotAvailable();
+        if (usedUhrType->NUM_RMATRIX() != 0) {
+            delete secondsFrame;
+            secondsFrame = new SecondsFrame(usedUhrType->NUM_RMATRIX());
+            G.progInit = 1;
+        }
         G.conf = COMMAND_IDLE;
         break;
     }
@@ -1096,11 +1093,6 @@ void ClockWork::loop(struct tm &tm) {
             led.set();
         }
         parametersChanged = false;
-        if (usedUhrType->hasSecondsFrame() &&
-            G.secondVariant == SecondVariant::Off &&
-            G.minuteVariant != MinuteVariant::Corners) {
-            led.setFrameColor();
-        }
         G.prog = COMMAND_IDLE;
     }
     default:
@@ -1109,31 +1101,6 @@ void ClockWork::loop(struct tm &tm) {
 
     if (countMillisSpeed > 10000) {
         countMillisSpeed = 0;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ClockWork::loopSecondsFrame() {
-    if (countMillis48 >= interval48) {
-        countMillis48 = 0;
-        _second48++;
-        if (_second48 > 47) {
-            _second48 = 0;
-        }
-    }
-    if (lastSecond48 != _second48) {
-        if (G.prog == 0 && G.conf == 0) {
-            if (G.secondVariant == SecondVariant::FrameDot ||
-                G.minuteVariant == MinuteVariant::Corners) {
-                led.clearFrame();
-            }
-            if (G.secondVariant == SecondVariant::FrameDot) {
-                led.showSeconds();
-            }
-            led.show();
-        }
-        lastSecond48 = _second48;
     }
 }
 

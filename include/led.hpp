@@ -183,6 +183,7 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
 
 inline void Led::clearFrame() {
     for (uint16_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
+        frameArray[i] = false;
         clearPixel(usedUhrType->getRMatrix(i));
     }
 }
@@ -202,6 +203,9 @@ void Led::set(bool changed) {
             // background
             setPixel(r2, g2, b2, w2, i);
         }
+    }
+    if (G.secondVariant != SecondVariant::Off) {
+        showSeconds();
     }
     if (animation->led_show_notify(changed, _minute)) {
         show();
@@ -335,10 +339,21 @@ void Led::showNumbers(const char d1, const char d2) {
 //------------------------------------------------------------------------------
 
 void Led::showSeconds() {
+    const uint8_t offesetSecondsFrame = 5;
     uint8_t rr, gg, bb, ww;
-    setBrightness(rr, gg, bb, ww, Effect);
-
-    setPixel(rr, gg, bb, ww, usedUhrType->getRMatrix(_second48));
+    setBrightness(rr, gg, bb, ww, Foreground);
+    for (uint8_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
+        if (frameArray[i]) {
+            if (i < usedUhrType->NUM_RMATRIX() - offesetSecondsFrame) {
+                setPixel(rr, gg, bb, ww,
+                         usedUhrType->getRMatrix(i) + offesetSecondsFrame);
+            } else {
+                setPixel(rr, gg, bb, ww,
+                         usedUhrType->getRMatrix(i) -
+                             usedUhrType->NUM_RMATRIX() + offesetSecondsFrame);
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

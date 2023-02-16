@@ -122,7 +122,7 @@ GLOBAL G = {};
 uint8_t ldrVal = 100;
 
 uint8_t _second = 0;
-uint8_t _second48 = 0;
+uint8_t _secondFrame = 0;
 uint8_t _minute = 0;
 uint8_t _hour = 0;
 uint8_t lastSecond = 0;
@@ -130,6 +130,7 @@ uint8_t lastMinute = 0;
 
 bool frontMatrix[MAX_ARRAY_SIZE] = {false};
 bool lastFrontMatrix[MAX_ARRAY_SIZE] = {false};
+bool frameArray[48] = {false};
 bool parametersChanged = false;
 uint8_t statusAccessPoint = 0;
 
