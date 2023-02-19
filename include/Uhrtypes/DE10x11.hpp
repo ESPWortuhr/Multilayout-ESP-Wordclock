@@ -51,13 +51,14 @@ public:
     //------------------------------------------------------------------------------
 
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) override {
-        if (row == ROWS_MATRIX() - 1) {
+        if (row == rowsWordMatrix() - 1) {
             return col;
         }
         if (row % 2 == 0) {
-            col = COLS_MATRIX() - col - 1;
+            col = colsWordMatrix() - col - 1;
         }
-        uint16_t returnValue = numPixels() - 1 - (col + (row * COLS_MATRIX()));
+        uint16_t returnValue =
+            numPixels() - 1 - (col + (row * colsWordMatrix()));
         if (returnValue > numPixels()) {
             Serial.println("[ERROR] getMatrix() ReturnValue out of Bounds");
         }

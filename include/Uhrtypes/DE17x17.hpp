@@ -40,11 +40,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t ROWS_MATRIX() override { return 17; };
+    virtual const uint16_t rowsWordMatrix() override { return 17; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t COLS_MATRIX() override { return 18; };
+    virtual const uint16_t colsWordMatrix() override { return 18; };
 
     //------------------------------------------------------------------------------
 

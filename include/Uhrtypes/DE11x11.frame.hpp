@@ -71,9 +71,9 @@ public:
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) override {
         row++;
         if (row % 2 != 0) {
-            col = COLS_MATRIX() - col - 1;
+            col = colsWordMatrix() - col - 1;
         }
-        uint16_t returnValue = col + 1 + (row * COLS_MATRIX() + 2);
+        uint16_t returnValue = col + 1 + (row * colsWordMatrix() + 2);
         if (returnValue > numPixels()) {
             Serial.println("[ERROR] getMatrix() ReturnValue out of Bounds");
         }
@@ -81,17 +81,17 @@ public:
     };
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getRMatrix(uint16_t index) override {
+    virtual const uint16_t getFrameMatrixIndex(uint16_t index) override {
         return rmatrix[index];
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getSMatrix(uint16_t index) override {
-        uint8_t row = index / COLS_MATRIX();
-        uint8_t col = index % COLS_MATRIX();
+    virtual const uint16_t getWordMatrixIndex(uint16_t index) override {
+        uint8_t row = index / colsWordMatrix();
+        uint8_t col = index % colsWordMatrix();
         if (row % 2 == 0) {
-            col = COLS_MATRIX() - 1 - col;
+            col = colsWordMatrix() - 1 - col;
         }
         return getFrontMatrix(row, col);
     };

@@ -106,13 +106,13 @@ public:
 
     virtual inline const uint16_t numPixelsFrameMatrix() { return 0; }
 
-    virtual inline const uint16_t ROWS_MATRIX() { return 11; }
+    virtual inline const uint16_t rowsWordMatrix() { return 11; }
 
-    virtual inline const uint16_t COLS_MATRIX() { return 11; }
+    virtual inline const uint16_t colsWordMatrix() { return 11; }
 
-    virtual const uint16_t getSMatrix(uint16_t index) { return index; }
+    virtual const uint16_t getWordMatrixIndex(uint16_t index) { return index; }
 
-    virtual const uint16_t getRMatrix(uint16_t index) { return 0; }
+    virtual const uint16_t getFrameMatrixIndex(uint16_t index) { return 0; }
 
     virtual const bool hasDreiviertel() { return false; }
 
@@ -128,9 +128,9 @@ public:
 
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) {
         if (row % 2 != 0) {
-            col = COLS_MATRIX() - col - 1;
+            col = colsWordMatrix() - col - 1;
         }
-        uint16_t returnValue = col + (row * COLS_MATRIX());
+        uint16_t returnValue = col + (row * colsWordMatrix());
         if (returnValue > numPixels()) {
             Serial.println("[ERROR] getMatrix() ReturnValue out of Bounds");
         }

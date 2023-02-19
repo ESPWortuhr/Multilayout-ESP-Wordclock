@@ -85,7 +85,7 @@ void ClockWork::rainbowCycle() {
 
     displayedHue = hue;
     for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        led.setPixelHsb(usedUhrType->getSMatrix(i), displayedHue, 100,
+        led.setPixelHsb(usedUhrType->getWordMatrixIndex(i), displayedHue, 100,
                         G.effectBri);
         displayedHue =
             displayedHue + 360.0 / usedUhrType->numPixelsWordMatrix();
@@ -100,7 +100,7 @@ void ClockWork::rainbowCycle() {
 
 void ClockWork::scrollingText(const char *buf) {
     static uint8_t i = 0, ii = 0;
-    uint8_t offsetRow = (usedUhrType->ROWS_MATRIX() - fontHeight - 1) / 2;
+    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - fontHeight - 1) / 2;
     uint8_t fontIndex = buf[ii];
 
     led.shiftColumnToRight();
@@ -113,16 +113,16 @@ void ClockWork::scrollingText(const char *buf) {
                     G.rgbw[Effect][0], G.rgbw[Effect][1], G.rgbw[Effect][2],
                     G.rgbw[Effect][3],
                     usedUhrType->getFrontMatrix(
-                        row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
+                        row + offsetRow, usedUhrType->colsWordMatrix() - 1));
             } else {
                 led.clearPixel(usedUhrType->getFrontMatrix(
-                    row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
+                    row + offsetRow, usedUhrType->colsWordMatrix() - 1));
             }
         }
     } else {
         for (uint8_t row = 0; row < fontHeight; row++) {
             led.clearPixel(usedUhrType->getFrontMatrix(
-                row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
+                row + offsetRow, usedUhrType->colsWordMatrix() - 1));
         }
     }
     led.show();

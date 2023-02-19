@@ -35,7 +35,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t ROWS_MATRIX() override { return 12; };
+    virtual const uint16_t rowsWordMatrix() override { return 12; };
 
     //------------------------------------------------------------------------------
 

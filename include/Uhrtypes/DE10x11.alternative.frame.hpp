@@ -34,7 +34,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getRMatrix(uint16_t index) override {
+    virtual const uint16_t getFrameMatrixIndex(uint16_t index) override {
         return 114 + index;
     };
 

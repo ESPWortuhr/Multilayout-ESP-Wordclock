@@ -154,14 +154,14 @@ inline void Led::clear() {
 
 inline void Led::clearClock() {
     for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        clearPixel(usedUhrType->getSMatrix(i));
+        clearPixel(usedUhrType->getWordMatrixIndex(i));
     }
 }
 
 //------------------------------------------------------------------------------
 
 inline void Led::clearRow(uint8_t row) {
-    for (uint8_t i = 0; i < usedUhrType->COLS_MATRIX(); i++) {
+    for (uint8_t i = 0; i < usedUhrType->colsWordMatrix(); i++) {
         clearPixel(usedUhrType->getFrontMatrix(row, i));
     }
 }
@@ -173,8 +173,8 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
         clearRow(i);
     }
 
-    for (uint8_t i = usedUhrType->ROWS_MATRIX() - 1; i > offsetRow + fontHeight;
-         i--) {
+    for (uint8_t i = usedUhrType->rowsWordMatrix() - 1;
+         i > offsetRow + fontHeight; i--) {
         clearRow(i - 1);
     }
 }
@@ -184,7 +184,7 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
 inline void Led::clearFrame() {
     for (uint16_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
         frameArray[i] = false;
-        clearPixel(usedUhrType->getRMatrix(i));
+        clearPixel(usedUhrType->getFrameMatrixIndex(i));
     }
 }
 
@@ -276,16 +276,16 @@ void Led::setFrameColor() {
     setBrightness(rr, gg, bb, ww, Frame);
 
     for (uint16_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
-        setPixel(rr, gg, bb, ww, usedUhrType->getRMatrix(i));
+        setPixel(rr, gg, bb, ww, usedUhrType->getFrameMatrixIndex(i));
     }
 }
 
 //------------------------------------------------------------------------------
 
 void Led::shiftColumnToRight() {
-    for (uint8_t col = 0; col < usedUhrType->COLS_MATRIX() - 1; col++) {
+    for (uint8_t col = 0; col < usedUhrType->colsWordMatrix() - 1; col++) {
         for (uint8_t row = 0;
-             row < usedUhrType->ROWS_MATRIX() - 1 /* Only Front*/; row++) {
+             row < usedUhrType->rowsWordMatrix() - 1 /* Only Front*/; row++) {
             if (G.Colortype == Grbw) {
                 setPixelColorObject(
                     usedUhrType->getFrontMatrix(row, col),
@@ -316,7 +316,7 @@ void Led::showNumbers(const char d1, const char d2) {
     clearClock();
     static uint8_t offsetLetter0 = 0;
     static uint8_t offsetLetter1 = fontWidth + 1;
-    uint8_t offsetRow = (usedUhrType->ROWS_MATRIX() - fontHeight - 1) / 2;
+    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - fontHeight - 1) / 2;
 
     if (usedUhrType->has24HourLayout()) {
         offsetLetter0 = 3;
@@ -346,10 +346,11 @@ void Led::showSeconds() {
         if (frameArray[i]) {
             if (i < usedUhrType->numPixelsFrameMatrix() - offesetSecondsFrame) {
                 setPixel(rr, gg, bb, ww,
-                         usedUhrType->getRMatrix(i) + offesetSecondsFrame);
+                         usedUhrType->getFrameMatrixIndex(i) +
+                             offesetSecondsFrame);
             } else {
                 setPixel(rr, gg, bb, ww,
-                         usedUhrType->getRMatrix(i) -
+                         usedUhrType->getFrameMatrixIndex(i) -
                              usedUhrType->numPixelsFrameMatrix() +
                              offesetSecondsFrame);
             }
