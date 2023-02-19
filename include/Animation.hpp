@@ -310,7 +310,7 @@ void Animation::set_minutes() {
     if (G.minuteVariant != MinuteVariant::Off) {
         uint8_t m = lastMinute % 5;
         uint16_t minArray[4];
-        usedUhrType->getMinArr(minArray, determineWhichMinuteVariant());
+        usedUhrType->getMinuteArray(minArray, determineWhichMinuteVariant());
         if (G.layoutVariant[ReverseMinDirection]) {
             std::reverse(std::begin(minArray), std::end(minArray));
         }

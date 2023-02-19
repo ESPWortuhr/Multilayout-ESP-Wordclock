@@ -34,7 +34,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
+    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
         for (uint8_t i = 0; i < 4; i++) {
             returnArr[i] = minArr[col][i];
         }

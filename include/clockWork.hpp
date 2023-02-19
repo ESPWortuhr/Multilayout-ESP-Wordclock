@@ -345,7 +345,7 @@ void ClockWork::showMinute(uint8_t min) {
         showMinuteInWords(min);
     } else if (G.minuteVariant != MinuteVariant::Off) {
         uint16_t minArray[4];
-        usedUhrType->getMinArr(minArray, determineWhichMinuteVariant());
+        usedUhrType->getMinuteArray(minArray, determineWhichMinuteVariant());
         if (G.layoutVariant[ReverseMinDirection]) {
             std::reverse(std::begin(minArray), std::end(minArray));
         }
