@@ -271,14 +271,6 @@ void setup() {
     settimeofday_cb(time_is_set);
 
     //-------------------------------------
-    // Init frontMatrix
-    //-------------------------------------
-
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        lastFrontMatrix[i] = 500;
-    }
-
-    //-------------------------------------
     // Start WiFi
     //-------------------------------------
 
