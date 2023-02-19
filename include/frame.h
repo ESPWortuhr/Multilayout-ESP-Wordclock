@@ -120,7 +120,7 @@ void SecondsFrame::loop() {
     countMillisFrameIntervall += currentMillis - previousMillis;
     previousMillis = currentMillis;
 
-    if (G.progInit == 1) {
+    if (G.progInit == 1 && G.prog == 0) {
         setup();
         G.progInit = 0;
     }
