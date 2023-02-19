@@ -100,15 +100,15 @@ public:
 
     virtual LanguageAbbreviation usedLang() = 0;
 
-    virtual inline const uint16_t NUM_PIXELS() { return 114; }
+    virtual inline const uint16_t numPixels() { return 114; }
 
-    virtual inline const uint16_t NUM_SMATRIX() { return 114; }
+    virtual inline const uint16_t numPixelsWordMatrix() { return 114; }
+
+    virtual inline const uint16_t numPixelsFrameMatrix() { return 0; }
 
     virtual inline const uint16_t ROWS_MATRIX() { return 11; }
 
     virtual inline const uint16_t COLS_MATRIX() { return 11; }
-
-    virtual inline const uint16_t NUM_RMATRIX() { return 0; }
 
     virtual const uint16_t getSMatrix(uint16_t index) { return index; }
 
@@ -131,7 +131,7 @@ public:
             col = COLS_MATRIX() - col - 1;
         }
         uint16_t returnValue = col + (row * COLS_MATRIX());
-        if (returnValue > NUM_PIXELS()) {
+        if (returnValue > numPixels()) {
             Serial.println("[ERROR] getMatrix() ReturnValue out of Bounds");
         }
         return returnValue;
@@ -139,7 +139,7 @@ public:
 
     virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
         for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = NUM_PIXELS() - (4 - i);
+            returnArr[i] = numPixels() - (4 - i);
         }
     };
 };

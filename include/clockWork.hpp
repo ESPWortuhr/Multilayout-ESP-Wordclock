@@ -11,7 +11,7 @@ OpenWMap weather;
 //------------------------------------------------------------------------------
 
 void ClockWork::copyClockface(const bool source[], bool destination[]) {
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         destination[i] = source[i];
     }
 }
@@ -19,7 +19,7 @@ void ClockWork::copyClockface(const bool source[], bool destination[]) {
 //------------------------------------------------------------------------------
 
 bool ClockWork::changesInClockface() {
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         if (frontMatrix[i] != lastFrontMatrix[i]) {
             return true;
         }
@@ -69,7 +69,7 @@ void ClockWork::loopLdrLogic() {
 void ClockWork::rainbow() {
     static float hue = 0;
 
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         led.setPixelHsb(i, hue, 100, G.effectBri);
     }
     led.show();
@@ -84,10 +84,11 @@ void ClockWork::rainbowCycle() {
     float displayedHue;
 
     displayedHue = hue;
-    for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
         led.setPixelHsb(usedUhrType->getSMatrix(i), displayedHue, 100,
                         G.effectBri);
-        displayedHue = displayedHue + 360.0 / usedUhrType->NUM_SMATRIX();
+        displayedHue =
+            displayedHue + 360.0 / usedUhrType->numPixelsWordMatrix();
         led.checkIfHueIsOutOfBound(displayedHue);
     }
     led.show();
@@ -641,7 +642,7 @@ void ClockWork::calcClockface() {
     led.setBrightnessLdr(rr, gg, bb, ww, Background);
 
     // set Background color
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         led.setPixel(rr, gg, bb, ww, i);
     }
 
@@ -695,7 +696,7 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
         if (strip_RGBW == NULL) {
             strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
-                usedUhrType->NUM_PIXELS());
+                usedUhrType->numPixels());
             strip_RGBW->Begin();
         }
     } else {
@@ -706,7 +707,7 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
         if (strip_RGB == NULL) {
             strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(
-                usedUhrType->NUM_PIXELS());
+                usedUhrType->numPixels());
             strip_RGB->Begin();
         }
     }
@@ -983,9 +984,10 @@ void ClockWork::loop(struct tm &tm) {
         Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
         usedUhrType = getPointer(G.UhrtypeDef);
         resetMinVariantIfNotAvailable();
-        if (usedUhrType->NUM_RMATRIX() != 0) {
+        if (usedUhrType->numPixelsFrameMatrix() != 0) {
             delete secondsFrame;
-            secondsFrame = new SecondsFrame(usedUhrType->NUM_RMATRIX());
+            secondsFrame =
+                new SecondsFrame(usedUhrType->numPixelsFrameMatrix());
             G.progInit = 1;
         }
         G.conf = COMMAND_IDLE;

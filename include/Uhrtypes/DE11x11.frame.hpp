@@ -74,7 +74,7 @@ public:
             col = COLS_MATRIX() - col - 1;
         }
         uint16_t returnValue = col + 1 + (row * COLS_MATRIX() + 2);
-        if (returnValue > NUM_PIXELS()) {
+        if (returnValue > numPixels()) {
             Serial.println("[ERROR] getMatrix() ReturnValue out of Bounds");
         }
         return returnValue;
@@ -98,15 +98,15 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_PIXELS() override { return 169; };
+    virtual const uint16_t numPixels() override { return 169; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_SMATRIX() override { return 121; };
+    virtual const uint16_t numPixelsWordMatrix() override { return 121; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_RMATRIX() override { return 48; };
+    virtual const uint16_t numPixelsFrameMatrix() override { return 48; };
 
     //------------------------------------------------------------------------------
 

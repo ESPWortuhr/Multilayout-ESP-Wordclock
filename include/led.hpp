@@ -144,7 +144,7 @@ inline void Led::clearPixel(uint16_t i) {
 //------------------------------------------------------------------------------
 
 inline void Led::clear() {
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         frontMatrix[i] = false;
         clearPixel(i);
     }
@@ -153,7 +153,7 @@ inline void Led::clear() {
 //------------------------------------------------------------------------------
 
 inline void Led::clearClock() {
-    for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
         clearPixel(usedUhrType->getSMatrix(i));
     }
 }
@@ -182,7 +182,7 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
 //------------------------------------------------------------------------------
 
 inline void Led::clearFrame() {
-    for (uint16_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
         frameArray[i] = false;
         clearPixel(usedUhrType->getRMatrix(i));
     }
@@ -195,7 +195,7 @@ void Led::set(bool changed) {
     uint8_t r2, g2, b2, w2;
     setBrightnessLdr(rr, gg, bb, ww, Foreground);
     setBrightnessLdr(r2, g2, b2, w2, Background);
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         if (lastFrontMatrix[i]) {
             // foreground
             setPixel(rr, gg, bb, ww, i);
@@ -241,9 +241,9 @@ void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100, bool rgb_icon) {
 void Led::setSingle(uint8_t wait) {
     float hue;
 
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        hue = 360.0 * i / (usedUhrType->NUM_PIXELS() - 1);
-        hue = hue + 360.0 / usedUhrType->NUM_PIXELS();
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
+        hue = 360.0 * i / (usedUhrType->numPixels() - 1);
+        hue = hue + 360.0 / usedUhrType->numPixels();
         checkIfHueIsOutOfBound(hue);
 
         clear();
@@ -256,7 +256,7 @@ void Led::setSingle(uint8_t wait) {
 //------------------------------------------------------------------------------
 
 void Led::setAllPixels(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww) {
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         setPixel(rr, gg, bb, ww, i);
     }
 }
@@ -275,7 +275,7 @@ void Led::setFrameColor() {
     uint8_t rr, gg, bb, ww;
     setBrightness(rr, gg, bb, ww, Frame);
 
-    for (uint16_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
         setPixel(rr, gg, bb, ww, usedUhrType->getRMatrix(i));
     }
 }
@@ -342,15 +342,16 @@ void Led::showSeconds() {
     const uint8_t offesetSecondsFrame = 5;
     uint8_t rr, gg, bb, ww;
     setBrightness(rr, gg, bb, ww, Foreground);
-    for (uint8_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
+    for (uint8_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
         if (frameArray[i]) {
-            if (i < usedUhrType->NUM_RMATRIX() - offesetSecondsFrame) {
+            if (i < usedUhrType->numPixelsFrameMatrix() - offesetSecondsFrame) {
                 setPixel(rr, gg, bb, ww,
                          usedUhrType->getRMatrix(i) + offesetSecondsFrame);
             } else {
                 setPixel(rr, gg, bb, ww,
                          usedUhrType->getRMatrix(i) -
-                             usedUhrType->NUM_RMATRIX() + offesetSecondsFrame);
+                             usedUhrType->numPixelsFrameMatrix() +
+                             offesetSecondsFrame);
             }
         }
     }

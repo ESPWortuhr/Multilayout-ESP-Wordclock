@@ -32,11 +32,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_PIXELS() override { return 291; };
+    virtual const uint16_t numPixels() override { return 291; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_SMATRIX() override { return 291; };
+    virtual const uint16_t numPixelsWordMatrix() override { return 291; };
 
     //------------------------------------------------------------------------------
 

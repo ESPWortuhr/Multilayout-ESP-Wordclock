@@ -57,8 +57,8 @@ public:
         if (row % 2 == 0) {
             col = COLS_MATRIX() - col - 1;
         }
-        uint16_t returnValue = NUM_PIXELS() - 1 - (col + (row * COLS_MATRIX()));
-        if (returnValue > NUM_PIXELS()) {
+        uint16_t returnValue = numPixels() - 1 - (col + (row * COLS_MATRIX()));
+        if (returnValue > numPixels()) {
             Serial.println("[ERROR] getMatrix() ReturnValue out of Bounds");
         }
         return returnValue;
