@@ -17,6 +17,11 @@
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with modified
 // layout for extra words in the matrix from the Github user @dbambus
 //
+// #define DEFAULT_LAYOUT Ger10x11AlternativeFrame
+// 10 rows, each 11 LED's per row + 4 LED's (minutes)+ 48 LED's (seconds) in a
+// Frame around with modified layout for extra words in the matrix from the
+// Github user @dbambus
+//
 // #define DEFAULT_LAYOUT Ger10x11Clock
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
 // from the original manufacturer
