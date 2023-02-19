@@ -28,17 +28,15 @@ This is the parent `<div>` that contains the menu and the content area.
     left: 0;
     padding-left: 0;
 }
-    #layout.active #menu {
-        left: 150px;
-        width: 150px;
-    }
 
-    #layout.active .menu-link {
-        left: 150px;
-    }
-/*
-The content `<div>` is where all your content goes.
-*/
+#layout.active #menu {
+    left: 150px;
+    width: 150px;
+}
+
+#layout.active .menu-link {
+    left: 150px;
+}
 
 .header {
      margin: 0;
@@ -46,30 +44,18 @@ The content `<div>` is where all your content goes.
      padding: 1.8em 1.8em 0;
      border-bottom: 1px solid #eee;
  }
-    .header h1 {
-        margin: 0.2em 0;
-        font-size: 2em;
-        font-weight: 300;
-    }
-     .header h2 {
-        font-weight: 300;
-        color: #ccc;
-        padding: 0;
-        margin-top: 0;
-    }
-
-.content-subhead {
-    margin: 50px 0 20px 0;
+.header h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 2em;
     font-weight: 300;
-    color: #888;
 }
 
 .footer {
+    font-size: small;
     text-align: right;
     margin-right: 10px;
 }
-
-
 
 /*
 The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
@@ -161,9 +147,9 @@ small screens.
     left: 0; /* "#menu width" */
     background: #000;
     background: rgba(0,0,0,0.7);
-    font-size: 10px; /* change this value to increase/decrease button size */
+    font-size: 14px; /* change this value to increase/decrease button size */
     z-index: 10;
-    width: 2em;
+    width: 1.6em;
     height: auto;
     padding: 2.1em 1.6em;
 }
@@ -205,12 +191,6 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 */
 @media (min-width: 48em) {
 
-    .header,
-    .content {
-        padding-left: 2em;
-        padding-right: 2em;
-    }
-
     #layout {
         padding-left: 150px; /* left col width "#menu" */
         left: 0;
@@ -231,6 +211,11 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 }
 
 @media (max-width: 48em) {
+
+    .header {
+        padding: 1.1em 4.5em 0.4em 5.3em;
+        border-bottom: none;
+    }
     /* Only apply this when the window is small. Otherwise, the following
     case results in extra padding on the left:
         * Make the window small.
@@ -248,60 +233,16 @@ body {
     font-size: 16px;
 }
 
-.content {
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
-}
-
-.content > .pure-g {
-    margin-left: -10px;
-    margin-right: -10px;
-}
-
 p {
     margin-bottom: 15px;
     margin-top: 0;
 }
+.box > p:last-child {
+    margin-bottom: 0;
+}
 
 a {
     text-decoration: none;
-}
-
-/**
- * Menu
- */
-
-.main-menu {
-    background: #5c5c5c;
-    box-shadow: inset 0 -10px 7px -10px rgba(0, 0, 0, 0.8);
-    overflow-x: scroll;
-    overflow-y: hidden;
-}
-
-.main-menu .content {
-    padding: 0;
-}
-
-.pure-menu-item {
-    height: auto;
-}
-
-.main-menu .pure-menu-link {
-    padding: 1.2em;
-    padding-bottom: 1.0em;
-    padding-top: 1em;
-    color: white;
-}
-
-.pure-menu-link:hover {
-    background: #898989;
-    color: white;
-}
-
-.pure-menu-link.active {
-    background: #f7f7f7;
-    color: #5c5c5c;
 }
 
 /**
@@ -432,48 +373,6 @@ input[type=range]::-moz-range-thumb {
 }
 
 /**
- * Sections
- */
-
-.section, .section-connection-lost{
-    display: none;
-}
-
-.section-connection-lost .box{
-    background: #ffe9e9;
-    color: #a94442;
-    text-align: center;
-    border: 1px solid #e0b2b2;
-    box-shadow: none;
-}
-
-.section-connection-lost .status-button{
-    float: right;
-    color: #fff;
-    border-radius: 2em;
-    background-color: #d9534f;
-    border-color: #d9534f;
-    margin-left: 20px;
-}
-
-.section-main {
-    display: block;
-}
-
-.box-debug {
-    overflow: hidden;
-    overflow-wrap: break-word;
-}
-
-.box-debug > div{
-    font-family: monospace;
-}
-
-.brightness, .speed, .functions-settings, .leds, .position{
-    display: none;
-}
-
-/**
  * Settings
  */
 
@@ -510,6 +409,7 @@ input[type=range]::-moz-range-thumb {
     background: #fff;
     border-radius: 3px;
     color: #5f6368;
+    text-align: justify;
 }
 
 .box h2 {
@@ -550,16 +450,16 @@ input[type=range]::-moz-range-thumb {
     width: 60px !important;
     height: 34px;
   }
-  
-  /* Hide default HTML checkbox */
-  .switch input {
+
+/* Hide default HTML checkbox */
+.switch input {
     opacity: 0;
     width: 0;
     height: 0;
-  }
-  
-  /* The Toggle slider */
-  .slider {
+}
+
+/* The Toggle slider */
+.slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -569,9 +469,9 @@ input[type=range]::-moz-range-thumb {
     background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
-  }
-  
-  .slider:before {
+}
+
+.slider:before {
     position: absolute;
     content: "";
     height: 26px;
@@ -581,32 +481,32 @@ input[type=range]::-moz-range-thumb {
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
-  }
-  
-  input:checked + .slider {
-    background-color: #5992aa;
-  }
-  
-  input:focus + .slider {
-    box-shadow: 0 0 1px #5992aa;
-  }
-  
-  input:checked + .slider:before {
+}
+
+input:checked + .slider {
+    background-color: #1f8dd6;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #1f8dd6;
+}
+
+input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
-  }
-  
-  /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
-  }
-  
-  .slider.round:before {
-    border-radius: 50%;
-  }
+}
 
-  .swatch-grid {
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.swatch-grid {
     display: grid;
     grid-template-columns: repeat(4, 50px);
     grid-template-rows: repeat(2, 50px);
@@ -614,11 +514,57 @@ input[type=range]::-moz-range-thumb {
     margin-top: 1em;
     margin-bottom: 1em;
     justify-content: center;
-  }
-  
-  .swatch {
+}
+
+.swatch {
     border: 2px solid gray;
     border-width: 1px;
     border-radius: 20px;
     cursor: pointer;
-  }
+}
+
+/**
+ * Sections
+ */
+
+.section, .section-connection-lost{
+    display: none;
+}
+
+.section-connection-lost .box{
+    background: #ffe9e9;
+    color: #a94442;
+    text-align: center;
+    border: 1px solid #e0b2b2;
+    box-shadow: none;
+}
+
+.section-connection-lost .status-button{
+    float: right;
+    color: #fff;
+    border-radius: 2em;
+    background-color: #d9534f;
+    border-color: #d9534f;
+    margin-left: 20px;
+}
+
+.section-main {
+    display: block;
+}
+
+.box-color {
+    text-align: center;
+}
+
+.box-debug {
+    overflow: hidden;
+    overflow-wrap: break-word;
+}
+
+.box-debug > div{
+    font-family: monospace;
+}
+
+.brightness, .speed, .functions-settings, .leds, .position{
+    display: none;
+}
