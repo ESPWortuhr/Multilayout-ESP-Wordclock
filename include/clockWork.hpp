@@ -11,7 +11,7 @@ OpenWMap weather;
 //------------------------------------------------------------------------------
 
 void ClockWork::copyClockface(const bool source[], bool destination[]) {
-    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
+    for (uint16_t i = 0; i < MAX_ARRAY_SIZE; i++) {
         destination[i] = source[i];
     }
 }
@@ -19,7 +19,7 @@ void ClockWork::copyClockface(const bool source[], bool destination[]) {
 //------------------------------------------------------------------------------
 
 bool ClockWork::changesInClockface() {
-    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
+    for (uint16_t i = 0; i < MAX_ARRAY_SIZE; i++) {
         if (frontMatrix[i] != lastFrontMatrix[i]) {
             return true;
         }
