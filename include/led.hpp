@@ -256,7 +256,7 @@ void Led::setSingle(uint8_t wait) {
 //------------------------------------------------------------------------------
 
 void Led::setAllPixels(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww) {
-    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
         setPixel(rr, gg, bb, ww, i);
     }
 }

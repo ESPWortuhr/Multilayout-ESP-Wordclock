@@ -69,7 +69,7 @@ void ClockWork::loopLdrLogic() {
 void ClockWork::rainbow() {
     static float hue = 0;
 
-    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
         led.setPixelHsb(i, hue, 100, G.effectBri);
     }
     led.show();
