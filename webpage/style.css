@@ -584,7 +584,7 @@ input[type=range]::-moz-range-thumb {
   }
   
   input:checked + .slider {
-    background-color: #5992aa;
+    background-color: #1f8dd6;
   }
   
   input:focus + .slider {
