@@ -977,9 +977,9 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_SET_UHRTYPE: {
         eeprom::write();
-        if (usedUhrType->NUM_RMATRIX() != 0) {
-            led.clearFrame();
-        }
+        led.clear();
+        led.show();
+        delay(10);
         Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
         usedUhrType = getPointer(G.UhrtypeDef);
         resetMinVariantIfNotAvailable();
