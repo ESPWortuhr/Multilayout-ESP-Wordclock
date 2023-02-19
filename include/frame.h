@@ -19,7 +19,7 @@ private:
     void frameLogic();
 
 public:
-    SecondsFrame(const uint8_t numPixels);
+    SecondsFrame(const uint8_t num);
     ~SecondsFrame();
 
     void setup();
@@ -48,7 +48,7 @@ void SecondsFrame::setInitFrameSector() {
 
     case SecondVariant::FrameSectorToggle:
         if (_minute % 2 == 1) {
-            for (uint8_t i = 0; i <= usedUhrType->NUM_RMATRIX(); i++) {
+            for (uint8_t i = 0; i <= numFramePixels; i++) {
                 frameArray[i] = true;
             }
         }
@@ -67,7 +67,7 @@ void SecondsFrame::setInitFrameSector() {
 
 void SecondsFrame::setup() {
     led.clearFrame();
-    _secondFrame = _second / (60 / numFramePixels);
+    _secondFrame = _second / (60.f / numFramePixels);
     setInitFrameSector();
     parametersChanged = true;
 }

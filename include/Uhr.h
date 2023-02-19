@@ -4,6 +4,7 @@
 
 #define PAYLOAD_LENGTH 30
 #define MAX_ARRAY_SIZE 291
+#define MAX_FRAME_ARRAY_SIZE 60
 
 enum ClockWords {
     ESIST = 0,
@@ -130,7 +131,7 @@ uint8_t lastMinute = 0;
 
 bool frontMatrix[MAX_ARRAY_SIZE] = {false};
 bool lastFrontMatrix[MAX_ARRAY_SIZE] = {false};
-bool frameArray[48] = {false};
+bool frameArray[MAX_FRAME_ARRAY_SIZE] = {false};
 bool parametersChanged = false;
 uint8_t statusAccessPoint = 0;
 

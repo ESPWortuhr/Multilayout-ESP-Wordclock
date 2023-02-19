@@ -233,7 +233,7 @@ void setup() {
     if (usedUhrType->NUM_RMATRIX() != 0) {
         secondsFrame = new SecondsFrame(usedUhrType->NUM_RMATRIX());
     } else {
-        secondsFrame = NULL;
+        secondsFrame = nullptr;
     }
 
     //-------------------------------------
