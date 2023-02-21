@@ -102,11 +102,13 @@ public:
 
     virtual inline const uint16_t numPixels() { return 114; }
 
-    virtual inline const uint16_t numPixelsWordMatrix() { return 114; }
+    virtual inline const uint16_t numPixelsWordMatrix() {
+        return rowsWordMatrix() * colsWordMatrix();
+    }
 
     virtual inline const uint16_t numPixelsFrameMatrix() { return 0; }
 
-    virtual inline const uint16_t rowsWordMatrix() { return 11; }
+    virtual inline const uint16_t rowsWordMatrix() { return 10; }
 
     virtual inline const uint16_t colsWordMatrix() { return 11; }
 

@@ -46,11 +46,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t numPixelsWordMatrix() override { return 125; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t rowsWordMatrix() override { return 12; };
+    virtual const uint16_t rowsWordMatrix() override { return 11; };
 
     //------------------------------------------------------------------------------
 

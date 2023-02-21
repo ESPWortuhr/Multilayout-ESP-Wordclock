@@ -173,8 +173,8 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
         clearRow(i);
     }
 
-    for (uint8_t i = usedUhrType->rowsWordMatrix() - 1;
-         i > offsetRow + fontHeight; i--) {
+    for (uint8_t i = usedUhrType->rowsWordMatrix(); i > offsetRow + fontHeight;
+         i--) {
         clearRow(i - 1);
     }
 }
@@ -284,8 +284,7 @@ void Led::setFrameColor() {
 
 void Led::shiftColumnToRight() {
     for (uint8_t col = 0; col < usedUhrType->colsWordMatrix() - 1; col++) {
-        for (uint8_t row = 0;
-             row < usedUhrType->rowsWordMatrix() - 1 /* Only Front*/; row++) {
+        for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
             if (G.Colortype == Grbw) {
                 setPixelColorObject(
                     usedUhrType->getFrontMatrix(row, col),
@@ -316,7 +315,7 @@ void Led::showNumbers(const char d1, const char d2) {
     clearClock();
     static uint8_t offsetLetter0 = 0;
     static uint8_t offsetLetter1 = fontWidth + 1;
-    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - fontHeight - 1) / 2;
+    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - fontHeight) / 2;
 
     if (usedUhrType->has24HourLayout()) {
         offsetLetter0 = 3;

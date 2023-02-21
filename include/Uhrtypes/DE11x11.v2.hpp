@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Uhrtype.hpp"
+#include "DE11x11.hpp"
 
 /*
  * Layout Front
@@ -19,30 +19,8 @@
  * + + + +
  */
 
-class De11x11V2_t : public iUhrType {
+class De11x11V2_t : public De11x11_t {
 public:
-    virtual LanguageAbbreviation usedLang() override {
-        return LanguageAbbreviation::DE;
-    };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t numPixels() override { return 125; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t numPixelsWordMatrix() override { return 125; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t rowsWordMatrix() override { return 12; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const bool hasZwanzig() override { return false; }
-
-    //------------------------------------------------------------------------------
-
     void show(FrontWord word) override {
         switch (word) {
 

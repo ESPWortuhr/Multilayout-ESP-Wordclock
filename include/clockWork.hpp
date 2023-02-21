@@ -100,7 +100,7 @@ void ClockWork::rainbowCycle() {
 
 void ClockWork::scrollingText(const char *buf) {
     static uint8_t i = 0, ii = 0;
-    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - fontHeight - 1) / 2;
+    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - fontHeight) / 2;
     uint8_t fontIndex = buf[ii];
 
     led.shiftColumnToRight();
