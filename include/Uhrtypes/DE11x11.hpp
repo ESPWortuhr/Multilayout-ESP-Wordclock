@@ -27,22 +27,29 @@ public:
 
     //------------------------------------------------------------------------------
 
-    const uint16_t minArr[2][4] = {
-        {121, 122, 123, 124}, // LEDs for "Normal" minute display
-        {110, 111, 112, 113}  // LEDs für "Row" type minute display
-    };
-
-    //------------------------------------------------------------------------------
-
-    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
+    virtual const void getMinuteArray(uint16_t *returnArr,
+                                      uint8_t col) override {
         for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = minArr[col][i];
+            switch (col) {
+            case 0: // LEDs for "LED4x" minute display
+                returnArr[i] = numPixels() - (7 - i);
+                break;
+            case 1: // LEDs for "LED7x" minute display
+                returnArr[i] = numPixels() - (7 - (i * 2));
+                break;
+            case 2: // LEDs für "Corners" type minute display
+                returnArr[i] = 110 + i;
+                break;
+
+            default:
+                break;
+            }
         }
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t numPixels() override { return 125; };
+    virtual const uint16_t numPixels() override { return 128; };
 
     //------------------------------------------------------------------------------
 

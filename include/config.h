@@ -136,3 +136,14 @@
  */
 #define BOOT_SHOWIP true
 #define BOOT_LEDSWEEP false
+
+//--------------------------------------------------------------------------
+// Displaying Option for Minutes
+//--------------------------------------------------------------------------
+/*
+ *
+ * Valid values [only one #define option]
+ */
+//#define MINUTE_Off
+#define MINUTE_LED4x
+//#define MINUTE_LED7x

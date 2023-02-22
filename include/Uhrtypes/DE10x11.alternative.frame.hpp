@@ -38,9 +38,12 @@ public:
         return 114 + index;
     };
 
-    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
+    //------------------------------------------------------------------------------
+
+    virtual const void getMinuteArray(uint16_t *returnArr,
+                                      uint8_t col) override {
         for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = 114 - (4 - i);
+            returnArr[i] = 110 + i;
         }
     };
 };

@@ -46,6 +46,23 @@ public:
         for (uint8_t i = 0; i < 4; i++) {
             returnArr[i] = minArr[i];
         }
+        for (uint8_t i = 0; i < 4; i++) {
+            switch (col) {
+            case 0:
+                // LEDs for "LED4x" minute display
+                // {112, 114, 116, 118}
+                returnArr[i] = 113 + i;
+                break;
+            case 1:
+                // LEDs for "LED7x" minute display
+                // {112, 114, 116, 118}
+                returnArr[i] = 112 + (i * 2);
+                break;
+
+            default:
+                break;
+            }
+        }
     };
 
     //------------------------------------------------------------------------------

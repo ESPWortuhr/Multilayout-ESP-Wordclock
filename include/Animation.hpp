@@ -291,11 +291,14 @@ void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
 
 uint8_t Animation::determineWhichMinuteVariant() {
     switch (G.minuteVariant) {
-    case MinuteVariant::Row:
+    case MinuteVariant::LED4x:
         return 0;
         break;
-    case MinuteVariant::Corners:
+    case MinuteVariant::LED7x:
         return 1;
+        break;
+    case MinuteVariant::Corners:
+        return 2;
         break;
     default:
         Serial.println("[ERROR] G.minuteVariant undefined");

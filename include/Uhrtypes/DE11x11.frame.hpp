@@ -53,16 +53,30 @@ public:
 
     //------------------------------------------------------------------------------
 
-    const uint16_t minArr[2][4] = {
-        {0, 12, 168, 156},   // LEDs for "Normal" minute display
-        {152, 150, 148, 146} // LEDs für "Row" type minute display
-    };
-
-    //------------------------------------------------------------------------------
-
     virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
+        const uint8_t corner[4] = {152, 150, 148, 146};
+
         for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = minArr[col][i];
+            switch (col) {
+            case 0:
+                // LEDs for "LED4x" minute display
+                // {150, 149, 148, 147}
+                returnArr[i] = 150 - i;
+                break;
+            case 1:
+                // LEDs for "LED7x" minute display
+                // {152, 150, 148, 146}
+                returnArr[i] = 152 - (i * 2);
+                break;
+            case 2:
+                // LEDs for "Corners" minute display
+                // {0, 12, 168, 156}
+                returnArr[i] = corner[i];
+                break;
+
+            default:
+                break;
+            }
         }
     };
 

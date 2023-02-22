@@ -378,8 +378,8 @@ function initWebsocket() {
 			enableSpecific("specific-layout-5", data.hasWeatherLayout);
 			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // EN10x11
 			enableSpecific("specific-colortype-4", data.colortype === 4);
-			removeSpecificOption("show-minutes", "2", data.UhrtypeDef !== 4); // MinuteVariant "Row"
-			removeSpecificOption("show-minutes", "3", data.UhrtypeDef !== 9); // MinuteVariant "In Words"
+			removeSpecificOption("show-minutes", "3", data.numOfRows !== 11); // MinuteVariant "Corners" only for DE11x11 Variants
+			removeSpecificOption("show-minutes", "4", data.UhrtypeDef !== 9); // MinuteVariant "In Words"
 
 			autoLdrEnabled = data.autoLdrEnabled;
 			$("#auto-ldr-enabled").set("value", autoLdrEnabled);

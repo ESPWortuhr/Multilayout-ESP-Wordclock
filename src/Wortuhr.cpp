@@ -157,7 +157,16 @@ void setup() {
         G.effectSpeed = 10;
         G.client_nr = 0;
         G.secondVariant = SecondVariant::Off;
-        G.minuteVariant = MinuteVariant::Corners;
+// C++23 #elifdef doesn't work yet
+#ifdef MINUTE_Off
+        G.minuteVariant = MinuteVariant::Off;
+#endif
+#ifdef MINUTE_4xLED
+        G.minuteVariant = MinuteVariant::LED7x;
+#endif
+#ifdef MINUTE_7xLED
+        G.minuteVariant = MinuteVariant::LED7x;
+#endif
         G.ldr = 0;
         G.ldrCal = 0;
         strcpy(G.openWeatherMap.cityid, "");

@@ -217,11 +217,14 @@ void ClockWork::setHour(const uint8_t hour, const bool fullHour) {
 
 uint8_t ClockWork::determineWhichMinuteVariant() {
     switch (G.minuteVariant) {
-    case MinuteVariant::Row:
+    case MinuteVariant::LED4x:
         return 0;
         break;
-    case MinuteVariant::Corners:
+    case MinuteVariant::LED7x:
         return 1;
+        break;
+    case MinuteVariant::Corners:
+        return 2;
         break;
     default:
         Serial.println("[ERROR] G.minuteVariant undefined");
@@ -718,9 +721,9 @@ void ClockWork::initLedStrip(uint8_t num) {
 void resetMinVariantIfNotAvailable() {
     if (G.UhrtypeDef != Nl10x11 && G.minuteVariant == MinuteVariant::InWords) {
         G.minuteVariant = MinuteVariant::Off;
-    } else if (G.UhrtypeDef != Ger11x11Frame &&
-               G.minuteVariant == MinuteVariant::Row) {
-        G.minuteVariant = MinuteVariant::Off;
+    } else if (usedUhrType->rowsWordMatrix() != 11 &&
+               G.minuteVariant == MinuteVariant::Corners) {
+        G.minuteVariant = MinuteVariant::LED4x;
     }
 }
 
@@ -849,6 +852,7 @@ void ClockWork::loop(struct tm &tm) {
         config["hasZwanzig"] = usedUhrType->hasZwanzig();
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
+        config["numOfRows"] = usedUhrType->rowsWordMatrix();
         serializeJson(config, str);
         Serial.print("Sending Payload:");
         Serial.println(str);
