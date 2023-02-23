@@ -18,8 +18,6 @@
  *
  */
 
-#define USE_DREIVIERTEL
-
 class En10x11_t : public iUhrType {
 public:
     virtual LanguageAbbreviation usedLang() override {

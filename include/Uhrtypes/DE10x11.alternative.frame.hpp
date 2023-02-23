@@ -18,8 +18,6 @@
  *
  */
 
-#define USE_DREIVIERTEL
-
 class De10x11AlternativeFrame_t : public De10x11Alternative_t {
 public:
     virtual const uint16_t numPixels() override { return 169; };
