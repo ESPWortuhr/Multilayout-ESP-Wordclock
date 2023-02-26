@@ -413,11 +413,15 @@ function initWebsocket() {
 			var index;
 			var animSelect = document.getElementById("animation-types");
 			var option;
+
+			while (animSelect.options.length > 0) {
+				animSelect.remove(0);
+			}
+
 			for (index = 0; index < animTypes.length; index++) {
 				option = document.createElement("option");
 				option.value = index;
 				option.text = animTypes[index];
-				animSelect.remove(index);
 				animSelect.add(option);
 			}
 			setAnimation();

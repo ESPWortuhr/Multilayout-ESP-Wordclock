@@ -1,8 +1,8 @@
-# ESPWortUhr
+# ESP Wortuhr
 
 English description further below.
 
-Dies ist ein Projekt für eine mehrsprachige Wordclock, basierend auf einem ESP8266 Mikrocontroller und einem programmierbaren LED-Streifen (WS2812 oder SK6812). Eine Wordclock ist ein einzigartiges Projekt, das Technologie und Design kombiniert, um einen funktionalen und ästhetisch ansprechenden Zeitmesser zu schaffen. Mit der Möglichkeit, die Zeit in mehreren Sprachen anzuzeigen, ist diese Wordclock nicht nur ein Gesprächsthema, sondern auch eine praktische Lösung für alle, die nach einer modernen und innovativen Möglichkeit suchen, die Zeit im Auge zu behalten.
+Dies ist ein Projekt für eine mehrsprachige Wortuhr, basierend auf einem ESP8266 Mikrocontroller und einem programmierbaren LED-Streifen (WS2812 oder SK6812). Eine Wortuhr ist ein einzigartiges Projekt, das Technologie und Design kombiniert, um einen funktionalen und ästhetisch ansprechenden Zeitmesser zu schaffen. Mit der Möglichkeit, die Zeit in mehreren Sprachen anzuzeigen, ist diese Wortuhr nicht nur ein Gesprächsthema, sondern auch eine praktische Lösung für alle, die nach einer modernen und innovativen Möglichkeit suchen, die Zeit im Auge zu behalten.
 Egal, ob du ein Anfänger oder ein erfahrener Bastler bist, dieses Projekt ist eine großartige Möglichkeit, deine Fähigkeiten auf die Probe zu stellen und etwas wirklich Besonderes zu schaffen.
 
 ![](pics/wortuhr-webpage.png)
@@ -26,7 +26,7 @@ Egal, ob du ein Anfänger oder ein erfahrener Bastler bist, dieses Projekt ist e
 * Gehen Sie zu 'Quick Access / Miscellaneous' und geben Sie den Befehl 'Clone Git Project' ein, und geben Sie 'https://github.com/ESPWortuhr/Wortuhr' als URL ein.
 * Gehen Sie dann zu 'Projekte', fügen Sie das neue Projekt mit 'Vorhandenes hinzufügen' zur Liste hinzu und klicken Sie auf 'Öffnen'.
 * In der PlatformIO-Seitenleiste erscheint nun 'Project Tasks'. Wählen Sie den Befehl 'General / Upload' (dauert ein paar Minuten, die Software wird zuerst erstellt).
-* Schließen Sie den ESP-8266 über USB an. Wenn die Wordclock-Software erstellt ist, wird sie auf dem ESP installiert.
+* Schließen Sie den ESP-8266 über USB an. Wenn die Wortuhr-Software erstellt ist, wird sie auf dem ESP installiert.
 
 ### MacOS
 
@@ -80,7 +80,7 @@ Die einzige Bedingung ist, dass der Copyright-Hinweis des Originalprogramms nich
 
 ## ENGLISH Textversion
 
-This is a project for a multilingual wordclock based on an ESP8266 microcontroller and a programmable LED stripe (WS2812 or SK6812). A Wordclock is a unique project that combines technology and design to create a functional and aesthetically pleasing timepiece. With the ability to display the time in multiple languages, this wordclock is not only a conversation piece, but also a practical solution for anyone looking for a modern and innovative way to keep track of time.
+This is a project for a multilingual wordclock based on an ESP8266 microcontroller and a programmable LED stripe (WS2812 or SK6812). A wordclock is a unique project that combines technology and design to create a functional and aesthetically pleasing timepiece. With the ability to display the time in multiple languages, this wordclock is not only a conversation piece, but also a practical solution for anyone looking for a modern and innovative way to keep track of time.
 Whether you're a beginner or an experienced maker, this project is a great way to put your skills to the test and create something truly special.
 
 ![](pics/wortuhr-webpage.png)
