@@ -38,7 +38,8 @@ module.exports = function(grunt) {
 			options: {
 				"id-class-style": "dash",
 				"attr-bans": ["align", "background", "bgcolor", "border", "frameborder", "longdesc", "marginwidth", "marginheight", "scrolling", "width"],
-				"line-end-style": false
+				"line-end-style": false,
+				"attr-name-ignore-regex": "viewBox"
 			}
 		},
 
@@ -113,8 +114,8 @@ module.exports = function(grunt) {
 			},
 			html_to_h: {
 				options: {
-					process: function(content, srcpath) {
-						var gen = "";
+					process: function(content) {
+						let gen = "";
 						gen += "// generated file -- do not modify\n";
 						gen += "// change *.html/*.css/*.js files instead\n\n";
 						gen += "const char html_code[] PROGMEM = R\"=====(\n";

@@ -1,5 +1,10 @@
-body {
-    color: #777;
+html, body {
+    padding: 0;
+    margin: 0;
+    color: #565656;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: #f7f7f7;
+    font-size: 16px;
 }
 
 .pure-img-responsive {
@@ -7,12 +12,25 @@ body {
     height: auto;
 }
 
+p {
+    margin-bottom: 15px;
+    margin-top: 0;
+}
+.box > p:last-child {
+    margin-bottom: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
 /*
-Add transition to containers so they can push in and out.
-*/
-#layout,
-#menu,
-.menu-link {
+ * Layout
+ */
+
+.layout,
+.menu,
+.hamburger {
     -webkit-transition: all 0.2s ease-out;
     -moz-transition: all 0.2s ease-out;
     -ms-transition: all 0.2s ease-out;
@@ -20,288 +38,158 @@ Add transition to containers so they can push in and out.
     transition: all 0.2s ease-out;
 }
 
-/*
-This is the parent `<div>` that contains the menu and the content area.
-*/
-#layout {
+.layout {
     position: relative;
     left: 0;
     padding-left: 0;
 }
-    #layout.active #menu {
-        left: 150px;
-        width: 150px;
-    }
 
-    #layout.active .menu-link {
-        left: 150px;
-    }
-/*
-The content `<div>` is where all your content goes.
-*/
+.layout.active .menu {
+    left: 170px;
+    width: 170px;
+}
+
+.layout.active .hamburger {
+    left: 170px;
+}
 
 .header {
-     margin: 0;
-     color: #333;
-     padding: 1.8em 1.8em 0;
-     border-bottom: 1px solid #eee;
- }
-    .header h1 {
-        margin: 0.2em 0;
-        font-size: 2em;
-        font-weight: 300;
-    }
-     .header h2 {
-        font-weight: 300;
-        color: #ccc;
-        padding: 0;
-        margin-top: 0;
-    }
-
-.content-subhead {
-    margin: 50px 0 20px 0;
+    margin: 0;
+    padding: .5em;
+    color: black;
+    height: 1.9em;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.header svg {
+    float: left;
+    margin-right: 0.6em;
+    height: 1.9em;
+    width: 1.9em;
+    fill: #1f8dd6;
+}
+.header svg use {
+    height: 1.9em;
+    width: 1.9em;
+}
+.header h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.7em;
     font-weight: 300;
-    color: #888;
+    color: #5c5c5c;
+}
+
+.hamburger {
+    position: fixed;
+    display: block;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    height: 1.9em;
+    width: 1.9em;
+    padding: 0.5em;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background: #f7f7f7;
+}
+
+.hamburger svg {
+    float: left;
+    height: 1.9em;
+    width: 1.9em;
+    fill: #5c5c5c;
 }
 
 .footer {
+    font-size: small;
     text-align: right;
-    margin-right: 10px;
+    margin-right: 0.8em;
+    padding-bottom: 0.8em;
 }
 
-
-
 /*
-The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
-appears on the left side of the page.
-*/
+ * Menu
+ */
 
-#menu {
-    margin-left: -150px; /* "#menu" width */
-    width: 150px;
+.menu {
+    margin-left: -170px;
+    width: 170px;
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    z-index: 1000; /* so the menu or its navicon stays above all content */
-    background: #191818;
+    z-index: 1000;
+    background: #5c5c5c;
     overflow-y: auto;
 }
-    /*
-    All anchors inside the menu should be styled like this.
-    */
-    #menu a {
-        color: #999;
-        border: none;
-        padding: 0.6em 0 0.6em 0.6em;
-    }
-
-    /*
-    Remove all background/borders, since we are applying them to #menu.
-    */
-     #menu .pure-menu,
-     #menu .pure-menu ul {
-        border: none;
-        background: transparent;
-    }
-
-    /*
-    Add that light border to separate items into groups.
-    */
-    #menu .pure-menu ul,
-    #menu .pure-menu .menu-item-divided {
-        border-top: 1px solid #333;
-    }
-        /*
-        Change color of the anchor links on hover/focus.
-        */
-        #menu .pure-menu li a:hover,
-        #menu .pure-menu li a:focus {
-            background: #333;
-        }
-
-    /*
-    This styles the selected menu item `<li>`.
-    */
-    #menu .pure-menu-selected,
-    #menu .pure-menu-heading {
-        background: #1f8dd6;
-    }
-        /*
-        This styles a link within a selected menu item `<li>`.
-        */
-        #menu .pure-menu-selected a {
-            color: #fff;
-        }
-
-    /*
-    This styles the menu heading.
-    */
-    #menu .pure-menu-heading {
-        font-size: 110%;
-        color: #fff;
-        margin: 0;
-    }
-
-/* -- Dynamic Button For Responsive Menu -------------------------------------*/
-
-/*
-The button to open/close the Menu is custom-made and not part of Pure. Here's
-how it works:
-*/
-
-/*
-`.menu-link` represents the responsive menu toggle that shows/hides on
-small screens.
-*/
-.menu-link {
-    position: fixed;
-    display: block; /* show this only on small screens */
-    top: 0;
-    left: 0; /* "#menu width" */
-    background: #000;
-    background: rgba(0,0,0,0.7);
-    font-size: 10px; /* change this value to increase/decrease button size */
-    z-index: 10;
-    width: 2em;
-    height: auto;
-    padding: 2.1em 1.6em;
+.menu a {
+    color: #ffffff;
+    border: none;
+    padding: 0.6em 0 0.6em 0.6em;
 }
 
-    .menu-link:hover,
-    .menu-link:focus {
-        background: #000;
-    }
-
-    .menu-link span {
-        position: relative;
-        display: block;
-    }
-
-    .menu-link span,
-    .menu-link span:before,
-    .menu-link span:after {
-        background-color: #fff;
-        width: 100%;
-        height: 0.2em;
-    }
-
-        .menu-link span:before,
-        .menu-link span:after {
-            position: absolute;
-            margin-top: -0.6em;
-            content: " ";
-        }
-
-        .menu-link span:after {
-            margin-top: 0.6em;
-        }
-
-
-/* -- Responsive Styles (Media Queries) ------------------------------------- */
+.menu .pure-menu,
+.menu .pure-menu ul {
+    border: none;
+    background: transparent;
+}
+.menu .pure-menu li a:hover,
+.menu .pure-menu li a:focus {
+    background: #383838;
+}
+.menu .pure-menu-heading {
+    background: #1f8dd6;
+}
+.menu .pure-menu-selected{
+    background: #898989;
+}
+.menu .pure-menu-selected a {
+    color: #fff;
+}
+.menu .pure-menu-heading {
+    font-size: 120%;
+    color: #fff;
+    margin: 0;
+    text-transform: none;
+}
 
 /*
-Hides the menu at `48em`, but modify this based on your app's needs.
-*/
-@media (min-width: 48em) {
+ * Menu Responsive styles
+ */
 
-    .header,
-    .content {
-        padding-left: 2em;
-        padding-right: 2em;
-    }
+@media (min-width: 41em) {
 
-    #layout {
-        padding-left: 150px; /* left col width "#menu" */
+    .layout {
+        padding-left: 170px;
         left: 0;
     }
-    #menu {
-        left: 150px;
+    .menu {
+        left: 170px;
     }
 
-    .menu-link {
-        position: fixed;
-        left: 150px;
+    .hamburger {
+        position: static;
+        left: 170px;
         display: none;
     }
 
-    #layout.active .menu-link {
-        left: 150px;
+    .layout.active .hamburger {
+        left: 170px;
     }
 }
 
-@media (max-width: 48em) {
-    /* Only apply this when the window is small. Otherwise, the following
-    case results in extra padding on the left:
-        * Make the window small.
-        * Tap the menu to trigger the active state.
-        * Make the window large again.
-    */
-    #layout.active {
+@media (max-width: 41em) {
+
+    .header {
+        padding-left: 3.8em;
+    }
+    .header .page-icon {
+        float: right;
+    }
+    .layout.active {
         position: relative;
-        left: 150px;
+        left: 170px;
     }
-}
-
-body {
-    background: #f7f7f7;
-    font-size: 16px;
-}
-
-.content {
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
-}
-
-.content > .pure-g {
-    margin-left: -10px;
-    margin-right: -10px;
-}
-
-p {
-    margin-bottom: 15px;
-    margin-top: 0;
-}
-
-a {
-    text-decoration: none;
-}
-
-/**
- * Menu
- */
-
-.main-menu {
-    background: #5c5c5c;
-    box-shadow: inset 0 -10px 7px -10px rgba(0, 0, 0, 0.8);
-    overflow-x: scroll;
-    overflow-y: hidden;
-}
-
-.main-menu .content {
-    padding: 0;
-}
-
-.pure-menu-item {
-    height: auto;
-}
-
-.main-menu .pure-menu-link {
-    padding: 1.2em;
-    padding-bottom: 1.0em;
-    padding-top: 1em;
-    color: white;
-}
-
-.pure-menu-link:hover {
-    background: #898989;
-    color: white;
-}
-
-.pure-menu-link.active {
-    background: #f7f7f7;
-    color: #5c5c5c;
 }
 
 /**
@@ -315,10 +203,6 @@ a {
     margin-bottom: 15px;
     margin-top: 10px;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
-}
-
-.button-xl {
-    font-size: 150%;
 }
 
 .pure-g.colors > div {
@@ -432,64 +316,8 @@ input[type=range]::-moz-range-thumb {
 }
 
 /**
- * Sections
- */
-
-.section, .section-connection-lost{
-    display: none;
-}
-
-.section-connection-lost .box{
-    background: #ffe9e9;
-    color: #a94442;
-    text-align: center;
-    border: 1px solid #e0b2b2;
-    box-shadow: none;
-}
-
-.section-connection-lost .status-button{
-    float: right;
-    color: #fff;
-    border-radius: 2em;
-    background-color: #d9534f;
-    border-color: #d9534f;
-    margin-left: 20px;
-}
-
-.section-main {
-    display: block;
-}
-
-.box-debug {
-    overflow: hidden;
-    overflow-wrap: break-word;
-}
-
-.box-debug > div{
-    font-family: monospace;
-}
-
-.brightness, .speed, .functions-settings, .leds, .position{
-    display: none;
-}
-
-/**
  * Settings
  */
-
-.section-settings > div, .section-settings .pure-u-1, .section-settings .box {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.section-settings .pure-u-1 {
-    padding-bottom: 20px;
-}
-
-.section-settings .box {
-    height: 100%;
-}
 
 .status.online {
     color: green;
@@ -499,27 +327,34 @@ input[type=range]::-moz-range-thumb {
     color: red;
 }
 
+@media only screen and (max-width: 480px) {
+    .pure-form-aligned input, .pure-form-aligned select, .pure-form-aligned textarea, .pure-form-message-inline {
+        width: 100%;
+    }
+}
+
 /**
  * Box
  */
 
 .box {
-    padding: 20px;
-    margin: 10px;
-    box-shadow: 0 1px 1px 0 rgba(60,64,67,.08),0 1px 3px 1px rgba(60,64,67,.16);
+    padding: 1em;
+    margin: 0.8em;
+    box-shadow: 0 1px 1px 0 rgba(60, 64, 67, .08),0 1px 3px 1px rgba(60,64,67,.16);
     background: #fff;
-    border-radius: 3px;
-    color: #5f6368;
+    border-radius: 0.4em;
+    text-align: justify;
+    hyphens: auto;
 }
 
 .box h2 {
     margin-top: -5px;
     border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 10px;
-    margin-left: -20px;
-    margin-right: -20px;
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-bottom: 0.6em;
+    margin-left: -1em;
+    margin-right: -1em;
+    padding-right: 1em;
+    padding-left: 1em;
     font-weight: normal;
     font-size: 1.1em;
 }
@@ -543,23 +378,27 @@ input[type=range]::-moz-range-thumb {
 }
 
 
-/* The switch - the box around the slider */
+/*
+ * Switch
+ */
+.pure-form-aligned .pure-control-group label.switch {
+    width: 60px;
+}
 .switch {
     position: relative;
     display: inline-block;
-    width: 60px !important;
     height: 34px;
-  }
-  
-  /* Hide default HTML checkbox */
-  .switch input {
+}
+
+/* Hide default HTML checkbox */
+.switch input {
     opacity: 0;
     width: 0;
     height: 0;
-  }
-  
-  /* The Toggle slider */
-  .slider {
+}
+
+/* The Toggle slider */
+.slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -569,9 +408,9 @@ input[type=range]::-moz-range-thumb {
     background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
-  }
-  
-  .slider:before {
+}
+
+.slider:before {
     position: absolute;
     content: "";
     height: 26px;
@@ -581,44 +420,101 @@ input[type=range]::-moz-range-thumb {
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
-  }
-  
-  input:checked + .slider {
-    background-color: #5992aa;
-  }
-  
-  input:focus + .slider {
-    box-shadow: 0 0 1px #5992aa;
-  }
-  
-  input:checked + .slider:before {
+}
+
+input:checked + .slider {
+    background-color: #1f8dd6;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #1f8dd6;
+}
+
+input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
-  }
-  
-  /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
-  }
-  
-  .slider.round:before {
-    border-radius: 50%;
-  }
+}
 
-  .swatch-grid {
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.IroWheelBorder, .IroSliderGradient {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.5) !important;
+    border: none !important;
+}
+
+.swatch-grid {
     display: grid;
-    grid-template-columns: repeat(4, 50px);
+    grid-template-columns: repeat(4, 68px);
     grid-template-rows: repeat(2, 50px);
     grid-gap: 10px;
     margin-top: 1em;
     margin-bottom: 1em;
     justify-content: center;
-  }
-  
-  .swatch {
-    border: 2px solid gray;
-    border-width: 1px;
-    border-radius: 20px;
+}
+
+.swatch {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
     cursor: pointer;
-  }
+}
+
+/**
+ * Sections
+ */
+
+.section, .section-connection-lost {
+    display: none;
+}
+
+.section-connection-lost .box {
+    background: #ffe9e9;
+    color: #a94442;
+    text-align: center;
+    border: 1px solid #e0b2b2;
+    box-shadow: none;
+    min-height: 2.3em;
+}
+
+@media (max-width: 41em) {
+    .section-connection-lost .box {
+        margin-left: 3.8em;
+    }
+}
+
+.section-connection-lost .status-button {
+    float: right;
+    color: #fff;
+    border-radius: 2em;
+    background-color: #d9534f;
+    border-color: #d9534f;
+    margin-left: 20px;
+}
+
+.section-main {
+    display: block;
+}
+
+.box-color {
+    text-align: center;
+}
+
+.box-debug {
+    overflow: hidden;
+    overflow-wrap: break-word;
+}
+
+.box-debug > div{
+    font-family: monospace;
+}
+
+.brightness, .speed, .functions-settings, .leds, .position{
+    display: none;
+}
