@@ -224,8 +224,8 @@ enum ClockType {
     Ger11x11 = 3,
     Ger11x11V2 = 8,
     Ger11x11Frame = 4,
-    Ger21x11Weather = 5,
-    Ger17x17 = 7,
+    Ger22x11Weather = 5,
+    Ger16x18 = 7,
     Nl10x11 = 9,
 };
 

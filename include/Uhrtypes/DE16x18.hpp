@@ -24,7 +24,7 @@
  *
  */
 
-class De17x17_t : public iUhrType {
+class De16x18_t : public iUhrType {
 public:
     virtual LanguageAbbreviation usedLang() override {
         return LanguageAbbreviation::DE;
@@ -486,4 +486,4 @@ public:
     };
 };
 
-De17x17_t _de17x17;
+De16x18_t _de16x18;
