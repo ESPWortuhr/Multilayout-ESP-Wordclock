@@ -40,11 +40,14 @@
 // Same Layout as Ger11x11, but with additional LED's to illuminate the frame
 // from the side
 //
-// #define DEFAULT_LAYOUT Ger21x11Weather
-// clock with weather forecast 242 LED's
+// #define DEFAULT_LAYOUT Ger22x11Weather
+// 22 rows, each 11 LED's per row, with weather forecast on overall 242 LED's
+// based on design of Github user @Eisbaeeer
 //
-// #define DEFAULT_LAYOUT Ger17x17
-// Clock with 24 hours display 18x16
+// #define DEFAULT_LAYOUT Ger16x18
+// 16 rows, each 18 LED's per row, with the layout WordClock24h of
+// mikrocontroller.net
+//
 //
 /**********************/
 /*       Dutch        */

@@ -30,7 +30,7 @@
  * D R E I ẞ I G O ° C X
  */
 
-class De21x11Weather_t : public iUhrType {
+class De22x11Weather_t : public iUhrType {
 public:
     virtual LanguageAbbreviation usedLang() override {
         return LanguageAbbreviation::DE;
@@ -600,4 +600,4 @@ public:
     };
 };
 
-De21x11Weather_t _de21x11Weather;
+De22x11Weather_t _de22x11Weather;
