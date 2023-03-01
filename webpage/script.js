@@ -2,49 +2,26 @@
 const iro = window.iro; // require("@jaames/iro");
 (function(window, document) {
 
-	var layout = document.getElementById("layout");
-	var menu = document.getElementById("menu");
-	var menuLink = document.getElementById("menu-link");
-
-	function toggleClass(element, className) {
-		var classes = element.className.split(/\s+/);
-		var length = classes.length;
-		var i = 0;
-
-		for (; i < length; i++) {
-			if (classes[i] === className) {
-				classes.splice(i, 1);
-				break;
-			}
-		}
-		// The className is not found
-		if (length === classes.length) {
-			classes.push(className);
-		}
-
-		element.className = classes.join(" ");
-	}
+	let layout = document.getElementsByClassName("layout")[0];
+	let menu = document.getElementsByClassName("menu")[0];
+	let menuLink = document.getElementsByClassName("hamburger")[0];
 
 	function toggleAll(element) {
-		var active = "active";
+		let active = "active";
+		console.log(layout);
+		console.log(menuLink);
 
 		element.preventDefault();
-		toggleClass(layout, active);
-		toggleClass(menu, active);
-		toggleClass(menuLink, active);
+		layout.classList.toggle(active);
+		menu.classList.toggle(active);
 	}
 
 	function handleEvent(element) {
-		if (element.target.id === menuLink.id) {
-			return toggleAll(element);
-		}
-
-		if (menu.className.indexOf("active") !== -1) {
-			return toggleAll(element);
-		}
+		console.log("click");
+		toggleAll(element);
 	}
 
-	document.addEventListener("click", handleEvent);
+	menuLink.addEventListener("click", handleEvent);
 
 }(this, this.document));
 
@@ -168,12 +145,21 @@ var DATA_HOST_TEXT_LENGTH = 30;
 // color pickers
 var colorPicker;
 
+/**
+ * Indicates local development of the webinterface.
+ * @returns {boolean|boolean}
+ */
+function isLocalEnvironment() {
+	// location.host will be an empty string if loading the HTML from file:/// protocol.
+	return location.host === "" || location.host.includes("localhost");
+}
 function initConfigValues() {
-	var locationHost = location.host;
-	if (locationHost !== "") {
-		ipEsp = "ws://" + locationHost;
+
+	// Load from hardcoded IP when doing development locally.
+	if (isLocalEnvironment()) {
+		ipEsp = "ws://192.168.2.167/";
 	} else {
-		ipEsp = "ws://192.168.178.44/";
+		ipEsp = "ws://" + location.host;
 	}
 
 	debug = true;
@@ -540,7 +526,7 @@ function toggleBackground() {
 }
 
 /**
- * Sets all sliders (the values) and their corresponsding labels to
+ * Sets all sliders (the values) and their corresponding labels to
  * the currently stored config values.
  *
  * This function also updated the color area with the current rgbw values.
@@ -681,8 +667,8 @@ $.ready(function() {
 		var navigation = $(this)[0].dataset.navigation;
 
 		// add/remove active class
-		$(".pure-menu-link").set("-active");
-		$(this).set("+active");
+		$(".pure-menu-link").set("-pure-menu-selected");
+		$(this).set("+pure-menu-selected");
 
 		if (navigation === "functions") {
 			setAnimation();
