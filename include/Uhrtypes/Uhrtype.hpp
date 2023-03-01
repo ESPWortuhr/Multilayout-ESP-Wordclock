@@ -93,7 +93,9 @@ enum class FrontWord {
 
 class iUhrType {
 protected:
-    virtual void setFrontMatrixPixel(const uint16_t index) { frontMatrix[index] = true; }
+    virtual void setFrontMatrixPixel(const uint16_t index) {
+        frontMatrix[index] = true;
+    }
 
 public:
     virtual void show(FrontWord word) = 0;
@@ -128,7 +130,7 @@ public:
 
     virtual const bool hasSecondsFrame() { return false; }
 
-    virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) {
+    virtual const uint16_t getFrontMatrixIndex(uint8_t row, uint8_t col) {
         if (row % 2 != 0) {
             col = colsWordMatrix() - col - 1;
         }

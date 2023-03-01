@@ -82,7 +82,8 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) override {
+    virtual const uint16_t getFrontMatrixIndex(uint8_t row,
+                                               uint8_t col) override {
         row++;
         if (row % 2 != 0) {
             col = colsWordMatrix() - col - 1;
@@ -107,7 +108,7 @@ public:
         if (row % 2 == 0) {
             col = colsWordMatrix() - 1 - col;
         }
-        return getFrontMatrix(row, col);
+        return getFrontMatrixIndex(row, col);
     };
 
     //------------------------------------------------------------------------------

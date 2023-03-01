@@ -112,16 +112,16 @@ void ClockWork::scrollingText(const char *buf) {
                 led.setPixel(
                     G.rgbw[Effect][0], G.rgbw[Effect][1], G.rgbw[Effect][2],
                     G.rgbw[Effect][3],
-                    usedUhrType->getFrontMatrix(
+                    usedUhrType->getFrontMatrixIndex(
                         row + offsetRow, usedUhrType->colsWordMatrix() - 1));
             } else {
-                led.clearPixel(usedUhrType->getFrontMatrix(
+                led.clearPixel(usedUhrType->getFrontMatrixIndex(
                     row + offsetRow, usedUhrType->colsWordMatrix() - 1));
             }
         }
     } else {
         for (uint8_t row = 0; row < fontHeight; row++) {
-            led.clearPixel(usedUhrType->getFrontMatrix(
+            led.clearPixel(usedUhrType->getFrontMatrixIndex(
                 row + offsetRow, usedUhrType->colsWordMatrix() - 1));
         }
     }

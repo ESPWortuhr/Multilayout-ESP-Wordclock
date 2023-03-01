@@ -162,7 +162,7 @@ inline void Led::clearClock() {
 
 inline void Led::clearRow(uint8_t row) {
     for (uint8_t i = 0; i < usedUhrType->colsWordMatrix(); i++) {
-        clearPixel(usedUhrType->getFrontMatrix(row, i));
+        clearPixel(usedUhrType->getFrontMatrixIndex(row, i));
     }
 }
 
@@ -227,9 +227,10 @@ void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100, bool rgb_icon) {
         for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
             if (pgm_read_word(&(grafik_11x10[num_icon][row])) &
                 (1 << (GRAFIK_11X10_COLS - 1 - col))) {
-                setPixel(rr, gg, bb, ww, usedUhrType->getFrontMatrix(row, col));
+                setPixel(rr, gg, bb, ww,
+                         usedUhrType->getFrontMatrixIndex(row, col));
             } else {
-                clearPixel(usedUhrType->getFrontMatrix(row, col));
+                clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
             }
         }
     }
@@ -287,12 +288,13 @@ void Led::shiftColumnToRight() {
         for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
             if (G.Colortype == Grbw) {
                 setPixelColorObject(
-                    usedUhrType->getFrontMatrix(row, col),
-                    getPixelRgbw(usedUhrType->getFrontMatrix(row, col + 1)));
+                    usedUhrType->getFrontMatrixIndex(row, col),
+                    getPixelRgbw(
+                        usedUhrType->getFrontMatrixIndex(row, col + 1)));
             } else {
                 setPixelColorObject(
-                    usedUhrType->getFrontMatrix(row, col),
-                    getPixel(usedUhrType->getFrontMatrix(row, col + 1)));
+                    usedUhrType->getFrontMatrixIndex(row, col),
+                    getPixel(usedUhrType->getFrontMatrixIndex(row, col + 1)));
             }
         }
     }
@@ -303,9 +305,10 @@ void Led::shiftColumnToRight() {
 void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                           uint8_t offsetRow, unsigned char unsigned_d1) {
     if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
-        setPixel(G.rgbw[Effect][0], G.rgbw[Effect][1], G.rgbw[Effect][2],
-                 G.rgbw[Effect][3],
-                 usedUhrType->getFrontMatrix(row + offsetRow, col + offsetCol));
+        setPixel(
+            G.rgbw[Effect][0], G.rgbw[Effect][1], G.rgbw[Effect][2],
+            G.rgbw[Effect][3],
+            usedUhrType->getFrontMatrixIndex(row + offsetRow, col + offsetCol));
     }
 }
 

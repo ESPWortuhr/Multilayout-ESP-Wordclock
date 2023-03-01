@@ -50,7 +50,8 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) override {
+    virtual const uint16_t getFrontMatrixIndex(uint8_t row,
+                                               uint8_t col) override {
         if (row == rowsWordMatrix() - 1) {
             return col;
         }
