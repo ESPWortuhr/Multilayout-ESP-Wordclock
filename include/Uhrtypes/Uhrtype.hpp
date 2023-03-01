@@ -93,7 +93,7 @@ enum class FrontWord {
 
 class iUhrType {
 protected:
-    virtual void setLetter(const uint16_t index) { frontMatrix[index] = true; }
+    virtual void setFrontMatrixPixel(const uint16_t index) { frontMatrix[index] = true; }
 
 public:
     virtual void show(FrontWord word) = 0;

@@ -35,192 +35,192 @@ public:
 
         case FrontWord::es_ist:
             // Es
-            setLetter(0);
-            setLetter(1);
+            setFrontMatrixPixel(0);
+            setFrontMatrixPixel(1);
 
             // Ist
-            setLetter(3);
-            setLetter(4);
-            setLetter(5);
+            setFrontMatrixPixel(3);
+            setFrontMatrixPixel(4);
+            setFrontMatrixPixel(5);
             break;
 
         case FrontWord::nach:
         case FrontWord::v_nach:
             // NACH
-            setLetter(36);
-            setLetter(35);
-            setLetter(34);
-            setLetter(33);
+            setFrontMatrixPixel(36);
+            setFrontMatrixPixel(35);
+            setFrontMatrixPixel(34);
+            setFrontMatrixPixel(33);
             break;
 
         case FrontWord::vor:
         case FrontWord::v_vor:
             // Vor
-            setLetter(41);
-            setLetter(42);
-            setLetter(43);
+            setFrontMatrixPixel(41);
+            setFrontMatrixPixel(42);
+            setFrontMatrixPixel(43);
             break;
 
         case FrontWord::viertel:
             // Viertel
-            setLetter(32);
-            setLetter(31);
-            setLetter(30);
-            setLetter(29);
-            setLetter(28);
-            setLetter(27);
-            setLetter(26);
+            setFrontMatrixPixel(32);
+            setFrontMatrixPixel(31);
+            setFrontMatrixPixel(30);
+            setFrontMatrixPixel(29);
+            setFrontMatrixPixel(28);
+            setFrontMatrixPixel(27);
+            setFrontMatrixPixel(26);
             break;
 
         case FrontWord::dreiviertel:
-            setLetter(32);
-            setLetter(31);
-            setLetter(30);
-            setLetter(29);
-            setLetter(28);
-            setLetter(27);
-            setLetter(26);
-            setLetter(25);
-            setLetter(24);
-            setLetter(23);
-            setLetter(22);
+            setFrontMatrixPixel(32);
+            setFrontMatrixPixel(31);
+            setFrontMatrixPixel(30);
+            setFrontMatrixPixel(29);
+            setFrontMatrixPixel(28);
+            setFrontMatrixPixel(27);
+            setFrontMatrixPixel(26);
+            setFrontMatrixPixel(25);
+            setFrontMatrixPixel(24);
+            setFrontMatrixPixel(23);
+            setFrontMatrixPixel(22);
             break;
 
         case FrontWord::fuenf:
-            setLetter(7);
-            setLetter(8);
-            setLetter(9);
-            setLetter(10);
+            setFrontMatrixPixel(7);
+            setFrontMatrixPixel(8);
+            setFrontMatrixPixel(9);
+            setFrontMatrixPixel(10);
             break;
 
         case FrontWord::zehn:
-            setLetter(21);
-            setLetter(20);
-            setLetter(19);
-            setLetter(18);
+            setFrontMatrixPixel(21);
+            setFrontMatrixPixel(20);
+            setFrontMatrixPixel(19);
+            setFrontMatrixPixel(18);
             break;
 
         case FrontWord::zwanzig:
-            setLetter(17);
-            setLetter(16);
-            setLetter(15);
-            setLetter(14);
-            setLetter(13);
-            setLetter(12);
-            setLetter(11);
+            setFrontMatrixPixel(17);
+            setFrontMatrixPixel(16);
+            setFrontMatrixPixel(15);
+            setFrontMatrixPixel(14);
+            setFrontMatrixPixel(13);
+            setFrontMatrixPixel(12);
+            setFrontMatrixPixel(11);
             break;
 
         case FrontWord::halb:
-            setLetter(44);
-            setLetter(45);
-            setLetter(46);
-            setLetter(47);
+            setFrontMatrixPixel(44);
+            setFrontMatrixPixel(45);
+            setFrontMatrixPixel(46);
+            setFrontMatrixPixel(47);
             break;
 
         case FrontWord::eins:
-            setLetter(65);
-            setLetter(64);
-            setLetter(63);
-            setLetter(62);
+            setFrontMatrixPixel(65);
+            setFrontMatrixPixel(64);
+            setFrontMatrixPixel(63);
+            setFrontMatrixPixel(62);
             break;
 
         case FrontWord::uhr:
-            setLetter(99);
-            setLetter(100);
-            setLetter(101);
+            setFrontMatrixPixel(99);
+            setFrontMatrixPixel(100);
+            setFrontMatrixPixel(101);
             break;
 
         case FrontWord::h_ein:
-            setLetter(63);
-            setLetter(64);
-            setLetter(65);
+            setFrontMatrixPixel(63);
+            setFrontMatrixPixel(64);
+            setFrontMatrixPixel(65);
             break;
 
         case FrontWord::h_zwei:
-            setLetter(55);
-            setLetter(56);
-            setLetter(57);
-            setLetter(58);
+            setFrontMatrixPixel(55);
+            setFrontMatrixPixel(56);
+            setFrontMatrixPixel(57);
+            setFrontMatrixPixel(58);
             break;
 
         case FrontWord::h_drei:
-            setLetter(66);
-            setLetter(67);
-            setLetter(68);
-            setLetter(69);
+            setFrontMatrixPixel(66);
+            setFrontMatrixPixel(67);
+            setFrontMatrixPixel(68);
+            setFrontMatrixPixel(69);
             break;
 
         case FrontWord::h_vier:
-            setLetter(73);
-            setLetter(74);
-            setLetter(75);
-            setLetter(76);
+            setFrontMatrixPixel(73);
+            setFrontMatrixPixel(74);
+            setFrontMatrixPixel(75);
+            setFrontMatrixPixel(76);
             break;
 
         case FrontWord::h_fuenf:
-            setLetter(51);
-            setLetter(52);
-            setLetter(53);
-            setLetter(54);
+            setFrontMatrixPixel(51);
+            setFrontMatrixPixel(52);
+            setFrontMatrixPixel(53);
+            setFrontMatrixPixel(54);
             break;
 
         case FrontWord::h_sechs:
-            setLetter(83);
-            setLetter(84);
-            setLetter(85);
-            setLetter(86);
-            setLetter(87);
+            setFrontMatrixPixel(83);
+            setFrontMatrixPixel(84);
+            setFrontMatrixPixel(85);
+            setFrontMatrixPixel(86);
+            setFrontMatrixPixel(87);
             break;
 
         case FrontWord::h_sieben:
-            setLetter(88);
-            setLetter(89);
-            setLetter(90);
-            setLetter(91);
-            setLetter(92);
-            setLetter(93);
+            setFrontMatrixPixel(88);
+            setFrontMatrixPixel(89);
+            setFrontMatrixPixel(90);
+            setFrontMatrixPixel(91);
+            setFrontMatrixPixel(92);
+            setFrontMatrixPixel(93);
             break;
 
         case FrontWord::h_acht:
-            setLetter(77);
-            setLetter(78);
-            setLetter(79);
-            setLetter(80);
+            setFrontMatrixPixel(77);
+            setFrontMatrixPixel(78);
+            setFrontMatrixPixel(79);
+            setFrontMatrixPixel(80);
             break;
 
         case FrontWord::h_neun:
-            setLetter(103);
-            setLetter(104);
-            setLetter(105);
-            setLetter(106);
+            setFrontMatrixPixel(103);
+            setFrontMatrixPixel(104);
+            setFrontMatrixPixel(105);
+            setFrontMatrixPixel(106);
             break;
 
         case FrontWord::h_zehn:
-            setLetter(106);
-            setLetter(107);
-            setLetter(108);
-            setLetter(109);
+            setFrontMatrixPixel(106);
+            setFrontMatrixPixel(107);
+            setFrontMatrixPixel(108);
+            setFrontMatrixPixel(109);
             break;
 
         case FrontWord::h_elf:
-            setLetter(49);
-            setLetter(50);
-            setLetter(51);
+            setFrontMatrixPixel(49);
+            setFrontMatrixPixel(50);
+            setFrontMatrixPixel(51);
             break;
 
         case FrontWord::h_zwoelf:
-            setLetter(94);
-            setLetter(95);
-            setLetter(96);
-            setLetter(97);
-            setLetter(98);
+            setFrontMatrixPixel(94);
+            setFrontMatrixPixel(95);
+            setFrontMatrixPixel(96);
+            setFrontMatrixPixel(97);
+            setFrontMatrixPixel(98);
             break;
 
         case FrontWord::funk:
-            setLetter(40);
-            setLetter(39);
-            setLetter(38);
-            setLetter(37);
+            setFrontMatrixPixel(40);
+            setFrontMatrixPixel(39);
+            setFrontMatrixPixel(38);
+            setFrontMatrixPixel(37);
             break;
 
         default:

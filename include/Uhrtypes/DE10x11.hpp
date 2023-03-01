@@ -91,225 +91,225 @@ public:
 
         case FrontWord::es_ist:
             // Es
-            setLetter(LED_MAP(0));
-            setLetter(LED_MAP(1));
+            setFrontMatrixPixel(LED_MAP(0));
+            setFrontMatrixPixel(LED_MAP(1));
 
             // Ist
-            setLetter(LED_MAP(3));
-            setLetter(LED_MAP(4));
-            setLetter(LED_MAP(5));
+            setFrontMatrixPixel(LED_MAP(3));
+            setFrontMatrixPixel(LED_MAP(4));
+            setFrontMatrixPixel(LED_MAP(5));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::nach:
         case FrontWord::v_nach:
-            setLetter(LED_MAP(38));
-            setLetter(LED_MAP(39));
-            setLetter(LED_MAP(40));
-            setLetter(LED_MAP(41));
+            setFrontMatrixPixel(LED_MAP(38));
+            setFrontMatrixPixel(LED_MAP(39));
+            setFrontMatrixPixel(LED_MAP(40));
+            setFrontMatrixPixel(LED_MAP(41));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::vor:
         case FrontWord::v_vor:
-            setLetter(LED_MAP(35));
-            setLetter(LED_MAP(36));
-            setLetter(LED_MAP(37));
+            setFrontMatrixPixel(LED_MAP(35));
+            setFrontMatrixPixel(LED_MAP(36));
+            setFrontMatrixPixel(LED_MAP(37));
             break;
             //------------------------------------------------------------------------------
 
         case FrontWord::viertel:
-            setLetter(LED_MAP(26));
-            setLetter(LED_MAP(27));
-            setLetter(LED_MAP(28));
-            setLetter(LED_MAP(29));
-            setLetter(LED_MAP(30));
-            setLetter(LED_MAP(31));
-            setLetter(LED_MAP(32));
+            setFrontMatrixPixel(LED_MAP(26));
+            setFrontMatrixPixel(LED_MAP(27));
+            setFrontMatrixPixel(LED_MAP(28));
+            setFrontMatrixPixel(LED_MAP(29));
+            setFrontMatrixPixel(LED_MAP(30));
+            setFrontMatrixPixel(LED_MAP(31));
+            setFrontMatrixPixel(LED_MAP(32));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::dreiviertel:
-            setLetter(LED_MAP(22));
-            setLetter(LED_MAP(23));
-            setLetter(LED_MAP(24));
-            setLetter(LED_MAP(25));
-            setLetter(LED_MAP(26));
-            setLetter(LED_MAP(27));
-            setLetter(LED_MAP(28));
-            setLetter(LED_MAP(29));
-            setLetter(LED_MAP(30));
-            setLetter(LED_MAP(31));
-            setLetter(LED_MAP(32));
+            setFrontMatrixPixel(LED_MAP(22));
+            setFrontMatrixPixel(LED_MAP(23));
+            setFrontMatrixPixel(LED_MAP(24));
+            setFrontMatrixPixel(LED_MAP(25));
+            setFrontMatrixPixel(LED_MAP(26));
+            setFrontMatrixPixel(LED_MAP(27));
+            setFrontMatrixPixel(LED_MAP(28));
+            setFrontMatrixPixel(LED_MAP(29));
+            setFrontMatrixPixel(LED_MAP(30));
+            setFrontMatrixPixel(LED_MAP(31));
+            setFrontMatrixPixel(LED_MAP(32));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::fuenf:
-            setLetter(LED_MAP(7));
-            setLetter(LED_MAP(8));
-            setLetter(LED_MAP(9));
-            setLetter(LED_MAP(10));
+            setFrontMatrixPixel(LED_MAP(7));
+            setFrontMatrixPixel(LED_MAP(8));
+            setFrontMatrixPixel(LED_MAP(9));
+            setFrontMatrixPixel(LED_MAP(10));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::zehn:
-            setLetter(LED_MAP(18));
-            setLetter(LED_MAP(19));
-            setLetter(LED_MAP(20));
-            setLetter(LED_MAP(21));
+            setFrontMatrixPixel(LED_MAP(18));
+            setFrontMatrixPixel(LED_MAP(19));
+            setFrontMatrixPixel(LED_MAP(20));
+            setFrontMatrixPixel(LED_MAP(21));
             break;
 
             //------------------------------------------------------------------------------
         case FrontWord::zwanzig:
-            setLetter(LED_MAP(11));
-            setLetter(LED_MAP(12));
-            setLetter(LED_MAP(13));
-            setLetter(LED_MAP(14));
-            setLetter(LED_MAP(15));
-            setLetter(LED_MAP(16));
-            setLetter(LED_MAP(17));
+            setFrontMatrixPixel(LED_MAP(11));
+            setFrontMatrixPixel(LED_MAP(12));
+            setFrontMatrixPixel(LED_MAP(13));
+            setFrontMatrixPixel(LED_MAP(14));
+            setFrontMatrixPixel(LED_MAP(15));
+            setFrontMatrixPixel(LED_MAP(16));
+            setFrontMatrixPixel(LED_MAP(17));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::halb:
-            setLetter(LED_MAP(44));
-            setLetter(LED_MAP(45));
-            setLetter(LED_MAP(46));
-            setLetter(LED_MAP(47));
+            setFrontMatrixPixel(LED_MAP(44));
+            setFrontMatrixPixel(LED_MAP(45));
+            setFrontMatrixPixel(LED_MAP(46));
+            setFrontMatrixPixel(LED_MAP(47));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::eins:
-            setLetter(LED_MAP(60));
-            setLetter(LED_MAP(61));
-            setLetter(LED_MAP(62));
-            setLetter(LED_MAP(63));
+            setFrontMatrixPixel(LED_MAP(60));
+            setFrontMatrixPixel(LED_MAP(61));
+            setFrontMatrixPixel(LED_MAP(62));
+            setFrontMatrixPixel(LED_MAP(63));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::uhr:
-            setLetter(LED_MAP(100));
-            setLetter(LED_MAP(101));
-            setLetter(LED_MAP(102));
+            setFrontMatrixPixel(LED_MAP(100));
+            setFrontMatrixPixel(LED_MAP(101));
+            setFrontMatrixPixel(LED_MAP(102));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_ein:
-            setLetter(LED_MAP(61));
-            setLetter(LED_MAP(62));
-            setLetter(LED_MAP(63));
+            setFrontMatrixPixel(LED_MAP(61));
+            setFrontMatrixPixel(LED_MAP(62));
+            setFrontMatrixPixel(LED_MAP(63));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_zwei:
-            setLetter(LED_MAP(62));
-            setLetter(LED_MAP(63));
-            setLetter(LED_MAP(64));
-            setLetter(LED_MAP(65));
+            setFrontMatrixPixel(LED_MAP(62));
+            setFrontMatrixPixel(LED_MAP(63));
+            setFrontMatrixPixel(LED_MAP(64));
+            setFrontMatrixPixel(LED_MAP(65));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_drei:
-            setLetter(LED_MAP(67));
-            setLetter(LED_MAP(68));
-            setLetter(LED_MAP(69));
-            setLetter(LED_MAP(70));
+            setFrontMatrixPixel(LED_MAP(67));
+            setFrontMatrixPixel(LED_MAP(68));
+            setFrontMatrixPixel(LED_MAP(69));
+            setFrontMatrixPixel(LED_MAP(70));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_vier:
-            setLetter(LED_MAP(77));
-            setLetter(LED_MAP(78));
-            setLetter(LED_MAP(79));
-            setLetter(LED_MAP(80));
+            setFrontMatrixPixel(LED_MAP(77));
+            setFrontMatrixPixel(LED_MAP(78));
+            setFrontMatrixPixel(LED_MAP(79));
+            setFrontMatrixPixel(LED_MAP(80));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_fuenf:
-            setLetter(LED_MAP(73));
-            setLetter(LED_MAP(74));
-            setLetter(LED_MAP(75));
-            setLetter(LED_MAP(76));
+            setFrontMatrixPixel(LED_MAP(73));
+            setFrontMatrixPixel(LED_MAP(74));
+            setFrontMatrixPixel(LED_MAP(75));
+            setFrontMatrixPixel(LED_MAP(76));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_sechs:
-            setLetter(LED_MAP(104));
-            setLetter(LED_MAP(105));
-            setLetter(LED_MAP(106));
-            setLetter(LED_MAP(107));
-            setLetter(LED_MAP(108));
+            setFrontMatrixPixel(LED_MAP(104));
+            setFrontMatrixPixel(LED_MAP(105));
+            setFrontMatrixPixel(LED_MAP(106));
+            setFrontMatrixPixel(LED_MAP(107));
+            setFrontMatrixPixel(LED_MAP(108));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_sieben:
-            setLetter(LED_MAP(55));
-            setLetter(LED_MAP(56));
-            setLetter(LED_MAP(57));
-            setLetter(LED_MAP(58));
-            setLetter(LED_MAP(59));
-            setLetter(LED_MAP(60));
+            setFrontMatrixPixel(LED_MAP(55));
+            setFrontMatrixPixel(LED_MAP(56));
+            setFrontMatrixPixel(LED_MAP(57));
+            setFrontMatrixPixel(LED_MAP(58));
+            setFrontMatrixPixel(LED_MAP(59));
+            setFrontMatrixPixel(LED_MAP(60));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_acht:
-            setLetter(LED_MAP(89));
-            setLetter(LED_MAP(90));
-            setLetter(LED_MAP(91));
-            setLetter(LED_MAP(92));
+            setFrontMatrixPixel(LED_MAP(89));
+            setFrontMatrixPixel(LED_MAP(90));
+            setFrontMatrixPixel(LED_MAP(91));
+            setFrontMatrixPixel(LED_MAP(92));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_neun:
-            setLetter(LED_MAP(81));
-            setLetter(LED_MAP(82));
-            setLetter(LED_MAP(83));
-            setLetter(LED_MAP(84));
+            setFrontMatrixPixel(LED_MAP(81));
+            setFrontMatrixPixel(LED_MAP(82));
+            setFrontMatrixPixel(LED_MAP(83));
+            setFrontMatrixPixel(LED_MAP(84));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_zehn:
-            setLetter(LED_MAP(93));
-            setLetter(LED_MAP(94));
-            setLetter(LED_MAP(95));
-            setLetter(LED_MAP(96));
+            setFrontMatrixPixel(LED_MAP(93));
+            setFrontMatrixPixel(LED_MAP(94));
+            setFrontMatrixPixel(LED_MAP(95));
+            setFrontMatrixPixel(LED_MAP(96));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_elf:
-            setLetter(LED_MAP(85));
-            setLetter(LED_MAP(86));
-            setLetter(LED_MAP(87));
+            setFrontMatrixPixel(LED_MAP(85));
+            setFrontMatrixPixel(LED_MAP(86));
+            setFrontMatrixPixel(LED_MAP(87));
             break;
 
             //------------------------------------------------------------------------------
 
         case FrontWord::h_zwoelf:
 
-            setLetter(LED_MAP(49));
-            setLetter(LED_MAP(50));
-            setLetter(LED_MAP(51));
-            setLetter(LED_MAP(52));
-            setLetter(LED_MAP(53));
+            setFrontMatrixPixel(LED_MAP(49));
+            setFrontMatrixPixel(LED_MAP(50));
+            setFrontMatrixPixel(LED_MAP(51));
+            setFrontMatrixPixel(LED_MAP(52));
+            setFrontMatrixPixel(LED_MAP(53));
             break;
 
         default:
