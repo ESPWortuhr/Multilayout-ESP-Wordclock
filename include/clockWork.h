@@ -4,7 +4,6 @@
 
 class ClockWork {
 private:
-
     uint16_t countMillisSpeed = 0;
     uint32_t previousMillis = 0;
 

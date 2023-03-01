@@ -15,7 +15,7 @@
  * E L F N E U N V I E R
  * U A C H T Z E H N S I
  * C S E C H S T L U H R
-*/
+ */
 
 class De10x11Nero_t : public iUhrType {
 public:
