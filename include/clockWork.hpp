@@ -11,7 +11,7 @@ OpenWMap weather;
 //------------------------------------------------------------------------------
 
 void ClockWork::copyClockface(const bool source[], bool destination[]) {
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < MAX_ARRAY_SIZE; i++) {
         destination[i] = source[i];
     }
 }
@@ -19,7 +19,7 @@ void ClockWork::copyClockface(const bool source[], bool destination[]) {
 //------------------------------------------------------------------------------
 
 bool ClockWork::changesInClockface() {
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < MAX_ARRAY_SIZE; i++) {
         if (frontMatrix[i] != lastFrontMatrix[i]) {
             return true;
         }
@@ -69,7 +69,7 @@ void ClockWork::loopLdrLogic() {
 void ClockWork::rainbow() {
     static float hue = 0;
 
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
         led.setPixelHsb(i, hue, 100, G.effectBri);
     }
     led.show();
@@ -84,10 +84,11 @@ void ClockWork::rainbowCycle() {
     float displayedHue;
 
     displayedHue = hue;
-    for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
-        led.setPixelHsb(usedUhrType->getSMatrix(i), displayedHue, 100,
+    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
+        led.setPixelHsb(usedUhrType->getWordMatrixIndex(i), displayedHue, 100,
                         G.effectBri);
-        displayedHue = displayedHue + 360.0 / usedUhrType->NUM_SMATRIX();
+        displayedHue =
+            displayedHue + 360.0 / usedUhrType->numPixelsWordMatrix();
         led.checkIfHueIsOutOfBound(displayedHue);
     }
     led.show();
@@ -99,7 +100,7 @@ void ClockWork::rainbowCycle() {
 
 void ClockWork::scrollingText(const char *buf) {
     static uint8_t i = 0, ii = 0;
-    uint8_t offsetRow = (usedUhrType->ROWS_MATRIX() - fontHeight - 1) / 2;
+    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - fontHeight) / 2;
     uint8_t fontIndex = buf[ii];
 
     led.shiftColumnToRight();
@@ -112,16 +113,16 @@ void ClockWork::scrollingText(const char *buf) {
                     G.rgbw[Effect][0], G.rgbw[Effect][1], G.rgbw[Effect][2],
                     G.rgbw[Effect][3],
                     usedUhrType->getFrontMatrix(
-                        row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
+                        row + offsetRow, usedUhrType->colsWordMatrix() - 1));
             } else {
                 led.clearPixel(usedUhrType->getFrontMatrix(
-                    row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
+                    row + offsetRow, usedUhrType->colsWordMatrix() - 1));
             }
         }
     } else {
         for (uint8_t row = 0; row < fontHeight; row++) {
             led.clearPixel(usedUhrType->getFrontMatrix(
-                row + offsetRow, usedUhrType->COLS_MATRIX() - 1));
+                row + offsetRow, usedUhrType->colsWordMatrix() - 1));
         }
     }
     led.show();
@@ -216,11 +217,14 @@ void ClockWork::setHour(const uint8_t hour, const bool fullHour) {
 
 uint8_t ClockWork::determineWhichMinuteVariant() {
     switch (G.minuteVariant) {
-    case MinuteVariant::Row:
+    case MinuteVariant::LED4x:
         return 0;
         break;
-    case MinuteVariant::Corners:
+    case MinuteVariant::LED7x:
         return 1;
+        break;
+    case MinuteVariant::Corners:
+        return 2;
         break;
     default:
         Serial.println("[ERROR] G.minuteVariant undefined");
@@ -344,7 +348,7 @@ void ClockWork::showMinute(uint8_t min) {
         showMinuteInWords(min);
     } else if (G.minuteVariant != MinuteVariant::Off) {
         uint16_t minArray[4];
-        usedUhrType->getMinArr(minArray, determineWhichMinuteVariant());
+        usedUhrType->getMinuteArray(minArray, determineWhichMinuteVariant());
         if (G.layoutVariant[ReverseMinDirection]) {
             std::reverse(std::begin(minArray), std::end(minArray));
         }
@@ -641,7 +645,7 @@ void ClockWork::calcClockface() {
     led.setBrightnessLdr(rr, gg, bb, ww, Background);
 
     // set Background color
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         led.setPixel(rr, gg, bb, ww, i);
     }
 
@@ -658,8 +662,12 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_de10x11;
     case Ger10x11Alternative:
         return &_de10x11Alternative;
+    case Ger10x11AlternativeFrame:
+        return &_de10x11AlternativeFrame;
     case Ger10x11Clock:
         return &_de10x11Clock;
+    case Ger10x11Nero:
+        return &_de10x11Nero;
     case Nl10x11:
         return &_nl10x11;
     case Ger11x11:
@@ -691,7 +699,7 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
         if (strip_RGBW == NULL) {
             strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
-                usedUhrType->NUM_PIXELS());
+                usedUhrType->numPixels());
             strip_RGBW->Begin();
         }
     } else {
@@ -702,7 +710,7 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
         if (strip_RGB == NULL) {
             strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(
-                usedUhrType->NUM_PIXELS());
+                usedUhrType->numPixels());
             strip_RGB->Begin();
         }
     }
@@ -713,9 +721,9 @@ void ClockWork::initLedStrip(uint8_t num) {
 void resetMinVariantIfNotAvailable() {
     if (G.UhrtypeDef != Nl10x11 && G.minuteVariant == MinuteVariant::InWords) {
         G.minuteVariant = MinuteVariant::Off;
-    } else if (G.UhrtypeDef != Ger11x11Frame &&
-               G.minuteVariant == MinuteVariant::Row) {
-        G.minuteVariant = MinuteVariant::Off;
+    } else if (usedUhrType->rowsWordMatrix() != 11 &&
+               G.minuteVariant == MinuteVariant::Corners) {
+        G.minuteVariant = MinuteVariant::LED4x;
     }
 }
 
@@ -724,20 +732,10 @@ void resetMinVariantIfNotAvailable() {
 void ClockWork::loop(struct tm &tm) {
     unsigned long currentMillis = millis();
     countMillisSpeed += currentMillis - previousMillis;
-    if (usedUhrType->hasSecondsFrame()) {
-        countMillis48 += currentMillis - previousMillis;
-    }
     previousMillis = currentMillis;
 
     // Faster runtime for demo
     animation->demoMode(_minute, _second);
-
-    //------------------------------------------------
-    // SecondsFrame
-    //------------------------------------------------
-    if (usedUhrType->hasSecondsFrame()) {
-        loopSecondsFrame();
-    }
 
     //------------------------------------------------
     // Secounds and LDR Routine
@@ -776,7 +774,6 @@ void ClockWork::loop(struct tm &tm) {
     // Minute
     //------------------------------------------------
     if (lastMinute != _minute) {
-        _second48 = 0;
         lastMinute = _minute;
     }
 
@@ -838,7 +835,7 @@ void ClockWork::loop(struct tm &tm) {
             config[stringToSend] = static_cast<uint8_t>(G.layoutVariant[i]);
         }
         config["effectBri"] = G.effectBri;
-        config["secondVariant"] = G.secondVariant;
+        config["secondVariant"] = static_cast<uint8_t>(G.secondVariant);
         config["minuteVariant"] = static_cast<uint8_t>(G.minuteVariant);
         config["ldr"] = G.ldr;
         config["ldrCal"] = G.ldrCal;
@@ -855,6 +852,7 @@ void ClockWork::loop(struct tm &tm) {
         config["hasZwanzig"] = usedUhrType->hasZwanzig();
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
+        config["numOfRows"] = usedUhrType->rowsWordMatrix();
         serializeJson(config, str);
         Serial.print("Sending Payload:");
         Serial.println(str);
@@ -984,9 +982,18 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_SET_UHRTYPE: {
         eeprom::write();
+        led.clear();
+        led.show();
+        delay(10);
         Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
         usedUhrType = getPointer(G.UhrtypeDef);
         resetMinVariantIfNotAvailable();
+        if (usedUhrType->numPixelsFrameMatrix() != 0) {
+            delete secondsFrame;
+            secondsFrame =
+                new SecondsFrame(usedUhrType->numPixelsFrameMatrix());
+            G.progInit = 1;
+        }
         G.conf = COMMAND_IDLE;
         break;
     }
@@ -1094,11 +1101,6 @@ void ClockWork::loop(struct tm &tm) {
             led.set();
         }
         parametersChanged = false;
-
-        if (usedUhrType->hasSecondsFrame() && G.secondVariant < 1 &&
-            G.minuteVariant != MinuteVariant::Corners) {
-            led.setFrameColor();
-        }
         G.prog = COMMAND_IDLE;
     }
     default:
@@ -1107,31 +1109,6 @@ void ClockWork::loop(struct tm &tm) {
 
     if (countMillisSpeed > 10000) {
         countMillisSpeed = 0;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ClockWork::loopSecondsFrame() {
-    if (countMillis48 >= interval48) {
-        countMillis48 = 0;
-        _second48++;
-        if (_second48 > 47) {
-            _second48 = 0;
-        }
-    }
-    if (lastSecond48 != _second48) {
-        if (G.prog == 0 && G.conf == 0) {
-            if (G.secondVariant == 1 ||
-                G.minuteVariant == MinuteVariant::Corners) {
-                led.clearFrame();
-            }
-            if (G.secondVariant > 0) {
-                led.showSeconds();
-            }
-            led.show();
-        }
-        lastSecond48 = _second48;
     }
 }
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Uhrtype.hpp"
 
 /*
@@ -15,8 +17,6 @@
  * T E N S E O'C L O C K
  *
  */
-
-#define USE_DREIVIERTEL
 
 class En10x11_t : public iUhrType {
 public:

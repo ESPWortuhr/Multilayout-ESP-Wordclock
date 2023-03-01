@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Uhrtype.hpp"
 
 /*
@@ -15,8 +17,6 @@
  * S E C H S I U H R Y E
  *
  */
-
-#define USE_DREIVIERTEL
 
 class De10x11Alternative_t : public iUhrType {
 public:

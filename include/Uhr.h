@@ -4,6 +4,7 @@
 
 #define PAYLOAD_LENGTH 30
 #define MAX_ARRAY_SIZE 291
+#define MAX_FRAME_ARRAY_SIZE 60
 
 enum ClockWords {
     ESIST = 0,
@@ -50,9 +51,17 @@ struct OpenWeatherMapData {
 
 enum class MinuteVariant {
     Off = 0,
-    Corners = 1,
-    Row = 2,
-    InWords = 3,
+    LED4x = 1,
+    LED7x = 2,
+    Corners = 3,
+    InWords = 4,
+};
+
+enum class SecondVariant {
+    Off = 0,
+    FrameDot = 1,
+    FrameSector = 2,
+    FrameSectorToggle = 3,
 };
 
 struct GLOBAL {
@@ -69,7 +78,7 @@ struct GLOBAL {
     uint8_t effectBri;
     uint8_t effectSpeed;
     uint8_t client_nr;
-    uint8_t secondVariant;
+    SecondVariant secondVariant;
     MinuteVariant minuteVariant;
     bool languageVariant[6];
     bool layoutVariant[1];
@@ -115,7 +124,7 @@ GLOBAL G = {};
 uint8_t ldrVal = 100;
 
 uint8_t _second = 0;
-uint8_t _second48 = 0;
+uint8_t _secondFrame = 0;
 uint8_t _minute = 0;
 uint8_t _hour = 0;
 uint8_t lastSecond = 0;
@@ -123,6 +132,7 @@ uint8_t lastMinute = 0;
 
 bool frontMatrix[MAX_ARRAY_SIZE] = {false};
 bool lastFrontMatrix[MAX_ARRAY_SIZE] = {false};
+bool frameArray[MAX_FRAME_ARRAY_SIZE] = {false};
 bool parametersChanged = false;
 uint8_t statusAccessPoint = 0;
 
@@ -205,16 +215,18 @@ enum CommandWords {
 };
 
 enum ClockType {
+    Eng10x11 = 10,
     Ger10x11 = 1,
     Ger10x11Alternative = 2,
+    Ger10x11AlternativeFrame = 12,
     Ger10x11Clock = 6,
-    Nl10x11 = 9,
+    Ger10x11Nero = 11,
     Ger11x11 = 3,
     Ger11x11V2 = 8,
     Ger11x11Frame = 4,
     Ger21x11Weather = 5,
     Ger17x17 = 7,
-    Eng10x11 = 10,
+    Nl10x11 = 9,
 };
 
 enum Icons {

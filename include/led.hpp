@@ -144,7 +144,7 @@ inline void Led::clearPixel(uint16_t i) {
 //------------------------------------------------------------------------------
 
 inline void Led::clear() {
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         frontMatrix[i] = false;
         clearPixel(i);
     }
@@ -153,15 +153,15 @@ inline void Led::clear() {
 //------------------------------------------------------------------------------
 
 inline void Led::clearClock() {
-    for (uint16_t i = 0; i < usedUhrType->NUM_SMATRIX(); i++) {
-        clearPixel(usedUhrType->getSMatrix(i));
+    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
+        clearPixel(usedUhrType->getWordMatrixIndex(i));
     }
 }
 
 //------------------------------------------------------------------------------
 
 inline void Led::clearRow(uint8_t row) {
-    for (uint8_t i = 0; i < usedUhrType->COLS_MATRIX(); i++) {
+    for (uint8_t i = 0; i < usedUhrType->colsWordMatrix(); i++) {
         clearPixel(usedUhrType->getFrontMatrix(row, i));
     }
 }
@@ -173,7 +173,7 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
         clearRow(i);
     }
 
-    for (uint8_t i = usedUhrType->ROWS_MATRIX() - 1; i > offsetRow + fontHeight;
+    for (uint8_t i = usedUhrType->rowsWordMatrix(); i > offsetRow + fontHeight;
          i--) {
         clearRow(i - 1);
     }
@@ -182,8 +182,9 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
 //------------------------------------------------------------------------------
 
 inline void Led::clearFrame() {
-    for (uint16_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
-        clearPixel(usedUhrType->getRMatrix(i));
+    for (uint16_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
+        frameArray[i] = false;
+        clearPixel(usedUhrType->getFrameMatrixIndex(i));
     }
 }
 
@@ -194,7 +195,7 @@ void Led::set(bool changed) {
     uint8_t r2, g2, b2, w2;
     setBrightnessLdr(rr, gg, bb, ww, Foreground);
     setBrightnessLdr(r2, g2, b2, w2, Background);
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         if (lastFrontMatrix[i]) {
             // foreground
             setPixel(rr, gg, bb, ww, i);
@@ -202,6 +203,9 @@ void Led::set(bool changed) {
             // background
             setPixel(r2, g2, b2, w2, i);
         }
+    }
+    if (G.secondVariant != SecondVariant::Off) {
+        showSeconds();
     }
     if (animation->led_show_notify(changed, _minute)) {
         show();
@@ -237,9 +241,9 @@ void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100, bool rgb_icon) {
 void Led::setSingle(uint8_t wait) {
     float hue;
 
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        hue = 360.0 * i / (usedUhrType->NUM_PIXELS() - 1);
-        hue = hue + 360.0 / usedUhrType->NUM_PIXELS();
+    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
+        hue = 360.0 * i / (usedUhrType->numPixels() - 1);
+        hue = hue + 360.0 / usedUhrType->numPixels();
         checkIfHueIsOutOfBound(hue);
 
         clear();
@@ -252,7 +256,7 @@ void Led::setSingle(uint8_t wait) {
 //------------------------------------------------------------------------------
 
 void Led::setAllPixels(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww) {
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
+    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
         setPixel(rr, gg, bb, ww, i);
     }
 }
@@ -271,17 +275,16 @@ void Led::setFrameColor() {
     uint8_t rr, gg, bb, ww;
     setBrightness(rr, gg, bb, ww, Frame);
 
-    for (uint16_t i = 0; i < usedUhrType->NUM_RMATRIX(); i++) {
-        setPixel(rr, gg, bb, ww, usedUhrType->getRMatrix(i));
+    for (uint16_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
+        setPixel(rr, gg, bb, ww, usedUhrType->getFrameMatrixIndex(i));
     }
 }
 
 //------------------------------------------------------------------------------
 
 void Led::shiftColumnToRight() {
-    for (uint8_t col = 0; col < usedUhrType->COLS_MATRIX() - 1; col++) {
-        for (uint8_t row = 0;
-             row < usedUhrType->ROWS_MATRIX() - 1 /* Only Front*/; row++) {
+    for (uint8_t col = 0; col < usedUhrType->colsWordMatrix() - 1; col++) {
+        for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
             if (G.Colortype == Grbw) {
                 setPixelColorObject(
                     usedUhrType->getFrontMatrix(row, col),
@@ -312,7 +315,7 @@ void Led::showNumbers(const char d1, const char d2) {
     clearClock();
     static uint8_t offsetLetter0 = 0;
     static uint8_t offsetLetter1 = fontWidth + 1;
-    uint8_t offsetRow = (usedUhrType->ROWS_MATRIX() - fontHeight - 1) / 2;
+    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - fontHeight) / 2;
 
     if (usedUhrType->has24HourLayout()) {
         offsetLetter0 = 3;
@@ -335,10 +338,23 @@ void Led::showNumbers(const char d1, const char d2) {
 //------------------------------------------------------------------------------
 
 void Led::showSeconds() {
+    const uint8_t offesetSecondsFrame = 5;
     uint8_t rr, gg, bb, ww;
-    setBrightness(rr, gg, bb, ww, Effect);
-
-    setPixel(rr, gg, bb, ww, usedUhrType->getRMatrix(_second48));
+    setBrightness(rr, gg, bb, ww, Foreground);
+    for (uint8_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
+        if (frameArray[i]) {
+            if (i < usedUhrType->numPixelsFrameMatrix() - offesetSecondsFrame) {
+                setPixel(rr, gg, bb, ww,
+                         usedUhrType->getFrameMatrixIndex(i) +
+                             offesetSecondsFrame);
+            } else {
+                setPixel(rr, gg, bb, ww,
+                         usedUhrType->getFrameMatrixIndex(i) -
+                             usedUhrType->numPixelsFrameMatrix() +
+                             offesetSecondsFrame);
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

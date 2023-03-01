@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Uhrtype.hpp"
 
 /*
@@ -40,23 +42,36 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
+    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
         for (uint8_t i = 0; i < 4; i++) {
             returnArr[i] = minArr[i];
+        }
+        for (uint8_t i = 0; i < 4; i++) {
+            switch (col) {
+            case 0:
+                // LEDs for "LED4x" minute display
+                // {112, 114, 116, 118}
+                returnArr[i] = 113 + i;
+                break;
+            case 1:
+                // LEDs for "LED7x" minute display
+                // {112, 114, 116, 118}
+                returnArr[i] = 112 + (i * 2);
+                break;
+
+            default:
+                break;
+            }
         }
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_PIXELS() override { return 242; };
+    virtual const uint16_t numPixels() override { return 242; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_SMATRIX() override { return 242; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t ROWS_MATRIX() override { return 22; };
+    virtual const uint16_t rowsWordMatrix() override { return 22; };
 
     //------------------------------------------------------------------------------
 

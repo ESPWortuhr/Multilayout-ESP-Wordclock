@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Uhrtype.hpp"
 
 /*
@@ -51,16 +53,30 @@ public:
 
     //------------------------------------------------------------------------------
 
-    const uint16_t minArr[2][4] = {
-        {0, 12, 168, 156},   // LEDs for "Normal" minute display
-        {152, 150, 148, 146} // LEDs für "Row" type minute display
-    };
+    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
+        const uint8_t corner[4] = {152, 150, 148, 146};
 
-    //------------------------------------------------------------------------------
-
-    virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
         for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = minArr[col][i];
+            switch (col) {
+            case 0:
+                // LEDs for "LED4x" minute display
+                // {150, 149, 148, 147}
+                returnArr[i] = 150 - i;
+                break;
+            case 1:
+                // LEDs for "LED7x" minute display
+                // {152, 150, 148, 146}
+                returnArr[i] = 152 - (i * 2);
+                break;
+            case 2:
+                // LEDs for "Corners" minute display
+                // {0, 12, 168, 156}
+                returnArr[i] = corner[i];
+                break;
+
+            default:
+                break;
+            }
         }
     };
 
@@ -69,42 +85,46 @@ public:
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) override {
         row++;
         if (row % 2 != 0) {
-            col = COLS_MATRIX() - col - 1;
+            col = colsWordMatrix() - col - 1;
         }
-        uint16_t returnValue = col + 1 + (row * COLS_MATRIX() + 2);
-        if (returnValue > NUM_PIXELS()) {
+        uint16_t returnValue = col + 1 + (row * colsWordMatrix() + 2);
+        if (returnValue > numPixels()) {
             Serial.println("[ERROR] getMatrix() ReturnValue out of Bounds");
         }
         return returnValue;
     };
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getRMatrix(uint16_t index) override {
+    virtual const uint16_t getFrameMatrixIndex(uint16_t index) override {
         return rmatrix[index];
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getSMatrix(uint16_t index) override {
-        uint8_t row = index / COLS_MATRIX();
-        uint8_t col = index % COLS_MATRIX();
+    virtual const uint16_t getWordMatrixIndex(uint16_t index) override {
+        uint8_t row = index / colsWordMatrix();
+        uint8_t col = index % colsWordMatrix();
         if (row % 2 == 0) {
-            col = COLS_MATRIX() - 1 - col;
+            col = colsWordMatrix() - 1 - col;
         }
         return getFrontMatrix(row, col);
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_PIXELS() override { return 169; };
+    virtual const uint16_t numPixels() override { return 169; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_SMATRIX() override { return 121; };
+    virtual const uint16_t rowsWordMatrix() override { return 11; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_RMATRIX() override { return 48; };
+    virtual const uint16_t numPixelsWordMatrix() override { return 121; };
+
+    //------------------------------------------------------------------------------
+
+    virtual const uint16_t numPixelsFrameMatrix() override { return 48; };
 
     //------------------------------------------------------------------------------
 

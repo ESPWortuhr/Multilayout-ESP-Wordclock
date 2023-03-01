@@ -100,19 +100,21 @@ public:
 
     virtual LanguageAbbreviation usedLang() = 0;
 
-    virtual inline const uint16_t NUM_PIXELS() { return 114; }
+    virtual inline const uint16_t numPixels() { return 117; }
 
-    virtual inline const uint16_t NUM_SMATRIX() { return 114; }
+    virtual inline const uint16_t numPixelsWordMatrix() {
+        return rowsWordMatrix() * colsWordMatrix();
+    }
 
-    virtual inline const uint16_t ROWS_MATRIX() { return 11; }
+    virtual inline const uint16_t numPixelsFrameMatrix() { return 0; }
 
-    virtual inline const uint16_t COLS_MATRIX() { return 11; }
+    virtual inline const uint16_t rowsWordMatrix() { return 10; }
 
-    virtual inline const uint16_t NUM_RMATRIX() { return 0; }
+    virtual inline const uint16_t colsWordMatrix() { return 11; }
 
-    virtual const uint16_t getSMatrix(uint16_t index) { return index; }
+    virtual const uint16_t getWordMatrixIndex(uint16_t index) { return index; }
 
-    virtual const uint16_t getRMatrix(uint16_t index) { return 0; }
+    virtual const uint16_t getFrameMatrixIndex(uint16_t index) { return 0; }
 
     virtual const bool hasDreiviertel() { return false; }
 
@@ -128,18 +130,28 @@ public:
 
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) {
         if (row % 2 != 0) {
-            col = COLS_MATRIX() - col - 1;
+            col = colsWordMatrix() - col - 1;
         }
-        uint16_t returnValue = col + (row * COLS_MATRIX());
-        if (returnValue > NUM_PIXELS()) {
+        uint16_t returnValue = col + (row * colsWordMatrix());
+        if (returnValue > numPixels()) {
             Serial.println("[ERROR] getMatrix() ReturnValue out of Bounds");
         }
         return returnValue;
     };
 
-    virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
+    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
         for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = NUM_PIXELS() - (4 - i);
+            switch (col) {
+            case 0: // LEDs for "LED4x" minute display
+                returnArr[i] = numPixels() - (7 - i);
+                break;
+            case 1: // LEDs for "LED7x" minute display
+                returnArr[i] = numPixels() - (7 - (i * 2));
+                break;
+
+            default:
+                break;
+            }
         }
     };
 };

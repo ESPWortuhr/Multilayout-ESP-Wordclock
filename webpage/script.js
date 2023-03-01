@@ -344,7 +344,7 @@ function initWebsocket() {
 			$("ldr-cal").set("value", data.ldrCal);
 			$("#slider-brightness").set("value", data.effectBri);
 			$("#slider-speed").set("value", data.effectSpeed); // TODO: there is no property effectSpeed!
-			document.getElementById("show-seconds").checked = data.secondVariant;
+			$("#show-seconds").set("value", data.secondVariant);
 			$("#show-minutes").set("value", data.minuteVariant);
 
 			$("#owm-api-key").set("value", data.apiKey);
@@ -364,8 +364,8 @@ function initWebsocket() {
 			enableSpecific("specific-layout-5", data.hasWeatherLayout);
 			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // EN10x11
 			enableSpecific("specific-colortype-4", data.colortype === 4);
-			removeSpecificOption("show-minutes", "2", data.UhrtypeDef !== 4); // MinuteVariant "Row"
-			removeSpecificOption("show-minutes", "3", data.UhrtypeDef !== 9); // MinuteVariant "In Words"
+			removeSpecificOption("show-minutes", "3", data.numOfRows !== 11); // MinuteVariant "Corners" only for DE11x11 Variants
+			removeSpecificOption("show-minutes", "4", data.UhrtypeDef !== 9); // MinuteVariant "In Words"
 
 			autoLdrEnabled = data.autoLdrEnabled;
 			$("#auto-ldr-enabled").set("value", autoLdrEnabled);
@@ -875,7 +875,7 @@ $.ready(function() {
 		debugMessage("MinuteVariant" + debugMessageReconfigured);
 	});
 	$("#show-seconds").on("change", function() {
-		var showSecondsValue = $("#show-seconds").get("checked") | 0;
+		var showSecondsValue = $("#show-seconds").get("value");
 
 		sendCmd(COMMAND_SET_SETTING_SECOND, nstr(showSecondsValue));
 		debugMessage("SecondVariant" + debugMessageReconfigured);

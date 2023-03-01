@@ -41,11 +41,13 @@ RTC_Type RTC;
 
 #include "Animation.h"
 #include "clockWork.h"
+#include "frame.h"
 #include "led.h"
 #include "mqtt.h"
 #include "network.h"
 
 Animation *animation;
+SecondsFrame *secondsFrame;
 Led led;
 ClockWork clockWork;
 Mqtt mqtt;
@@ -90,8 +92,8 @@ void time_is_set() {
     _second = tm.tm_sec;
     _minute = tm.tm_min;
     _hour = tm.tm_hour;
-    if (usedUhrType->hasSecondsFrame()) {
-        _second48 = _second * 48 / 60;
+    if (usedUhrType->numPixelsFrameMatrix() != 0) {
+        _secondFrame = _second / (usedUhrType->numPixelsFrameMatrix() / 60.f);
     }
 
     String origin;
@@ -154,8 +156,17 @@ void setup() {
         G.effectBri = 2;
         G.effectSpeed = 10;
         G.client_nr = 0;
-        G.secondVariant = 0;
-        G.minuteVariant = MinuteVariant::Corners;
+        G.secondVariant = SecondVariant::Off;
+// C++23 #elifdef doesn't work yet
+#ifdef MINUTE_Off
+        G.minuteVariant = MinuteVariant::Off;
+#endif
+#ifdef MINUTE_4xLED
+        G.minuteVariant = MinuteVariant::LED7x;
+#endif
+#ifdef MINUTE_7xLED
+        G.minuteVariant = MinuteVariant::LED7x;
+#endif
         G.ldr = 0;
         G.ldrCal = 0;
         strcpy(G.openWeatherMap.cityid, "");
@@ -225,8 +236,14 @@ void setup() {
     //         Number of rows (including frames)
     //         Number of columns (including frames)
     // Get TODO frame width from usedUhrTyp
-    animation = new Animation(0, 0, usedUhrType->ROWS_MATRIX() - 1,
-                              usedUhrType->COLS_MATRIX());
+    animation = new Animation(0, 0, usedUhrType->rowsWordMatrix(),
+                              usedUhrType->colsWordMatrix());
+
+    if (usedUhrType->numPixelsFrameMatrix() != 0) {
+        secondsFrame = new SecondsFrame(usedUhrType->numPixelsFrameMatrix());
+    } else {
+        secondsFrame = nullptr;
+    }
 
     //-------------------------------------
     // Initialize LEDs
@@ -261,14 +278,6 @@ void setup() {
         externalRTC = false;
     }
     settimeofday_cb(time_is_set);
-
-    //-------------------------------------
-    // Init frontMatrix
-    //-------------------------------------
-
-    for (uint16_t i = 0; i < usedUhrType->NUM_PIXELS(); i++) {
-        lastFrontMatrix[i] = 500;
-    }
 
     //-------------------------------------
     // Start WiFi
@@ -326,13 +335,6 @@ void setup() {
     MDNS.begin(G.hostname);
     MDNS.addService("http", "tcp", 80);
     MDNS.addService("http", "tcp", 81);
-
-    /*
-    // setup frame
-    if (usedUhrType->hasSecondsFrame() && G.secondVariant < 1 && G.minuteVariant
-    < 2) { led.setFrameColor();
-    }
-    */
 
     //-------------------------------------
     Serial.println("--------------------------------------");
@@ -399,6 +401,10 @@ void loop() {
 
     // make the time run faster in the demo mode of the animation
     animation->demoMode(_minute, _second);
+
+    if (usedUhrType->numPixelsFrameMatrix() != 0) {
+        secondsFrame->loop();
+    }
 
     clockWork.loop(tm);
 }

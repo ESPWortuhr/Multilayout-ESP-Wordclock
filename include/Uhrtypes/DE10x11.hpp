@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Uhrtype.hpp"
 
 /*
@@ -49,14 +51,15 @@ public:
     //------------------------------------------------------------------------------
 
     virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) override {
-        if (row == ROWS_MATRIX() - 1) {
+        if (row == rowsWordMatrix() - 1) {
             return col;
         }
         if (row % 2 == 0) {
-            col = COLS_MATRIX() - col - 1;
+            col = colsWordMatrix() - col - 1;
         }
-        uint16_t returnValue = NUM_PIXELS() - 1 - (col + (row * COLS_MATRIX()));
-        if (returnValue > NUM_PIXELS()) {
+        uint16_t returnValue =
+            numPixels() - 1 - (col + (row * colsWordMatrix()));
+        if (returnValue > numPixels()) {
             Serial.println("[ERROR] getMatrix() ReturnValue out of Bounds");
         }
         return returnValue;
@@ -71,7 +74,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const void getMinArr(uint16_t *returnArr, uint8_t col) {
+    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
         for (uint8_t i = 0; i < 4; i++) {
             returnArr[i] = minArr[i];
         }

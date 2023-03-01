@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Uhrtype.hpp"
 
 /*
@@ -30,19 +32,15 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_PIXELS() override { return 291; };
+    virtual const uint16_t numPixels() override { return 291; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t NUM_SMATRIX() override { return 291; };
+    virtual const uint16_t rowsWordMatrix() override { return 16; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t ROWS_MATRIX() override { return 17; };
-
-    //------------------------------------------------------------------------------
-
-    virtual const uint16_t COLS_MATRIX() override { return 18; };
+    virtual const uint16_t colsWordMatrix() override { return 18; };
 
     //------------------------------------------------------------------------------
 

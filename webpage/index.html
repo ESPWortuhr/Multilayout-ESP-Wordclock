@@ -170,11 +170,16 @@
                     <h2>Front</h2>
                     <form class="pure-form pure-form-aligned">
                         <fieldset>
+                            <legend>
+                                Änderungen der Matrixgröße werden erst mit einem Neustart der Uhr übernommen.
+                                </legend>
                             <div class="pure-control-group">
                                 <label for="front-layout">Wahl der Uhrvariante</label><select name="front-layout" id="front-layout" size="1">
                                 <option value="1" selected>DE 10x11</option>
                                 <option value="2">DE 10x11 Alternative</option>
+                                <option value="12">DE 10x11 Alternative Frame</option>
                                 <option value="6">DE 10x11 Clock</option>
+                                <option value="11">DE 10x11 Nero</option>
                                 <option value="3">DE 11x11</option>
                                 <option value="8">DE 11x11 v2</option>
                                 <option value="4">DE 11x11 Frame</option>
@@ -251,9 +256,10 @@
                             <div class="pure-control-group">
                                 <label for="show-minutes">Minuten Anzeigemodus</label><select name="show-minutes" id="show-minutes" size="1">
                                 <option value="0" selected>Aus</option>
-                                <option value="1">Normal</option>
-                                <option value="2">Reihe</option>
-                                <option value="3">In Worten</option>
+                                <option value="1">Normal (4xLED)</option>
+                                <option value="2">Normal (7xLED)</option>
+                                <option value="3">Ecken</option>
+                                <option value="4">In Worten</option>
                             </select>
                             </div>
                         </fieldset>
@@ -266,11 +272,12 @@
                     <form class="pure-form pure-form-aligned">
                         <fieldset>
                             <div class="pure-control-group">
-                                <label for="show-seconds">Sekundenanzeige im Rahmen</label>
-                                <label class="switch">
-                                    <input type="checkbox" id="show-seconds">
-                                    <span class="slider round"></span>
-                                </label>
+                                <label for="show-seconds">Sekundenanzeige im Rahmen</label><select name="show-seconds" id="show-seconds" size="1">
+                                    <option value="0" selected>Off</option>
+                                    <option value="1">Punkt</option>
+                                    <option value="2">Sektor</option>
+                                    <option value="3">Umlaufender Sektor</option>
+                                </select>
                             </div>
                         </fieldset>
                     </form>

@@ -15,11 +15,20 @@
 //
 // #define DEFAULT_LAYOUT Ger10x11Alternative
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with modified
-// layout for extra words in the matrix
+// layout for extra words in the matrix from the Github user @dbambus
+//
+// #define DEFAULT_LAYOUT Ger10x11AlternativeFrame
+// 10 rows, each 11 LED's per row + 4 LED's (minutes)+ 48 LED's (seconds) in a
+// Frame around with modified layout for extra words in the matrix from the
+// Github user @dbambus
 //
 // #define DEFAULT_LAYOUT Ger10x11Clock
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
 // from the original manufacturer
+//
+// #define DEFAULT_LAYOUT Ger10x11Nero
+// 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
+// from the Github user @n3roGit
 //
 // #define DEFAULT_LAYOUT Ger11x11
 // 11 rows, each 11 LED's per row + 4 LED's for minutes
@@ -85,7 +94,7 @@
  *
  * Valid values [0 ... 255]
  */
-#define SERNR 70
+#define SERNR 80
 
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output
@@ -127,3 +136,14 @@
  */
 #define BOOT_SHOWIP true
 #define BOOT_LEDSWEEP false
+
+//--------------------------------------------------------------------------
+// Displaying Option for Minutes
+//--------------------------------------------------------------------------
+/*
+ *
+ * Valid values [only one #define option]
+ */
+//#define MINUTE_Off
+#define MINUTE_LED4x
+//#define MINUTE_LED7x
