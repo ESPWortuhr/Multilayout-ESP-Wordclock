@@ -15,7 +15,6 @@ private:
     void scrollingText(const char *buf);
 
     bool changesInClockface();
-    void copyClockface(const bool source[], bool destination[]);
     void calcClockface();
     void countdownToMidnight();
 
