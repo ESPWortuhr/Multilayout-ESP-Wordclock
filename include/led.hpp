@@ -126,19 +126,8 @@ inline void Led::mirrorFrontMatrixHorizontal() {
 //------------------------------------------------------------------------------
 
 void Led::shiftColumnToRight() {
-    for (uint8_t col = 0; col < usedUhrType->colsWordMatrix() - 1; col++) {
-        for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
-            if (G.Colortype == Grbw) {
-                setPixelColorObject(
-                    usedUhrType->getFrontMatrixIndex(row, col),
-                    getPixelRgbw(
-                        usedUhrType->getFrontMatrixIndex(row, col + 1)));
-            } else {
-                setPixelColorObject(
-                    usedUhrType->getFrontMatrixIndex(row, col),
-                    getPixel(usedUhrType->getFrontMatrixIndex(row, col + 1)));
-            }
-        }
+    for (uint8_t row = 0; row < MAX_ROW_SIZE; row++) {
+        frontMatrix[row] <<= 1;
     }
 }
 
@@ -190,25 +179,15 @@ void Led::setPixelColorObject(uint16_t i, RgbwColor color) {
 
 //------------------------------------------------------------------------------
 
-void Led::set(bool changed) {
+void Led::setbyFrontMatrix(uint8_t colorPosition = Foreground) {
     uint8_t rr, gg, bb, ww;
-    uint8_t r2, g2, b2, w2;
-    setBrightnessLdr(rr, gg, bb, ww, Foreground);
-    setBrightnessLdr(r2, g2, b2, w2, Background);
-    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
-        if (lastFrontMatrix[i]) {
-            // foreground
+    setBrightnessLdr(rr, gg, bb, ww, colorPosition);
+    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
+        if (usedUhrType->getFrontMatrixPixel(i)) {
             setPixel(rr, gg, bb, ww, i);
         } else {
-            // background
-            setPixel(r2, g2, b2, w2, i);
+            clearPixel(i);
         }
-    }
-    if (G.secondVariant != SecondVariant::Off) {
-        showSeconds();
-    }
-    if (animation->led_show_notify(changed, _minute)) {
-        show();
     }
 }
 
