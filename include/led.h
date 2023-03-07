@@ -8,6 +8,7 @@ private:
     // Helper Functions
     //------------------------------------------------------------------------------
     inline uint8_t reverse8BitOrder(uint8_t x);
+    inline uint32_t reverse32BitOrder(uint32_t x);
 
 public:
     Led(/* args */) = default;
@@ -22,6 +23,8 @@ public:
     // Manipulate Functions
     //------------------------------------------------------------------------------
     inline void mirrorMinuteArrayVertical();
+    inline void mirrorFrontMatrixVertical();
+    inline void mirrorFrontMatrixHorizontal();
 
     //------------------------------------------------------------------------------
     // Brightness Functions

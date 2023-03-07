@@ -58,7 +58,7 @@ var h20 = 100;
 var h22 = 100;
 var h24 = 100;
 var dialect = [0, 0, 0, 0, 0, 0];
-var layVar = [0];
+var layVar = [0, 0, 0];
 var ldr = 0;
 var ldrCal = 0;
 var showSeconds = 0;
@@ -186,7 +186,7 @@ function initConfigValues() {
 	ldr = 0;
 	ldrCal = 10;
 	dialect = [0, 0, 0, 0, 0, 0];
-	layVar = [0];
+	layVar = [0, 0, 0];
 	showSeconds = 0;
 	showMinutes = 0;
 	UhrtypeDef = 0;
@@ -339,6 +339,8 @@ function initWebsocket() {
 			$("#dialect-5").set("value", data.langVar5);
 
 			document.getElementById("layvar-0").checked = data.layVar0;
+			document.getElementById("layvar-1").checked = data.layVar1;
+			document.getElementById("layvar-2").checked = data.layVar2;
 
 			document.getElementById("ldr").checked = data.ldr;
 			$("ldr-cal").set("value", data.ldrCal);
@@ -956,8 +958,10 @@ $.ready(function() {
 	});
 	$("[id*='layvar']").on("change", function() {
 		layVar[0] = $("#layvar-0").get("checked") | 0;
+		layVar[1] = $("#layvar-1").get("checked") | 0;
+		layVar[2] = $("#layvar-2").get("checked") | 0;
 
-		sendCmd(COMMAND_SET_LAYOUT_VARIANT, nstr(layVar[0]));
+		sendCmd(COMMAND_SET_LAYOUT_VARIANT, nstr(layVar[0]) + nstr(layVar[1]) + nstr(layVar[2]));
 		debugMessage("layVar" + debugMessageReconfigured);
 	});
 });

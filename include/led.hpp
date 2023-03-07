@@ -25,13 +25,14 @@ inline uint8_t Led::reverse8BitOrder(uint8_t x) {
 
 //------------------------------------------------------------------------------
 
-void Led::setPixelColorObject(uint16_t i, RgbColor color) {
+/* Based on https://graphics.stanford.edu/~seander/bithacks.html */
 
-    if (G.Colortype == Grbw) {
-        strip_RGBW->SetPixelColor(i, RgbwColor(color));
-    } else {
-        strip_RGB->SetPixelColor(i, color);
-    }
+inline uint32_t Led::reverse32BitOrder(uint32_t x) {
+    x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
+    x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
+    x = (((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4));
+    x = (((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8));
+    return ((x >> 16) | (x << 16));
 }
 
 //------------------------------------------------------------------------------
@@ -105,11 +106,20 @@ inline void Led::mirrorMinuteArrayVertical() {
 
 //------------------------------------------------------------------------------
 
-inline void Led::clearPixel(uint16_t i) {
-    if (G.Colortype == Grbw) {
-        strip_RGBW->SetPixelColor(i, 0);
-    } else {
-        strip_RGB->SetPixelColor(i, 0);
+inline void Led::mirrorFrontMatrixVertical() {
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        frontMatrix[row] = reverse32BitOrder(frontMatrix[row]);
+        frontMatrix[row] >>= (32 - usedUhrType->colsWordMatrix());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline void Led::mirrorFrontMatrixHorizontal() {
+    uint32_t tempMatrix[MAX_ROW_SIZE] = {0};
+    memcpy(&tempMatrix, &frontMatrix, sizeof tempMatrix);
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        frontMatrix[row] = tempMatrix[usedUhrType->rowsWordMatrix() - row - 1];
     }
 }
 
@@ -339,6 +349,7 @@ inline void Led::clearClock() {
 
 inline void Led::clearRow(uint8_t row) {
     for (uint8_t i = 0; i < usedUhrType->colsWordMatrix(); i++) {
+        usedUhrType->setFrontMatrixPixel(row, i, false);
         clearPixel(usedUhrType->getFrontMatrixIndex(row, i));
     }
 }

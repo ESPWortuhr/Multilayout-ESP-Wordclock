@@ -3,7 +3,7 @@
 #include "version.gen.h"
 
 #define PAYLOAD_LENGTH 30
-#define MAX_ARRAY_SIZE 291
+#define MAX_ROW_SIZE 22
 #define MAX_FRAME_ARRAY_SIZE 60
 
 enum ClockWords {
@@ -81,7 +81,7 @@ struct GLOBAL {
     SecondVariant secondVariant;
     MinuteVariant minuteVariant;
     bool languageVariant[6];
-    bool layoutVariant[1];
+    bool layoutVariant[3];
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char scrollingText[PAYLOAD_LENGTH];
@@ -130,8 +130,8 @@ uint8_t _hour = 0;
 uint8_t lastSecond = 0;
 uint8_t lastMinute = 0;
 
-bool frontMatrix[MAX_ARRAY_SIZE] = {false};
-bool lastFrontMatrix[MAX_ARRAY_SIZE] = {false};
+uint32_t frontMatrix[MAX_ROW_SIZE] = {0};
+uint32_t lastFrontMatrix[MAX_ROW_SIZE] = {0};
 uint8_t minuteArray = 0; /* Using a byte as a per bit array */
 uint8_t lastMinuteArray = 0;
 uint16_t minutePixelArray[4] = {0};
@@ -169,6 +169,8 @@ enum LanguageDialects {
 
 enum LayoutVariants {
     ReverseMinDirection = 0,
+    MirrorVertical = 1,
+    MirrorHorizontal = 2,
 };
 
 enum CommandWords {

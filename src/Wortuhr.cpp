@@ -184,10 +184,9 @@ void setup() {
         G.h20 = 100;
         G.h22 = 100;
         G.h24 = 100;
-        for (uint8_t i = 0;
-             i < sizeof(G.layoutVariant) / sizeof(G.layoutVariant[0]); i++) {
-            G.layoutVariant[i] = false;
-        }
+        G.layoutVariant[ReverseMinDirection] = REVERSE_MINUTE_DIR;
+        G.layoutVariant[MirrorVertical] = MIRROR_FRONT_VERTICAL;
+        G.layoutVariant[MirrorHorizontal] = MIRROR_FRONT_HORIZONTAL;
         for (uint8_t i = 0;
              i < sizeof(G.languageVariant) / sizeof(G.languageVariant[0]);
              i++) {

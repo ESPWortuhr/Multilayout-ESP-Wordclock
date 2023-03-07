@@ -384,6 +384,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_LAYOUT_VARIANT: {
             G.conf = COMMAND_SET_LAYOUT_VARIANT;
             G.layoutVariant[ReverseMinDirection] = split(payload, 3);
+            G.layoutVariant[MirrorVertical] = split(payload, 6);
+            G.layoutVariant[MirrorHorizontal] = split(payload, 9);
             break;
         }
 

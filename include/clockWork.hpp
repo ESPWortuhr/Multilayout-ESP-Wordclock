@@ -691,7 +691,7 @@ bool ClockWork::changesInClockface() {
     if (lastMinuteArray != minuteArray) {
         return true;
     } else {
-        for (uint16_t i = 0; i < MAX_ARRAY_SIZE; i++) {
+        for (uint16_t i = 0; i < MAX_ROW_SIZE; i++) {
             if (frontMatrix[i] != lastFrontMatrix[i]) {
                 return true;
             }
@@ -1128,6 +1128,13 @@ void ClockWork::loop(struct tm &tm) {
         if (G.layoutVariant[ReverseMinDirection]) {
             led.mirrorMinuteArrayVertical();
         }
+        if (G.layoutVariant[MirrorVertical]) {
+            led.mirrorFrontMatrixVertical();
+        }
+        if (G.layoutVariant[MirrorHorizontal]) {
+            led.mirrorFrontMatrixHorizontal();
+        }
+
         if (changesInClockface()) {
             lastMinuteArray = minuteArray;
             memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
