@@ -313,18 +313,21 @@ void ClockWork::showMinuteInWords(uint8_t min) {
 //------------------------------------------------------------------------------
 
 void ClockWork::showMinute(uint8_t min) {
+    /* To prevent errors if min is not in Range of [0-4] */
     min %= 5;
+
+    /* saving corosponding minutePixelArray */
+    usedUhrType->getMinuteArray(minutePixelArray,
+                                determineWhichMinuteVariant());
+    /* Reseting minute byte */
+    minuteArray = 0;
+    for (uint8_t i = 0; i < min; i++) {
+        /* Shifting a 1 Bit for every pixel starting at LSB */
+        minuteArray |= 1UL << i;
+    }
+
     if (G.UhrtypeDef == Nl10x11 && G.minuteVariant == MinuteVariant::InWords) {
         showMinuteInWords(min);
-    } else if (G.minuteVariant != MinuteVariant::Off) {
-        uint16_t minArray[4];
-        usedUhrType->getMinuteArray(minArray, determineWhichMinuteVariant());
-        if (G.layoutVariant[ReverseMinDirection]) {
-            std::reverse(std::begin(minArray), std::end(minArray));
-        }
-        for (uint8_t i = 0; i < min; i++) {
-            frontMatrix[minArray[i]] = true;
-        }
     }
 }
 
@@ -685,9 +688,13 @@ void ClockWork::setHour(const uint8_t hour, const bool fullHour) {
 //------------------------------------------------------------------------------
 
 bool ClockWork::changesInClockface() {
-    for (uint16_t i = 0; i < MAX_ARRAY_SIZE; i++) {
-        if (frontMatrix[i] != lastFrontMatrix[i]) {
-            return true;
+    if (lastMinuteArray != minuteArray) {
+        return true;
+    } else {
+        for (uint16_t i = 0; i < MAX_ARRAY_SIZE; i++) {
+            if (frontMatrix[i] != lastFrontMatrix[i]) {
+                return true;
+            }
         }
     }
     return false;
@@ -1118,7 +1125,11 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_WORD_CLOCK: {
         calcClockface();
 
+        if (G.layoutVariant[ReverseMinDirection]) {
+            led.mirrorMinuteArrayVertical();
+        }
         if (changesInClockface()) {
+            lastMinuteArray = minuteArray;
             memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
             led.set(true);
         } else if (parametersChanged) {

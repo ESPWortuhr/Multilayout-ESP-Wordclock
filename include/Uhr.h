@@ -132,6 +132,9 @@ uint8_t lastMinute = 0;
 
 bool frontMatrix[MAX_ARRAY_SIZE] = {false};
 bool lastFrontMatrix[MAX_ARRAY_SIZE] = {false};
+uint8_t minuteArray = 0; /* Using a byte as a per bit array */
+uint8_t lastMinuteArray = 0;
+uint16_t minutePixelArray[4] = {0};
 bool frameArray[MAX_FRAME_ARRAY_SIZE] = {false};
 bool parametersChanged = false;
 uint8_t statusAccessPoint = 0;

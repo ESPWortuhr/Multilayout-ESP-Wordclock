@@ -4,6 +4,11 @@
 
 class Led {
 private:
+    //------------------------------------------------------------------------------
+    // Helper Functions
+    //------------------------------------------------------------------------------
+    inline uint8_t reverse8BitOrder(uint8_t x);
+
 public:
     Led(/* args */) = default;
     ~Led() = default;
@@ -12,6 +17,11 @@ public:
     // Helper Functions
     //------------------------------------------------------------------------------
     inline void checkIfHueIsOutOfBound(float &hue);
+
+    //------------------------------------------------------------------------------
+    // Manipulate Functions
+    //------------------------------------------------------------------------------
+    inline void mirrorMinuteArrayVertical();
 
     //------------------------------------------------------------------------------
     // Brightness Functions
@@ -51,6 +61,7 @@ public:
     inline void clearPixel(uint16_t i);
     inline void clearClock();
     inline void clearRow(uint8_t row);
+    inline void clearMinArray();
     inline void clearFrontExeptofFontspace(uint8_t offsetRow);
     inline void clearFrame();
     inline void clear();
@@ -59,6 +70,7 @@ public:
     // Show Functions
     //------------------------------------------------------------------------------
     void showNumbers(const char d1, const char d2);
+    void showMinutes();
     void showSeconds();
     void show();
 };
