@@ -1010,7 +1010,6 @@ void ClockWork::loop(struct tm &tm) {
         G.Colortype = G.param1;
         eeprom::write();
         initLedStrip(G.Colortype);
-        led.setIcon(RGB_I, 100, true);
         break;
     }
 

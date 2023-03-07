@@ -45,7 +45,7 @@ public:
     void setPixelColorObject(uint16_t i, RgbColor color);
     void setPixelColorObject(uint16_t i, RgbwColor color);
     void setbyFrontMatrix(uint8_t ColorPosition);
-    void setIcon(uint8_t num_icon, uint8_t brightness, bool rgb_icon = false);
+    void setIcon(uint8_t num_icon, uint8_t brightness);
     void setSingle(uint8_t wait);
     void setFrameColor();
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,

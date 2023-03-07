@@ -247,5 +247,4 @@ enum Icons {
     FIRE_4 = 9,
     FIRE_5 = 10,
     FIRE_6 = 11,
-    RGB_I = 12,
 };

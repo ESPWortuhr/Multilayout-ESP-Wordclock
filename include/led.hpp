@@ -197,26 +197,18 @@ void Led::setbyFrontMatrix(uint8_t colorPosition = Foreground) {
 
 //------------------------------------------------------------------------------
 
-void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100, bool rgb_icon) {
-    uint8_t rr, gg, bb, ww;
-    setBrightness(rr, gg, bb, ww, Foreground, brightness);
+void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100) {
     for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
-        if (rgb_icon) {
-            rr = col < 3 ? 255 : 0;
-            gg = (col > 3) && (col < 7) ? 255 : 0;
-            bb = col > 7 ? 255 : 0;
-            ww = 0;
-        }
         for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
             if (pgm_read_word(&(grafik_11x10[num_icon][row])) &
                 (1 << (GRAFIK_11X10_COLS - 1 - col))) {
-                setPixel(rr, gg, bb, ww,
-                         usedUhrType->getFrontMatrixIndex(row, col));
+                usedUhrType->setFrontMatrixPixel(row, col);
             } else {
-                clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
+                usedUhrType->setFrontMatrixPixel(row, col, false);
             }
         }
     }
+    setbyFrontMatrix(Foreground);
     show();
 }
 
