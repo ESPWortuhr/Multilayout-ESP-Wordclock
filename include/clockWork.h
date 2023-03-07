@@ -12,6 +12,7 @@ private:
     // Helper Functions
     //------------------------------------------------------------------------------
     void loopLdrLogic();
+    uint32_t num32BitWithOnesAccordingToColumns();
 
     //------------------------------------------------------------------------------
     // Front Effect Functions

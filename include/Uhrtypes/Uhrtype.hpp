@@ -93,7 +93,7 @@ enum class FrontWord {
 
 class iUhrType {
 public:
-    virtual void setFrontMatrixPixel(const uint16_t index, bool state = true) {
+    virtual void setFrontMatrixPixel(const int index, bool state = true) {
         uint8_t col, row;
         getFrontMatrixColRow(row, col, index);
         if (state) {
@@ -103,7 +103,7 @@ public:
         }
     }
 
-    virtual void setFrontMatrixPixel(const uint8_t row, const uint8_t col,
+    virtual void setFrontMatrixPixel(const int row, const int col,
                                      bool state = true) {
         if (state) {
             frontMatrix[row] |= 1UL << col;

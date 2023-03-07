@@ -110,6 +110,12 @@ void ClockWork::initLedStrip(uint8_t num) {
 }
 
 //------------------------------------------------------------------------------
+
+uint32_t ClockWork::num32BitWithOnesAccordingToColumns() {
+    return pow(2, usedUhrType->colsWordMatrix()) - 1;
+}
+
+//------------------------------------------------------------------------------
 // Front Effect Functions
 //------------------------------------------------------------------------------
 
@@ -164,6 +170,7 @@ void ClockWork::scrollingText(const char *buf) {
             usedUhrType->setFrontMatrixPixel(row + offsetRow, 0, false);
         }
     }
+
     led.setbyFrontMatrix(Foreground);
     led.show();
 
@@ -246,7 +253,10 @@ void ClockWork::initBootWifiSignalStrength(int strength) {
 //------------------------------------------------------------------------------
 
 void ClockWork::initBootLedBlink() {
-    led.setAllPixels(50, 50, 50, 50);
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        frontMatrix[row] ^= num32BitWithOnesAccordingToColumns();
+    }
+    led.setbyFrontMatrix(Effect);
     led.show();
 }
 
@@ -1099,7 +1109,10 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_COLOR: {
         if (G.progInit == 1) {
             G.progInit = 0;
-            led.setColor();
+            for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+                frontMatrix[row] = num32BitWithOnesAccordingToColumns();
+            }
+            led.setbyFrontMatrix(Effect);
             led.show();
         }
         break;

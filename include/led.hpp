@@ -183,9 +183,13 @@ void Led::setbyFrontMatrix(uint8_t colorPosition = Foreground) {
     uint8_t rr, gg, bb, ww;
     setBrightnessLdr(rr, gg, bb, ww, colorPosition);
     for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        if (usedUhrType->getFrontMatrixPixel(i)) {
+        bool boolSetPixel = usedUhrType->getFrontMatrixPixel(i);
+        if (colorPosition == Background) {
+            boolSetPixel = !boolSetPixel;
+        }
+        if (boolSetPixel) {
             setPixel(rr, gg, bb, ww, i);
-        } else {
+        } else if (colorPosition != Background) {
             clearPixel(i);
         }
     }
@@ -249,30 +253,15 @@ void Led::setFrameColor() {
 void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                           uint8_t offsetRow, unsigned char unsigned_d1) {
     if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
-        setPixel(
-            G.rgbw[Effect][0], G.rgbw[Effect][1], G.rgbw[Effect][2],
-            G.rgbw[Effect][3],
-            usedUhrType->getFrontMatrixIndex(row + offsetRow, col + offsetCol));
+        usedUhrType->setFrontMatrixPixel(row + offsetRow, col + offsetCol);
     }
 }
 
 //------------------------------------------------------------------------------
 
 void Led::set(bool changed) {
-    uint8_t rr, gg, bb, ww;
-    uint8_t r2, g2, b2, w2;
-    setBrightnessLdr(rr, gg, bb, ww, Foreground);
-    setBrightnessLdr(r2, g2, b2, w2, Background);
-
-    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        if (usedUhrType->getFrontMatrixPixel(i)) {
-            // foreground
-            setPixel(rr, gg, bb, ww, i);
-        } else {
-            // background
-            setPixel(r2, g2, b2, w2, i);
-        }
-    }
+    setbyFrontMatrix(Foreground);
+    setbyFrontMatrix(Background);
 
     if (G.minuteVariant != MinuteVariant::Off) {
         showMinutes();
@@ -400,6 +389,9 @@ void Led::showNumbers(const char d1, const char d2) {
                             static_cast<unsigned char>(d2));
         }
     }
+
+    mirrorFrontMatrixVertical();
+    setbyFrontMatrix(Effect);
     show();
 }
 
