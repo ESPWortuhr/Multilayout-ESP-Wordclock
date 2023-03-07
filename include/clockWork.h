@@ -8,38 +8,62 @@ private:
     uint32_t previousMillis = 0;
 
 private:
+    //------------------------------------------------------------------------------
+    // Helper Functions
+    //------------------------------------------------------------------------------
     void loopLdrLogic();
 
+    //------------------------------------------------------------------------------
+    // Front Effect Functions
+    //------------------------------------------------------------------------------
     void rainbow();
     void rainbowCycle();
     void scrollingText(const char *buf);
-
-    bool changesInClockface();
-    void calcClockface();
     void countdownToMidnight();
 
-    void setClock();
+    //------------------------------------------------------------------------------
+    // Minute Functions
+    //------------------------------------------------------------------------------
+    uint8_t determineWhichMinuteVariant();
+    void showMinuteInWords(uint8_t min);
+    void showMinute(uint8_t min);
+    void resetMinVariantIfNotAvailable();
+    FrontWord getFrontWordForNum(uint8_t min);
+    void setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour);
+
+    //------------------------------------------------------------------------------
+    // Hour Functions
+    //------------------------------------------------------------------------------
     void setHour(const uint8_t std, const bool fullHour);
 
-    void setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour);
-    void showMinute(uint8_t min);
-    void showMinuteInWords(uint8_t min);
-    uint8_t determineWhichMinuteVariant();
-    FrontWord getFrontWordForNum(uint8_t min);
+    //------------------------------------------------------------------------------
+    // Loop Helper Functions
+    //------------------------------------------------------------------------------
+    bool changesInClockface();
+    void calcClockface();
+    void setClock();
 
 public:
     ClockWork() = default;
     ~ClockWork() = default;
 
+    //------------------------------------------------------------------------------
+    // Helper Functions
+    //------------------------------------------------------------------------------
     iUhrType *getPointer(uint8_t type);
+    void initLedStrip(uint8_t num);
 
-    void loop(struct tm &tm);
-
+    //------------------------------------------------------------------------------
+    // Boot Functions
+    //------------------------------------------------------------------------------
     void initBootLed();
     void initBootLedBlink();
     void initBootLedSweep(uint32_t delay);
     void initBootShowIp(const char *buf);
     void initBootWifiSignalStrength(int strength);
 
-    void initLedStrip(uint8_t num);
+    //------------------------------------------------------------------------------
+    // Loop Functions
+    //------------------------------------------------------------------------------
+    void loop(struct tm &tm);
 };
