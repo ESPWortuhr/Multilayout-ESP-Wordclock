@@ -988,7 +988,7 @@ void ClockWork::loop(struct tm &tm) {
         eeprom::write();
         led.clear();
         frameArray = 0;
-        G.progInit = 1;
+        G.progInit = true;
         parametersChanged = true;
         G.conf = COMMAND_IDLE;
         break;
@@ -1035,7 +1035,7 @@ void ClockWork::loop(struct tm &tm) {
             delete secondsFrame;
             secondsFrame =
                 new SecondsFrame(usedUhrType->numPixelsFrameMatrix());
-            G.progInit = 1;
+            G.progInit = true;
         }
         G.conf = COMMAND_IDLE;
         break;
@@ -1073,9 +1073,9 @@ void ClockWork::loop(struct tm &tm) {
     switch (G.prog) {
 
     case COMMAND_MODE_SECONDS: {
-        if (G.progInit == 1) {
+        if (G.progInit) {
             led.clear();
-            G.progInit = 0;
+            G.progInit = false;
         }
         char d1[5];
         char d2[5];
@@ -1088,8 +1088,8 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_SCROLLINGTEXT:
     case COMMAND_MODE_RAINBOWCYCLE:
     case COMMAND_MODE_RAINBOW: {
-        if (G.progInit == 1) {
-            G.progInit = 0;
+        if (G.progInit) {
+            G.progInit = false;
             led.clear();
             countMillisSpeed = (11u - G.effectSpeed) * 30u;
         }
@@ -1116,8 +1116,8 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_MODE_COLOR: {
-        if (G.progInit == 1) {
-            G.progInit = 0;
+        if (G.progInit) {
+            G.progInit = false;
             for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
                 frontMatrix[row] = num32BitWithOnesAccordingToColumns();
             }
@@ -1128,8 +1128,8 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_MODE_ANIMATION: {
-        if (G.progInit == 1) {
-            G.progInit = 0;
+        if (G.progInit) {
+            G.progInit = false;
             eeprom::write();
             delay(100);
         }

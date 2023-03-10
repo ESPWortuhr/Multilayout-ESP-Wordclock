@@ -122,9 +122,9 @@ void SecondsFrame::loop() {
     countMillisFrameIntervall += currentMillis - previousMillis;
     previousMillis = currentMillis;
 
-    if (G.progInit == 1 && G.prog == 0) {
+    if (G.progInit && G.prog == 0) {
         setup();
-        G.progInit = 0;
+        G.progInit = false;
     }
     if (countMillisFrameIntervall >= frameIntervall) {
         frameLogic();

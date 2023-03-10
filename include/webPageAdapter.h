@@ -203,7 +203,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_MODE_SECONDS: {
             G.prog = COMMAND_MODE_SECONDS;
-            G.progInit = 1;
+            G.progInit = true;
 
             G.rgbw[Effect][0] = split(payload, 3);
             G.rgbw[Effect][1] = split(payload, 6);
@@ -218,7 +218,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_MODE_SCROLLINGTEXT: {
             G.prog = COMMAND_MODE_SCROLLINGTEXT;
-            G.progInit = 1;
+            G.progInit = true;
 
             G.rgbw[Effect][0] = split(payload, 3);
             G.rgbw[Effect][1] = split(payload, 6);
@@ -233,7 +233,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_MODE_RAINBOWCYCLE: {
             G.prog = COMMAND_MODE_RAINBOWCYCLE;
-            G.progInit = 1;
+            G.progInit = true;
 
             G.effectBri = split(payload, 27);
             G.effectSpeed = split(payload, 30);
@@ -244,7 +244,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_MODE_RAINBOW: {
             G.prog = COMMAND_MODE_RAINBOW;
-            G.progInit = 1;
+            G.progInit = true;
 
             G.effectBri = split(payload, 27);
             G.effectSpeed = split(payload, 30);
@@ -255,7 +255,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_MODE_COLOR: {
             G.prog = COMMAND_MODE_COLOR;
-            G.progInit = 1;
+            G.progInit = true;
 
             G.rgbw[Effect][0] = split(payload, 3);
             G.rgbw[Effect][1] = split(payload, 6);
@@ -267,7 +267,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_MODE_ANIMATION: {
             G.prog = COMMAND_MODE_ANIMATION;
-            G.progInit = 1;
+            G.progInit = true;
             G.animType = split(payload, 3);
             G.animDuration = split(payload, 6);
             G.animSpeed = split(payload, 9);
@@ -331,7 +331,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_SETTING_SECOND: {
             G.conf = COMMAND_SET_SETTING_SECOND;
-            G.progInit = 1;
+            G.progInit = true;
 
             G.secondVariant = static_cast<SecondVariant>(split(payload, 3));
             break;
