@@ -158,6 +158,36 @@
                     </form>
                 </div>
 
+                <div class="box functions-settings">
+                    <h2>Einstellung</h2>
+
+                    <form class="pure-form pure-form-aligned">
+                        <div class="pure-control-group brightness">
+                            <label class="slider-label" for="slider-brightness">Helligkeit <span class="value" id="slider-brightness-value">0</span></label>
+                            <input id="slider-brightness" type="range" min="0" max="100" value="1">
+                        </div>
+                        <div class="pure-control-group text">
+                            <label for="marquee">Lauftext</label>
+                            <input id="marquee" type="text" placeholder="Lauftext">
+                            <div class="pure-controls">
+                                <button id="marquee-button" class="pure-button">Speichern</button>
+                            </div>
+                        </div>
+                        <div class="pure-control-group speed">
+                            <label class="slider-label" for="slider-speed">Geschwindigkeit <span class="value" id="slider-speed-value">0</span></label>
+                            <input id="slider-speed" type="range" min="1" max="10" value="0">
+                        </div>
+                        <div class="pure-control-group leds">
+                            <label class="slider-label" for="slider-leds">Anzahl LEDs <span class="value" id="slider-leds-value">0</span></label>
+                            <input id="slider-leds" type="range" min="5" max="100" value="100">
+                        </div>
+                        <div class="pure-control-group position">
+                            <label class="slider-label" for="slider-position">Position <span class="value" id="slider-position-value">0</span></label>
+                            <input id="slider-position" type="range" min="1" max="100" value="100">
+                        </div>
+                    </form>
+                </div>
+
             </div>
 
             <div class="pure-u-24-24 section section-frontoptions">
