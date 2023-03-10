@@ -49,13 +49,13 @@ void SecondsFrame::setInitFrameSector() {
     case SecondVariant::FrameSectorToggle:
         if (_minute % 2 == 1) {
             for (uint8_t i = 0; i <= numFramePixels; i++) {
-                frameArray[i] = true;
+                frameArray |= 1ULL << i; // Setting Bits
             }
         }
         /* intentianally no break */
     case SecondVariant::FrameSector:
         for (uint8_t i = 0; i <= _secondFrame; i++) {
-            frameArray[i] = !frameArray[i];
+            frameArray ^= 1ULL << i; // Toggling Bits
         }
         break;
     default:
@@ -81,6 +81,8 @@ void SecondsFrame::frameLogic() {
     /*Every full minute */
     if (_secondFrame == numFramePixels) {
         led.clearFrame();
+        frameArray = 0;
+        setInitFrameSector();
         _secondFrame = 0;
     }
 
@@ -89,14 +91,14 @@ void SecondsFrame::frameLogic() {
 
         switch (G.secondVariant) {
         case SecondVariant::FrameDot:
-            frameArray[_secondFrame] = true;
+            frameArray |= 1ULL << _secondFrame; // Setting Bit to 1
             if (_secondFrame != 0) {
-                frameArray[_secondFrame - 1] = false;
+                frameArray &= ~(1ULL << (_secondFrame - 1)); // Setting Bit to 0
             }
             break;
         case SecondVariant::FrameSector:
         case SecondVariant::FrameSectorToggle:
-            frameArray[_secondFrame] = !frameArray[_secondFrame];
+            frameArray ^= 1ULL << _secondFrame; // Toggle Bit
             break;
         default:
             break;

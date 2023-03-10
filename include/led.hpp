@@ -415,7 +415,7 @@ void Led::showSeconds() {
     uint8_t rr, gg, bb, ww;
     setBrightness(rr, gg, bb, ww, Foreground);
     for (uint8_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
-        if (frameArray[i]) {
+        if ((frameArray >> i) & 1U) {
             if (i < usedUhrType->numPixelsFrameMatrix() - offesetSecondsFrame) {
                 setPixel(rr, gg, bb, ww,
                          usedUhrType->getFrameMatrixIndex(i) +

@@ -975,10 +975,20 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_AUTO_LDR:
     case COMMAND_SET_LANGUAGE_VARIANT:
     case COMMAND_SET_LAYOUT_VARIANT:
-    case COMMAND_SET_SETTING_SECOND:
     case COMMAND_SET_TIME_MANUAL: {
         eeprom::write();
         led.clear();
+        frameArray = 0;
+        parametersChanged = true;
+        G.conf = COMMAND_IDLE;
+        break;
+    }
+
+    case COMMAND_SET_SETTING_SECOND: {
+        eeprom::write();
+        led.clear();
+        frameArray = 0;
+        G.progInit = 1;
         parametersChanged = true;
         G.conf = COMMAND_IDLE;
         break;
