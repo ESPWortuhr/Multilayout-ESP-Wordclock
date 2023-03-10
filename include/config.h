@@ -144,9 +144,20 @@
 // Displaying Option for Minutes
 //--------------------------------------------------------------------------
 /*
- *
  * Valid values [only one #define option]
  */
 //#define MINUTE_Off
 #define MINUTE_LED4x
 //#define MINUTE_LED7x
+
+//--------------------------------------------------------------------------
+// Front Displaying Options
+//--------------------------------------------------------------------------
+/*
+ * Valid values REVERSE_MINUTE_DIR [true, false]
+ * Valid values MIRROR_FRONT_VERTICAL [true, false]
+ * Valid values MIRROR_FRONT_HORIZONTAL [true, false]
+ */
+#define REVERSE_MINUTE_DIR false
+#define MIRROR_FRONT_VERTICAL false
+#define MIRROR_FRONT_HORIZONTAL false

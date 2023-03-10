@@ -38,19 +38,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    const uint16_t minArr[4] = {112, 114, 116, 118};
-
-    //------------------------------------------------------------------------------
-
     virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
-        for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = minArr[i];
-        }
         for (uint8_t i = 0; i < 4; i++) {
             switch (col) {
             case 0:
                 // LEDs for "LED4x" minute display
-                // {112, 114, 116, 118}
+                // {113, 114, 115, 116}
                 returnArr[i] = 113 + i;
                 break;
             case 1:
@@ -84,13 +77,13 @@ public:
 
         case FrontWord::es_ist:
             // Es
-            setLetter(0);
-            setLetter(1);
+            setFrontMatrixPixel(0);
+            setFrontMatrixPixel(1);
 
             // Ist
-            setLetter(3);
-            setLetter(4);
-            setLetter(5);
+            setFrontMatrixPixel(3);
+            setFrontMatrixPixel(4);
+            setFrontMatrixPixel(5);
 
 #if WEATHER_VERBOSE
             Serial.println("");
@@ -99,13 +92,13 @@ public:
             break;
 
         case FrontWord::viertel:
-            setLetter(26);
-            setLetter(27);
-            setLetter(28);
-            setLetter(29);
-            setLetter(30);
-            setLetter(31);
-            setLetter(32);
+            setFrontMatrixPixel(26);
+            setFrontMatrixPixel(27);
+            setFrontMatrixPixel(28);
+            setFrontMatrixPixel(29);
+            setFrontMatrixPixel(30);
+            setFrontMatrixPixel(31);
+            setFrontMatrixPixel(32);
 
 #if WEATHER_VERBOSE
             Serial.print("viertel ");
@@ -113,10 +106,10 @@ public:
             break;
 
         case FrontWord::fuenf:
-            setLetter(7);
-            setLetter(8);
-            setLetter(9);
-            setLetter(10);
+            setFrontMatrixPixel(7);
+            setFrontMatrixPixel(8);
+            setFrontMatrixPixel(9);
+            setFrontMatrixPixel(10);
 
 #if WEATHER_VERBOSE
             Serial.print("Fünf ");
@@ -124,10 +117,10 @@ public:
             break;
 
         case FrontWord::zehn:
-            setLetter(18);
-            setLetter(19);
-            setLetter(20);
-            setLetter(21);
+            setFrontMatrixPixel(18);
+            setFrontMatrixPixel(19);
+            setFrontMatrixPixel(20);
+            setFrontMatrixPixel(21);
 
 #if WEATHER_VERBOSE
             Serial.print("zehn ");
@@ -135,13 +128,13 @@ public:
             break;
 
         case FrontWord::zwanzig:
-            setLetter(11);
-            setLetter(12);
-            setLetter(13);
-            setLetter(14);
-            setLetter(15);
-            setLetter(16);
-            setLetter(17);
+            setFrontMatrixPixel(11);
+            setFrontMatrixPixel(12);
+            setFrontMatrixPixel(13);
+            setFrontMatrixPixel(14);
+            setFrontMatrixPixel(15);
+            setFrontMatrixPixel(16);
+            setFrontMatrixPixel(17);
 
 #if WEATHER_VERBOSE
             Serial.print("zwanzig ");
@@ -149,10 +142,10 @@ public:
             break;
 
         case FrontWord::halb:
-            setLetter(44);
-            setLetter(45);
-            setLetter(46);
-            setLetter(47);
+            setFrontMatrixPixel(44);
+            setFrontMatrixPixel(45);
+            setFrontMatrixPixel(46);
+            setFrontMatrixPixel(47);
 
 #if WEATHER_VERBOSE
             Serial.print("halb ");
@@ -160,10 +153,10 @@ public:
             break;
 
         case FrontWord::eins:
-            setLetter(60);
-            setLetter(61);
-            setLetter(62);
-            setLetter(63);
+            setFrontMatrixPixel(60);
+            setFrontMatrixPixel(61);
+            setFrontMatrixPixel(62);
+            setFrontMatrixPixel(63);
 
 #if WEATHER_VERBOSE
             Serial.print("Eins ");
@@ -172,10 +165,10 @@ public:
 
         case FrontWord::nach:
         case FrontWord::v_nach:
-            setLetter(38);
-            setLetter(39);
-            setLetter(40);
-            setLetter(41);
+            setFrontMatrixPixel(38);
+            setFrontMatrixPixel(39);
+            setFrontMatrixPixel(40);
+            setFrontMatrixPixel(41);
 
 #if WEATHER_VERBOSE
             Serial.print("nach ");
@@ -184,18 +177,18 @@ public:
 
         case FrontWord::vor:
         case FrontWord::v_vor:
-            setLetter(35);
-            setLetter(36);
-            setLetter(37);
+            setFrontMatrixPixel(35);
+            setFrontMatrixPixel(36);
+            setFrontMatrixPixel(37);
 
 #if WEATHER_VERBOSE
             Serial.print("vor ");
 #endif
 
         case FrontWord::uhr:
-            setLetter(100);
-            setLetter(101);
-            setLetter(102);
+            setFrontMatrixPixel(100);
+            setFrontMatrixPixel(101);
+            setFrontMatrixPixel(102);
 
 #if WEATHER_VERBOSE
             Serial.println("Uhr ");
@@ -203,9 +196,9 @@ public:
             break;
 
         case FrontWord::h_ein:
-            setLetter(61);
-            setLetter(62);
-            setLetter(63);
+            setFrontMatrixPixel(61);
+            setFrontMatrixPixel(62);
+            setFrontMatrixPixel(63);
 
 #if WEATHER_VERBOSE
             Serial.println("Eins ");
@@ -213,10 +206,10 @@ public:
             break;
 
         case FrontWord::h_zwei:
-            setLetter(62);
-            setLetter(63);
-            setLetter(64);
-            setLetter(65);
+            setFrontMatrixPixel(62);
+            setFrontMatrixPixel(63);
+            setFrontMatrixPixel(64);
+            setFrontMatrixPixel(65);
 
 #if WEATHER_VERBOSE
             Serial.println("Zwei ");
@@ -224,10 +217,10 @@ public:
             break;
 
         case FrontWord::h_drei:
-            setLetter(67);
-            setLetter(68);
-            setLetter(69);
-            setLetter(70);
+            setFrontMatrixPixel(67);
+            setFrontMatrixPixel(68);
+            setFrontMatrixPixel(69);
+            setFrontMatrixPixel(70);
 
 #if WEATHER_VERBOSE
             Serial.println("Drei ");
@@ -235,10 +228,10 @@ public:
             break;
 
         case FrontWord::h_vier:
-            setLetter(77);
-            setLetter(78);
-            setLetter(79);
-            setLetter(80);
+            setFrontMatrixPixel(77);
+            setFrontMatrixPixel(78);
+            setFrontMatrixPixel(79);
+            setFrontMatrixPixel(80);
 
 #if WEATHER_VERBOSE
             Serial.println("Vier ");
@@ -246,10 +239,10 @@ public:
             break;
 
         case FrontWord::h_fuenf:
-            setLetter(73);
-            setLetter(74);
-            setLetter(75);
-            setLetter(76);
+            setFrontMatrixPixel(73);
+            setFrontMatrixPixel(74);
+            setFrontMatrixPixel(75);
+            setFrontMatrixPixel(76);
 
 #if WEATHER_VERBOSE
             Serial.println("Fünf ");
@@ -257,11 +250,11 @@ public:
             break;
 
         case FrontWord::h_sechs:
-            setLetter(104);
-            setLetter(105);
-            setLetter(106);
-            setLetter(107);
-            setLetter(108);
+            setFrontMatrixPixel(104);
+            setFrontMatrixPixel(105);
+            setFrontMatrixPixel(106);
+            setFrontMatrixPixel(107);
+            setFrontMatrixPixel(108);
 
 #if WEATHER_VERBOSE
             Serial.println("Sechs ");
@@ -269,12 +262,12 @@ public:
             break;
 
         case FrontWord::h_sieben:
-            setLetter(55);
-            setLetter(56);
-            setLetter(57);
-            setLetter(58);
-            setLetter(59);
-            setLetter(60);
+            setFrontMatrixPixel(55);
+            setFrontMatrixPixel(56);
+            setFrontMatrixPixel(57);
+            setFrontMatrixPixel(58);
+            setFrontMatrixPixel(59);
+            setFrontMatrixPixel(60);
 
 #if WEATHER_VERBOSE
             Serial.println("Sieben ");
@@ -282,10 +275,10 @@ public:
             break;
 
         case FrontWord::h_acht:
-            setLetter(89);
-            setLetter(90);
-            setLetter(91);
-            setLetter(92);
+            setFrontMatrixPixel(89);
+            setFrontMatrixPixel(90);
+            setFrontMatrixPixel(91);
+            setFrontMatrixPixel(92);
 
 #if WEATHER_VERBOSE
             Serial.println("Acht ");
@@ -293,10 +286,10 @@ public:
             break;
 
         case FrontWord::h_neun:
-            setLetter(81);
-            setLetter(82);
-            setLetter(83);
-            setLetter(84);
+            setFrontMatrixPixel(81);
+            setFrontMatrixPixel(82);
+            setFrontMatrixPixel(83);
+            setFrontMatrixPixel(84);
 
 #if WEATHER_VERBOSE
             Serial.println("Neun ");
@@ -304,10 +297,10 @@ public:
             break;
 
         case FrontWord::h_zehn:
-            setLetter(93);
-            setLetter(94);
-            setLetter(95);
-            setLetter(96);
+            setFrontMatrixPixel(93);
+            setFrontMatrixPixel(94);
+            setFrontMatrixPixel(95);
+            setFrontMatrixPixel(96);
 
 #if WEATHER_VERBOSE
             Serial.println("Zehn ");
@@ -315,9 +308,9 @@ public:
             break;
 
         case FrontWord::h_elf:
-            setLetter(85);
-            setLetter(86);
-            setLetter(87);
+            setFrontMatrixPixel(85);
+            setFrontMatrixPixel(86);
+            setFrontMatrixPixel(87);
 
 #if WEATHER_VERBOSE
             Serial.println("Elf ");
@@ -325,11 +318,11 @@ public:
             break;
 
         case FrontWord::h_zwoelf:
-            setLetter(49);
-            setLetter(50);
-            setLetter(51);
-            setLetter(52);
-            setLetter(53);
+            setFrontMatrixPixel(49);
+            setFrontMatrixPixel(50);
+            setFrontMatrixPixel(51);
+            setFrontMatrixPixel(52);
+            setFrontMatrixPixel(53);
 
 #if WEATHER_VERBOSE
             Serial.println("Zwölf ");
@@ -341,12 +334,12 @@ public:
             //------------------------------------------------------------------------------
 
         case FrontWord::w_morgen:
-            setLetter(131);
-            setLetter(130);
-            setLetter(129);
-            setLetter(128);
-            setLetter(127);
-            setLetter(126);
+            setFrontMatrixPixel(131);
+            setFrontMatrixPixel(130);
+            setFrontMatrixPixel(129);
+            setFrontMatrixPixel(128);
+            setFrontMatrixPixel(127);
+            setFrontMatrixPixel(126);
 
 #if WEATHER_VERBOSE
             Serial.print("Morgen ");
@@ -354,10 +347,10 @@ public:
             break;
 
         case FrontWord::w_frueh:
-            setLetter(124);
-            setLetter(123);
-            setLetter(122);
-            setLetter(121);
+            setFrontMatrixPixel(124);
+            setFrontMatrixPixel(123);
+            setFrontMatrixPixel(122);
+            setFrontMatrixPixel(121);
 
 #if WEATHER_VERBOSE
             Serial.print("Früh ");
@@ -365,11 +358,11 @@ public:
             break;
 
         case FrontWord::w_abend:
-            setLetter(132);
-            setLetter(133);
-            setLetter(134);
-            setLetter(135);
-            setLetter(136);
+            setFrontMatrixPixel(132);
+            setFrontMatrixPixel(133);
+            setFrontMatrixPixel(134);
+            setFrontMatrixPixel(135);
+            setFrontMatrixPixel(136);
 
 #if WEATHER_VERBOSE
             Serial.print("Abend ");
@@ -377,12 +370,12 @@ public:
             break;
 
         case FrontWord::w_mittag:
-            setLetter(137);
-            setLetter(138);
-            setLetter(139);
-            setLetter(140);
-            setLetter(141);
-            setLetter(142);
+            setFrontMatrixPixel(137);
+            setFrontMatrixPixel(138);
+            setFrontMatrixPixel(139);
+            setFrontMatrixPixel(140);
+            setFrontMatrixPixel(141);
+            setFrontMatrixPixel(142);
 
 #if WEATHER_VERBOSE
             Serial.print("Mittag ");
@@ -390,11 +383,11 @@ public:
             break;
 
         case FrontWord::w_nacht:
-            setLetter(153);
-            setLetter(152);
-            setLetter(151);
-            setLetter(150);
-            setLetter(149);
+            setFrontMatrixPixel(153);
+            setFrontMatrixPixel(152);
+            setFrontMatrixPixel(151);
+            setFrontMatrixPixel(150);
+            setFrontMatrixPixel(149);
 
 #if WEATHER_VERBOSE
             Serial.print("Nacht ");
@@ -402,12 +395,12 @@ public:
             break;
 
         case FrontWord::w_schnee:
-            setLetter(148);
-            setLetter(147);
-            setLetter(146);
-            setLetter(145);
-            setLetter(144);
-            setLetter(143);
+            setFrontMatrixPixel(148);
+            setFrontMatrixPixel(147);
+            setFrontMatrixPixel(146);
+            setFrontMatrixPixel(145);
+            setFrontMatrixPixel(144);
+            setFrontMatrixPixel(143);
 
 #if WEATHER_VERBOSE
             Serial.print("Schnee ");
@@ -415,10 +408,10 @@ public:
             break;
 
         case FrontWord::w_klar:
-            setLetter(154);
-            setLetter(155);
-            setLetter(156);
-            setLetter(157);
+            setFrontMatrixPixel(154);
+            setFrontMatrixPixel(155);
+            setFrontMatrixPixel(156);
+            setFrontMatrixPixel(157);
 
 #if WEATHER_VERBOSE
             Serial.print("klar ");
@@ -426,13 +419,13 @@ public:
             break;
 
         case FrontWord::w_warnung:
-            setLetter(158);
-            setLetter(159);
-            setLetter(160);
-            setLetter(161);
-            setLetter(162);
-            setLetter(163);
-            setLetter(164);
+            setFrontMatrixPixel(158);
+            setFrontMatrixPixel(159);
+            setFrontMatrixPixel(160);
+            setFrontMatrixPixel(161);
+            setFrontMatrixPixel(162);
+            setFrontMatrixPixel(163);
+            setFrontMatrixPixel(164);
 
 #if WEATHER_VERBOSE
             Serial.print("Warnung ");
@@ -440,11 +433,11 @@ public:
             break;
 
         case FrontWord::w_regen:
-            setLetter(175);
-            setLetter(174);
-            setLetter(173);
-            setLetter(172);
-            setLetter(171);
+            setFrontMatrixPixel(175);
+            setFrontMatrixPixel(174);
+            setFrontMatrixPixel(173);
+            setFrontMatrixPixel(172);
+            setFrontMatrixPixel(171);
 
 #if WEATHER_VERBOSE
             Serial.print("Regen ");
@@ -452,12 +445,12 @@ public:
             break;
 
         case FrontWord::w_wolken:
-            setLetter(170);
-            setLetter(169);
-            setLetter(168);
-            setLetter(167);
-            setLetter(166);
-            setLetter(165);
+            setFrontMatrixPixel(170);
+            setFrontMatrixPixel(169);
+            setFrontMatrixPixel(168);
+            setFrontMatrixPixel(167);
+            setFrontMatrixPixel(166);
+            setFrontMatrixPixel(165);
 
 #if WEATHER_VERBOSE
             Serial.print("Wolken ");
@@ -465,14 +458,14 @@ public:
             break;
 
         case FrontWord::w_gewitter:
-            setLetter(177);
-            setLetter(178);
-            setLetter(179);
-            setLetter(180);
-            setLetter(181);
-            setLetter(182);
-            setLetter(183);
-            setLetter(184);
+            setFrontMatrixPixel(177);
+            setFrontMatrixPixel(178);
+            setFrontMatrixPixel(179);
+            setFrontMatrixPixel(180);
+            setFrontMatrixPixel(181);
+            setFrontMatrixPixel(182);
+            setFrontMatrixPixel(183);
+            setFrontMatrixPixel(184);
 
 #if WEATHER_VERBOSE
             Serial.print("Gewitter ");
@@ -480,11 +473,11 @@ public:
             break;
 
         case FrontWord::w_unter:
-            setLetter(197);
-            setLetter(196);
-            setLetter(195);
-            setLetter(194);
-            setLetter(193);
+            setFrontMatrixPixel(197);
+            setFrontMatrixPixel(196);
+            setFrontMatrixPixel(195);
+            setFrontMatrixPixel(194);
+            setFrontMatrixPixel(193);
 
 #if WEATHER_VERBOSE
             Serial.print("unter ");
@@ -492,10 +485,10 @@ public:
             break;
 
         case FrontWord::w_ueber:
-            setLetter(191);
-            setLetter(190);
-            setLetter(189);
-            setLetter(188);
+            setFrontMatrixPixel(191);
+            setFrontMatrixPixel(190);
+            setFrontMatrixPixel(189);
+            setFrontMatrixPixel(188);
 
 #if WEATHER_VERBOSE
             Serial.print("über ");
@@ -503,11 +496,11 @@ public:
             break;
 
         case FrontWord::w_minus:
-            setLetter(199);
-            setLetter(200);
-            setLetter(201);
-            setLetter(202);
-            setLetter(203);
+            setFrontMatrixPixel(199);
+            setFrontMatrixPixel(200);
+            setFrontMatrixPixel(201);
+            setFrontMatrixPixel(202);
+            setFrontMatrixPixel(203);
 
 #if WEATHER_VERBOSE
             Serial.print("minus ");
@@ -515,10 +508,10 @@ public:
             break;
 
         case FrontWord::w_null:
-            setLetter(205);
-            setLetter(206);
-            setLetter(207);
-            setLetter(208);
+            setFrontMatrixPixel(205);
+            setFrontMatrixPixel(206);
+            setFrontMatrixPixel(207);
+            setFrontMatrixPixel(208);
 
 #if WEATHER_VERBOSE
             Serial.print("Null ");
@@ -526,10 +519,10 @@ public:
             break;
 
         case FrontWord::w_fuenf:
-            setLetter(219);
-            setLetter(218);
-            setLetter(217);
-            setLetter(216);
+            setFrontMatrixPixel(219);
+            setFrontMatrixPixel(218);
+            setFrontMatrixPixel(217);
+            setFrontMatrixPixel(216);
 
 #if WEATHER_VERBOSE
             Serial.print("Fünf ");
@@ -537,10 +530,10 @@ public:
             break;
 
         case FrontWord::w_zehn:
-            setLetter(215);
-            setLetter(214);
-            setLetter(213);
-            setLetter(212);
+            setFrontMatrixPixel(215);
+            setFrontMatrixPixel(214);
+            setFrontMatrixPixel(213);
+            setFrontMatrixPixel(212);
 
 #if WEATHER_VERBOSE
             Serial.print("Zehn ");
@@ -548,9 +541,9 @@ public:
             break;
 
         case FrontWord::w_und:
-            setLetter(211);
-            setLetter(210);
-            setLetter(209);
+            setFrontMatrixPixel(211);
+            setFrontMatrixPixel(210);
+            setFrontMatrixPixel(209);
 
 #if WEATHER_VERBOSE
             Serial.print("und ");
@@ -558,13 +551,13 @@ public:
             break;
 
         case FrontWord::w_zwanzig:
-            setLetter(222);
-            setLetter(223);
-            setLetter(224);
-            setLetter(225);
-            setLetter(226);
-            setLetter(227);
-            setLetter(228);
+            setFrontMatrixPixel(222);
+            setFrontMatrixPixel(223);
+            setFrontMatrixPixel(224);
+            setFrontMatrixPixel(225);
+            setFrontMatrixPixel(226);
+            setFrontMatrixPixel(227);
+            setFrontMatrixPixel(228);
 
 #if WEATHER_VERBOSE
             Serial.print("Zwanzig ");
@@ -572,13 +565,13 @@ public:
             break;
 
         case FrontWord::w_dreissig:
-            setLetter(241);
-            setLetter(240);
-            setLetter(239);
-            setLetter(238);
-            setLetter(237);
-            setLetter(236);
-            setLetter(235);
+            setFrontMatrixPixel(241);
+            setFrontMatrixPixel(240);
+            setFrontMatrixPixel(239);
+            setFrontMatrixPixel(238);
+            setFrontMatrixPixel(237);
+            setFrontMatrixPixel(236);
+            setFrontMatrixPixel(235);
 
 #if WEATHER_VERBOSE
             Serial.print("Dreißig ");
@@ -586,8 +579,8 @@ public:
             break;
 
         case FrontWord::w_grad:
-            setLetter(233);
-            setLetter(232);
+            setFrontMatrixPixel(233);
+            setFrontMatrixPixel(232);
 
 #if WEATHER_VERBOSE
             Serial.println("°C ");

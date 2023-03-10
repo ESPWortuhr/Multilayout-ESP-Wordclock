@@ -107,6 +107,9 @@ void time_is_set() {
     }
     Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _hour, _minute,
                   _second, origin.c_str());
+
+    G.progInit = true;
+    parametersChanged = true;
 }
 
 //------------------------------------------------------------------------------
@@ -140,7 +143,7 @@ void setup() {
         G.sernr = SERNR;
         G.prog = 1;
         G.param1 = 0;
-        G.progInit = 1;
+        G.progInit = true;
         G.conf = COMMAND_IDLE;
         for (uint8_t i = 0; i < 4; i++) {
             for (uint8_t ii = 0; ii < 4; ii++) {
@@ -184,10 +187,9 @@ void setup() {
         G.h20 = 100;
         G.h22 = 100;
         G.h24 = 100;
-        for (uint8_t i = 0;
-             i < sizeof(G.layoutVariant) / sizeof(G.layoutVariant[0]); i++) {
-            G.layoutVariant[i] = false;
-        }
+        G.layoutVariant[ReverseMinDirection] = REVERSE_MINUTE_DIR;
+        G.layoutVariant[MirrorVertical] = MIRROR_FRONT_VERTICAL;
+        G.layoutVariant[MirrorHorizontal] = MIRROR_FRONT_HORIZONTAL;
         for (uint8_t i = 0;
              i < sizeof(G.languageVariant) / sizeof(G.languageVariant[0]);
              i++) {
@@ -222,7 +224,7 @@ void setup() {
     }
 
     // Initialization of COMMAND_MODE_xxx (color)
-    G.progInit = 1;
+    G.progInit = true;
 
     //-------------------------------------
     // Get Pointer for Uhrtype

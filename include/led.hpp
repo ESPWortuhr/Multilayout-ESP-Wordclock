@@ -14,63 +14,37 @@ extern iUhrType *usedUhrType;
 extern Animation *animation;
 
 //------------------------------------------------------------------------------
+// Helper Functions
+//------------------------------------------------------------------------------
 
-void Led::setPixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
+/* Based on https://graphics.stanford.edu/~seander/bithacks.html */
 
-    if (G.Colortype == Grbw) {
-        strip_RGBW->SetPixelColor(i, RgbwColor(rr, gg, bb, ww));
-    } else {
-        strip_RGB->SetPixelColor(i, RgbColor(rr, gg, bb));
+inline uint8_t Led::reverse8BitOrder(uint8_t x) {
+    return (x * 0x0202020202ULL & 0x010884422010ULL) % 1023;
+}
+
+//------------------------------------------------------------------------------
+
+/* Based on https://graphics.stanford.edu/~seander/bithacks.html */
+
+inline uint32_t Led::reverse32BitOrder(uint32_t x) {
+    x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
+    x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
+    x = (((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4));
+    x = (((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8));
+    return ((x >> 16) | (x << 16));
+}
+
+//------------------------------------------------------------------------------
+
+inline void Led::checkIfHueIsOutOfBound(float &hue) {
+    if (hue > 360) {
+        hue = 0;
     }
 }
 
 //------------------------------------------------------------------------------
-
-void Led::setPixelHsb(uint16_t ledIndex, float hue, float sat, float bri,
-                      uint8_t alpha) {
-    HsbColor hsbColor = HsbColor(hue / 360, sat / 100, bri / 100);
-
-    if (G.Colortype == Grbw) {
-        RgbColor rgbColor = RgbColor(hsbColor);
-
-        strip_RGBW->SetPixelColor(
-            ledIndex, RgbwColor(rgbColor.R, rgbColor.G, rgbColor.B, alpha));
-    } else {
-        strip_RGB->SetPixelColor(ledIndex, hsbColor);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Led::setPixelColorObject(uint16_t i, RgbColor color) {
-
-    if (G.Colortype == Grbw) {
-        strip_RGBW->SetPixelColor(i, RgbwColor(color));
-    } else {
-        strip_RGB->SetPixelColor(i, color);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Led::setPixelColorObject(uint16_t i, RgbwColor color) {
-    strip_RGBW->SetPixelColor(i, color);
-}
-
-//------------------------------------------------------------------------------
-
-RgbColor Led::getPixel(uint16_t i) {
-    if (G.Colortype == Grbw) {
-        RgbwColor rgbw = strip_RGBW->GetPixelColor(i);
-        return RgbColor(rgbw.R, rgbw.G, rgbw.B);
-    }
-    return strip_RGB->GetPixelColor(i);
-}
-
-//------------------------------------------------------------------------------
-
-RgbwColor Led::getPixelRgbw(uint16_t i) { return strip_RGBW->GetPixelColor(i); }
-
+// Brightness Functions
 //------------------------------------------------------------------------------
 
 uint8_t Led::setBrightnessAuto(uint8_t val) {
@@ -122,117 +96,119 @@ void Led::setBrightness(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
 }
 
 //------------------------------------------------------------------------------
+// Manipulate Functions
+//------------------------------------------------------------------------------
 
-void Led::show() {
+inline void Led::mirrorMinuteArrayVertical() {
+    minuteArray = reverse8BitOrder(minuteArray);
+    minuteArray >>= 4;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Led::mirrorFrontMatrixVertical() {
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        frontMatrix[row] = reverse32BitOrder(frontMatrix[row]);
+        frontMatrix[row] >>= (32 - usedUhrType->colsWordMatrix());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline void Led::mirrorFrontMatrixHorizontal() {
+    uint32_t tempMatrix[MAX_ROW_SIZE] = {0};
+    memcpy(&tempMatrix, &frontMatrix, sizeof tempMatrix);
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        frontMatrix[row] = tempMatrix[usedUhrType->rowsWordMatrix() - row - 1];
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Led::shiftColumnToRight() {
+    for (uint8_t row = 0; row < MAX_ROW_SIZE; row++) {
+        frontMatrix[row] <<= 1;
+    }
+}
+
+//------------------------------------------------------------------------------
+// Pixel set Functions
+//------------------------------------------------------------------------------
+
+void Led::setPixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
+
     if (G.Colortype == Grbw) {
-        strip_RGBW->Show();
+        strip_RGBW->SetPixelColor(i, RgbwColor(rr, gg, bb, ww));
     } else {
-        strip_RGB->Show();
+        strip_RGB->SetPixelColor(i, RgbColor(rr, gg, bb));
     }
 }
 
 //------------------------------------------------------------------------------
 
-inline void Led::clearPixel(uint16_t i) {
+void Led::setPixelHsb(uint16_t ledIndex, float hue, float sat, float bri,
+                      uint8_t alpha) {
+    HsbColor hsbColor = HsbColor(hue / 360, sat / 100, bri / 100);
+
     if (G.Colortype == Grbw) {
-        strip_RGBW->SetPixelColor(i, 0);
+        RgbColor rgbColor = RgbColor(hsbColor);
+
+        strip_RGBW->SetPixelColor(
+            ledIndex, RgbwColor(rgbColor.R, rgbColor.G, rgbColor.B, alpha));
     } else {
-        strip_RGB->SetPixelColor(i, 0);
+        strip_RGB->SetPixelColor(ledIndex, hsbColor);
     }
 }
 
 //------------------------------------------------------------------------------
 
-inline void Led::clear() {
-    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
-        frontMatrix[i] = false;
-        clearPixel(i);
+void Led::setPixelColorObject(uint16_t i, RgbColor color) {
+
+    if (G.Colortype == Grbw) {
+        strip_RGBW->SetPixelColor(i, RgbwColor(color));
+    } else {
+        strip_RGB->SetPixelColor(i, color);
     }
 }
 
 //------------------------------------------------------------------------------
 
-inline void Led::clearClock() {
+void Led::setPixelColorObject(uint16_t i, RgbwColor color) {
+    strip_RGBW->SetPixelColor(i, color);
+}
+
+//------------------------------------------------------------------------------
+
+void Led::setbyFrontMatrix(uint8_t colorPosition = Foreground) {
+    uint8_t rr, gg, bb, ww;
+    setBrightnessLdr(rr, gg, bb, ww, colorPosition);
     for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        clearPixel(usedUhrType->getWordMatrixIndex(i));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-inline void Led::clearRow(uint8_t row) {
-    for (uint8_t i = 0; i < usedUhrType->colsWordMatrix(); i++) {
-        clearPixel(usedUhrType->getFrontMatrix(row, i));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
-    for (uint8_t i = 0; i < offsetRow; i++) {
-        clearRow(i);
-    }
-
-    for (uint8_t i = usedUhrType->rowsWordMatrix(); i > offsetRow + fontHeight;
-         i--) {
-        clearRow(i - 1);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-inline void Led::clearFrame() {
-    for (uint16_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
-        frameArray[i] = false;
-        clearPixel(usedUhrType->getFrameMatrixIndex(i));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Led::set(bool changed) {
-    uint8_t rr, gg, bb, ww;
-    uint8_t r2, g2, b2, w2;
-    setBrightnessLdr(rr, gg, bb, ww, Foreground);
-    setBrightnessLdr(r2, g2, b2, w2, Background);
-    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
-        if (lastFrontMatrix[i]) {
-            // foreground
+        bool boolSetPixel = usedUhrType->getFrontMatrixPixel(i);
+        if (colorPosition == Background) {
+            boolSetPixel = !boolSetPixel;
+        }
+        if (boolSetPixel) {
             setPixel(rr, gg, bb, ww, i);
-        } else {
-            // background
-            setPixel(r2, g2, b2, w2, i);
+        } else if (colorPosition != Background) {
+            clearPixel(i);
         }
-    }
-    if (G.secondVariant != SecondVariant::Off) {
-        showSeconds();
-    }
-    if (animation->led_show_notify(changed, _minute)) {
-        show();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100, bool rgb_icon) {
-    uint8_t rr, gg, bb, ww;
-    setBrightness(rr, gg, bb, ww, Foreground, brightness);
+void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100) {
     for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
-        if (rgb_icon) {
-            rr = col < 3 ? 255 : 0;
-            gg = (col > 3) && (col < 7) ? 255 : 0;
-            bb = col > 7 ? 255 : 0;
-            ww = 0;
-        }
         for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
             if (pgm_read_word(&(grafik_11x10[num_icon][row])) &
                 (1 << (GRAFIK_11X10_COLS - 1 - col))) {
-                setPixel(rr, gg, bb, ww, usedUhrType->getFrontMatrix(row, col));
+                usedUhrType->setFrontMatrixPixel(row, col);
             } else {
-                clearPixel(usedUhrType->getFrontMatrix(row, col));
+                usedUhrType->setFrontMatrixPixel(row, col, false);
             }
         }
     }
+    setbyFrontMatrix(Foreground);
     show();
 }
 
@@ -255,22 +231,6 @@ void Led::setSingle(uint8_t wait) {
 
 //------------------------------------------------------------------------------
 
-void Led::setAllPixels(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww) {
-    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        setPixel(rr, gg, bb, ww, i);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Led::setColor() {
-    uint8_t rr, gg, bb, ww;
-    setBrightness(rr, gg, bb, ww, Effect);
-    setAllPixels(rr, gg, bb, ww);
-}
-
-//------------------------------------------------------------------------------
-
 void Led::setFrameColor() {
     uint8_t rr, gg, bb, ww;
     setBrightness(rr, gg, bb, ww, Frame);
@@ -282,33 +242,121 @@ void Led::setFrameColor() {
 
 //------------------------------------------------------------------------------
 
-void Led::shiftColumnToRight() {
-    for (uint8_t col = 0; col < usedUhrType->colsWordMatrix() - 1; col++) {
-        for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
-            if (G.Colortype == Grbw) {
-                setPixelColorObject(
-                    usedUhrType->getFrontMatrix(row, col),
-                    getPixelRgbw(usedUhrType->getFrontMatrix(row, col + 1)));
-            } else {
-                setPixelColorObject(
-                    usedUhrType->getFrontMatrix(row, col),
-                    getPixel(usedUhrType->getFrontMatrix(row, col + 1)));
-            }
-        }
+void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
+                          uint8_t offsetRow, unsigned char unsigned_d1) {
+    if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
+        usedUhrType->setFrontMatrixPixel(row + offsetRow, col + offsetCol);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                          uint8_t offsetRow, unsigned char unsigned_d1) {
-    if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
-        setPixel(G.rgbw[Effect][0], G.rgbw[Effect][1], G.rgbw[Effect][2],
-                 G.rgbw[Effect][3],
-                 usedUhrType->getFrontMatrix(row + offsetRow, col + offsetCol));
+void Led::set(bool changed) {
+    setbyFrontMatrix(Foreground);
+    setbyFrontMatrix(Background);
+
+    if (G.minuteVariant != MinuteVariant::Off) {
+        showMinutes();
+    }
+
+    if (G.secondVariant != SecondVariant::Off) {
+        showSeconds();
+    }
+
+    if (animation->led_show_notify(changed, _minute)) {
+        show();
     }
 }
 
+//------------------------------------------------------------------------------
+// Pixel get Functions
+//------------------------------------------------------------------------------
+
+RgbColor Led::getPixel(uint16_t i) {
+    if (G.Colortype == Grbw) {
+        RgbwColor rgbw = strip_RGBW->GetPixelColor(i);
+        return RgbColor(rgbw.R, rgbw.G, rgbw.B);
+    }
+    return strip_RGB->GetPixelColor(i);
+}
+
+//------------------------------------------------------------------------------
+
+RgbwColor Led::getPixelRgbw(uint16_t i) { return strip_RGBW->GetPixelColor(i); }
+
+//------------------------------------------------------------------------------
+// Pixel Clear Functions
+//------------------------------------------------------------------------------
+
+inline void Led::clearPixel(uint16_t i) {
+    if (G.Colortype == Grbw) {
+        strip_RGBW->SetPixelColor(i, 0);
+    } else {
+        strip_RGB->SetPixelColor(i, 0);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline void Led::clearClock() {
+    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
+        usedUhrType->setFrontMatrixPixel(i, false);
+        clearPixel(usedUhrType->getWordMatrixIndex(i));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline void Led::clearRow(uint8_t row) {
+    for (uint8_t i = 0; i < usedUhrType->colsWordMatrix(); i++) {
+        usedUhrType->setFrontMatrixPixel(row, i, false);
+        clearPixel(usedUhrType->getFrontMatrixIndex(row, i));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline void Led::clearMinArray() {
+    if (usedUhrType->numPixelsFrameMatrix() == 0) {
+        for (uint16_t i = usedUhrType->numPixelsWordMatrix();
+             i < usedUhrType->numPixels(); i++) {
+            clearPixel(i);
+        }
+        minuteArray = 0;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
+    for (uint8_t i = 0; i < offsetRow; i++) {
+        clearRow(i);
+    }
+
+    for (uint8_t i = usedUhrType->rowsWordMatrix(); i > offsetRow + fontHeight;
+         i--) {
+        clearRow(i - 1);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline void Led::clearFrame() {
+    for (uint16_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
+        clearPixel(usedUhrType->getFrameMatrixIndex(i));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline void Led::clear() {
+    clearClock();
+    clearFrame();
+    clearMinArray();
+}
+
+//------------------------------------------------------------------------------
+// Show Functions
 //------------------------------------------------------------------------------
 
 void Led::showNumbers(const char d1, const char d2) {
@@ -332,7 +380,32 @@ void Led::showNumbers(const char d1, const char d2) {
                             static_cast<unsigned char>(d2));
         }
     }
+
+    mirrorFrontMatrixVertical();
+    setbyFrontMatrix(Effect);
     show();
+}
+
+//------------------------------------------------------------------------------
+
+void Led::showMinutes() {
+    /* This Code will be replaces soon */
+    uint8_t rr, gg, bb, ww;
+    uint8_t r2, g2, b2, w2;
+    setBrightnessLdr(rr, gg, bb, ww, Foreground);
+    setBrightnessLdr(r2, g2, b2, w2, Background);
+    /* Till here, by creating colorObjects */
+
+    /* Set minutes According to minute byte */
+    for (uint8_t i = 0; i < 4; i++) {
+        /* Bitwise check whether Pixel bit is set */
+        if ((minuteArray >> i) & 1U) {
+            setPixel(rr, gg, bb, ww, minutePixelArray[i]);
+        } else {
+            /* Only for Background color setting */
+            setPixel(r2, g2, b2, w2, minutePixelArray[i]);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -342,7 +415,7 @@ void Led::showSeconds() {
     uint8_t rr, gg, bb, ww;
     setBrightness(rr, gg, bb, ww, Foreground);
     for (uint8_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
-        if (frameArray[i]) {
+        if ((frameArray >> i) & 1U) {
             if (i < usedUhrType->numPixelsFrameMatrix() - offesetSecondsFrame) {
                 setPixel(rr, gg, bb, ww,
                          usedUhrType->getFrameMatrixIndex(i) +
@@ -359,8 +432,10 @@ void Led::showSeconds() {
 
 //------------------------------------------------------------------------------
 
-inline void Led::checkIfHueIsOutOfBound(float &hue) {
-    if (hue > 360) {
-        hue = 0;
+void Led::show() {
+    if (G.Colortype == Grbw) {
+        strip_RGBW->Show();
+    } else {
+        strip_RGB->Show();
     }
 }

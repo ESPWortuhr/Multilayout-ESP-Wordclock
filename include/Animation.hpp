@@ -241,8 +241,8 @@ void Animation::analyzeColors(RgbfColor **dest, RgbfColor **source,
     for (uint8_t r = 0; r < maxRows; r++) {
         for (uint8_t c = 0; c < maxCols; c++) {
             if (source == STRIPE) {
-                color = led.getPixel(
-                    usedUhrType->getFrontMatrix(r + rowStart, c + colStart));
+                color = led.getPixel(usedUhrType->getFrontMatrixIndex(
+                    r + rowStart, c + colStart));
             } else {
                 color = source[r][c];
             }
@@ -330,9 +330,9 @@ void Animation::set_minutes() {
 void Animation::copy2Stripe(RgbfColor **source) {
     for (uint8_t row = 0; row < maxRows; row++) {
         for (uint8_t col = 0; col < maxCols; col++) {
-            led.setPixelColorObject(
-                usedUhrType->getFrontMatrix(row + rowStart, col + colStart),
-                source[row][col]);
+            led.setPixelColorObject(usedUhrType->getFrontMatrixIndex(
+                                        row + rowStart, col + colStart),
+                                    source[row][col]);
         }
     }
     set_minutes();

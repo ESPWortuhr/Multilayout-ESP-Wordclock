@@ -92,10 +92,36 @@ enum class FrontWord {
 };
 
 class iUhrType {
-protected:
-    virtual void setLetter(const uint16_t index) { frontMatrix[index] = true; }
-
 public:
+    virtual void setFrontMatrixPixel(const int index, bool state = true) {
+        uint8_t col, row;
+        getFrontMatrixColRow(row, col, index);
+        if (state) {
+            frontMatrix[row] |= 1UL << col;
+        } else {
+            frontMatrix[row] &= ~(1UL << col);
+        }
+    }
+
+    virtual void setFrontMatrixPixel(const int row, const int col,
+                                     bool state = true) {
+        if (state) {
+            frontMatrix[row] |= 1UL << col;
+        } else {
+            frontMatrix[row] &= ~(1UL << col);
+        }
+    }
+
+    virtual bool getFrontMatrixPixel(const uint16_t index) {
+        uint8_t col, row;
+        getFrontMatrixColRow(row, col, index);
+        return (frontMatrix[row] >> col) & 1U;
+    }
+
+    virtual bool getFrontMatrixPixel(const uint8_t row, const uint8_t col) {
+        return (frontMatrix[row] >> col) & 1U;
+    }
+
     virtual void show(FrontWord word) = 0;
 
     virtual LanguageAbbreviation usedLang() = 0;
@@ -128,7 +154,7 @@ public:
 
     virtual const bool hasSecondsFrame() { return false; }
 
-    virtual const uint16_t getFrontMatrix(uint8_t row, uint8_t col) {
+    virtual const uint16_t getFrontMatrixIndex(uint8_t row, uint8_t col) {
         if (row % 2 != 0) {
             col = colsWordMatrix() - col - 1;
         }
@@ -152,6 +178,15 @@ public:
             default:
                 break;
             }
+        }
+    };
+
+    virtual const void getFrontMatrixColRow(uint8_t &row, uint8_t &col,
+                                            const uint16 index) {
+        row = index / colsWordMatrix();
+        col = index % colsWordMatrix();
+        if (row % 2 == 0) {
+            col = colsWordMatrix() - 1 - col;
         }
     };
 };
