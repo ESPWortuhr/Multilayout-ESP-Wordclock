@@ -107,6 +107,9 @@ void time_is_set() {
     }
     Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _hour, _minute,
                   _second, origin.c_str());
+
+    G.progInit = 1;
+    parametersChanged = true;
 }
 
 //------------------------------------------------------------------------------
