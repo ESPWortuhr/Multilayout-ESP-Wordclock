@@ -343,7 +343,6 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
 
 inline void Led::clearFrame() {
     for (uint16_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
-        frameArray[i] = false;
         clearPixel(usedUhrType->getFrameMatrixIndex(i));
     }
 }
