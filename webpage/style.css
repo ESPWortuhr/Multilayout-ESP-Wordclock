@@ -515,6 +515,6 @@ input:checked + .slider:before {
     font-family: monospace;
 }
 
-.brightness, .speed, .functions-settings, .leds, .position{
+.brightness, .speed, .functions-settings, .leds, .position {
     display: none;
 }
