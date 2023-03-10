@@ -38,19 +38,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    const uint16_t minArr[4] = {112, 114, 116, 118};
-
-    //------------------------------------------------------------------------------
-
     virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
-        for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = minArr[i];
-        }
         for (uint8_t i = 0; i < 4; i++) {
             switch (col) {
             case 0:
                 // LEDs for "LED4x" minute display
-                // {112, 114, 116, 118}
+                // {113, 114, 115, 116}
                 returnArr[i] = 113 + i;
                 break;
             case 1:
