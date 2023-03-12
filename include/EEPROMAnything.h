@@ -47,14 +47,10 @@ void read() {
     Serial.printf("rgbw.1.1   : %u\n", G.rgbw[Background][1]);
     Serial.printf("rgbw.1.2   : %u\n", G.rgbw[Background][2]);
     Serial.printf("rgbw.1.3   : %u\n", G.rgbw[Background][3]);
-    Serial.printf("rgbw.2.0   : %u\n", G.rgbw[Frame][0]);
-    Serial.printf("rgbw.2.1   : %u\n", G.rgbw[Frame][1]);
-    Serial.printf("rgbw.2.2   : %u\n", G.rgbw[Frame][2]);
-    Serial.printf("rgbw.2.3   : %u\n", G.rgbw[Frame][3]);
-    Serial.printf("rgbw.3.0   : %u\n", G.rgbw[Effect][0]);
-    Serial.printf("rgbw.3.1   : %u\n", G.rgbw[Effect][1]);
-    Serial.printf("rgbw.3.2   : %u\n", G.rgbw[Effect][2]);
-    Serial.printf("rgbw.3.3   : %u\n", G.rgbw[Effect][3]);
+    Serial.printf("rgbw.2.0   : %u\n", G.rgbw[Effect][0]);
+    Serial.printf("rgbw.2.1   : %u\n", G.rgbw[Effect][1]);
+    Serial.printf("rgbw.2.2   : %u\n", G.rgbw[Effect][2]);
+    Serial.printf("rgbw.2.3   : %u\n", G.rgbw[Effect][3]);
     Serial.printf("Zeitserver: %s\n", G.timeserver);
     Serial.printf("Lauftext  : %s\n", G.scrollingText);
     Serial.printf("H6        : %u\n", G.h6);

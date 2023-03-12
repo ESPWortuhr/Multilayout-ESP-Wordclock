@@ -69,7 +69,7 @@ struct GLOBAL {
     uint8_t param1;
     bool progInit;
     uint16_t conf;
-    uint8_t rgbw[4][4];
+    uint8_t rgbw[3][4];
     uint8_t rr;
     uint8_t gg;
     uint8_t bb;
@@ -145,8 +145,7 @@ bool externalRTC = false;
 enum ColorPosition {
     Foreground = 0,
     Background = 1,
-    Frame = 2,
-    Effect = 3,
+    Effect = 2,
 };
 
 enum LedColorVariants {

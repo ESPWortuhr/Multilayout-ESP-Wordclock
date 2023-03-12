@@ -898,7 +898,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_COLOR_VALUES: {
         DynamicJsonDocument config(1024);
         config["command"] = "set";
-        for (uint8_t i = 0; i < 4; i++) {
+        for (uint8_t i = 0; i < 3; i++) {
             for (uint8_t ii = 0; ii < 4; ii++) {
                 char stringToSend[7];
                 sprintf(stringToSend, "rgbw%d%d", i, ii);
