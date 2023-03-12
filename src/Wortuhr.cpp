@@ -145,7 +145,7 @@ void setup() {
         G.param1 = 0;
         G.progInit = true;
         G.conf = COMMAND_IDLE;
-        for (uint8_t i = 0; i < 4; i++) {
+        for (uint8_t i = 0; i < 3; i++) {
             for (uint8_t ii = 0; ii < 4; ii++) {
                 G.rgbw[i][ii] = 0;
             }

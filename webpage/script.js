@@ -40,9 +40,7 @@ var debug = true;
 var command = 1;
 var rgbw = [
 	[0, 0, 100, 0],
-	[0, 10, 0, 0],
-	[10, 0, 0, 0],
-	[5, 5, 5, 0]
+	[0, 10, 0, 0]
 ];
 var effectBri = 2;
 var effectSpeed = 10;
@@ -166,9 +164,7 @@ function initConfigValues() {
 	command = 1;
 	rgbw = [
 		[0, 0, 100, 0],
-		[0, 10, 0, 0],
-		[10, 0, 0, 0],
-		[5, 5, 5, 0]
+		[0, 10, 0, 0]
 	];
 	effectBri = 2;
 	effectSpeed = 10;
@@ -383,14 +379,6 @@ function initWebsocket() {
 			rgbw[1][1] = data.rgbw11;
 			rgbw[1][2] = data.rgbw12;
 			rgbw[1][3] = data.rgbw13;
-			rgbw[2][0] = data.rgbw20;
-			rgbw[2][1] = data.rgbw21;
-			rgbw[2][2] = data.rgbw22;
-			rgbw[2][3] = data.rgbw23;
-			rgbw[3][0] = data.rgbw30;
-			rgbw[3][1] = data.rgbw31;
-			rgbw[3][2] = data.rgbw32;
-			rgbw[3][3] = data.rgbw33;
 			effectBri = data.effectBri;
 			effectSpeed = data.effectSpeed;
 			colortype = data.colortype;

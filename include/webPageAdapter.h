@@ -186,16 +186,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.rgbw[Background][1] = split(payload, 18);
             G.rgbw[Background][2] = split(payload, 21);
             G.rgbw[Background][3] = split(payload, 24);
-
-            G.rgbw[Frame][0] = split(payload, 3);
-            G.rgbw[Frame][1] = split(payload, 6);
-            G.rgbw[Frame][2] = split(payload, 9);
-            G.rgbw[Frame][3] = split(payload, 12);
-
-            G.rgbw[Effect][0] = split(payload, 3);
-            G.rgbw[Effect][1] = split(payload, 6);
-            G.rgbw[Effect][2] = split(payload, 9);
-            G.rgbw[Effect][3] = split(payload, 12);
             break;
         }
 

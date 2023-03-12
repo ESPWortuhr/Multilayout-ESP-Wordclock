@@ -47,7 +47,6 @@ public:
     void setbyFrontMatrix(uint8_t ColorPosition);
     void setIcon(uint8_t num_icon, uint8_t brightness);
     void setSingle(uint8_t wait);
-    void setFrameColor();
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                          uint8_t offsetRow, unsigned char unsigned_d1);
     void set(bool changed = false);

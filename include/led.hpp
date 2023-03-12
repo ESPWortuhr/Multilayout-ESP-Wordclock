@@ -231,17 +231,6 @@ void Led::setSingle(uint8_t wait) {
 
 //------------------------------------------------------------------------------
 
-void Led::setFrameColor() {
-    uint8_t rr, gg, bb, ww;
-    setBrightness(rr, gg, bb, ww, Frame);
-
-    for (uint16_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
-        setPixel(rr, gg, bb, ww, usedUhrType->getFrameMatrixIndex(i));
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                           uint8_t offsetRow, unsigned char unsigned_d1) {
     if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
