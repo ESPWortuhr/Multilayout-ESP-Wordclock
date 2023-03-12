@@ -164,10 +164,10 @@ void setup() {
 #ifdef MINUTE_Off
         G.minuteVariant = MinuteVariant::Off;
 #endif
-#ifdef MINUTE_4xLED
-        G.minuteVariant = MinuteVariant::LED7x;
+#ifdef MINUTE_LED4x
+        G.minuteVariant = MinuteVariant::LED4x;
 #endif
-#ifdef MINUTE_7xLED
+#ifdef MINUTE_LED7x
         G.minuteVariant = MinuteVariant::LED7x;
 #endif
         G.ldr = 0;
