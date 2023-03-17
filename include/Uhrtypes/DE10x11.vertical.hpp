@@ -20,22 +20,30 @@
 
 class De10x11Vertical_t : public iUhrType {
 public: 
+
     //------------------------------------------------------------------------------
+
     virtual LanguageAbbreviation usedLang() override {
         return LanguageAbbreviation::DE;
     };
+
     //------------------------------------------------------------------------------
+
     virtual const bool hasDreiviertel() override { return true; }
+
     //------------------------------------------------------------------------------
+
     virtual const void getFrontMatrixColRow(uint8_t &row, uint8_t &col,
                                             const uint16 index) {
         row = index % rowsWordMatrix();
-        col = colsWordMatrix() -1 - ( index / rowsWordMatrix());
+        col = colsWordMatrix() -1 -(index/rowsWordMatrix());
         if (col % 2 == 0) {
             row = rowsWordMatrix() - 1 - row;
         }
     };
+
     //------------------------------------------------------------------------------
+    
     void show(FrontWord word) override {
         switch (word) {
 
