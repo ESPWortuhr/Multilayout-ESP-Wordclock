@@ -251,7 +251,7 @@
 		"yield-star-spacing": ["error", "both"],
 		"yoda": ["error", "never"],
 		"id-length": ["error", {
-			"exceptions": ["$", "_", "i", "r", "g", "b", "a"]
+			"exceptions": ["$", "_", "i", "h", "s", "v", "a"]
 		}]
 	},
 	"env": {
