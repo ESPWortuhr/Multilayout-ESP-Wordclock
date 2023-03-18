@@ -70,10 +70,6 @@ struct GLOBAL {
     bool progInit;
     uint16_t conf;
     uint8_t rgbw[3][4];
-    uint8_t rr;
-    uint8_t gg;
-    uint8_t bb;
-    uint8_t ww;
     uint8_t effectBri;
     uint8_t effectSpeed;
     uint8_t client_nr;
