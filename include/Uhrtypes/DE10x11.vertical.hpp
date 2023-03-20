@@ -147,7 +147,7 @@ public:
             setFrontMatrixPixel(4);
             setFrontMatrixPixel(15);
             setFrontMatrixPixel(24);
-            setFrontMatrixPixel(34);
+            setFrontMatrixPixel(35);
             break;
 
             //------------------------------------------------------------------------------
