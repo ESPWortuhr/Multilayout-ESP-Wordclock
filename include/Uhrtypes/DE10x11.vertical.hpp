@@ -178,10 +178,10 @@ public:
             //------------------------------------------------------------------------------
 
         case FrontWord::h_drei:
-            setFrontMatrixPixel(7);
-            setFrontMatrixPixel(12);
-            setFrontMatrixPixel(27);
-            setFrontMatrixPixel(32);
+            setFrontMatrixPixel(3);
+            setFrontMatrixPixel(16);
+            setFrontMatrixPixel(23);
+            setFrontMatrixPixel(36);
             break;
 
             //------------------------------------------------------------------------------
