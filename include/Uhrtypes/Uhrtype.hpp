@@ -132,11 +132,11 @@ public:
         return rowsWordMatrix() * colsWordMatrix();
     }
 
-    virtual inline const uint16_t numPixelsFrameMatrix() { return 0; }
+    virtual inline const uint8_t numPixelsFrameMatrix() { return 0; }
 
-    virtual inline const uint16_t rowsWordMatrix() { return 10; }
+    virtual inline const uint8_t rowsWordMatrix() { return 10; }
 
-    virtual inline const uint16_t colsWordMatrix() { return 11; }
+    virtual inline const uint8_t colsWordMatrix() { return 11; }
 
     virtual const uint16_t getWordMatrixIndex(uint16_t index) { return index; }
 
