@@ -37,7 +37,7 @@ inline uint32_t Led::reverse32BitOrder(uint32_t x) {
 
 //------------------------------------------------------------------------------
 
-inline void Led::checkIfHueIsOutOfBound(float &hue) {
+inline void Led::checkIfHueIsOutOfBound(uint16_t &hue) {
     if (hue > 360) {
         hue = 0;
     }
@@ -77,19 +77,21 @@ void Led::getCurrentManualBrightnessSetting(uint8_t &currentBrightness) {
 
 //------------------------------------------------------------------------------
 
-void Led::setBrightness(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
-                        uint8_t position, uint8_t percentage = 100) {
-    rr = G.rgbw[position][0] * percentage / 100;
-    gg = G.rgbw[position][1] * percentage / 100;
-    bb = G.rgbw[position][2] * percentage / 100;
-    ww = G.rgbw[position][3] * percentage / 100;
-    uint16_t zz = rr + gg + bb;
-    if (zz > 150) {
-        zz = zz * 10 / 150;
-        rr = rr * 10 / zz;
-        gg = gg * 10 / zz;
-        bb = bb * 10 / zz;
-        ww = ww * 10 / zz;
+void Led::getColorbyPositionWithAppliedBrightness(Color &color,
+                                                  uint8_t colorPosition) {
+    color = G.color[colorPosition];
+    uint8_t manBrightnessSetting = 100;
+    getCurrentManualBrightnessSetting(manBrightnessSetting);
+
+    if (G.autoLdrEnabled) {
+        color.hsb.B = setBrightnessAuto(color.hsb.B);
+        color.alpha = setBrightnessAuto(color.alpha);
+    } else if (G.ldr == 1) {
+        color.hsb.B *= ldrVal / 100.f;
+        color.alpha *= ldrVal / 100.f;
+    } else {
+        color.hsb.B *= manBrightnessSetting / 100.f;
+        color.alpha *= manBrightnessSetting / 100.f;
     }
 }
 
@@ -133,60 +135,30 @@ void Led::shiftColumnToRight() {
 // Pixel set Functions
 //------------------------------------------------------------------------------
 
-void Led::setPixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i) {
-
+void Led::setPixel(uint16_t ledIndex, Color color) {
     if (G.Colortype == Grbw) {
-        strip_RGBW->SetPixelColor(i, RgbwColor(rr, gg, bb, ww));
+        RgbColor rgbColor = RgbColor(color.hsb);
+
+        strip_RGBW->SetPixelColor(ledIndex, RgbwColor(rgbColor.R, rgbColor.G,
+                                                      rgbColor.B, color.alpha));
     } else {
-        strip_RGB->SetPixelColor(i, RgbColor(rr, gg, bb));
+        strip_RGB->SetPixelColor(ledIndex, color.hsb);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void Led::setPixelHsb(uint16_t ledIndex, float hue, float sat, float bri,
-                      uint8_t alpha) {
-    HsbColor hsbColor = HsbColor(hue / 360, sat / 100, bri / 100);
-
-    if (G.Colortype == Grbw) {
-        RgbColor rgbColor = RgbColor(hsbColor);
-
-        strip_RGBW->SetPixelColor(
-            ledIndex, RgbwColor(rgbColor.R, rgbColor.G, rgbColor.B, alpha));
-    } else {
-        strip_RGB->SetPixelColor(ledIndex, hsbColor);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Led::setPixelColorObject(uint16_t i, RgbColor color) {
-
-    if (G.Colortype == Grbw) {
-        strip_RGBW->SetPixelColor(i, RgbwColor(color));
-    } else {
-        strip_RGB->SetPixelColor(i, color);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Led::setPixelColorObject(uint16_t i, RgbwColor color) {
-    strip_RGBW->SetPixelColor(i, color);
 }
 
 //------------------------------------------------------------------------------
 
 void Led::setbyFrontMatrix(uint8_t colorPosition = Foreground) {
-    uint8_t rr, gg, bb, ww;
-    setBrightnessLdr(rr, gg, bb, ww, colorPosition);
+    Color displayedColor;
+    getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
+
     for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
         bool boolSetPixel = usedUhrType->getFrontMatrixPixel(i);
         if (colorPosition == Background) {
             boolSetPixel = !boolSetPixel;
         }
         if (boolSetPixel) {
-            setPixel(rr, gg, bb, ww, i);
+            setPixel(i, displayedColor);
         } else if (colorPosition != Background) {
             clearPixel(i);
         }
@@ -213,15 +185,15 @@ void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100) {
 //------------------------------------------------------------------------------
 
 void Led::setSingle(uint8_t wait) {
-    float hue;
+    uint16_t hue;
 
     for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
-        hue = 360.0 * i / (usedUhrType->numPixels() - 1);
-        hue = hue + 360.0 / usedUhrType->numPixels();
+        hue = 360.f * i / (usedUhrType->numPixels() - 1);
+        hue = hue + 360.f / usedUhrType->numPixels();
         checkIfHueIsOutOfBound(hue);
 
         clear();
-        setPixelHsb(i, hue, 100, 100);
+        setPixel(i, HsbColor(hue / 360.f, 1.f, 1.f));
         show();
         delay(wait);
     }
@@ -259,17 +231,13 @@ void Led::set(bool changed) {
 // Pixel get Functions
 //------------------------------------------------------------------------------
 
-RgbColor Led::getPixel(uint16_t i) {
+HsbColor Led::getPixel(uint16_t i) {
     if (G.Colortype == Grbw) {
         RgbwColor rgbw = strip_RGBW->GetPixelColor(i);
-        return RgbColor(rgbw.R, rgbw.G, rgbw.B);
+        return HsbColor(rgbw.R / 255.f, rgbw.G / 255.f, rgbw.B / 255.f);
     }
     return strip_RGB->GetPixelColor(i);
 }
-
-//------------------------------------------------------------------------------
-
-RgbwColor Led::getPixelRgbw(uint16_t i) { return strip_RGBW->GetPixelColor(i); }
 
 //------------------------------------------------------------------------------
 // Pixel Clear Functions
@@ -376,21 +344,14 @@ void Led::showNumbers(const char d1, const char d2) {
 //------------------------------------------------------------------------------
 
 void Led::showMinutes() {
-    /* This Code will be replaces soon */
-    uint8_t rr, gg, bb, ww;
-    uint8_t r2, g2, b2, w2;
-    setBrightnessLdr(rr, gg, bb, ww, Foreground);
-    setBrightnessLdr(r2, g2, b2, w2, Background);
-    /* Till here, by creating colorObjects */
-
     /* Set minutes According to minute byte */
     for (uint8_t i = 0; i < 4; i++) {
         /* Bitwise check whether Pixel bit is set */
         if ((minuteArray >> i) & 1U) {
-            setPixel(rr, gg, bb, ww, minutePixelArray[i]);
+            setPixel(minutePixelArray[i], G.color[Foreground]);
         } else {
             /* Only for Background color setting */
-            setPixel(r2, g2, b2, w2, minutePixelArray[i]);
+            setPixel(minutePixelArray[i], G.color[Background]);
         }
     }
 }
@@ -399,19 +360,17 @@ void Led::showMinutes() {
 
 void Led::showSeconds() {
     const uint8_t offesetSecondsFrame = 5;
-    uint8_t rr, gg, bb, ww;
-    setBrightness(rr, gg, bb, ww, Foreground);
     for (uint8_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
         if ((frameArray >> i) & 1U) {
             if (i < usedUhrType->numPixelsFrameMatrix() - offesetSecondsFrame) {
-                setPixel(rr, gg, bb, ww,
-                         usedUhrType->getFrameMatrixIndex(i) +
-                             offesetSecondsFrame);
+                setPixel(usedUhrType->getFrameMatrixIndex(i) +
+                             offesetSecondsFrame,
+                         G.color[Foreground]);
             } else {
-                setPixel(rr, gg, bb, ww,
-                         usedUhrType->getFrameMatrixIndex(i) -
+                setPixel(usedUhrType->getFrameMatrixIndex(i) -
                              usedUhrType->numPixelsFrameMatrix() +
-                             offesetSecondsFrame);
+                             offesetSecondsFrame,
+                         G.color[Foreground]);
             }
         }
     }

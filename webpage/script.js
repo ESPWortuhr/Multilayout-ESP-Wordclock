@@ -569,11 +569,11 @@ function autoLdrStop() {
 }
 
 function nstr5(number) {
-	return number.toString().padStart(5, "0");
+	return Math.round(number).toString().padStart(5, "0");
 }
 
 function nstr(number) {
-	return number.toString().padStart(3, "0");
+	return Math.round(number).toString().padStart(3, "0");
 }
 
 function getPaddedString(string, maxStringLength) {

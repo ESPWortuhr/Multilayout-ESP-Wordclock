@@ -143,6 +143,15 @@ void payloadTextHandling(const uint8_t *payload, char *text,
 
 //------------------------------------------------------------------------------
 
+void parseMainColor(uint8_t *payload, uint8_t position) {
+    G.color[position] = {HsbColor(split(payload, 3) / 360.f,
+                                    split(payload, 6) / 100.f,
+                                    split(payload, 9) / 100.f),
+                           split(payload, 12)};
+}
+
+//------------------------------------------------------------------------------
+
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                     size_t length) {
     // Disable Accesspoint Mode Disable Timer on Web Event
@@ -177,15 +186,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_MODE_WORD_CLOCK: {
             G.prog = COMMAND_MODE_WORD_CLOCK;
             parametersChanged = true;
-            G.rgbw[Foreground][0] = split(payload, 3);
-            G.rgbw[Foreground][1] = split(payload, 6);
-            G.rgbw[Foreground][2] = split(payload, 9);
-            G.rgbw[Foreground][3] = split(payload, 12);
 
-            G.rgbw[Background][0] = split(payload, 15);
-            G.rgbw[Background][1] = split(payload, 18);
-            G.rgbw[Background][2] = split(payload, 21);
-            G.rgbw[Background][3] = split(payload, 24);
+            parseMainColor(payload, Foreground);
+
+            G.color[Background] = {HsbColor(split(payload, 15) / 360.f,
+                                            split(payload, 18) / 100.f,
+                                            split(payload, 21) / 100.f),
+                                   split(payload, 24)};
             break;
         }
 
@@ -195,10 +202,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_SECONDS;
             G.progInit = true;
 
-            G.rgbw[Effect][0] = split(payload, 3);
-            G.rgbw[Effect][1] = split(payload, 6);
-            G.rgbw[Effect][2] = split(payload, 9);
-            G.rgbw[Effect][3] = split(payload, 12);
+            parseMainColor(payload, Effect);
+
             G.effectBri = split(payload, 27);
             G.effectSpeed = split(payload, 30);
             break;
@@ -210,10 +215,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_SCROLLINGTEXT;
             G.progInit = true;
 
-            G.rgbw[Effect][0] = split(payload, 3);
-            G.rgbw[Effect][1] = split(payload, 6);
-            G.rgbw[Effect][2] = split(payload, 9);
-            G.rgbw[Effect][3] = split(payload, 12);
+            parseMainColor(payload, Effect);
+
             G.effectBri = split(payload, 27);
             G.effectSpeed = split(payload, 30);
             break;
@@ -247,10 +250,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_COLOR;
             G.progInit = true;
 
-            G.rgbw[Effect][0] = split(payload, 3);
-            G.rgbw[Effect][1] = split(payload, 6);
-            G.rgbw[Effect][2] = split(payload, 9);
-            G.rgbw[Effect][3] = split(payload, 12);
+            parseMainColor(payload, Effect);
             break;
         }
             //------------------------------------------------------------------------------
@@ -281,10 +281,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_INITIAL_VALUES: {
             Serial.println("Startwerte gespeichert");
-            Serial.println(G.rgbw[Foreground][0]);
-            Serial.println(G.rgbw[Foreground][1]);
-            Serial.println(G.rgbw[Foreground][2]);
-            Serial.println(G.rgbw[Foreground][3]);
+
+            parseMainColor(payload, Foreground);
+
             G.conf = COMMAND_SET_INITIAL_VALUES;
             break;
         }

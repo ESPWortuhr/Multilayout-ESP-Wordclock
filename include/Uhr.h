@@ -63,13 +63,43 @@ enum class SecondVariant {
     FrameSectorToggle = 3,
 };
 
+struct Color {
+    HsbColor hsb;
+    uint16_t alpha;
+
+    Color() {
+        hsb = HsbColor(0, 0, 0);
+        alpha = 0;
+    }
+
+    Color(float newHue) {
+        hsb.H = newHue;
+        alpha = 0;
+    }
+
+    Color(HsbColor newHsb) {
+        hsb = newHsb;
+        alpha = 0;
+    }
+
+    Color(RgbColor newRgb) {
+        hsb = HsbColor(newRgb);
+        alpha = 0;
+    }
+
+    Color(HsbColor newHsb, uint16_t newAlpha) {
+        hsb = newHsb;
+        alpha = newAlpha;
+    }
+};
+
 struct GLOBAL {
     uint8_t sernr;
     uint16_t prog;
     uint8_t param1;
     bool progInit;
     uint16_t conf;
-    uint8_t rgbw[3][4];
+    Color color[3];
     uint8_t effectBri;
     uint8_t effectSpeed;
     uint8_t client_nr;

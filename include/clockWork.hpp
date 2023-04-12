@@ -120,10 +120,10 @@ uint32_t ClockWork::num32BitWithOnesAccordingToColumns() {
 //------------------------------------------------------------------------------
 
 void ClockWork::rainbow() {
-    static float hue = 0;
+    static uint16_t hue = 0;
 
     for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        led.setPixelHsb(i, hue, 100, G.effectBri);
+        led.setPixel(i, HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
     }
     led.show();
     hue++;
@@ -133,15 +133,15 @@ void ClockWork::rainbow() {
 //-----------------------------------------------------------------------------
 
 void ClockWork::rainbowCycle() {
-    static float hue = 0;
-    float displayedHue;
+    static uint16_t hue = 0;
+    uint16_t displayedHue;
 
     displayedHue = hue;
     for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        led.setPixelHsb(usedUhrType->getWordMatrixIndex(i), displayedHue, 100,
-                        G.effectBri);
+        led.setPixel(usedUhrType->getWordMatrixIndex(i),
+                     HsbColor(displayedHue / 360.f, 1.f, G.effectBri / 100.f));
         displayedHue =
-            displayedHue + 360.0 / usedUhrType->numPixelsWordMatrix();
+            displayedHue + 360.f / usedUhrType->numPixelsWordMatrix();
         led.checkIfHueIsOutOfBound(displayedHue);
     }
     led.show();
@@ -720,7 +720,6 @@ void ClockWork::setClock() {
 //------------------------------------------------------------------------------
 
 void ClockWork::calcClockface() {
-    uint8_t rr, gg, bb, ww;
 
     if (_hour == 23 && _minute == 59 && _second >= 50) {
         countdownToMidnight();
@@ -730,7 +729,7 @@ void ClockWork::calcClockface() {
 
     // set Background color
     for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
-        led.setPixel(rr, gg, bb, ww, i);
+        led.setPixel(i, G.color[Background]);
     }
 
     if (usedUhrType->hasWeatherLayout()) {
@@ -837,15 +836,15 @@ void ClockWork::loop(struct tm &tm) {
         for (uint8_t i = 0;
              i < sizeof(G.languageVariant) / sizeof(G.languageVariant[0]);
              i++) {
-            char stringToSend[11];
-            sprintf(stringToSend, "langVar%d", i);
-            config[stringToSend] = static_cast<uint8_t>(G.languageVariant[i]);
+            char string2Send[11];
+            sprintf(string2Send, "langVar%d", i);
+            config[string2Send] = static_cast<uint8_t>(G.languageVariant[i]);
         }
         for (uint8_t i = 0;
              i < sizeof(G.layoutVariant) / sizeof(G.layoutVariant[0]); i++) {
-            char stringToSend[11];
-            sprintf(stringToSend, "layVar%d", i);
-            config[stringToSend] = static_cast<uint8_t>(G.layoutVariant[i]);
+            char string2Send[11];
+            sprintf(string2Send, "layVar%d", i);
+            config[string2Send] = static_cast<uint8_t>(G.layoutVariant[i]);
         }
         config["effectBri"] = G.effectBri;
         config["secondVariant"] = static_cast<uint8_t>(G.secondVariant);
@@ -877,12 +876,16 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_COLOR_VALUES: {
         DynamicJsonDocument config(1024);
         config["command"] = "set";
-        for (uint8_t i = 0; i < 3; i++) {
-            for (uint8_t ii = 0; ii < 4; ii++) {
-                char stringToSend[7];
-                sprintf(stringToSend, "rgbw%d%d", i, ii);
-                config[stringToSend] = G.rgbw[i][ii];
-            }
+        for (uint8_t i = 0; i < 2; i++) {
+            char string2Send[7];
+            sprintf(string2Send, "hsva%d%d", i, 0);
+            config[string2Send] = static_cast<uint16_t>(G.color[i].hsb.H * 360);
+            sprintf(string2Send, "hsva%d%d", i, 1);
+            config[string2Send] = static_cast<uint8_t>(G.color[i].hsb.S * 100);
+            sprintf(string2Send, "hsva%d%d", i, 2);
+            config[string2Send] = static_cast<uint8_t>(G.color[i].hsb.B * 100);
+            sprintf(string2Send, "hsva%d%d", i, 3);
+            config[string2Send] = static_cast<uint8_t>(G.color[i].alpha);
         }
         config["effectBri"] = G.effectBri;
         config["effectSpeed"] = G.effectSpeed;
