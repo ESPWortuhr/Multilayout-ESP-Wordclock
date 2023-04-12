@@ -47,33 +47,31 @@ inline void Led::checkIfHueIsOutOfBound(float &hue) {
 // Brightness Functions
 //------------------------------------------------------------------------------
 
-uint8_t Led::setBrightnessAuto(uint8_t val) {
+float Led::setBrightnessAuto(float val) {
     // G.hh contains time-dependent brightness values in %.
-    uint16_t u16 = (val * G.hh) / 100;
-    return (static_cast<uint8_t>((u16 * ldrVal) / 100));
+    return (val * ldrVal) / 100.f;
 }
 
 //------------------------------------------------------------------------------
 
-void Led::setBrightnessLdr(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
-                           uint8_t position) {
-    if (G.autoLdrEnabled) {
-        rr = setBrightnessAuto(G.rgbw[position][0]);
-        gg = setBrightnessAuto(G.rgbw[position][1]);
-        bb = setBrightnessAuto(G.rgbw[position][2]);
-        ww = setBrightnessAuto(G.rgbw[position][3]);
-    } else {
-        if (G.ldr == 1) {
-            rr = G.rgbw[position][0] * ldrVal / 100;
-            gg = G.rgbw[position][1] * ldrVal / 100;
-            bb = G.rgbw[position][2] * ldrVal / 100;
-            ww = G.rgbw[position][3] * ldrVal / 100;
-        } else {
-            rr = G.rgbw[position][0] * G.hh / 100;
-            gg = G.rgbw[position][1] * G.hh / 100;
-            bb = G.rgbw[position][2] * G.hh / 100;
-            ww = G.rgbw[position][3] * G.hh / 100;
-        }
+void Led::getCurrentManualBrightnessSetting(uint8_t &currentBrightness) {
+    // Set Brighness hour dependent
+    if (_hour < 6) {
+        currentBrightness= G.h24;
+    } else if (_hour < 8) {
+        currentBrightness = G.h6;
+    } else if (_hour < 12) {
+        currentBrightness = G.h8;
+    } else if (_hour < 16) {
+        currentBrightness = G.h12;
+    } else if (_hour < 18) {
+        currentBrightness = G.h16;
+    } else if (_hour < 20) {
+        currentBrightness = G.h18;
+    } else if (_hour < 22) {
+        currentBrightness = G.h20;
+    } else if (_hour < 24) {
+        currentBrightness = G.h22;
     }
 }
 

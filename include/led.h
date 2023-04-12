@@ -17,7 +17,7 @@ public:
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
-    inline void checkIfHueIsOutOfBound(float &hue);
+    inline void checkIfHueIsOutOfBound(uint16_t &hue);
 
     //------------------------------------------------------------------------------
     // Manipulate Functions
@@ -29,21 +29,15 @@ public:
     //------------------------------------------------------------------------------
     // Brightness Functions
     //------------------------------------------------------------------------------
-    uint8_t setBrightnessAuto(uint8_t val);
-    void setBrightnessLdr(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
-                          uint8_t position);
-    void setBrightness(uint8_t &rr, uint8_t &gg, uint8_t &bb, uint8_t &ww,
-                       uint8_t position, uint8_t percentage);
+    float setBrightnessAuto(float val);
+    void getCurrentManualBrightnessSetting(uint8_t &currentBrightness);
+    void getColorbyPositionWithAppliedBrightness(Color &color, uint8_t position);
     void shiftColumnToRight();
 
     //------------------------------------------------------------------------------
     // Pixel set Functions
     //------------------------------------------------------------------------------
-    void setPixel(uint8_t rr, uint8_t gg, uint8_t bb, uint8_t ww, uint16_t i);
-    void setPixelHsb(uint16_t ledIndex, float hue, float sat, float bri,
-                     uint8_t alpha = 0);
-    void setPixelColorObject(uint16_t i, RgbColor color);
-    void setPixelColorObject(uint16_t i, RgbwColor color);
+    void setPixel(uint16_t ledIndex, Color color);
     void setbyFrontMatrix(uint8_t ColorPosition);
     void setIcon(uint8_t num_icon, uint8_t brightness);
     void setSingle(uint8_t wait);
@@ -54,8 +48,7 @@ public:
     //------------------------------------------------------------------------------
     // Pixel get Functions
     //------------------------------------------------------------------------------
-    RgbColor getPixel(uint16_t i);
-    RgbwColor getPixelRgbw(uint16_t i);
+    HsbColor getPixel(uint16_t i);
 
     //------------------------------------------------------------------------------
     // Pixel Clear Functions

@@ -728,27 +728,6 @@ void ClockWork::calcClockface() {
         setClock();
     }
 
-    // Set Brighness hour dependent
-    if (_hour < 6) {
-        G.hh = G.h24;
-    } else if (_hour < 8) {
-        G.hh = G.h6;
-    } else if (_hour < 12) {
-        G.hh = G.h8;
-    } else if (_hour < 16) {
-        G.hh = G.h12;
-    } else if (_hour < 18) {
-        G.hh = G.h16;
-    } else if (_hour < 20) {
-        G.hh = G.h18;
-    } else if (_hour < 22) {
-        G.hh = G.h20;
-    } else if (_hour < 24) {
-        G.hh = G.h22;
-    }
-
-    led.setBrightnessLdr(rr, gg, bb, ww, Background);
-
     // set Background color
     for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
         led.setPixel(rr, gg, bb, ww, i);

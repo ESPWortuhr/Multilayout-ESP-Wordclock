@@ -82,7 +82,6 @@ struct GLOBAL {
     char scrollingText[PAYLOAD_LENGTH];
     uint16_t ldr;
     uint16_t ldrCal;
-    uint8_t hh;
     uint8_t h6;
     uint8_t h8;
     uint8_t h12;
