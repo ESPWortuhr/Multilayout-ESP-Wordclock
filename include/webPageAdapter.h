@@ -145,9 +145,9 @@ void payloadTextHandling(const uint8_t *payload, char *text,
 
 void parseMainColor(uint8_t *payload, uint8_t position) {
     G.color[position] = {HsbColor(split(payload, 3) / 360.f,
-                                    split(payload, 6) / 100.f,
-                                    split(payload, 9) / 100.f),
-                           split(payload, 12)};
+                                  split(payload, 6) / 100.f,
+                                  split(payload, 9) / 100.f),
+                         split(payload, 12)};
 }
 
 //------------------------------------------------------------------------------

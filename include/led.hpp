@@ -57,7 +57,7 @@ float Led::setBrightnessAuto(float val) {
 void Led::getCurrentManualBrightnessSetting(uint8_t &currentBrightness) {
     // Set Brighness hour dependent
     if (_hour < 6) {
-        currentBrightness= G.h24;
+        currentBrightness = G.h24;
     } else if (_hour < 8) {
         currentBrightness = G.h6;
     } else if (_hour < 12) {

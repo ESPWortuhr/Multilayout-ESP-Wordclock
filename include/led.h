@@ -31,7 +31,8 @@ public:
     //------------------------------------------------------------------------------
     float setBrightnessAuto(float val);
     void getCurrentManualBrightnessSetting(uint8_t &currentBrightness);
-    void getColorbyPositionWithAppliedBrightness(Color &color, uint8_t position);
+    void getColorbyPositionWithAppliedBrightness(Color &color,
+                                                 uint8_t position);
     void shiftColumnToRight();
 
     //------------------------------------------------------------------------------
