@@ -146,16 +146,10 @@ void setup() {
         G.progInit = true;
         G.conf = COMMAND_IDLE;
         for (uint8_t i = 0; i < 3; i++) {
-            for (uint8_t ii = 0; ii < 4; ii++) {
-                G.rgbw[i][ii] = 0;
-            }
+            G.color[i] = {};
         }
-        G.rgbw[Foreground][2] = 100;
-        G.rgbw[Effect][1] = 100;
-        G.rr = 0;
-        G.gg = 0;
-        G.bb = 0;
-        G.ww = 0;
+        G.color[Foreground].hsb = HsbColor(120 / 360.f, 1.f, 0.5f);
+        G.color[Effect].hsb = HsbColor(240 / 360.f, 1.f, 0.5f);
         G.effectBri = 2;
         G.effectSpeed = 10;
         G.client_nr = 0;
@@ -178,7 +172,6 @@ void setup() {
         strcpy(G.hostname, "ESPWordclock");
         strcpy(G.scrollingText, "HELLO WORLD ");
 
-        G.hh = 100;
         G.h6 = 100;
         G.h8 = 100;
         G.h12 = 100;

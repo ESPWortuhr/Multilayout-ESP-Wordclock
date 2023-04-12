@@ -83,15 +83,11 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         } else if (str_buffer.compare("Farbe")) {
             G.prog = COMMAND_MODE_COLOR;
         }
-        G.rgbw[Foreground][0] = doc["color"][0];
-        G.rgbw[Foreground][1] = doc["color"][1];
-        G.rgbw[Foreground][2] = doc["color"][2];
-        // G.rgbw[Foreground][3] = doc["White"];
+        G.color[Foreground] =
+            RgbColor(doc["color"][0], doc["color"][1], doc["color"][2]);
+        G.color[Foreground].alpha = doc["White"];
     } else {
-        G.rgbw[Foreground][0] = 0;
-        G.rgbw[Foreground][1] = 0;
-        G.rgbw[Foreground][2] = 0;
-        G.rgbw[Foreground][3] = 0;
+        G.color[Foreground] = {};
     }
 }
 

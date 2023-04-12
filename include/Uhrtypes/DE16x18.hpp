@@ -36,11 +36,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t rowsWordMatrix() override { return 16; };
+    virtual const uint8_t rowsWordMatrix() override { return 16; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t colsWordMatrix() override { return 18; };
+    virtual const uint8_t colsWordMatrix() override { return 18; };
 
     //------------------------------------------------------------------------------
 

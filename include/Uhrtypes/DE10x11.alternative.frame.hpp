@@ -24,7 +24,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual inline const uint16_t numPixelsFrameMatrix() { return 48; }
+    virtual inline const uint8_t numPixelsFrameMatrix() { return 48; }
 
     //------------------------------------------------------------------------------
 

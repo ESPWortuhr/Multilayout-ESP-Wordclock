@@ -38,9 +38,9 @@ var websocket;
 var ipEsp = "ws://192.168.4.1";
 var debug = true;
 var command = 1;
-var rgbw = [
-	[0, 0, 100, 0],
-	[0, 10, 0, 0]
+var hsva = [
+	[0, 100, 50, 0],
+	[120, 100, 50, 0]
 ];
 var effectBri = 2;
 var effectSpeed = 10;
@@ -162,9 +162,9 @@ function initConfigValues() {
 
 	debug = true;
 	command = 1;
-	rgbw = [
-		[0, 0, 100, 0],
-		[0, 10, 0, 0]
+	hsva = [
+		[0, 100, 50, 0],
+		[120, 100, 50, 0]
 	];
 	effectBri = 2;
 	effectSpeed = 10;
@@ -371,14 +371,14 @@ function initWebsocket() {
 			enableSpecific("specific-layout-brightness-auto", autoLdrEnabled === 1);
 		}
 		if (data.command === "set") {
-			rgbw[0][0] = data.rgbw00;
-			rgbw[0][1] = data.rgbw01;
-			rgbw[0][2] = data.rgbw02;
-			rgbw[0][3] = data.rgbw03;
-			rgbw[1][0] = data.rgbw10;
-			rgbw[1][1] = data.rgbw11;
-			rgbw[1][2] = data.rgbw12;
-			rgbw[1][3] = data.rgbw13;
+			hsva[0][0] = data.hsva00;
+			hsva[0][1] = data.hsva01;
+			hsva[0][2] = data.hsva02;
+			hsva[0][3] = data.hsva03;
+			hsva[1][0] = data.hsva10;
+			hsva[1][1] = data.hsva11;
+			hsva[1][2] = data.hsva12;
+			hsva[1][3] = data.hsva13;
 			effectBri = data.effectBri;
 			effectSpeed = data.effectSpeed;
 			colortype = data.colortype;
@@ -429,10 +429,10 @@ function initWebsocket() {
 }
 
 function changeColor(color) {
-	rgbw[color.index][0] = color.red;
-	rgbw[color.index][1] = color.green;
-	rgbw[color.index][2] = color.blue;
-	rgbw[color.index][3] = Math.round(255 * (1.0 - color.alpha));
+	hsva[color.index][0] = color.hue;
+	hsva[color.index][1] = color.saturation;
+	hsva[color.index][2] = color.value;
+	hsva[color.index][3] = Math.round(255 * (1.0 - color.alpha));
 	sendColorData(command, nstr(1));
 }
 
@@ -461,21 +461,21 @@ function createColorPicker() {
  * show the color configuration in the color picker
  */
 function setColorPicker(withBackground) {
-	var rgbaFg = {
-		r: rgbw[COLOR_FOREGROUND][0],
-		g: rgbw[COLOR_FOREGROUND][1],
-		b: rgbw[COLOR_FOREGROUND][2],
-		a: 1.0 - rgbw[COLOR_FOREGROUND][3] / 255.0
+	var hsvaFg = {
+		h: hsva[COLOR_FOREGROUND][0],
+		s: hsva[COLOR_FOREGROUND][1],
+		v: hsva[COLOR_FOREGROUND][2],
+		a: 1.0 - hsva[COLOR_FOREGROUND][3] / 255.0
 	};
-	var rgbaBg = {
-		r: rgbw[COLOR_BACKGROUND][0],
-		g: rgbw[COLOR_BACKGROUND][1],
-		b: rgbw[COLOR_BACKGROUND][2],
-		a: 1.0 - rgbw[COLOR_BACKGROUND][3] / 255.0
+	var hsvaBg = {
+		h: hsva[COLOR_BACKGROUND][0],
+		s: hsva[COLOR_BACKGROUND][1],
+		v: hsva[COLOR_BACKGROUND][2],
+		a: 1.0 - hsva[COLOR_BACKGROUND][3] / 255.0
 	};
-	var colors = [rgbaFg];
+	var colors = [hsvaFg];
 	if (withBackground) {
-		colors.push(rgbaBg);
+		colors.push(hsvaBg);
 	}
 	colorPicker.setColors(colors);
 }
@@ -485,10 +485,10 @@ function setColorPicker(withBackground) {
  */
 function setColors() {
 	var withBackground =
-		rgbw[COLOR_BACKGROUND][0] ||
-		rgbw[COLOR_BACKGROUND][1] ||
-		rgbw[COLOR_BACKGROUND][2] ||
-		rgbw[COLOR_BACKGROUND][3];
+		hsva[COLOR_BACKGROUND][0] ||
+		hsva[COLOR_BACKGROUND][1] ||
+		hsva[COLOR_BACKGROUND][2] ||
+		hsva[COLOR_BACKGROUND][3];
 	setColorPicker(withBackground);
 	$("#with-background").set("checked", withBackground);
 }
@@ -500,16 +500,16 @@ function toggleBackground() {
 	var withBackground = $("#with-background").get("checked") | 0;
 	if (withBackground) {
 		// set to dark gray
-		rgbw[COLOR_BACKGROUND][0] = 5;
-		rgbw[COLOR_BACKGROUND][1] = 5;
-		rgbw[COLOR_BACKGROUND][2] = 5;
-		rgbw[COLOR_BACKGROUND][3] = 5;
+		hsva[COLOR_BACKGROUND][0] = 0;
+		hsva[COLOR_BACKGROUND][1] = 0;
+		hsva[COLOR_BACKGROUND][2] = 10;
+		hsva[COLOR_BACKGROUND][3] = 0;
 	} else {
 		// set to black
-		rgbw[COLOR_BACKGROUND][0] = 0;
-		rgbw[COLOR_BACKGROUND][1] = 0;
-		rgbw[COLOR_BACKGROUND][2] = 0;
-		rgbw[COLOR_BACKGROUND][3] = 0;
+		hsva[COLOR_BACKGROUND][0] = 0;
+		hsva[COLOR_BACKGROUND][1] = 0;
+		hsva[COLOR_BACKGROUND][2] = 0;
+		hsva[COLOR_BACKGROUND][3] = 0;
 	}
 	setColorPicker(withBackground);
 	sendColorData(command, nstr(1));
@@ -569,11 +569,11 @@ function autoLdrStop() {
 }
 
 function nstr5(number) {
-	return number.toString().padStart(5, "0");
+	return Math.round(number).toString().padStart(5, "0");
 }
 
 function nstr(number) {
-	return number.toString().padStart(3, "0");
+	return Math.round(number).toString().padStart(3, "0");
 }
 
 function getPaddedString(string, maxStringLength) {
@@ -601,14 +601,14 @@ function sendBrightnessData(command, addData = "") {
 }
 
 function sendColorData(command, addData = "") {
-	sendCmd(command, nstr(rgbw[COLOR_FOREGROUND][0]) +
-	nstr(rgbw[COLOR_FOREGROUND][1]) +
-	nstr(rgbw[COLOR_FOREGROUND][2]) +
-	nstr(rgbw[COLOR_FOREGROUND][3]) +
-	nstr(rgbw[COLOR_BACKGROUND][0]) +
-	nstr(rgbw[COLOR_BACKGROUND][1]) +
-	nstr(rgbw[COLOR_BACKGROUND][2]) +
-	nstr(rgbw[COLOR_BACKGROUND][3]) +
+	sendCmd(command, nstr(hsva[COLOR_FOREGROUND][0]) +
+	nstr(hsva[COLOR_FOREGROUND][1]) +
+	nstr(hsva[COLOR_FOREGROUND][2]) +
+	nstr(hsva[COLOR_FOREGROUND][3]) +
+	nstr(hsva[COLOR_BACKGROUND][0]) +
+	nstr(hsva[COLOR_BACKGROUND][1]) +
+	nstr(hsva[COLOR_BACKGROUND][2]) +
+	nstr(hsva[COLOR_BACKGROUND][3]) +
 	nstr(effectBri) +
 	nstr(effectSpeed));
 }
