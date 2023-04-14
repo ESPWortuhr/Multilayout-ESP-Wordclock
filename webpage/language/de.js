@@ -1,6 +1,7 @@
 let TRANSLATION_DE_DE = {
+	"title": "Wortuhr",
+
 	"menu": {
-		"title": "Wortuhr",
 		"language": {
 			"label": "Sprache",
 			"de": "🇩🇪 Deutsch",

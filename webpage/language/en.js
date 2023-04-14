@@ -1,6 +1,7 @@
 let TRANSLATION_EN_US = {
+	"title": "Word Clock",
+
 	"menu": {
-		"title": "Word Clock",
 		"language": {
 			"label": "Language",
 			"de": "🇩🇪 German",

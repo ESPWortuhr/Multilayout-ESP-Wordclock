@@ -1,6 +1,7 @@
 let TRANSLATION_NL = {
+	"title": "Woord Klok",
+
 	"menu": {
-		"title": "Woord Klok",
 		"language": {
 			"label": "Taal",
 			"de": "🇩🇪 Duits",
