@@ -137,20 +137,29 @@ a {
 .menu .pure-menu li a:focus {
     background: #383838;
 }
-.menu .pure-menu-heading {
-    background: #1f8dd6;
-}
-.menu .pure-menu-selected{
+.menu .pure-menu-selected {
     background: #898989;
 }
 .menu .pure-menu-selected a {
     color: #fff;
 }
-.menu .pure-menu-heading {
+.pure-menu-heading {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: smaller;
+}
+.menu .title {
+    background: #1f8dd6;
     font-size: 120%;
     color: #fff;
     margin: 0;
     text-transform: none;
+}
+
+.menu .language {
+    margin: 0.6em 0 0.6em 0.6em;
+    border: 0;
+    width: 9em;
+    box-shadow: none;
 }
 
 /*
