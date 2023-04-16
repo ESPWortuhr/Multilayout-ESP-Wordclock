@@ -188,7 +188,7 @@ void setup() {
              i++) {
             G.languageVariant[i] = false;
         }
-        G.mqtt.state = 0;
+        G.mqtt.state = false;
         G.mqtt.port = 1883;
         strcpy(G.mqtt.serverAdress, "192.168.4.1");
         strcpy(G.mqtt.user, "User");
@@ -311,7 +311,7 @@ void setup() {
     // MQTT
     //-------------------------------------
 
-    if (G.mqtt.state == 1) {
+    if (G.mqtt.state) {
         mqtt.init();
     }
 
@@ -388,7 +388,7 @@ void loop() {
     //------------------------------------------------
     // MQTT
     //------------------------------------------------
-    if (G.mqtt.state == 1 && WiFi.status() == WL_CONNECTED) {
+    if (G.mqtt.state && WiFi.status() == WL_CONNECTED) {
         mqtt.loop();
     }
 
