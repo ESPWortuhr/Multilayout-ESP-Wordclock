@@ -382,6 +382,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_MQTT: {
             G.conf = COMMAND_SET_MQTT;
+            if (!G.mqtt.state) {
+                G.progInit = true;
+            }
             G.mqtt.state = split(payload, 3);
             G.mqtt.port = split(payload, 6, 5);
             uint8_t index_start = 11;

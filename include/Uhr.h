@@ -34,7 +34,7 @@ enum ClockWords {
 };
 
 struct MqttData {
-    uint8_t state;
+    bool state;
     char serverAdress[PAYLOAD_LENGTH];
     char user[PAYLOAD_LENGTH];
     char password[PAYLOAD_LENGTH];

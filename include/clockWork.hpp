@@ -979,6 +979,12 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_SET_MQTT: {
+        if (G.mqtt.state && G.progInit) {
+            mqtt.init();
+            G.progInit = false;
+        }
+        delay(100);
+
         if (G.mqtt.state && !mqtt.getConnected()) {
             mqtt.reInit();
         }
