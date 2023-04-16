@@ -16,7 +16,12 @@ module.exports = function(grunt) {
 			options: {
 				overrideConfigFile: "eslintrc.json"
 			},
-			files: ["Gruntfile.js", "<%= settings.srcDirectory %>/script.js"]
+			files: [
+				"Gruntfile.js",
+				"<%= settings.srcDirectory %>/script.js",
+				"<%= settings.srcDirectory %>/i18n.js",
+				"<%= settings.srcDirectory %>/language/*.js"
+			]
 		},
 
 		csslint: {
@@ -73,6 +78,12 @@ module.exports = function(grunt) {
 					cwd: "<%= settings.srcDirectory %>",
 					src: ["*.js", "!*.min.js"],
 					dest: "<%= settings.tempDirectory %>"
+				},
+				{
+					expand: true,
+					cwd: "<%= settings.srcDirectory %>/language/",
+					src: ["**/*"],
+					dest: "<%= settings.tempDirectory %>/language/"
 				}]
 			}
 		},
@@ -80,7 +91,7 @@ module.exports = function(grunt) {
 		version: {
 			index: {
 				options: {
-					prefix: "<span class=\"version\">"
+					prefix: "<span id=\"version\" class=\"version\">"
 				},
 				src: "<%= settings.tempDirectory %>/index.html"
 			}
@@ -101,6 +112,16 @@ module.exports = function(grunt) {
 					expand: true,
 					cwd: "node_modules/@jaames/iro/dist/",
 					src: ["iro.min.js"],
+					dest: "<%= settings.tempDirectory %>"
+				}, {
+					expand: true,
+					cwd: "node_modules/i18next",
+					src: ["i18next.min.js"],
+					dest: "<%= settings.tempDirectory %>"
+				}, {
+					expand: true,
+					cwd: "node_modules/i18next-browser-languagedetector",
+					src: ["i18nextBrowserLanguageDetector.min.js"],
 					dest: "<%= settings.tempDirectory %>"
 				}]
 			},
@@ -173,6 +194,7 @@ module.exports = function(grunt) {
 		"copy:minified_css_files",
 		"terser",
 		"copy:minified_js_files",
+		"copy",
 		"copy:index",
 		"version:index",
 		"assets_inline",

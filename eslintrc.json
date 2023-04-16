@@ -260,6 +260,11 @@
 	},
 	"globals": {
 		"require": false,
-		"module": false
+		"module": false,
+		"TRANSLATION_DE_DE": "readonly",
+		"TRANSLATION_EN_US": "readonly",
+		"TRANSLATION_NL": "readonly",
+		"i18next": "readonly",
+		"isLocalEnvironment": "readonly"
 	}
 }
