@@ -97,7 +97,7 @@
  *
  * Valid values [0 ... 255]
  */
-#define SERNR 90
+#define SERNR 30
 
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output
@@ -123,9 +123,9 @@
  * Valid values WIFI_PASSWORD [up to 64 Alphanumeric Letters]
  *
  */
-#define MANUAL_WIFI_SETTINGS true
-#define WIFI_SSID "Geheim_24Ghz"
-#define WIFI_PASSWORD "69830718001049910803"
+#define MANUAL_WIFI_SETTINGS false
+#define WIFI_SSID "WIFISSID"
+#define WIFI_PASSWORD "Password"
 
 //--------------------------------------------------------------------------
 // Settings for Boot sequence
@@ -137,7 +137,7 @@
  * Valid values BOOT_SHOWIP [true, false]
  * Valid values BOOT_LEDSWEEP [true, false]
  */
-#define BOOT_SHOWIP false
+#define BOOT_SHOWIP true
 #define BOOT_LEDSWEEP false
 
 //--------------------------------------------------------------------------
