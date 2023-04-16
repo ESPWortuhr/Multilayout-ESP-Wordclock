@@ -167,6 +167,47 @@ void Led::setbyFrontMatrix(uint8_t colorPosition = Foreground) {
 
 //------------------------------------------------------------------------------
 
+void Led::setbyMinuteArray(uint8_t colorPosition = Foreground) {
+    Color displayedColor;
+    getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
+
+    /* Set minutes According to minute byte */
+    for (uint8_t i = 0; i < 4; i++) {
+        /* Bitwise check whether Pixel bit is set */
+        if ((minuteArray >> i) & 1U) {
+            setPixel(minutePixelArray[i], displayedColor);
+        } else {
+            /* Only for Background color setting */
+            setPixel(minutePixelArray[i], displayedColor);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Led::setbySecondArray(uint8_t colorPosition = Foreground) {
+    Color displayedColor;
+    getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
+
+    const uint8_t offesetSecondsFrame = 5;
+    for (uint8_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
+        if ((frameArray >> i) & 1U) {
+            if (i < usedUhrType->numPixelsFrameMatrix() - offesetSecondsFrame) {
+                setPixel(usedUhrType->getFrameMatrixIndex(i) +
+                             offesetSecondsFrame,
+                         displayedColor);
+            } else {
+                setPixel(usedUhrType->getFrameMatrixIndex(i) -
+                             usedUhrType->numPixelsFrameMatrix() +
+                             offesetSecondsFrame,
+                         displayedColor);
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100) {
     for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
         for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
@@ -215,11 +256,11 @@ void Led::set(bool changed) {
     setbyFrontMatrix(Background);
 
     if (G.minuteVariant != MinuteVariant::Off) {
-        showMinutes();
+        setbyMinuteArray(Foreground);
     }
 
     if (G.secondVariant != SecondVariant::Off) {
-        showSeconds();
+        setbySecondArray(Foreground);
     }
 
     if (animation->led_show_notify(changed, _minute)) {
@@ -339,41 +380,6 @@ void Led::showNumbers(const char d1, const char d2) {
     mirrorFrontMatrixVertical();
     setbyFrontMatrix(Effect);
     show();
-}
-
-//------------------------------------------------------------------------------
-
-void Led::showMinutes() {
-    /* Set minutes According to minute byte */
-    for (uint8_t i = 0; i < 4; i++) {
-        /* Bitwise check whether Pixel bit is set */
-        if ((minuteArray >> i) & 1U) {
-            setPixel(minutePixelArray[i], G.color[Foreground]);
-        } else {
-            /* Only for Background color setting */
-            setPixel(minutePixelArray[i], G.color[Background]);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Led::showSeconds() {
-    const uint8_t offesetSecondsFrame = 5;
-    for (uint8_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
-        if ((frameArray >> i) & 1U) {
-            if (i < usedUhrType->numPixelsFrameMatrix() - offesetSecondsFrame) {
-                setPixel(usedUhrType->getFrameMatrixIndex(i) +
-                             offesetSecondsFrame,
-                         G.color[Foreground]);
-            } else {
-                setPixel(usedUhrType->getFrameMatrixIndex(i) -
-                             usedUhrType->numPixelsFrameMatrix() +
-                             offesetSecondsFrame,
-                         G.color[Foreground]);
-            }
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
