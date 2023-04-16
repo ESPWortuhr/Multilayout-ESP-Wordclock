@@ -40,6 +40,8 @@ public:
     //------------------------------------------------------------------------------
     void setPixel(uint16_t ledIndex, Color color);
     void setbyFrontMatrix(uint8_t ColorPosition);
+    void setbyMinuteArray(uint8_t ColorPosition);
+    void setbySecondArray(uint8_t ColorPosition);
     void setIcon(uint8_t num_icon, uint8_t brightness);
     void setSingle(uint8_t wait);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
@@ -66,7 +68,5 @@ public:
     // Show Functions
     //------------------------------------------------------------------------------
     void showNumbers(const char d1, const char d2);
-    void showMinutes();
-    void showSeconds();
     void show();
 };
