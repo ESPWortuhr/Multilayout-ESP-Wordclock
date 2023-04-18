@@ -106,7 +106,7 @@ let TRANSLATION_NL = {
 			"three-quarter-ten": "Driekwart tien",
 			"at-nine-fourtyfive-english": "On 9:45 it is ...",
 			"quarter-to-ten-english": "Quarter to ten",
-			"q-quarter-to-ten-english": "A quarter to ten"
+			"a-quarter-to-ten-english": "A quarter to ten"
 		},
 		"minutes": {
 			"h2": "Minuten",
@@ -241,7 +241,7 @@ let TRANSLATION_NL = {
 	},
 	"about": {
 		"h1": "Over",
-		"text": "De software van deze Woordklok is gebaseerd op een project van <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (as of 2019)</a> en wordt nu verder ontwikkeld <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>door de community</a> op <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
+		"text-general": "De software van deze Woordklok is gebaseerd op een project van <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (as of 2019)</a> en wordt nu verder ontwikkeld <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>door de community</a> op <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
 		"software": "Bibliotheken en software",
 		"debug": "Debug Output"
 	},
