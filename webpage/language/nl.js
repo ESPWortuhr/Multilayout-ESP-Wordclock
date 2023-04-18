@@ -1,5 +1,5 @@
 let TRANSLATION_NL = {
-	"title": "Woord Klok",
+	"title": "Woordklok",
 
 	"menu": {
 		"language": {
@@ -8,5 +8,244 @@ let TRANSLATION_NL = {
 			"en": "🇺🇸 Engels",
 			"nl": "🇳🇱 Nederlands"
 		}
+	},
+
+	"connection-lost": {
+		"button": "Verbinden",
+		"text": "De verbinding met de Woordklok is verbroken."
+	},
+
+	"colors": {
+		"h1": "Kleuren",
+		"with-background": "Met achtergrondkleur"
+	},
+
+	"functions": {
+		"h1": "Functies",
+		"mode": {
+			"h2": "Modus",
+			"wordclock": "Woordklok",
+			"color": "Kleur",
+			"seconds": "Seconden",
+			"marquee": "Tekst",
+			"rainbow": "Regenboog",
+			"color-change": "Kleurverandering"
+		},
+		"animation": {
+			"h2": "Animatie",
+			"type": {
+				"label": "Type"
+			},
+			"duration": {
+				"label": "Duur",
+				"short": "Kort",
+				"medium": "Middel",
+				"long": "Lang"
+			},
+			"color": {
+				"label": "Kleuranimatie",
+				"off": "Uit",
+				"words": "Gekleurde woorden",
+				"letters": "Gekleurde letters"
+			},
+			"speed": {
+				"label": "Snelheid"
+			},
+			"demo": {
+				"label": "Voorbeeld"
+			}
+		},
+		"settings": {
+			"h2": "Instellingen",
+			"brightness": "Helderheid ",
+			"marquee-text": "Tekst",
+			"save": "Opslaan",
+			"speed": "Snelheid ",
+			"leds": "Aantal LED's ",
+			"position": "Positie "
+		}
+	},
+
+	"view": {
+		"h1": "Weergave",
+		"front": {
+			"h2": "Weergave",
+			"text": "Verandering van formaat is alleen zichtbaar na herstart.",
+			"variant": "Klok variant",
+			"de-10-11": "Duits 10 × 11",
+			"de-10-11-alt": "Duits 10 × 11 Alternatief",
+			"de-10-11-alt-frame": "Duits 10 × 11 Alternatief Frame",
+			"de-10-11-vertical": "Duits 10 × 11 Verticaal",
+			"de-10-11-clock": "Duits 10 × 11 Clock",
+			"de-10-11-nero": "Duits 10 × 11 Nero",
+			"de-11-11": "Duits 11 × 11",
+			"de-11-11-v2": "Duits 11 × 11 Versie 2",
+			"de-11-11-frame": "Duits 11 × 11 Frame",
+			"de-22-11-weather": "Duits 10 × 11 Weer",
+			"de-16-18": "Duits 16 × 18",
+			"en-10-11": "Engels 10 × 11",
+			"nl-10-11": "Nederlands 10 × 11",
+			"invert-min-dir": "Draai minuutrichting om",
+			"mirror-vertically": "Spiegel Woordklok verticaal",
+			"mirror-horizontally": "Spiegel Woordklok horizontaal"
+		},
+		"language": {
+			"h2": "Taal",
+			"hide-it-is": "Verberg “Het is”",
+			"at-nine-fifteen": "Om 9:15 is het...",
+			"quarter-past-nine": "Kwart over negen",
+			"quarter-nine": "Kwart tien",
+			"at-nine-twenty": "Om 9:20 is het...",
+			"twenty-past-nine": "Twintig over negen",
+			"ten-before-half-past-ten": "Tien voor half tien",
+			"at-nine-fourty": "Om 9:40 is het...",
+			"twenty-before-ten": "Twintig voor tien",
+			"ten-after-half-past-ten": "Tien over half tien",
+			"at-nine-fourtyfive-german": "Om 9:45 is het...",
+			"quarter-to-ten": "Kwart voor tien",
+			"three-quarter-ten": "Driekwart tien",
+			"at-nine-fourtyfive-english": "On 9:45 it is ...",
+			"quarter-to-ten-english": "Quarter to ten",
+			"q-quarter-to-ten-english": "A quarter to ten"
+		},
+		"minutes": {
+			"h2": "Minuten",
+			"mode": "Weergave",
+			"off": "Uit",
+			"normal-4-leds": "Normaal (4 LEDs)",
+			"normal-7-leds": "Normaal (7 LEDs)",
+			"edges": "Hoeken",
+			"in-words": "In woorden"
+		},
+		"seconds": {
+			"h2": "Seconden",
+			"in-border": "Seconden in de rand",
+			"off": "Uit",
+			"point": "Punt",
+			"sector": "Sector",
+			"revolving-sector": "Revolving Sector"
+		},
+		"boot": {
+			"h2": "Herstart",
+			"help": "Wat moet er worden laten zien bij een herstart?",
+			"blink-leds": "Alle LED's kort aan",
+			"iterate-leds": "Alle LED's doorlopen",
+			"wifi-symbol": "WiFi symbool",
+			"ip-address": "IP adres"
+		}
+	},
+
+	"settings": {
+		"h1": "Instellingen",
+		"status": {
+			"h2": "Status",
+			"label": "Verbindingsstatus",
+			"connect": "Verbinden"
+		},
+		"led-type": {
+			"h2": "LED Type",
+			"help": "Hier kun je het type LED-strip instellen (WS2812 of SK6812).\n" +
+				"Afhankelijk van de fabrikant van de strip kan de kleur in een andere volgorde weergegeven worden.\n" +
+				"Hieronder kunt je de juiste kleurcombinatie instellen.\n" +
+				"G-Groen / B-Blauw / R-Rood / W-Wit",
+			"label": "Kleurtype",
+			"ws2812-brg": "WS2812 BRG",
+			"ws2812-grb": "WS2812 GRB",
+			"ws2812-rgb": "WS2812 RGB",
+			"ws2812-rbg": "WS2812 RBG",
+			"sk6812-brgw": "SK6812 RGBW",
+			"save": "Opslaan"
+		},
+		"time-server": {
+			"h2": "Tijdserver",
+			"label": "Tijdserver",
+			"save": "Opslaan"
+		},
+		"manual-time": {
+			"h2": "Tijd handmatig instellen",
+			"hour": "Uur",
+			"minute": "Minuten",
+			"save": "Opslaan"
+		},
+		"brightness": {
+			"h2": "Helderheid",
+			"mode": "Mode",
+			"automatic": "Automatisch",
+			"manual": "Handmatig",
+			"p100": "100 %",
+			"p80": "80 %",
+			"p60": "60 %",
+			"p40": "40 %",
+			"p20": "20 %",
+			"off": "Uit",
+			"zero-to-six": "0:00 – 5:59",
+			"six-to-eight": "6:00 – 7:59",
+			"eight-to-twelve": "8:00 – 11:59",
+			"twelve-to-sixteen": "12:00 – 15:59",
+			"sixteen-to-eighteen": "16:00 – 17:59",
+			"eighteen-to-twenty": "18:00 – 19:59",
+			"twenty-to-twenty-two": "20:00 – 21:59",
+			"twenty-two-to-zero": "22:00 – 23:59",
+			"ldr-value": "Huidige helderheid volgens sensor",
+			"value-bright": "Licht (0 – 255)",
+			"value-dark": "Donker (0 – 255)"
+		},
+		"hostname": {
+			"h2": "Hostnaam",
+			"label": "Hostnaam",
+			"save": "Opslaan"
+		},
+		"weather": {
+			"h2": "Weer",
+			"api-key": "OpenWeatherMap API Key",
+			"city-id": "OpenWeatherMap City ID",
+			"save": "Opslaan"
+		},
+		"ldr": {
+			"h2": "Lichtsensor (LDR)",
+			"activate": "Activeer lichtsensor",
+			"calibration": "Kalibratie",
+			"off": "Uit"
+		},
+		"wifi": {
+			"h2": "Wi-Fi",
+			"help": "Herconfiguratie creëert zijn eigen Wi-Fi.\n" +
+				"Maak hier verbinding mee, dan kan het doelnetwerk geselecteerd worden.",
+			"ssid": "Netwerk naam (SSID)",
+			"other-wifi": "Ander netwerk",
+			"configure": "Congigureer",
+			"until-restart": "Tot herstart",
+			"deactivate": "Deactiveer"
+		},
+		"restart": {
+			"h2": "Herstart / Reset",
+			"reset": "Herstart",
+			"restart": "Reset naar standaardwaarden"
+		}
+	},
+
+	"smart-home": {
+		"h1": "Smart Home",
+		"mqtt": {
+			"h2": "MQTT",
+			"text": "De software van de Woordklok kan worden aangestuurd met behulp van MQTT. Hier integreer je de klok via je bestaande Home Assistant setup om rudimentaire functies te kunnen aansturen. Deze functie is nog experimenteel en wordt voortdurend uitgebreid.",
+			"activate": "Activeer MQTT",
+			"server": "Serveradres",
+			"port": "Port",
+			"username": "Gebruikersnaam",
+			"password": "Wachtwoord",
+			"client-id": "Client ID",
+			"topic": "Topic",
+			"save": "Opslaan"
+		}
+	},
+	"about": {
+		"h1": "Over",
+		"text": "De software van deze Woordklok is gebaseerd op een project van <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (as of 2019)</a> en wordt nu verder ontwikkeld <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>door de community</a> op <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
+		"software": "Bibliotheken en software",
+		"debug": "Debug Output"
+	},
+	"footer": {
+		"version": "Versie"
 	}
 };

@@ -20,7 +20,6 @@ let TRANSLATION_EN_US = {
 		"with-background": "With Background Color"
 	},
 
-	// Page Functions
 	"functions": {
 		"h1": "Functions",
 		"mode": {
