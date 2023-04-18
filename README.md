@@ -1,6 +1,6 @@
 # ESP Wortuhr
 
-English description further below.
+English and Dutch description further below.
 
 Dies ist ein Projekt für eine mehrsprachige Wortuhr, basierend auf einem ESP8266 Mikrocontroller und einem programmierbaren LED-Streifen (WS2812 oder SK6812). Eine Wortuhr ist ein einzigartiges Projekt, das Technologie und Design kombiniert, um einen funktionalen und ästhetisch ansprechenden Zeitmesser zu schaffen. Mit der Möglichkeit, die Zeit in mehreren Sprachen anzuzeigen, ist diese Wortuhr nicht nur ein Gesprächsthema, sondern auch eine praktische Lösung für alle, die nach einer modernen und innovativen Möglichkeit suchen, die Zeit im Auge zu behalten.
 Egal, ob du ein Anfänger oder ein erfahrener Bastler bist, dieses Projekt ist eine großartige Möglichkeit, deine Fähigkeiten auf die Probe zu stellen und etwas wirklich Besonderes zu schaffen.
@@ -155,3 +155,81 @@ pio run -t upload
 
 This software is licensed under the BSD license and may be used freely. It is allowed to copy, modify and distribute it.
 The only condition is that the copyright notice of the original program must not be removed.
+
+## Nederlandse versie
+
+Dit is een project voor een meertalige Woordklok op basis van een ESP8266 microcontroller en een programmeerbare LED-strip (WS2812 of SK6812). Een Woordklok is een uniek project dat technologie en design combineert om een functioneel en esthetisch uurwerk te creëren. Met de mogelijkheid om de tijd in meerdere talen weer te geven, is deze Woordklok niet alleen een conversatiestuk, maar ook een praktische oplossing voor iedereen die op zoek is naar een moderne en innovatieve manier om de tijd bij te houden.
+Of je nu een beginner of een ervaren maker bent, dit project is een geweldige manier om je vaardigheden op de proef te stellen en iets heel bijzonders te creëren.
+
+![](pics/wortuhr-webpage.png)
+
+## De volgende hardware/software is vereist voor dit project:
+* Apparatuur
+     * NodeMCU (getest board Lolin Version3 en Wemos D3 mini) of vergelijkbaar board met een ESP8266
+     * WS2812B, WS2816 RGB LED-strips of SK6812 RGBW-strips
+     * Voeding 5V 2A
+     * Optioneel: LDR, 10 KOhm weerstand
+* Software
+     * PlatformIO [Core](https://docs.platformio.org/en/latest/core/installation.html) of [IDE](https://platformio.org/install/ide?install=vscode)
+     * [Node.js](https://www.nodejs.org/)
+     * [Git](https://git-scm.com)
+
+## Installatie
+### Windows
+
+* Installeer PlatformIO IDE, Node.js en Git handmatig via de bovenstaande links.
+* Hiermee wordt Visual Studio Code geïnstalleerd, met een PlatformIO-pictogram (mierhoofd/alien) in de zijbalk.
+* Ga naar 'Quick Access / Miscellaneous' en voer het commando 'Clone Git Project' in, en voer 'https://github.com/ESPWortuhr/Wortuhr' in als de URL.
+* Ga vervolgens naar 'Projecten', voeg het nieuwe project toe aan de lijst door 'Bestaand toevoegen' en klik op 'Openen'.
+* Vervolgens verschijnt in de PlatformIO-zijbalk 'Projecttaken'. Selecteer het commando 'Algemeen / Upload' (duurt enkele minuten, de software wordt eerst gebouwd).
+* Sluit de ESP-8266 aan via USB. Wanneer de wordclock-software is gebouwd, wordt deze op de ESP geïnstalleerd.
+
+### MacOS
+
+De makkelijkste manier is met [homebrew](https://docs.brew.sh/Installation):
+
+```sh
+brew install platformio
+brew install node
+git clone https://github.com/ESPWortuhr/Wortuhr
+cd Wortuhr
+pio run -t upload
+```
+
+### Linux
+
+```sh
+python3 -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
+sudo apt install npm
+git clone https://github.com/ESPWortuhr/Wortuhr
+cd Wortuhr
+pio run -t upload
+```
+
+## Verbinden van de WS2812/ SK6812 Stripe
+* RX = DI / Data 
+* G = GND / Massa
+* VU = 5V
+* Niveauregeling 3.3V tot 5V zie docs
+
+## Verbinden van de LDR (optioneel)
+![](pics/old/LDR.png)
+      
+## mappenstructuur
+
+- `pics` bevat afbeeldingen
+- `svg` bevat SVG-bestanden
+- `include` bevat C-headerbestanden
+- `src` bevat C-bronbestanden
+- `webpagina` bevat de webinterface
+- `docs` bevat handleidingen
+- `Templates` bevat frees- en lasergegevens
+
+## To DO & (Ideen):
+* HomeKit Support
+* Home Assistant Support
+
+### BSD-3 License
+
+Deze software is gelicentieerd onder de BSD-licentie en mag vrij worden gebruikt. Het is toegestaan deze te kopiëren, aan te passen en te verspreiden.
+De enige voorwaarde is dat de copyrightvermelding van het originele programma niet mag worden verwijderd.
