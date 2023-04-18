@@ -144,10 +144,10 @@ let TRANSLATION_EN_US = {
 		},
 		"led-type": {
 			"h2": "LED Type",
-			"help": "Hier können Sie den Typ des verwendeten LED-Streifens (WS2812 oder SK6812) einstellen.\n" +
-				"Je nach Hersteller der verwendeten SK2812-Streifen gibt es hier eine andere Version, die die Farben in einer anderen Reihenfolge anzeigt.\n" +
-				"Entsprechend können Sie hier die richtige Farbkombination des Streifens einstellen.\n" +
-				"G-Grün / B-Blau / R-Rot / W-Weiß",
+			"help": "Here you can set the type of LED strip used (WS2812 or SK6812).\n" +
+				"Depending on the manufacturer of the SK2812 strips used, there is a different version here that shows the colors in a different order.\n" +
+				"Accordingly, you can set the correct color combination of the stripe here.\n" +
+				"G-Green / B-Blue / R-Red / W-White",
 			"label": "Change of Color Type",
 			"ws2812-brg": "WS2812 BRG",
 			"ws2812-grb": "WS2812 GRB",
@@ -209,8 +209,8 @@ let TRANSLATION_EN_US = {
 		},
 		"wifi": {
 			"h2": "Wi-Fi",
-			"help": "Neukonfiguration erstellt ein eigenes WLAN.\n" +
-				"Mit diesem verbinden, dann kann das Zielnetz ausgewählt werden.",
+			"help": "Reconfiguration creates its own WLAN.\n" +
+				"Connect to this, then the target network can be selected.",
 			"ssid": "Wi-Fi Name (SSID)",
 			"other-wifi": "Other Wi-Fi",
 			"configure": "Configure",
