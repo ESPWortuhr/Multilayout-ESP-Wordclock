@@ -41,6 +41,17 @@ function initLanguageDropdown(language) {
 
 	let languageSelect = document.getElementById("language");
 
+	// The following four lines are a bugfix for Safari on iOS.
+	// The state of the currently selected option would not change in the select until you click on
+	// it (showing an initial empty select).
+	// The workaround clones the complete select, removes it from the DOM and then adds it again. When changing
+	// the currently selected option on the clone, the UI updates accordingly even on iOS Safari.
+	// Interestingly the problem does not occur with Safari for macOS (or e.g. Firefox for macOS).
+	let cloneLanguageSelect = languageSelect.cloneNode(true);
+	languageSelect.remove();
+	document.getElementById("language-select-container").append(cloneLanguageSelect);
+	languageSelect = cloneLanguageSelect;
+
 	// set initial language for the dropdown
 	languageSelect.value = language;
 
