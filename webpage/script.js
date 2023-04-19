@@ -98,15 +98,15 @@ var COMMAND_MODE_ANIMATION = 10;
  * @type {Map<number, String>}
  */
 const MODE_TO_INPUT_ID = new Map();
-MODE_TO_INPUT_ID.set(0, 'mode-wordclock'); // Map COMMAND_IDLE to mode wordclock
-MODE_TO_INPUT_ID.set(COMMAND_MODE_WORD_CLOCK, 'mode-wordclock');
-MODE_TO_INPUT_ID.set(COMMAND_MODE_SECONDS, 'mode-seconds');
-MODE_TO_INPUT_ID.set(COMMAND_MODE_SCROLLINGTEXT, 'mode-marquee');
-MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOWCYCLE, 'mode-rainbow');
-MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOW, 'mode-change'); // Color change
-MODE_TO_INPUT_ID.set(COMMAND_MODE_COLOR, 'mode-color');
-MODE_TO_INPUT_ID.set(COMMAND_MODE_MINUTES, 'mode-minutes');
-MODE_TO_INPUT_ID.set(COMMAND_MODE_ANIMATION, 'mode-wordclock');
+MODE_TO_INPUT_ID.set(0, "mode-wordclock"); // Map COMMAND_IDLE to mode wordclock
+MODE_TO_INPUT_ID.set(COMMAND_MODE_WORD_CLOCK, "mode-wordclock");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_SECONDS, "mode-seconds");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_SCROLLINGTEXT, "mode-marquee");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOWCYCLE, "mode-rainbow");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOW, "mode-change"); // Color change
+MODE_TO_INPUT_ID.set(COMMAND_MODE_COLOR, "mode-color");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_MINUTES, "mode-minutes");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_ANIMATION, "mode-wordclock");
 
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
