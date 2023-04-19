@@ -213,7 +213,7 @@ let TRANSLATION_NL = {
 				"Maak hier verbinding mee, dan kan het doelnetwerk geselecteerd worden.",
 			"ssid": "Netwerk naam (SSID)",
 			"other-wifi": "Ander netwerk",
-			"configure": "Congigureer",
+			"configure": "Configureer",
 			"until-restart": "Tot herstart",
 			"deactivate": "Deactiveer"
 		},
@@ -242,6 +242,8 @@ let TRANSLATION_NL = {
 	"about": {
 		"h1": "Over",
 		"text-general": "De software van deze Woordklok is gebaseerd op een project van <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (as of 2019)</a> en wordt nu verder ontwikkeld <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>door de community</a> op <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
+		"text-update": "Een update voor de software is mogelijk, daarvoor kun je <a href='update' onmouseover='javascript:event.target.port=81'>hier klikken</a>.",
+		"text-license": "Dit project is open source gelicenseerd onder de BSD 3-Clause License.",
 		"software": "Bibliotheken en software",
 		"debug": "Debug Output"
 	},
