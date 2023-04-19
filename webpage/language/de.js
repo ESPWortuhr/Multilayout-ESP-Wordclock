@@ -106,7 +106,7 @@ let TRANSLATION_DE_DE = {
 			"three-quarter-ten": "dreiviertel zehn",
 			"at-nine-fourtyfive-english": "On 9:45 it is ...",
 			"quarter-to-ten-english": "Quarter to ten",
-			"q-quarter-to-ten-english": "A quarter to ten"
+			"a-quarter-to-ten-english": "A quarter to ten"
 		},
 		"minutes": {
 			"h2": "Minuten",
@@ -242,7 +242,9 @@ let TRANSLATION_DE_DE = {
 
 	"about": {
 		"h1": "Über",
-		"text": "Die Software dieser Wortuhr basiert auf der Wortuhr von <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (Stand 2019)</a> und wird nun <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>von der Community</a> weiterentwickelt auf <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
+		"text-general": "Die Software dieser Wortuhr basiert auf der Wortuhr von <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (Stand 2019)</a> und wird nun <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>von der Community</a> weiterentwickelt auf <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
+		"text-update": "Ein Update der Software ist möglich, dazu bitte <a href='update' onmouseover='javascript:event.target.port=81'>auf die Update-Seite wechseln</a>.",
+		"text-license": "Dieses Projekt ist Open-Source-lizenziert unter der <span lang='en'>3-Clause BSD License</span>.",
 		"software": "Bibliotheken und Software",
 		"debug": "Debug-Ausgabe"
 	},
