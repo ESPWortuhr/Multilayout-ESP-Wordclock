@@ -41,8 +41,13 @@ void Mqtt::loop() {
 //------------------------------------------------------------------------------
 
 void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
-    //{"state": "on", "brightness": 255, "color": [255, 255, 255], "effect":
-    //"rainbow"}
+    /*
+    {
+        "state": "on",
+        "color": [0-255, 0-255, 0-255],
+        "effect": "rainbow"
+    }
+    */
     StaticJsonDocument<200> doc;
 
     Serial.print("Received message [");
@@ -54,9 +59,7 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         msg[i] = (char)payload[i];
     }
     Serial.println();
-
     msg[length] = '\0';
-    Serial.println(msg);
 
     DeserializationError error = deserializeJson(doc, msg);
 
@@ -67,27 +70,36 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         return;
     }
 
-    if (doc["state"] == "ON") {
-        const char *str_buff = doc["effect"];
-        std::string str_buffer = str_buff;
-        if (str_buffer.compare("Wortuhr")) {
+    if (doc.containsKey("state")) {
+        if (!strcmp("on", doc["state"])) {
+            G.state = true;
+        } else {
+            led.clear();
+            led.show();
+            G.state = false;
+        }
+    }
+
+    if (doc.containsKey("effect")) {
+        if (!strcmp("Wordclock", doc["effect"])) {
             G.prog = COMMAND_MODE_WORD_CLOCK;
-        } else if (str_buffer.compare("Sekundenanzeige")) {
+        } else if (!strcmp("Seconds", doc["effect"])) {
             G.prog = COMMAND_MODE_SECONDS;
-        } else if (str_buffer.compare("Laufschrift")) {
+        } else if (!strcmp("Scrollingtext", doc["effect"])) {
             G.prog = COMMAND_MODE_SCROLLINGTEXT;
-        } else if (str_buffer.compare("Regenbogen")) {
+        } else if (!strcmp("Rainbowcycle", doc["effect"])) {
             G.prog = COMMAND_MODE_RAINBOWCYCLE;
-        } else if (str_buffer.compare("Farbwechsel")) {
+        } else if (!strcmp("Rainbow", doc["effect"])) {
             G.prog = COMMAND_MODE_RAINBOW;
-        } else if (str_buffer.compare("Farbe")) {
+        } else if (!strcmp("Color", doc["effect"])) {
             G.prog = COMMAND_MODE_COLOR;
         }
+    }
+
+    if (doc.containsKey("color")) {
         G.color[Foreground] =
             RgbColor(doc["color"][0], doc["color"][1], doc["color"][2]);
         G.color[Foreground].alpha = doc["White"];
-    } else {
-        G.color[Foreground] = {};
     }
 }
 
