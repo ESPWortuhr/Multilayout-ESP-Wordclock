@@ -163,8 +163,7 @@ let TRANSLATION_DE_DE = {
 		},
 		"manual-time": {
 			"h2": "Uhrzeit manuell einstellen",
-			"hour": "Stunde",
-			"minute": "Minute",
+			"time": "Zeit",
 			"save": "Einstellung speichern"
 		},
 		"brightness": {

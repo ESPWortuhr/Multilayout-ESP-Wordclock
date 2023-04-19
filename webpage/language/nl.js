@@ -163,8 +163,7 @@ let TRANSLATION_NL = {
 		},
 		"manual-time": {
 			"h2": "Tijd handmatig instellen",
-			"hour": "Uur",
-			"minute": "Minuten",
+			"time": "Tijd",
 			"save": "Opslaan"
 		},
 		"brightness": {
