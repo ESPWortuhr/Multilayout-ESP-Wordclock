@@ -385,9 +385,11 @@ void Led::showNumbers(const char d1, const char d2) {
 //------------------------------------------------------------------------------
 
 void Led::show() {
-    if (G.Colortype == Grbw) {
-        strip_RGBW->Show();
-    } else {
-        strip_RGB->Show();
+    if (G.state) {
+        if (G.Colortype == Grbw) {
+            strip_RGBW->Show();
+        } else {
+            strip_RGB->Show();
+        }
     }
 }
