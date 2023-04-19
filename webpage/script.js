@@ -555,8 +555,8 @@ function setAnimation() {
 function updateManualTimeInput() {
 	const currentDate = new Date();
 	// Pad the values with leading zeroes, so at five past eight in the morning it is 08:05 not 8:5.
-	const hours = currentDate.getHours().toString().padStart(2, '0');
-	const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+	const hours = currentDate.getHours().toString().padStart(2, "0");
+	const minutes = currentDate.getMinutes().toString().padStart(2, "0");
 	$("#time").set("value", `${hours}:${minutes}`);
 }
 
