@@ -74,6 +74,8 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
             G.prog = COMMAND_MODE_WORD_CLOCK;
         } else if (str_buffer.compare("Sekundenanzeige")) {
             G.prog = COMMAND_MODE_SECONDS;
+        } else if (str_buffer.compare("Minutenanzeige")) {
+            G.prog = COMMAND_MODE_MINUTES;
         } else if (str_buffer.compare("Laufschrift")) {
             G.prog = COMMAND_MODE_SCROLLINGTEXT;
         } else if (str_buffer.compare("Regenbogen")) {

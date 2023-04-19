@@ -1075,6 +1075,19 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
+    case COMMAND_MODE_MINUTES: {
+        if (G.progInit) {
+            led.clear();
+            G.progInit = false;
+        }
+        char d1[5];
+        char d2[5];
+        sprintf(d1, "%d", (int)(_minute / 10));
+        sprintf(d2, "%d", (int)(_minute % 10));
+        led.showNumbers(d1[0], d2[0]);
+        break;
+    }
+
     case COMMAND_MODE_SCROLLINGTEXT:
     case COMMAND_MODE_RAINBOWCYCLE:
     case COMMAND_MODE_RAINBOW: {

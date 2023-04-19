@@ -27,6 +27,7 @@ let TRANSLATION_NL = {
 			"wordclock": "Woordklok",
 			"color": "Kleur",
 			"seconds": "Seconden",
+			"minutes": "Minuten",
 			"marquee": "Tekst",
 			"rainbow": "Regenboog",
 			"color-change": "Kleurverandering"

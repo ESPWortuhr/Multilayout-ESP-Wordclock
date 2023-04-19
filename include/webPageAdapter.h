@@ -211,6 +211,19 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+        case COMMAND_MODE_MINUTES: {
+            G.prog = COMMAND_MODE_MINUTES;
+            G.progInit = true;
+
+            parseMainColor(payload, Effect);
+
+            G.effectBri = split(payload, 27);
+            G.effectSpeed = split(payload, 30);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
         case COMMAND_MODE_SCROLLINGTEXT: {
             G.prog = COMMAND_MODE_SCROLLINGTEXT;
             G.progInit = true;
