@@ -27,7 +27,7 @@ let TRANSLATION_EN_US = {
 			"wordclock": "Word Clock",
 			"color": "Color",
 			"seconds": "Seconds",
-			"minutes": "Minutes",
+			"digitalclock": "Digitalclock",
 			"marquee": "Marquee",
 			"rainbow": "Rainbow",
 			"color-change": "Color Change"

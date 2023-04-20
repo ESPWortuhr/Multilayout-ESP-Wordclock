@@ -9,6 +9,8 @@ private:
     //------------------------------------------------------------------------------
     inline uint8_t reverse8BitOrder(uint8_t x);
     inline uint32_t reverse32BitOrder(uint32_t x);
+    bool getCharCol(fontSize font, uint8_t col, uint8_t row,
+                    unsigned char unsigned_d1);
 
 public:
     Led(/* args */) = default;
@@ -45,7 +47,8 @@ public:
     void setIcon(uint8_t num_icon, uint8_t brightness);
     void setSingle(uint8_t wait);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                         uint8_t offsetRow, unsigned char unsigned_d1);
+                         uint8_t offsetRow, unsigned char unsigned_d1,
+                         fontSize font);
     void set(bool changed = false);
 
     //------------------------------------------------------------------------------
@@ -68,5 +71,7 @@ public:
     // Show Functions
     //------------------------------------------------------------------------------
     void showNumbers(const char d1, const char d2);
+    void showDigitalClock(const char min1, const char min0, const char h1,
+                          const char h0);
     void show();
 };
