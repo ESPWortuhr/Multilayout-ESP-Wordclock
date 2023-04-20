@@ -85,7 +85,7 @@
 	},
 	"dependencies": {
 		"@jaames/iro": "^5.5.2",
-		"i18next": "^22.4.10",
+		"i18next": "^22.4.15",
 		"i18next-browser-languagedetector": "^7.0.1",
 		"minified": "^1.0.1",
 		"purecss": "^3.0.0"
