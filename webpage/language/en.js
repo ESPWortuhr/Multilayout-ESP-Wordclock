@@ -93,21 +93,21 @@ let TRANSLATION_EN_US = {
 		"language": {
 			"h2": "Language",
 			"hide-it-is": "Hide “It Is”",
-			"at-nine-fifteen": "Um 9:15 ist es ...",
-			"quarter-past-nine": "viertel nach neun",
-			"quarter-nine": "viertel zehn",
-			"at-nine-twenty": "Um 9:20 ist es ...",
-			"twenty-past-nine": "zwanzig nach neun",
-			"ten-before-half-past-ten": "zehn vor halb zehn",
-			"at-nine-fourty": "Um 9:40 ist es...",
-			"twenty-before-ten": "zwanzig vor zehn",
-			"ten-after-half-past-ten": "zehn nach halb zehn",
-			"at-nine-fourtyfive-german": "Um 9:45 ist es...",
-			"quarter-to-ten": "viertel vor zehn",
-			"three-quarter-ten": "dreiviertel zehn",
-			"at-nine-fourtyfive-english": "On 9:45 it is ...",
-			"quarter-to-ten-english": "Quarter to ten",
-			"q-quarter-to-ten-english": "A quarter to ten"
+			"at-nine-fifteen": "On 9:15 It Is ...",
+			"quarter-past-nine": "Quarter Past Nine", // German: viertel nach neun
+			"quarter-nine": "Quarter Ten", // German: viertel zehn
+			"at-nine-twenty": "On 9:20 It Is ...",
+			"twenty-past-nine": "Twenty Past Nine", // German: zwanzig nach neun
+			"ten-before-half-past-ten": "Ten to Half Past Nine", // German: zehn vor halb zehn
+			"at-nine-fourty": "On 9:40 It Is ...",
+			"twenty-before-ten": "Twenty to Ten", // German: zwanzig vor zehn
+			"ten-after-half-past-ten": "Ten After Half Past Nine", // German: zehn nach halb zehn
+			"at-nine-fourtyfive-german": "On 9:45 It Is ...",
+			"quarter-to-ten": "Quarter to Ten", // German: viertel vor zehn
+			"three-quarter-ten": "Three Quarter Ten", // German: dreiviertel zehn
+			"at-nine-fourtyfive-english": "On 9:45 It Is ...",
+			"quarter-to-ten-english": "Quarter to Ten",
+			"a-quarter-to-ten-english": "A Quarter to Ten"
 		},
 		"minutes": {
 			"h2": "Minutes",
@@ -145,10 +145,10 @@ let TRANSLATION_EN_US = {
 		},
 		"led-type": {
 			"h2": "LED Type",
-			"help": "Hier können Sie den Typ des verwendeten LED-Streifens (WS2812 oder SK6812) einstellen.\n" +
-				"Je nach Hersteller der verwendeten SK2812-Streifen gibt es hier eine andere Version, die die Farben in einer anderen Reihenfolge anzeigt.\n" +
-				"Entsprechend können Sie hier die richtige Farbkombination des Streifens einstellen.\n" +
-				"G-Grün / B-Blau / R-Rot / W-Weiß",
+			"help": "Here you can set the type of LED strip used (WS2812 or SK6812).\n " +
+				"Depending on the manufacturer of the SK2812 strips used, there is a different version here that shows the colors in a different order.\n " +
+				"Accordingly, you can set the correct color combination of the stripe here.\n " +
+				"G-Green / B-Blue / R-Red / W-White",
 			"label": "Change of Color Type",
 			"ws2812-brg": "WS2812 BRG",
 			"ws2812-grb": "WS2812 GRB",
@@ -164,8 +164,7 @@ let TRANSLATION_EN_US = {
 		},
 		"manual-time": {
 			"h2": "Set Time Manually",
-			"hour": "Hour",
-			"minute": "Minute",
+			"time": "Time",
 			"save": "Save Setting"
 		},
 		"brightness": {
@@ -210,8 +209,8 @@ let TRANSLATION_EN_US = {
 		},
 		"wifi": {
 			"h2": "Wi-Fi",
-			"help": "Neukonfiguration erstellt ein eigenes WLAN.\n" +
-				"Mit diesem verbinden, dann kann das Zielnetz ausgewählt werden.",
+			"help": "Reconfiguration creates its own wireless network.\n " +
+				"Connect to this temporary network, then the target network can be selected.",
 			"ssid": "Wi-Fi Name (SSID)",
 			"other-wifi": "Other Wi-Fi",
 			"configure": "Configure",
@@ -242,7 +241,9 @@ let TRANSLATION_EN_US = {
 	},
 	"about": {
 		"h1": "About",
-		"text": "The software of this Word Clock is based on the Word Clock by <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (as of 2019)</a> and is now being further developed <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>by the community</a> on <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
+		"text-general": "The software of this Word Clock is based on the Word Clock by <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (as of 2019)</a> and is now being further developed <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>by the community</a> on <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
+		"text-update": "An update of the software is possible, please <a href='update' onmouseover='javascript:event.target.port=81'>switch to the update page</a>.",
+		"text-license": "This project is open source licensed under the BSD 3-Clause License.",
 		"software": "Libraries and Software",
 		"debug": "Debug Output"
 	},

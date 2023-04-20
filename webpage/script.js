@@ -565,23 +565,36 @@ function setAnimation() {
 	document.getElementById("animation-demo").checked = animDemo;
 }
 
+/**
+ * Sets the value of the manual time input to the current browser time on the settings page.
+ */
+function updateManualTimeInput() {
+	const currentDate = new Date();
+	// Pad the values with leading zeroes, so at five past eight in the morning it is 08:05 not 8:5.
+	const hours = currentDate.getHours().toString().padStart(2, "0");
+	const minutes = currentDate.getMinutes().toString().padStart(2, "0");
+	$("#time").set("value", `${hours}:${minutes}`);
+}
+
 function autoLdrValueUpdater() {
-	if (autoLdrInterval == null && autoLdrEnabled === 1) {
-		autoLdrInterval = setInterval(function() {
-			// jede Sekunde ausfuehren
-			if ($("#auto-ldr-enabled").get("value") === "1") {
-				sendCmd(COMMAND_REQUEST_AUTO_LDR, 1);
-			}
-		}, 1000);
+	if (autoLdrInterval !== null || autoLdrEnabled !== 1) {
+		return;
 	}
+	autoLdrInterval = setInterval(function() {
+		if ($("#auto-ldr-enabled").get("value") === "1") {
+			sendCmd(COMMAND_REQUEST_AUTO_LDR, 1);
+		}
+	}, 1000);
+	debugMessage(`Start timer autoLdrInterval with ID ${autoLdrInterval}`);
 }
 
 function autoLdrStop() {
-	if (autoLdrInterval != null) {
-		clearInterval(autoLdrInterval);
-		autoLdrInterval = null;
-		debugMessage("LDR requests stopped", null);
+	if (autoLdrInterval === null) {
+		return;
 	}
+	debugMessage(`Stop timer autoLdrInterval with ID ${autoLdrInterval}`);
+	clearInterval(autoLdrInterval);
+	autoLdrInterval = null;
 }
 
 function nstr5(number) {
@@ -688,6 +701,7 @@ $.ready(function() {
 		if (navigation === "settings" || navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 			sendCmd(COMMAND_REQUEST_AUTO_LDR);
+			updateManualTimeInput();
 			autoLdrValueUpdater();
 		} else {
 			autoLdrStop();
@@ -934,11 +948,15 @@ $.ready(function() {
 		sendCmd(COMMAND_RESET);
 	});
 	$("#uhrzeit-button").on("click", function() {
-		var hour = $("#hour").get("value");
-		var minute = $("#minute").get("value");
 
-		sendCmd(COMMAND_SET_TIME_MANUAL, nstr(hour) + nstr(minute));
-		debugMessage("Time manually set");
+		if (!$("#time")[0].validity.valid) {
+			return;
+		}
+		const timeString = $("#time").get("value");
+		const [hours, minutes] = timeString.split(":");
+
+		sendCmd(COMMAND_SET_TIME_MANUAL, nstr(hours) + nstr(minutes));
+		debugMessage(`Time manually set to ${hours}:${minutes}`);
 	});
 	$("#mqtt-button").on("click", function() {
 		MQTTState = $("#mqtt-state").get("checked") | 0;
