@@ -85,7 +85,7 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
             G.prog = COMMAND_MODE_WORD_CLOCK;
         } else if (!strcmp("Seconds", doc["effect"])) {
             G.prog = COMMAND_MODE_SECONDS;
-        } else if (str_buffer.compare("Digitalclock")) {
+        } else if (!strcmp("Digitalclock", doc["effect"])) {
             G.prog = COMMAND_MODE_DIGITALCLOCK;
         } else if (!strcmp("Scrollingtext", doc["effect"])) {
             G.prog = COMMAND_MODE_SCROLLINGTEXT;

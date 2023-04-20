@@ -211,8 +211,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_MINUTES: {
-            G.prog = COMMAND_MODE_MINUTES;
+        case COMMAND_MODE_DIGITALCLOCK: {
+            G.prog = COMMAND_MODE_DIGITALCLOCK;
             G.progInit = true;
 
             parseMainColor(payload, Effect);

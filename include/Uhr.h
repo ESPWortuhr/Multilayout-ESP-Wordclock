@@ -197,6 +197,11 @@ enum LayoutVariants {
     MirrorHorizontal = 2,
 };
 
+enum fontSize {
+    normalSizeASCII = 0,
+    smallSizeNumbers = 1,
+};
+
 enum CommandWords {
     COMMAND_IDLE = 0,
 
