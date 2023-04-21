@@ -1076,7 +1076,7 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
-    case COMMAND_MODE_DIGITALCLOCK: {
+    case COMMAND_MODE_DIGITAL_CLOCK: {
         if (G.progInit) {
             led.clear();
             G.progInit = false;

@@ -89,7 +89,7 @@ var COMMAND_MODE_SCROLLINGTEXT = 3;
 var COMMAND_MODE_RAINBOWCYCLE = 4;
 var COMMAND_MODE_RAINBOW = 5;
 var COMMAND_MODE_COLOR = 6;
-var COMMAND_MODE_DIGITALCLOCK = 7;
+var COMMAND_MODE_DIGITAL_CLOCK = 7;
 var COMMAND_MODE_ANIMATION = 10;
 
 /**
@@ -105,7 +105,7 @@ MODE_TO_INPUT_ID.set(COMMAND_MODE_SCROLLINGTEXT, "mode-marquee");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOWCYCLE, "mode-rainbow");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOW, "mode-change"); // Color change
 MODE_TO_INPUT_ID.set(COMMAND_MODE_COLOR, "mode-color");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_DIGITALCLOCK, "mode-digitalclock");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_DIGITAL_CLOCK, "mode-digital-clock");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_ANIMATION, "mode-wordclock");
 
 // other commands
@@ -735,8 +735,8 @@ $.ready(function() {
 		if (id === "mode-seconds") {
 			command = COMMAND_MODE_SECONDS;
 		}
-		if (id === "mode-digitalclock") {
-			command = COMMAND_MODE_DIGITALCLOCK;
+		if (id === "mode-digital-clock") {
+			command = COMMAND_MODE_DIGITAL_CLOCK;
 		}
 		if (id === "mode-marquee") {
 			hasSpeed = true;
