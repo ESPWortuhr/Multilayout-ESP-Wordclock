@@ -331,13 +331,12 @@ inline void Led::clearRow(uint8_t row) {
 //------------------------------------------------------------------------------
 
 inline void Led::clearMinArray() {
-    if (usedUhrType->numPixelsFrameMatrix() == 0) {
-        for (uint16_t i = usedUhrType->numPixelsWordMatrix();
-             i < usedUhrType->numPixels(); i++) {
-            clearPixel(i);
-        }
-        minuteArray = 0;
+    for (uint16_t i = usedUhrType->numPixelsWordMatrix();
+         i < usedUhrType->numPixels() - usedUhrType->numPixelsFrameMatrix();
+         i++) {
+        clearPixel(i);
     }
+    minuteArray = 0;
 }
 
 //------------------------------------------------------------------------------
