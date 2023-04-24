@@ -195,9 +195,6 @@ void Led::setbyMinuteArray(uint8_t colorPosition = Foreground) {
         /* Bitwise check whether Pixel bit is set */
         if ((minuteArray >> i) & 1U) {
             setPixel(minutePixelArray[i], displayedColor);
-        } else {
-            /* Only for Background color setting */
-            setPixel(minutePixelArray[i], displayedColor);
         }
     }
 }
