@@ -27,7 +27,7 @@ let TRANSLATION_DE_DE = {
 			"wordclock": "Wortuhr",
 			"color": "Farbe",
 			"seconds": "Sekunden",
-			"digitalclock": "Digitaluhr",
+			"digital-clock": "Digitaluhr",
 			"marquee": "Laufschrift",
 			"rainbow": "Regenbogen",
 			"color-change": "Farbwechsel"
