@@ -261,10 +261,9 @@ void Led::setSingle(uint8_t wait) {
 void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                           uint8_t offsetRow, unsigned char unsigned_d1,
                           fontSize font = normalSizeASCII) {
+
     if (getCharCol(font, col, row, unsigned_d1)) {
-        if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
-            usedUhrType->setFrontMatrixPixel(row + offsetRow, col + offsetCol);
-        }
+        usedUhrType->setFrontMatrixPixel(row + offsetRow, col + offsetCol);
     }
 }
 
@@ -410,12 +409,12 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
         usedUhrType->colsWordMatrix() / 2 - fontWidth[smallSizeNumbers] - 1;
     static uint8_t offsetLetterH1 =
         offsetLetterH0 + fontWidth[smallSizeNumbers] + 2;
-    static uint8_t offsetLetterMin0 = 1;
+    static uint8_t offsetLetterMin0 = 3;
     static uint8_t offsetLetterMin1 =
         offsetLetterMin0 + fontWidth[smallSizeNumbers] + 2;
 
     uint8_t offsetRow0 =
-        (usedUhrType->rowsWordMatrix() - 1) / 2 - fontHeight[smallSizeNumbers];
+        usedUhrType->rowsWordMatrix() / 2 - fontHeight[smallSizeNumbers];
     uint8_t offsetRow1 =
         offsetRow0 +
         fontHeight[smallSizeNumbers]; // +1 for Clocks with Rows greater 10
@@ -434,6 +433,9 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
                             static_cast<unsigned char>(min0), smallSizeNumbers);
         }
     }
+
+    mirrorFrontMatrixVertical();
+    setbyFrontMatrix(Effect);
     show();
 }
 

@@ -777,9 +777,15 @@ void ClockWork::loop(struct tm &tm) {
             loopLdrLogic();
         }
 
-        if (G.prog == 0 && G.conf == 0) {
+        if (G.prog == COMMAND_IDLE && G.conf == 0) {
             led.clear();
             G.prog = COMMAND_MODE_WORD_CLOCK;
+        }
+
+        if (G.prog == COMMAND_MODE_DIGITAL_CLOCK) {
+            led.clear();
+            led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
+                                 _hour / 10);
         }
 
         lastSecond = _second;
@@ -1080,11 +1086,7 @@ void ClockWork::loop(struct tm &tm) {
         if (G.progInit) {
             led.clear();
             G.progInit = false;
-        }
-
-        if (lastSecond != _second) {
-            led.showDigitalClock(_minute / 10, _minute % 10, _hour / 10,
-                                 _hour % 10);
+            led.show();
         }
         break;
     }
