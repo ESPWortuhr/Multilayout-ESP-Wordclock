@@ -418,6 +418,17 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
         offsetRow0 +
         fontHeight[smallSizeNumbers]; // +1 for Clocks with Rows greater 10
 
+    uint8_t secondDot = 6;
+    if (_second % 2) {
+        usedUhrType->setFrontMatrixPixel(secondDot, 1);
+        usedUhrType->setFrontMatrixPixel(secondDot + 2, 1);
+    }
+
+    if (usedUhrType->rowsWordMatrix() == 11) {
+        offsetRow1++;
+        secondDot++;
+    }
+
     for (uint8_t col = 0; col < 3; col++) {
         for (uint8_t row = 0; row < 5; row++) {
             // 1. Row
