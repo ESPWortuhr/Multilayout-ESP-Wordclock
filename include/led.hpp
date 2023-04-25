@@ -44,6 +44,25 @@ inline void Led::checkIfHueIsOutOfBound(uint16_t &hue) {
 }
 
 //------------------------------------------------------------------------------
+
+bool Led::getCharCol(fontSize font, uint8_t col, uint8_t row,
+                     unsigned char uChar) {
+    switch (font) {
+    case normalSizeASCII:
+        return pgm_read_byte(&(font_7x5[uChar][col])) & (1u << row);
+        break;
+
+    case smallSizeNumbers:
+        return pgm_read_byte(&(font_5x3[uChar][col])) & (1u << row);
+        break;
+
+    default:
+        return false;
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
 // Brightness Functions
 //------------------------------------------------------------------------------
 
@@ -176,9 +195,6 @@ void Led::setbyMinuteArray(uint8_t colorPosition = Foreground) {
         /* Bitwise check whether Pixel bit is set */
         if ((minuteArray >> i) & 1U) {
             setPixel(minutePixelArray[i], displayedColor);
-        } else {
-            /* Only for Background color setting */
-            setPixel(minutePixelArray[i], displayedColor);
         }
     }
 }
@@ -243,8 +259,10 @@ void Led::setSingle(uint8_t wait) {
 //------------------------------------------------------------------------------
 
 void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                          uint8_t offsetRow, unsigned char unsigned_d1) {
-    if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
+                          uint8_t offsetRow, unsigned char unsigned_d1,
+                          fontSize font = normalSizeASCII) {
+
+    if (getCharCol(font, col, row, unsigned_d1)) {
         usedUhrType->setFrontMatrixPixel(row + offsetRow, col + offsetCol);
     }
 }
@@ -313,13 +331,12 @@ inline void Led::clearRow(uint8_t row) {
 //------------------------------------------------------------------------------
 
 inline void Led::clearMinArray() {
-    if (usedUhrType->numPixelsFrameMatrix() == 0) {
-        for (uint16_t i = usedUhrType->numPixelsWordMatrix();
-             i < usedUhrType->numPixels(); i++) {
-            clearPixel(i);
-        }
-        minuteArray = 0;
+    for (uint16_t i = usedUhrType->numPixelsWordMatrix();
+         i < usedUhrType->numPixels() - usedUhrType->numPixelsFrameMatrix();
+         i++) {
+        clearPixel(i);
     }
+    minuteArray = 0;
 }
 
 //------------------------------------------------------------------------------
@@ -329,8 +346,8 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
         clearRow(i);
     }
 
-    for (uint8_t i = usedUhrType->rowsWordMatrix(); i > offsetRow + fontHeight;
-         i--) {
+    for (uint8_t i = usedUhrType->rowsWordMatrix();
+         i > offsetRow + fontHeight[normalSizeASCII]; i--) {
         clearRow(i - 1);
     }
 }
@@ -358,22 +375,75 @@ inline void Led::clear() {
 void Led::showNumbers(const char d1, const char d2) {
     clearClock();
     static uint8_t offsetLetter0 = 0;
-    static uint8_t offsetLetter1 = fontWidth + 1;
-    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - fontHeight) / 2;
+    static uint8_t offsetLetter1 = fontWidth[normalSizeASCII] + 1;
+    uint8_t offsetRow =
+        (usedUhrType->rowsWordMatrix() - fontHeight[normalSizeASCII]) / 2;
 
     if (usedUhrType->has24HourLayout()) {
         offsetLetter0 = 3;
-        offsetLetter1 = fontWidth + 4;
+        offsetLetter1 = fontWidth[normalSizeASCII] + 4;
     }
 
-    for (uint8_t col = 0; col < fontWidth; col++) {
-        for (uint8_t row = 0; row < fontHeight; row++) {
+    for (uint8_t col = 0; col < fontWidth[normalSizeASCII]; col++) {
+        for (uint8_t row = 0; row < fontHeight[normalSizeASCII]; row++) {
             // 1. Number without Offset
             setPixelForChar(col, row, offsetLetter0, offsetRow,
                             static_cast<unsigned char>(d1));
             // 2. Number with Offset
             setPixelForChar(col, row, offsetLetter1, offsetRow,
                             static_cast<unsigned char>(d2));
+        }
+    }
+
+    mirrorFrontMatrixVertical();
+    setbyFrontMatrix(Effect);
+    show();
+}
+
+//------------------------------------------------------------------------------
+
+void Led::showDigitalClock(const char min1, const char min0, const char h1,
+                           const char h0) {
+    // 1st Row of letters vertical Offset
+    static uint8_t offsetLetterH0 =
+        usedUhrType->colsWordMatrix() / 2 - fontWidth[smallSizeNumbers] - 1;
+    static uint8_t offsetLetterH1 =
+        offsetLetterH0 + fontWidth[smallSizeNumbers] + 2;
+
+    // 2nd Row of letters vertical Offset
+    static uint8_t offsetLetterMin0 = 3;
+    static uint8_t offsetLetterMin1 =
+        offsetLetterMin0 + fontWidth[smallSizeNumbers] + 2;
+
+    // 1st Row of letters horizontal Offset
+    uint8_t offsetRow0 =
+        usedUhrType->rowsWordMatrix() / 2 - fontHeight[smallSizeNumbers];
+    // 2nd Row of letters horizontal Offset
+    uint8_t offsetRow1 = offsetRow0 + fontHeight[smallSizeNumbers];
+
+    // Horizontal offset +1 for clocks > 10 Rows
+    if (usedUhrType->rowsWordMatrix() > 10) {
+        offsetRow1++;
+    }
+
+    // Toggle second dots every second
+    if (_second % 2) {
+        usedUhrType->setFrontMatrixPixel(offsetRow1 + 1, 1);
+        usedUhrType->setFrontMatrixPixel(offsetRow1 + 3, 1);
+    }
+
+    for (uint8_t col = 0; col < 3; col++) {
+        for (uint8_t row = 0; row < 5; row++) {
+            // 1st Row
+            setPixelForChar(col, row, offsetLetterH1, offsetRow0,
+                            static_cast<unsigned char>(h1), smallSizeNumbers);
+            setPixelForChar(col, row, offsetLetterH0, offsetRow0,
+                            static_cast<unsigned char>(h0), smallSizeNumbers);
+            // 2nd Row
+            setPixelForChar(col, row, offsetLetterMin1, offsetRow1,
+                            static_cast<unsigned char>(min1), smallSizeNumbers);
+            setPixelForChar(col, row, offsetLetterMin0, offsetRow1,
+                            static_cast<unsigned char>(min0), smallSizeNumbers);
         }
     }
 

@@ -8,16 +8,12 @@ const iro = window.iro; // require("@jaames/iro");
 
 	function toggleAll(element) {
 		let active = "active";
-		console.log(layout);
-		console.log(menuLink);
-
 		element.preventDefault();
 		layout.classList.toggle(active);
 		menu.classList.toggle(active);
 	}
 
 	function handleEvent(element) {
-		console.log("click");
 		toggleAll(element);
 	}
 
@@ -93,7 +89,24 @@ var COMMAND_MODE_SCROLLINGTEXT = 3;
 var COMMAND_MODE_RAINBOWCYCLE = 4;
 var COMMAND_MODE_RAINBOW = 5;
 var COMMAND_MODE_COLOR = 6;
+var COMMAND_MODE_DIGITAL_CLOCK = 7;
 var COMMAND_MODE_ANIMATION = 10;
+
+/**
+ * Maps the mode to the corresponding input id on the functions page.
+ *
+ * @type {Map<number, String>}
+ */
+const MODE_TO_INPUT_ID = new Map();
+MODE_TO_INPUT_ID.set(0, "mode-wordclock"); // Map COMMAND_IDLE to mode wordclock
+MODE_TO_INPUT_ID.set(COMMAND_MODE_WORD_CLOCK, "mode-wordclock");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_SECONDS, "mode-seconds");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_SCROLLINGTEXT, "mode-marquee");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOWCYCLE, "mode-rainbow");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOW, "mode-change"); // Color change
+MODE_TO_INPUT_ID.set(COMMAND_MODE_COLOR, "mode-color");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_DIGITAL_CLOCK, "mode-digital-clock");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_ANIMATION, "mode-wordclock");
 
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
@@ -215,10 +228,10 @@ function debugMessage(debugMessage, someObject) {
 	if (debug === true) {
 
 		if (console !== undefined) {
-			console.log(debugMessage);
-
 			if (someObject) {
-				console.log(someObject);
+				console.log(debugMessage, someObject);
+			} else {
+				console.log(debugMessage);
 			}
 		}
 
@@ -298,7 +311,7 @@ function initWebsocket() {
 
 		var data = JSON.parse(event.data);
 
-		debugMessage("Webservice response arrived (Command " + data.command + ").", data);
+		debugMessage("WebSocket response arrived (command " + data.command + ").", data);
 
 		if (data.command === "mqtt") {
 			$("#mqtt-port").set("value", data.MQTT_Port);
@@ -382,10 +395,13 @@ function initWebsocket() {
 			effectBri = data.effectBri;
 			effectSpeed = data.effectSpeed;
 			colortype = data.colortype;
-			var map = [0, 0, 2, 3, 4, 5, 1];	// see COMMAND_MODE_XX
+
 			var prog = data.prog;
 			command = prog === 0 ? COMMAND_MODE_WORD_CLOCK : prog;	// 0 == COMMAND_IDLE
-			document.prog.mode[map[prog]].checked = true;
+			const inputID = MODE_TO_INPUT_ID.get(prog);
+			debugMessage("Mode is " + prog + " (" + inputID + ")");
+
+			$("#" + inputID).checked = true;
 			setSliders();
 			setColors();
 			enableSpecific("specific-colortype-4", data.colortype === 4);
@@ -595,8 +611,8 @@ function getPaddedString(string, maxStringLength) {
 
 function sendCmd(command, addData = "") {
 	var data = nstr(command) + addData + "999";
+	debugMessage("Send data: '" + data + "'");
 	websocket.send(data);
-	debugMessage("Send data: ", data);
 }
 
 function sendBrightnessData(command, addData = "") {
@@ -718,6 +734,9 @@ $.ready(function() {
 		}
 		if (id === "mode-seconds") {
 			command = COMMAND_MODE_SECONDS;
+		}
+		if (id === "mode-digital-clock") {
+			command = COMMAND_MODE_DIGITAL_CLOCK;
 		}
 		if (id === "mode-marquee") {
 			hasSpeed = true;

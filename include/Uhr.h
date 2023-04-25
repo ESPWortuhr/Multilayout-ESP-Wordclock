@@ -197,6 +197,11 @@ enum LayoutVariants {
     MirrorHorizontal = 2,
 };
 
+enum fontSize {
+    normalSizeASCII = 0,
+    smallSizeNumbers = 1,
+};
+
 enum CommandWords {
     COMMAND_IDLE = 0,
 
@@ -206,6 +211,7 @@ enum CommandWords {
     COMMAND_MODE_RAINBOWCYCLE = 4,
     COMMAND_MODE_RAINBOW = 5,
     COMMAND_MODE_COLOR = 6,
+    COMMAND_MODE_DIGITAL_CLOCK = 7,
 
     COMMAND_MODE_ANIMATION = 10,
     COMMAND_SET_INITIAL_VALUES = 20,

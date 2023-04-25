@@ -155,20 +155,21 @@ void ClockWork::rainbowCycle() {
 
 void ClockWork::scrollingText(const char *buf) {
     static uint8_t i = 0, ii = 0;
-    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - fontHeight) / 2;
+    uint8_t offsetRow =
+        (usedUhrType->rowsWordMatrix() - fontHeight[normalSizeASCII]) / 2;
     uint8_t fontIndex = buf[ii];
 
     led.shiftColumnToRight();
     led.clearFrontExeptofFontspace(offsetRow);
 
-    if (i < fontWidth) {
-        for (uint8_t row = 0; row < fontHeight; row++) {
+    if (i < fontWidth[normalSizeASCII]) {
+        for (uint8_t row = 0; row < fontHeight[normalSizeASCII]; row++) {
             usedUhrType->setFrontMatrixPixel(
                 row + offsetRow, 0,
                 pgm_read_byte(&(font_7x5[fontIndex][i])) & (1u << row));
         }
     } else {
-        for (uint8_t row = 0; row < fontHeight; row++) {
+        for (uint8_t row = 0; row < fontHeight[normalSizeASCII]; row++) {
             usedUhrType->setFrontMatrixPixel(row + offsetRow, 0, false);
         }
     }
@@ -177,7 +178,7 @@ void ClockWork::scrollingText(const char *buf) {
     led.show();
 
     i++;
-    if (i > fontWidth) {
+    if (i > fontWidth[normalSizeASCII]) {
         i = 0;
         ii++;
         if (ii > strlen(buf)) {
@@ -776,9 +777,15 @@ void ClockWork::loop(struct tm &tm) {
             loopLdrLogic();
         }
 
-        if (G.prog == 0 && G.conf == 0) {
+        if (G.prog == COMMAND_IDLE && G.conf == 0) {
             led.clear();
             G.prog = COMMAND_MODE_WORD_CLOCK;
+        }
+
+        if (G.prog == COMMAND_MODE_DIGITAL_CLOCK) {
+            led.clear();
+            led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
+                                 _hour / 10);
         }
 
         lastSecond = _second;
@@ -1072,6 +1079,15 @@ void ClockWork::loop(struct tm &tm) {
         sprintf(d1, "%d", (int)(_second / 10));
         sprintf(d2, "%d", (int)(_second % 10));
         led.showNumbers(d1[0], d2[0]);
+        break;
+    }
+
+    case COMMAND_MODE_DIGITAL_CLOCK: {
+        if (G.progInit) {
+            led.clear();
+            G.progInit = false;
+            led.show();
+        }
         break;
     }
 
