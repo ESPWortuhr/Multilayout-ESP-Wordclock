@@ -404,39 +404,42 @@ void Led::showNumbers(const char d1, const char d2) {
 
 void Led::showDigitalClock(const char min1, const char min0, const char h1,
                            const char h0) {
+    // 1st Row of letters vertical Offset
     static uint8_t offsetLetterH0 =
         usedUhrType->colsWordMatrix() / 2 - fontWidth[smallSizeNumbers] - 1;
     static uint8_t offsetLetterH1 =
         offsetLetterH0 + fontWidth[smallSizeNumbers] + 2;
+
+    // 2nd Row of letters vertical Offset
     static uint8_t offsetLetterMin0 = 3;
     static uint8_t offsetLetterMin1 =
         offsetLetterMin0 + fontWidth[smallSizeNumbers] + 2;
 
+    // 1st Row of letters horizontal Offset
     uint8_t offsetRow0 =
         usedUhrType->rowsWordMatrix() / 2 - fontHeight[smallSizeNumbers];
-    uint8_t offsetRow1 =
-        offsetRow0 +
-        fontHeight[smallSizeNumbers]; // +1 for Clocks with Rows greater 10
+    // 2nd Row of letters horizontal Offset
+    uint8_t offsetRow1 = offsetRow0 + fontHeight[smallSizeNumbers];
 
-    uint8_t secondDot = 6;
-    if (_second % 2) {
-        usedUhrType->setFrontMatrixPixel(secondDot, 1);
-        usedUhrType->setFrontMatrixPixel(secondDot + 2, 1);
-    }
-
+    // Horizontal offset +1 for clocks == 11 Rows
     if (usedUhrType->rowsWordMatrix() == 11) {
         offsetRow1++;
-        secondDot++;
+    }
+
+    // Toggle second dots every second
+    if (_second % 2) {
+        usedUhrType->setFrontMatrixPixel(offsetRow1 + 1, 1);
+        usedUhrType->setFrontMatrixPixel(offsetRow1 + 3, 1);
     }
 
     for (uint8_t col = 0; col < 3; col++) {
         for (uint8_t row = 0; row < 5; row++) {
-            // 1. Row
+            // 1st Row
             setPixelForChar(col, row, offsetLetterH1, offsetRow0,
                             static_cast<unsigned char>(h1), smallSizeNumbers);
             setPixelForChar(col, row, offsetLetterH0, offsetRow0,
                             static_cast<unsigned char>(h0), smallSizeNumbers);
-            // 2. Row
+            // 2nd Row
             setPixelForChar(col, row, offsetLetterMin1, offsetRow1,
                             static_cast<unsigned char>(min1), smallSizeNumbers);
             setPixelForChar(col, row, offsetLetterMin0, offsetRow1,
