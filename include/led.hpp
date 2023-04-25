@@ -421,8 +421,8 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
     // 2nd Row of letters horizontal Offset
     uint8_t offsetRow1 = offsetRow0 + fontHeight[smallSizeNumbers];
 
-    // Horizontal offset +1 for clocks == 11 Rows
-    if (usedUhrType->rowsWordMatrix() == 11) {
+    // Horizontal offset +1 for clocks > 10 Rows
+    if (usedUhrType->rowsWordMatrix() > 10) {
         offsetRow1++;
     }
 
