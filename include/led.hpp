@@ -290,10 +290,9 @@ void Led::set(bool changed) {
 // Pixel get Functions
 //------------------------------------------------------------------------------
 
-HsbColor Led::getPixel(uint16_t i) {
+RgbColor Led::getPixel(uint16_t i) {
     if (G.Colortype == Grbw) {
-        RgbwColor rgbw = strip_RGBW->GetPixelColor(i);
-        return HsbColor(rgbw.R / 255.f, rgbw.G / 255.f, rgbw.B / 255.f);
+        return RgbColor(strip_RGBW->GetPixelColor(i));
     }
     return strip_RGB->GetPixelColor(i);
 }

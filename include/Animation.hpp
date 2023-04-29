@@ -332,7 +332,8 @@ void Animation::copy2Stripe(RgbfColor **source) {
         for (uint8_t col = 0; col < maxCols; col++) {
             led.setPixel(usedUhrType->getFrontMatrixIndex(row + rowStart,
                                                           col + colStart),
-                         Color{source[row][col]});
+                         Color{RgbColor(source[row][col].R, source[row][col].G,
+                                        source[row][col].B)});
         }
     }
     set_minutes();
