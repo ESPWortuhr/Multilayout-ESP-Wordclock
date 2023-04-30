@@ -741,6 +741,16 @@ void ClockWork::calcClockface() {
 }
 
 //------------------------------------------------------------------------------
+
+void ClockWork::clearClockByProgInit() {
+    if (G.progInit) {
+        G.progInit = false;
+        led.clear();
+        led.show();
+    }
+}
+
+//------------------------------------------------------------------------------
 // Loop Functions
 //------------------------------------------------------------------------------
 
@@ -1017,6 +1027,9 @@ void ClockWork::loop(struct tm &tm) {
         G.Colortype = G.param1;
         eeprom::write();
         initLedStrip(G.Colortype);
+
+        clearClockByProgInit();
+        parametersChanged = true;
         break;
     }
 
@@ -1070,10 +1083,8 @@ void ClockWork::loop(struct tm &tm) {
     switch (G.prog) {
 
     case COMMAND_MODE_SECONDS: {
-        if (G.progInit) {
-            led.clear();
-            G.progInit = false;
-        }
+        clearClockByProgInit();
+
         char d1[5];
         char d2[5];
         sprintf(d1, "%d", (int)(_second / 10));
@@ -1083,11 +1094,7 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_MODE_DIGITAL_CLOCK: {
-        if (G.progInit) {
-            led.clear();
-            G.progInit = false;
-            led.show();
-        }
+        clearClockByProgInit();
         break;
     }
 
@@ -1095,10 +1102,10 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_RAINBOWCYCLE:
     case COMMAND_MODE_RAINBOW: {
         if (G.progInit) {
-            G.progInit = false;
-            led.clear();
             countMillisSpeed = (11u - G.effectSpeed) * 30u;
         }
+        clearClockByProgInit();
+
         if (countMillisSpeed >= (11u - G.effectSpeed) * 30u) {
             switch (G.prog) {
             case COMMAND_MODE_SCROLLINGTEXT: {
@@ -1144,6 +1151,7 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_MODE_WORD_CLOCK: {
+        clearClockByProgInit();
         calcClockface();
 
         if (G.layoutVariant[ReverseMinDirection]) {
