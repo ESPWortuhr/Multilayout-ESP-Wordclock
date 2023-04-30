@@ -184,9 +184,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         switch (command) {
         case COMMAND_MODE_WORD_CLOCK: {
+            if (G.prog != COMMAND_IDLE && G.prog != COMMAND_MODE_WORD_CLOCK) {
+                G.progInit = true;
+            }
             G.prog = COMMAND_MODE_WORD_CLOCK;
-            parametersChanged = true;
 
+            parametersChanged = true;
             parseMainColor(payload, Foreground);
 
             G.color[Background] = {HsbColor(split(payload, 15) / 360.f,
@@ -436,6 +439,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_COLORTYPE: {
             G.conf = COMMAND_SET_COLORTYPE;
+            G.progInit = true;
+
             G.param1 = split(payload, 3);
             break;
         }

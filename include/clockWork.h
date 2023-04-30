@@ -43,6 +43,7 @@ private:
     bool changesInClockface();
     void calcClockface();
     void setClock();
+    void clearClockByProgInit();
 
 public:
     ClockWork() = default;
