@@ -30,17 +30,6 @@ void ClockWork::loopLdrLogic() {
         } else {
             ldrVal = map(lux, G.autoLdrDark, G.autoLdrBright, 10, 100);
         }
-    } else {
-        if (G.ldr == 1) {
-            lux = lux - (G.ldrCal * 20);
-            if (lux >= 900) {
-                lux = 900;
-            } // Max Brightness
-            if (lux <= 1) {
-                lux = 1;
-            } // Min Brightness
-            ldrVal = map(lux, 1, 900, 1, 100);
-        }
     }
     if (ldrValOld != ldrVal) {
         led.set();
@@ -783,7 +772,7 @@ void ClockWork::loop(struct tm &tm) {
         //--------------------------------------------
         // LDR Routine
         //--------------------------------------------
-        if ((G.ldr == 1) || G.autoLdrEnabled) {
+        if (G.autoLdrEnabled) {
             loopLdrLogic();
         }
 
@@ -867,8 +856,6 @@ void ClockWork::loop(struct tm &tm) {
         config["effectBri"] = G.effectBri;
         config["secondVariant"] = static_cast<uint8_t>(G.secondVariant);
         config["minuteVariant"] = static_cast<uint8_t>(G.minuteVariant);
-        config["ldr"] = G.ldr;
-        config["ldrCal"] = G.ldrCal;
         config["cityid"] = G.openWeatherMap.cityid;
         config["apikey"] = G.openWeatherMap.apikey;
         config["colortype"] = G.Colortype;
@@ -966,7 +953,6 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_SET_MINUTE:
     case COMMAND_SET_BRIGHTNESS:
-    case COMMAND_SET_LDR:
     case COMMAND_SET_AUTO_LDR:
     case COMMAND_SET_LANGUAGE_VARIANT:
     case COMMAND_SET_LAYOUT_VARIANT:

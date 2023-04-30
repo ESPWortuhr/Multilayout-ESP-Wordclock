@@ -110,8 +110,6 @@ struct GLOBAL {
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char scrollingText[PAYLOAD_LENGTH];
-    uint16_t ldr;
-    uint16_t ldrCal;
     bool state;
     uint8_t h6;
     uint8_t h8;
@@ -224,7 +222,6 @@ enum CommandWords {
     COMMAND_SET_COLORTYPE = 88,
     COMMAND_SET_UHRTYPE = 89,
     COMMAND_SET_WEATHER_DATA = 90,
-    COMMAND_SET_LDR = 91,
     COMMAND_SET_HOSTNAME = 92,
     COMMAND_SET_SETTING_SECOND = 93,
     COMMAND_SET_MINUTE = 94,

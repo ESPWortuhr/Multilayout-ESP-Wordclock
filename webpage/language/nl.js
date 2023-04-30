@@ -201,12 +201,6 @@ let TRANSLATION_NL = {
 			"city-id": "OpenWeatherMap City ID",
 			"save": "Opslaan"
 		},
-		"ldr": {
-			"h2": "Lichtsensor (LDR)",
-			"activate": "Activeer lichtsensor",
-			"calibration": "Kalibratie",
-			"off": "Uit"
-		},
 		"wifi": {
 			"h2": "Wi-Fi",
 			"help": "Herconfiguratie creëert zijn eigen Wi-Fi.\n" +

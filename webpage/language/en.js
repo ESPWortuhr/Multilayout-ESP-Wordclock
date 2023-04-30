@@ -201,12 +201,6 @@ let TRANSLATION_EN_US = {
 			"city-id": "OpenWeatherMap City ID",
 			"save": "Save Setting"
 		},
-		"ldr": {
-			"h2": "Photoresistor (LDR)",
-			"activate": "Activate Photoresistor Control (Legacy)",
-			"calibration": "Calibration",
-			"off": "Off"
-		},
 		"wifi": {
 			"h2": "Wi-Fi",
 			"help": "Reconfiguration creates its own wireless network.\n " +

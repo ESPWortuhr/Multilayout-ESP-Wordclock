@@ -352,17 +352,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_LDR: {
-            G.conf = COMMAND_SET_LDR;
-            G.ldr = split(payload, 3);
-            G.ldrCal = split(payload, 6);
-            Serial.printf("LDR : %u\n\n", G.ldr);
-            Serial.printf("LDR Kalibrierung: %u\n\n", G.ldrCal);
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
         case COMMAND_SET_AUTO_LDR: {
             G.conf = COMMAND_SET_AUTO_LDR;
             G.autoLdrEnabled = split(payload, 3);

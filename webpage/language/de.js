@@ -201,12 +201,6 @@ let TRANSLATION_DE_DE = {
 			"city-id": "OpenWeatherMap City-ID",
 			"save": "Einstellung speichern"
 		},
-		"ldr": {
-			"h2": "Fotowiderstand (LDR)",
-			"activate": "Aktivieren der Fotowiderstand-Steuerung (Legacy)",
-			"calibration": "Kalibrierung",
-			"off": "Aus"
-		},
 		"wifi": {
 			"h2": "Wi-Fi / WLAN",
 			"help": "Neukonfiguration erstellt ein eigenes WLAN.\n" +

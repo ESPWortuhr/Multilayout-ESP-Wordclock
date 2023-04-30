@@ -164,8 +164,6 @@ void setup() {
 #ifdef MINUTE_LED7x
         G.minuteVariant = MinuteVariant::LED7x;
 #endif
-        G.ldr = 0;
-        G.ldrCal = 0;
         strcpy(G.openWeatherMap.cityid, "");
         strcpy(G.openWeatherMap.apikey, "");
         strcpy(G.timeserver, "europe.pool.ntp.org");
