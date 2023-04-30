@@ -105,9 +105,6 @@ void Led::getColorbyPositionWithAppliedBrightness(Color &color,
     if (G.autoLdrEnabled) {
         color.hsb.B = setBrightnessAuto(color.hsb.B);
         color.alpha = setBrightnessAuto(color.alpha);
-    } else if (G.ldr == 1) {
-        color.hsb.B *= ldrVal / 100.f;
-        color.alpha *= ldrVal / 100.f;
     } else {
         color.hsb.B *= manBrightnessSetting / 100.f;
         color.alpha *= manBrightnessSetting / 100.f;

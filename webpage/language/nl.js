@@ -81,7 +81,6 @@ let TRANSLATION_NL = {
 			"de-10-11-nero": "Duits 10 × 11 Nero",
 			"de-11-11": "Duits 11 × 11",
 			"de-11-11-v2": "Duits 11 × 11 Versie 2",
-			"de-11-11-frame": "Duits 11 × 11 Frame",
 			"de-22-11-weather": "Duits 10 × 11 Weer",
 			"de-16-18": "Duits 16 × 18",
 			"en-10-11": "Engels 10 × 11",
@@ -200,12 +199,6 @@ let TRANSLATION_NL = {
 			"api-key": "OpenWeatherMap API Key",
 			"city-id": "OpenWeatherMap City ID",
 			"save": "Opslaan"
-		},
-		"ldr": {
-			"h2": "Lichtsensor (LDR)",
-			"activate": "Activeer lichtsensor",
-			"calibration": "Kalibratie",
-			"off": "Uit"
 		},
 		"wifi": {
 			"h2": "Wi-Fi",

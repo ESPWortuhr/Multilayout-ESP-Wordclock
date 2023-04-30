@@ -60,8 +60,6 @@ void read() {
     Serial.printf("H18       : %u\n", G.h18);
     Serial.printf("H22       : %u\n", G.h22);
     Serial.printf("H24       : %u\n", G.h24);
-    Serial.printf("LDR       : %u\n", G.ldr);
-    Serial.printf("LDRCal    : %u\n", G.ldrCal);
     Serial.printf("Uhrtype    : %u\n", G.UhrtypeDef);
 
     Serial.printf("MQTT_State    : %u\n", G.mqtt.state);

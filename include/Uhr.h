@@ -110,8 +110,6 @@ struct GLOBAL {
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char scrollingText[PAYLOAD_LENGTH];
-    uint16_t ldr;
-    uint16_t ldrCal;
     bool state;
     uint8_t h6;
     uint8_t h8;
@@ -219,12 +217,10 @@ enum CommandWords {
 
     COMMAND_SET_LANGUAGE_VARIANT = 84,
     COMMAND_SET_MQTT = 85,
-    COMMAND_SET_TIME_MANUAL = 86,
-    COMMAND_SET_WPS_MODE = 87,
+    COMMAND_SET_TIME_MANUAL = 86, /* 87 is unused */
     COMMAND_SET_COLORTYPE = 88,
     COMMAND_SET_UHRTYPE = 89,
     COMMAND_SET_WEATHER_DATA = 90,
-    COMMAND_SET_LDR = 91,
     COMMAND_SET_HOSTNAME = 92,
     COMMAND_SET_SETTING_SECOND = 93,
     COMMAND_SET_MINUTE = 94,
@@ -253,13 +249,12 @@ enum ClockType {
     Eng10x11 = 10,
     Ger10x11 = 1,
     Ger10x11Alternative = 2,
-    Ger10x11AlternativeFrame = 12,
-    Ger10x11Vertical = 13,
+    Ger10x11AlternativeFrame = 4,
+    Ger10x11Vertical = 12,
     Ger10x11Clock = 6,
     Ger10x11Nero = 11,
     Ger11x11 = 3,
     Ger11x11V2 = 8,
-    Ger11x11Frame = 4,
     Ger22x11Weather = 5,
     Ger16x18 = 7,
     Nl10x11 = 9,

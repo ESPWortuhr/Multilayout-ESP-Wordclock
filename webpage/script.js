@@ -53,8 +53,6 @@ var h22 = 100;
 var h24 = 100;
 var dialect = [0, 0, 0, 0, 0, 0];
 var layVar = [0, 0, 0];
-var ldr = 0;
-var ldrCal = 0;
 var showSeconds = 0;
 var showMinutes = 0;
 var UhrtypeDef = 0;
@@ -113,12 +111,10 @@ var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
 var COMMAND_SET_LANGUAGE_VARIANT = 84;
 var COMMAND_SET_MQTT = 85;
-var COMMAND_SET_TIME_MANUAL = 86;
-var COMMAND_SET_WPS_MODE = 87;
+var COMMAND_SET_TIME_MANUAL = 86; /* 87 is unused */
 var COMMAND_SET_COLORTYPE = 88;
 var COMMAND_SET_UHRTYPE = 89;
 var COMMAND_SET_WEATHER_DATA = 90;
-var COMMAND_SET_LDR = 91;
 var COMMAND_SET_HOSTNAME = 92;
 var COMMAND_SET_SETTING_SECOND = 93;
 var COMMAND_SET_MINUTE = 94;
@@ -132,9 +128,7 @@ var COMMAND_SET_BOOT = 101;
 var COMMAND_SET_AUTO_LDR = 102;
 var COMMAND_SET_LAYOUT_VARIANT = 103;
 
-var COMMAND_BRIGHTNESS = 151;
 var COMMAND_SPEED = 152;
-var COMMAND_LEDS = 153;
 
 var COMMAND_REQUEST_CONFIG_VALUES = 200;
 var COMMAND_REQUEST_COLOR_VALUES = 201;
@@ -192,8 +186,6 @@ function initConfigValues() {
 	h20 = 100;
 	h22 = 100;
 	h24 = 100;
-	ldr = 0;
-	ldrCal = 10;
 	dialect = [0, 0, 0, 0, 0, 0];
 	layVar = [0, 0, 0];
 	showSeconds = 0;
@@ -351,8 +343,6 @@ function initWebsocket() {
 			document.getElementById("layvar-1").checked = data.layVar1;
 			document.getElementById("layvar-2").checked = data.layVar2;
 
-			document.getElementById("ldr").checked = data.ldr;
-			$("ldr-cal").set("value", data.ldrCal);
 			$("#slider-brightness").set("value", data.effectBri);
 			$("#slider-speed").set("value", data.effectSpeed); // TODO: there is no property effectSpeed!
 			$("#show-seconds").set("value", data.secondVariant);
@@ -916,13 +906,6 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_COLORTYPE, nstr(colortype));
 		debugMessage("Colortype" + debugMessageReconfigured);
 	});
-	$("[id*='ldr']").on("change", function() {
-		ldr = $("#ldr").get("checked") | 0;
-		ldrCal = $("#ldr-cal").get("value");
-
-		sendCmd(COMMAND_SET_LDR, nstr(ldr) + nstr(ldrCal));
-		debugMessage("LDR mode" + debugMessageReconfigured);
-	});
 	$("#hostname-button").on("click", function() {
 		var hostname = $("#hostname").get("value");
 
@@ -940,9 +923,6 @@ $.ready(function() {
 	});
 	$("#disable-button").on("click", function() {
 		sendCmd(COMMAND_SET_WIFI_DISABLED);
-	});
-	$("#wps-button").on("click", function() {
-		sendCmd(COMMAND_SET_WPS_MODE);
 	});
 	$("#reset-button").on("click", function() {
 		sendCmd(COMMAND_RESET);
