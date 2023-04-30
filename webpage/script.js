@@ -111,8 +111,7 @@ var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
 var COMMAND_SET_LANGUAGE_VARIANT = 84;
 var COMMAND_SET_MQTT = 85;
-var COMMAND_SET_TIME_MANUAL = 86;
-var COMMAND_SET_WPS_MODE = 87;
+var COMMAND_SET_TIME_MANUAL = 86; /* 87 is unused */
 var COMMAND_SET_COLORTYPE = 88;
 var COMMAND_SET_UHRTYPE = 89;
 var COMMAND_SET_WEATHER_DATA = 90;
@@ -924,9 +923,6 @@ $.ready(function() {
 	});
 	$("#disable-button").on("click", function() {
 		sendCmd(COMMAND_SET_WIFI_DISABLED);
-	});
-	$("#wps-button").on("click", function() {
-		sendCmd(COMMAND_SET_WPS_MODE);
 	});
 	$("#reset-button").on("click", function() {
 		sendCmd(COMMAND_RESET);
