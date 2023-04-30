@@ -833,7 +833,6 @@ void ClockWork::loop(struct tm &tm) {
         Serial.print("Sending Payload:");
         Serial.println(str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
-        G.conf = COMMAND_IDLE;
         break;
     }
 
@@ -888,7 +887,6 @@ void ClockWork::loop(struct tm &tm) {
         Serial.print("Sending Payload:");
         Serial.println(str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
-        G.conf = COMMAND_IDLE;
         break;
     }
 
@@ -912,7 +910,6 @@ void ClockWork::loop(struct tm &tm) {
         config["prog"] = G.prog;
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
-        G.conf = COMMAND_IDLE;
         break;
     }
 
@@ -927,7 +924,6 @@ void ClockWork::loop(struct tm &tm) {
         config["autoLdrValue"] = map(analogRead(A0), 0, 1023, 0, 255);
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
-        G.conf = COMMAND_IDLE;
         break;
     }
 
@@ -955,7 +951,6 @@ void ClockWork::loop(struct tm &tm) {
         types.add("zufällig");
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
-        G.conf = COMMAND_IDLE;
         break;
     }
 
@@ -966,7 +961,6 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_BOOT: {
         eeprom::write();
         delay(100);
-        G.conf = COMMAND_IDLE;
         break;
     }
 
@@ -981,7 +975,6 @@ void ClockWork::loop(struct tm &tm) {
         led.clear();
         frameArray = 0;
         parametersChanged = true;
-        G.conf = COMMAND_IDLE;
         break;
     }
 
@@ -991,7 +984,6 @@ void ClockWork::loop(struct tm &tm) {
         frameArray = 0;
         G.progInit = true;
         parametersChanged = true;
-        G.conf = COMMAND_IDLE;
         break;
     }
 
@@ -1007,20 +999,12 @@ void ClockWork::loop(struct tm &tm) {
         }
 
         eeprom::write();
-        G.conf = COMMAND_IDLE;
         break;
     }
 
     case COMMAND_SET_COLORTYPE: {
         // G.param1 sets new Colortype
         Serial.printf("LED Colortype: %u\n", G.param1);
-
-        // if ((G.param1 != G.Colortype) && ((G.param1 == Grbw) ||
-        //    (G.Colortype == Grbw))) {
-        //    G.conf = COMMAND_RESET;
-        // } else {
-        G.conf = COMMAND_IDLE;
-        // }
 
         // the G.Colortype must be called at the same time as initLedStrip,
         // otherwise it is referenced via a null-pointer.
@@ -1047,7 +1031,6 @@ void ClockWork::loop(struct tm &tm) {
                 new SecondsFrame(usedUhrType->numPixelsFrameMatrix());
             G.progInit = true;
         }
-        G.conf = COMMAND_IDLE;
         break;
     }
 
@@ -1056,7 +1039,6 @@ void ClockWork::loop(struct tm &tm) {
         Serial.println(G.hostname);
         eeprom::write();
         network.reboot();
-        G.conf = COMMAND_IDLE;
         break;
     }
 
@@ -1065,20 +1047,20 @@ void ClockWork::loop(struct tm &tm) {
         delay(100);
         Serial.println("Conf: WLAN off");
         network.disable();
-        G.conf = COMMAND_IDLE;
         break;
     }
 
     case COMMAND_SET_WIFI_AND_RESTART: {
         Serial.println("Conf: new Wifi Config");
         network.resetSettings();
-        G.conf = COMMAND_IDLE;
         break;
     }
 
     default:
         break;
     }
+
+    G.conf = COMMAND_IDLE;
 
     switch (G.prog) {
 
