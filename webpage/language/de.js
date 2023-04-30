@@ -81,7 +81,6 @@ let TRANSLATION_DE_DE = {
 			"de-10-11-nero": "Deutsch 10 × 11 Nero",
 			"de-11-11": "Deutsch 11 × 11",
 			"de-11-11-v2": "Deutsch 11 × 11 Version 2",
-			"de-11-11-frame": "Deutsch 11 × 11 Rahmen",
 			"de-22-11-weather": "Deutsch 10 × 11 Wetter",
 			"de-16-18": "Deutsch 16 × 18",
 			"en-10-11": "Englisch 10 × 11",
