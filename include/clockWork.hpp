@@ -1076,7 +1076,11 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_MODE_DIGITAL_CLOCK: {
-        clearClockByProgInit();
+        if (G.progInit) {
+            clearClockByProgInit();
+            led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
+                                 _hour / 10);
+        }
         break;
     }
 
