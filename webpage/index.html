@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- stylesheets -->
-    <link rel="stylesheet" href="pure-min.css">
-    <link rel="stylesheet" href="grids-responsive-min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./pure-min.css">
+    <link rel="stylesheet" href="./grids-responsive-min.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 
@@ -42,7 +42,7 @@
         <svg><use href="#hamburger"/></svg>
     </a>
 
-    <div class="menu">
+    <nav class="menu" id="menu">
         <div class="pure-menu">
             <a class="pure-menu-heading title" href="#" data-i18next="title"></a>
 
@@ -64,9 +64,9 @@
                 </li>
             </ul>
         </div>
-    </div>
+    </nav>
 
-    <div class="main">
+    <main class="main">
         <div class="pure-g">
             <div class="pure-u-24-24 section-connection-lost" id="section-connection-lost">
                 <div class="box">
@@ -76,10 +76,10 @@
             </div>
 
             <div class="pure-u-24-24 section section-main">
-                <div class="header">
+                <header class="header">
                     <svg><use href="#palette"/></svg>
                     <h1 data-i18next="colors.h1"></h1>
-                </div>
+                </header>
 
                 <div class="box box-color">
                     <p>
@@ -100,10 +100,10 @@
             </div>
 
             <div class="pure-u-24-24 section section-functions">
-                <div class="header">
+                <header class="header">
                     <svg><use href="#screwdriver"/></svg>
                     <h1 data-i18next="functions.h1"></h1>
-                </div>
+                </header>
 
                 <div class="box">
                     <h2 data-i18next="functions.mode.h2"></h2>
@@ -127,37 +127,35 @@
                 <div class="box" id="animation-box">
                     <h2 data-i18next="functions.animation.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-control-group">
-                                <label for="animation-types" data-i18next="functions.animation.type.label"></label>
-                                <select id="animation-types" size="1">
-                                </select>
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="animation-duration" data-i18next="functions.animation.duration.label"></label>
-                                <select id="animation-duration" size="1">
-                                    <option value="1" data-i18next="functions.animation.duration.short"></option>
-                                    <option value="2" data-i18next="functions.animation.duration.medium"></option>
-                                    <option value="3" data-i18next="functions.animation.duration.long"></option>
-                                </select>
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="animation-colorize" data-i18next="functions.animation.color.label"></label>
-                                <select id="animation-colorize" size="1">
-                                    <option value="1" data-i18next="functions.animation.color.off"></option>
-                                    <option value="2" data-i18next="functions.animation.color.words"></option>
-                                    <option value="3" data-i18next="functions.animation.color.letters"></option>
-                                </select>
-                            </div>
-                            <div class="pure-control-group">
-                                <label class="slider-label" for="animation-speed" data-i18next="functions.animation.speed.label"></label> <span class="value" id="animation-speed-value">30</span>
-                                <input id="animation-speed" type="range" min="0" max="60" value="0">
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="animation-demo" data-i18next="functions.animation.demo.label"></label>
-                                <input type="checkbox" id="animation-demo" >
-                            </div>
-                        </fieldset>
+                        <div class="pure-control-group">
+                            <label for="animation-types" data-i18next="functions.animation.type.label"></label>
+                            <select id="animation-types" size="1">
+                            </select>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="animation-duration" data-i18next="functions.animation.duration.label"></label>
+                            <select id="animation-duration" size="1">
+                                <option value="1" data-i18next="functions.animation.duration.short"></option>
+                                <option value="2" data-i18next="functions.animation.duration.medium"></option>
+                                <option value="3" data-i18next="functions.animation.duration.long"></option>
+                            </select>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="animation-colorize" data-i18next="functions.animation.color.label"></label>
+                            <select id="animation-colorize" size="1">
+                                <option value="1" data-i18next="functions.animation.color.off"></option>
+                                <option value="2" data-i18next="functions.animation.color.words"></option>
+                                <option value="3" data-i18next="functions.animation.color.letters"></option>
+                            </select>
+                        </div>
+                        <div class="pure-control-group">
+                            <label class="slider-label" for="animation-speed" data-i18next="functions.animation.speed.label"></label> <span class="value" id="animation-speed-value">30</span>
+                            <input id="animation-speed" type="range" min="0" max="60" value="0">
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="animation-demo" data-i18next="functions.animation.demo.label"></label>
+                            <input type="checkbox" id="animation-demo" >
+                        </div>
                     </form>
                 </div>
 
@@ -194,10 +192,10 @@
             </div>
 
             <div class="pure-u-24-24 section section-frontoptions">
-                <div class="header">
+                <header class="header">
                     <svg><use href="#eye"/></svg>
                     <h1 data-i18next="view.h1"></h1>
-                </div>
+                </header>
 
                 <div class="box">
                     <h2 data-i18next="view.front.h2"></h2>
@@ -248,66 +246,62 @@
                 <div class="box">
                     <h2 data-i18next="view.language.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-control-group">
-                                <label for="dialect-4" data-i18next="view.language.hide-it-is"></label>
-                                <label class="switch">
-                                    <input type="checkbox" id="dialect-4">
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="dialect-0" data-i18next="view.language.at-nine-fifteen"></label><select name="dialect-0" id="dialect-0" size="1">
-                                <option value="0" selected data-i18next="view.language.quarter-past-nine"></option>
-                                <option value="1" data-i18next="view.language.quarter-nine"></option>
-                            </select>
-                            </div>
-                            <div class="pure-control-group specific-layout-3">
-                                <label for="dialect-1" data-i18next="view.language.at-nine-twenty"></label><select name="dialect-1" id="dialect-1" size="1">
-                                <option value="0" selected data-i18next="view.language.twenty-past-nine"></option>
-                                <option value="1" data-i18next="view.language.ten-before-half-past-ten"></option>
-                            </select>
-                            </div>
-                            <div class="pure-control-group specific-layout-3">
-                                <label for="dialect-2" data-i18next="view.language.at-nine-fourty"></label><select name="dialect-2" id="dialect-2" size="1">
-                                <option value="0" selected data-i18next="view.language.twenty-before-ten"></option>
-                                <option value="1" data-i18next="view.language.ten-after-half-past-ten"></option>
-                            </select>
-                            </div>
-                            <!-- Specific DE10x11Alternative Start-->
-                            <div class="pure-control-group specific-layout-2">
-                                <label for="dialect-3" data-i18next="view.language.at-nine-fourtyfive-german"></label><select name="dialect-3" id="dialect-3" size="1">
-                                <option value="0" selected data-i18next="view.language.quarter-to-ten"></option>
-                                <option value="1" data-i18next="view.language.three-quarter-ten"></option>
-                            </select>
-                            </div>
-                            <!-- Specific DE10x11Alternative End-->
-                            <!-- Specific EN10x11 Start-->
-                            <div class="pure-control-group specific-layout-6">
-                                <label for="dialect-5" data-i18next="view.language.at-nine-fourtyfive-english"></label><select name="dialect-5" id="dialect-5" size="1">
-                                <option value="0" selected data-i18next="view.language.quarter-to-ten-english"></option>
-                                <option value="1" data-i18next="view.language.a-quarter-to-ten-english"></option>
-                            </select>
-                            </div>
-                            <!-- Specific EN10x11 End-->
-                        </fieldset>
-                    </form>
+                        <div class="pure-control-group">
+                            <label for="dialect-4" data-i18next="view.language.hide-it-is"></label>
+                            <label class="switch">
+                                <input type="checkbox" id="dialect-4">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="dialect-0" data-i18next="view.language.at-nine-fifteen"></label><select name="dialect-0" id="dialect-0" size="1">
+                            <option value="0" selected data-i18next="view.language.quarter-past-nine"></option>
+                            <option value="1" data-i18next="view.language.quarter-nine"></option>
+                        </select>
+                        </div>
+                        <div class="pure-control-group specific-layout-3">
+                            <label for="dialect-1" data-i18next="view.language.at-nine-twenty"></label><select name="dialect-1" id="dialect-1" size="1">
+                            <option value="0" selected data-i18next="view.language.twenty-past-nine"></option>
+                            <option value="1" data-i18next="view.language.ten-before-half-past-ten"></option>
+                        </select>
+                        </div>
+                        <div class="pure-control-group specific-layout-3">
+                            <label for="dialect-2" data-i18next="view.language.at-nine-fourty"></label><select name="dialect-2" id="dialect-2" size="1">
+                            <option value="0" selected data-i18next="view.language.twenty-before-ten"></option>
+                            <option value="1" data-i18next="view.language.ten-after-half-past-ten"></option>
+                        </select>
+                        </div>
+                        <!-- Specific DE10x11Alternative Start-->
+                        <div class="pure-control-group specific-layout-2">
+                            <label for="dialect-3" data-i18next="view.language.at-nine-fourtyfive-german"></label><select name="dialect-3" id="dialect-3" size="1">
+                            <option value="0" selected data-i18next="view.language.quarter-to-ten"></option>
+                            <option value="1" data-i18next="view.language.three-quarter-ten"></option>
+                        </select>
+                        </div>
+                        <!-- Specific DE10x11Alternative End-->
+                        <!-- Specific EN10x11 Start-->
+                        <div class="pure-control-group specific-layout-6">
+                            <label for="dialect-5" data-i18next="view.language.at-nine-fourtyfive-english"></label><select name="dialect-5" id="dialect-5" size="1">
+                            <option value="0" selected data-i18next="view.language.quarter-to-ten-english"></option>
+                            <option value="1" data-i18next="view.language.a-quarter-to-ten-english"></option>
+                        </select>
+                        </div>
+                        <!-- Specific EN10x11 End-->
+                </form>
                 </div>
 
                 <div class="box">
                     <h2 data-i18next="view.minutes.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-control-group">
-                                <label for="show-minutes" data-i18next="view.minutes.mode"></label><select name="show-minutes" id="show-minutes" size="1">
-                                <option value="0" selected data-i18next="view.minutes.off"></option>
-                                <option value="1" data-i18next="view.minutes.normal-4-leds"></option>
-                                <option value="2" data-i18next="view.minutes.normal-7-leds"></option>
-                                <option value="3" data-i18next="view.minutes.edges"></option>
-                                <option value="4" data-i18next="view.minutes.in-words"></option>
-                            </select>
-                            </div>
-                        </fieldset>
+                        <div class="pure-control-group">
+                            <label for="show-minutes" data-i18next="view.minutes.mode"></label><select name="show-minutes" id="show-minutes" size="1">
+                            <option value="0" selected data-i18next="view.minutes.off"></option>
+                            <option value="1" data-i18next="view.minutes.normal-4-leds"></option>
+                            <option value="2" data-i18next="view.minutes.normal-7-leds"></option>
+                            <option value="3" data-i18next="view.minutes.edges"></option>
+                            <option value="4" data-i18next="view.minutes.in-words"></option>
+                        </select>
+                        </div>
                     </form>
                 </div>
 
@@ -315,16 +309,14 @@
                 <div class="box specific-layout-4">
                     <h2 data-i18next="view.seconds.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-control-group">
-                                <label for="show-seconds" data-i18next="view.seconds.in-border"></label><select name="show-seconds" id="show-seconds" size="1">
-                                    <option value="0" selected data-i18next="view.seconds.off"></option>
-                                    <option value="1" data-i18next="view.seconds.point"></option>
-                                    <option value="2" data-i18next="view.seconds.sector"></option>
-                                    <option value="3" data-i18next="view.seconds.revolving-sector"></option>
-                                </select>
-                            </div>
-                        </fieldset>
+                        <div class="pure-control-group">
+                            <label for="show-seconds" data-i18next="view.seconds.in-border"></label><select name="show-seconds" id="show-seconds" size="1">
+                                <option value="0" selected data-i18next="view.seconds.off"></option>
+                                <option value="1" data-i18next="view.seconds.point"></option>
+                                <option value="2" data-i18next="view.seconds.sector"></option>
+                                <option value="3" data-i18next="view.seconds.revolving-sector"></option>
+                            </select>
+                        </div>
                     </form>
                 </div>
                 <!-- Specific UHR169 End-->
@@ -368,22 +360,20 @@
             </div>
 
             <div class="pure-u-24-24 section section-settings">
-                <div class="header">
+                <header class="header">
                     <svg><use href="#gear"/></svg>
                     <h1 data-i18next="settings.h1"></h1>
-                </div>
+                </header>
 
                 <div class="box">
                     <h2 data-i18next="settings.status.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-control-group">
-                                <label for="status" data-i18next="settings.status.label"></label><input id="status" class="status" value="Loading ...">
-                            </div>
-                            <div class="pure-controls">
-                                <button class="pure-button" data-i18next="settings.status.connect"></button>
-                            </div>
-                        </fieldset>
+                        <div class="pure-control-group">
+                            <label for="status" data-i18next="settings.status.label"></label><input id="status" class="status" value="Loading ...">
+                        </div>
+                        <div class="pure-controls">
+                            <button class="pure-button" data-i18next="settings.status.connect"></button>
+                        </div>
                     </form>
                 </div>
 
@@ -411,163 +401,151 @@
                 <div class="box">
                     <h2 data-i18next="settings.time-server.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-control-group">
-                                <label for="timeserver" data-i18next="settings.time-server.label"></label><input id="timeserver" type="text">
-                            </div>
-                            <div class="pure-controls">
-                                <button id="timeserver-button" class="pure-button" data-i18next="settings.time-server.save"></button>
-                            </div>
-                        </fieldset>
+                        <div class="pure-control-group">
+                            <label for="timeserver" data-i18next="settings.time-server.label"></label><input id="timeserver" type="text">
+                        </div>
+                        <div class="pure-controls">
+                            <button id="timeserver-button" class="pure-button" data-i18next="settings.time-server.save"></button>
+                        </div>
                     </form>
                 </div>
 
                 <div class="box">
                     <h2 data-i18next="settings.manual-time.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-control-group">
-                                <label for="time" data-i18next="settings.manual-time.time"></label>
-                                <input type="time" id="time" required>
-                            </div>
-                            <div class="pure-controls">
-                                <button id="uhrzeit-button" class="pure-button" data-i18next="settings.manual-time.save"></button>
-                            </div>
-                        </fieldset>
+                        <div class="pure-control-group">
+                            <label for="time" data-i18next="settings.manual-time.time"></label>
+                            <input type="time" id="time" required>
+                        </div>
+                        <div class="pure-controls">
+                            <button id="uhrzeit-button" class="pure-button" data-i18next="settings.manual-time.save"></button>
+                        </div>
                     </form>
                 </div>
 
                 <div class="box">
                     <h2 data-i18next="settings.brightness.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
+                        <div class="pure-control-group">
+                            <label for="auto-ldr-enabled" data-i18next="settings.brightness.mode"></label><select id="auto-ldr-enabled" size="1">
+                                <option value="1" data-i18next="settings.brightness.automatic"></option>
+                                <option value="0" data-i18next="settings.brightness.manual"></option>
+                            </select>
+                        </div>
+                        <br>
+                        <!-- Specific Brightness-manual Start-->
+                        <div class="specific-layout-brightness-man">
                             <div class="pure-control-group">
-                                <label for="auto-ldr-enabled" data-i18next="settings.brightness.mode"></label><select id="auto-ldr-enabled" size="1">
-                                    <option value="1" data-i18next="settings.brightness.automatic"></option>
-                                    <option value="0" data-i18next="settings.brightness.manual"></option>
-                                </select>
+                                <label for="brightness-24" data-i18next="settings.brightness.zero-to-six"></label><select name="brightness-24" id="brightness-24" size="1">
+                                <option value="100" data-i18next="settings.brightness.p100"></option>
+                                <option value="80" data-i18next="settings.brightness.p80"></option>
+                                <option value="60" data-i18next="settings.brightness.p60"></option>
+                                <option value="40" data-i18next="settings.brightness.p40"></option>
+                                <option value="20" data-i18next="settings.brightness.p20"></option>
+                                <option value="0" data-i18next="settings.brightness.off"></option>
+                            </select>
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="brightness-6" data-i18next="settings.brightness.six-to-eight"></label><select name="brightness-6" id="brightness-6" size="1">
+                                <option value="100" data-i18next="settings.brightness.p100"></option>
+                                <option value="80" data-i18next="settings.brightness.p80"></option>
+                                <option value="60" data-i18next="settings.brightness.p60"></option>
+                                <option value="40" data-i18next="settings.brightness.p40"></option>
+                                <option value="20" data-i18next="settings.brightness.p20"></option>
+                                <option value="0" data-i18next="settings.brightness.off"></option>
+                            </select>
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="brightness-8" data-i18next="settings.brightness.eight-to-twelve"></label><select name="brightness-8" id="brightness-8" size="1">
+                                <option value="100" data-i18next="settings.brightness.p100"></option>
+                                <option value="80" data-i18next="settings.brightness.p80"></option>
+                                <option value="60" data-i18next="settings.brightness.p60"></option>
+                                <option value="40" data-i18next="settings.brightness.p40"></option>
+                                <option value="20" data-i18next="settings.brightness.p20"></option>
+                                <option value="0" data-i18next="settings.brightness.off"></option>
+                            </select>
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="brightness-12" data-i18next="settings.brightness.twelve-to-sixteen"></label><select name="brightness-12" id="brightness-12" size="1">
+                                <option value="100" data-i18next="settings.brightness.p100"></option>
+                                <option value="80" data-i18next="settings.brightness.p80"></option>
+                                <option value="60" data-i18next="settings.brightness.p60"></option>
+                                <option value="40" data-i18next="settings.brightness.p40"></option>
+                                <option value="20" data-i18next="settings.brightness.p20"></option>
+                                <option value="0" data-i18next="settings.brightness.off"></option>
+                            </select>
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="brightness-16" data-i18next="settings.brightness.sixteen-to-eighteen"></label><select name="brightness-16" id="brightness-16" size="1">
+                                <option value="100" data-i18next="settings.brightness.p100"></option>
+                                <option value="80" data-i18next="settings.brightness.p80"></option>
+                                <option value="60" data-i18next="settings.brightness.p60"></option>
+                                <option value="40" data-i18next="settings.brightness.p40"></option>
+                                <option value="20" data-i18next="settings.brightness.p20"></option>
+                                <option value="0" data-i18next="settings.brightness.off"></option>
+                            </select>
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="brightness-18" data-i18next="settings.brightness.eighteen-to-twenty"></label><select name="brightness-18" id="brightness-18" size="1">
+                                <option value="100" data-i18next="settings.brightness.p100"></option>
+                                <option value="80" data-i18next="settings.brightness.p80"></option>
+                                <option value="60" data-i18next="settings.brightness.p60"></option>
+                                <option value="40" data-i18next="settings.brightness.p40"></option>
+                                <option value="20" data-i18next="settings.brightness.p20"></option>
+                                <option value="0" data-i18next="settings.brightness.off"></option>
+                            </select>
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="brightness-20" data-i18next="settings.brightness.twenty-to-twenty-two"></label><select name="brightness-20" id="brightness-20" size="1">
+                                <option value="100" data-i18next="settings.brightness.p100"></option>
+                                <option value="80" data-i18next="settings.brightness.p80"></option>
+                                <option value="60" data-i18next="settings.brightness.p60"></option>
+                                <option value="40" data-i18next="settings.brightness.p40"></option>
+                                <option value="20" data-i18next="settings.brightness.p20"></option>
+                                <option value="0" data-i18next="settings.brightness.off"></option>
+                            </select>
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="brightness-22" data-i18next="settings.brightness.twenty-two-to-zero"></label><select name="brightness-22" id="brightness-22" size="1">
+                                <option value="100" data-i18next="settings.brightness.p100"></option>
+                                <option value="80" data-i18next="settings.brightness.p80"></option>
+                                <option value="60" data-i18next="settings.brightness.p60"></option>
+                                <option value="40" data-i18next="settings.brightness.p40"></option>
+                                <option value="20" data-i18next="settings.brightness.p20"></option>
+                                <option value="0" data-i18next="settings.brightness.off"></option>
+                            </select>
+                            </div>
+
+                        </div>
+                        <!-- Specific Brightness-manual End-->
+
+                        <!-- Specific Brightness-automatic Start-->
+                        <div class="specific-layout-brightness-auto">
+                            <br>
+                            <div class="pure-control-group">
+                                <label for="auto-ldr-value" data-i18next="settings.brightness.ldr-value"></label><input id="auto-ldr-value" type="text" value=" " readonly>
                             </div>
                             <br>
-                            <!-- Specific Brightness-manual Start-->
-                            <div class="specific-layout-brightness-man">
-                                <form class="pure-form pure-form-aligned">
-                                    <fieldset>
-                                        <div class="pure-control-group">
-                                            <label for="brightness-24" data-i18next="settings.brightness.zero-to-six"></label><select name="brightness-24" id="brightness-24" size="1">
-                                            <option value="100" data-i18next="settings.brightness.p100"></option>
-                                            <option value="80" data-i18next="settings.brightness.p80"></option>
-                                            <option value="60" data-i18next="settings.brightness.p60"></option>
-                                            <option value="40" data-i18next="settings.brightness.p40"></option>
-                                            <option value="20" data-i18next="settings.brightness.p20"></option>
-                                            <option value="0" data-i18next="settings.brightness.off"></option>
-                                        </select>
-                                        </div>
-                                        <div class="pure-control-group">
-                                            <label for="brightness-6" data-i18next="settings.brightness.six-to-eight"></label><select name="brightness-6" id="brightness-6" size="1">
-                                            <option value="100" data-i18next="settings.brightness.p100"></option>
-                                            <option value="80" data-i18next="settings.brightness.p80"></option>
-                                            <option value="60" data-i18next="settings.brightness.p60"></option>
-                                            <option value="40" data-i18next="settings.brightness.p40"></option>
-                                            <option value="20" data-i18next="settings.brightness.p20"></option>
-                                            <option value="0" data-i18next="settings.brightness.off"></option>
-                                        </select>
-                                        </div>
-                                        <div class="pure-control-group">
-                                            <label for="brightness-8" data-i18next="settings.brightness.eight-to-twelve"></label><select name="brightness-8" id="brightness-8" size="1">
-                                            <option value="100" data-i18next="settings.brightness.p100"></option>
-                                            <option value="80" data-i18next="settings.brightness.p80"></option>
-                                            <option value="60" data-i18next="settings.brightness.p60"></option>
-                                            <option value="40" data-i18next="settings.brightness.p40"></option>
-                                            <option value="20" data-i18next="settings.brightness.p20"></option>
-                                            <option value="0" data-i18next="settings.brightness.off"></option>
-                                        </select>
-                                        </div>
-                                        <div class="pure-control-group">
-                                            <label for="brightness-12" data-i18next="settings.brightness.twelve-to-sixteen"></label><select name="brightness-12" id="brightness-12" size="1">
-                                            <option value="100" data-i18next="settings.brightness.p100"></option>
-                                            <option value="80" data-i18next="settings.brightness.p80"></option>
-                                            <option value="60" data-i18next="settings.brightness.p60"></option>
-                                            <option value="40" data-i18next="settings.brightness.p40"></option>
-                                            <option value="20" data-i18next="settings.brightness.p20"></option>
-                                            <option value="0" data-i18next="settings.brightness.off"></option>
-                                        </select>
-                                        </div>
-                                        <div class="pure-control-group">
-                                            <label for="brightness-16" data-i18next="settings.brightness.sixteen-to-eighteen"></label><select name="brightness-16" id="brightness-16" size="1">
-                                            <option value="100" data-i18next="settings.brightness.p100"></option>
-                                            <option value="80" data-i18next="settings.brightness.p80"></option>
-                                            <option value="60" data-i18next="settings.brightness.p60"></option>
-                                            <option value="40" data-i18next="settings.brightness.p40"></option>
-                                            <option value="20" data-i18next="settings.brightness.p20"></option>
-                                            <option value="0" data-i18next="settings.brightness.off"></option>
-                                        </select>
-                                        </div>
-                                        <div class="pure-control-group">
-                                            <label for="brightness-18" data-i18next="settings.brightness.eighteen-to-twenty"></label><select name="brightness-18" id="brightness-18" size="1">
-                                            <option value="100" data-i18next="settings.brightness.p100"></option>
-                                            <option value="80" data-i18next="settings.brightness.p80"></option>
-                                            <option value="60" data-i18next="settings.brightness.p60"></option>
-                                            <option value="40" data-i18next="settings.brightness.p40"></option>
-                                            <option value="20" data-i18next="settings.brightness.p20"></option>
-                                            <option value="0" data-i18next="settings.brightness.off"></option>
-                                        </select>
-                                        </div>
-                                        <div class="pure-control-group">
-                                            <label for="brightness-20" data-i18next="settings.brightness.twenty-to-twenty-two"></label><select name="brightness-20" id="brightness-20" size="1">
-                                            <option value="100" data-i18next="settings.brightness.p100"></option>
-                                            <option value="80" data-i18next="settings.brightness.p80"></option>
-                                            <option value="60" data-i18next="settings.brightness.p60"></option>
-                                            <option value="40" data-i18next="settings.brightness.p40"></option>
-                                            <option value="20" data-i18next="settings.brightness.p20"></option>
-                                            <option value="0" data-i18next="settings.brightness.off"></option>
-                                        </select>
-                                        </div>
-                                        <div class="pure-control-group">
-                                            <label for="brightness-22" data-i18next="settings.brightness.twenty-two-to-zero"></label><select name="brightness-22" id="brightness-22" size="1">
-                                            <option value="100" data-i18next="settings.brightness.p100"></option>
-                                            <option value="80" data-i18next="settings.brightness.p80"></option>
-                                            <option value="60" data-i18next="settings.brightness.p60"></option>
-                                            <option value="40" data-i18next="settings.brightness.p40"></option>
-                                            <option value="20" data-i18next="settings.brightness.p20"></option>
-                                            <option value="0" data-i18next="settings.brightness.off"></option>
-                                        </select>
-                                        </div>
-                                    </fieldset>
-                                </form>
-
-                                </div>
-                                <!-- Specific Brightness-manual End-->
-
-                                <!-- Specific Brightness-automatic Start-->
-                                <div class="specific-layout-brightness-auto">
-                                    <br>
-                                    <div class="pure-control-group">
-                                        <label for="auto-ldr-value" data-i18next="settings.brightness.ldr-value"></label><input id="auto-ldr-value" type="text" value=" " disabled style="color:black">
-                                    </div>
-                                    <br>
-                                    <div class="pure-control-group">
-                                        <label for="auto-ldr-bright" data-i18next="settings.brightness.value-bright"></label><input id="auto-ldr-bright" type="number" min="0" max="255">
-                                    </div>
-                                    <div class="pure-control-group">
-                                        <label for="auto-ldr-dark" data-i18next="settings.brightness.value-dark"></label><input id="auto-ldr-dark" type="number" min="0" max="255">
-                                    </div>
-                                    <!-- Specific Brightness-automatic End-->
-                                </div>
-                        </fieldset>
+                            <div class="pure-control-group">
+                                <label for="auto-ldr-bright" data-i18next="settings.brightness.value-bright"></label><input id="auto-ldr-bright" type="number" min="0" max="255">
+                            </div>
+                            <div class="pure-control-group">
+                                <label for="auto-ldr-dark" data-i18next="settings.brightness.value-dark"></label><input id="auto-ldr-dark" type="number" min="0" max="255">
+                            </div>
+                            <!-- Specific Brightness-automatic End-->
+                        </div>
                     </form>
                 </div>
 
                 <div class="box">
                     <h2 data-i18next="settings.hostname.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-control-group">
-                                <label for="hostname" data-i18next="settings.hostname.label"></label><input id="hostname" type="text">
-                            </div>
-                            <div class="pure-controls">
-                                <button id="hostname-button" class="pure-button" data-i18next="settings.hostname.save"></button>
-                            </div>
-                        </fieldset>
+                        <div class="pure-control-group">
+                            <label for="hostname" data-i18next="settings.hostname.label"></label><input id="hostname" type="text">
+                        </div>
+                        <div class="pure-controls">
+                            <button id="hostname-button" class="pure-button" data-i18next="settings.hostname.save"></button>
+                        </div>
                     </form>
                 </div>
 
@@ -575,17 +553,15 @@
                 <div class="box specific-layout-5">
                     <h2 data-i18next="settings.weather.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-control-group">
-                                <label for="owm-api-key" data-i18next="settings.weather.api-key"></label><input id="owm-api-key" type="text" minlength="32" maxlength="32">
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="owm-city-id" data-i18next="settings.weather.city-id"></label><input id="owm-city-id" type="text" minlength="7" maxlength="7">
-                            </div>
-                            <div class="pure-controls">
-                                <button id="weather-button" class="pure-button" data-i18next="settings.weather.save"></button>
-                            </div>
-                        </fieldset>
+                        <div class="pure-control-group">
+                            <label for="owm-api-key" data-i18next="settings.weather.api-key"></label><input id="owm-api-key" type="text" minlength="32" maxlength="32">
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="owm-city-id" data-i18next="settings.weather.city-id"></label><input id="owm-city-id" type="text" minlength="7" maxlength="7">
+                        </div>
+                        <div class="pure-controls">
+                            <button id="weather-button" class="pure-button" data-i18next="settings.weather.save"></button>
+                        </div>
                     </form>
                 </div>
                 <!-- Specific UHR242 End-->
@@ -614,21 +590,19 @@
                 <div class="box">
                     <h2 data-i18next="settings.restart.h2"></h2>
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-controls">
-                                <button id="initial-values-button" class="pure-button" data-i18next="settings.restart.restart"></button>
-                                <button id="reset-button" class="pure-button" data-i18next="settings.restart.reset"></button>
-                            </div>
-                        </fieldset>
+                        <div class="pure-controls">
+                            <button id="initial-values-button" class="pure-button" data-i18next="settings.restart.restart"></button>
+                            <button id="reset-button" class="pure-button" data-i18next="settings.restart.reset"></button>
+                        </div>
                     </form>
                 </div>
             </div>
 
             <div class="pure-u-24-24 section section-smart-home">
-                <div class="header">
+                <header class="header">
                     <svg><use href="#light-bulb"/></svg>
                     <h1 data-i18next="smart-home.h1"></h1>
-                </div>
+                </header>
 
                 <div class="box">
                     <h2 data-i18next="smart-home.mqtt.h2"></h2>
@@ -636,45 +610,43 @@
                     <p data-i18next="smart-home.mqtt.text"></p>
 
                     <form class="pure-form pure-form-aligned">
-                        <fieldset>
-                            <div class="pure-control-group">
-                            <label for="mqtt-state" data-i18next="smart-home.mqtt.activate"></label>
-                            <label class="switch">
-                                <input type="checkbox" id="mqtt-state">
-                                <span class="slider round"></span>
-                            </label>
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="mqtt-server" data-i18next="smart-home.mqtt.server"></label><input id="mqtt-server" type="text">
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="mqtt-port" data-i18next="smart-home.mqtt.port"></label><input id="mqtt-port" type="text">
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="mqtt-user" data-i18next="smart-home.mqtt.username"></label><input id="mqtt-user" type="text">
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="mqtt-pass" data-i18next="smart-home.mqtt.password"></label><input id="mqtt-pass" type="text">
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="mqtt-clientid" data-i18next="smart-home.mqtt.client-id"></label><input id="mqtt-clientid" type="text">
-                            </div>
-                            <div class="pure-control-group">
-                                <label for="mqtt-topic" data-i18next="smart-home.mqtt.topic"></label><input id="mqtt-topic" type="text">
-                            </div>
-                            <div class="pure-controls">
-                                <button id="mqtt-button" class="pure-button" data-i18next="smart-home.mqtt.save"></button>
-                            </div>
-                        </fieldset>
+                        <div class="pure-control-group">
+                        <label for="mqtt-state" data-i18next="smart-home.mqtt.activate"></label>
+                        <label class="switch">
+                            <input type="checkbox" id="mqtt-state">
+                            <span class="slider round"></span>
+                        </label>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="mqtt-server" data-i18next="smart-home.mqtt.server"></label><input id="mqtt-server" type="text">
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="mqtt-port" data-i18next="smart-home.mqtt.port"></label><input id="mqtt-port" type="text">
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="mqtt-user" data-i18next="smart-home.mqtt.username"></label><input id="mqtt-user" type="text">
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="mqtt-pass" data-i18next="smart-home.mqtt.password"></label><input id="mqtt-pass" type="text">
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="mqtt-clientid" data-i18next="smart-home.mqtt.client-id"></label><input id="mqtt-clientid" type="text">
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="mqtt-topic" data-i18next="smart-home.mqtt.topic"></label><input id="mqtt-topic" type="text">
+                        </div>
+                        <div class="pure-controls">
+                            <button id="mqtt-button" class="pure-button" data-i18next="smart-home.mqtt.save"></button>
+                        </div>
                     </form>
                 </div>
             </div>
 
             <div class="pure-u-24-24 section section-about">
-                <div class="header">
+                <header class="header">
                     <svg><use href="#info"/></svg>
                     <h1 data-i18next="about.h1"></h1>
-                </div>
+                </header>
 
                 <div class="box">
                     <p data-i18next="about.text-general"></p>
@@ -699,25 +671,24 @@
                 </div>
             </div>
         </div> <!--/pure-g-->
+    </main> <!--/content-->
 
-        <div class="footer">
-            <span data-i18next="footer.version"></span>
-            <span id="version" class="version">0.0.0</span>
-        </div>
-
-    </div> <!--/content-->
+    <footer class="footer">
+        <span data-i18next="footer.version"></span>
+        <span id="version" class="version">0.0.0</span>
+    </footer>
 </div>
 
 <!-- scripts -->
-<script src="i18next.min.js"></script>
-<script src="i18nextBrowserLanguageDetector.min.js"></script>
-<script src="minified-web.js"></script>
-<script src="iro.min.js"></script>
-<script src="script.js"></script>
-<script src="language/en.js"></script>
-<script src="language/de.js"></script>
-<script src="language/nl.js"></script>
-<script src="i18n.js"></script>
+<script src="./i18next.min.js"></script>
+<script src="./i18nextBrowserLanguageDetector.min.js"></script>
+<script src="./minified-web.js"></script>
+<script src="./iro.min.js"></script>
+<script src="./script.js"></script>
+<script src="./language/en.js"></script>
+<script src="./language/de.js"></script>
+<script src="./language/nl.js"></script>
+<script src="./i18n.js"></script>
 
 </body>
 </html>

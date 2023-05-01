@@ -20,8 +20,28 @@ p {
     margin-bottom: 0;
 }
 
-a {
-    text-decoration: none;
+/**
+ * Links
+ */
+a:link {
+    color: rgb(0, 0, 238);
+    text-decoration-color: #bbbbff;
+}
+a:link:hover {
+    text-decoration-color: rgb(0, 0, 238);;
+}
+
+a:visited {
+    color: rgb(78, 33, 134);
+    text-decoration-color: #d0b8ee;
+}
+a:visited:hover {
+    text-decoration-color: rgb(78, 33, 134);
+}
+
+a:active, a:active:hover{
+    color: rgb(238, 0, 0);
+    text-decoration-color: #ffbbbb;
 }
 
 /*
@@ -65,7 +85,7 @@ a {
     margin-right: 0.6em;
     height: 1.9em;
     width: 1.9em;
-    fill: #1f8dd6;
+    fill: #1A7CBD;
 }
 .header svg use {
     height: 1.9em;
@@ -135,24 +155,31 @@ a {
 }
 .menu .pure-menu li a:hover,
 .menu .pure-menu li a:focus {
+    background: #424242;
+}
+.menu .pure-menu li a:active {
     background: #383838;
+    color: white;
 }
 .menu .pure-menu-selected {
-    background: #898989;
+    background: #757575;
 }
 .menu .pure-menu-selected a {
     color: #fff;
 }
 .pure-menu-heading {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.8);
     font-size: smaller;
 }
 .menu .title {
-    background: #1f8dd6;
+    background: #1A7CBD;
     font-size: 120%;
     color: #fff;
     margin: 0;
     text-transform: none;
+}
+.menu .title:active {
+    color: #d3d3d3;
 }
 
 .menu .language {
@@ -374,9 +401,17 @@ input[type=range]::-moz-range-thumb {
 }
 
 .pure-button {
-    background-color: #1f8dd6;
+    background-color: #1A7CBD;
     border-radius: 2em;
     color: white;
+}
+
+.pure-form input[readonly],
+.pure-form select[readonly],
+.pure-form textarea[readonly] {
+    background-color: #E8E8E8;
+    color: #666666;
+    border-color: #ccc;
 }
 
 .pure-control-group-switch label {
@@ -389,7 +424,6 @@ input[type=range]::-moz-range-thumb {
 .radio-wrapper {
     white-space: nowrap;
 }
-
 
 /*
  * Switch
