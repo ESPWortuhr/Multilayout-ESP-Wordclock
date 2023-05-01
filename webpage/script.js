@@ -6,18 +6,31 @@ const iro = window.iro; // require("@jaames/iro");
 	let menu = document.getElementsByClassName("menu")[0];
 	let menuLink = document.getElementsByClassName("hamburger")[0];
 
-	function toggleAll(element) {
-		let active = "active";
-		element.preventDefault();
-		layout.classList.toggle(active);
-		menu.classList.toggle(active);
+	function toggleMenuEventHandler(event) {
+		// It's a link, so don't activate the link but do some JS instead
+		event.preventDefault();
+
+		const active = "active";
+		const menuIsOpen = menuLink.getAttribute("aria-expanded") === "true";
+
+		if (menuIsOpen) {
+			// Close menu
+			console.log("is open, closing");
+			menuLink.setAttribute("aria-expanded", "false");
+			menuLink.setAttribute("aria-label", i18next.t("menu.aria-show-menu"));
+			layout.classList.remove(active);
+			menu.classList.remove(active);
+		} else {
+			console.log("is closed, opening");
+			// Open menu
+			menuLink.setAttribute("aria-expanded", "true");
+			menuLink.setAttribute("aria-label", i18next.t("menu.aria-hide-menu"));
+			layout.classList.add(active);
+			menu.classList.add(active);
+		}
 	}
 
-	function handleEvent(element) {
-		toggleAll(element);
-	}
-
-	menuLink.addEventListener("click", handleEvent);
+	menuLink.addEventListener("click", toggleMenuEventHandler);
 
 }(this, this.document));
 
@@ -672,12 +685,18 @@ $.ready(function() {
 	/**
 	 * A menu item has been clicked.
 	 */
-	$("a[class~='pure-menu-link']").on("click", function() {
+	$("a[data-navigation]").on("click", function() {
 		var navigation = $(this)[0].dataset.navigation;
 
-		// add/remove active class
+		// Remove classes and attributes
 		$(".pure-menu-link").set("-pure-menu-selected");
+		Array.from(document.getElementsByClassName("pure-menu-link")).forEach(elem => {
+			elem.removeAttribute("aria-current");
+		});
+
+		// Add classes and Attributes
 		$(this).set("+pure-menu-selected");
+		document.getElementsByClassName("pure-menu-selected")[0].setAttribute("aria-current", "page");
 
 		if (navigation === "functions") {
 			setAnimation();

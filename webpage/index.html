@@ -38,24 +38,26 @@
     </symbol>
 </svg>
 
-    <a href="#menu" class="hamburger">
-        <svg><use href="#hamburger"/></svg>
+    <a href="#menu" role="button" aria-controls="menu" aria-expanded="false" class="hamburger">
+        <svg aria-hidden="true"><use href="#hamburger"/></svg>
     </a>
 
-    <nav class="menu" id="menu">
+    <nav class="menu" id="menu" role="menu">
         <div class="pure-menu">
-            <a class="pure-menu-heading title" href="#" data-i18next="title"></a>
+            <header>
+                <a class="pure-menu-heading title" data-navigation="main" href="#" data-i18next="title"></a>
+            </header>
 
             <ul class="pure-menu-list">
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="main" data-i18next="colors.h1"></a></li>
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="functions" data-i18next="functions.h1"></a></li>
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="frontoptions" data-i18next="view.h1"></a></li>
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="settings" data-i18next="settings.h1"></a></li>
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="smart-home" data-i18next="smart-home.h1"></a></li>
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link" data-navigation="about" data-i18next="about.h1"></a></li>
+                <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="main" data-i18next="colors.h1"></a></li>
+                <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="functions" data-i18next="functions.h1"></a></li>
+                <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="frontoptions" data-i18next="view.h1"></a></li>
+                <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="settings" data-i18next="settings.h1"></a></li>
+                <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="smart-home" data-i18next="smart-home.h1"></a></li>
+                <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="about" data-i18next="about.h1"></a></li>
 
-                <li class="pure-menu-heading"><label for="language" data-i18next="menu.language.label"></label></li>
-                <li class="pure-menu-item pure-form" id="language-select-container">
+                <li class="pure-menu-heading" role="none"><label for="language" data-i18next="menu.language.label"></label></li>
+                <li class="pure-menu-item pure-form" role="none" id="language-select-container">
                     <select id="language" class="language" size="1">
                         <option value="de" data-i18next="menu.language.de"></option>
                         <option value="en" data-i18next="menu.language.en"></option>
@@ -75,9 +77,9 @@
                 </div>
             </div>
 
-            <div class="pure-u-24-24 section section-main">
+            <section class="pure-u-24-24 section section-main">
                 <header class="header">
-                    <svg><use href="#palette"/></svg>
+                    <svg aria-hidden="true"><use href="#palette"/></svg>
                     <h1 data-i18next="colors.h1"></h1>
                 </header>
 
@@ -97,11 +99,11 @@
                         <div class="swatch" data-color="#960F8C" style="background: #960F8C"></div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="pure-u-24-24 section section-functions">
+            <section class="pure-u-24-24 section section-functions">
                 <header class="header">
-                    <svg><use href="#screwdriver"/></svg>
+                    <svg aria-hidden="true"><use href="#screwdriver"/></svg>
                     <h1 data-i18next="functions.h1"></h1>
                 </header>
 
@@ -189,11 +191,11 @@
                     </form>
                 </div>
 
-            </div>
+            </section>
 
-            <div class="pure-u-24-24 section section-frontoptions">
+            <section class="pure-u-24-24 section section-frontoptions">
                 <header class="header">
-                    <svg><use href="#eye"/></svg>
+                    <svg aria-hidden="true"><use href="#eye"/></svg>
                     <h1 data-i18next="view.h1"></h1>
                 </header>
 
@@ -357,11 +359,11 @@
                         </fieldset>
                     </form>
                 </div>
-            </div>
+            </section>
 
-            <div class="pure-u-24-24 section section-settings">
+            <section class="pure-u-24-24 section section-settings">
                 <header class="header">
-                    <svg><use href="#gear"/></svg>
+                    <svg aria-hidden="true"><use href="#gear"/></svg>
                     <h1 data-i18next="settings.h1"></h1>
                 </header>
 
@@ -596,11 +598,11 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </section>
 
-            <div class="pure-u-24-24 section section-smart-home">
+            <section class="pure-u-24-24 section section-smart-home">
                 <header class="header">
-                    <svg><use href="#light-bulb"/></svg>
+                    <svg aria-hidden="true"><use href="#light-bulb"/></svg>
                     <h1 data-i18next="smart-home.h1"></h1>
                 </header>
 
@@ -640,11 +642,11 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </section>
 
-            <div class="pure-u-24-24 section section-about">
+            <section class="pure-u-24-24 section section-about">
                 <header class="header">
-                    <svg><use href="#info"/></svg>
+                    <svg aria-hidden="true"><use href="#info"/></svg>
                     <h1 data-i18next="about.h1"></h1>
                 </header>
 
@@ -669,7 +671,7 @@
                     <h2 data-i18next="about.debug"></h2>
                     <div id="output"></div>
                 </div>
-            </div>
+            </section>
         </div> <!--/pure-g-->
     </main> <!--/content-->
 

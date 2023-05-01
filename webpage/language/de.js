@@ -2,6 +2,8 @@ let TRANSLATION_DE_DE = {
 	"title": "Wortuhr",
 
 	"menu": {
+		"aria-show-menu": "Menü anzeigen",
+		"aria-hide-menu": "Menü ausblenden",
 		"language": {
 			"label": "Sprache",
 			"de": "🇩🇪 Deutsch",
