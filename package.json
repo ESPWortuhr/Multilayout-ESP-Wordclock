@@ -77,7 +77,7 @@
 		"grunt-contrib-cssmin": "^5.0.0",
 		"grunt-contrib-htmlmin": "^3.0.0",
 		"grunt-contrib-jshint": "^3.2.0",
-		"grunt-eslint": "^24.0.1",
+		"grunt-eslint": "^24.1.0",
 		"grunt-htmllint": "^0.3.0",
 		"grunt-terser": "^2.0.0",
 		"grunt-version": "^3.0.0",
