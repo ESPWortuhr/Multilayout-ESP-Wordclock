@@ -391,7 +391,7 @@ function initWebsocket() {
 			const inputID = MODE_TO_INPUT_ID.get(prog);
 			debugMessage("Mode is " + prog + " (" + inputID + ")");
 
-			$("#" + inputID).checked = true;
+			document.getElementById(inputID).checked = true;
 			setSliders();
 			setColors();
 			enableSpecific("specific-colortype-4", data.colortype === 4);
