@@ -2,6 +2,8 @@ let TRANSLATION_EN_US = {
 	"title": "Word Clock",
 
 	"menu": {
+		"aria-show-menu": "Show Menu",
+		"aria-hide-menu": "Hide Menu",
 		"language": {
 			"label": "Language",
 			"de": "🇩🇪 German",

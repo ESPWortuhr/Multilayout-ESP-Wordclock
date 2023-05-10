@@ -2,6 +2,8 @@ let TRANSLATION_NL = {
 	"title": "Woordklok",
 
 	"menu": {
+		"aria-show-menu": "Menu tonen",
+		"aria-hide-menu": "Menu verbergen",
 		"language": {
 			"label": "Taal",
 			"de": "🇩🇪 Duits",

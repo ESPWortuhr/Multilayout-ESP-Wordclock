@@ -25,16 +25,38 @@ i18next.init({
 		console.error("error while initializing i18next", error);
 	}
 	initLanguageDropdown(i18next.resolvedLanguage);
-	applyLanguageToHtml();
+	applyLanguageToAnnotatedElements();
+	applyLanguageSpecialCases();
 });
 
-i18next.on("languageChanged", applyLanguageToHtml);
+i18next.on("languageChanged", () => {
+	applyLanguageToAnnotatedElements();
+	applyLanguageSpecialCases();
+});
 
-function applyLanguageToHtml() {
+/**
+ * Searches for all annotated HTML elements (with the attribute `data-i18next`) and writes translated text to the
+ * innerHTML of this element. The translation key is the value of the attribute `data-i18next`.
+ */
+function applyLanguageToAnnotatedElements() {
 	document.querySelectorAll("[data-i18next]")
 		.forEach((element) => {
 			element.innerHTML = i18next.t(element.dataset.i18next);
 		});
+}
+
+/**
+ * There are some translation that are not applied via the general method above (`data-i18next`). This function
+ * applies the translation manually in some special cases.
+ */
+function applyLanguageSpecialCases() {
+	// Translate the `aria-label` attribute of the menu link depending on the menu state
+	const menuLink = document.getElementsByClassName("hamburger")[0];
+	if (menuLink.getAttribute("aria-expanded") === "true") {
+		menuLink.setAttribute("aria-label", i18next.t("menu.aria-hide-menu"));
+	} else {
+		menuLink.setAttribute("aria-label", i18next.t("menu.aria-show-menu"));
+	}
 }
 
 function initLanguageDropdown(language) {
