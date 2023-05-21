@@ -11,6 +11,7 @@ private:
     inline uint32_t reverse32BitOrder(uint32_t x);
     bool getCharCol(fontSize font, uint8_t col, uint8_t row,
                     unsigned char unsigned_d1);
+    void applyMirroringAndReverseIfDefined();
 
 public:
     Led(/* args */) = default;
@@ -41,9 +42,10 @@ public:
     // Pixel set Functions
     //------------------------------------------------------------------------------
     void setPixel(uint16_t ledIndex, Color color);
-    void setbyFrontMatrix(uint8_t ColorPosition);
-    void setbyMinuteArray(uint8_t ColorPosition);
-    void setbySecondArray(uint8_t ColorPosition);
+    void setbyFrontMatrix(uint8_t ColorPosition = Foreground,
+                          bool applyMirrorAndReverse = true);
+    void setbyMinuteArray(uint8_t ColorPosition = Foreground);
+    void setbySecondArray(uint8_t ColorPosition = Foreground);
     void setIcon(uint8_t num_icon, uint8_t brightness);
     void setSingle(uint8_t wait);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
