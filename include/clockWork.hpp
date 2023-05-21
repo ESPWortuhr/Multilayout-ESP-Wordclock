@@ -146,6 +146,7 @@ void ClockWork::scrollingText(const char *buf) {
         (usedUhrType->rowsWordMatrix() - fontHeight[normalSizeASCII]) / 2;
     uint8_t fontIndex = buf[ii];
 
+    led.setbyFrontMatrix(Foreground); // Needed for Mirrored Display
     led.shiftColumnToRight();
     led.clearFrontExeptofFontspace(offsetRow);
 
@@ -717,11 +718,6 @@ void ClockWork::calcClockface() {
         setClock();
     }
 
-    // set Background color
-    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
-        led.setPixel(i, G.color[Background]);
-    }
-
     if (usedUhrType->hasWeatherLayout()) {
         weather.calcWeatherClockface();
     }
@@ -1104,7 +1100,7 @@ void ClockWork::loop(struct tm &tm) {
             for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
                 frontMatrix[row] = num32BitWithOnesAccordingToColumns();
             }
-            led.setbyFrontMatrix(Effect);
+            led.setbyFrontMatrix(Effect, false);
             led.show();
         }
         break;
@@ -1123,16 +1119,6 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_WORD_CLOCK: {
         clearClockByProgInit();
         calcClockface();
-
-        if (G.layoutVariant[ReverseMinDirection]) {
-            led.mirrorMinuteArrayVertical();
-        }
-        if (G.layoutVariant[MirrorVertical]) {
-            led.mirrorFrontMatrixVertical();
-        }
-        if (G.layoutVariant[MirrorHorizontal]) {
-            led.mirrorFrontMatrixHorizontal();
-        }
 
         if (changesInClockface()) {
             lastMinuteArray = minuteArray;

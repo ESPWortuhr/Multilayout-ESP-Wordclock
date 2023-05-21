@@ -63,6 +63,20 @@ bool Led::getCharCol(fontSize font, uint8_t col, uint8_t row,
 }
 
 //------------------------------------------------------------------------------
+
+void Led::applyMirroringAndReverseIfDefined() {
+    if (G.layoutVariant[ReverseMinDirection]) {
+        led.mirrorMinuteArrayVertical();
+    }
+    if (G.layoutVariant[MirrorVertical]) {
+        led.mirrorFrontMatrixVertical();
+    }
+    if (G.layoutVariant[MirrorHorizontal]) {
+        led.mirrorFrontMatrixHorizontal();
+    }
+}
+
+//------------------------------------------------------------------------------
 // Brightness Functions
 //------------------------------------------------------------------------------
 
@@ -164,7 +178,10 @@ void Led::setPixel(uint16_t ledIndex, Color color) {
 
 //------------------------------------------------------------------------------
 
-void Led::setbyFrontMatrix(uint8_t colorPosition = Foreground) {
+void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
+    if (applyMirrorAndReverse) {
+        applyMirroringAndReverseIfDefined();
+    }
     Color displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
@@ -183,7 +200,7 @@ void Led::setbyFrontMatrix(uint8_t colorPosition = Foreground) {
 
 //------------------------------------------------------------------------------
 
-void Led::setbyMinuteArray(uint8_t colorPosition = Foreground) {
+void Led::setbyMinuteArray(uint8_t colorPosition) {
     Color displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
@@ -198,7 +215,7 @@ void Led::setbyMinuteArray(uint8_t colorPosition = Foreground) {
 
 //------------------------------------------------------------------------------
 
-void Led::setbySecondArray(uint8_t colorPosition = Foreground) {
+void Led::setbySecondArray(uint8_t colorPosition) {
     Color displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
@@ -268,7 +285,7 @@ void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
 
 void Led::set(bool changed) {
     setbyFrontMatrix(Foreground);
-    setbyFrontMatrix(Background);
+    setbyFrontMatrix(Background, false);
 
     if (G.minuteVariant != MinuteVariant::Off) {
         setbyMinuteArray(Foreground);
@@ -391,7 +408,7 @@ void Led::showNumbers(const char d1, const char d2) {
         }
     }
 
-    mirrorFrontMatrixVertical();
+    mirrorFrontMatrixVertical(); // Needed for correct displaying of Chars
     setbyFrontMatrix(Effect);
     show();
 }
@@ -443,7 +460,7 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
         }
     }
 
-    mirrorFrontMatrixVertical();
+    mirrorFrontMatrixVertical(); // Needed for correct displaying of Chars
     setbyFrontMatrix(Effect);
     show();
 }
