@@ -33,15 +33,15 @@ public:
     //------------------------------------------------------------------------------
 
     virtual const uint16_t getFrameMatrixIndex(uint16_t index) override {
-        return 114 + index;
+        return rowsWordMatrix() * colsWordMatrix() + 4 /* Minutes */ + index;
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const void getMinuteArray(uint16_t *returnArr,
-                                      uint8_t col) override {
+    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col,
+                                      bool doubleRes = false) override {
         for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = 110 + i;
+            returnArr[i] = rowsWordMatrix() * colsWordMatrix() + i;
         }
     };
 };

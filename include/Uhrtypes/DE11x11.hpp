@@ -27,15 +27,18 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const void getMinuteArray(uint16_t *returnArr,
-                                      uint8_t col) override {
+    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col,
+                                      bool doubleRes = false) override {
+
+        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
+
         for (uint8_t i = 0; i < 4; i++) {
             switch (col) {
             case 0: // LEDs for "LED4x" minute display
-                returnArr[i] = numPixels() - (7 - i);
+                returnArr[i] = numPixelsWordMatrix + i;
                 break;
             case 1: // LEDs for "LED7x" minute display
-                returnArr[i] = numPixels() - (7 - (i * 2));
+                returnArr[i] = numPixelsWordMatrix + (i * 2);
                 break;
             case 2: // LEDs für "Corners" type minute display
                 returnArr[i] = 110 + i;

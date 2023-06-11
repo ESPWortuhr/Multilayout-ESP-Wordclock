@@ -148,26 +148,45 @@ public:
 
     virtual const bool hasSecondsFrame() { return false; }
 
-    virtual const uint16_t getFrontMatrixIndex(uint8_t row, uint8_t col) {
+    virtual const uint16_t getFrontMatrixIndex(const uint8_t row, uint8_t col,
+                                               bool doubleRes = false) {
+
+        uint8_t newColsWordMatrix = colsWordMatrix();
+        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
+
+        if (true) {
+            newColsWordMatrix = 2 * colsWordMatrix() - 1;
+            numPixelsWordMatrix = rowsWordMatrix() * (colsWordMatrix() * 2 - 1);
+            col *= 2;
+        }
         if (row % 2 != 0) {
-            col = colsWordMatrix() - col - 1;
+            col = newColsWordMatrix - col - 1;
         }
         uint16_t returnValue = col + (row * colsWordMatrix());
-        if (returnValue > (rowsWordMatrix() * colsWordMatrix())) {
+
+        if (returnValue > numPixelsWordMatrix) {
             Serial.println(
                 "[ERROR] getFrontMatrixIndex() returnValue out of Bounds");
         }
+
         return returnValue;
     };
 
-    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
+    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col,
+                                      bool doubleRes = false) {
+        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
+
+        if (true) {
+            numPixelsWordMatrix = rowsWordMatrix() * (colsWordMatrix() * 2 - 1);
+        }
+
         for (uint8_t i = 0; i < 4; i++) {
             switch (col) {
             case 0: // LEDs for "LED4x" minute display
-                returnArr[i] = rowsWordMatrix() * colsWordMatrix() + i;
+                returnArr[i] = numPixelsWordMatrix + i;
                 break;
             case 1: // LEDs for "LED7x" minute display
-                returnArr[i] = rowsWordMatrix() * colsWordMatrix() + i * 2;
+                returnArr[i] = numPixelsWordMatrix + i * 2;
                 break;
 
             default:
