@@ -200,18 +200,19 @@ void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
     Color displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
-    uint16_t numPixelsWordMatrix =
-        usedUhrType->rowsWordMatrix() * usedUhrType->colsWordMatrix();
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
 
-    for (uint16_t i = 0; i < numPixelsWordMatrix; i++) {
-        bool boolSetPixel = usedUhrType->getFrontMatrixPixel(i);
-        if (colorPosition == Background) {
-            boolSetPixel = !boolSetPixel;
-        }
-        if (boolSetPixel) {
-            setPixel(i, displayedColor);
-        } else if (colorPosition != Background) {
-            clearPixel(i);
+            bool boolSetPixel = usedUhrType->getFrontMatrixPixel(row, col);
+            if (colorPosition == Background) {
+                boolSetPixel = !boolSetPixel;
+            }
+
+            if (boolSetPixel) {
+                setPixel(row, col, displayedColor);
+            } else if (colorPosition != Background) {
+                clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
+            }
         }
     }
 }

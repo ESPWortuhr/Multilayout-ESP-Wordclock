@@ -119,7 +119,7 @@ public:
     }
 
     virtual bool getFrontMatrixPixel(const uint8_t row, const uint8_t col) {
-        return (frontMatrix[row] >> col) & 1U;
+        return (frontMatrix[row] >> (colsWordMatrix() - 1 - col)) & 1U;
     }
 
     virtual void show(FrontWord word) = 0;
