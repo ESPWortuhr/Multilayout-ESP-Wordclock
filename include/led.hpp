@@ -178,6 +178,21 @@ void Led::setPixel(uint16_t ledIndex, Color color) {
 
 //------------------------------------------------------------------------------
 
+void Led::setPixel(uint8_t row, uint8_t col, Color color) {
+    if (G.Colortype == Grbw) {
+        RgbColor rgbColor = RgbColor(color.hsb);
+
+        strip_RGBW->SetPixelColor(
+            usedUhrType->getFrontMatrixIndex(row, col),
+            RgbwColor(rgbColor.R, rgbColor.G, rgbColor.B, color.alpha));
+    } else {
+        strip_RGB->SetPixelColor(usedUhrType->getFrontMatrixIndex(row, col),
+                                 color.hsb);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
@@ -185,7 +200,10 @@ void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
     Color displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
-    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
+    uint16_t numPixelsWordMatrix =
+        usedUhrType->rowsWordMatrix() * usedUhrType->colsWordMatrix();
+
+    for (uint16_t i = 0; i < numPixelsWordMatrix; i++) {
         bool boolSetPixel = usedUhrType->getFrontMatrixPixel(i);
         if (colorPosition == Background) {
             boolSetPixel = !boolSetPixel;
@@ -326,25 +344,29 @@ inline void Led::clearPixel(uint16_t i) {
 //------------------------------------------------------------------------------
 
 inline void Led::clearClock() {
-    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        usedUhrType->setFrontMatrixPixel(i, false);
-        clearPixel(usedUhrType->getWordMatrixIndex(i));
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
+            usedUhrType->setFrontMatrixPixel(row, col, false);
+            clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
+        }
     }
 }
 
 //------------------------------------------------------------------------------
 
 inline void Led::clearRow(uint8_t row) {
-    for (uint8_t i = 0; i < usedUhrType->colsWordMatrix(); i++) {
-        usedUhrType->setFrontMatrixPixel(row, i, false);
-        clearPixel(usedUhrType->getFrontMatrixIndex(row, i));
+    for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
+        usedUhrType->setFrontMatrixPixel(row, col, false);
+        clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
     }
 }
 
 //------------------------------------------------------------------------------
 
 inline void Led::clearMinArray() {
-    for (uint16_t i = usedUhrType->numPixelsWordMatrix();
+    uint16_t numPixelsWordMatrix =
+        usedUhrType->rowsWordMatrix() * usedUhrType->colsWordMatrix();
+    for (uint16_t i = numPixelsWordMatrix;
          i < usedUhrType->numPixels() - usedUhrType->numPixelsFrameMatrix();
          i++) {
         clearPixel(i);
