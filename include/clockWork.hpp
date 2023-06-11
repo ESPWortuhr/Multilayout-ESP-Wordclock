@@ -111,8 +111,11 @@ uint32_t ClockWork::num32BitWithOnesAccordingToColumns() {
 void ClockWork::rainbow() {
     static uint16_t hue = 0;
 
-    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        led.setPixel(i, HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
+            led.setPixel(row, col,
+                         HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
+        }
     }
     led.show();
     hue++;
@@ -123,15 +126,19 @@ void ClockWork::rainbow() {
 
 void ClockWork::rainbowCycle() {
     static uint16_t hue = 0;
+    uint16_t numPixelsWordMatrix =
+        usedUhrType->rowsWordMatrix() * usedUhrType->colsWordMatrix();
     uint16_t displayedHue;
 
     displayedHue = hue;
-    for (uint16_t i = 0; i < usedUhrType->numPixelsWordMatrix(); i++) {
-        led.setPixel(usedUhrType->getWordMatrixIndex(i),
-                     HsbColor(displayedHue / 360.f, 1.f, G.effectBri / 100.f));
-        displayedHue =
-            displayedHue + 360.f / usedUhrType->numPixelsWordMatrix();
-        led.checkIfHueIsOutOfBound(displayedHue);
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
+            led.setPixel(
+                row, col,
+                HsbColor(displayedHue / 360.f, 1.f, G.effectBri / 100.f));
+            displayedHue = displayedHue + 360.f / numPixelsWordMatrix;
+            led.checkIfHueIsOutOfBound(displayedHue);
+        }
     }
     led.show();
     hue++;

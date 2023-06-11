@@ -128,17 +128,11 @@ public:
 
     virtual inline const uint16_t numPixels() { return 117; }
 
-    virtual inline const uint16_t numPixelsWordMatrix() {
-        return rowsWordMatrix() * colsWordMatrix();
-    }
-
     virtual inline const uint8_t numPixelsFrameMatrix() { return 0; }
 
     virtual inline const uint8_t rowsWordMatrix() { return 10; }
 
     virtual inline const uint8_t colsWordMatrix() { return 11; }
-
-    virtual const uint16_t getWordMatrixIndex(uint16_t index) { return index; }
 
     virtual const uint16_t getFrameMatrixIndex(uint16_t index) { return 0; }
 
@@ -159,8 +153,9 @@ public:
             col = colsWordMatrix() - col - 1;
         }
         uint16_t returnValue = col + (row * colsWordMatrix());
-        if (returnValue > numPixels()) {
-            Serial.println("[ERROR] getMatrix() ReturnValue out of Bounds");
+        if (returnValue > (rowsWordMatrix() * colsWordMatrix())) {
+            Serial.println(
+                "[ERROR] getFrontMatrixIndex() returnValue out of Bounds");
         }
         return returnValue;
     };
@@ -169,10 +164,10 @@ public:
         for (uint8_t i = 0; i < 4; i++) {
             switch (col) {
             case 0: // LEDs for "LED4x" minute display
-                returnArr[i] = numPixels() - (7 - i);
+                returnArr[i] = rowsWordMatrix() * colsWordMatrix() + i;
                 break;
             case 1: // LEDs for "LED7x" minute display
-                returnArr[i] = numPixels() - (7 - (i * 2));
+                returnArr[i] = rowsWordMatrix() * colsWordMatrix() + i * 2;
                 break;
 
             default:
