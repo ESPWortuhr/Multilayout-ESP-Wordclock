@@ -80,8 +80,7 @@ void ClockWork::initLedStrip(uint8_t num) {
             strip_RGB = NULL;
         }
         if (strip_RGBW == NULL) {
-            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
-                usedUhrType->numPixels());
+            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(500);
             strip_RGBW->Begin();
         }
     } else {
@@ -91,8 +90,7 @@ void ClockWork::initLedStrip(uint8_t num) {
             strip_RGBW = NULL;
         }
         if (strip_RGB == NULL) {
-            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(
-                usedUhrType->numPixels());
+            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(500);
             strip_RGB->Begin();
         }
     }
