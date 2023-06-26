@@ -27,8 +27,8 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col,
-                                      bool doubleRes = false) override {
+    virtual const void getMinuteArray(uint16_t *returnArr,
+                                      uint8_t col) override {
 
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 

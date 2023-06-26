@@ -858,6 +858,7 @@ void ClockWork::loop(struct tm &tm) {
         config["cityid"] = G.openWeatherMap.cityid;
         config["apikey"] = G.openWeatherMap.apikey;
         config["colortype"] = G.Colortype;
+        config["buildtype"] = static_cast<uint8_t>(G.buildTypeDef);
         config["UhrtypeDef"] = G.UhrtypeDef;
         config["bootLedBlink"] = G.bootLedBlink;
         config["bootLedSweep"] = G.bootLedSweep;
@@ -947,6 +948,19 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_BOOT: {
         eeprom::write();
         delay(100);
+        break;
+    }
+
+    case COMMAND_SET_BUILDTYPE: {
+        led.clear();
+
+        // G.param1 sets new buildtype
+        Serial.printf("Clock Buildtype: %u\n", G.param1);
+
+        G.buildTypeDef = static_cast<BuildTypeDef>(G.param1);
+        eeprom::write();
+        led.clear();
+        parametersChanged = true;
         break;
     }
 

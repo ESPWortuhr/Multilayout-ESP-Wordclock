@@ -148,21 +148,20 @@ public:
 
     virtual const bool hasSecondsFrame() { return false; }
 
-    virtual const uint16_t getFrontMatrixIndex(const uint8_t row, uint8_t col,
-                                               bool doubleRes = false) {
+    virtual const uint16_t getFrontMatrixIndex(const uint8_t row, uint8_t col) {
 
         uint8_t newColsWordMatrix = colsWordMatrix();
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 
-        if (true) {
-            newColsWordMatrix = 2 * colsWordMatrix() - 1;
-            numPixelsWordMatrix = rowsWordMatrix() * (colsWordMatrix() * 2 - 1);
+        if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
+            newColsWordMatrix = 2 * colsWordMatrix() - 1; //21
+            numPixelsWordMatrix = rowsWordMatrix() * newColsWordMatrix;
             col *= 2;
         }
         if (row % 2 != 0) {
             col = newColsWordMatrix - col - 1;
         }
-        uint16_t returnValue = col + (row * colsWordMatrix());
+        uint16_t returnValue = col + (row * newColsWordMatrix);
 
         if (returnValue > numPixelsWordMatrix) {
             Serial.println(
@@ -172,11 +171,10 @@ public:
         return returnValue;
     };
 
-    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col,
-                                      bool doubleRes = false) {
+    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 
-        if (true) {
+        if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
             numPixelsWordMatrix = rowsWordMatrix() * (colsWordMatrix() * 2 - 1);
         }
 

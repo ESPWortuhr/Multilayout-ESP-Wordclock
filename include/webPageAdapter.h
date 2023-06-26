@@ -436,6 +436,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+        case COMMAND_SET_BUILDTYPE: {
+            G.conf = COMMAND_SET_BUILDTYPE;
+            G.progInit = true;
+            G.param1 = split(payload, 3);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
         case COMMAND_SET_UHRTYPE: {
             G.conf = COMMAND_SET_UHRTYPE;
             G.UhrtypeDef = split(payload, 3);

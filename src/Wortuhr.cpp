@@ -196,6 +196,7 @@ void setup() {
         strcpy(G.mqtt.topic, "ESPWordclock");
 
         G.UhrtypeDef = DEFAULT_LAYOUT;
+        G.buildTypeDef = DEFAULT_BUILDTYPE;
         G.Colortype = DEFAULT_LEDTYPE;
         G.bootLedBlink = false;
         G.bootLedSweep = BOOT_LEDSWEEP;

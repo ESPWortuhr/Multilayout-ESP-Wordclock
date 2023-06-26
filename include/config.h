@@ -78,6 +78,32 @@
 #define DEFAULT_LEDTYPE Brg
 
 //--------------------------------------------------------------------------
+// Define Build Type
+//--------------------------------------------------------------------------
+/*
+ * There are several ways to build wordclocks:
+ *
+ * For small and mediumsized wordclocks, each LED is used in a strip, such as.
+ *
+ * [x x x x x x x x] = (Normal)
+ *
+ * Some variants of wordclocks (mostly midsized - 40x40 cm) rely on Ledstripes
+ * with 74LEDs/m with one LED skipped for the Frontmatrix. It is build with 21
+ * LEDs per line, for example:
+ *
+ * [x - x - x - x - x - x - x - x - x] = (DoubleResM1)
+ *
+ * For larger wordclocks (80x80 cm and more) you might need two LEDs
+ * per character, so 22 LEDs per line.
+ *
+ * [(x x)(x x)(x x)(x x)(x x)(x x)(x x)(x x)(x x)(x x)] = (DoubleRes)
+ *
+ * Valid values:
+ * [BuildTypeDef::Normal, BuildTypeDef::DoubleResM1, BuildTypeDef::DoubleRes]
+ */
+#define DEFAULT_BUILDTYPE BuildTypeDef::Normal
+
+//--------------------------------------------------------------------------
 // Define External Realtime Clock
 //--------------------------------------------------------------------------
 /*
@@ -146,9 +172,9 @@
 /*
  * Valid values [only one #define option]
  */
-//#define MINUTE_Off
+// #define MINUTE_Off
 #define MINUTE_LED4x
-//#define MINUTE_LED7x
+// #define MINUTE_LED7x
 
 //--------------------------------------------------------------------------
 // Front Displaying Options
