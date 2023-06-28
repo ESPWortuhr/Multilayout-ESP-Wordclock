@@ -11,7 +11,9 @@
 
 //------------------------------------------------------------------------------
 
-class NeoMultiFeature : public Neo3ByteElementsNoSettings {
+class NeoMultiFeature
+    : public Neo3ByteFeature<ColorIndexR, ColorIndexG, ColorIndexB>,
+      public NeoElementsNoSettings {
 protected:
     static uint8_t _colortype;
 
