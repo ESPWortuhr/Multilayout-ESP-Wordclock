@@ -93,9 +93,8 @@ enum class FrontWord {
 
 class iUhrType {
 public:
-    virtual void setFrontMatrixPixel(const int index, bool state = true) {
-        uint8_t col, row;
-        getFrontMatrixColRow(row, col, index);
+    virtual void setFrontMatrixPixel(const int row, const int col,
+                                     bool state = true) {
         if (state) {
             frontMatrix[row] |= 1UL << col;
         } else {
@@ -103,12 +102,10 @@ public:
         }
     }
 
-    virtual void setFrontMatrixPixel(const int row, const int col,
-                                     bool state = true) {
-        if (state) {
-            frontMatrix[row] |= 1UL << col;
-        } else {
-            frontMatrix[row] &= ~(1UL << col);
+    virtual void setFrontMatrixWord(const uint8_t row, const uint8_t colStart,
+                                    const uint8_t colEnd) {
+        for (uint8_t i = colStart; i <= colEnd; i++) {
+            setFrontMatrixPixel(row, i);
         }
     }
 
