@@ -125,7 +125,7 @@
  *
  * Valid values [0 ... 255]
  */
-#define SERNR 30
+#define SERNR 31
 
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output
