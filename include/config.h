@@ -93,13 +93,9 @@
  *
  * [x - x - x - x - x - x - x - x - x] = (DoubleResM1)
  *
- * For larger wordclocks (80x80 cm and more) you might need two LEDs
- * per character, so 22 LEDs per line.
- *
- * [(x x)(x x)(x x)(x x)(x x)(x x)(x x)(x x)(x x)(x x)] = (DoubleRes)
  *
  * Valid values:
- * [BuildTypeDef::Normal, BuildTypeDef::DoubleResM1, BuildTypeDef::DoubleRes]
+ * [BuildTypeDef::Normal, BuildTypeDef::DoubleResM1]
  */
 #define DEFAULT_BUILDTYPE BuildTypeDef::Normal
 
