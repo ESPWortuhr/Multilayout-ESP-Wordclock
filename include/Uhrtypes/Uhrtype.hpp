@@ -126,8 +126,6 @@ public:
 
     virtual LanguageAbbreviation usedLang() = 0;
 
-    virtual inline const uint16_t numPixels() { return 117; }
-
     virtual inline const uint8_t numPixelsFrameMatrix() { return 0; }
 
     virtual inline const uint8_t rowsWordMatrix() { return 10; }
@@ -154,7 +152,7 @@ public:
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 
         if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
-            newColsWordMatrix = 2 * colsWordMatrix() - 1; //21
+            newColsWordMatrix = 2 * colsWordMatrix() - 1; // 21
             numPixelsWordMatrix = rowsWordMatrix() * newColsWordMatrix;
             col *= 2;
         }
