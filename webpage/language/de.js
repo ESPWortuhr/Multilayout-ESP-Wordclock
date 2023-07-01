@@ -162,6 +162,13 @@ let TRANSLATION_DE_DE = {
 			"sk6812-brgw": "SK6812 RGBW",
 			"save": "Einstellung speichern"
 		},
+		"whitetype": {
+			"h2": "Typ der Weiß LED",
+			"in-border": "Einstellung des Types der Weißen LED des RGBW Stripes",
+			"ww": "Warmweiß",
+			"nw": "Neutralweiß",
+			"cw": "Kaltweiß"
+		},
 		"time-server": {
 			"h2": "Zeitserver",
 			"label": "Zeitserver",

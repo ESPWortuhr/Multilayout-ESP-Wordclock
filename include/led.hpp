@@ -13,6 +13,10 @@ extern NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW;
 extern iUhrType *usedUhrType;
 extern Animation *animation;
 
+const uint8_t whiteAdjR[3] = {255, 255, 255};
+const uint8_t whiteAdjG[3] = {180, 215, 107};
+const uint8_t whiteAdjB[3] = {107, 177, 253};
+
 //------------------------------------------------------------------------------
 // Helper Functions
 //------------------------------------------------------------------------------
@@ -74,6 +78,37 @@ void Led::applyMirroringAndReverseIfDefined() {
     if (G.layoutVariant[MirrorHorizontal]) {
         led.mirrorFrontMatrixHorizontal();
     }
+}
+
+//------------------------------------------------------------------------------
+
+RgbwColor convertRgbToRgbw(RgbColor light, WhiteType wType) {
+    RgbwColor returnColor;
+
+    // These values are what the 'white' value would need to
+    // be to get the corresponding color value.
+    float whiteValueR =
+        light.R * 255.0 / whiteAdjR[static_cast<uint8_t>(wType)];
+    float whiteValueG =
+        light.G * 255.0 / whiteAdjG[static_cast<uint8_t>(wType)];
+    float whiteValueB =
+        light.B * 255.0 / whiteAdjB[static_cast<uint8_t>(wType)];
+
+    // Set the white value to the highest it can be for the given color
+    // (without over saturating any channel - thus the minimum of them).
+    float minValW = min(whiteValueR, min(whiteValueG, whiteValueB));
+    returnColor.W = (minValW <= 255 ? (uint8_t)minValW : 255);
+
+    // The rest of the channels will just be the original value minus the
+    // contribution by the white channel.
+    returnColor.R = static_cast<uint8_t>(
+        light.R - minValW * whiteAdjR[static_cast<uint8_t>(wType)] / 255);
+    returnColor.G = static_cast<uint8_t>(
+        light.G - minValW * whiteAdjG[static_cast<uint8_t>(wType)] / 255);
+    returnColor.B = static_cast<uint8_t>(
+        light.B - minValW * whiteAdjB[static_cast<uint8_t>(wType)] / 255);
+
+    return returnColor;
 }
 
 //------------------------------------------------------------------------------
@@ -167,10 +202,8 @@ void Led::shiftColumnToRight() {
 
 void Led::setPixel(uint16_t ledIndex, Color color) {
     if (G.Colortype == Grbw) {
-        RgbColor rgbColor = RgbColor(color.hsb);
-
-        strip_RGBW->SetPixelColor(ledIndex, RgbwColor(rgbColor.R, rgbColor.G,
-                                                      rgbColor.B, color.alpha));
+        strip_RGBW->SetPixelColor(
+            ledIndex, convertRgbToRgbw(RgbColor(color.hsb), G.wType));
     } else {
         strip_RGB->SetPixelColor(ledIndex, color.hsb);
     }
@@ -179,16 +212,7 @@ void Led::setPixel(uint16_t ledIndex, Color color) {
 //------------------------------------------------------------------------------
 
 void Led::setPixel(uint8_t row, uint8_t col, Color color) {
-    if (G.Colortype == Grbw) {
-        RgbColor rgbColor = RgbColor(color.hsb);
-
-        strip_RGBW->SetPixelColor(
-            usedUhrType->getFrontMatrixIndex(row, col),
-            RgbwColor(rgbColor.R, rgbColor.G, rgbColor.B, color.alpha));
-    } else {
-        strip_RGB->SetPixelColor(usedUhrType->getFrontMatrixIndex(row, col),
-                                 color.hsb);
-    }
+    setPixel(usedUhrType->getFrontMatrixIndex(row, col), color);
 }
 
 //------------------------------------------------------------------------------

@@ -43,6 +43,12 @@ struct MqttData {
     uint16_t port;
 };
 
+enum class WhiteType {
+    WarmWhite = 0,
+    NeutralWhite = 1,
+    ColdWhite = 2,
+};
+
 struct OpenWeatherMapData {
     char apikey[35];
     char cityid[8];
@@ -129,6 +135,7 @@ struct GLOBAL {
     uint8_t UhrtypeDef;
     BuildTypeDef buildTypeDef;
     uint8_t Colortype;
+    WhiteType wType;
 
     MqttData mqtt;
 
@@ -229,6 +236,7 @@ enum CommandWords {
     COMMAND_SET_COLORTYPE = 88,
     COMMAND_SET_UHRTYPE = 89,
     COMMAND_SET_WEATHER_DATA = 90,
+    COMMAND_SET_WHITETYPE = 91,
     COMMAND_SET_HOSTNAME = 92,
     COMMAND_SET_SETTING_SECOND = 93,
     COMMAND_SET_MINUTE = 94,
