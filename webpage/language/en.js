@@ -89,7 +89,11 @@ let TRANSLATION_EN_US = {
 			"nl-10-11": "Dutch 10 × 11",
 			"invert-min-dir": "Invert Minute Counting Direction",
 			"mirror-vertically": "Mirror Word Clock Vertically",
-			"mirror-horizontally": "Mirror Word Clock Horizontally"
+			"mirror-horizontally": "Mirror Word Clock Horizontally",
+			"buildtype": "Buildtype",
+			"normal": "Each LED corresponds to one letter",
+			"doubleResM1": "Every second LED corresponds to one letter",
+			"doubleRes": "Two LEDs per letter"
 		},
 		"language": {
 			"h2": "Language",

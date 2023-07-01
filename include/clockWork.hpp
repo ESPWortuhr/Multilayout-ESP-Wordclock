@@ -80,8 +80,7 @@ void ClockWork::initLedStrip(uint8_t num) {
             strip_RGB = NULL;
         }
         if (strip_RGBW == NULL) {
-            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
-                usedUhrType->numPixels());
+            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(500);
             strip_RGBW->Begin();
         }
     } else {
@@ -91,8 +90,7 @@ void ClockWork::initLedStrip(uint8_t num) {
             strip_RGBW = NULL;
         }
         if (strip_RGB == NULL) {
-            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(
-                usedUhrType->numPixels());
+            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(500);
             strip_RGB->Begin();
         }
     }
@@ -860,6 +858,7 @@ void ClockWork::loop(struct tm &tm) {
         config["cityid"] = G.openWeatherMap.cityid;
         config["apikey"] = G.openWeatherMap.apikey;
         config["colortype"] = G.Colortype;
+        config["buildtype"] = static_cast<uint8_t>(G.buildTypeDef);
         config["UhrtypeDef"] = G.UhrtypeDef;
         config["bootLedBlink"] = G.bootLedBlink;
         config["bootLedSweep"] = G.bootLedSweep;
@@ -949,6 +948,19 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_BOOT: {
         eeprom::write();
         delay(100);
+        break;
+    }
+
+    case COMMAND_SET_BUILDTYPE: {
+        led.clear();
+
+        // G.param1 sets new buildtype
+        Serial.printf("Clock Buildtype: %u\n", G.param1);
+
+        G.buildTypeDef = static_cast<BuildTypeDef>(G.param1);
+        eeprom::write();
+        led.clear();
+        parametersChanged = true;
         break;
     }
 

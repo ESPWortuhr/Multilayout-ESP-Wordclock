@@ -89,7 +89,11 @@ let TRANSLATION_DE_DE = {
 			"nl-10-11": "Niederländisch 10 × 11",
 			"invert-min-dir": "Minutenzählrichtung invertieren",
 			"mirror-vertically": "Wortuhr vertikal spiegeln",
-			"mirror-horizontally": "Wortuhr horizontal spiegeln"
+			"mirror-horizontally": "Wortuhr horizontal spiegeln",
+			"buildtype": "Bauart",
+			"normal": "Jede LED entspricht einem Buchstaben",
+			"doubleResM1": "Jede zweite LED entspricht einem Buchstaben",
+			"doubleRes": "Je zwei LEDs pro Buchstabe"
 		},
 		"language": {
 			"h2": "Sprache",

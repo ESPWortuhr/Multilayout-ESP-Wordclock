@@ -48,6 +48,12 @@ struct OpenWeatherMapData {
     char cityid[8];
 };
 
+enum class BuildTypeDef {
+    Normal = 0,
+    DoubleResM1 = 1,
+    DoubleRes = 2,
+};
+
 enum class MinuteVariant {
     Off = 0,
     LED4x = 1,
@@ -121,6 +127,7 @@ struct GLOBAL {
     uint8_t h24;
 
     uint8_t UhrtypeDef;
+    BuildTypeDef buildTypeDef;
     uint8_t Colortype;
 
     MqttData mqtt;
@@ -217,7 +224,8 @@ enum CommandWords {
 
     COMMAND_SET_LANGUAGE_VARIANT = 84,
     COMMAND_SET_MQTT = 85,
-    COMMAND_SET_TIME_MANUAL = 86, /* 87 is unused */
+    COMMAND_SET_TIME_MANUAL = 86,
+    COMMAND_SET_BUILDTYPE = 87,
     COMMAND_SET_COLORTYPE = 88,
     COMMAND_SET_UHRTYPE = 89,
     COMMAND_SET_WEATHER_DATA = 90,

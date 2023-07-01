@@ -89,7 +89,11 @@ let TRANSLATION_NL = {
 			"nl-10-11": "Nederlands 10 × 11",
 			"invert-min-dir": "Draai minuutrichting om",
 			"mirror-vertically": "Spiegel Woordklok verticaal",
-			"mirror-horizontally": "Spiegel Woordklok horizontaal"
+			"mirror-horizontally": "Spiegel Woordklok horizontaal",
+			"buildtype": "bouwtype",
+			"normal": "Elke LED komt overeen met een letter",
+			"doubleResM1": "Elke tweede LED komt overeen met een letter",
+			"doubleRes": "Twee LED's per letter"
 		},
 		"language": {
 			"h2": "Taal",

@@ -69,6 +69,7 @@ var layVar = [0, 0, 0];
 var showSeconds = 0;
 var showMinutes = 0;
 var UhrtypeDef = 0;
+var buildtype = 0;
 var colortype = 0;
 var MQTTState = 0;
 var MQTTPort = 0;
@@ -124,7 +125,8 @@ var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
 var COMMAND_SET_LANGUAGE_VARIANT = 84;
 var COMMAND_SET_MQTT = 85;
-var COMMAND_SET_TIME_MANUAL = 86; /* 87 is unused */
+var COMMAND_SET_TIME_MANUAL = 86;
+var COMMAND_SET_BUILDTYPE = 87;
 var COMMAND_SET_COLORTYPE = 88;
 var COMMAND_SET_UHRTYPE = 89;
 var COMMAND_SET_WEATHER_DATA = 90;
@@ -203,6 +205,7 @@ function initConfigValues() {
 	layVar = [0, 0, 0];
 	showSeconds = 0;
 	showMinutes = 0;
+	buildtype = 0;
 	UhrtypeDef = 0;
 	colortype = 0;
 	MQTTState = 0;
@@ -365,6 +368,7 @@ function initWebsocket() {
 			$("#owm-city-id").set("value", data.cityid);
 
 			$("#front-layout").set("value", data.UhrtypeDef);
+			$("#buildtype").set("value", data.buildtype);
 			$("#colortype").set("value", data.colortype);
 
 			document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
@@ -987,5 +991,11 @@ $.ready(function() {
 
 		sendCmd(COMMAND_SET_LAYOUT_VARIANT, nstr(layVar[0]) + nstr(layVar[1]) + nstr(layVar[2]));
 		debugMessage("layVar" + debugMessageReconfigured);
+	});
+	$("[id*='buildtype']").on("change", function() {
+		buildtype = $("#buildtype").get("value");
+
+		sendCmd(COMMAND_SET_BUILDTYPE, nstr(buildtype));
+		debugMessage("buildtype" + debugMessageReconfigured);
 	});
 });
