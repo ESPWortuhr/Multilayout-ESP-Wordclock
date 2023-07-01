@@ -92,8 +92,8 @@ let TRANSLATION_NL = {
 			"mirror-horizontally": "Spiegel Woordklok horizontaal",
 			"buildtype": "bouwtype",
 			"normal": "Elke LED komt overeen met een letter",
-			"DoubleResM1": "Elke tweede LED komt overeen met een letter",
-			"DoubleRes": "Twee LED's per letter"
+			"doubleResM1": "Elke tweede LED komt overeen met een letter",
+			"doubleRes": "Twee LED's per letter"
 		},
 		"language": {
 			"h2": "Taal",

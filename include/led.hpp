@@ -276,16 +276,27 @@ void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100) {
 
 void Led::setSingle(uint8_t wait) {
     uint16_t hue;
+    uint16_t counterLed = 0;
+    uint16_t numPixelsWordMatrix =
+        usedUhrType->rowsWordMatrix() * usedUhrType->colsWordMatrix();
 
-    for (uint16_t i = 0; i < usedUhrType->numPixels(); i++) {
-        hue = 360.f * i / (usedUhrType->numPixels() - 1);
-        hue = hue + 360.f / usedUhrType->numPixels();
-        checkIfHueIsOutOfBound(hue);
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
+            hue = 360.f * counterLed / numPixelsWordMatrix;
+            checkIfHueIsOutOfBound(hue);
 
-        clear();
-        setPixel(i, HsbColor(hue / 360.f, 1.f, 1.f));
-        show();
-        delay(wait);
+            clear();
+            if (row % 2 != 0) {
+                led.setPixel(row, usedUhrType->colsWordMatrix() - 1 - col,
+                             HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
+            } else {
+                led.setPixel(row, col,
+                             HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
+            }
+            show();
+            delay(wait);
+            counterLed++;
+        }
     }
 }
 
@@ -365,10 +376,8 @@ inline void Led::clearRow(uint8_t row) {
 //------------------------------------------------------------------------------
 
 inline void Led::clearMinArray() {
-    uint16_t numPixelsWordMatrix =
-        usedUhrType->rowsWordMatrix() * usedUhrType->colsWordMatrix();
-    for (uint16_t i = numPixelsWordMatrix;
-         i < usedUhrType->numPixels() - usedUhrType->numPixelsFrameMatrix();
+    for (uint16_t i = minutePixelArray[0];
+         i <= minutePixelArray[3] - usedUhrType->numPixelsFrameMatrix();
          i++) {
         clearPixel(i);
     }

@@ -92,8 +92,8 @@ let TRANSLATION_DE_DE = {
 			"mirror-horizontally": "Wortuhr horizontal spiegeln",
 			"buildtype": "Bauart",
 			"normal": "Jede LED entspricht einem Buchstaben",
-			"DoubleResM1": "Jede zweite LED entspricht einem Buchstaben",
-			"DoubleRes": "Je zwei LEDs pro Buchstabe"
+			"doubleResM1": "Jede zweite LED entspricht einem Buchstaben",
+			"doubleRes": "Je zwei LEDs pro Buchstabe"
 		},
 		"language": {
 			"h2": "Sprache",

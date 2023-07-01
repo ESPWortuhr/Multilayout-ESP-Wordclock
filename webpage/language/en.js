@@ -92,8 +92,8 @@ let TRANSLATION_EN_US = {
 			"mirror-horizontally": "Mirror Word Clock Horizontally",
 			"buildtype": "Buildtype",
 			"normal": "Each LED corresponds to one letter",
-			"DoubleResM1": "Every second LED corresponds to one letter",
-			"DoubleRes": "Two LEDs per letter"
+			"doubleResM1": "Every second LED corresponds to one letter",
+			"doubleRes": "Two LEDs per letter"
 		},
 		"language": {
 			"h2": "Language",
