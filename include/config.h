@@ -69,13 +69,19 @@
 // Define LED Type
 //--------------------------------------------------------------------------
 /*
- * Currently only WS2812 or SK6812 LEDs are supported.
- * Different manufacturers use different layout, so you can change it
- * accordingly.
+ * So far, WS2812 or SK6812 LED strips are supported. Different manufacturers of
+ * these strips use different colour layouts, so you can adjust it accordingly
+ * with DEFAULT_LEDTYPE. If you have an RGBW LED strip, you can also use
+ * WHITE_LEDTYPE to specify the type of white LED used (WarmWhite (3000K),
+ * NeutralWhite (4300K) or ColdWhite (6500K)), in the case of RGB just leave it
+ * at NeutralWhite.
  *
- * Valid values [Brg, Grb, Rgb, Rbg, Grbw]
+ * Valid values for DEFAULT_LEDTYPE [Brg, Grb, Rgb, Rbg, Grbw]
+ *
+ * Valid values for WHITE_LEDTYPE [WarmWhite, NeutralWhite, ColdWhite]
  */
 #define DEFAULT_LEDTYPE Brg
+#define WHITE_LEDTYPE WhiteType::NeutralWhite
 
 //--------------------------------------------------------------------------
 // Define Build Type

@@ -859,6 +859,7 @@ void ClockWork::loop(struct tm &tm) {
         config["apikey"] = G.openWeatherMap.apikey;
         config["colortype"] = G.Colortype;
         config["buildtype"] = static_cast<uint8_t>(G.buildTypeDef);
+        config["wType"] = static_cast<uint8_t>(G.wType);
         config["UhrtypeDef"] = G.UhrtypeDef;
         config["bootLedBlink"] = G.bootLedBlink;
         config["bootLedSweep"] = G.bootLedSweep;
@@ -969,6 +970,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_AUTO_LDR:
     case COMMAND_SET_LANGUAGE_VARIANT:
     case COMMAND_SET_LAYOUT_VARIANT:
+    case COMMAND_SET_WHITETYPE:
     case COMMAND_SET_TIME_MANUAL: {
         eeprom::write();
         led.clear();

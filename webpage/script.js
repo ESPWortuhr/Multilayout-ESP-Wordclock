@@ -70,6 +70,7 @@ var showSeconds = 0;
 var showMinutes = 0;
 var UhrtypeDef = 0;
 var buildtype = 0;
+var wType = 0;
 var colortype = 0;
 var MQTTState = 0;
 var MQTTPort = 0;
@@ -130,6 +131,7 @@ var COMMAND_SET_BUILDTYPE = 87;
 var COMMAND_SET_COLORTYPE = 88;
 var COMMAND_SET_UHRTYPE = 89;
 var COMMAND_SET_WEATHER_DATA = 90;
+var COMMAND_SET_WHITETYPE = 91;
 var COMMAND_SET_HOSTNAME = 92;
 var COMMAND_SET_SETTING_SECOND = 93;
 var COMMAND_SET_MINUTE = 94;
@@ -206,6 +208,7 @@ function initConfigValues() {
 	showSeconds = 0;
 	showMinutes = 0;
 	buildtype = 0;
+	wType = 0;
 	UhrtypeDef = 0;
 	colortype = 0;
 	MQTTState = 0;
@@ -369,6 +372,7 @@ function initWebsocket() {
 
 			$("#front-layout").set("value", data.UhrtypeDef);
 			$("#buildtype").set("value", data.buildtype);
+			$("#whitetype").set("value", data.wType);
 			$("#colortype").set("value", data.colortype);
 
 			document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
@@ -997,5 +1001,11 @@ $.ready(function() {
 
 		sendCmd(COMMAND_SET_BUILDTYPE, nstr(buildtype));
 		debugMessage("buildtype" + debugMessageReconfigured);
+	});
+	$("[id*='whitetype']").on("change", function() {
+		wType = $("#whitetype").get("value");
+
+		sendCmd(COMMAND_SET_WHITETYPE, nstr(wType));
+		debugMessage("whitetype" + debugMessageReconfigured);
 	});
 });
