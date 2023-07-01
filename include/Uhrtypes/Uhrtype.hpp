@@ -93,13 +93,10 @@ enum class FrontWord {
 
 class iUhrType {
 public:
-    virtual void setFrontMatrixPixel(const int index, bool state = true) {
-        uint8_t col, row;
-        getFrontMatrixColRow(row, col, index);
-        if (state) {
-            frontMatrix[row] |= 1UL << col;
-        } else {
-            frontMatrix[row] &= ~(1UL << col);
+    virtual void setFrontMatrixWord(const uint8_t row, const uint8_t colStart,
+                                    const uint8_t colEnd) {
+        for (uint8_t i = colStart; i <= colEnd; i++) {
+            setFrontMatrixPixel(row, i);
         }
     }
 
@@ -110,12 +107,6 @@ public:
         } else {
             frontMatrix[row] &= ~(1UL << col);
         }
-    }
-
-    virtual bool getFrontMatrixPixel(const uint16_t index) {
-        uint8_t col, row;
-        getFrontMatrixColRow(row, col, index);
-        return (frontMatrix[row] >> col) & 1U;
     }
 
     virtual bool getFrontMatrixPixel(const uint8_t row, const uint8_t col) {
@@ -152,7 +143,7 @@ public:
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 
         if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
-            newColsWordMatrix = 2 * colsWordMatrix() - 1; // 21
+            newColsWordMatrix = 2 * colsWordMatrix() - 1;
             numPixelsWordMatrix = rowsWordMatrix() * newColsWordMatrix;
             col *= 2;
         }
@@ -188,15 +179,6 @@ public:
             default:
                 break;
             }
-        }
-    };
-
-    virtual const void getFrontMatrixColRow(uint8_t &row, uint8_t &col,
-                                            const uint16 index) {
-        row = index / colsWordMatrix();
-        col = index % colsWordMatrix();
-        if (row % 2 == 0) {
-            col = colsWordMatrix() - 1 - col;
         }
     };
 };
