@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DE10x11.2Clock.hpp"
+#include "DE10x11.2clock.hpp"
 
 /*
  *           Layout Front
