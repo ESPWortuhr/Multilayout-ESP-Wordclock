@@ -621,7 +621,7 @@ function getPaddedString(string, maxStringLength) {
 }
 
 function sendCmd(command, addData = "") {
-	var data = nstr(command) + addData + "999";
+	var data = nstr(command) + addData;
 	debugMessage("Send data: '" + data + "'");
 	websocket.send(data);
 }
