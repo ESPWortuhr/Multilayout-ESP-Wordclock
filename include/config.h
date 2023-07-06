@@ -44,6 +44,10 @@
 // 22 rows, each 11 LED's per row, with weather forecast on overall 242 LED's
 // based on design of Github user @Eisbaeeer
 //
+// #define DEFAULT_LAYOUT Ger16x8
+// 16 rows, each 8 LED's per row, based on a 16x16 presoldered WS2812b matrix
+// and a 3D printed case
+//
 // #define DEFAULT_LAYOUT Ger16x18
 // 16 rows, each 18 LED's per row, with the layout WordClock24h of
 // mikrocontroller.net

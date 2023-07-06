@@ -84,6 +84,7 @@ let TRANSLATION_EN_US = {
 			"de-11-11": "German 11 × 11",
 			"de-11-11-v2": "German 11 × 11 Version 2",
 			"de-22-11-weather": "German 10 × 11 Weather",
+			"de-16-8": "German 16 × 8",
 			"de-16-18": "German 16 × 18",
 			"en-10-11": "English 10 × 11",
 			"nl-10-11": "Dutch 10 × 11",
