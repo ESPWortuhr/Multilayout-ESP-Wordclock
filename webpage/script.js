@@ -475,13 +475,10 @@ function createColorPicker() {
 			options: { sliderType: "value" }
 		}, {
 			component: iro.ui.Slider,
-			options: { sliderType: "alpha" }
+			options: { sliderType: "kelvin" }
 		}]
 	});
 	colorPicker.on("input:change", changeColor);
-	// attach extra attribute to the alpha slider to only show it for RGBW LEDs
-	const alphaSlider = colorPicker.el.lastElementChild.lastElementChild;
-	alphaSlider.classList.add("specific-colortype-4");
 }
 
 /**
