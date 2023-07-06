@@ -280,13 +280,15 @@ void Led::setbySecondArray(uint8_t colorPosition) {
 //------------------------------------------------------------------------------
 
 void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100) {
+    uint8_t offsetCol = (usedUhrType->colsWordMatrix() - GRAFIK_11X10_COLS) / 2;
+
     for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
         for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
             if (pgm_read_word(&(grafik_11x10[num_icon][row])) &
                 (1 << (GRAFIK_11X10_COLS - 1 - col))) {
-                usedUhrType->setFrontMatrixPixel(row, col);
+                usedUhrType->setFrontMatrixPixel(row, col + offsetCol);
             } else {
-                usedUhrType->setFrontMatrixPixel(row, col, false);
+                usedUhrType->setFrontMatrixPixel(row, col + offsetCol, false);
             }
         }
     }
@@ -440,8 +442,9 @@ inline void Led::clear() {
 
 void Led::showNumbers(const char d1, const char d2) {
     clearClock();
-    static uint8_t offsetLetter0 = 0;
-    static uint8_t offsetLetter1 = fontWidth[normalSizeASCII] + 1;
+    static uint8_t offsetLetter0 =
+        usedUhrType->colsWordMatrix() / 2 - fontWidth[normalSizeASCII];
+    static uint8_t offsetLetter1 = usedUhrType->colsWordMatrix() / 2 + 1;
     uint8_t offsetRow =
         (usedUhrType->rowsWordMatrix() - fontHeight[normalSizeASCII]) / 2;
 
@@ -470,36 +473,37 @@ void Led::showNumbers(const char d1, const char d2) {
 
 void Led::showDigitalClock(const char min1, const char min0, const char h1,
                            const char h0) {
+
+    uint8_t letterSpacing = 1;
+    if (usedUhrType->rowsWordMatrix() >= fontHeight[smallSizeNumbers] * 2) {
+        letterSpacing++;
+    }
+
     // 1st Row of letters vertical Offset
-    static uint8_t offsetLetterH0 =
-        usedUhrType->colsWordMatrix() / 2 - fontWidth[smallSizeNumbers] - 1;
+    static uint8_t offsetLetterH0 = 0;
     static uint8_t offsetLetterH1 =
-        offsetLetterH0 + fontWidth[smallSizeNumbers] + 2;
+        offsetLetterH0 + fontWidth[smallSizeNumbers] + letterSpacing;
 
     // 2nd Row of letters vertical Offset
-    static uint8_t offsetLetterMin0 = 3;
     static uint8_t offsetLetterMin1 =
-        offsetLetterMin0 + fontWidth[smallSizeNumbers] + 2;
+        usedUhrType->colsWordMatrix() - fontWidth[smallSizeNumbers];
+    static uint8_t offsetLetterMin0 =
+        offsetLetterMin1 - fontWidth[smallSizeNumbers] - letterSpacing;
 
     // 1st Row of letters horizontal Offset
-    uint8_t offsetRow0 =
-        usedUhrType->rowsWordMatrix() / 2 - fontHeight[smallSizeNumbers];
+    uint8_t offsetRow0 = 0;
     // 2nd Row of letters horizontal Offset
-    uint8_t offsetRow1 = offsetRow0 + fontHeight[smallSizeNumbers];
-
-    // Horizontal offset +1 for clocks > 10 Rows
-    if (usedUhrType->rowsWordMatrix() > 10) {
-        offsetRow1++;
-    }
+    uint8_t offsetRow1 =
+        usedUhrType->rowsWordMatrix() - fontHeight[smallSizeNumbers];
 
     // Toggle second dots every second
     if (_second % 2) {
-        usedUhrType->setFrontMatrixPixel(offsetRow1 + 1, 1);
-        usedUhrType->setFrontMatrixPixel(offsetRow1 + 3, 1);
+        usedUhrType->setFrontMatrixPixel(offsetRow1 + 1, offsetLetterMin0 - 2);
+        usedUhrType->setFrontMatrixPixel(offsetRow1 + 3, offsetLetterMin0 - 2);
     }
 
-    for (uint8_t col = 0; col < 3; col++) {
-        for (uint8_t row = 0; row < 5; row++) {
+    for (uint8_t col = 0; col < fontWidth[smallSizeNumbers]; col++) {
+        for (uint8_t row = 0; row < fontHeight[smallSizeNumbers]; row++) {
             // 1st Row
             setPixelForChar(col, row, offsetLetterH1, offsetRow0,
                             static_cast<unsigned char>(h1), smallSizeNumbers);
