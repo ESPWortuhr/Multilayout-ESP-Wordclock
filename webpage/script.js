@@ -652,14 +652,13 @@ $.ready(function() {
 	$("#with-background").on("change", toggleBackground);
 	$(".status-button").on("click", function() {
 		var value = $(this).get("value");
+		$("#status").fill("Verbinden ...");
 		if (value === "1") {
 			value = 0;
-			$("#status").fill("Verbinden ...");
 			$(".status-button").set("value", value);
 			websocket.close();
 		} else {
 			value = 1;
-			$("#status").fill("Verbinden ...");
 			$(".status-button").set("value", value);
 			initWebsocket();
 		}
@@ -871,10 +870,7 @@ $.ready(function() {
 		return false;
 	});
 	$("#timeserver-button").on("click", function() {
-
-		var timeserverValue = $("#timeserver").get("value");
-
-		sendCmd(COMMAND_SET_TIMESERVER, getPaddedString(timeserverValue, DATA_TIMESERVER_TEXT_LENGTH));
+		sendCmd(COMMAND_SET_TIMESERVER, getPaddedString($("#timeserver").get("value"), DATA_TIMESERVER_TEXT_LENGTH));
 		debugMessage("Timeserver" + debugMessageReconfigured);
 		return false;
 	});
@@ -886,29 +882,19 @@ $.ready(function() {
 		sendBrightnessData(COMMAND_SET_BRIGHTNESS);
 	});
 	$("#weather-button").on("click", function() {
-
-		var apiKey = $("#owm-api-key").get("value");
-		var cityId = $("#owm-city-id").get("value");
-
-		sendCmd(COMMAND_SET_WEATHER_DATA, cityId + " " + apiKey);
+		sendCmd(COMMAND_SET_WEATHER_DATA, $("#owm-city-id").get("value") + " " + $("#owm-api-key").get("value"));
 		debugMessage("OpenWeatherMap Login" + debugMessageReconfigured);
 	});
 	$("#show-minutes").on("change", function() {
-		var showMinutesValue = $("#show-minutes").get("value");
-
-		sendCmd(COMMAND_SET_MINUTE, nstr(showMinutesValue));
+		sendCmd(COMMAND_SET_MINUTE, nstr($("#show-minutes").get("value")));
 		debugMessage("MinuteVariant" + debugMessageReconfigured);
 	});
 	$("#show-seconds").on("change", function() {
-		var showSecondsValue = $("#show-seconds").get("value");
-
-		sendCmd(COMMAND_SET_SETTING_SECOND, nstr(showSecondsValue));
+		sendCmd(COMMAND_SET_SETTING_SECOND, nstr($("#show-seconds").get("value")));
 		debugMessage("SecondVariant" + debugMessageReconfigured);
 	});
 	$("#front-layout").on("change", function() {
-		var frontLayout = $("#front-layout").get("value");
-
-		sendCmd(COMMAND_SET_UHRTYPE, nstr(frontLayout));
+		sendCmd(COMMAND_SET_UHRTYPE, nstr($("#front-layout").get("value")));
 		sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 		debugMessage("FrontLayout" + debugMessageReconfigured);
 	});
@@ -919,9 +905,7 @@ $.ready(function() {
 		debugMessage("Colortype" + debugMessageReconfigured);
 	});
 	$("#hostname-button").on("click", function() {
-		var hostname = $("#hostname").get("value");
-
-		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString(hostname, DATA_HOST_TEXT_LENGTH));
+		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString($("#hostname").get("value"), DATA_HOST_TEXT_LENGTH));
 		debugMessage("Hostname" + debugMessageReconfigured);
 	});
 	$("[id*='boot-show']").on("change", function() {
