@@ -77,31 +77,21 @@ enum class SecondVariant {
 
 struct Color {
     HsbColor hsb;
-    uint16_t alpha;
 
     Color() {
         hsb = HsbColor(0, 0, 0);
-        alpha = 0;
     }
 
     Color(float newHue) {
         hsb.H = newHue;
-        alpha = 0;
     }
 
     Color(HsbColor newHsb) {
         hsb = newHsb;
-        alpha = 0;
     }
 
     Color(RgbColor newRgb) {
         hsb = HsbColor(newRgb);
-        alpha = 0;
-    }
-
-    Color(HsbColor newHsb, uint16_t newAlpha) {
-        hsb = newHsb;
-        alpha = newAlpha;
     }
 };
 

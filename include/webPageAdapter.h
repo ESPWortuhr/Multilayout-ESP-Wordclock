@@ -146,8 +146,7 @@ void payloadTextHandling(const uint8_t *payload, char *text,
 void parseMainColor(uint8_t *payload, uint8_t position) {
     G.color[position] = {HsbColor(split(payload, 3) / 360.f,
                                   split(payload, 6) / 100.f,
-                                  split(payload, 9) / 100.f),
-                         split(payload, 12)};
+                                  split(payload, 9) / 100.f)};
 }
 
 //------------------------------------------------------------------------------
@@ -192,10 +191,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             parametersChanged = true;
             parseMainColor(payload, Foreground);
 
-            G.color[Background] = {HsbColor(split(payload, 15) / 360.f,
-                                            split(payload, 18) / 100.f,
-                                            split(payload, 21) / 100.f),
-                                   split(payload, 24)};
+            G.color[Background] = {HsbColor(split(payload, 12) / 360.f,
+                                            split(payload, 15) / 100.f,
+                                            split(payload, 18) / 100.f)};
             break;
         }
 
@@ -207,8 +205,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             parseMainColor(payload, Effect);
 
-            G.effectBri = split(payload, 27);
-            G.effectSpeed = split(payload, 30);
+            G.effectBri = split(payload, 21);
+            G.effectSpeed = split(payload, 24);
             break;
         }
 
@@ -220,8 +218,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             parseMainColor(payload, Effect);
 
-            G.effectBri = split(payload, 27);
-            G.effectSpeed = split(payload, 30);
+            G.effectBri = split(payload, 21);
+            G.effectSpeed = split(payload, 24);
             break;
         }
 
@@ -233,8 +231,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             parseMainColor(payload, Effect);
 
-            G.effectBri = split(payload, 27);
-            G.effectSpeed = split(payload, 30);
+            G.effectBri = split(payload, 21);
+            G.effectSpeed = split(payload, 24);
             break;
         }
 
@@ -244,8 +242,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_RAINBOWCYCLE;
             G.progInit = true;
 
-            G.effectBri = split(payload, 27);
-            G.effectSpeed = split(payload, 30);
+            G.effectBri = split(payload, 21);
+            G.effectSpeed = split(payload, 24);
             break;
         }
 
@@ -255,8 +253,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.prog = COMMAND_MODE_RAINBOW;
             G.progInit = true;
 
-            G.effectBri = split(payload, 27);
-            G.effectSpeed = split(payload, 30);
+            G.effectBri = split(payload, 21);
+            G.effectSpeed = split(payload, 24);
             break;
         }
 

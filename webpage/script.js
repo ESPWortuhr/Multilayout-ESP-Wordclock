@@ -47,9 +47,9 @@ var websocket;
 var ipEsp = "ws://192.168.4.1";
 var debug = true;
 var command = 1;
-var hsva = [
-	[0, 100, 50, 0],
-	[120, 100, 50, 0]
+var hsb = [
+	[0, 100, 50],
+	[120, 100, 50]
 ];
 var effectBri = 2;
 var effectSpeed = 10;
@@ -186,9 +186,9 @@ function initConfigValues() {
 
 	debug = true;
 	command = 1;
-	hsva = [
-		[0, 100, 50, 0],
-		[120, 100, 50, 0]
+	hsb = [
+		[0, 100, 50],
+		[120, 100, 50]
 	];
 	effectBri = 2;
 	effectSpeed = 10;
@@ -395,14 +395,12 @@ function initWebsocket() {
 			enableSpecific("specific-layout-brightness-auto", autoLdrEnabled === 1);
 		}
 		if (data.command === "set") {
-			hsva[0][0] = data.hsva00;
-			hsva[0][1] = data.hsva01;
-			hsva[0][2] = data.hsva02;
-			hsva[0][3] = data.hsva03;
-			hsva[1][0] = data.hsva10;
-			hsva[1][1] = data.hsva11;
-			hsva[1][2] = data.hsva12;
-			hsva[1][3] = data.hsva13;
+			hsb[0][0] = data.hsb00;
+			hsb[0][1] = data.hsb01;
+			hsb[0][2] = data.hsb02;
+			hsb[1][0] = data.hsb10;
+			hsb[1][1] = data.hsb11;
+			hsb[1][2] = data.hsb12;
 			effectBri = data.effectBri;
 			effectSpeed = data.effectSpeed;
 			colortype = data.colortype;
@@ -456,10 +454,9 @@ function initWebsocket() {
 }
 
 function changeColor(color) {
-	hsva[color.index][0] = color.hue;
-	hsva[color.index][1] = color.saturation;
-	hsva[color.index][2] = color.value;
-	hsva[color.index][3] = Math.round(255 * (1.0 - color.alpha));
+	hsb[color.index][0] = color.hue;
+	hsb[color.index][1] = color.saturation;
+	hsb[color.index][2] = color.value;
 	sendColorData(command, nstr(1));
 }
 
@@ -485,21 +482,19 @@ function createColorPicker() {
  * show the color configuration in the color picker
  */
 function setColorPicker(withBackground) {
-	var hsvaFg = {
-		h: hsva[COLOR_FOREGROUND][0],
-		s: hsva[COLOR_FOREGROUND][1],
-		v: hsva[COLOR_FOREGROUND][2],
-		a: 1.0 - hsva[COLOR_FOREGROUND][3] / 255.0
+	var hsbFg = {
+		h: hsb[COLOR_FOREGROUND][0],
+		s: hsb[COLOR_FOREGROUND][1],
+		v: hsb[COLOR_FOREGROUND][2]
 	};
-	var hsvaBg = {
-		h: hsva[COLOR_BACKGROUND][0],
-		s: hsva[COLOR_BACKGROUND][1],
-		v: hsva[COLOR_BACKGROUND][2],
-		a: 1.0 - hsva[COLOR_BACKGROUND][3] / 255.0
+	var hsbBg = {
+		h: hsb[COLOR_BACKGROUND][0],
+		s: hsb[COLOR_BACKGROUND][1],
+		v: hsb[COLOR_BACKGROUND][2]
 	};
-	var colors = [hsvaFg];
+	var colors = [hsbFg];
 	if (withBackground) {
-		colors.push(hsvaBg);
+		colors.push(hsbBg);
 	}
 	colorPicker.setColors(colors);
 }
@@ -509,10 +504,9 @@ function setColorPicker(withBackground) {
  */
 function setColors() {
 	var withBackground =
-		hsva[COLOR_BACKGROUND][0] ||
-		hsva[COLOR_BACKGROUND][1] ||
-		hsva[COLOR_BACKGROUND][2] ||
-		hsva[COLOR_BACKGROUND][3];
+		hsb[COLOR_BACKGROUND][0] ||
+		hsb[COLOR_BACKGROUND][1] ||
+		hsb[COLOR_BACKGROUND][2];
 	setColorPicker(withBackground);
 	$("#with-background").set("checked", withBackground);
 }
@@ -524,16 +518,14 @@ function toggleBackground() {
 	var withBackground = $("#with-background").get("checked") | 0;
 	if (withBackground) {
 		// set to dark gray
-		hsva[COLOR_BACKGROUND][0] = 0;
-		hsva[COLOR_BACKGROUND][1] = 0;
-		hsva[COLOR_BACKGROUND][2] = 10;
-		hsva[COLOR_BACKGROUND][3] = 0;
+		hsb[COLOR_BACKGROUND][0] = 0;
+		hsb[COLOR_BACKGROUND][1] = 0;
+		hsb[COLOR_BACKGROUND][2] = 10;
 	} else {
 		// set to black
-		hsva[COLOR_BACKGROUND][0] = 0;
-		hsva[COLOR_BACKGROUND][1] = 0;
-		hsva[COLOR_BACKGROUND][2] = 0;
-		hsva[COLOR_BACKGROUND][3] = 0;
+		hsb[COLOR_BACKGROUND][0] = 0;
+		hsb[COLOR_BACKGROUND][1] = 0;
+		hsb[COLOR_BACKGROUND][2] = 0;
 	}
 	setColorPicker(withBackground);
 	sendColorData(command, nstr(1));
@@ -638,14 +630,12 @@ function sendBrightnessData(command, addData = "") {
 }
 
 function sendColorData(command, addData = "") {
-	sendCmd(command, nstr(hsva[COLOR_FOREGROUND][0]) +
-	nstr(hsva[COLOR_FOREGROUND][1]) +
-	nstr(hsva[COLOR_FOREGROUND][2]) +
-	nstr(hsva[COLOR_FOREGROUND][3]) +
-	nstr(hsva[COLOR_BACKGROUND][0]) +
-	nstr(hsva[COLOR_BACKGROUND][1]) +
-	nstr(hsva[COLOR_BACKGROUND][2]) +
-	nstr(hsva[COLOR_BACKGROUND][3]) +
+	sendCmd(command, nstr(hsb[COLOR_FOREGROUND][0]) +
+	nstr(hsb[COLOR_FOREGROUND][1]) +
+	nstr(hsb[COLOR_FOREGROUND][2]) +
+	nstr(hsb[COLOR_BACKGROUND][0]) +
+	nstr(hsb[COLOR_BACKGROUND][1]) +
+	nstr(hsb[COLOR_BACKGROUND][2]) +
 	nstr(effectBri) +
 	nstr(effectSpeed));
 }

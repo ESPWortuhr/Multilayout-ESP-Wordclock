@@ -42,15 +42,12 @@ void read() {
     Serial.printf("FgCol.H   : %f\n", G.color[Foreground].hsb.H);
     Serial.printf("FgCol.S   : %f\n", G.color[Foreground].hsb.S);
     Serial.printf("FgCol.V   : %f\n", G.color[Foreground].hsb.B);
-    Serial.printf("FgCol.A   : %u\n", G.color[Foreground].alpha);
     Serial.printf("BgCol.H   : %f\n", G.color[Background].hsb.H);
     Serial.printf("BgCol.S   : %f\n", G.color[Background].hsb.S);
     Serial.printf("BgCol.V   : %f\n", G.color[Background].hsb.B);
-    Serial.printf("BgCol.A   : %u\n", G.color[Background].alpha);
     Serial.printf("EfCol.H   : %f\n", G.color[Effect].hsb.H);
     Serial.printf("EfCol.S   : %f\n", G.color[Effect].hsb.S);
     Serial.printf("EfCol.V   : %f\n", G.color[Effect].hsb.B);
-    Serial.printf("EfCol.A   : %u\n", G.color[Effect].alpha);
     Serial.printf("Zeitserver: %s\n", G.timeserver);
     Serial.printf("Lauftext  : %s\n", G.scrollingText);
     Serial.printf("H6        : %u\n", G.h6);
