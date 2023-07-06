@@ -178,7 +178,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
     case WStype_TEXT: {
         Serial.printf("[%u] get Text: %s\n", length, payload);
 
-        uint16_t command = split(payload, 0);
+        uint8_t command = split(payload, 0);
         G.param1 = 0;
 
         switch (command) {
@@ -186,11 +186,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             if (G.prog != COMMAND_IDLE && G.prog != COMMAND_MODE_WORD_CLOCK) {
                 G.progInit = true;
             }
-            G.prog = COMMAND_MODE_WORD_CLOCK;
-
             parametersChanged = true;
             parseMainColor(payload, Foreground);
-
             G.color[Background] = {HsbColor(split(payload, 12) / 360.f,
                                             split(payload, 15) / 100.f,
                                             split(payload, 18) / 100.f)};
@@ -200,11 +197,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_SECONDS: {
-            G.prog = COMMAND_MODE_SECONDS;
             G.progInit = true;
 
             parseMainColor(payload, Effect);
-
             G.effectBri = split(payload, 21);
             G.effectSpeed = split(payload, 24);
             break;
@@ -213,11 +208,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_DIGITAL_CLOCK: {
-            G.prog = COMMAND_MODE_DIGITAL_CLOCK;
             G.progInit = true;
 
             parseMainColor(payload, Effect);
-
             G.effectBri = split(payload, 21);
             G.effectSpeed = split(payload, 24);
             break;
@@ -226,11 +219,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_SCROLLINGTEXT: {
-            G.prog = COMMAND_MODE_SCROLLINGTEXT;
             G.progInit = true;
 
             parseMainColor(payload, Effect);
-
             G.effectBri = split(payload, 21);
             G.effectSpeed = split(payload, 24);
             break;
@@ -239,7 +230,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_RAINBOWCYCLE: {
-            G.prog = COMMAND_MODE_RAINBOWCYCLE;
             G.progInit = true;
 
             G.effectBri = split(payload, 21);
@@ -250,7 +240,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_RAINBOW: {
-            G.prog = COMMAND_MODE_RAINBOW;
             G.progInit = true;
 
             G.effectBri = split(payload, 21);
@@ -261,7 +250,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_COLOR: {
-            G.prog = COMMAND_MODE_COLOR;
             G.progInit = true;
 
             parseMainColor(payload, Effect);
@@ -270,17 +258,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_ANIMATION: {
-            G.prog = COMMAND_MODE_ANIMATION;
             G.progInit = true;
+
             G.animType = split(payload, 3);
             G.animDuration = split(payload, 6);
             G.animSpeed = split(payload, 9);
             G.animColorize = split(payload, 12);
             G.animDemo = split(payload, 15);
-            //					Serial.printf("animType %d
-            // animDuration %d animSpeed %d animColorize %d animDemo %d\n",
-            // G.animType, G.animDuration, G.animSpeed, G.animColorize,
-            // G.animDemo);
+            ;
             break;
         }
 
@@ -297,15 +282,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             Serial.println("Startwerte gespeichert");
 
             parseMainColor(payload, Foreground);
-
-            G.conf = COMMAND_SET_INITIAL_VALUES;
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_TIME: {
-            G.conf = COMMAND_SET_TIME;
             ii = 0;
             tmp[0] = '\0';
             uint32_t tt = split(payload, 3, 16);
@@ -325,7 +307,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_HOSTNAME: {
-            G.conf = COMMAND_SET_HOSTNAME;
             payloadTextHandling(payload, G.hostname);
             break;
         }
@@ -333,7 +314,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_SETTING_SECOND: {
-            G.conf = COMMAND_SET_SETTING_SECOND;
             G.progInit = true;
 
             G.secondVariant = static_cast<SecondVariant>(split(payload, 3));
@@ -343,7 +323,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_MINUTE: {
-            G.conf = COMMAND_SET_MINUTE;
             G.minuteVariant = static_cast<MinuteVariant>(split(payload, 3));
             break;
         }
@@ -351,7 +330,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_AUTO_LDR: {
-            G.conf = COMMAND_SET_AUTO_LDR;
             G.autoLdrEnabled = split(payload, 3);
             G.autoLdrBright = split(payload, 6);
             G.autoLdrDark = split(payload, 9);
@@ -361,7 +339,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_LANGUAGE_VARIANT: {
-            G.conf = COMMAND_SET_LANGUAGE_VARIANT;
             G.languageVariant[ItIs15] = split(payload, 3);
             G.languageVariant[ItIs20] = split(payload, 6);
             G.languageVariant[ItIs40] = split(payload, 9);
@@ -374,7 +351,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_LAYOUT_VARIANT: {
-            G.conf = COMMAND_SET_LAYOUT_VARIANT;
             G.layoutVariant[ReverseMinDirection] = split(payload, 3);
             G.layoutVariant[MirrorVertical] = split(payload, 6);
             G.layoutVariant[MirrorHorizontal] = split(payload, 9);
@@ -384,7 +360,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_MQTT: {
-            G.conf = COMMAND_SET_MQTT;
             if (!G.mqtt.state) {
                 G.progInit = true;
             }
@@ -406,7 +381,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_TIME_MANUAL: {
-            G.conf = COMMAND_SET_TIME_MANUAL;
             time_t old = time(nullptr);
             struct tm tm;
             localtime_r(&old, &tm);
@@ -425,7 +399,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_COLORTYPE: {
-            G.conf = COMMAND_SET_COLORTYPE;
             G.progInit = true;
 
             G.param1 = split(payload, 3);
@@ -435,8 +408,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_BUILDTYPE: {
-            G.conf = COMMAND_SET_BUILDTYPE;
             G.progInit = true;
+
             G.param1 = split(payload, 3);
             break;
         }
@@ -444,7 +417,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_WHITETYPE: {
-            G.conf = COMMAND_SET_WHITETYPE;
             G.wType = static_cast<WhiteType>(split(payload, 3));
             break;
         }
@@ -452,7 +424,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_UHRTYPE: {
-            G.conf = COMMAND_SET_UHRTYPE;
             G.UhrtypeDef = split(payload, 3);
             break;
         }
@@ -460,7 +431,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_WEATHER_DATA: {
-            G.conf = COMMAND_SET_WEATHER_DATA;
             ii = 0;
             for (uint8_t k = 3; k < 10; k++) {
                 if (payload[k] != ' ') {
@@ -489,7 +459,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_BRIGHTNESS: {
-            G.conf = COMMAND_SET_BRIGHTNESS;
             G.h6 = split(payload, 3);
             G.h8 = split(payload, 6);
             G.h12 = split(payload, 9);
@@ -504,8 +473,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_MARQUEE_TEXT: {
-            G.conf = COMMAND_SET_MARQUEE_TEXT;
+        case COMMAND_SET_SCROLLINGTEXT: {
             payloadTextHandling(payload, G.scrollingText);
             break;
         }
@@ -513,7 +481,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_TIMESERVER: {
-            G.conf = COMMAND_SET_TIMESERVER;
             payloadTextHandling(payload, G.timeserver);
             break;
         }
@@ -521,7 +488,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_BOOT: {
-            G.conf = COMMAND_SET_BOOT;
             G.bootLedBlink = split(payload, 3);
             G.bootLedSweep = split(payload, 6);
             G.bootShowWifi = split(payload, 9);
@@ -533,7 +499,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_WIFI_DISABLED:
         case COMMAND_SET_WIFI_AND_RESTART:
         case COMMAND_RESET: {
-            G.conf = command;
             break;
         }
 
@@ -544,7 +509,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_REQUEST_COLOR_VALUES:
         case COMMAND_REQUEST_WIFI_LIST:
         case COMMAND_REQUEST_ANIMATION: {
-            G.conf = command;
             G.client_nr = num;
             break;
         }
@@ -552,8 +516,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_REQUEST_AUTO_LDR: {
+
             G.param1 = split(payload, 3);
-            G.conf = command;
             G.client_nr = num;
             break;
         }
@@ -563,6 +527,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         default:
             break;
         }
+
+        if (command < PLACEHOLDER_MAX_MODE) {
+            G.prog = command;
+        } else if (command < PLACEHOLDER_MAX_SET) {
+            G.conf = command;
+        } else if (command < PLACEHOLDER_MAX_REQUEST) {
+            G.conf = command;
+        }
+
         break;
     }
     case WStype_BIN: {
