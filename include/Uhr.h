@@ -78,21 +78,13 @@ enum class SecondVariant {
 struct Color {
     HsbColor hsb;
 
-    Color() {
-        hsb = HsbColor(0, 0, 0);
-    }
+    Color() { hsb = HsbColor(0, 0, 0); }
 
-    Color(float newHue) {
-        hsb.H = newHue;
-    }
+    Color(float newHue) { hsb.H = newHue; }
 
-    Color(HsbColor newHsb) {
-        hsb = newHsb;
-    }
+    Color(HsbColor newHsb) { hsb = newHsb; }
 
-    Color(RgbColor newRgb) {
-        hsb = HsbColor(newRgb);
-    }
+    Color(RgbColor newRgb) { hsb = HsbColor(newRgb); }
 };
 
 struct GLOBAL {
