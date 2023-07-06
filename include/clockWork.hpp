@@ -943,7 +943,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_TIME:
     case COMMAND_SET_INITIAL_VALUES:
     case COMMAND_SET_WEATHER_DATA:
-    case COMMAND_SET_MARQUEE_TEXT:
+    case COMMAND_SET_SCROLLINGTEXT:
     case COMMAND_SET_BOOT: {
         eeprom::write();
         delay(100);

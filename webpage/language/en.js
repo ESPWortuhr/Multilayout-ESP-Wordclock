@@ -30,7 +30,7 @@ let TRANSLATION_EN_US = {
 			"color": "Color",
 			"seconds": "Seconds",
 			"digital-clock": "Digital Clock",
-			"marquee": "Marquee",
+			"scrollingtext": "Scrollingtext",
 			"rainbow": "Rainbow",
 			"color-change": "Color Change"
 		},
@@ -61,7 +61,7 @@ let TRANSLATION_EN_US = {
 		"settings": {
 			"h2": "Settings",
 			"brightness": "Brightness ",
-			"marquee-text": "Marquee Text",
+			"scrollingtext": "Scrolling text",
 			"save": "Save",
 			"speed": "Speed ",
 			"leds": "Number of LEDs ",

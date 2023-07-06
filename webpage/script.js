@@ -114,7 +114,7 @@ const MODE_TO_INPUT_ID = new Map();
 MODE_TO_INPUT_ID.set(0, "mode-wordclock"); // Map COMMAND_IDLE to mode wordclock
 MODE_TO_INPUT_ID.set(COMMAND_MODE_WORD_CLOCK, "mode-wordclock");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_SECONDS, "mode-seconds");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_SCROLLINGTEXT, "mode-marquee");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_SCROLLINGTEXT, "mode-scrollingtext");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOWCYCLE, "mode-rainbow");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOW, "mode-change"); // Color change
 MODE_TO_INPUT_ID.set(COMMAND_MODE_COLOR, "mode-color");
@@ -136,7 +136,7 @@ var COMMAND_SET_HOSTNAME = 92;
 var COMMAND_SET_SETTING_SECOND = 93;
 var COMMAND_SET_MINUTE = 94;
 var COMMAND_SET_BRIGHTNESS = 95;
-var COMMAND_SET_MARQUEE_TEXT = 96;
+var COMMAND_SET_SCROLLINGTEXT = 96;
 var COMMAND_SET_TIMESERVER = 97;
 var COMMAND_SET_WIFI_DISABLED = 98;
 var COMMAND_SET_WIFI_AND_RESTART = 99;
@@ -159,7 +159,7 @@ var COLOR_FOREGROUND = 0;
 var COLOR_BACKGROUND = 1;
 
 // data that gets send back to the esp
-var DATA_MARQUEE_TEXT_LENGTH = 30;
+var DATA_SCROLLINGTEXT_LENGTH = 30;
 var DATA_TIMESERVER_TEXT_LENGTH = 30;
 var DATA_MQTT_RESPONSE_TEXT_LENGTH = 30;
 var DATA_HOST_TEXT_LENGTH = 30;
@@ -340,7 +340,7 @@ function initWebsocket() {
 
 			$("#timeserver").set("value", data.timeserver);
 			$("#hostname").set("value", data.hostname);
-			$("#marquee").set("value", data.scrollingText);
+			$("#scrollingtext").set("value", data.scrollingText);
 
 			$("#brightness-6").set("value", data.h6);
 			$("#brightness-8").set("value", data.h8);
@@ -742,7 +742,7 @@ $.ready(function() {
 		if (id === "mode-digital-clock") {
 			command = COMMAND_MODE_DIGITAL_CLOCK;
 		}
-		if (id === "mode-marquee") {
+		if (id === "mode-scrollingtext") {
 			hasSpeed = true;
 			hasText = true;
 			command = COMMAND_MODE_SCROLLINGTEXT;
@@ -878,10 +878,8 @@ $.ready(function() {
 		debugMessage("Timeserver" + debugMessageReconfigured);
 		return false;
 	});
-	$("#marquee-button").on("click", function() {
-		var marqueeTextValue = $("#marquee").get("value");
-
-		sendCmd(COMMAND_SET_MARQUEE_TEXT, getPaddedString(marqueeTextValue, DATA_MARQUEE_TEXT_LENGTH));
+	$("#scrollingtext-button").on("click", function() {
+		sendCmd(COMMAND_SET_SCROLLINGTEXT, getPaddedString($("#scrollingtext").get("value"), DATA_SCROLLINGTEXT_LENGTH));
 		debugMessage("ScrollingText" + debugMessageReconfigured);
 	});
 	$("[id*='brightness']").on("change", function() {

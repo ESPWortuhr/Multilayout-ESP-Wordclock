@@ -30,7 +30,7 @@ let TRANSLATION_NL = {
 			"color": "Kleur",
 			"seconds": "Seconden",
 			"digital-clock": "Digitale klok",
-			"marquee": "Tekst",
+			"scrollingtext": "Tekst",
 			"rainbow": "Regenboog",
 			"color-change": "Kleurverandering"
 		},
@@ -61,7 +61,7 @@ let TRANSLATION_NL = {
 		"settings": {
 			"h2": "Instellingen",
 			"brightness": "Helderheid ",
-			"marquee-text": "Tekst",
+			"scrollingtext": "Tekst",
 			"save": "Opslaan",
 			"speed": "Snelheid ",
 			"leds": "Aantal LED's ",

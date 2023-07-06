@@ -30,7 +30,7 @@ let TRANSLATION_DE_DE = {
 			"color": "Farbe",
 			"seconds": "Sekunden",
 			"digital-clock": "Digitaluhr",
-			"marquee": "Laufschrift",
+			"scrollingtext": "Laufschrift",
 			"rainbow": "Regenbogen",
 			"color-change": "Farbwechsel"
 		},
@@ -61,7 +61,7 @@ let TRANSLATION_DE_DE = {
 		"settings": {
 			"h2": "Einstellungen",
 			"brightness": "Helligkeit ",
-			"marquee-text": "Lauftext",
+			"scrollingtext": "Lauftext",
 			"save": "Speichern",
 			"speed": "Geschwindigkeit ",
 			"leds": "Anzahl LEDs ",
