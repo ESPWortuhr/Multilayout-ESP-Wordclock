@@ -86,6 +86,7 @@ enum class FrontWord {
     w_dreissig,
     w_grad,
 
+    plus,
     funk,
     h_droelf,
     happy_birthday
@@ -136,6 +137,8 @@ public:
     virtual const bool hasWeatherLayout() { return false; }
 
     virtual const bool hasSecondsFrame() { return false; }
+
+    virtual const bool hasAbsoluteMinLayout() { return false; }
 
     virtual const uint16_t getFrontMatrixIndex(const uint8_t row, uint8_t col) {
 

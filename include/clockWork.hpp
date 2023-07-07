@@ -322,9 +322,13 @@ void ClockWork::showMinute(uint8_t min) {
                                 determineWhichMinuteVariant());
     /* Reseting minute byte */
     minuteArray = 0;
-    for (uint8_t i = 0; i < min; i++) {
-        /* Shifting a 1 Bit for every pixel starting at LSB */
-        minuteArray |= 1UL << i;
+    if (usedUhrType->hasAbsoluteMinLayout() && min > 0) {
+        minuteArray |= 1UL << (min - 1);
+    } else {
+        for (uint8_t i = 0; i < min; i++) {
+            /* Shifting a 1 Bit for every pixel starting at LSB */
+            minuteArray |= 1UL << i;
+        }
     }
 
     if (G.UhrtypeDef == Nl10x11 && G.minuteVariant == MinuteVariant::InWords) {
@@ -433,6 +437,13 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
 //------------------------------------------------------------------------------
 
 void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
+    if (min % 5 >= 1) {
+        usedUhrType->show(FrontWord::plus);
+        usedUhrType->show(FrontWord::minute);
+        if (min % 5 >= 2) {
+            usedUhrType->show(FrontWord::minuten);
+        }
+    }
     if (!usedUhrType->has24HourLayout()) {
         showMinute(min);
         min /= 5;
@@ -462,7 +473,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     case 13:
     case 14:
         usedUhrType->show(getFrontWordForNum(min));
-        usedUhrType->show(FrontWord::minuten);
+        if (usedUhrType->has24HourLayout()) {
+            usedUhrType->show(FrontWord::minuten);
+        }
         usedUhrType->show(FrontWord::nach);
         break;
     case 15: // quarter past

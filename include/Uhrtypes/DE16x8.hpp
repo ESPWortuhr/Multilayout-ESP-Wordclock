@@ -41,11 +41,11 @@ public:
 
         row *= 2;
         uint8_t newColsWordMatrix = colsWordMatrix();
-        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
+        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix() * 2;
 
         if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
             newColsWordMatrix = 2 * colsWordMatrix() - 1;
-            numPixelsWordMatrix = rowsWordMatrix() * newColsWordMatrix;
+            numPixelsWordMatrix = rowsWordMatrix() * newColsWordMatrix * 2;
             col *= 2;
         }
         if (row % 2 != 0) {
@@ -54,23 +54,12 @@ public:
         uint16_t returnValue = col + (row * newColsWordMatrix);
 
         if (returnValue > numPixelsWordMatrix) {
-            // Serial.println("[ERROR] getFrontMatrixIndex() returnValue out of
-            // Bounds");
+            Serial.println(
+                "[ERROR] getFrontMatrixIndex() returnValue out of Bounds");
         }
 
         return returnValue;
     };
-
-    //------------------------------------------------------------------------------
-
-    /*     virtual void setFrontMatrixPixel(const int index,
-                                         bool state = true) override {
-            uint8_t col, row;
-            getFrontMatrixColRow(row, col, index);
-            for (uint8_t i = 0; i < 2; i++) {
-                setFrontMatrixPixel(row + 1, col, state);
-            }
-        } */
 
     //------------------------------------------------------------------------------
 
@@ -82,25 +71,13 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasAbsoluteMinLayout() { return true; }
+
+    //------------------------------------------------------------------------------
+
     virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
-        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
-
         for (uint8_t i = 0; i < 4; i++) {
-            switch (col) {
-            case 0: // LEDs for "LED4x" minute display
-                returnArr[i] = numPixelsWordMatrix + i;
-                break;
-            case 1: // LEDs for "LED7x" minute display
-                returnArr[i] = numPixelsWordMatrix + i * 2;
-                break;
-
-            case 2: // LEDs for "16x16Matrix" minute display
-                returnArr[i] = 124 - i;
-                break;
-
-            default:
-                break;
-            }
+            returnArr[i] = 236 - i;
         }
     };
 
@@ -203,10 +180,15 @@ public:
             break;
 
         case FrontWord::minuten:
-            setFrontMatrixWord(7, 1, 1);
+            setFrontMatrixWord(7, 1, 7);
             break;
+
         case FrontWord::minute:
             setFrontMatrixWord(7, 2, 7);
+            break;
+
+        case FrontWord::plus:
+            setFrontMatrixWord(7, 14, 14);
             break;
 
         default:
