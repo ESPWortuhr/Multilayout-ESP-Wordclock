@@ -145,16 +145,16 @@ void Led::getCurrentManualBrightnessSetting(uint8_t &currentBrightness) {
 
 //------------------------------------------------------------------------------
 
-void Led::getColorbyPositionWithAppliedBrightness(Color &color,
+void Led::getColorbyPositionWithAppliedBrightness(HsbColor &color,
                                                   uint8_t colorPosition) {
     color = G.color[colorPosition];
     uint8_t manBrightnessSetting = 100;
     getCurrentManualBrightnessSetting(manBrightnessSetting);
 
     if (G.autoLdrEnabled) {
-        color.hsb.B = setBrightnessAuto(color.hsb.B);
+        color.B = setBrightnessAuto(color.B);
     } else {
-        color.hsb.B *= manBrightnessSetting / 100.f;
+        color.B *= manBrightnessSetting / 100.f;
     }
 }
 
@@ -198,18 +198,18 @@ void Led::shiftColumnToRight() {
 // Pixel set Functions
 //------------------------------------------------------------------------------
 
-void Led::setPixel(uint16_t ledIndex, Color color) {
+void Led::setPixel(uint16_t ledIndex, HsbColor color) {
     if (G.Colortype == Grbw) {
         strip_RGBW->SetPixelColor(
-            ledIndex, convertRgbToRgbw(RgbColor(color.hsb), G.wType));
+            ledIndex, convertRgbToRgbw(RgbColor(color), G.wType));
     } else {
-        strip_RGB->SetPixelColor(ledIndex, color.hsb);
+        strip_RGB->SetPixelColor(ledIndex, color);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Led::setPixel(uint8_t row, uint8_t col, Color color) {
+void Led::setPixel(uint8_t row, uint8_t col, HsbColor color) {
     setPixel(usedUhrType->getFrontMatrixIndex(row, col), color);
 }
 
@@ -219,7 +219,7 @@ void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
     }
-    Color displayedColor;
+    HsbColor displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
@@ -242,7 +242,7 @@ void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
 //------------------------------------------------------------------------------
 
 void Led::setbyMinuteArray(uint8_t colorPosition) {
-    Color displayedColor;
+    HsbColor displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
     /* Set minutes According to minute byte */
@@ -257,7 +257,7 @@ void Led::setbyMinuteArray(uint8_t colorPosition) {
 //------------------------------------------------------------------------------
 
 void Led::setbySecondArray(uint8_t colorPosition) {
-    Color displayedColor;
+    HsbColor displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
     const uint8_t offesetSecondsFrame = 5;

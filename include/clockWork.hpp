@@ -908,11 +908,11 @@ void ClockWork::loop(struct tm &tm) {
         for (uint8_t i = 0; i < 2; i++) {
             char string2Send[7];
             sprintf(string2Send, "hsb%d%d", i, 0);
-            config[string2Send] = static_cast<uint16_t>(G.color[i].hsb.H * 360);
+            config[string2Send] = static_cast<uint16_t>(G.color[i].H * 360);
             sprintf(string2Send, "hsb%d%d", i, 1);
-            config[string2Send] = static_cast<uint8_t>(G.color[i].hsb.S * 100);
+            config[string2Send] = static_cast<uint8_t>(G.color[i].S * 100);
             sprintf(string2Send, "hsb%d%d", i, 2);
-            config[string2Send] = static_cast<uint8_t>(G.color[i].hsb.B * 100);
+            config[string2Send] = static_cast<uint8_t>(G.color[i].B * 100);
         }
         config["effectBri"] = G.effectBri;
         config["effectSpeed"] = G.effectSpeed;

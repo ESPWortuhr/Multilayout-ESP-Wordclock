@@ -319,7 +319,7 @@ void Animation::set_minutes() {
         }
         for (uint8_t i = 0; i < 4; i++) {
             led.setPixel(minArray[i],
-                         Color{m > i ? foregroundMinute : background});
+                         HsbColor{m > i ? foregroundMinute : background});
         }
     }
 }
@@ -332,7 +332,7 @@ void Animation::copy2Stripe(RgbfColor **source) {
         for (uint8_t col = 0; col < maxCols; col++) {
             led.setPixel(usedUhrType->getFrontMatrixIndex(row + rowStart,
                                                           col + colStart),
-                         Color{RgbColor(source[row][col].R, source[row][col].G,
+                         HsbColor{RgbColor(source[row][col].R, source[row][col].G,
                                         source[row][col].B)});
         }
     }
