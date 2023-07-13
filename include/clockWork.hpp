@@ -12,6 +12,14 @@ OpenWMap weather;
 // Helper Functions
 //------------------------------------------------------------------------------
 
+void ClockWork::resetFrontMatrixBuffer() {
+    for (uint8_t i = 0; i < usedUhrType->rowsWordMatrix(); i++) {
+        frontMatrix[i] = 0;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::loopLdrLogic() {
     int16_t lux = analogRead(A0); // Range 0-1023
     uint8_t ldrValOld = ldrVal;
@@ -731,6 +739,7 @@ void ClockWork::setClock() {
 //------------------------------------------------------------------------------
 
 void ClockWork::calcClockface() {
+    resetFrontMatrixBuffer();
 
     if (_hour == 23 && _minute == 59 && _second >= 50) {
         countdownToMidnight();
