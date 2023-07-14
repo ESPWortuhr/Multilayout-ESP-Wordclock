@@ -69,7 +69,7 @@ public:
             setFrontMatrixWord(2, 4, 7);
             break;
 
-        case FrontWord::fuenf:
+        case FrontWord::m_fuenf:
             setFrontMatrixWord(2, 12, 15);
             break;
 
@@ -89,7 +89,7 @@ public:
             setFrontMatrixWord(2, 8, 11);
             break;
 
-        case FrontWord::zehn:
+        case FrontWord::m_zehn:
             setFrontMatrixWord(3, 0, 3);
             break;
 
@@ -132,7 +132,7 @@ public:
             setFrontMatrixWord(3, 0, 3);
             break;
 
-        case FrontWord::zwanzig:
+        case FrontWord::m_zwanzig:
             setFrontMatrixWord(4, 7, 13);
             break;
 

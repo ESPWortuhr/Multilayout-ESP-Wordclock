@@ -92,21 +92,21 @@ public:
 #endif
             break;
 
-        case FrontWord::fuenf:
+        case FrontWord::m_fuenf:
             setFrontMatrixWord(0, 0, 3);
 #if WEATHER_VERBOSE
             Serial.print("Fünf ");
 #endif
             break;
 
-        case FrontWord::zehn:
+        case FrontWord::m_zehn:
             setFrontMatrixWord(1, 7, 10);
 #if WEATHER_VERBOSE
             Serial.print("zehn ");
 #endif
             break;
 
-        case FrontWord::zwanzig:
+        case FrontWord::m_zwanzig:
             setFrontMatrixWord(1, 0, 6);
 #if WEATHER_VERBOSE
             Serial.print("zwanzig ");

@@ -104,12 +104,12 @@ public:
             setFrontMatrixWord(8, 0, 5);
             break;
 
-        case FrontWord::fuenf:
+        case FrontWord::m_fuenf:
             // Five
             setFrontMatrixWord(2, 1, 4);
             break;
 
-        case FrontWord::zehn:
+        case FrontWord::m_zehn:
             // Ten
             setFrontMatrixWord(3, 3, 5);
             break;
@@ -124,12 +124,12 @@ public:
             setFrontMatrixWord(1, 2, 8);
             break;
 
-        case FrontWord::zwanzig:
+        case FrontWord::m_zwanzig:
             // Twenty
             setFrontMatrixWord(2, 5, 10);
             break;
 
-        case FrontWord::twentyfive:
+        case FrontWord::m_twentyfive:
             // Twentyfive
             setFrontMatrixWord(2, 1, 10);
             break;

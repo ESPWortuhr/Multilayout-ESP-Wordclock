@@ -196,7 +196,7 @@ void ClockWork::countdownToMidnight() {
     Serial.printf("Count down: %d\n", 60 - _second);
     switch (_second) {
     case 50:
-        usedUhrType->show(FrontWord::zehn);
+        usedUhrType->show(FrontWord::m_zehn);
         break;
     case 51:
         usedUhrType->show(FrontWord::h_neun);
@@ -211,7 +211,7 @@ void ClockWork::countdownToMidnight() {
         usedUhrType->show(FrontWord::h_sechs);
         break;
     case 55:
-        usedUhrType->show(FrontWord::fuenf);
+        usedUhrType->show(FrontWord::m_fuenf);
         break;
     case 56:
         usedUhrType->show(FrontWord::h_vier);
@@ -377,7 +377,7 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
         break;
 
     case 5:
-        return FrontWord::fuenf;
+        return FrontWord::m_fuenf;
         break;
 
     case 6:
@@ -397,7 +397,7 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
         break;
 
     case 10:
-        return FrontWord::zehn;
+        return FrontWord::m_zehn;
         break;
 
     case 11:
@@ -433,7 +433,7 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
         break;
 
     case 20:
-        return FrontWord::zwanzig;
+        return FrontWord::m_zwanzig;
 
     default:
         break;
@@ -508,12 +508,12 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         break;
     case 20: // 20 past
         if (!usedUhrType->hasZwanzig() || G.languageVariant[ItIs20]) {
-            usedUhrType->show(FrontWord::zehn);
+            usedUhrType->show(FrontWord::m_zehn);
             usedUhrType->show(FrontWord::vor);
             usedUhrType->show(FrontWord::halb);
             offsetHour = 1;
         } else {
-            usedUhrType->show(FrontWord::zwanzig);
+            usedUhrType->show(FrontWord::m_zwanzig);
             usedUhrType->show(FrontWord::nach);
         }
         break;
@@ -523,10 +523,10 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     case 24:
     case 25:
         if (usedUhrType->hasTwentyfive()) {
-            usedUhrType->show(FrontWord::twentyfive);
+            usedUhrType->show(FrontWord::m_twentyfive);
             usedUhrType->show(FrontWord::nach);
         } else {
-            usedUhrType->show(FrontWord::fuenf);
+            usedUhrType->show(FrontWord::m_fuenf);
             usedUhrType->show(FrontWord::vor);
             usedUhrType->show(FrontWord::halb);
             offsetHour = 1;
@@ -568,10 +568,10 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     case 34:
     case 35:
         if (usedUhrType->hasTwentyfive()) {
-            usedUhrType->show(FrontWord::twentyfive);
+            usedUhrType->show(FrontWord::m_twentyfive);
             usedUhrType->show(FrontWord::vor);
         } else {
-            usedUhrType->show(FrontWord::fuenf);
+            usedUhrType->show(FrontWord::m_fuenf);
             usedUhrType->show(FrontWord::nach);
             usedUhrType->show(FrontWord::halb);
         }
@@ -588,11 +588,11 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         break;
     case 40: // 20 to
         if (!usedUhrType->hasZwanzig() || G.languageVariant[ItIs40]) {
-            usedUhrType->show(FrontWord::zehn);
+            usedUhrType->show(FrontWord::m_zehn);
             usedUhrType->show(FrontWord::nach);
             usedUhrType->show(FrontWord::halb);
         } else {
-            usedUhrType->show(FrontWord::zwanzig);
+            usedUhrType->show(FrontWord::m_zwanzig);
             usedUhrType->show(FrontWord::vor);
         }
         offsetHour = 1;
