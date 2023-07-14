@@ -117,7 +117,7 @@ public:
 
     void begin();
     void loop(struct tm &tm);
-    bool led_show_notify(bool flag, uint8_t minute);
+    bool ledShowNotify(bool flag, uint8_t minute);
     void demoMode(uint8_t &_minute, uint8_t _second);
     //------------------------------------------------------------------------------
 protected:
@@ -168,7 +168,7 @@ protected:
     void analyzeColors(RgbfColor **dest, RgbfColor **source,
                        RgbfColor &foreground, RgbfColor &background);
     uint8_t determineWhichMinuteVariant();
-    void set_minutes(void);
+    void setMinute(void);
     void copy2Stripe(RgbfColor **source);
     void copyMatrix(RgbfColor **dest, RgbfColor **source);
     void copyMatrixFlags(RgbfColor **dest, RgbfColor **source);
