@@ -71,13 +71,13 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasAbsoluteMinLayout() { return true; }
+    virtual const bool hasMinuteInWords() { return true; }
 
     //------------------------------------------------------------------------------
 
     virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
         for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = 236 - i;
+            returnArr[i] = 256 + i;
         }
     };
 
@@ -189,6 +189,22 @@ public:
 
         case FrontWord::plus:
             setFrontMatrixWord(7, 14, 14);
+            break;
+
+        case FrontWord::m_num1:
+            setFrontMatrixWord(7, 12, 12);
+            break;
+
+        case FrontWord::m_num2:
+            setFrontMatrixWord(7, 11, 11);
+            break;
+
+        case FrontWord::m_num3:
+            setFrontMatrixWord(7, 10, 10);
+            break;
+
+        case FrontWord::m_num4:
+            setFrontMatrixWord(7, 9, 9);
             break;
 
         default:

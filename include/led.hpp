@@ -200,8 +200,8 @@ void Led::shiftColumnToRight() {
 
 void Led::setPixel(uint16_t ledIndex, HsbColor color) {
     if (G.Colortype == Grbw) {
-        strip_RGBW->SetPixelColor(
-            ledIndex, convertRgbToRgbw(RgbColor(color), G.wType));
+        strip_RGBW->SetPixelColor(ledIndex,
+                                  convertRgbToRgbw(RgbColor(color), G.wType));
     } else {
         strip_RGB->SetPixelColor(ledIndex, color);
     }
@@ -349,7 +349,7 @@ void Led::set(bool changed) {
         setbySecondArray(Foreground);
     }
 
-    if (animation->led_show_notify(changed, _minute)) {
+    if (animation->ledShowNotify(changed, _minute)) {
         show();
     }
 }

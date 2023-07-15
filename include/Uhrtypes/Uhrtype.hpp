@@ -142,7 +142,7 @@ public:
 
     virtual const bool hasSecondsFrame() { return false; }
 
-    virtual const bool hasAbsoluteMinLayout() { return false; }
+    virtual const bool hasMinuteInWords() { return false; }
 
     virtual const uint16_t getFrontMatrixIndex(const uint8_t row, uint8_t col) {
 

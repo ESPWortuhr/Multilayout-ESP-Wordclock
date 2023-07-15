@@ -27,6 +27,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasMinuteInWords() { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(FrontWord word) override {
         switch (word) {
 

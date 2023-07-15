@@ -387,7 +387,9 @@ function initWebsocket() {
 			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // EN10x11
 			enableSpecific("specific-colortype-4", data.colortype === 4);
 			removeSpecificOption("show-minutes", "3", data.numOfRows !== 11); // MinuteVariant "Corners" only for DE11x11 Variants
-			removeSpecificOption("show-minutes", "4", data.UhrtypeDef !== 9); // MinuteVariant "In Words"
+			removeSpecificOption("show-minutes", "4", !data.hasMinuteInWords);
+			removeSpecificOption("show-minutes", "1", data.UhrtypeDef === 13); // Remove "LED4x" for Ger16x8
+			removeSpecificOption("show-minutes", "2", data.UhrtypeDef === 13); // Remove "LED7x" for Ger16x8
 
 			autoLdrEnabled = data.autoLdrEnabled;
 			$("#auto-ldr-enabled").set("value", autoLdrEnabled);

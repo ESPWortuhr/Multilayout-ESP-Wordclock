@@ -302,15 +302,30 @@ uint8_t ClockWork::determineWhichMinuteVariant() {
 //------------------------------------------------------------------------------
 
 void ClockWork::showMinuteInWords(uint8_t min) {
+    if (G.UhrtypeDef == Ger16x8 && min > 0) {
+        usedUhrType->show(FrontWord::plus);
+        usedUhrType->show(FrontWord::minute);
+        if (min % 5 > 1) {
+            usedUhrType->show(FrontWord::minuten);
+        }
+    }
     switch (min) {
     case 0:
         usedUhrType->show(FrontWord::nur);
         break;
 
     case 1:
+        usedUhrType->show(FrontWord::m_num1);
+        break;
+
     case 2:
+        usedUhrType->show(FrontWord::m_num2);
+        break;
     case 3:
+        usedUhrType->show(FrontWord::m_num3);
+        break;
     case 4:
+        usedUhrType->show(FrontWord::m_num4);
         usedUhrType->show(FrontWord::gewesen);
         break;
 
@@ -330,7 +345,7 @@ void ClockWork::showMinute(uint8_t min) {
                                 determineWhichMinuteVariant());
     /* Reseting minute byte */
     minuteArray = 0;
-    if (usedUhrType->hasAbsoluteMinLayout() && min > 0) {
+    if (usedUhrType->hasMinuteInWords() && min > 0) {
         minuteArray |= 1UL << (min - 1);
     } else {
         for (uint8_t i = 0; i < min; i++) {
@@ -339,7 +354,8 @@ void ClockWork::showMinute(uint8_t min) {
         }
     }
 
-    if (G.UhrtypeDef == Nl10x11 && G.minuteVariant == MinuteVariant::InWords) {
+    if (usedUhrType->hasMinuteInWords() &&
+        G.minuteVariant == MinuteVariant::InWords) {
         showMinuteInWords(min);
     }
 }
@@ -445,13 +461,6 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
 //------------------------------------------------------------------------------
 
 void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
-    if (min % 5 >= 1) {
-        usedUhrType->show(FrontWord::plus);
-        usedUhrType->show(FrontWord::minute);
-        if (min % 5 >= 2) {
-            usedUhrType->show(FrontWord::minuten);
-        }
-    }
     if (!usedUhrType->has24HourLayout()) {
         showMinute(min);
         min /= 5;
@@ -894,6 +903,7 @@ void ClockWork::loop(struct tm &tm) {
         config["hasZwanzig"] = usedUhrType->hasZwanzig();
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
+        config["hasMinuteInWords"] = usedUhrType->hasMinuteInWords();
         config["numOfRows"] = usedUhrType->rowsWordMatrix();
         serializeJson(config, str);
         Serial.print("Sending Payload:");
