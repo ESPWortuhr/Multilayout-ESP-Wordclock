@@ -146,10 +146,10 @@ void setup() {
         G.progInit = true;
         G.conf = COMMAND_IDLE;
         for (uint8_t i = 0; i < 3; i++) {
-            G.color[i] = {0,0,0};
+            G.color[i] = {0, 0, 0};
         }
         G.color[Foreground] = HsbColor(120 / 360.f, 1.f, 0.5f);
-        G.color[Effect]= HsbColor(240 / 360.f, 1.f, 0.5f);
+        G.color[Effect] = HsbColor(240 / 360.f, 1.f, 0.5f);
         G.effectBri = 2;
         G.effectSpeed = 10;
         G.client_nr = 0;
