@@ -153,7 +153,7 @@ void ClockWork::scrollingText(const char *buf) {
         (usedUhrType->rowsWordMatrix() - fontHeight[normalSizeASCII]) / 2;
     uint8_t fontIndex = buf[ii];
 
-    led.setbyFrontMatrix(Foreground); // Needed for Mirrored Display
+    led.setbyFrontMatrix(Effect); // Needed for Mirrored Display
     led.shiftColumnToRight();
     led.clearFrontExeptofFontspace(offsetRow);
 
@@ -169,7 +169,7 @@ void ClockWork::scrollingText(const char *buf) {
         }
     }
 
-    led.setbyFrontMatrix(Foreground);
+    led.setbyFrontMatrix(Effect);
     led.show();
 
     i++;
