@@ -130,9 +130,9 @@
 /*
  * To delete or initialize the EEPROM, enter another serial number here.
  *
- * Valid values [0 ... 255]
+ * Valid values [0 ... 65536]
  */
-#define SERNR 31
+#define SERNR 311
 
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output
