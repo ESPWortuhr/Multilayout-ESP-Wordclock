@@ -8,12 +8,12 @@ enum class FrontWord {
     m_zwei,
     m_drei,
     m_vier,
-    fuenf,
+    m_fuenf,
     m_sechs,
     m_sieben,
     m_acht,
     m_neun,
-    zehn,
+    m_zehn,
     m_elf,
     m_zwoelf,
     m_dreizehn,
@@ -22,8 +22,12 @@ enum class FrontWord {
     m_siebzehn,
     m_achtzehn,
     m_neunzehn,
-    zwanzig,
-    twentyfive,
+    m_zwanzig,
+    m_twentyfive,
+    m_num1,
+    m_num2,
+    m_num3,
+    m_num4,
 
     es_ist,
     nach,
@@ -86,6 +90,7 @@ enum class FrontWord {
     w_dreissig,
     w_grad,
 
+    plus,
     funk,
     h_droelf,
     happy_birthday
@@ -136,6 +141,8 @@ public:
     virtual const bool hasWeatherLayout() { return false; }
 
     virtual const bool hasSecondsFrame() { return false; }
+
+    virtual const bool hasMinuteInWords() { return false; }
 
     virtual const uint16_t getFrontMatrixIndex(const uint8_t row, uint8_t col) {
 

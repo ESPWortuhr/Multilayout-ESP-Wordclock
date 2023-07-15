@@ -30,9 +30,10 @@ let TRANSLATION_NL = {
 			"color": "Kleur",
 			"seconds": "Seconden",
 			"digital-clock": "Digitale klok",
-			"marquee": "Tekst",
+			"scrollingtext": "Tekst",
 			"rainbow": "Regenboog",
-			"color-change": "Kleurverandering"
+			"color-change": "Kleurverandering",
+			"symbol": "Symbool"
 		},
 		"animation": {
 			"h2": "Animatie",
@@ -61,7 +62,7 @@ let TRANSLATION_NL = {
 		"settings": {
 			"h2": "Instellingen",
 			"brightness": "Helderheid ",
-			"marquee-text": "Tekst",
+			"scrollingtext": "Tekst",
 			"save": "Opslaan",
 			"speed": "Snelheid ",
 			"leds": "Aantal LED's ",
@@ -84,6 +85,7 @@ let TRANSLATION_NL = {
 			"de-11-11": "Duits 11 × 11",
 			"de-11-11-v2": "Duits 11 × 11 Versie 2",
 			"de-22-11-weather": "Duits 10 × 11 Weer",
+			"de-16-8": "Duits 16 × 8",
 			"de-16-18": "Duits 16 × 18",
 			"en-10-11": "Engels 10 × 11",
 			"nl-10-11": "Nederlands 10 × 11",

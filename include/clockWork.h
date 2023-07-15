@@ -20,12 +20,12 @@ private:
     void rainbow();
     void rainbowCycle();
     void scrollingText(const char *buf);
+    void displaySymbols(uint8_t iconNum);
     void countdownToMidnight();
 
     //------------------------------------------------------------------------------
     // Minute Functions
     //------------------------------------------------------------------------------
-    uint8_t determineWhichMinuteVariant();
     void showMinuteInWords(uint8_t min);
     void showMinute(uint8_t min);
     void resetMinVariantIfNotAvailable();
@@ -54,6 +54,11 @@ public:
     //------------------------------------------------------------------------------
     iUhrType *getPointer(uint8_t type);
     void initLedStrip(uint8_t num);
+
+    //------------------------------------------------------------------------------
+    // Minute Functions
+    //------------------------------------------------------------------------------
+    uint8_t determineWhichMinuteVariant();
 
     //------------------------------------------------------------------------------
     // Boot Functions

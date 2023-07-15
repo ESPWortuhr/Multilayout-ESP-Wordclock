@@ -121,7 +121,7 @@ void setup() {
     // Start serial interface if required
     //-------------------------------------
 #if GENERAL_VERBOSE
-    Serial.begin(115200);
+    Serial.begin(460800);
     Serial.println("");
     Serial.println("--------------------------------------");
     Serial.println("Begin Setup");
@@ -146,10 +146,10 @@ void setup() {
         G.progInit = true;
         G.conf = COMMAND_IDLE;
         for (uint8_t i = 0; i < 3; i++) {
-            G.color[i] = {};
+            G.color[i] = {0, 0, 0};
         }
-        G.color[Foreground].hsb = HsbColor(120 / 360.f, 1.f, 0.5f);
-        G.color[Effect].hsb = HsbColor(240 / 360.f, 1.f, 0.5f);
+        G.color[Foreground] = HsbColor(120 / 360.f, 1.f, 0.5f);
+        G.color[Effect] = HsbColor(240 / 360.f, 1.f, 0.5f);
         G.effectBri = 2;
         G.effectSpeed = 10;
         G.client_nr = 0;

@@ -30,9 +30,10 @@ let TRANSLATION_EN_US = {
 			"color": "Color",
 			"seconds": "Seconds",
 			"digital-clock": "Digital Clock",
-			"marquee": "Marquee",
+			"scrollingtext": "Scrollingtext",
 			"rainbow": "Rainbow",
-			"color-change": "Color Change"
+			"color-change": "Color Change",
+			"symbol": "Symbol"
 		},
 		"animation": {
 			"h2": "Animation",
@@ -61,7 +62,7 @@ let TRANSLATION_EN_US = {
 		"settings": {
 			"h2": "Settings",
 			"brightness": "Brightness ",
-			"marquee-text": "Marquee Text",
+			"scrollingtext": "Scrolling text",
 			"save": "Save",
 			"speed": "Speed ",
 			"leds": "Number of LEDs ",
@@ -84,6 +85,7 @@ let TRANSLATION_EN_US = {
 			"de-11-11": "German 11 × 11",
 			"de-11-11-v2": "German 11 × 11 Version 2",
 			"de-22-11-weather": "German 10 × 11 Weather",
+			"de-16-8": "German 16 × 8",
 			"de-16-18": "German 16 × 18",
 			"en-10-11": "English 10 × 11",
 			"nl-10-11": "Dutch 10 × 11",

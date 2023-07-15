@@ -70,13 +70,13 @@ bool Led::getCharCol(fontSize font, uint8_t col, uint8_t row,
 
 void Led::applyMirroringAndReverseIfDefined() {
     if (G.layoutVariant[ReverseMinDirection]) {
-        led.mirrorMinuteArrayVertical();
+        mirrorMinuteArrayVertical();
     }
     if (G.layoutVariant[MirrorVertical]) {
-        led.mirrorFrontMatrixVertical();
+        mirrorFrontMatrixVertical();
     }
     if (G.layoutVariant[MirrorHorizontal]) {
-        led.mirrorFrontMatrixHorizontal();
+        mirrorFrontMatrixHorizontal();
     }
 }
 
@@ -109,6 +109,14 @@ RgbwColor convertRgbToRgbw(RgbColor light, WhiteType wType) {
         light.B - minValW * whiteAdjB[static_cast<uint8_t>(wType)] / 255);
 
     return returnColor;
+}
+
+//------------------------------------------------------------------------------
+
+void Led::resetFrontMatrixBuffer() {
+    for (uint8_t i = 0; i < usedUhrType->rowsWordMatrix(); i++) {
+        frontMatrix[i] = 0;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -145,18 +153,16 @@ void Led::getCurrentManualBrightnessSetting(uint8_t &currentBrightness) {
 
 //------------------------------------------------------------------------------
 
-void Led::getColorbyPositionWithAppliedBrightness(Color &color,
+void Led::getColorbyPositionWithAppliedBrightness(HsbColor &color,
                                                   uint8_t colorPosition) {
     color = G.color[colorPosition];
     uint8_t manBrightnessSetting = 100;
     getCurrentManualBrightnessSetting(manBrightnessSetting);
 
     if (G.autoLdrEnabled) {
-        color.hsb.B = setBrightnessAuto(color.hsb.B);
-        color.alpha = setBrightnessAuto(color.alpha);
+        color.B = setBrightnessAuto(color.B);
     } else {
-        color.hsb.B *= manBrightnessSetting / 100.f;
-        color.alpha *= manBrightnessSetting / 100.f;
+        color.B *= manBrightnessSetting / 100.f;
     }
 }
 
@@ -200,18 +206,18 @@ void Led::shiftColumnToRight() {
 // Pixel set Functions
 //------------------------------------------------------------------------------
 
-void Led::setPixel(uint16_t ledIndex, Color color) {
+void Led::setPixel(uint16_t ledIndex, HsbColor color) {
     if (G.Colortype == Grbw) {
-        strip_RGBW->SetPixelColor(
-            ledIndex, convertRgbToRgbw(RgbColor(color.hsb), G.wType));
+        strip_RGBW->SetPixelColor(ledIndex,
+                                  convertRgbToRgbw(RgbColor(color), G.wType));
     } else {
-        strip_RGB->SetPixelColor(ledIndex, color.hsb);
+        strip_RGB->SetPixelColor(ledIndex, color);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Led::setPixel(uint8_t row, uint8_t col, Color color) {
+void Led::setPixel(uint8_t row, uint8_t col, HsbColor color) {
     setPixel(usedUhrType->getFrontMatrixIndex(row, col), color);
 }
 
@@ -221,7 +227,7 @@ void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
     }
-    Color displayedColor;
+    HsbColor displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
@@ -244,7 +250,7 @@ void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
 //------------------------------------------------------------------------------
 
 void Led::setbyMinuteArray(uint8_t colorPosition) {
-    Color displayedColor;
+    HsbColor displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
     /* Set minutes According to minute byte */
@@ -259,7 +265,7 @@ void Led::setbyMinuteArray(uint8_t colorPosition) {
 //------------------------------------------------------------------------------
 
 void Led::setbySecondArray(uint8_t colorPosition) {
-    Color displayedColor;
+    HsbColor displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
     const uint8_t offesetSecondsFrame = 5;
@@ -281,18 +287,22 @@ void Led::setbySecondArray(uint8_t colorPosition) {
 
 //------------------------------------------------------------------------------
 
-void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100) {
+void Led::setIcon(uint8_t iconNum) {
+    resetFrontMatrixBuffer();
+    uint8_t offsetCol = (usedUhrType->colsWordMatrix() - GRAFIK_11X10_COLS) / 2;
+
     for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
         for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
-            if (pgm_read_word(&(grafik_11x10[num_icon][row])) &
-                (1 << (GRAFIK_11X10_COLS - 1 - col))) {
-                usedUhrType->setFrontMatrixPixel(row, col);
+            if (pgm_read_word(&(grafik_11x10[iconNum][row])) &
+                (1 << (GRAFIK_11X10_COLS - col - 1))) {
+                usedUhrType->setFrontMatrixPixel(row, col + offsetCol);
             } else {
-                usedUhrType->setFrontMatrixPixel(row, col, false);
+                usedUhrType->setFrontMatrixPixel(row, col + offsetCol, false);
             }
         }
     }
-    setbyFrontMatrix(Foreground);
+
+    setbyFrontMatrix(Effect);
     show();
 }
 
@@ -311,11 +321,11 @@ void Led::setSingle(uint8_t wait) {
 
             clear();
             if (row % 2 != 0) {
-                led.setPixel(row, usedUhrType->colsWordMatrix() - 1 - col,
-                             HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
+                setPixel(row, usedUhrType->colsWordMatrix() - 1 - col,
+                         HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
             } else {
-                led.setPixel(row, col,
-                             HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
+                setPixel(row, col,
+                         HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
             }
             show();
             delay(wait);
@@ -349,7 +359,7 @@ void Led::set(bool changed) {
         setbySecondArray(Foreground);
     }
 
-    if (animation->led_show_notify(changed, _minute)) {
+    if (animation->ledShowNotify(changed, _minute)) {
         show();
     }
 }
@@ -400,8 +410,7 @@ inline void Led::clearRow(uint8_t row) {
 //------------------------------------------------------------------------------
 
 inline void Led::clearMinArray() {
-    for (uint16_t i = minutePixelArray[0];
-         i <= minutePixelArray[3] - usedUhrType->numPixelsFrameMatrix(); i++) {
+    for (uint16_t i = minutePixelArray[0]; i <= minutePixelArray[3]; i++) {
         clearPixel(i);
     }
     minuteArray = 0;
@@ -442,8 +451,9 @@ inline void Led::clear() {
 
 void Led::showNumbers(const char d1, const char d2) {
     clearClock();
-    static uint8_t offsetLetter0 = 0;
-    static uint8_t offsetLetter1 = fontWidth[normalSizeASCII] + 1;
+    static uint8_t offsetLetter0 =
+        usedUhrType->colsWordMatrix() / 2 - fontWidth[normalSizeASCII];
+    static uint8_t offsetLetter1 = usedUhrType->colsWordMatrix() / 2 + 1;
     uint8_t offsetRow =
         (usedUhrType->rowsWordMatrix() - fontHeight[normalSizeASCII]) / 2;
 
@@ -472,36 +482,38 @@ void Led::showNumbers(const char d1, const char d2) {
 
 void Led::showDigitalClock(const char min1, const char min0, const char h1,
                            const char h0) {
+    resetFrontMatrixBuffer();
+
+    uint8_t letterSpacing = 1;
+    if (usedUhrType->rowsWordMatrix() >= fontHeight[smallSizeNumbers] * 2) {
+        letterSpacing++;
+    }
+
     // 1st Row of letters vertical Offset
-    static uint8_t offsetLetterH0 =
-        usedUhrType->colsWordMatrix() / 2 - fontWidth[smallSizeNumbers] - 1;
+    static uint8_t offsetLetterH0 = 0;
     static uint8_t offsetLetterH1 =
-        offsetLetterH0 + fontWidth[smallSizeNumbers] + 2;
+        offsetLetterH0 + fontWidth[smallSizeNumbers] + letterSpacing;
 
     // 2nd Row of letters vertical Offset
-    static uint8_t offsetLetterMin0 = 3;
     static uint8_t offsetLetterMin1 =
-        offsetLetterMin0 + fontWidth[smallSizeNumbers] + 2;
+        usedUhrType->colsWordMatrix() - fontWidth[smallSizeNumbers];
+    static uint8_t offsetLetterMin0 =
+        offsetLetterMin1 - fontWidth[smallSizeNumbers] - letterSpacing;
 
     // 1st Row of letters horizontal Offset
-    uint8_t offsetRow0 =
-        usedUhrType->rowsWordMatrix() / 2 - fontHeight[smallSizeNumbers];
+    uint8_t offsetRow0 = 0;
     // 2nd Row of letters horizontal Offset
-    uint8_t offsetRow1 = offsetRow0 + fontHeight[smallSizeNumbers];
-
-    // Horizontal offset +1 for clocks > 10 Rows
-    if (usedUhrType->rowsWordMatrix() > 10) {
-        offsetRow1++;
-    }
+    uint8_t offsetRow1 =
+        usedUhrType->rowsWordMatrix() - fontHeight[smallSizeNumbers];
 
     // Toggle second dots every second
     if (_second % 2) {
-        usedUhrType->setFrontMatrixPixel(offsetRow1 + 1, 1);
-        usedUhrType->setFrontMatrixPixel(offsetRow1 + 3, 1);
+        usedUhrType->setFrontMatrixPixel(offsetRow1 + 1, offsetLetterMin0 - 2);
+        usedUhrType->setFrontMatrixPixel(offsetRow1 + 3, offsetLetterMin0 - 2);
     }
 
-    for (uint8_t col = 0; col < 3; col++) {
-        for (uint8_t row = 0; row < 5; row++) {
+    for (uint8_t col = 0; col < fontWidth[smallSizeNumbers]; col++) {
+        for (uint8_t row = 0; row < fontHeight[smallSizeNumbers]; row++) {
             // 1st Row
             setPixelForChar(col, row, offsetLetterH1, offsetRow0,
                             static_cast<unsigned char>(h1), smallSizeNumbers);

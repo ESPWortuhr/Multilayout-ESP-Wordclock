@@ -57,15 +57,15 @@ public:
             setFrontMatrixWord(2, 0, 10);
             break;
 
-        case FrontWord::fuenf:
+        case FrontWord::m_fuenf:
             setFrontMatrixWord(0, 0, 3);
             break;
 
-        case FrontWord::zehn:
+        case FrontWord::m_zehn:
             setFrontMatrixWord(1, 7, 10);
             break;
 
-        case FrontWord::zwanzig:
+        case FrontWord::m_zwanzig:
             setFrontMatrixWord(1, 0, 6);
             break;
 

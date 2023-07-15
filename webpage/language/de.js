@@ -30,9 +30,10 @@ let TRANSLATION_DE_DE = {
 			"color": "Farbe",
 			"seconds": "Sekunden",
 			"digital-clock": "Digitaluhr",
-			"marquee": "Laufschrift",
+			"scrollingtext": "Laufschrift",
 			"rainbow": "Regenbogen",
-			"color-change": "Farbwechsel"
+			"color-change": "Farbwechsel",
+			"symbol": "Symbol"
 		},
 		"animation": {
 			"h2": "Animation",
@@ -61,7 +62,7 @@ let TRANSLATION_DE_DE = {
 		"settings": {
 			"h2": "Einstellungen",
 			"brightness": "Helligkeit ",
-			"marquee-text": "Lauftext",
+			"scrollingtext": "Lauftext",
 			"save": "Speichern",
 			"speed": "Geschwindigkeit ",
 			"leds": "Anzahl LEDs ",
@@ -84,6 +85,7 @@ let TRANSLATION_DE_DE = {
 			"de-11-11": "Deutsch 11 × 11",
 			"de-11-11-v2": "Deutsch 11 × 11 Version 2",
 			"de-22-11-weather": "Deutsch 10 × 11 Wetter",
+			"de-16-8": "Deutsch 16 × 8",
 			"de-16-18": "Deutsch 16 × 18",
 			"en-10-11": "Englisch 10 × 11",
 			"nl-10-11": "Niederländisch 10 × 11",

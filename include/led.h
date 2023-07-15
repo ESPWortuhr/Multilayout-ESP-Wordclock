@@ -21,6 +21,7 @@ public:
     // Helper Functions
     //------------------------------------------------------------------------------
     inline void checkIfHueIsOutOfBound(uint16_t &hue);
+    void resetFrontMatrixBuffer();
 
     //------------------------------------------------------------------------------
     // Manipulate Functions
@@ -34,20 +35,20 @@ public:
     //------------------------------------------------------------------------------
     float setBrightnessAuto(float val);
     void getCurrentManualBrightnessSetting(uint8_t &currentBrightness);
-    void getColorbyPositionWithAppliedBrightness(Color &color,
+    void getColorbyPositionWithAppliedBrightness(HsbColor &color,
                                                  uint8_t position);
     void shiftColumnToRight();
 
     //------------------------------------------------------------------------------
     // Pixel set Functions
     //------------------------------------------------------------------------------
-    void setPixel(uint16_t ledIndex, Color color);
-    void setPixel(uint8_t row, uint8_t col, Color color);
+    void setPixel(uint16_t ledIndex, HsbColor color);
+    void setPixel(uint8_t row, uint8_t col, HsbColor color);
     void setbyFrontMatrix(uint8_t ColorPosition = Foreground,
                           bool applyMirrorAndReverse = true);
     void setbyMinuteArray(uint8_t ColorPosition = Foreground);
     void setbySecondArray(uint8_t ColorPosition = Foreground);
-    void setIcon(uint8_t num_icon, uint8_t brightness);
+    void setIcon(uint8_t iconNum);
     void setSingle(uint8_t wait);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                          uint8_t offsetRow, unsigned char unsigned_d1,

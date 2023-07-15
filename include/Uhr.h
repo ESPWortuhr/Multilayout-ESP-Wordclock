@@ -75,43 +75,13 @@ enum class SecondVariant {
     FrameSectorToggle = 3,
 };
 
-struct Color {
-    HsbColor hsb;
-    uint16_t alpha;
-
-    Color() {
-        hsb = HsbColor(0, 0, 0);
-        alpha = 0;
-    }
-
-    Color(float newHue) {
-        hsb.H = newHue;
-        alpha = 0;
-    }
-
-    Color(HsbColor newHsb) {
-        hsb = newHsb;
-        alpha = 0;
-    }
-
-    Color(RgbColor newRgb) {
-        hsb = HsbColor(newRgb);
-        alpha = 0;
-    }
-
-    Color(HsbColor newHsb, uint16_t newAlpha) {
-        hsb = newHsb;
-        alpha = newAlpha;
-    }
-};
-
 struct GLOBAL {
     uint8_t sernr;
     uint16_t prog;
     uint8_t param1;
     bool progInit;
     uint16_t conf;
-    Color color[3];
+    HsbColor color[3];
     uint8_t effectBri;
     uint8_t effectSpeed;
     uint8_t client_nr;
@@ -224,8 +194,11 @@ enum CommandWords {
     COMMAND_MODE_RAINBOW = 5,
     COMMAND_MODE_COLOR = 6,
     COMMAND_MODE_DIGITAL_CLOCK = 7,
-
+    COMMAND_MODE_SYMBOL = 8,
     COMMAND_MODE_ANIMATION = 10,
+
+    PLACEHOLDER_MAX_MODE = 19,
+
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
 
@@ -241,7 +214,7 @@ enum CommandWords {
     COMMAND_SET_SETTING_SECOND = 93,
     COMMAND_SET_MINUTE = 94,
     COMMAND_SET_BRIGHTNESS = 95,
-    COMMAND_SET_MARQUEE_TEXT = 96,
+    COMMAND_SET_SCROLLINGTEXT = 96,
     COMMAND_SET_TIMESERVER = 97,
     COMMAND_SET_WIFI_DISABLED = 98,
     COMMAND_SET_WIFI_AND_RESTART = 99,
@@ -252,6 +225,8 @@ enum CommandWords {
 
     COMMAND_SPEED = 152,
 
+    PLACEHOLDER_MAX_SET = 199,
+
     COMMAND_REQUEST_CONFIG_VALUES = 200,
     COMMAND_REQUEST_COLOR_VALUES = 201,
     COMMAND_REQUEST_WIFI_LIST = 202,
@@ -259,6 +234,7 @@ enum CommandWords {
     COMMAND_REQUEST_ANIMATION = 204,
     COMMAND_REQUEST_MQTT_VALUES = 205,
 
+    PLACEHOLDER_MAX_REQUEST = 255,
 };
 
 enum ClockType {
@@ -272,21 +248,21 @@ enum ClockType {
     Ger11x11 = 3,
     Ger11x11V2 = 8,
     Ger22x11Weather = 5,
+    Ger16x8 = 13,
     Ger16x18 = 7,
     Nl10x11 = 9,
 };
 
 enum Icons {
-    WLANT = 0,
-    WLAN100 = 1,
-    WLAN60 = 2,
-    WLAN30 = 3,
-    HERZ = 4,
-    SMILY = 5,
-    FIRE_1 = 6,
-    FIRE_2 = 7,
-    FIRE_3 = 8,
-    FIRE_4 = 9,
-    FIRE_5 = 10,
-    FIRE_6 = 11,
+    WLAN100 = 0,
+    WLAN60 = 1,
+    WLAN30 = 2,
+    FIRE_1 = 3,
+    FIRE_2 = 4,
+    FIRE_3 = 5,
+    FIRE_4 = 6,
+    FIRE_5 = 7,
+    FIRE_6 = 8,
+    HEART = 9,
+    SMILEY = 10,
 };

@@ -47,9 +47,9 @@ var websocket;
 var ipEsp = "ws://192.168.4.1";
 var debug = true;
 var command = 1;
-var hsva = [
-	[0, 100, 50, 0],
-	[120, 100, 50, 0]
+var hsb = [
+	[0, 100, 50],
+	[120, 100, 50]
 ];
 var effectBri = 2;
 var effectSpeed = 10;
@@ -103,6 +103,7 @@ var COMMAND_MODE_RAINBOWCYCLE = 4;
 var COMMAND_MODE_RAINBOW = 5;
 var COMMAND_MODE_COLOR = 6;
 var COMMAND_MODE_DIGITAL_CLOCK = 7;
+var COMMAND_MODE_SYMBOL = 8;
 var COMMAND_MODE_ANIMATION = 10;
 
 /**
@@ -114,11 +115,12 @@ const MODE_TO_INPUT_ID = new Map();
 MODE_TO_INPUT_ID.set(0, "mode-wordclock"); // Map COMMAND_IDLE to mode wordclock
 MODE_TO_INPUT_ID.set(COMMAND_MODE_WORD_CLOCK, "mode-wordclock");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_SECONDS, "mode-seconds");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_SCROLLINGTEXT, "mode-marquee");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_SCROLLINGTEXT, "mode-scrollingtext");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOWCYCLE, "mode-rainbow");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOW, "mode-change"); // Color change
 MODE_TO_INPUT_ID.set(COMMAND_MODE_COLOR, "mode-color");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_DIGITAL_CLOCK, "mode-digital-clock");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_SYMBOL, "mode-symbol");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_ANIMATION, "mode-wordclock");
 
 // other commands
@@ -136,7 +138,7 @@ var COMMAND_SET_HOSTNAME = 92;
 var COMMAND_SET_SETTING_SECOND = 93;
 var COMMAND_SET_MINUTE = 94;
 var COMMAND_SET_BRIGHTNESS = 95;
-var COMMAND_SET_MARQUEE_TEXT = 96;
+var COMMAND_SET_SCROLLINGTEXT = 96;
 var COMMAND_SET_TIMESERVER = 97;
 var COMMAND_SET_WIFI_DISABLED = 98;
 var COMMAND_SET_WIFI_AND_RESTART = 99;
@@ -159,7 +161,7 @@ var COLOR_FOREGROUND = 0;
 var COLOR_BACKGROUND = 1;
 
 // data that gets send back to the esp
-var DATA_MARQUEE_TEXT_LENGTH = 30;
+var DATA_SCROLLINGTEXT_LENGTH = 30;
 var DATA_TIMESERVER_TEXT_LENGTH = 30;
 var DATA_MQTT_RESPONSE_TEXT_LENGTH = 30;
 var DATA_HOST_TEXT_LENGTH = 30;
@@ -186,9 +188,9 @@ function initConfigValues() {
 
 	debug = true;
 	command = 1;
-	hsva = [
-		[0, 100, 50, 0],
-		[120, 100, 50, 0]
+	hsb = [
+		[0, 100, 50],
+		[120, 100, 50]
 	];
 	effectBri = 2;
 	effectSpeed = 10;
@@ -340,7 +342,7 @@ function initWebsocket() {
 
 			$("#timeserver").set("value", data.timeserver);
 			$("#hostname").set("value", data.hostname);
-			$("#marquee").set("value", data.scrollingText);
+			$("#scrollingtext").set("value", data.scrollingText);
 
 			$("#brightness-6").set("value", data.h6);
 			$("#brightness-8").set("value", data.h8);
@@ -387,7 +389,9 @@ function initWebsocket() {
 			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // EN10x11
 			enableSpecific("specific-colortype-4", data.colortype === 4);
 			removeSpecificOption("show-minutes", "3", data.numOfRows !== 11); // MinuteVariant "Corners" only for DE11x11 Variants
-			removeSpecificOption("show-minutes", "4", data.UhrtypeDef !== 9); // MinuteVariant "In Words"
+			removeSpecificOption("show-minutes", "4", !data.hasMinuteInWords);
+			removeSpecificOption("show-minutes", "1", data.UhrtypeDef === 13); // Remove "LED4x" for Ger16x8
+			removeSpecificOption("show-minutes", "2", data.UhrtypeDef === 13); // Remove "LED7x" for Ger16x8
 
 			autoLdrEnabled = data.autoLdrEnabled;
 			$("#auto-ldr-enabled").set("value", autoLdrEnabled);
@@ -395,14 +399,12 @@ function initWebsocket() {
 			enableSpecific("specific-layout-brightness-auto", autoLdrEnabled === 1);
 		}
 		if (data.command === "set") {
-			hsva[0][0] = data.hsva00;
-			hsva[0][1] = data.hsva01;
-			hsva[0][2] = data.hsva02;
-			hsva[0][3] = data.hsva03;
-			hsva[1][0] = data.hsva10;
-			hsva[1][1] = data.hsva11;
-			hsva[1][2] = data.hsva12;
-			hsva[1][3] = data.hsva13;
+			hsb[0][0] = data.hsb00;
+			hsb[0][1] = data.hsb01;
+			hsb[0][2] = data.hsb02;
+			hsb[1][0] = data.hsb10;
+			hsb[1][1] = data.hsb11;
+			hsb[1][2] = data.hsb12;
 			effectBri = data.effectBri;
 			effectSpeed = data.effectSpeed;
 			colortype = data.colortype;
@@ -456,10 +458,9 @@ function initWebsocket() {
 }
 
 function changeColor(color) {
-	hsva[color.index][0] = color.hue;
-	hsva[color.index][1] = color.saturation;
-	hsva[color.index][2] = color.value;
-	hsva[color.index][3] = Math.round(255 * (1.0 - color.alpha));
+	hsb[color.index][0] = color.hue;
+	hsb[color.index][1] = color.saturation;
+	hsb[color.index][2] = color.value;
 	sendColorData(command, nstr(1));
 }
 
@@ -475,34 +476,29 @@ function createColorPicker() {
 			options: { sliderType: "value" }
 		}, {
 			component: iro.ui.Slider,
-			options: { sliderType: "alpha" }
+			options: { sliderType: "kelvin" }
 		}]
 	});
 	colorPicker.on("input:change", changeColor);
-	// attach extra attribute to the alpha slider to only show it for RGBW LEDs
-	const alphaSlider = colorPicker.el.lastElementChild.lastElementChild;
-	alphaSlider.classList.add("specific-colortype-4");
 }
 
 /**
  * show the color configuration in the color picker
  */
 function setColorPicker(withBackground) {
-	var hsvaFg = {
-		h: hsva[COLOR_FOREGROUND][0],
-		s: hsva[COLOR_FOREGROUND][1],
-		v: hsva[COLOR_FOREGROUND][2],
-		a: 1.0 - hsva[COLOR_FOREGROUND][3] / 255.0
+	var hsbFg = {
+		h: hsb[COLOR_FOREGROUND][0],
+		s: hsb[COLOR_FOREGROUND][1],
+		v: hsb[COLOR_FOREGROUND][2]
 	};
-	var hsvaBg = {
-		h: hsva[COLOR_BACKGROUND][0],
-		s: hsva[COLOR_BACKGROUND][1],
-		v: hsva[COLOR_BACKGROUND][2],
-		a: 1.0 - hsva[COLOR_BACKGROUND][3] / 255.0
+	var hsbBg = {
+		h: hsb[COLOR_BACKGROUND][0],
+		s: hsb[COLOR_BACKGROUND][1],
+		v: hsb[COLOR_BACKGROUND][2]
 	};
-	var colors = [hsvaFg];
+	var colors = [hsbFg];
 	if (withBackground) {
-		colors.push(hsvaBg);
+		colors.push(hsbBg);
 	}
 	colorPicker.setColors(colors);
 }
@@ -512,10 +508,9 @@ function setColorPicker(withBackground) {
  */
 function setColors() {
 	var withBackground =
-		hsva[COLOR_BACKGROUND][0] ||
-		hsva[COLOR_BACKGROUND][1] ||
-		hsva[COLOR_BACKGROUND][2] ||
-		hsva[COLOR_BACKGROUND][3];
+		hsb[COLOR_BACKGROUND][0] ||
+		hsb[COLOR_BACKGROUND][1] ||
+		hsb[COLOR_BACKGROUND][2];
 	setColorPicker(withBackground);
 	$("#with-background").set("checked", withBackground);
 }
@@ -527,16 +522,14 @@ function toggleBackground() {
 	var withBackground = $("#with-background").get("checked") | 0;
 	if (withBackground) {
 		// set to dark gray
-		hsva[COLOR_BACKGROUND][0] = 0;
-		hsva[COLOR_BACKGROUND][1] = 0;
-		hsva[COLOR_BACKGROUND][2] = 10;
-		hsva[COLOR_BACKGROUND][3] = 0;
+		hsb[COLOR_BACKGROUND][0] = 0;
+		hsb[COLOR_BACKGROUND][1] = 0;
+		hsb[COLOR_BACKGROUND][2] = 10;
 	} else {
 		// set to black
-		hsva[COLOR_BACKGROUND][0] = 0;
-		hsva[COLOR_BACKGROUND][1] = 0;
-		hsva[COLOR_BACKGROUND][2] = 0;
-		hsva[COLOR_BACKGROUND][3] = 0;
+		hsb[COLOR_BACKGROUND][0] = 0;
+		hsb[COLOR_BACKGROUND][1] = 0;
+		hsb[COLOR_BACKGROUND][2] = 0;
 	}
 	setColorPicker(withBackground);
 	sendColorData(command, nstr(1));
@@ -621,7 +614,7 @@ function getPaddedString(string, maxStringLength) {
 }
 
 function sendCmd(command, addData = "") {
-	var data = nstr(command) + addData + "999";
+	var data = nstr(command) + addData;
 	debugMessage("Send data: '" + data + "'");
 	websocket.send(data);
 }
@@ -641,14 +634,12 @@ function sendBrightnessData(command, addData = "") {
 }
 
 function sendColorData(command, addData = "") {
-	sendCmd(command, nstr(hsva[COLOR_FOREGROUND][0]) +
-	nstr(hsva[COLOR_FOREGROUND][1]) +
-	nstr(hsva[COLOR_FOREGROUND][2]) +
-	nstr(hsva[COLOR_FOREGROUND][3]) +
-	nstr(hsva[COLOR_BACKGROUND][0]) +
-	nstr(hsva[COLOR_BACKGROUND][1]) +
-	nstr(hsva[COLOR_BACKGROUND][2]) +
-	nstr(hsva[COLOR_BACKGROUND][3]) +
+	sendCmd(command, nstr(hsb[COLOR_FOREGROUND][0]) +
+	nstr(hsb[COLOR_FOREGROUND][1]) +
+	nstr(hsb[COLOR_FOREGROUND][2]) +
+	nstr(hsb[COLOR_BACKGROUND][0]) +
+	nstr(hsb[COLOR_BACKGROUND][1]) +
+	nstr(hsb[COLOR_BACKGROUND][2]) +
 	nstr(effectBri) +
 	nstr(effectSpeed));
 }
@@ -665,14 +656,13 @@ $.ready(function() {
 	$("#with-background").on("change", toggleBackground);
 	$(".status-button").on("click", function() {
 		var value = $(this).get("value");
+		$("#status").fill("Verbinden ...");
 		if (value === "1") {
 			value = 0;
-			$("#status").fill("Verbinden ...");
 			$(".status-button").set("value", value);
 			websocket.close();
 		} else {
 			value = 1;
-			$("#status").fill("Verbinden ...");
 			$(".status-button").set("value", value);
 			initWebsocket();
 		}
@@ -755,7 +745,7 @@ $.ready(function() {
 		if (id === "mode-digital-clock") {
 			command = COMMAND_MODE_DIGITAL_CLOCK;
 		}
-		if (id === "mode-marquee") {
+		if (id === "mode-scrollingtext") {
 			hasSpeed = true;
 			hasText = true;
 			command = COMMAND_MODE_SCROLLINGTEXT;
@@ -769,6 +759,10 @@ $.ready(function() {
 			hasBrightness = true;
 			hasSpeed = true;
 			command = COMMAND_MODE_RAINBOW;
+		}
+		if (id === "mode-symbol") {
+			hasSpeed = true;
+			command = COMMAND_MODE_SYMBOL;
 		}
 
 		setAnimation();
@@ -884,46 +878,31 @@ $.ready(function() {
 		return false;
 	});
 	$("#timeserver-button").on("click", function() {
-
-		var timeserverValue = $("#timeserver").get("value");
-
-		sendCmd(COMMAND_SET_TIMESERVER, getPaddedString(timeserverValue, DATA_TIMESERVER_TEXT_LENGTH));
+		sendCmd(COMMAND_SET_TIMESERVER, getPaddedString($("#timeserver").get("value"), DATA_TIMESERVER_TEXT_LENGTH));
 		debugMessage("Timeserver" + debugMessageReconfigured);
 		return false;
 	});
-	$("#marquee-button").on("click", function() {
-		var marqueeTextValue = $("#marquee").get("value");
-
-		sendCmd(COMMAND_SET_MARQUEE_TEXT, getPaddedString(marqueeTextValue, DATA_MARQUEE_TEXT_LENGTH));
+	$("#scrollingtext-button").on("click", function() {
+		sendCmd(COMMAND_SET_SCROLLINGTEXT, getPaddedString($("#scrollingtext").get("value"), DATA_SCROLLINGTEXT_LENGTH));
 		debugMessage("ScrollingText" + debugMessageReconfigured);
 	});
 	$("[id*='brightness']").on("change", function() {
 		sendBrightnessData(COMMAND_SET_BRIGHTNESS);
 	});
 	$("#weather-button").on("click", function() {
-
-		var apiKey = $("#owm-api-key").get("value");
-		var cityId = $("#owm-city-id").get("value");
-
-		sendCmd(COMMAND_SET_WEATHER_DATA, cityId + " " + apiKey);
+		sendCmd(COMMAND_SET_WEATHER_DATA, $("#owm-city-id").get("value") + " " + $("#owm-api-key").get("value"));
 		debugMessage("OpenWeatherMap Login" + debugMessageReconfigured);
 	});
 	$("#show-minutes").on("change", function() {
-		var showMinutesValue = $("#show-minutes").get("value");
-
-		sendCmd(COMMAND_SET_MINUTE, nstr(showMinutesValue));
+		sendCmd(COMMAND_SET_MINUTE, nstr($("#show-minutes").get("value")));
 		debugMessage("MinuteVariant" + debugMessageReconfigured);
 	});
 	$("#show-seconds").on("change", function() {
-		var showSecondsValue = $("#show-seconds").get("value");
-
-		sendCmd(COMMAND_SET_SETTING_SECOND, nstr(showSecondsValue));
+		sendCmd(COMMAND_SET_SETTING_SECOND, nstr($("#show-seconds").get("value")));
 		debugMessage("SecondVariant" + debugMessageReconfigured);
 	});
 	$("#front-layout").on("change", function() {
-		var frontLayout = $("#front-layout").get("value");
-
-		sendCmd(COMMAND_SET_UHRTYPE, nstr(frontLayout));
+		sendCmd(COMMAND_SET_UHRTYPE, nstr($("#front-layout").get("value")));
 		sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 		debugMessage("FrontLayout" + debugMessageReconfigured);
 	});
@@ -934,9 +913,7 @@ $.ready(function() {
 		debugMessage("Colortype" + debugMessageReconfigured);
 	});
 	$("#hostname-button").on("click", function() {
-		var hostname = $("#hostname").get("value");
-
-		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString(hostname, DATA_HOST_TEXT_LENGTH));
+		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString($("#hostname").get("value"), DATA_HOST_TEXT_LENGTH));
 		debugMessage("Hostname" + debugMessageReconfigured);
 	});
 	$("[id*='boot-show']").on("change", function() {

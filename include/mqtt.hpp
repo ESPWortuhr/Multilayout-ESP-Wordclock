@@ -105,7 +105,6 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     if (doc.containsKey("color")) {
         G.color[Foreground] =
             RgbColor(doc["color"][0], doc["color"][1], doc["color"][2]);
-        G.color[Foreground].alpha = 1;
     }
 }
 
