@@ -1106,8 +1106,11 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_DIGITAL_CLOCK: {
         if (G.progInit) {
             clearClockByProgInit();
+        }
+        if (parametersChanged) {
             led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
                                  _hour / 10);
+            parametersChanged = false;
         }
         break;
     }
@@ -1117,8 +1120,8 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_RAINBOW: {
         if (G.progInit) {
             countMillisSpeed = (11u - G.effectSpeed) * 30u;
+            clearClockByProgInit();
         }
-        clearClockByProgInit();
 
         if (countMillisSpeed >= (11u - G.effectSpeed) * 30u) {
             switch (G.prog) {

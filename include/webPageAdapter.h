@@ -143,6 +143,13 @@ void payloadTextHandling(const uint8_t *payload, char *text,
 
 //------------------------------------------------------------------------------
 
+bool compareEffBriAndSpeedToOld(uint8_t *payload) {
+    return ((G.effectBri != split(payload, 21)) ||
+            (G.effectSpeed != split(payload, 24)));
+}
+
+//------------------------------------------------------------------------------
+
 void parseMainColor(uint8_t *payload, uint8_t position) {
     G.color[position] = {HsbColor(split(payload, 3) / 360.f,
                                   split(payload, 6) / 100.f,
@@ -197,32 +204,34 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_SECONDS: {
-            G.progInit = true;
+            if (G.prog != command) {
+                G.progInit = true;
+            }
 
             parseMainColor(payload, Effect);
-            G.effectBri = split(payload, 21);
-            G.effectSpeed = split(payload, 24);
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_DIGITAL_CLOCK: {
-            G.progInit = true;
+            if (G.prog != command) {
+                G.progInit = true;
+            }
 
             parseMainColor(payload, Effect);
-            G.effectBri = split(payload, 21);
-            G.effectSpeed = split(payload, 24);
+            parametersChanged = true;
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_SCROLLINGTEXT: {
-            G.progInit = true;
+            if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
+                G.progInit = true;
+            }
 
             parseMainColor(payload, Effect);
-            G.effectBri = split(payload, 21);
             G.effectSpeed = split(payload, 24);
             break;
         }
@@ -230,7 +239,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_RAINBOWCYCLE: {
-            G.progInit = true;
+            if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
+                G.progInit = true;
+            }
 
             G.effectBri = split(payload, 21);
             G.effectSpeed = split(payload, 24);
@@ -240,7 +251,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_RAINBOW: {
-            G.progInit = true;
+            if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
+                G.progInit = true;
+            }
 
             G.effectBri = split(payload, 21);
             G.effectSpeed = split(payload, 24);
@@ -250,7 +263,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_COLOR: {
-            G.progInit = true;
+            if (G.prog != command) {
+                G.progInit = true;
+            }
 
             parseMainColor(payload, Effect);
             break;
