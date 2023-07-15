@@ -70,13 +70,13 @@ bool Led::getCharCol(fontSize font, uint8_t col, uint8_t row,
 
 void Led::applyMirroringAndReverseIfDefined() {
     if (G.layoutVariant[ReverseMinDirection]) {
-        led.mirrorMinuteArrayVertical();
+        mirrorMinuteArrayVertical();
     }
     if (G.layoutVariant[MirrorVertical]) {
-        led.mirrorFrontMatrixVertical();
+        mirrorFrontMatrixVertical();
     }
     if (G.layoutVariant[MirrorHorizontal]) {
-        led.mirrorFrontMatrixHorizontal();
+        mirrorFrontMatrixHorizontal();
     }
 }
 
@@ -321,11 +321,11 @@ void Led::setSingle(uint8_t wait) {
 
             clear();
             if (row % 2 != 0) {
-                led.setPixel(row, usedUhrType->colsWordMatrix() - 1 - col,
-                             HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
+                setPixel(row, usedUhrType->colsWordMatrix() - 1 - col,
+                         HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
             } else {
-                led.setPixel(row, col,
-                             HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
+                setPixel(row, col,
+                         HsbColor(hue / 360.f, 1.f, G.effectBri / 100.f));
             }
             show();
             delay(wait);
