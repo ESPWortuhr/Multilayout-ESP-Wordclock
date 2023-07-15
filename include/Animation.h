@@ -218,8 +218,8 @@ public:
         stopPhase = frames - speedlimit * maxRows;
     }
 
-    RgbaColor get(int32_t r) {
-        int32_t row = (maxRows - 1 - r);
+    RgbaColor get(int32_t _row) {
+        int32_t row = (maxRows - 1 - _row);
         // per image row runs from (maxRows - 1) down to 0
 
         int32_t pos = (row + offset) % (deadtime + lifetime);
@@ -283,12 +283,12 @@ public:
     }
     virtual ~Ball(){};
 
-    void begin(int32_t row, int32_t column, RgbfColor foreground,
+    void begin(int32_t _row, int32_t _col, RgbfColor foreground,
                RgbfColor background, int32_t delay) {
         this->delay = delay;
-        y = row << 8; // increase precision
-        r = row;
-        c = column;
+        y = _row << 8; // increase precision
+        row = _row;
+        col = _col;
         vy = 0;
         colorForeground = foreground;
         colorBackground = background;
@@ -318,7 +318,7 @@ public:
                 }
                 lastDown |= (_vy < 0) && (vy >= 0) &&
                             (y > lastPos); // upper turning point
-                r = y >> 8;
+                row = y >> 8;
             }
             color = end ? colorBackground : colorForeground;
         }
@@ -326,7 +326,7 @@ public:
     }
 
 public:
-    int32_t r, c; // after calling move() r and c contain new actual values
+    int32_t row, col; // after calling move() row & col contain new actual val
     RgbfColor color;
 
 protected:
@@ -507,19 +507,19 @@ public:
         maxLayer = layer;
     }
 
-    bool getPixel(uint8_t r, uint8_t c, RgbColor &color) {
+    bool getPixel(uint8_t row, uint8_t col, RgbColor &color) {
         // void Animation::copyBlock(RgbfColor color, uint32_t block, bool fgbg,
         // bool mirrored,
         //                          bool init) {
 
-        if ((r < 10) && (r < maxRows) && (c < 11) && (c < maxCols)) {
+        if ((row < 10) && (row < maxRows) && (col < 11) && (col < maxCols)) {
             uint16_t pixels = 0;
             for (int32_t layer = 0; layer <= maxLayer; layer++) {
                 if (icons[layer] != static_cast<Icons>(0)) {
                     pixels = animation->reverse(
-                        pgm_read_word(&(grafik_11x10[icons[layer]][r])),
+                        pgm_read_word(&(grafik_11x10[icons[layer]][row])),
                         mirrored);
-                    if (pixels & (1 << c)) {
+                    if (pixels & (1 << col)) {
                         color = colors[layer];
                         return true;
                     }

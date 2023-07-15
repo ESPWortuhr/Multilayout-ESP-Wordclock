@@ -668,10 +668,10 @@ uint16_t Animation::animBalls() {
     starttime = now;
     ballsDown = 0;
     for (uint8_t i = 0; i < numBalls; i++) {
-        oldR = balls[i].r;
+        oldR = balls[i].row;
         ballsDown += balls[i].move(timeDelta);
-        row = balls[i].r; // row, col new coordinates
-        col = balls[i].c;
+        row = balls[i].row; // row, col new coordinates
+        col = balls[i].col;
         if (row > oldR) { // down
             for (; row > oldR; oldR++) {
                 work[oldR][col] = background;
