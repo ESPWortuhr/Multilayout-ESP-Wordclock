@@ -121,7 +121,7 @@ void setup() {
     // Start serial interface if required
     //-------------------------------------
 #if GENERAL_VERBOSE
-    Serial.begin(115200);
+    Serial.begin(460800);
     Serial.println("");
     Serial.println("--------------------------------------");
     Serial.println("Begin Setup");
