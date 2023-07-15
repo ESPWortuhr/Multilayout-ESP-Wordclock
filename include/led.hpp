@@ -112,6 +112,14 @@ RgbwColor convertRgbToRgbw(RgbColor light, WhiteType wType) {
 }
 
 //------------------------------------------------------------------------------
+
+void Led::resetFrontMatrixBuffer() {
+    for (uint8_t i = 0; i < usedUhrType->rowsWordMatrix(); i++) {
+        frontMatrix[i] = 0;
+    }
+}
+
+//------------------------------------------------------------------------------
 // Brightness Functions
 //------------------------------------------------------------------------------
 
@@ -279,19 +287,21 @@ void Led::setbySecondArray(uint8_t colorPosition) {
 
 //------------------------------------------------------------------------------
 
-void Led::setIcon(uint8_t num_icon, uint8_t brightness = 100) {
+void Led::setIcon(uint8_t iconNum) {
+    resetFrontMatrixBuffer();
     uint8_t offsetCol = (usedUhrType->colsWordMatrix() - GRAFIK_11X10_COLS) / 2;
 
     for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
         for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
-            if (pgm_read_word(&(grafik_11x10[num_icon][row])) &
-                (1 << (GRAFIK_11X10_COLS - 1 - col))) {
+            if (pgm_read_word(&(grafik_11x10[iconNum][row])) &
+                (1 << (GRAFIK_11X10_COLS - col - 1))) {
                 usedUhrType->setFrontMatrixPixel(row, col + offsetCol);
             } else {
                 usedUhrType->setFrontMatrixPixel(row, col + offsetCol, false);
             }
         }
     }
+
     setbyFrontMatrix(Foreground);
     show();
 }

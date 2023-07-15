@@ -12,14 +12,6 @@ OpenWMap weather;
 // Helper Functions
 //------------------------------------------------------------------------------
 
-void ClockWork::resetFrontMatrixBuffer() {
-    for (uint8_t i = 0; i < usedUhrType->rowsWordMatrix(); i++) {
-        frontMatrix[i] = 0;
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void ClockWork::loopLdrLogic() {
     int16_t lux = analogRead(A0); // Range 0-1023
     uint8_t ldrValOld = ldrVal;
@@ -248,11 +240,11 @@ void ClockWork::initBootShowIp(const char *buf) {
 
 void ClockWork::initBootWifiSignalStrength(int strength) {
     if (strength <= 100) {
-        led.setIcon(WLAN100, 100);
+        led.setIcon(WLAN100);
     } else if (strength <= 60) {
-        led.setIcon(WLAN60, 60);
+        led.setIcon(WLAN60);
     } else if (strength <= 30) {
-        led.setIcon(WLAN30, 30);
+        led.setIcon(WLAN30);
     }
 }
 
@@ -291,6 +283,9 @@ uint8_t ClockWork::determineWhichMinuteVariant() {
         break;
     case MinuteVariant::Corners:
         return 2;
+        break;
+    case MinuteVariant::InWords:
+        return 0;
         break;
     default:
         Serial.println("[ERROR] G.minuteVariant undefined");
@@ -748,7 +743,7 @@ void ClockWork::setClock() {
 //------------------------------------------------------------------------------
 
 void ClockWork::calcClockface() {
-    resetFrontMatrixBuffer();
+    led.resetFrontMatrixBuffer();
 
     if (_hour == 23 && _minute == 59 && _second >= 50) {
         countdownToMidnight();
