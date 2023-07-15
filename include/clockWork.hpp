@@ -184,6 +184,42 @@ void ClockWork::scrollingText(const char *buf) {
 
 //------------------------------------------------------------------------------
 
+void ClockWork::displaySymbols(uint8_t iconNum) {
+    static uint8_t count = 0;
+
+    switch (iconNum) {
+    case HEART:
+        /* Heartbeat begin */
+        if (count < 10) {
+            G.color[Effect].B += 0.03;
+            if (G.color[Effect].B > 1) {
+                G.color[Effect].B = 1;
+            }
+            count++;
+        } else if (count < 20) {
+            G.color[Effect].B -= 0.03;
+            if (G.color[Effect].B <= 0) {
+                G.color[Effect].B = 0;
+            }
+            count++;
+        } else {
+            count = 0;
+        }
+        /* Heartbeat end */
+        led.setIcon(HEART);
+        break;
+
+    case SMILEY:
+        led.setIcon(SMILEY);
+        break;
+
+    default:
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::countdownToMidnight() {
     Serial.printf("Count down: %d\n", 60 - _second);
     switch (_second) {
@@ -1117,7 +1153,8 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_MODE_SCROLLINGTEXT:
     case COMMAND_MODE_RAINBOWCYCLE:
-    case COMMAND_MODE_RAINBOW: {
+    case COMMAND_MODE_RAINBOW:
+    case COMMAND_MODE_SYMBOL: {
         if (G.progInit) {
             countMillisSpeed = (11u - G.effectSpeed) * 30u;
             clearClockByProgInit();
@@ -1135,6 +1172,10 @@ void ClockWork::loop(struct tm &tm) {
             }
             case COMMAND_MODE_RAINBOW: {
                 rainbow();
+                break;
+            }
+            case COMMAND_MODE_SYMBOL: {
+                displaySymbols(HEART);
                 break;
             }
             default:

@@ -194,6 +194,7 @@ enum CommandWords {
     COMMAND_MODE_RAINBOW = 5,
     COMMAND_MODE_COLOR = 6,
     COMMAND_MODE_DIGITAL_CLOCK = 7,
+    COMMAND_MODE_SYMBOL = 8,
     COMMAND_MODE_ANIMATION = 10,
 
     PLACEHOLDER_MAX_MODE = 19,
@@ -253,16 +254,15 @@ enum ClockType {
 };
 
 enum Icons {
-    WLANT = 0,
-    WLAN100 = 1,
-    WLAN60 = 2,
-    WLAN30 = 3,
-    HERZ = 4,
-    SMILY = 5,
-    FIRE_1 = 6,
-    FIRE_2 = 7,
-    FIRE_3 = 8,
-    FIRE_4 = 9,
-    FIRE_5 = 10,
-    FIRE_6 = 11,
+    WLAN100 = 0,
+    WLAN60 = 1,
+    WLAN30 = 2,
+    FIRE_1 = 3,
+    FIRE_2 = 4,
+    FIRE_3 = 5,
+    FIRE_4 = 6,
+    FIRE_5 = 7,
+    FIRE_6 = 8,
+    HEART = 9,
+    SMILEY = 10,
 };

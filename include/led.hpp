@@ -302,7 +302,7 @@ void Led::setIcon(uint8_t iconNum) {
         }
     }
 
-    setbyFrontMatrix(Foreground);
+    setbyFrontMatrix(Effect);
     show();
 }
 

@@ -32,7 +32,8 @@ let TRANSLATION_EN_US = {
 			"digital-clock": "Digital Clock",
 			"scrollingtext": "Scrollingtext",
 			"rainbow": "Rainbow",
-			"color-change": "Color Change"
+			"color-change": "Color Change",
+			"symbol": "Symbol"
 		},
 		"animation": {
 			"h2": "Animation",

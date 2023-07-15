@@ -272,6 +272,18 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         }
             //------------------------------------------------------------------------------
 
+        case COMMAND_MODE_SYMBOL: {
+            if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
+                G.progInit = true;
+            }
+
+            parseMainColor(payload, Effect);
+            G.effectBri = split(payload, 21);
+            G.effectSpeed = split(payload, 24);
+            break;
+        }
+            //------------------------------------------------------------------------------
+
         case COMMAND_MODE_ANIMATION: {
             G.progInit = true;
 

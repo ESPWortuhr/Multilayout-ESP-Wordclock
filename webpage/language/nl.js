@@ -32,7 +32,8 @@ let TRANSLATION_NL = {
 			"digital-clock": "Digitale klok",
 			"scrollingtext": "Tekst",
 			"rainbow": "Regenboog",
-			"color-change": "Kleurverandering"
+			"color-change": "Kleurverandering",
+			"symbol": "Symbool"
 		},
 		"animation": {
 			"h2": "Animatie",
