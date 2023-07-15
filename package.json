@@ -1,6 +1,6 @@
 {
 	"name": "Wortuhr",
-	"version": "3.1.0",
+	"version": "3.1.1",
 	"description": "For building a german layouted wordclock with an esp8266 module and WS2812/SK2812.",
 	"license": "BSD-3-Clause",
 	"contributors": [
@@ -51,6 +51,10 @@
 		{
 			"name": "Pien",
 			"url": "https://github.com/pienmatla"
+		},
+		{
+			"name": "ThxAndBye",
+			"url": "https://github.com/ThxAndBye"
 		}
 	],
 	"keywords": [
