@@ -11,7 +11,6 @@ private:
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
-    void resetFrontMatrixBuffer();
     void loopLdrLogic();
     uint32_t num32BitWithOnesAccordingToColumns();
 
