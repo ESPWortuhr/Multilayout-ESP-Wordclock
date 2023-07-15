@@ -482,6 +482,7 @@ void Led::showNumbers(const char d1, const char d2) {
 
 void Led::showDigitalClock(const char min1, const char min0, const char h1,
                            const char h0) {
+    resetFrontMatrixBuffer();
 
     uint8_t letterSpacing = 1;
     if (usedUhrType->rowsWordMatrix() >= fontHeight[smallSizeNumbers] * 2) {
