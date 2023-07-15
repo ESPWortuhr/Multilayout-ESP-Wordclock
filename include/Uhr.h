@@ -247,6 +247,7 @@ enum ClockType {
     Ger10x11Nero = 11,
     Ger11x11 = 3,
     Ger11x11V2 = 8,
+    Ger11x11V3 = 14,
     Ger22x11Weather = 5,
     Ger16x8 = 13,
     Ger16x18 = 7,

@@ -84,6 +84,7 @@ let TRANSLATION_NL = {
 			"de-10-11-nero": "Duits 10 × 11 Nero",
 			"de-11-11": "Duits 11 × 11",
 			"de-11-11-v2": "Duits 11 × 11 Versie 2",
+			"de-11-11-v3": "Duits 11 × 11 (panbachi)",
 			"de-22-11-weather": "Duits 10 × 11 Weer",
 			"de-16-8": "Duits 16 × 8",
 			"de-16-18": "Duits 16 × 18",
