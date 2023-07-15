@@ -1188,7 +1188,7 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_MODE_COLOR: {
         if (G.progInit) {
-            G.progInit = false;
+            clearClockByProgInit();
             for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
                 frontMatrix[row] = num32BitWithOnesAccordingToColumns();
             }
