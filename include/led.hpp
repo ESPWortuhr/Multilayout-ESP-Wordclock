@@ -410,8 +410,7 @@ inline void Led::clearRow(uint8_t row) {
 //------------------------------------------------------------------------------
 
 inline void Led::clearMinArray() {
-    for (uint16_t i = minutePixelArray[0];
-         i <= minutePixelArray[3] - usedUhrType->numPixelsFrameMatrix(); i++) {
+    for (uint16_t i = minutePixelArray[0]; i <= minutePixelArray[3]; i++) {
         clearPixel(i);
     }
     minuteArray = 0;
