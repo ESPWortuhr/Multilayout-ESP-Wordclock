@@ -45,7 +45,8 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     {
         "state": "on",
         "color": [0-255, 0-255, 0-255],
-        "effect": "rainbow"
+        "effect": "rainbow",
+        "marquee_text": "Hello World!"
     }
     */
     StaticJsonDocument<200> doc;
