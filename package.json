@@ -84,7 +84,7 @@
 		"grunt-eslint": "^24.3.0",
 		"grunt-htmllint": "^0.3.0",
 		"grunt-terser": "^2.0.0",
-		"grunt-version": "^3.0.0",
+		"grunt-version": "^3.0.1",
 		"terser": "^5.19.2"
 	},
 	"dependencies": {
