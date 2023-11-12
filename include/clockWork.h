@@ -13,6 +13,7 @@ private:
     //------------------------------------------------------------------------------
     void loopLdrLogic();
     uint32_t num32BitWithOnesAccordingToColumns();
+    bool isRomanLanguage();
 
     //------------------------------------------------------------------------------
     // Front Effect Functions

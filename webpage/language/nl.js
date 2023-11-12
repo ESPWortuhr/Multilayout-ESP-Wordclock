@@ -8,7 +8,9 @@ let TRANSLATION_NL = {
 			"label": "Taal",
 			"de": "🇩🇪 Duits",
 			"en": "🇺🇸 Engels",
-			"nl": "🇳🇱 Nederlands"
+			"nl": "🇳🇱 Nederlands",
+			"es": "🇪🇸 Spaans",
+			"it": "🇮🇹 Italiaans"
 		}
 	},
 
@@ -90,6 +92,8 @@ let TRANSLATION_NL = {
 			"de-16-18": "Duits 16 × 18",
 			"en-10-11": "Engels 10 × 11",
 			"nl-10-11": "Nederlands 10 × 11",
+			"es-10-11": "Spaans 10 × 11",
+			"it-10-11": "Italiaans 10 × 11",
 			"invert-min-dir": "Draai minuutrichting om",
 			"mirror-vertically": "Spiegel Woordklok verticaal",
 			"mirror-horizontally": "Spiegel Woordklok horizontaal",

@@ -1,6 +1,6 @@
 #pragma once
 
-enum class LanguageAbbreviation { EN, DE, NL };
+enum class LanguageAbbreviation { DE, EN, ES, IT, NL};
 
 enum class FrontWord {
     error,
@@ -30,6 +30,7 @@ enum class FrontWord {
     m_num4,
 
     es_ist,
+    es_ist___plural___,
     nach,
     vor,
     viertel,

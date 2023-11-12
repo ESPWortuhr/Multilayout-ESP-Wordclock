@@ -62,6 +62,8 @@
                         <option value="de" data-i18next="menu.language.de"></option>
                         <option value="en" data-i18next="menu.language.en"></option>
                         <option value="nl" data-i18next="menu.language.nl"></option>
+                        <option value="es" data-i18next="menu.language.es"></option>
+                        <option value="it" data-i18next="menu.language.it"></option>
                     </select>
                 </li>
             </ul>
@@ -222,6 +224,8 @@
                                 <option value="7"  data-i18next="view.front.de-16-18"></option>
                                 <option value="10" data-i18next="view.front.en-10-11"></option>
                                 <option value="9"  data-i18next="view.front.nl-10-11"></option>
+                                <option value="15"  data-i18next="view.front.es-10-11"></option>
+                                <option value="16"  data-i18next="view.front.it-10-11"></option>
                             </select>
                             </div>
                             <div class="pure-control-group">
@@ -265,40 +269,42 @@
                                 <span class="slider round"></span>
                             </label>
                         </div>
-                        <div class="pure-control-group">
-                            <label for="dialect-0" data-i18next="view.language.at-nine-fifteen"></label><select name="dialect-0" id="dialect-0" size="1">
-                            <option value="0" selected data-i18next="view.language.quarter-past-nine"></option>
-                            <option value="1" data-i18next="view.language.quarter-nine"></option>
-                        </select>
+                        <div class="pure-control-group specific-layout-1">
+                            <div class="pure-control-group">
+                                <label for="dialect-0" data-i18next="view.language.at-nine-fifteen"></label><select name="dialect-0" id="dialect-0" size="1">
+                                <option value="0" selected data-i18next="view.language.quarter-past-nine"></option>
+                                <option value="1" data-i18next="view.language.quarter-nine"></option>
+                            </select>
+                            </div>
+                            <div class="pure-control-group specific-layout-3">
+                                <label for="dialect-1" data-i18next="view.language.at-nine-twenty"></label><select name="dialect-1" id="dialect-1" size="1">
+                                <option value="0" selected data-i18next="view.language.twenty-past-nine"></option>
+                                <option value="1" data-i18next="view.language.ten-before-half-past-ten"></option>
+                            </select>
+                            </div>
+                            <div class="pure-control-group specific-layout-3">
+                                <label for="dialect-2" data-i18next="view.language.at-nine-fourty"></label><select name="dialect-2" id="dialect-2" size="1">
+                                <option value="0" selected data-i18next="view.language.twenty-before-ten"></option>
+                                <option value="1" data-i18next="view.language.ten-after-half-past-ten"></option>
+                            </select>
+                            </div>
+                            <!-- Specific DE10x11Alternative Start-->
+                            <div class="pure-control-group specific-layout-2">
+                                <label for="dialect-3" data-i18next="view.language.at-nine-fourtyfive-german"></label><select name="dialect-3" id="dialect-3" size="1">
+                                <option value="0" selected data-i18next="view.language.quarter-to-ten"></option>
+                                <option value="1" data-i18next="view.language.three-quarter-ten"></option>
+                            </select>
+                            </div>
+                            <!-- Specific DE10x11Alternative End-->
+                            <!-- Specific EN10x11 Start-->
+                            <div class="pure-control-group specific-layout-6">
+                                <label for="dialect-5" data-i18next="view.language.at-nine-fourtyfive-english"></label><select name="dialect-5" id="dialect-5" size="1">
+                                <option value="0" selected data-i18next="view.language.quarter-to-ten-english"></option>
+                                <option value="1" data-i18next="view.language.a-quarter-to-ten-english"></option>
+                            </select>
+                            </div>
+                            <!-- Specific EN10x11 End-->
                         </div>
-                        <div class="pure-control-group specific-layout-3">
-                            <label for="dialect-1" data-i18next="view.language.at-nine-twenty"></label><select name="dialect-1" id="dialect-1" size="1">
-                            <option value="0" selected data-i18next="view.language.twenty-past-nine"></option>
-                            <option value="1" data-i18next="view.language.ten-before-half-past-ten"></option>
-                        </select>
-                        </div>
-                        <div class="pure-control-group specific-layout-3">
-                            <label for="dialect-2" data-i18next="view.language.at-nine-fourty"></label><select name="dialect-2" id="dialect-2" size="1">
-                            <option value="0" selected data-i18next="view.language.twenty-before-ten"></option>
-                            <option value="1" data-i18next="view.language.ten-after-half-past-ten"></option>
-                        </select>
-                        </div>
-                        <!-- Specific DE10x11Alternative Start-->
-                        <div class="pure-control-group specific-layout-2">
-                            <label for="dialect-3" data-i18next="view.language.at-nine-fourtyfive-german"></label><select name="dialect-3" id="dialect-3" size="1">
-                            <option value="0" selected data-i18next="view.language.quarter-to-ten"></option>
-                            <option value="1" data-i18next="view.language.three-quarter-ten"></option>
-                        </select>
-                        </div>
-                        <!-- Specific DE10x11Alternative End-->
-                        <!-- Specific EN10x11 Start-->
-                        <div class="pure-control-group specific-layout-6">
-                            <label for="dialect-5" data-i18next="view.language.at-nine-fourtyfive-english"></label><select name="dialect-5" id="dialect-5" size="1">
-                            <option value="0" selected data-i18next="view.language.quarter-to-ten-english"></option>
-                            <option value="1" data-i18next="view.language.a-quarter-to-ten-english"></option>
-                        </select>
-                        </div>
-                        <!-- Specific EN10x11 End-->
                 </form>
                 </div>
 
@@ -714,6 +720,8 @@
 <script src="./language/en.js"></script>
 <script src="./language/de.js"></script>
 <script src="./language/nl.js"></script>
+<script src="./language/es.js"></script>
+<script src="./language/it.js"></script>
 <script src="./i18n.js"></script>
 
 </body>

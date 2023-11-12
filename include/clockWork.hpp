@@ -68,6 +68,10 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_de16x18;
     case Eng10x11:
         return &_en10x11;
+    case Es10x11:
+        return &_es10x11;
+    case It10x11:
+        return &_it10x11;
     default:
         return nullptr;
     }
@@ -104,6 +108,13 @@ void ClockWork::initLedStrip(uint8_t num) {
 
 uint32_t ClockWork::num32BitWithOnesAccordingToColumns() {
     return pow(2, usedUhrType->colsWordMatrix()) - 1;
+}
+
+//------------------------------------------------------------------------------
+
+bool ClockWork::isRomanLanguage() {
+    return usedUhrType->usedLang() == LanguageAbbreviation::ES ||
+           usedUhrType->usedLang() == LanguageAbbreviation::IT;
 }
 
 //------------------------------------------------------------------------------
@@ -590,7 +601,8 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         offsetHour = 1;
         break;
     case 30: // half
-        if (G.UhrtypeDef == Eng10x11) {
+        if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == It10x11 ||
+            G.UhrtypeDef == Es10x11) {
             usedUhrType->show(FrontWord::halb);
             usedUhrType->show(FrontWord::nach);
         } else {
@@ -767,15 +779,19 @@ bool ClockWork::changesInClockface() {
 //------------------------------------------------------------------------------
 
 void ClockWork::setClock() {
-    if (!G.languageVariant[NotShowItIs]) {
-        usedUhrType->show(FrontWord::es_ist);
-    }
-
     uint8_t offsetHour = 0;
     bool fullHour = 0;
 
     setMinute(_minute, offsetHour, fullHour);
     setHour(_hour + offsetHour, fullHour);
+
+    if (!G.languageVariant[NotShowItIs]) {
+        if (G.UhrtypeDef == Es10x11 && (_hour + offsetHour) == 1) {
+            usedUhrType->show(FrontWord::es_ist___plural___);
+        } else {
+            usedUhrType->show(FrontWord::es_ist);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -932,6 +948,7 @@ void ClockWork::loop(struct tm &tm) {
         config["bootShowWifi"] = G.bootShowWifi;
         config["bootShowIP"] = G.bootShowIP;
         config["autoLdrEnabled"] = G.autoLdrEnabled;
+        config["isRomanLanguage"] = isRomanLanguage();
         config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
         config["hasZwanzig"] = usedUhrType->hasZwanzig();
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
