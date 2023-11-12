@@ -8,7 +8,9 @@ let TRANSLATION_DE_DE = {
 			"label": "Sprache",
 			"de": "🇩🇪 Deutsch",
 			"en": "🇺🇸 Englisch",
-			"nl": "🇳🇱 Niederländisch"
+			"nl": "🇳🇱 Niederländisch",
+			"es": "🇪🇸 Spanisch",
+			"it": "🇮🇹 Italienisch"
 		}
 	},
 
@@ -90,6 +92,8 @@ let TRANSLATION_DE_DE = {
 			"de-16-18": "Deutsch 16 × 18",
 			"en-10-11": "Englisch 10 × 11",
 			"nl-10-11": "Niederländisch 10 × 11",
+			"es-10-11": "Spanisch 10 × 11",
+			"it-10-11": "Italienisch 10 × 11",
 			"invert-min-dir": "Minutenzählrichtung invertieren",
 			"mirror-vertically": "Wortuhr vertikal spiegeln",
 			"mirror-horizontally": "Wortuhr horizontal spiegeln",

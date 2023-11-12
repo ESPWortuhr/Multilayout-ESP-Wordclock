@@ -18,6 +18,12 @@ i18next.init({
 		},
 		nl: {
 			translation: TRANSLATION_NL
+		},
+		it: {
+			translation: TRANSLATION_IT
+		},
+		es: {
+			translation: TRANSLATION_ES
 		}
 	}
 }, (error) => {

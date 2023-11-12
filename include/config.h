@@ -72,6 +72,22 @@
 // 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
 // layout for the English language
 
+/**********************/
+/*       Italian      */
+/**********************/
+//
+// #define DEFAULT_LAYOUT  It10x11
+// 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
+// layout for the Italian language
+
+/**********************/
+/*       Spanish      */
+/**********************/
+//
+// #define DEFAULT_LAYOUT  Es10x11
+// 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
+// layout for the Spanish language
+
 //--------------------------------------------------------------------------
 // Define LED Type
 //--------------------------------------------------------------------------
@@ -130,9 +146,9 @@
 /*
  * To delete or initialize the EEPROM, enter another serial number here.
  *
- * Valid values [0 ... 65536]
+ * Valid values [0 ... 255]
  */
-#define SERNR 311
+#define SERNR 32
 
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output

@@ -8,7 +8,9 @@ let TRANSLATION_EN_US = {
 			"label": "Language",
 			"de": "🇩🇪 German",
 			"en": "🇺🇸 English",
-			"nl": "🇳🇱 Dutch"
+			"nl": "🇳🇱 Dutch",
+			"es": "🇪🇸 Spanish",
+			"it": "🇮🇹 Italian"
 		}
 	},
 
@@ -90,6 +92,8 @@ let TRANSLATION_EN_US = {
 			"de-16-18": "German 16 × 18",
 			"en-10-11": "English 10 × 11",
 			"nl-10-11": "Dutch 10 × 11",
+			"es-10-11": "Spanish 10 × 11",
+			"it-10-11": "Italian 10 × 11",
 			"invert-min-dir": "Invert Minute Counting Direction",
 			"mirror-vertically": "Mirror Word Clock Vertically",
 			"mirror-horizontally": "Mirror Word Clock Horizontally",
