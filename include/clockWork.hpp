@@ -850,6 +850,14 @@ void ClockWork::loop(struct tm &tm) {
             weather.loop();
         }
 
+        //------------------------------------------------
+        // MQTT
+        //------------------------------------------------
+
+        if (G.mqtt.state && WiFi.status() == WL_CONNECTED) {
+            mqtt.sendState();
+        }
+
         //--------------------------------------------
         // LDR Routine
         //--------------------------------------------
@@ -1082,6 +1090,11 @@ void ClockWork::loop(struct tm &tm) {
         }
 
         eeprom::write();
+        break;
+    }
+
+    case COMMAND_SET_MQTT_HA_DISCOVERY: {
+        mqtt.sendDiscovery();
         break;
     }
 

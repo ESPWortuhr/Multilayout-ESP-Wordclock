@@ -249,7 +249,8 @@ let TRANSLATION_DE_DE = {
 			"password": "Passwort",
 			"client-id": "Client-ID",
 			"topic": "Topic",
-			"save": "Einstellungen Speichern"
+			"save": "Einstellungen Speichern",
+			"discovery": "Sende HA Discovery"
 		}
 	},
 

@@ -249,7 +249,8 @@ let TRANSLATION_EN_US = {
 			"password": "Password",
 			"client-id": "Client ID",
 			"topic": "Topic",
-			"save": "Save Settings"
+			"save": "Save Settings",
+			"discovery": "Send HA Discovery"
 		}
 	},
 	"about": {

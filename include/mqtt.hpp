@@ -5,6 +5,8 @@
 #include <PubSubClient.h>
 #include <WiFiClient.h>
 
+#define HOMEASSISTANT_DISCOVERY_TOPIC "homeassistant"
+
 extern WiFiClient client;
 
 PubSubClient mqttClient(client);
@@ -15,7 +17,7 @@ void Mqtt::init() {
     mqttClient.setServer(G.mqtt.serverAdress, G.mqtt.port);
     mqttClient.setCallback(callback);
     mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
-    mqttClient.subscribe(G.mqtt.topic);
+    mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
 }
 
 //------------------------------------------------------------------------------
@@ -41,15 +43,7 @@ void Mqtt::loop() {
 //------------------------------------------------------------------------------
 
 void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
-    /*
-    {
-        "state": "on",
-        "color": [0-255, 0-255, 0-255],
-        "effect": "rainbow",
-        "marquee_text": "Hello World!"
-    }
-    */
-    StaticJsonDocument<200> doc;
+    StaticJsonDocument<512> doc;
 
     Serial.print("Received message [");
     Serial.print(topic);
@@ -72,13 +66,14 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     }
 
     if (doc.containsKey("state")) {
-        if (!strcmp("on", doc["state"])) {
+        if (!strcmp(doc["state"], "ON")) {
             G.state = true;
-        } else {
+        } else if (!strcmp(doc["state"], "OFF")) {
             led.clear();
             led.show();
             G.state = false;
         }
+        parametersChanged = true;
     }
 
     if (doc.containsKey("effect")) {
@@ -105,13 +100,123 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
 
     if (doc.containsKey("color")) {
         G.color[Foreground] =
-            RgbColor(doc["color"][0], doc["color"][1], doc["color"][2]);
+            HsbColor(float(doc["color"]["h"]) / 360.f,
+                     float(doc["color"]["s"]) / 100.f, G.color[Foreground].B);
+        parametersChanged = true;
+    }
+
+    if (doc.containsKey("brightness")) {
+        G.color[Foreground] =
+            HsbColor(G.color[Foreground].H, G.color[Foreground].S,
+                     uint8_t(doc["brightness"]) / 255.f);
+        parametersChanged = true;
     }
 }
 
 //------------------------------------------------------------------------------
 
+void Mqtt::sendState() {
+    StaticJsonDocument<200> doc;
+
+    doc["state"] = (G.state) ? "ON" : "OFF";
+
+    JsonObject color = doc.createNestedObject("color");
+
+    color["h"] = G.color[Foreground].H * 360;
+    color["s"] = G.color[Foreground].S * 100;
+
+    doc["brightness"] = G.color[Foreground].B * 255;
+
+    char buffer[256];
+    serializeJson(doc, buffer);
+    mqttClient.publish((std::string(G.mqtt.topic) + "/status").c_str(), buffer);
+}
+
+//------------------------------------------------------------------------------
+
+void Mqtt::sendDiscovery() {
+
+    // MQTT discovery for Home Assistant
+    // {
+    //     "brightness": true,
+    //     "color_mode": true,
+    //     "supported_color_modes": [
+    //         "hs"
+    //     ],
+    //     "schema": "json",
+    //     "name": "ESP",
+    //     "device": {
+    //         "identifiers": [
+    //             "ESPBuro"
+    //         ],
+    //         "name": "ESP",
+    //         "sw_version": "3.3",
+    //         "configuration_url": "http://<IP-Adress>"
+    //     },
+    //     "state_topic": "ESPBuro/status",
+    //     "command_topic": "ESPBuro/cmd",
+    //     "unique_id": "<MAC-Adress>",
+    //     "plattform": "mqtt",
+    //     "effect": true,
+    //     "effect_list": [
+    //         "Wordclock",
+    //         "Seconds",
+    //         "Digitalclock",
+    //         "Scrollingtext",
+    //         "Rainbowcycle",
+    //         "Rainbow",
+    //         "Color"
+    //     ]
+    // }
+
+    StaticJsonDocument<512> root;
+    mqttClient.setBufferSize(512);
+
+    root["brightness"] = true;
+    root["color_mode"] = true;
+
+    JsonArray colorMode = root.createNestedArray("supported_color_modes");
+    colorMode.add("hs");
+
+    root["schema"] = "json";
+    root["name"] = G.mqtt.clientId;
+
+    JsonObject device = root.createNestedObject("device");
+
+    JsonArray identifiers = device.createNestedArray("identifiers");
+    identifiers.add(G.mqtt.topic);
+
+    device["name"] = G.mqtt.clientId;
+    device["sw_version"] = VERSION;
+    device["configuration_url"] = "http://" + WiFi.localIP().toString();
+
+    root["state_topic"] = std::string(G.mqtt.topic) + "/status";
+    root["command_topic"] = std::string(G.mqtt.topic) + "/cmd";
+    root["unique_id"] = WiFi.macAddress();
+    root["plattform"] = "mqtt";
+
+    root["effect"] = true;
+    JsonArray effectList = root.createNestedArray("effect_list");
+    effectList.add("Wordclock");
+    effectList.add("Seconds");
+    effectList.add("Digitalclock");
+    effectList.add("Scrollingtext");
+    effectList.add("Rainbowcycle");
+    effectList.add("Rainbow");
+    effectList.add("Color");
+
+    char buffer[512];
+    serializeJson(root, buffer);
+    mqttClient.publish((std::string(HOMEASSISTANT_DISCOVERY_TOPIC) +
+                        std::string("/light/") + std::string(G.mqtt.topic) +
+                        std::string("/light/config"))
+                           .c_str(),
+                       buffer, true);
+}
+
+//------------------------------------------------------------------------------
+
 void Mqtt::reconnect() {
-    mqttClient.subscribe(G.mqtt.topic);
+    mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
     Serial.println("MQTT Connected...");
 }

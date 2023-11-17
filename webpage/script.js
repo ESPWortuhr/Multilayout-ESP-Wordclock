@@ -146,6 +146,7 @@ var COMMAND_RESET = 100;
 var COMMAND_SET_BOOT = 101;
 var COMMAND_SET_AUTO_LDR = 102;
 var COMMAND_SET_LAYOUT_VARIANT = 103;
+var COMMAND_SET_MQTT_HA_DISCOVERY = 104;
 
 var COMMAND_SPEED = 152;
 
@@ -956,6 +957,10 @@ $.ready(function() {
 
 		sendCmd(COMMAND_SET_MQTT, nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTUser, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTPass, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTClientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTTopic, DATA_MQTT_RESPONSE_TEXT_LENGTH));
 		debugMessage("MQTT config" + debugMessageReconfigured);
+	});
+	$("#mqtt-discovery-button").on("click", function() {
+		sendCmd(COMMAND_SET_MQTT_HA_DISCOVERY);
+		debugMessage("MQTT Discovery" + debugMessageReconfigured);
 	});
 	$("[id*='dialect']").on("change", function() {
 		dialect[0] = $("#dialect-0").get("value");

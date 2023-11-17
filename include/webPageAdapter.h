@@ -524,6 +524,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_WIFI_DISABLED:
+        case COMMAND_SET_MQTT_HA_DISCOVERY:
         case COMMAND_SET_WIFI_AND_RESTART:
         case COMMAND_RESET: {
             break;
