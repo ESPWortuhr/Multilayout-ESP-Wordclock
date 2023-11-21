@@ -254,6 +254,7 @@ enum ClockType {
     Nl10x11 = 9,
     Es10x11 = 15,
     It10x11 = 16,
+    Hu10x10 = 17,
 };
 
 enum Icons {

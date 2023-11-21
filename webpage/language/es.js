@@ -94,6 +94,7 @@ let TRANSLATION_ES = {
 			"nl-10-11": "Holandés 10 × 11",
 			"es-10-11": "Español 10 × 11",
 			"it-10-11": "Italiano 10 × 11",
+			"hu-10-10": "Húngaro 10 x 10",
 			"invert-min-dir": "Invertir la dirección de conteo de minutos",
 			"mirror-vertically": "Voltear el reloj verticalmente",
 			"mirror-horizontally": "Voltear el reloj horizontalmente",
