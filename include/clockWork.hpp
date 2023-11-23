@@ -72,6 +72,8 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_es10x11;
     case It10x11:
         return &_it10x11;
+    case Hu10x10:
+        return &_hu10x10;
     default:
         return nullptr;
     }

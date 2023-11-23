@@ -94,6 +94,7 @@ let TRANSLATION_DE_DE = {
 			"nl-10-11": "Niederländisch 10 × 11",
 			"es-10-11": "Spanisch 10 × 11",
 			"it-10-11": "Italienisch 10 × 11",
+			"hu-10-10": "Ungarisch 10 x 10",
 			"invert-min-dir": "Minutenzählrichtung invertieren",
 			"mirror-vertically": "Wortuhr vertikal spiegeln",
 			"mirror-horizontally": "Wortuhr horizontal spiegeln",
