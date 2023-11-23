@@ -88,7 +88,6 @@
 // 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
 // layout for the Spanish language
 
-
 /**********************/
 /*      Hungarian     */
 /**********************/

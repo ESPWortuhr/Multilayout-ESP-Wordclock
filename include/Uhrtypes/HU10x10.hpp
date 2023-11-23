@@ -112,7 +112,7 @@ public:
 
         case FrontWord::h_acht:
             setFrontMatrixWord(6, 5, 9);
-            break;  
+            break;
 
         case FrontWord::h_neun:
             setFrontMatrixWord(9, 4, 9);
