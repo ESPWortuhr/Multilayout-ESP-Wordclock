@@ -58,7 +58,6 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
 
     DeserializationError error = deserializeJson(doc, msg);
 
-    // Test if parsing succeeds.
     if (error) {
         Serial.print(F("deserializeJson() failed: "));
         Serial.println(error.c_str());
@@ -91,6 +90,8 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
             G.prog = COMMAND_MODE_RAINBOW;
         } else if (!strcmp("Color", doc["effect"])) {
             G.prog = COMMAND_MODE_COLOR;
+        } else if (!strcmp("Symbol", doc["effect"])) {
+            G.prog = COMMAND_MODE_SYMBOL;
         }
     }
 
@@ -99,16 +100,23 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     }
 
     if (doc.containsKey("color")) {
-        G.color[Foreground] =
+        ColorPosition pos = Effect;
+        if (G.prog == COMMAND_MODE_WORD_CLOCK || G.prog == COMMAND_IDLE) {
+            pos = Foreground;
+        }
+        G.color[pos] =
             HsbColor(float(doc["color"]["h"]) / 360.f,
-                     float(doc["color"]["s"]) / 100.f, G.color[Foreground].B);
+                     float(doc["color"]["s"]) / 100.f, G.color[pos].B);
         parametersChanged = true;
     }
 
     if (doc.containsKey("brightness")) {
-        G.color[Foreground] =
-            HsbColor(G.color[Foreground].H, G.color[Foreground].S,
-                     uint8_t(doc["brightness"]) / 255.f);
+        ColorPosition pos = Effect;
+        if (G.prog == COMMAND_MODE_WORD_CLOCK || G.prog == COMMAND_IDLE) {
+            pos = Foreground;
+        }
+        G.color[pos] = HsbColor(G.color[pos].H, G.color[pos].S,
+                                uint8_t(doc["brightness"]) / 255.f);
         parametersChanged = true;
     }
 }
@@ -122,12 +130,16 @@ void Mqtt::sendState() {
 
     JsonObject color = doc.createNestedObject("color");
 
-    color["h"] = G.color[Foreground].H * 360;
-    color["s"] = G.color[Foreground].S * 100;
+    ColorPosition pos = Effect;
+    if (G.prog == COMMAND_MODE_WORD_CLOCK || G.prog == COMMAND_IDLE) {
+        pos = Foreground;
+    }
+    color["h"] = G.color[pos].H * 360;
+    color["s"] = G.color[pos].S * 100;
 
-    doc["brightness"] = G.color[Foreground].B * 255;
+    doc["brightness"] = G.color[pos].B * 255;
 
-    char buffer[256];
+    char buffer[200];
     serializeJson(doc, buffer);
     mqttClient.publish((std::string(G.mqtt.topic) + "/status").c_str(), buffer);
 }
@@ -165,12 +177,13 @@ void Mqtt::sendDiscovery() {
     //         "Scrollingtext",
     //         "Rainbowcycle",
     //         "Rainbow",
-    //         "Color"
+    //         "Color",
+    //         "Symbol"
     //     ]
     // }
 
-    StaticJsonDocument<512> root;
-    mqttClient.setBufferSize(512);
+    StaticJsonDocument<700> root;
+    mqttClient.setBufferSize(700);
 
     root["brightness"] = true;
     root["color_mode"] = true;
@@ -204,8 +217,9 @@ void Mqtt::sendDiscovery() {
     effectList.add("Rainbowcycle");
     effectList.add("Rainbow");
     effectList.add("Color");
+    effectList.add("Symbol");
 
-    char buffer[512];
+    char buffer[700];
     serializeJson(root, buffer);
     mqttClient.publish((std::string(HOMEASSISTANT_DISCOVERY_TOPIC) +
                         std::string("/light/") + std::string(G.mqtt.topic) +
