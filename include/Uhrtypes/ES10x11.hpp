@@ -42,6 +42,7 @@ public:
             // SON LAS
             setFrontMatrixWord(0, 7, 9);
             setFrontMatrixWord(0, 3, 5);
+            break;
 
         case FrontWord::es_ist___plural___:
             // ES LA
