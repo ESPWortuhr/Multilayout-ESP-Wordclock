@@ -150,7 +150,7 @@ bool compareEffBriAndSpeedToOld(uint8_t *payload) {
 
 //------------------------------------------------------------------------------
 
-void parseMainColor(uint8_t *payload, uint8_t position) {
+void parseColor(uint8_t *payload, uint8_t position = Foreground) {
     G.color[position] = {HsbColor(split(payload, 3) / 360.f,
                                   split(payload, 6) / 100.f,
                                   split(payload, 9) / 100.f)};
@@ -194,7 +194,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
             parametersChanged = true;
-            parseMainColor(payload, Foreground);
+            parseColor(payload);
             G.color[Background] = {HsbColor(split(payload, 12) / 360.f,
                                             split(payload, 15) / 100.f,
                                             split(payload, 18) / 100.f)};
@@ -208,7 +208,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
 
-            parseMainColor(payload, Effect);
+            parseColor(payload);
             break;
         }
 
@@ -219,7 +219,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
 
-            parseMainColor(payload, Effect);
+            parseColor(payload);
             parametersChanged = true;
             break;
         }
@@ -231,7 +231,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
 
-            parseMainColor(payload, Effect);
+            parseColor(payload);
             G.effectSpeed = split(payload, 24);
             break;
         }
@@ -267,7 +267,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
 
-            parseMainColor(payload, Effect);
+            parseColor(payload);
             break;
         }
             //------------------------------------------------------------------------------
@@ -277,7 +277,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
 
-            parseMainColor(payload, Effect);
+            parseColor(payload);
             G.effectBri = split(payload, 21);
             G.effectSpeed = split(payload, 24);
             break;
@@ -308,7 +308,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_INITIAL_VALUES: {
             Serial.println("Startwerte gespeichert");
 
-            parseMainColor(payload, Foreground);
+            parseColor(payload);
             break;
         }
 

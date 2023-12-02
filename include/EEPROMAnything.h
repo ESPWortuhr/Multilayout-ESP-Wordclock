@@ -45,9 +45,6 @@ void read() {
     Serial.printf("BgCol.H   : %f\n", G.color[Background].H);
     Serial.printf("BgCol.S   : %f\n", G.color[Background].S);
     Serial.printf("BgCol.V   : %f\n", G.color[Background].B);
-    Serial.printf("EfCol.H   : %f\n", G.color[Effect].H);
-    Serial.printf("EfCol.S   : %f\n", G.color[Effect].S);
-    Serial.printf("EfCol.V   : %f\n", G.color[Effect].B);
     Serial.printf("Zeitserver: %s\n", G.timeserver);
     Serial.printf("Lauftext  : %s\n", G.scrollingText);
     Serial.printf("H6        : %u\n", G.h6);

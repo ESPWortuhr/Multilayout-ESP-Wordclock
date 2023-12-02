@@ -153,7 +153,6 @@ bool externalRTC = false;
 enum ColorPosition {
     Foreground = 0,
     Background = 1,
-    Effect = 2,
 };
 
 enum LedColorVariants {

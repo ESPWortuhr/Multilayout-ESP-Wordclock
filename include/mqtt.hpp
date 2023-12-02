@@ -100,23 +100,16 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     }
 
     if (doc.containsKey("color")) {
-        ColorPosition pos = Effect;
-        if (G.prog == COMMAND_MODE_WORD_CLOCK || G.prog == COMMAND_IDLE) {
-            pos = Foreground;
-        }
-        G.color[pos] =
+        G.color[Foreground] =
             HsbColor(float(doc["color"]["h"]) / 360.f,
-                     float(doc["color"]["s"]) / 100.f, G.color[pos].B);
+                     float(doc["color"]["s"]) / 100.f, G.color[Foreground].B);
         parametersChanged = true;
     }
 
     if (doc.containsKey("brightness")) {
-        ColorPosition pos = Effect;
-        if (G.prog == COMMAND_MODE_WORD_CLOCK || G.prog == COMMAND_IDLE) {
-            pos = Foreground;
-        }
-        G.color[pos] = HsbColor(G.color[pos].H, G.color[pos].S,
-                                uint8_t(doc["brightness"]) / 255.f);
+        G.color[Foreground] =
+            HsbColor(G.color[Foreground].H, G.color[Foreground].S,
+                     uint8_t(doc["brightness"]) / 255.f);
         parametersChanged = true;
     }
 }
@@ -130,14 +123,10 @@ void Mqtt::sendState() {
 
     JsonObject color = doc.createNestedObject("color");
 
-    ColorPosition pos = Effect;
-    if (G.prog == COMMAND_MODE_WORD_CLOCK || G.prog == COMMAND_IDLE) {
-        pos = Foreground;
-    }
-    color["h"] = G.color[pos].H * 360;
-    color["s"] = G.color[pos].S * 100;
+    color["h"] = G.color[Foreground].H * 360;
+    color["s"] = G.color[Foreground].S * 100;
 
-    doc["brightness"] = G.color[pos].B * 255;
+    doc["brightness"] = G.color[Foreground].B * 255;
 
     char buffer[200];
     serializeJson(doc, buffer);

@@ -166,7 +166,7 @@ void ClockWork::scrollingText(const char *buf) {
         (usedUhrType->rowsWordMatrix() - fontHeight[normalSizeASCII]) / 2;
     uint8_t fontIndex = buf[ii];
 
-    led.setbyFrontMatrix(Effect); // Needed for Mirrored Display
+    led.setbyFrontMatrix(Foreground); // Needed for Mirrored Display
     led.shiftColumnToRight();
     led.clearFrontExeptofFontspace(offsetRow);
 
@@ -182,7 +182,7 @@ void ClockWork::scrollingText(const char *buf) {
         }
     }
 
-    led.setbyFrontMatrix(Effect);
+    led.setbyFrontMatrix(Foreground);
     led.show();
 
     i++;
@@ -204,15 +204,15 @@ void ClockWork::displaySymbols(uint8_t iconNum) {
     case HEART:
         /* Heartbeat begin */
         if (count < 10) {
-            G.color[Effect].B += 0.03;
-            if (G.color[Effect].B > 1) {
-                G.color[Effect].B = 1;
+            G.color[Foreground].B += 0.03;
+            if (G.color[Foreground].B > 1) {
+                G.color[Foreground].B = 1;
             }
             count++;
         } else if (count < 20) {
-            G.color[Effect].B -= 0.03;
-            if (G.color[Effect].B <= 0) {
-                G.color[Effect].B = 0;
+            G.color[Foreground].B -= 0.03;
+            if (G.color[Foreground].B <= 0) {
+                G.color[Foreground].B = 0;
             }
             count++;
         } else {
@@ -303,7 +303,7 @@ void ClockWork::initBootLedBlink() {
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
         frontMatrix[row] ^= num32BitWithOnesAccordingToColumns();
     }
-    led.setbyFrontMatrix(Effect);
+    led.setbyFrontMatrix(Foreground);
     led.show();
 }
 
@@ -1224,7 +1224,7 @@ void ClockWork::loop(struct tm &tm) {
             for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
                 frontMatrix[row] = num32BitWithOnesAccordingToColumns();
             }
-            led.setbyFrontMatrix(Effect, false);
+            led.setbyFrontMatrix(Foreground, false);
             led.show();
         }
         break;
