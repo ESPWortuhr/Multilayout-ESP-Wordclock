@@ -247,7 +247,8 @@ let TRANSLATION_IT = {
 			"password": "Parola d'ordine",
 			"client-id": "Client-ID",
 			"topic": "Argomento",
-			"save": "Guardar ajustes"
+			"save": "Guardar ajustes",
+			"discovery": "Send HA Discovery"
 		}
 	},
 

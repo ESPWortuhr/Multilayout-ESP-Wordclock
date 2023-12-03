@@ -149,7 +149,6 @@ void setup() {
             G.color[i] = {0, 0, 0};
         }
         G.color[Foreground] = HsbColor(120 / 360.f, 1.f, 0.5f);
-        G.color[Effect] = HsbColor(240 / 360.f, 1.f, 0.5f);
         G.effectBri = 2;
         G.effectSpeed = 10;
         G.client_nr = 0;

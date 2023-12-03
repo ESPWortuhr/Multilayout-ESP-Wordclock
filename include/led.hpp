@@ -302,7 +302,7 @@ void Led::setIcon(uint8_t iconNum) {
         }
     }
 
-    setbyFrontMatrix(Effect);
+    setbyFrontMatrix(Foreground);
     show();
 }
 
@@ -474,7 +474,7 @@ void Led::showNumbers(const char d1, const char d2) {
     }
 
     mirrorFrontMatrixVertical(); // Needed for correct displaying of Chars
-    setbyFrontMatrix(Effect);
+    setbyFrontMatrix(Foreground);
     show();
 }
 
@@ -528,7 +528,7 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
     }
 
     mirrorFrontMatrixVertical(); // Needed for correct displaying of Chars
-    setbyFrontMatrix(Effect);
+    setbyFrontMatrix(Foreground);
     show();
 }
 

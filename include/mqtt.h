@@ -14,6 +14,8 @@ public:
     void init();
     void reInit();
     void loop();
+    void sendState();
+    void sendDiscovery();
 
     bool getConnected();
 };

@@ -250,7 +250,8 @@ let TRANSLATION_NL = {
 			"password": "Wachtwoord",
 			"client-id": "Client ID",
 			"topic": "Topic",
-			"save": "Opslaan"
+			"save": "Opslaan",
+			"discovery": "Send HA Discovery"
 		}
 	},
 	"about": {

@@ -153,7 +153,6 @@ bool externalRTC = false;
 enum ColorPosition {
     Foreground = 0,
     Background = 1,
-    Effect = 2,
 };
 
 enum LedColorVariants {
@@ -222,6 +221,7 @@ enum CommandWords {
     COMMAND_SET_BOOT = 101,
     COMMAND_SET_AUTO_LDR = 102,
     COMMAND_SET_LAYOUT_VARIANT = 103,
+    COMMAND_SET_MQTT_HA_DISCOVERY = 104,
 
     COMMAND_SPEED = 152,
 
