@@ -1,18 +1,44 @@
-# ESP Wortuhr
+![GitHub release (with filter)](https://img.shields.io/github/v/release/ESPWortuhr/Multilayout-ESP-Wordclock) ![GitHub all releases](https://img.shields.io/github/downloads/ESPWortuhr/Multilayout-ESP-Wordclock/total) 
+<img src="https://community-assets.home-assistant.io/original/4X/0/4/b/04b7e3172e215e6f727c17f55b039ade3986ebcb.png" alt="drawing" width="200"/>
+
+# ESP Wordclock
 
 English description further below.
 
-Dies ist ein Projekt für eine mehrsprachige Wortuhr, basierend auf einem ESP8266 Mikrocontroller und einem programmierbaren LED-Streifen (WS2812 oder SK6812). Eine Wortuhr ist ein einzigartiges Projekt, das Technologie und Design kombiniert, um einen funktionalen und ästhetisch ansprechenden Zeitmesser zu schaffen. Mit der Möglichkeit, die Zeit in mehreren Sprachen anzuzeigen, ist diese Wortuhr nicht nur ein Gesprächsthema, sondern auch eine praktische Lösung für alle, die nach einer modernen und innovativen Möglichkeit suchen, die Zeit im Auge zu behalten.
-Egal, ob du ein Anfänger oder ein erfahrener Bastler bist, dieses Projekt ist eine großartige Möglichkeit, deine Fähigkeiten auf die Probe zu stellen und etwas wirklich Besonderes zu schaffen.
+![](pics/wortuhr-webpage.png)
+
+Dies ist ein Projekt für eine mehrsprachige Wortuhr auf Grundlage eines ESP8266-Mikrocontrollers und einer programmierbaren LED-Leiste (WS2812 oder SK6812). Eine Wortuhr ist ein wunderschönes DIY-Projekt für Anfänger, das Technologie und Design kombiniert, um eine funktionale und ästhetisch ansprechende Uhr zu schaffen. 
+Egal, ob Sie ein Anfänger oder ein erfahrener Bastler sind, dieses Projekt ist eine großartige Möglichkeit, Ihre Fähigkeiten unter Beweis zu stellen und etwas wirklich Besonderes zu schaffen.
+Die Software hat viele Funktionen:
+- Mehrsprachig (:uk:, :de:, :es:, :netherlands:, :it:)
+- Unterstützung für mehrere Layouts und LED-Abstände
+- Farbwechsel der Displayfarbe möglich (RGB oder RGBW)
+- Digitale Uhranzeige
+- Regenbogenfarbwechsel
+- Umgebungslicht (als Sekundenzeiger ausgeführt) 
+- Automatische Helligkeitsregelung (optional über LDR) 
+- Auswahl an dialektspezifischen Anzeigen
+- Home-Assistant-Einbindung mit Autodiscovery
+
+<img src="https://community-assets.home-assistant.io/original/4X/0/4/b/04b7e3172e215e6f727c17f55b039ade3986ebcb.png" alt="drawing" width="200"/>
 
 ![](pics/wortuhr-webpage.png)
 
+## Betriebsmodi der Uhr
+
+<img src="pics/ModeWordclock.png" alt="drawing" width="300"/> <img src="pics/ModeDigitalClock.gif" alt="drawing" width="300"/> <img src="pics/ModeColors.gif" alt="drawing" width="300"/>
+<img src="pics/ModeRainbow.gif" alt="drawing" width="300"/> <img src="pics/ModeSymbol.gif" alt="drawing" width="300"/> <img src="pics/ModeSeconds.gif" alt="drawing" width="300"/>
+<img src="pics/ModeScrollingText.gif" alt="drawing" width="300"/> <img src="pics/Animation.gif" alt="drawing" width="300"/> <img src="pics/SecondsInFrame.gif" alt="drawing" width="300"/> 
+
+
+
 ## Die folgende Hardware/Software wird für dieses Projekt benötigt:
 * Hardware
-    * NodeMCU (getestetes Board Lolin Version3 und Wemos D3 mini) oder vergleichbares Board mit einem ESP8266 
-    * WS2812B, WS2816 RGB-LED-Streifen oder SK6812 RGBW-Streifen
+    * NodeMCU oder vergleichbares Board mit einem dem ESP8266 oder ESP8285 Chip
+    * WS2812B RGB-LED-Streifen oder SK6812 RGBW-Streifen
     * Stromversorgung 5V 2A
     * Optional: LDR, 10 KOhm-Widerstand
+
 * Software
     * PlatformIO [Core](https://docs.platformio.org/en/latest/core/installation.html) oder [IDE](https://platformio.org/install/ide?install=vscode)
     * [Node.js](https://www.nodejs.org/)
@@ -50,11 +76,11 @@ cd Wortuhr
 pio run -t upload
 ```
 
-## Anschließen des WS2812/ SK6812 Stripe
+## Anschließen des WS2812/ SK6812 LED Streifens
 * RX = DI / Datenbus
 * G = GND / Masse
 * VU = 5V
-* Pegelanpassung 3.3V bis 5V siehe Doku
+* Pegelanpassung 3.3V bis 5V siehe Doku (optional)
 
 ## Anschluss für den LDR (optional)
 ![](pics/old/LDR.png)
