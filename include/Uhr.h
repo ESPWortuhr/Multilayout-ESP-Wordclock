@@ -114,11 +114,11 @@ struct GLOBAL {
     uint8_t autoLdrEnabled;
     uint8_t autoLdrBright;
     uint8_t autoLdrDark;
-    uint8_t animType;
-    uint8_t animDuration;
-    uint8_t animSpeed;
-    uint8_t animColorize;
-    uint8_t animDemo;
+    uint8_t transitionType;
+    uint8_t transitionDuration;
+    uint8_t transitionSpeed;
+    uint8_t transitionColorize;
+    uint8_t transitionDemo;
 
     bool bootLedBlink;
     bool bootLedSweep;

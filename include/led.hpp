@@ -1,5 +1,5 @@
-#include "Animation.h"
 #include "NeoMultiFeature.hpp"
+#include "Transitiontypes/Transition.h"
 #include "Uhr.h"
 #include "Uhrtypes/Uhrtype.hpp"
 #include "font.h"
@@ -11,7 +11,7 @@ extern NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod> *strip_RGB;
 extern NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW;
 
 extern iUhrType *usedUhrType;
-extern Animation *animation;
+extern Transition *transition;
 
 const uint8_t whiteAdjR[3] = {255, 255, 255};
 const uint8_t whiteAdjG[3] = {180, 215, 107};
@@ -359,7 +359,7 @@ void Led::set(bool changed) {
         setbySecondArray(Foreground);
     }
 
-    if (animation->ledShowNotify(changed, _minute)) {
+    if (transition->ledShowNotify(changed, _minute)) {
         show();
     }
 }

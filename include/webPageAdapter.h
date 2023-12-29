@@ -289,11 +289,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_MODE_ANIMATION: {
             G.progInit = true;
 
-            G.animType = split(payload, 3);
-            G.animDuration = split(payload, 6);
-            G.animSpeed = split(payload, 9);
-            G.animColorize = split(payload, 12);
-            G.animDemo = split(payload, 15);
+            G.transitionType = split(payload, 3);
+            G.transitionDuration = split(payload, 6);
+            G.transitionSpeed = split(payload, 9);
+            G.transitionColorize = split(payload, 12);
+            G.transitionDemo = split(payload, 15);
             ;
             break;
         }

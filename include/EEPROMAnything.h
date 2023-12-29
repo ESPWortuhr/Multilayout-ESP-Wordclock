@@ -67,11 +67,11 @@ void read() {
     Serial.printf("autoLdrEnabled    : %u\n", G.autoLdrEnabled);
     Serial.printf("autoLdrBright    : %u\n", G.autoLdrBright);
     Serial.printf("autoLdrDark    : %u\n", G.autoLdrDark);
-    Serial.printf("animType    : %u\n", G.animType);
-    Serial.printf("Uhrtype    : %u\n", G.animDuration);
-    Serial.printf("animDuration    : %u\n", G.animSpeed);
-    Serial.printf("animColorize    : %u\n", G.animColorize);
-    Serial.printf("animDemo    : %u\n", G.animDemo);
+    Serial.printf("Uhrtype    : %u\n", G.transitionDuration);
+    Serial.printf("transitionType    : %u\n", G.transitionType);
+    Serial.printf("transitionDuration    : %u\n", G.transitionSpeed);
+    Serial.printf("transitionColorize    : %u\n", G.transitionColorize);
+    Serial.printf("transitionDemo    : %u\n", G.transitionDemo);
 
     Serial.printf("bootLedBlink    : %u\n", G.bootLedBlink);
     Serial.printf("bootLedSweep    : %u\n", G.bootLedSweep);

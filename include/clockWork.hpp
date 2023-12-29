@@ -1,5 +1,5 @@
-#include "Animation.h"
 #include "NeoMultiFeature.hpp"
+#include "Transitiontypes/Transition.h"
 #include "Uhr.h"
 #include "Uhrtypes/Uhrtype.hpp"
 #include "clockWork.h"
@@ -832,7 +832,7 @@ void ClockWork::loop(struct tm &tm) {
     previousMillis = currentMillis;
 
     // Faster runtime for demo
-    animation->demoMode(_minute, _second);
+    transition->demoMode(_minute, _second);
 
     //------------------------------------------------
     // Secounds and LDR Routine
@@ -1010,11 +1010,11 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_ANIMATION: {
         DynamicJsonDocument config(1024);
         config["command"] = "animation";
-        config["animType"] = G.animType;
-        config["animDuration"] = G.animDuration;
-        config["animSpeed"] = G.animSpeed;
-        config["animDemo"] = G.animDemo;
-        config["animColorize"] = G.animColorize;
+        config["transitionType"] = G.transitionType;
+        config["transitionDuration"] = G.transitionDuration;
+        config["transitionSpeed"] = G.transitionSpeed;
+        config["transitionDemo"] = G.transitionDemo;
+        config["transitionColorize"] = G.transitionColorize;
         JsonArray types = config.createNestedArray("animTypes");
         // Sequence must match to 'enum Anim'
         types.add("keine");

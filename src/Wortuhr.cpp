@@ -39,21 +39,21 @@ const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
 
 RTC_Type RTC;
 
-#include "Animation.h"
+#include "Transitiontypes/Transition.h"
 #include "clockWork.h"
 #include "frame.h"
 #include "led.h"
 #include "mqtt.h"
 #include "network.h"
 
-Animation *animation;
+Transition *transition;
 SecondsFrame *secondsFrame;
 Led led;
 ClockWork clockWork;
 Mqtt mqtt;
 Network network;
 
-#include "Animation.hpp"
+#include "Transitiontypes/Transition.hpp"
 #include "Wifi.hpp"
 #include "clockWork.hpp"
 #include "icons.h"
@@ -207,11 +207,11 @@ void setup() {
         G.autoLdrEnabled = 0;
         G.autoLdrBright = 100;
         G.autoLdrDark = 10;
-        G.animType = 0; // Animation::KEINE;
-        G.animDuration = 2;
-        G.animSpeed = 30;
-        G.animColorize = 1;
-        G.animDemo = false;
+        G.transitionType = 0; // Transition::KEINE;
+        G.transitionDuration = 2;
+        G.transitionSpeed = 30;
+        G.transitionColorize = 1;
+        G.transitionDemo = false;
 
         eeprom::write();
         Serial.println("eeprom schreiben");
@@ -232,8 +232,8 @@ void setup() {
     //         Number of rows (including frames)
     //         Number of columns (including frames)
     // Get TODO frame width from usedUhrTyp
-    animation = new Animation(usedUhrType->rowsWordMatrix(),
-                              usedUhrType->colsWordMatrix());
+    transition = new Transition(usedUhrType->rowsWordMatrix(),
+                                usedUhrType->colsWordMatrix());
 
     if (usedUhrType->numPixelsFrameMatrix() != 0) {
         secondsFrame = new SecondsFrame(usedUhrType->numPixelsFrameMatrix());
@@ -393,10 +393,10 @@ void loop() {
         mqtt.loop();
     }
 
-    animation->loop(tm); // must be called periodically
+    transition->loop(tm); // must be called periodically
 
-    // make the time run faster in the demo mode of the animation
-    animation->demoMode(_minute, _second);
+    // make the time run faster in the demo mode of the transition
+    transition->demoMode(_minute, _second);
 
     if (usedUhrType->numPixelsFrameMatrix() != 0) {
         secondsFrame->loop();
