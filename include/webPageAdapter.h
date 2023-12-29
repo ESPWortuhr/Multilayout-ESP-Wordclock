@@ -154,6 +154,8 @@ void parseColor(uint8_t *payload, uint8_t position = Foreground) {
     G.color[position] = {HsbColor(split(payload, 3) / 360.f,
                                   split(payload, 6) / 100.f,
                                   split(payload, 9) / 100.f)};
+    // TO DO: Better Position for EEPROM Write
+    eeprom::write();
 }
 
 //------------------------------------------------------------------------------
