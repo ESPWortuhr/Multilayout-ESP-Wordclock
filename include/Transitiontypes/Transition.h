@@ -93,24 +93,24 @@ public:
     ~Transition();
 
     enum Transition_t {
-        KEINE = 0,
-        HOCH_ROLLEN = 1,
-        RUNTER_ROLLEN = 2,
-        LINKS_SCHIEBEN = 3,
-        RECHTS_SCHIEBEN = 4,
-        UEBERBLENDEN = 5,
+        NO_TRANSITION = 0,
+        ROLL_UP = 1,
+        ROLL_DOWN = 2,
+        SHIFT_LEFT = 3,
+        SHIFT_RIGHT = 4,
+        FADE = 5,
         LASER = 6,
-        MATRIX = 7,
-        BAELLE = 8,
+        MATRIX_RAIN = 7,
+        BALLS = 8,
         FIRE = 9,
-        SCHLANGE = 10,
+        SNAKE = 10,
         // only internaly used
         RANDOM = 11,
         COUNTDOWN = 98,
-        SILVESTER = 99
+        NEWYEAR = 99
     };
-    static const Transition_t transitionTypeFirst = HOCH_ROLLEN;
-    static const Transition_t transitionTypeLast = SCHLANGE;
+    static const Transition_t transitionTypeFirst = ROLL_UP;
+    static const Transition_t transitionTypeLast = SNAKE;
 
     enum Colorize { OFF = 1, WORDS = 2, CHARACTERS = 3 };
 
@@ -123,7 +123,7 @@ protected:
     uint16_t phase = 0;
     bool matrixChanged = false;
     uint32_t transitionDelay = 100;
-    Transition_t transitionType = KEINE;
+    Transition_t transitionType = NO_TRANSITION;
     uint32_t nextActionTime = 0;
     uint8_t lastMinute = 100;
 
@@ -507,8 +507,8 @@ public:
     }
 
     bool getPixel(uint8_t row, uint8_t col, RgbColor &color) {
-        // void Transition::copyBlock(RgbfColor color, uint32_t block, bool fgbg,
-        // bool mirrored,
+        // void Transition::copyBlock(RgbfColor color, uint32_t block, bool
+        // fgbg, bool mirrored,
         //                          bool init) {
 
         if ((row < 10) && (row < maxRows) && (col < 11) && (col < maxCols)) {

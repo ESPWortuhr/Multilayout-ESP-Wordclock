@@ -67,11 +67,11 @@ bool Transition::isSilvester(Transition_t &type, struct tm &tm, bool trigger) {
         } else {
             minutesAfterMidnight++;
         }
-        if ((type == SILVESTER) && (minutesAfterMidnight >= 11)) {
+        if ((type == NEWYEAR) && (minutesAfterMidnight >= 11)) {
             type = getTransitionType(true);
         }
     }
-    return (type == COUNTDOWN) || (type == SILVESTER);
+    return (type == COUNTDOWN) || (type == NEWYEAR);
 }
 
 //------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ Transition::Transition_t Transition::getTransitionType(bool trigger) {
 
 //------------------------------------------------------------------------------
 bool Transition::isColorization() {
-    return ((transitionType != KEINE) &&
+    return ((transitionType != NO_TRANSITION) &&
             ((G.transitionColorize == WORDS) ||
              (G.transitionColorize == CHARACTERS)));
 }
@@ -356,7 +356,7 @@ void Transition::fillMatrix(RgbfColor **matrix, RgbfColor color) {
 bool Transition::ledShowNotify(bool changed, uint8_t minute) {
     bool ledShow = true;
 
-    if (transitionType == KEINE) {
+    if (transitionType == NO_TRANSITION) {
         if (changed && (lastMinute != minute)) {
             lastMinute = minute;
             // in case the transition is switched on
@@ -402,9 +402,9 @@ void Transition::loop(struct tm &tm) {
             transitionType = getTransitionType(minuteChange);
         }
 
-        if (transitionType == KEINE) {
-            if (lastTransitionType != KEINE) {
-                lastTransitionType = KEINE;
+        if (transitionType == NO_TRANSITION) {
+            if (lastTransitionType != NO_TRANSITION) {
+                lastTransitionType = NO_TRANSITION;
                 copyMatrix(work, act);
                 colorize(work);
                 copy2Stripe(work);
@@ -430,42 +430,42 @@ void Transition::loop(struct tm &tm) {
                 // Serial.printf("Transition: type %d phase %d\n",
                 // transitionType, phase);
                 switch (transitionType) {
-                case HOCH_ROLLEN:
+                case ROLL_UP:
                     phase = transitionScrollDown(false);
                     break;
-                case RUNTER_ROLLEN:
+                case ROLL_DOWN:
                     phase = transitionScrollDown(true);
                     break;
-                case LINKS_SCHIEBEN:
+                case SHIFT_LEFT:
                     phase = transitionScrollRight(false); // shift left
                     break;
-                case RECHTS_SCHIEBEN:
+                case SHIFT_RIGHT:
                     phase = transitionScrollRight(true);
                     break;
-                case UEBERBLENDEN:
+                case FADE:
                     phase = transitionFade();
                     break;
                 case LASER:
                     phase = transitionLaser();
                     break;
-                case MATRIX:
+                case MATRIX_RAIN:
                     phase = transitionMatrixRain();
                     break;
-                case BAELLE:
+                case BALLS:
                     phase = transitionBalls();
                     break;
-                case SILVESTER:
+                case NEWYEAR:
                 case FIRE:
                     phase = transitionFire();
                     break;
-                case SCHLANGE:
+                case SNAKE:
                     phase = transitionSnake();
                     break;
                 case COUNTDOWN:
                     phase = transitionCountdown(tm);
                     break;
                 case RANDOM:
-                case KEINE:
+                case NO_TRANSITION:
                     break;
                 }
             }
@@ -737,7 +737,7 @@ uint16_t Transition::transitionFire() {
         case (FIRE_6 + 4):
             mirrored = !mirrored;
             copyMatrix(old, act); // old contains artefacts
-            if ((transitionType == SILVESTER)) {
+            if ((transitionType == NEWYEAR)) {
                 transitionDelay = 500;
                 return 1; // next transition in 500ms
             }
@@ -827,7 +827,7 @@ uint16_t Transition::transitionCountdown(struct tm &tm) {
         if (countDown < 0) { // 60 - 0
             countDown = 60;
             lastSecond = 99;
-            transitionType = SILVESTER;
+            transitionType = NEWYEAR;
             return 1; // continue FIRE in phase 1
         }
         lastSecond = _second;
