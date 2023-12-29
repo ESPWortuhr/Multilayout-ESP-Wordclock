@@ -5,28 +5,26 @@
 #define STRIPE NULL
 #define MAX_RANDOM 10
 
-Animation::Animation(uint16 frameH, uint16 frameV, uint16 rows, uint16 cols) {
-    rowStart = frameH;
-    colStart = frameV;
-    maxRows = rows - 2 * frameH;
-    maxCols = cols - 2 * frameV;
-    sizeofColumn = maxCols * sizeof(RgbfColor);
-    old = new RgbfColor *[maxRows];
-    act = new RgbfColor *[maxRows];
-    work = new RgbfColor *[maxRows];
-    for (uint8_t row = 0; row < maxRows; row++) {
-        old[row] = new RgbfColor[maxCols];
-        act[row] = new RgbfColor[maxCols];
-        work[row] = new RgbfColor[maxCols];
+Animation::Animation(uint8 rows, uint8 cols) {
+    maxRows = rows;
+    maxCols = cols;
+    sizeofColumn = cols * sizeof(RgbfColor);
+    old = new RgbfColor *[rows];
+    act = new RgbfColor *[rows];
+    work = new RgbfColor *[rows];
+    for (uint8_t row = 0; row < rows; row++) {
+        old[row] = new RgbfColor[cols];
+        act[row] = new RgbfColor[cols];
+        work[row] = new RgbfColor[cols];
     }
-    rain = new Rain[maxCols];
-    balls = new Ball[maxCols];
-    for (uint8_t col = 0; col < maxCols; col++) {
-        rain[col] = Rain(maxRows, maxCols);
-        balls[col] = Ball(maxRows);
+    rain = new Rain[cols];
+    balls = new Ball[cols];
+    for (uint8_t col = 0; col < cols; col++) {
+        rain[col] = Rain(rows, cols);
+        balls[col] = Ball(rows);
     }
-    snake = new Snake(maxRows, maxCols);
-    firework = new Firework(maxRows, maxCols);
+    snake = new Snake(rows, cols);
+    firework = new Firework(rows, cols);
     animType = (Animation_t)G.animType;
     lastAnimType = (Animation_t)G.animType;
     lastAnimDemo = G.animDemo;
@@ -313,8 +311,7 @@ void Animation::copy2Stripe(RgbfColor **source) {
     for (uint8_t row = 0; row < maxRows; row++) {
         for (uint8_t col = 0; col < maxCols; col++) {
             led.setPixel(
-                usedUhrType->getFrontMatrixIndex(row + rowStart,
-                                                 col + colStart),
+                usedUhrType->getFrontMatrixIndex(row, col),
                 HsbColor{RgbColor(source[row][col].R, source[row][col].G,
                                   source[row][col].B)});
         }

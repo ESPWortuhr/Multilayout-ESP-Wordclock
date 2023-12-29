@@ -232,7 +232,7 @@ void setup() {
     //         Number of rows (including frames)
     //         Number of columns (including frames)
     // Get TODO frame width from usedUhrTyp
-    animation = new Animation(0, 0, usedUhrType->rowsWordMatrix(),
+    animation = new Animation(usedUhrType->rowsWordMatrix(),
                               usedUhrType->colsWordMatrix());
 
     if (usedUhrType->numPixelsFrameMatrix() != 0) {

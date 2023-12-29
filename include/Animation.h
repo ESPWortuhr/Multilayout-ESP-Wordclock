@@ -89,8 +89,7 @@ class Animation {
     friend class Firework;
 
 public:
-    Animation(uint16 topLeftRow, uint16 topLeftCol, uint16 bottomRightRow,
-              uint16 bottomRightCol);
+    Animation(uint8 bottomRightRow, uint8 bottomRightCol);
     ~Animation();
 
     enum Animation_t {
@@ -143,7 +142,7 @@ protected:
     uint8_t lastAnimDuration;
     uint8_t lastAnimColorize;
 
-    uint8_t maxRows, maxCols, rowStart, colStart;
+    uint8_t maxRows, maxCols;
     uint16 sizeofColumn;
     RgbfColor **old;
     RgbfColor **act;
