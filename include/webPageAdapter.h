@@ -286,7 +286,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         }
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_ANIMATION: {
+        case COMMAND_MODE_TRANSITION: {
             G.progInit = true;
 
             G.transitionType = split(payload, 3);
@@ -538,7 +538,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_REQUEST_CONFIG_VALUES:
         case COMMAND_REQUEST_COLOR_VALUES:
         case COMMAND_REQUEST_WIFI_LIST:
-        case COMMAND_REQUEST_ANIMATION: {
+        case COMMAND_REQUEST_TRANSITION: {
             G.client_nr = num;
             break;
         }

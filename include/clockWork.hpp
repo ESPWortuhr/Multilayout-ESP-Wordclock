@@ -1007,16 +1007,16 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
-    case COMMAND_REQUEST_ANIMATION: {
+    case COMMAND_REQUEST_TRANSITION: {
         DynamicJsonDocument config(1024);
-        config["command"] = "animation";
+        config["command"] = "transition";
         config["transitionType"] = G.transitionType;
         config["transitionDuration"] = G.transitionDuration;
         config["transitionSpeed"] = G.transitionSpeed;
         config["transitionDemo"] = G.transitionDemo;
         config["transitionColorize"] = G.transitionColorize;
-        JsonArray types = config.createNestedArray("animTypes");
-        // Sequence must match to 'enum Anim'
+        JsonArray types = config.createNestedArray("transitionTypes");
+        // Sequence must match to 'enum Transition_t' in Transitiontypes/Transition.h
         types.add("keine");
         types.add("Hoch rollen");
         types.add("Runter rollen");
@@ -1239,14 +1239,14 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
-    case COMMAND_MODE_ANIMATION: {
+    case COMMAND_MODE_TRANSITION: {
         if (G.progInit) {
             G.progInit = false;
             eeprom::write();
             delay(100);
         }
         // There is no break here on purpose, directly after the call
-        // COMMAND_MODE_ANIMATION, COMMAND_MODE_WORD_CLOCK must be called
+        // COMMAND_MODE_TRANSITION, COMMAND_MODE_WORD_CLOCK must be called
     }
 
     case COMMAND_MODE_WORD_CLOCK: {

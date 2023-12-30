@@ -37,8 +37,8 @@ let TRANSLATION_NL = {
 			"color-change": "Kleurverandering",
 			"symbol": "Symbool"
 		},
-		"animation": {
-			"h2": "Animatie",
+		"transition": {
+			"h2": "Overgang",
 			"type": {
 				"label": "Type"
 			},
@@ -49,7 +49,7 @@ let TRANSLATION_NL = {
 				"long": "Lang"
 			},
 			"color": {
-				"label": "Kleuranimatie",
+				"label": "Kleurovergang",
 				"off": "Uit",
 				"words": "Gekleurde woorden",
 				"letters": "Gekleurde letters"

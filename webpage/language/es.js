@@ -37,8 +37,8 @@ let TRANSLATION_ES = {
 			"color-change": "Cambio de color",
 			"symbol": "Símbolo"
 		},
-		"animation": {
-			"h2": "Animación",
+		"transition": {
+			"h2": "Transición",
 			"type": {
 				"label": "Tipo"
 			},
@@ -49,7 +49,7 @@ let TRANSLATION_ES = {
 				"long": "largo"
 			},
 			"color": {
-				"label": "Animación en Colores",
+				"label": "Transición en Colores",
 				"off": "Apagado",
 				"words": "Palabras Coloridas",
 				"letters": "Letras Coloridas"
