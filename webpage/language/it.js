@@ -40,7 +40,19 @@ let TRANSLATION_IT = {
 		"transition": {
 			"h2": "Transizione",
 			"type": {
-				"label": "Tipo"
+				"label": "Tipo",
+				"none": "Nessuno",
+				"scroll_up": "Scorri verso l'alto",
+				"scroll_down": "Scorri verso il basso",
+				"shift_left": "Scorri a sinistra",
+				"shift_right": "Sposta a destra",
+				"fade": "Dissolvenza",
+				"laser": "Laser",
+				"matrix_rain": "Matrix Rain",
+				"balls": "Palle",
+				"firework": "Fuoco d'artificio",
+				"snake": "Serpente",
+				"random": "Casuale"
 			},
 			"duration": {
 				"label": "Lasso di tempo",

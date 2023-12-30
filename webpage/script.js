@@ -89,7 +89,6 @@ var displayAutoLdr = 0;
 var autoLdrBright = " ";
 var autoLdrDark = " ";
 var transitionType = 0;
-var transitionTypes = ["None"];
 var transitionDuration = 1;
 var transitionSpeed = 30;
 var transitionColorize = 1;
@@ -230,7 +229,6 @@ function initConfigValues() {
 	autoLdrBright = " ";
 	autoLdrDark = " ";
 	transitionType = 0;
-	transitionTypes = ["None"];
 	transitionDuration = 1;
 	transitionSpeed = 30;
 	transitionColorize = 1;
@@ -428,25 +426,10 @@ function initWebsocket() {
 		}
 		if (data.command === "transition") {
 			transitionType = data.transitionType;
-			transitionTypes = data.transitionTypes;
 			transitionDuration = data.transitionDuration;
 			transitionSpeed = data.transitionSpeed;
 			transitionColorize = data.transitionColorize;
 			transitionDemo = data.transitionDemo;
-			var index;
-			var transitionSelect = document.getElementById("transition-types");
-			var option;
-
-			while (transitionSelect.options.length > 0) {
-				transitionSelect.remove(0);
-			}
-
-			for (index = 0; index < transitionTypes.length; index++) {
-				option = document.createElement("option");
-				option.value = index;
-				option.text = transitionTypes[index];
-				transitionSelect.add(option);
-			}
 			setTransition();
 		}
 		if (data.command === "autoLdr") {

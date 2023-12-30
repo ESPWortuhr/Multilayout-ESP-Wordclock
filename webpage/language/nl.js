@@ -40,7 +40,19 @@ let TRANSLATION_NL = {
 		"transition": {
 			"h2": "Overgang",
 			"type": {
-				"label": "Type"
+				"label": "Type",
+				"none": "Geen",
+				"scroll_up": "Naar boven scrollen",
+				"scroll_down": "Naar beneden scrollen",
+				"shift_left": "Verschuiving naar links",
+				"shift_right": "Verschuiving naar rechts",
+				"fade": "Vervagen",
+				"laser": "Laser",
+				"matrix_rain": "Matrix Regen",
+				"balls": "Ballen",
+				"firework": "Vuurwerk",
+				"snake": "Slang",
+				"random": "Willekeurig"
 			},
 			"duration": {
 				"label": "Duur",

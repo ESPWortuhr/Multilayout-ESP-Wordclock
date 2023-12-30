@@ -40,7 +40,19 @@ let TRANSLATION_DE_DE = {
 		"transition": {
 			"h2": "Übergang",
 			"type": {
-				"label": "Typ"
+				"label": "Art",
+				"none": "Keines",
+				"scroll_up": "Hoch scrollen",
+				"scroll_down": "Runter scrollen",
+				"shift_left": "Nach links schieben",
+				"shift_right": "nach rechts schieben",
+				"fade": "Überblenden",
+				"laser": "Laser",
+				"matrix_rain": "Matrix Regen",
+				"balls": "Bälle",
+				"firework": "Feuerwerk",
+				"snake": "Schlange",
+				"random": "Zufällig"
 			},
 			"duration": {
 				"label": "Dauer",

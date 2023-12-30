@@ -1015,20 +1015,6 @@ void ClockWork::loop(struct tm &tm) {
         config["transitionSpeed"] = G.transitionSpeed;
         config["transitionDemo"] = G.transitionDemo;
         config["transitionColorize"] = G.transitionColorize;
-        JsonArray types = config.createNestedArray("transitionTypes");
-        // Sequence must match to 'enum Transition_t' in Transitiontypes/Transition.h
-        types.add("keine");
-        types.add("Hoch rollen");
-        types.add("Runter rollen");
-        types.add("Links schieben");
-        types.add("Rechts schieben");
-        types.add("Überblenden");
-        types.add("Laser");
-        types.add("Matrix");
-        types.add("Baelle");
-        types.add("Feuerwerk");
-        types.add("Schlange");
-        types.add("zufällig");
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
         break;
