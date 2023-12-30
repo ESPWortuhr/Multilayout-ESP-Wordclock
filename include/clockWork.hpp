@@ -1061,13 +1061,20 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_BRIGHTNESS:
     case COMMAND_SET_AUTO_LDR:
     case COMMAND_SET_LANGUAGE_VARIANT:
-    case COMMAND_SET_LAYOUT_VARIANT:
     case COMMAND_SET_WHITETYPE:
     case COMMAND_SET_TIME_MANUAL: {
         eeprom::write();
         led.clear();
         frameArray = 0;
         parametersChanged = true;
+        break;
+    }
+
+    case COMMAND_SET_LAYOUT_VARIANT: {
+        eeprom::write();
+        led.clear();
+        frameArray = 0;
+        layoutChanged = true;
         break;
     }
 
@@ -1250,6 +1257,9 @@ void ClockWork::loop(struct tm &tm) {
             lastMinuteArray = minuteArray;
             memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
             led.set(true);
+        } else if (layoutChanged) {
+            led.set(true);
+            layoutChanged = false;
         } else if (parametersChanged) {
             led.set();
         }
