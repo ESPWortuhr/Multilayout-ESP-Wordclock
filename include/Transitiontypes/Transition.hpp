@@ -32,6 +32,8 @@ Transition::Transition(uint8 rows, uint8 cols) {
     lastTransitionColorize = G.transitionColorize;
 }
 
+//------------------------------------------------------------------------------
+
 Transition::~Transition() {
 #if 0
     // matrix type changes during runtime forces a ESP reset
@@ -76,7 +78,7 @@ bool Transition::isSilvester(Transition_t &type, struct tm &tm, bool trigger) {
 
 //------------------------------------------------------------------------------
 
-Transition::Transition_t Transition::getTransitionType(bool trigger) {
+Transition_t Transition::getTransitionType(bool trigger) {
     if (G.transitionType == RANDOM) {
         if (trigger) {
             return (Transition_t)random(transitionTypeFirst,
@@ -140,9 +142,9 @@ bool Transition::changeBrightness() {
 }
 
 //------------------------------------------------------------------------------
-
 // returns hue values with a difference of at least 0.1 (360 * 0,1 = 36 degree)
 // avoiding neighbors with very similar colors
+
 float Transition::pseudoRandomHue() {
     static bool first = true;
     if (first) {
@@ -190,8 +192,8 @@ float Transition::pseudoRandomHue(bool init) {
 }
 
 //------------------------------------------------------------------------------
-
 // colorize foreground
+
 void Transition::colorize(RgbfColor **dest) {
     bool changeColor = true;
     HsbColor hsbColor = HsbColor(foreground);
@@ -232,9 +234,9 @@ void Transition::saveMatrix() {
 }
 
 //------------------------------------------------------------------------------
-
 // copy (internal matrix or from LED stripe) and determine foreground and
 // background color
+
 void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
                                RgbfColor &foreground, RgbfColor &background) {
     RgbfColor color, color1(0), color2(0);
@@ -307,8 +309,8 @@ void Transition::setMinute() {
 }
 
 //------------------------------------------------------------------------------
-
 // Overwrite the LEDs with internal matrix
+
 void Transition::copy2Stripe(RgbfColor **source) {
     for (uint8_t row = 0; row < maxRows; row++) {
         for (uint8_t col = 0; col < maxCols; col++) {
@@ -351,129 +353,10 @@ void Transition::fillMatrix(RgbfColor **matrix, RgbfColor color) {
 
 //------------------------------------------------------------------------------
 
-// changed: 0 changes, e.g. color, no change of content
-// changed: 1 content has changed
-bool Transition::ledShowNotify(bool changed, uint8_t minute) {
-    bool ledShow = true;
-
-    if (transitionType == NO_TRANSITION) {
-        if (changed && (lastMinute != minute)) {
-            lastMinute = minute;
-            // in case the transition is switched on
-            matrixChanged = true;
-        }
-    } else {
-        bool brightnessChanged = changeBrightness(); // Adapt brightness
-        if (changed) {
-            if (lastMinute != minute) {
-                lastMinute = minute;
-                matrixChanged = true;
-                nextActionTime = 0; // ###################
-                phase = 1;          // -> start Transition
-                ledShow = false;    // ###################
-            }
-        } else {
-            if (brightnessChanged) {
-                copy2Stripe(work);
-            }
-            ledShow = isIdle();
-        }
-    }
-    return ledShow;
-}
-
-//------------------------------------------------------------------------------
-
-void Transition::loop(struct tm &tm) {
-    static uint8_t lastMinute = 99;
-    bool minuteChange = false;
-
-    if (matrixChanged) {
-        matrixChanged = false;
-        saveMatrix();
-    }
-
-    if ((G.prog == COMMAND_IDLE) || (G.prog == COMMAND_MODE_WORD_CLOCK)) {
-        if (lastMinute != _minute) {
-            lastMinute = _minute;
-            minuteChange = true;
-        }
-        if (!isSilvester(transitionType, tm, minuteChange)) {
-            transitionType = getTransitionType(minuteChange);
-        }
-
-        if (transitionType == NO_TRANSITION) {
-            if (lastTransitionType != NO_TRANSITION) {
-                lastTransitionType = NO_TRANSITION;
-                copyMatrix(work, act);
-                colorize(work);
-                copy2Stripe(work);
-                led.show();
-            }
-        } else {
-            if ((transitionType != lastTransitionType) ||
-                (G.transitionDuration != lastTransitionDuration) ||
-                (G.transitionDemo != lastTransitionDemo)) {
-                lastTransitionType = transitionType;
-                lastTransitionDemo = G.transitionDemo;
-                lastTransitionDuration = G.transitionDuration;
-                phase = 1;
-            }
-            if (G.transitionColorize != lastTransitionColorize) {
-                lastTransitionColorize = G.transitionColorize;
-                colorize(isIdle() ? work : act);
-            }
-
-            uint32_t now = millis();
-            if ((!isIdle()) && (now >= nextActionTime)) {
-                nextActionTime = now + transitionDelay;
-                // Serial.printf("Transition: type %d phase %d\n",
-                // transitionType, phase);
-                switch (transitionType) {
-                case ROLL_UP:
-                    phase = transitionScrollDown(false);
-                    break;
-                case ROLL_DOWN:
-                    phase = transitionScrollDown(true);
-                    break;
-                case SHIFT_LEFT:
-                    phase = transitionScrollRight(false); // shift left
-                    break;
-                case SHIFT_RIGHT:
-                    phase = transitionScrollRight(true);
-                    break;
-                case FADE:
-                    phase = transitionFade();
-                    break;
-                case LASER:
-                    phase = transitionLaser();
-                    break;
-                case MATRIX_RAIN:
-                    phase = transitionMatrixRain();
-                    break;
-                case BALLS:
-                    phase = transitionBalls();
-                    break;
-                case NEWYEAR:
-                case FIRE:
-                    phase = transitionFire();
-                    break;
-                case SNAKE:
-                    phase = transitionSnake();
-                    break;
-                case COUNTDOWN:
-                    phase = transitionCountdown(tm);
-                    break;
-                case RANDOM:
-                case NO_TRANSITION:
-                    break;
-                }
-            }
-            transitionColorChange();
-            copy2Stripe(work);
-            led.show();
-        }
-    }
+bool Transition::changesInTransitionTypeDurationOrDemo() {
+    return (transitionType != lastTransitionType) ||
+           (G.transitionDuration != lastTransitionDuration) ||
+           (G.transitionDemo != lastTransitionDemo);
 }
 
 //------------------------------------------------------------------------------
@@ -493,27 +376,10 @@ uint16_t Transition::reverse(uint16_t num, bool mirrored) {
 }
 
 //------------------------------------------------------------------------------
-
-void Transition::demoMode(uint8_t &_minute, uint8_t _second) {
-    static uint8_t test_second = 0;
-    static uint8_t test_minute = 45;
-    if (G.transitionDemo) {
-        if (isIdle() && ((_second % 10) == 0) && (test_second != _second)) {
-            test_minute += 5;
-            if (test_minute >= 60) {
-                test_minute = _minute % 5;
-            }
-        }
-        _minute = test_minute;
-        test_second = _second;
-    }
-}
-
-//------------------------------------------------------------------------------
-
 // slow == 1 -> 5s
 // mid  == 2 -> 3.5s
 // fast == 3 -> 2s
+
 uint16_t Transition::calcDelay(uint16_t frames) {
     uint32_t pause;
     if (frames == 0) { // avoid div 0
@@ -538,6 +404,18 @@ uint16_t Transition::calcDelay(uint16_t frames) {
 
 //------------------------------------------------------------------------------
 
+void Transition::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
+                                 unsigned char unsigned_d1, HsbColor color) {
+    if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
+        work[row + 1][col + offsetCol].changeRgb(color);
+    }
+}
+
+//------------------------------------------------------------------------------
+// Transitions
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 // the new matrix slides in from above       | below
 //                      row                  |               row
 // phase | 9876543210   old  act   wechsel   | 9876543210   old  act   wechsel
@@ -591,7 +469,6 @@ uint16_t Transition::transitionScrollDown(bool dirDown) {
 }
 
 //------------------------------------------------------------------------------
-
 // the new matrix slides in from the right / in from the left
 //                       col
 // phase | 01234567890   old  act   Wechsel  01234567890   old  act   Wechsel
@@ -601,6 +478,7 @@ uint16_t Transition::transitionScrollDown(bool dirDown) {
 //
 //  10   | annnnnnnnnn   10   0-9    9       nnnnnnnnnna   0    1-10   1
 //  11   | nnnnnnnnnnn        0-10  10       nnnnnnnnnnn        0-10   0
+
 uint16_t Transition::transitionScrollRight(bool dirRight) {
     uint32_t wechsel, colAlt, colNeu;
     bool copyFromNeu;
@@ -639,8 +517,8 @@ uint16_t Transition::transitionScrollRight(bool dirRight) {
 }
 
 //------------------------------------------------------------------------------
-
 // In each column, one ball falls from the highest letter.
+
 uint16_t Transition::transitionBalls() {
     static uint32_t starttime;
     static uint32_t numBalls;
@@ -804,15 +682,6 @@ uint16_t Transition::transitionFire() {
     }
     subPhase++;
     return phase;
-}
-
-//------------------------------------------------------------------------------
-
-void Transition::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                                 unsigned char unsigned_d1, HsbColor color) {
-    if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
-        work[row + 1][col + offsetCol].changeRgb(color);
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -1010,4 +879,150 @@ uint16_t Transition::transitionSnake() {
         return 0;
     }
     return phase + 1;
+}
+
+//------------------------------------------------------------------------------
+// Loop Helper Functions
+//------------------------------------------------------------------------------
+
+void Transition::demoMode(uint8_t &_minute, uint8_t _second) {
+    static uint8_t test_second = 0;
+    static uint8_t test_minute = 45;
+    if (G.transitionDemo) {
+        if (isIdle() && ((_second % 10) == 0) && (test_second != _second)) {
+            test_minute += 5;
+            if (test_minute >= 60) {
+                test_minute = _minute % 5;
+            }
+        }
+        _minute = test_minute;
+        test_second = _second;
+    }
+}
+
+//------------------------------------------------------------------------------
+// changed: 0 changes, e.g. color, no change of content
+// changed: 1 content has changed
+
+bool Transition::ledShowNotify(bool changed, uint8_t minute) {
+    bool ledShow = true;
+
+    if (transitionType == NO_TRANSITION) {
+        if (changed && (lastMinute != minute)) {
+            lastMinute = minute;
+            // in case the transition is switched on
+            matrixChanged = true;
+        }
+    } else {
+        bool brightnessChanged = changeBrightness(); // Adapt brightness
+        if (changed) {
+            if (lastMinute != minute) {
+                lastMinute = minute;
+                matrixChanged = true;
+                nextActionTime = 0; // ###################
+                phase = 1;          // -> start Transition
+                ledShow = false;    // ###################
+            }
+        } else {
+            if (brightnessChanged) {
+                copy2Stripe(work);
+            }
+            ledShow = isIdle();
+        }
+    }
+    return ledShow;
+}
+
+//------------------------------------------------------------------------------
+// Loop Functions
+//------------------------------------------------------------------------------
+
+void Transition::loop(struct tm &tm) {
+    static uint8_t lastMinute = 99;
+    bool minuteChange = false;
+
+    if (matrixChanged) {
+        matrixChanged = false;
+        saveMatrix();
+    }
+
+    if ((G.prog == COMMAND_IDLE) || (G.prog == COMMAND_MODE_WORD_CLOCK)) {
+        if (lastMinute != _minute) {
+            lastMinute = _minute;
+            minuteChange = true;
+        }
+        if (!isSilvester(transitionType, tm, minuteChange)) {
+            transitionType = getTransitionType(minuteChange);
+        }
+
+        if (transitionType == NO_TRANSITION) {
+            if (lastTransitionType != NO_TRANSITION) {
+                lastTransitionType = NO_TRANSITION;
+                copyMatrix(work, act);
+                colorize(work);
+                copy2Stripe(work);
+                led.show();
+            }
+        } else {
+            if (changesInTransitionTypeDurationOrDemo()) {
+                lastTransitionType = transitionType;
+                lastTransitionDemo = G.transitionDemo;
+                lastTransitionDuration = G.transitionDuration;
+                phase = 1;
+            }
+            if (G.transitionColorize != lastTransitionColorize) {
+                lastTransitionColorize = G.transitionColorize;
+                colorize(isIdle() ? work : act);
+            }
+
+            uint32_t now = millis();
+            if ((!isIdle()) && (now >= nextActionTime)) {
+                nextActionTime = now + transitionDelay;
+                // Serial.printf("Transition: type %d phase %d\n",
+                // transitionType,phase);
+                switch (transitionType) {
+                case ROLL_UP:
+                    phase = transitionScrollDown(false);
+                    break;
+                case ROLL_DOWN:
+                    phase = transitionScrollDown(true);
+                    break;
+                case SHIFT_LEFT:
+                    phase = transitionScrollRight(false);
+                    break;
+                case SHIFT_RIGHT:
+                    phase = transitionScrollRight(true);
+                    break;
+                case FADE:
+                    phase = transitionFade();
+                    break;
+                case LASER:
+                    phase = transitionLaser();
+                    break;
+                case MATRIX_RAIN:
+                    phase = transitionMatrixRain();
+                    break;
+                case BALLS:
+                    phase = transitionBalls();
+                    break;
+                case NEWYEAR:
+                case FIRE:
+                    phase = transitionFire();
+                    break;
+                case SNAKE:
+                    phase = transitionSnake();
+                    break;
+                case COUNTDOWN:
+                    phase = transitionCountdown(tm);
+                    break;
+                case RANDOM:
+                case NO_TRANSITION:
+                    break;
+                }
+            }
+            transitionColorChange();
+            copy2Stripe(work);
+            led.show();
+        }
+    }
 }

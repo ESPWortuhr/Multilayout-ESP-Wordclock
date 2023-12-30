@@ -7,6 +7,7 @@
 // ###############################################################################
 // compare operators are derived from RgbColor which compare R, G, B only
 // one hot coding for F_xxx
+
 #define F_NULL 0
 #define F_FOREGROUND 1
 #define F_OVERLAY 2
@@ -80,6 +81,27 @@ protected:
     uint8_t Alpha;
 };
 // ###############################################################################
+
+enum Transition_t {
+    NO_TRANSITION = 0,
+    ROLL_UP = 1,
+    ROLL_DOWN = 2,
+    SHIFT_LEFT = 3,
+    SHIFT_RIGHT = 4,
+    FADE = 5,
+    LASER = 6,
+    MATRIX_RAIN = 7,
+    BALLS = 8,
+    FIRE = 9,
+    SNAKE = 10,
+    // only internaly used
+    RANDOM = 11,
+    COUNTDOWN = 98,
+    NEWYEAR = 99
+};
+
+enum Colorize { OFF = 1, WORDS = 2, CHARACTERS = 3 };
+
 class Snake;
 class Firework;
 class Rain;
@@ -89,36 +111,9 @@ class Transition {
     friend class Firework;
 
 public:
-    Transition(uint8 bottomRightRow, uint8 bottomRightCol);
-    ~Transition();
-
-    enum Transition_t {
-        NO_TRANSITION = 0,
-        ROLL_UP = 1,
-        ROLL_DOWN = 2,
-        SHIFT_LEFT = 3,
-        SHIFT_RIGHT = 4,
-        FADE = 5,
-        LASER = 6,
-        MATRIX_RAIN = 7,
-        BALLS = 8,
-        FIRE = 9,
-        SNAKE = 10,
-        // only internaly used
-        RANDOM = 11,
-        COUNTDOWN = 98,
-        NEWYEAR = 99
-    };
     static const Transition_t transitionTypeFirst = ROLL_UP;
     static const Transition_t transitionTypeLast = SNAKE;
 
-    enum Colorize { OFF = 1, WORDS = 2, CHARACTERS = 3 };
-
-    void begin();
-    void loop(struct tm &tm);
-    bool ledShowNotify(bool flag, uint8_t minute);
-    void demoMode(uint8_t &_minute, uint8_t _second);
-    //------------------------------------------------------------------------------
 protected:
     uint16_t phase = 0;
     bool matrixChanged = false;
@@ -152,6 +147,10 @@ protected:
     Ball *balls;
     Firework *firework;
 
+protected:
+    //------------------------------------------------------------------------------
+    // Helper Functions
+    //------------------------------------------------------------------------------
     uint16_t reverse(uint16_t num, bool mirror);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                          unsigned char unsigned_d1, HsbColor color);
@@ -172,17 +171,36 @@ protected:
     void copyMatrixFlags(RgbfColor **dest, RgbfColor **source);
     void fillMatrix(RgbfColor **matrix, RgbfColor color);
     uint16_t calcDelay(uint16_t phasen);
+    bool changesInTransitionTypeDurationOrDemo();
+
+    //------------------------------------------------------------------------------
+    // Transitions
+    //------------------------------------------------------------------------------
     uint16_t transitionScrollDown(bool dirDown);
     uint16_t transitionScrollRight(bool dirRight);
     uint16_t transitionBalls();
     uint16_t transitionFire();
     uint16_t transitionFade();
+    void transitionColorChange();
     uint16_t transitionLaser();
     uint16_t transitionCountdown(struct tm &tm);
     uint16_t transitionMatrixRain();
     uint16_t transitionSnake();
 
-    void transitionColorChange();
+public:
+    Transition(uint8 bottomRightRow, uint8 bottomRightCol);
+    ~Transition();
+
+    //------------------------------------------------------------------------------
+    // Loop Helper Functions
+    //------------------------------------------------------------------------------
+    bool ledShowNotify(bool flag, uint8_t minute);
+    void demoMode(uint8_t &_minute, uint8_t _second);
+
+    //------------------------------------------------------------------------------
+    // Loop Functions
+    //------------------------------------------------------------------------------
+    void loop(struct tm &tm);
 };
 
 extern Transition *transition;
