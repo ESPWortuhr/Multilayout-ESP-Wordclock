@@ -7,6 +7,7 @@
 // ###############################################################################
 // compare operators are derived from RgbColor which compare R, G, B only
 // one hot coding for F_xxx
+
 #define F_NULL 0
 #define F_FOREGROUND 1
 #define F_OVERLAY 2
@@ -80,51 +81,44 @@ protected:
     uint8_t Alpha;
 };
 // ###############################################################################
+
+enum Transition_t {
+    NO_TRANSITION = 0,
+    ROLL_UP = 1,
+    ROLL_DOWN = 2,
+    SHIFT_LEFT = 3,
+    SHIFT_RIGHT = 4,
+    FADE = 5,
+    LASER = 6,
+    MATRIX_RAIN = 7,
+    BALLS = 8,
+    FIRE = 9,
+    SNAKE = 10,
+    // only internaly used
+    RANDOM = 11,
+    COUNTDOWN = 98,
+    NEWYEAR = 99
+};
+
+enum Colorize { OFF = 0, WORDS = 1, CHARACTERS = 2 };
+
 class Snake;
 class Firework;
 class Rain;
 class Ball;
-class Animation {
+class Transition {
     friend class Snake;
     friend class Firework;
 
 public:
-    Animation(uint16 topLeftRow, uint16 topLeftCol, uint16 bottomRightRow,
-              uint16 bottomRightCol);
-    ~Animation();
+    static const Transition_t transitionTypeFirst = ROLL_UP;
+    static const Transition_t transitionTypeLast = SNAKE;
 
-    enum Animation_t {
-        KEINE = 0,
-        HOCH_ROLLEN = 1,
-        RUNTER_ROLLEN = 2,
-        LINKS_SCHIEBEN = 3,
-        RECHTS_SCHIEBEN = 4,
-        UEBERBLENDEN = 5,
-        LASER = 6,
-        MATRIX = 7,
-        BAELLE = 8,
-        FIRE = 9,
-        SCHLANGE = 10,
-        // only internaly used
-        RANDOM = 11,
-        COUNTDOWN = 98,
-        SILVESTER = 99
-    };
-    static const Animation_t animTypeFirst = HOCH_ROLLEN;
-    static const Animation_t animTypeLast = SCHLANGE;
-
-    enum Colorize { OFF = 1, WORDS = 2, CHARACTERS = 3 };
-
-    void begin();
-    void loop(struct tm &tm);
-    bool ledShowNotify(bool flag, uint8_t minute);
-    void demoMode(uint8_t &_minute, uint8_t _second);
-    //------------------------------------------------------------------------------
 protected:
     uint16_t phase = 0;
     bool matrixChanged = false;
-    uint32_t animationDelay = 100;
-    Animation_t animType = KEINE;
+    uint32_t transitionDelay = 100;
+    Transition_t transitionType = NO_TRANSITION;
     uint32_t nextActionTime = 0;
     uint8_t lastMinute = 100;
 
@@ -138,12 +132,12 @@ protected:
     RgbfColor foreground = RgbfColor(0, F_FOREGROUND);
     RgbfColor background = RgbfColor(100, F_NULL);
 
-    Animation_t lastAnimType;
-    uint8_t lastAnimDemo;
-    uint8_t lastAnimDuration;
-    uint8_t lastAnimColorize;
+    Transition_t lastTransitionType;
+    uint8_t lastTransitionDemo;
+    uint8_t lastTransitionDuration;
+    uint8_t lastTransitionColorize;
 
-    uint8_t maxRows, maxCols, rowStart, colStart;
+    uint8_t maxRows, maxCols;
     uint16 sizeofColumn;
     RgbfColor **old;
     RgbfColor **act;
@@ -153,12 +147,16 @@ protected:
     Ball *balls;
     Firework *firework;
 
+protected:
+    //------------------------------------------------------------------------------
+    // Helper Functions
+    //------------------------------------------------------------------------------
     uint16_t reverse(uint16_t num, bool mirror);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                          unsigned char unsigned_d1, HsbColor color);
     inline bool isIdle() { return phase == 0; }
-    bool isSilvester(Animation_t &type, struct tm &tm, bool trigger);
-    Animation_t getAnimationType(bool trigger);
+    bool isSilvester(Transition_t &type, struct tm &tm, bool trigger);
+    Transition_t getTransitionType(bool trigger);
     bool isColorization();
     bool changeBrightness();
     float pseudoRandomHue();
@@ -173,20 +171,41 @@ protected:
     void copyMatrixFlags(RgbfColor **dest, RgbfColor **source);
     void fillMatrix(RgbfColor **matrix, RgbfColor color);
     uint16_t calcDelay(uint16_t phasen);
-    uint16_t animScrollDown(bool dirDown);
-    uint16_t animScrollRight(bool dirRight);
-    uint16_t animBalls();
-    uint16_t animFire();
-    uint16_t animFade();
-    uint16_t animLaser();
-    uint16_t animCountdown(struct tm &tm);
-    uint16_t animMatrixRain();
-    uint16_t animSnake();
+    bool changesInTransitionTypeDurationOrDemo();
 
-    void animColorChange();
+    //------------------------------------------------------------------------------
+    // Transitions
+    //------------------------------------------------------------------------------
+    uint16_t transitionScrollDown(bool dirDown);
+    uint16_t transitionScrollRight(bool dirRight);
+    uint16_t transitionBalls();
+    uint16_t transitionFire();
+    uint16_t transitionFade();
+    void transitionColorChange();
+    uint16_t transitionLaser();
+    uint16_t transitionCountdown(struct tm &tm);
+    uint16_t transitionMatrixRain();
+    uint16_t transitionSnake();
+
+public:
+    Transition(uint8 bottomRightRow, uint8 bottomRightCol);
+    ~Transition();
+
+    //------------------------------------------------------------------------------
+    // Loop Helper Functions
+    //------------------------------------------------------------------------------
+    void demoMode(uint8_t &_minute, uint8_t _second);
+    void initTransitionStart();
+    bool hasMinuteChanged();
+    bool isOverwrittenByTransition(bool flag, uint8_t minute);
+
+    //------------------------------------------------------------------------------
+    // Loop Functions
+    //------------------------------------------------------------------------------
+    void loop(struct tm &tm);
 };
 
-extern Animation *animation;
+extern Transition *transition;
 
 // ###############################################################################
 
@@ -292,7 +311,7 @@ public:
         vy = 0;
         colorForeground = foreground;
         colorBackground = background;
-        g = 9810 / G.animDuration;
+        g = 9810 / G.transitionDuration;
         end = (y == unten) ? 1 : 0;
         lastDown = false;
     }
@@ -372,15 +391,15 @@ protected:
     RgbfColor **old;
     RgbfColor **act;
     RgbfColor snakeColor;
-    Animation *animation;
+    Transition *transition;
 
 public:
-    void begin(Animation *animation) {
-        this->old = animation->old;
-        this->act = animation->act;
-        this->work = animation->work;
-        this->animation = animation;
-        HsbColor hsbColor = HsbColor(animation->foreground);
+    void begin(Transition *transition) {
+        this->old = transition->old;
+        this->act = transition->act;
+        this->work = transition->work;
+        this->transition = transition;
+        HsbColor hsbColor = HsbColor(transition->foreground);
         hsbColor.H = fmodf(hsbColor.H + 0.5, 1.0);
         snakeColor = RgbfColor(hsbColor, true);
         goRight = true;
@@ -403,7 +422,7 @@ public:
             tail = snake.front();
             snake.pop();
             work[tail.row][tail.col] =
-                tail.useAct ? act[tail.row][tail.col] : animation->background;
+                tail.useAct ? act[tail.row][tail.col] : transition->background;
         }
         if (moving) {
             snake.push(head);
@@ -508,15 +527,15 @@ public:
     }
 
     bool getPixel(uint8_t row, uint8_t col, RgbColor &color) {
-        // void Animation::copyBlock(RgbfColor color, uint32_t block, bool fgbg,
-        // bool mirrored,
+        // void Transition::copyBlock(RgbfColor color, uint32_t block, bool
+        // fgbg, bool mirrored,
         //                          bool init) {
 
         if ((row < 10) && (row < maxRows) && (col < 11) && (col < maxCols)) {
             uint16_t pixels = 0;
             for (int32_t layer = 0; layer <= maxLayer; layer++) {
                 if (icons[layer] != static_cast<Icons>(0)) {
-                    pixels = animation->reverse(
+                    pixels = transition->reverse(
                         pgm_read_word(&(grafik_11x10[icons[layer]][row])),
                         mirrored);
                     if (pixels & (1 << col)) {

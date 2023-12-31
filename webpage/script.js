@@ -88,12 +88,11 @@ var autoLdrEnabled = 0;
 var displayAutoLdr = 0;
 var autoLdrBright = " ";
 var autoLdrDark = " ";
-var animType = 0;
-var animTypes = ["keine"];
-var animDuration = 1;
-var animSpeed = 30;
-var animColorize = 1;
-var animDemo = false;
+var transitionType = 0;
+var transitionDuration = 1;
+var transitionSpeed = 30;
+var transitionColorize = 1;
+var transitionDemo = false;
 
 // operation modes
 var COMMAND_MODE_WORD_CLOCK = 1;
@@ -104,7 +103,7 @@ var COMMAND_MODE_RAINBOW = 5;
 var COMMAND_MODE_COLOR = 6;
 var COMMAND_MODE_DIGITAL_CLOCK = 7;
 var COMMAND_MODE_SYMBOL = 8;
-var COMMAND_MODE_ANIMATION = 10;
+var COMMAND_MODE_TRANSITION = 10;
 
 /**
  * Maps the mode to the corresponding input id on the functions page.
@@ -121,7 +120,7 @@ MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOW, "mode-change"); // Color change
 MODE_TO_INPUT_ID.set(COMMAND_MODE_COLOR, "mode-color");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_DIGITAL_CLOCK, "mode-digital-clock");
 MODE_TO_INPUT_ID.set(COMMAND_MODE_SYMBOL, "mode-symbol");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_ANIMATION, "mode-wordclock");
+MODE_TO_INPUT_ID.set(COMMAND_MODE_TRANSITION, "mode-wordclock");
 
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
@@ -154,7 +153,7 @@ var COMMAND_REQUEST_CONFIG_VALUES = 200;
 var COMMAND_REQUEST_COLOR_VALUES = 201;
 var COMMAND_REQUEST_WIFI_LIST = 202;
 var COMMAND_REQUEST_AUTO_LDR = 203;
-var COMMAND_REQUEST_ANIMATION = 204;
+var COMMAND_REQUEST_TRANSITION = 204;
 var COMMAND_REQUEST_MQTT_VALUES = 205;
 
 // colors
@@ -229,12 +228,11 @@ function initConfigValues() {
 	autoLdrEnabled = 0;
 	autoLdrBright = " ";
 	autoLdrDark = " ";
-	animType = 0;
-	animTypes = ["keine"];
-	animDuration = 1;
-	animSpeed = 30;
-	animColorize = 1;
-	animDemo = false;
+	transitionType = 0;
+	transitionDuration = 1;
+	transitionSpeed = 30;
+	transitionColorize = 1;
+	transitionDemo = false;
 }
 
 /* eslint-disable no-console */
@@ -303,7 +301,7 @@ function initWebsocket() {
 		debugMessage("The connection with the websocket has been established.", event);
 
 		sendCmd(COMMAND_REQUEST_COLOR_VALUES);
-		sendCmd(COMMAND_REQUEST_ANIMATION);
+		sendCmd(COMMAND_REQUEST_TRANSITION);
 	};
 
 	websocket.onclose = function(event) {
@@ -426,28 +424,13 @@ function initWebsocket() {
 		if (data.command === "wlan") {
 			document.getElementById("wlanlist").innerHTML = data.list;
 		}
-		if (data.command === "animation") {
-			animType = data.animType;
-			animTypes = data.animTypes;
-			animDuration = data.animDuration;
-			animSpeed = data.animSpeed;
-			animColorize = data.animColorize;
-			animDemo = data.animDemo;
-			var index;
-			var animSelect = document.getElementById("animation-types");
-			var option;
-
-			while (animSelect.options.length > 0) {
-				animSelect.remove(0);
-			}
-
-			for (index = 0; index < animTypes.length; index++) {
-				option = document.createElement("option");
-				option.value = index;
-				option.text = animTypes[index];
-				animSelect.add(option);
-			}
-			setAnimation();
+		if (data.command === "transition") {
+			transitionType = data.transitionType;
+			transitionDuration = data.transitionDuration;
+			transitionSpeed = data.transitionSpeed;
+			transitionColorize = data.transitionColorize;
+			transitionDemo = data.transitionDemo;
+			setTransition();
 		}
 		if (data.command === "autoLdr") {
 			$("#auto-ldr-enabled").set("value", data.autoLdrEnabled);
@@ -555,22 +538,22 @@ function setSliders() {
 	$("#slider-speed-value").fill(effectSpeed);
 }
 
-function setAnimation() {
+function setTransition() {
 	if (document.getElementById("mode-wordclock").checked) {
-		$("#animation-box").set({
+		$("#transition-box").set({
 			$display: "block"
 		});
 	} else {
-		$("#animation-box").set({
+		$("#transition-box").set({
 			$display: "none"
 		});
 	}
-	$("#animation-types").set("value", animType);
-	$("#animation-duration").set("value", animDuration);
-	$("#animation-speed-value").fill(animSpeed);
-	$("#animation-speed").set("value", animSpeed);
-	$("#animation-colorize").set("value", animColorize);
-	document.getElementById("animation-demo").checked = animDemo;
+	$("#transition-types").set("value", transitionType);
+	$("#transition-duration").set("value", transitionDuration);
+	$("#transition-speed-value").fill(transitionSpeed);
+	$("#transition-speed").set("value", transitionSpeed);
+	$("#transition-colorize").set("value", transitionColorize);
+	document.getElementById("transition-demo").checked = transitionDemo;
 }
 
 /**
@@ -653,7 +636,7 @@ $.ready(function() {
 	initConfigValues();
 	createColorPicker();
 	setSliders();
-	setAnimation();
+	setTransition();
 	initWebsocket();
 	setColors();
 
@@ -701,7 +684,7 @@ $.ready(function() {
 		document.getElementsByClassName("pure-menu-selected")[0].setAttribute("aria-current", "page");
 
 		if (navigation === "functions") {
-			setAnimation();
+			setTransition();
 		}
 		if (navigation === "smart-home") {
 			sendCmd(COMMAND_REQUEST_MQTT_VALUES);
@@ -769,7 +752,7 @@ $.ready(function() {
 			command = COMMAND_MODE_SYMBOL;
 		}
 
-		setAnimation();
+		setTransition();
 
 		if (hasBrightness === true) {
 			$(".brightness").set({
@@ -839,21 +822,21 @@ $.ready(function() {
 		return false;
 	});
 
-	$("#animation-speed").onChange(function(event) {
-		animSpeed = $("#animation-speed").get("value");
-		$("#animation-speed-value").fill(animSpeed);
+	$("#transition-speed").onChange(function(event) {
+		transitionSpeed = $("#transition-speed").get("value");
+		$("#transition-speed-value").fill(transitionSpeed);
 	});
 
-	$("[id*='animation']").on("change", function(event) {
-		animType = $("#animation-types").get("value");
-		animDuration = $("#animation-duration").get("value");
-		animSpeed = $("#animation-speed").get("value");
-		animColorize = $("#animation-colorize").get("value");
-		animDemo = document.getElementById("animation-demo").checked;
+	$("[id*='transition']").on("change", function(event) {
+		transitionType = $("#transition-types").get("value");
+		transitionDuration = $("#transition-duration").get("value");
+		transitionSpeed = $("#transition-speed").get("value");
+		transitionColorize = $("#transition-colorize").get("value");
+		transitionDemo = document.getElementById("transition-demo").checked;
 
-		sendCmd(COMMAND_MODE_ANIMATION, nstr(animType) + nstr(animDuration) + nstr(animSpeed) + nstr(animColorize) + nstr(animDemo ? 1 : 0));
-		debugMessage("Animation" + debugMessageReconfigured);
-		setAnimation();
+		sendCmd(COMMAND_MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionColorize) + nstr(transitionDemo ? 1 : 0));
+		debugMessage("Transition" + debugMessageReconfigured);
+		setTransition();
 		return false;
 	});
 	$("#initial-values-button").on("click", function() {

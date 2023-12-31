@@ -1,5 +1,5 @@
-#include "Animation.h"
 #include "NeoMultiFeature.hpp"
+#include "Transitiontypes/Transition.h"
 #include "Uhr.h"
 #include "Uhrtypes/Uhrtype.hpp"
 #include "clockWork.h"
@@ -832,7 +832,7 @@ void ClockWork::loop(struct tm &tm) {
     previousMillis = currentMillis;
 
     // Faster runtime for demo
-    animation->demoMode(_minute, _second);
+    transition->demoMode(_minute, _second);
 
     //------------------------------------------------
     // Secounds and LDR Routine
@@ -1007,28 +1007,14 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
-    case COMMAND_REQUEST_ANIMATION: {
+    case COMMAND_REQUEST_TRANSITION: {
         DynamicJsonDocument config(1024);
-        config["command"] = "animation";
-        config["animType"] = G.animType;
-        config["animDuration"] = G.animDuration;
-        config["animSpeed"] = G.animSpeed;
-        config["animDemo"] = G.animDemo;
-        config["animColorize"] = G.animColorize;
-        JsonArray types = config.createNestedArray("animTypes");
-        // Sequence must match to 'enum Anim'
-        types.add("keine");
-        types.add("Hoch rollen");
-        types.add("Runter rollen");
-        types.add("Links schieben");
-        types.add("Rechts schieben");
-        types.add("Überblenden");
-        types.add("Laser");
-        types.add("Matrix");
-        types.add("Baelle");
-        types.add("Feuerwerk");
-        types.add("Schlange");
-        types.add("zufällig");
+        config["command"] = "transition";
+        config["transitionType"] = G.transitionType;
+        config["transitionDuration"] = G.transitionDuration;
+        config["transitionSpeed"] = G.transitionSpeed;
+        config["transitionDemo"] = G.transitionDemo;
+        config["transitionColorize"] = G.transitionColorize;
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
         break;
@@ -1061,13 +1047,20 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_BRIGHTNESS:
     case COMMAND_SET_AUTO_LDR:
     case COMMAND_SET_LANGUAGE_VARIANT:
-    case COMMAND_SET_LAYOUT_VARIANT:
     case COMMAND_SET_WHITETYPE:
     case COMMAND_SET_TIME_MANUAL: {
         eeprom::write();
         led.clear();
         frameArray = 0;
         parametersChanged = true;
+        break;
+    }
+
+    case COMMAND_SET_LAYOUT_VARIANT: {
+        eeprom::write();
+        led.clear();
+        frameArray = 0;
+        layoutChanged = true;
         break;
     }
 
@@ -1232,14 +1225,14 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
-    case COMMAND_MODE_ANIMATION: {
+    case COMMAND_MODE_TRANSITION: {
         if (G.progInit) {
             G.progInit = false;
             eeprom::write();
             delay(100);
         }
         // There is no break here on purpose, directly after the call
-        // COMMAND_MODE_ANIMATION, COMMAND_MODE_WORD_CLOCK must be called
+        // COMMAND_MODE_TRANSITION, COMMAND_MODE_WORD_CLOCK must be called
     }
 
     case COMMAND_MODE_WORD_CLOCK: {
@@ -1250,6 +1243,9 @@ void ClockWork::loop(struct tm &tm) {
             lastMinuteArray = minuteArray;
             memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
             led.set(true);
+        } else if (layoutChanged) {
+            led.set(true);
+            layoutChanged = false;
         } else if (parametersChanged) {
             led.set();
         }

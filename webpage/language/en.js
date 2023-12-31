@@ -1,5 +1,5 @@
 let TRANSLATION_EN_US = {
-	"title": "Word Clock",
+	"title": "Wordclock",
 
 	"menu": {
 		"aria-show-menu": "Show Menu",
@@ -7,7 +7,7 @@ let TRANSLATION_EN_US = {
 		"language": {
 			"label": "Language",
 			"de": "🇩🇪 German",
-			"en": "🇺🇸 English",
+			"en": "🇬🇧 English",
 			"nl": "🇳🇱 Dutch",
 			"es": "🇪🇸 Spanish",
 			"it": "🇮🇹 Italian"
@@ -28,7 +28,7 @@ let TRANSLATION_EN_US = {
 		"h1": "Functions",
 		"mode": {
 			"h2": "Mode",
-			"wordclock": "Word Clock",
+			"wordclock": "Wordclock",
 			"color": "Color",
 			"seconds": "Seconds",
 			"digital-clock": "Digital Clock",
@@ -37,10 +37,22 @@ let TRANSLATION_EN_US = {
 			"color-change": "Color Change",
 			"symbol": "Symbol"
 		},
-		"animation": {
-			"h2": "Animation",
+		"transition": {
+			"h2": "Transition",
 			"type": {
-				"label": "Type"
+				"label": "Type",
+				"none": "None",
+				"scroll_up": "Scroll up",
+				"scroll_down": "Scroll down",
+				"shift_left": "Shift left",
+				"shift_right": "Shift right",
+				"fade": "Fade",
+				"laser": "Laser",
+				"matrix_rain": "Matrix Rain",
+				"balls": "Balls",
+				"firework": "Firework",
+				"snake": "Snake",
+				"random": "Random"
 			},
 			"duration": {
 				"label": "Duration",
@@ -49,7 +61,7 @@ let TRANSLATION_EN_US = {
 				"long": "Long"
 			},
 			"color": {
-				"label": "Color Animation",
+				"label": "Color transition",
 				"off": "Off",
 				"words": "Colored Words",
 				"letters": "Colored Letters"
@@ -78,23 +90,23 @@ let TRANSLATION_EN_US = {
 			"h2": "Front",
 			"text": "Changes to the matrix size are only applied when the clock is restarted.",
 			"variant": "Choice of Clock Variant",
-			"de-10-11": "German 10 × 11",
-			"de-10-11-alt": "German 10 × 11 Alternative",
-			"de-10-11-alt-frame": "German 10 × 11 Alternative Frame",
-			"de-10-11-vertical": "German 10 × 11 Vertical",
-			"de-10-11-clock": "German 10 × 11 Clock",
-			"de-10-11-nero": "German 10 × 11 Nero",
-			"de-11-11": "German 11 × 11",
-			"de-11-11-v2": "German 11 × 11 Version 2",
-			"de-11-11-v3": "German 11 × 11 (panbachi)",
-			"de-22-11-weather": "German 10 × 11 Weather",
-			"de-16-8": "German 16 × 8",
-			"de-16-18": "German 16 × 18",
-			"en-10-11": "English 10 × 11",
-			"nl-10-11": "Dutch 10 × 11",
-			"es-10-11": "Spanish 10 × 11",
-			"it-10-11": "Italian 10 × 11",
-			"hu-10-10": "Hungarian 10 x 10",
+			"de-10-11": "🇩🇪 10 × 11",
+			"de-10-11-alt": "🇩🇪 10 × 11 Alternative",
+			"de-10-11-alt-frame": "🇩🇪 10 × 11 Alternative Frame",
+			"de-10-11-vertical": "🇩🇪 10 × 11 Vertical",
+			"de-10-11-clock": "🇩🇪 10 × 11 Clock",
+			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
+			"de-11-11": "🇩🇪 11 × 11",
+			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
+			"de-11-11-v3": "🇩🇪 11 × 11 (panbachi)",
+			"de-22-11-weather": "🇩🇪 10 × 11 Weather",
+			"de-16-8": "🇩🇪 16 × 8",
+			"de-16-18": "🇩🇪 16 × 18",
+			"en-10-11": "🇬🇧 10 × 11",
+			"nl-10-11": "🇳🇱 10 × 11",
+			"es-10-11": "🇪🇸 10 × 11",
+			"it-10-11": "🇮🇹 10 × 11",
+			"hu-10-10": "🇭🇺 10 x 10",
 			"invert-min-dir": "Invert Minute Counting Direction",
 			"mirror-vertically": "Mirror Word Clock Vertically",
 			"mirror-horizontally": "Mirror Word Clock Horizontally",
