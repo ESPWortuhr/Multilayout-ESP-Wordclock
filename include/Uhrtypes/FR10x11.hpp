@@ -36,7 +36,7 @@ public:
     //------------------------------------------------------------------------------
 
     virtual const bool hasMitternacht() override { return true; }
-    
+
     //------------------------------------------------------------------------------
 
     void show(FrontWord word) override {
@@ -47,12 +47,6 @@ public:
             setFrontMatrixWord(0, 9, 10);
             setFrontMatrixWord(0, 5, 7);
             break;
-
-        //case FrontWord::es_ist___plural___:
-            // IL EST HEURES
-        //    setFrontMatrixWord(0, 9, 10);
-        //    setFrontMatrixWord(0, 5, 7);
-        //    break;
 
         case FrontWord::h_ein:
             // UNE HEURE
