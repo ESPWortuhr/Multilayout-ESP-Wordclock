@@ -359,7 +359,7 @@ void Led::set(bool changed) {
         setbySecondArray(Foreground);
     }
 
-    if (transition->ledShowNotify(changed, _minute)) {
+    if (transition->isOverwrittenByTransition(changed, _minute)) {
         show();
     }
 }

@@ -100,7 +100,7 @@ enum Transition_t {
     NEWYEAR = 99
 };
 
-enum Colorize { OFF = 1, WORDS = 2, CHARACTERS = 3 };
+enum Colorize { OFF = 0, WORDS = 1, CHARACTERS = 2 };
 
 class Snake;
 class Firework;
@@ -194,8 +194,10 @@ public:
     //------------------------------------------------------------------------------
     // Loop Helper Functions
     //------------------------------------------------------------------------------
-    bool ledShowNotify(bool flag, uint8_t minute);
     void demoMode(uint8_t &_minute, uint8_t _second);
+    void initTransitionStart();
+    bool hasMinuteChanged();
+    bool isOverwrittenByTransition(bool flag, uint8_t minute);
 
     //------------------------------------------------------------------------------
     // Loop Functions

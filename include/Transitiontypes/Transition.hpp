@@ -92,9 +92,7 @@ Transition_t Transition::getTransitionType(bool trigger) {
 
 //------------------------------------------------------------------------------
 bool Transition::isColorization() {
-    return ((transitionType != NO_TRANSITION) &&
-            ((G.transitionColorize == WORDS) ||
-             (G.transitionColorize == CHARACTERS)));
+    return (transitionType != NO_TRANSITION && G.transitionColorize);
 }
 
 //------------------------------------------------------------------------------
@@ -303,7 +301,8 @@ void Transition::setMinute() {
         }
         for (uint8_t i = 0; i < 4; i++) {
             led.setPixel(minArray[i],
-                         HsbColor{m > i ? foregroundMinute : background});
+                         HsbColor{m > i ? foreground : background});
+            // TODO: foregroundMinute
         }
     }
 }
@@ -901,36 +900,50 @@ void Transition::demoMode(uint8_t &_minute, uint8_t _second) {
 }
 
 //------------------------------------------------------------------------------
-// changed: 0 changes, e.g. color, no change of content
-// changed: 1 content has changed
 
-bool Transition::ledShowNotify(bool changed, uint8_t minute) {
-    bool ledShow = true;
+void Transition::initTransitionStart() {
+    nextActionTime = 0;
+    phase = 1;
+}
 
+//------------------------------------------------------------------------------
+
+bool Transition::hasMinuteChanged() {
+    if (lastMinute != _minute) {
+        lastMinute = _minute;
+        return true;
+    }
+    return false;
+}
+
+//------------------------------------------------------------------------------
+// changesInWordMatrix: 'false' changes, e.g. color
+// changesInWordMatrix: 'true'  changes in displayed content incl. MinuteArray
+
+bool Transition::isOverwrittenByTransition(bool changesInWordMatrix,
+                                           uint8_t minute) {
     if (transitionType == NO_TRANSITION) {
-        if (changed && (lastMinute != minute)) {
-            lastMinute = minute;
-            // in case the transition is switched on
+        if (changesInWordMatrix && hasMinuteChanged()) {
+            // Needed in Case the Transition is switched off
             matrixChanged = true;
         }
     } else {
-        bool brightnessChanged = changeBrightness(); // Adapt brightness
-        if (changed) {
-            if (lastMinute != minute) {
-                lastMinute = minute;
-                matrixChanged = true;
-                nextActionTime = 0; // ###################
-                phase = 1;          // -> start Transition
-                ledShow = false;    // ###################
+        if (changesInWordMatrix) {
+            // Start every 5 Minutes only
+            if (minuteArray == 0) {
+                initTransitionStart();
             }
+            lastMinute = minute;
+            matrixChanged = true;
+            return false;
         } else {
-            if (brightnessChanged) {
+            if (changeBrightness()) {
                 copy2Stripe(work);
             }
-            ledShow = isIdle();
+            return isIdle();
         }
     }
-    return ledShow;
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -938,21 +951,15 @@ bool Transition::ledShowNotify(bool changed, uint8_t minute) {
 //------------------------------------------------------------------------------
 
 void Transition::loop(struct tm &tm) {
-    static uint8_t lastMinute = 99;
-    bool minuteChange = false;
-
     if (matrixChanged) {
         matrixChanged = false;
         saveMatrix();
+        copyMatrix(work, act);
     }
 
-    if ((G.prog == COMMAND_IDLE) || (G.prog == COMMAND_MODE_WORD_CLOCK)) {
-        if (lastMinute != _minute) {
-            lastMinute = _minute;
-            minuteChange = true;
-        }
-        if (!isSilvester(transitionType, tm, minuteChange)) {
-            transitionType = getTransitionType(minuteChange);
+    if (G.prog == COMMAND_IDLE || G.prog == COMMAND_MODE_WORD_CLOCK) {
+        if (!isSilvester(transitionType, tm, hasMinuteChanged())) {
+            transitionType = getTransitionType(hasMinuteChanged());
         }
 
         if (transitionType == NO_TRANSITION) {
@@ -1022,6 +1029,7 @@ void Transition::loop(struct tm &tm) {
             }
             transitionColorChange();
             copy2Stripe(work);
+            setMinute(); // TODO: Is setMinute() on the right place ?
             led.show();
         }
     }
