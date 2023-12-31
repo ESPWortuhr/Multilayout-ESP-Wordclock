@@ -122,7 +122,7 @@ public:
         case FrontWord::h_mitternacht:
             // MINUIT
             setFrontMatrixWord(4, 0, 5);
-            break;            
+            break;
 
         case FrontWord::m_fuenf:
             // CINCQ
