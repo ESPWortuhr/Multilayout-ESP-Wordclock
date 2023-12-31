@@ -1,5 +1,5 @@
 let TRANSLATION_IT = {
-	"title": "Orologio delle parole",
+	"title": "Orologio di parole",
 
 	"menu": {
 		"aria-show-menu": "Mostra menù",
@@ -7,7 +7,7 @@ let TRANSLATION_IT = {
 		"language": {
 			"label": "Lingua",
 			"de": "🇩🇪 Tedesco",
-			"en": "🇺🇸 Inglese",
+			"en": "🇬🇧 Inglese",
 			"nl": "🇳🇱 Olandese",
 			"es": "🇪🇸 Spagnolo",
 			"it": "🇮🇹 Italiano"
@@ -37,10 +37,22 @@ let TRANSLATION_IT = {
 			"color-change": "Cambio di colore",
 			"symbol": "Simbolo"
 		},
-		"animation": {
-			"h2": "Animazione",
+		"transition": {
+			"h2": "Transizione",
 			"type": {
-				"label": "Tipo"
+				"label": "Tipo",
+				"none": "Nessuno",
+				"scroll_up": "Scorri verso l'alto",
+				"scroll_down": "Scorri verso il basso",
+				"shift_left": "Scorri a sinistra",
+				"shift_right": "Sposta a destra",
+				"fade": "Dissolvenza",
+				"laser": "Laser",
+				"matrix_rain": "Matrix Rain",
+				"balls": "Palle",
+				"firework": "Fuoco d'artificio",
+				"snake": "Serpente",
+				"random": "Casuale"
 			},
 			"duration": {
 				"label": "Lasso di tempo",
@@ -49,7 +61,7 @@ let TRANSLATION_IT = {
 				"long": "lungo"
 			},
 			"color": {
-				"label": "Animazione a colori",
+				"label": "Transizione a colori",
 				"off": "Spegni",
 				"words": "Parole colorate",
 				"letters": "Lettere colorate"
@@ -78,27 +90,26 @@ let TRANSLATION_IT = {
 			"h2": "Front",
 			"text": "Le modifiche alle dimensioni dell'array hanno effetto solo quando l'orologio viene reimpostato.",
 			"variant": "Scelta della variante dell'orologio",
-			"de-10-11": "Tedesco 10 × 11",
-			"de-10-11-alt": "Tedesco 10 × 11 Alternativ",
-			"de-10-11-alt-frame": "Tedesco 10 × 11 Alternativer Rahmen",
-			"de-10-11-vertical": "Tedesco 10 × 11 Vertikal",
-			"de-10-11-clock": "Tedesco 10 × 11 Uhr",
-			"de-10-11-schwaebisch": "Tedesco 10 × 11 Svevo",
-			"de-10-11-nero": "Tedesco 10 × 11 Nero",
-			"de-11-11": "Tedesco 11 × 11",
-			"de-11-11-v2": "Tedesco 11 × 11 Version 2",
-			"de-11-11-v3": "Tedesco 11 × 11 (panbachi)",
-			"de-22-11-weather": "Tedesco 10 × 11 Wetter",
-			"de-16-8": "Tedesco 16 × 8",
-			"de-16-18": "Tedesco 16 × 18",
-			"en-10-11": "Inglese 10 × 11",
-			"nl-10-11": "Olandese 10 × 11",
-			"es-10-11": "Spagnolo 10 × 11",
-			"it-10-11": "Italiano 10 × 11",
-			"hu-10-10": "Ungherese 10 x 10",
-			"ch-10-11": "Svizzero Tedesco 10 x 11",
-			"ro-10-11": "Rumeno 10 x 11",
-			"fr-10-11": "Francese 10 x11",
+			"de-10-11": "🇩🇪 10 × 11",
+			"de-10-11-alt": "🇩🇪 10 × 11 Alternativ",
+			"de-10-11-alt-frame": "🇩🇪 10 × 11 Alternativer Rahmen",
+			"de-10-11-vertical": "🇩🇪 10 × 11 Vertikal",
+			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
+			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
+			"de-11-11": "🇩🇪 11 × 11",
+			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
+			"de-11-11-v3": "🇩🇪 11 × 11 (panbachi)",
+			"de-22-11-weather": "🇩🇪 10 × 11 Wetter",
+			"de-16-8": "🇩🇪 16 × 8",
+			"de-16-18": "🇩🇪 16 × 18",
+			"en-10-11": "🇬🇧 10 × 11",
+			"nl-10-11": "🇳🇱 10 × 11",
+			"es-10-11": "🇪🇸 10 × 11",
+			"it-10-11": "🇮🇹 10 × 11",
+			"hu-10-10": "🇭🇺 10 x 10",
+			"ch-10-11": "🇨🇭 10 x 11",
+			"ro-10-11": "🇷🇴 10 x 11",
+			"fr-10-11": "🇫🇷 10 x 11",
 			"invert-min-dir": "Invertire la direzione del conteggio dei minuti",
 			"mirror-vertically": "Capovolgi l'orologio verticalmente",
 			"mirror-horizontally": "Capovolgi l'orologio orizzontalmente",

@@ -130,37 +130,49 @@
                     </form>
                 </div>
 
-                <div class="box" id="animation-box">
-                    <h2 data-i18next="functions.animation.h2"></h2>
+                <div class="box" id="transition-box">
+                    <h2 data-i18next="functions.transition.h2"></h2>
                     <form class="pure-form pure-form-aligned">
                         <div class="pure-control-group">
-                            <label for="animation-types" data-i18next="functions.animation.type.label"></label>
-                            <select id="animation-types" size="1">
+                            <label for="transition-types" data-i18next="functions.transition.type.label"></label>
+                            <select id="transition-types" size="1">
+                                <option value="0" data-i18next="functions.transition.type.none"></option>
+                                <option value="1" data-i18next="functions.transition.type.scroll_up"></option>
+                                <option value="2" data-i18next="functions.transition.type.scroll_down"></option>
+                                <option value="3" data-i18next="functions.transition.type.shift_left"></option>
+                                <option value="4" data-i18next="functions.transition.type.shift_right"></option>
+                                <option value="5" data-i18next="functions.transition.type.fade"></option>
+                                <option value="6" data-i18next="functions.transition.type.laser"></option>
+                                <option value="7" data-i18next="functions.transition.type.matrix_rain"></option>
+                                <option value="8" data-i18next="functions.transition.type.balls"></option>
+                                <option value="9" data-i18next="functions.transition.type.firework"></option>
+                                <option value="10" data-i18next="functions.transition.type.snake"></option>
+                                <option value="11" data-i18next="functions.transition.type.random"></option>
                             </select>
                         </div>
                         <div class="pure-control-group">
-                            <label for="animation-duration" data-i18next="functions.animation.duration.label"></label>
-                            <select id="animation-duration" size="1">
-                                <option value="1" data-i18next="functions.animation.duration.short"></option>
-                                <option value="2" data-i18next="functions.animation.duration.medium"></option>
-                                <option value="3" data-i18next="functions.animation.duration.long"></option>
+                            <label for="transition-duration" data-i18next="functions.transition.duration.label"></label>
+                            <select id="transition-duration" size="1">
+                                <option value="1" data-i18next="functions.transition.duration.short"></option>
+                                <option value="2" data-i18next="functions.transition.duration.medium"></option>
+                                <option value="3" data-i18next="functions.transition.duration.long"></option>
                             </select>
                         </div>
                         <div class="pure-control-group">
-                            <label for="animation-colorize" data-i18next="functions.animation.color.label"></label>
-                            <select id="animation-colorize" size="1">
-                                <option value="1" data-i18next="functions.animation.color.off"></option>
-                                <option value="2" data-i18next="functions.animation.color.words"></option>
-                                <option value="3" data-i18next="functions.animation.color.letters"></option>
+                            <label for="transition-colorize" data-i18next="functions.transition.color.label"></label>
+                            <select id="transition-colorize" size="1">
+                                <option value="0" data-i18next="functions.transition.color.off"></option>
+                                <option value="1" data-i18next="functions.transition.color.words"></option>
+                                <option value="2" data-i18next="functions.transition.color.letters"></option>
                             </select>
                         </div>
                         <div class="pure-control-group">
-                            <label class="slider-label" for="animation-speed" data-i18next="functions.animation.speed.label"></label> <span class="value" id="animation-speed-value">30</span>
-                            <input id="animation-speed" type="range" min="0" max="60" value="0">
+                            <label class="slider-label" for="transition-speed" data-i18next="functions.transition.speed.label"></label> <span class="value" id="transition-speed-value">30</span>
+                            <input id="transition-speed" type="range" min="0" max="60" value="0">
                         </div>
                         <div class="pure-control-group">
-                            <label for="animation-demo" data-i18next="functions.animation.demo.label"></label>
-                            <input type="checkbox" id="animation-demo" >
+                            <label for="transition-demo" data-i18next="functions.transition.demo.label"></label>
+                            <input type="checkbox" id="transition-demo" >
                         </div>
                     </form>
                 </div>

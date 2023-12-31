@@ -115,11 +115,11 @@ struct GLOBAL {
     uint8_t autoLdrEnabled;
     uint8_t autoLdrBright;
     uint8_t autoLdrDark;
-    uint8_t animType;
-    uint8_t animDuration;
-    uint8_t animSpeed;
-    uint8_t animColorize;
-    uint8_t animDemo;
+    uint8_t transitionType;
+    uint8_t transitionDuration;
+    uint8_t transitionSpeed;
+    uint8_t transitionColorize;
+    uint8_t transitionDemo;
 
     bool bootLedBlink;
     bool bootLedSweep;
@@ -145,6 +145,7 @@ uint8_t lastMinuteArray = 0;
 uint16_t minutePixelArray[4] = {0};
 uint64_t frameArray = 0;
 bool parametersChanged = false;
+bool layoutChanged = false;
 uint8_t statusAccessPoint = 0;
 
 char str[1024];
@@ -195,7 +196,7 @@ enum CommandWords {
     COMMAND_MODE_COLOR = 6,
     COMMAND_MODE_DIGITAL_CLOCK = 7,
     COMMAND_MODE_SYMBOL = 8,
-    COMMAND_MODE_ANIMATION = 10,
+    COMMAND_MODE_TRANSITION = 10,
 
     PLACEHOLDER_MAX_MODE = 19,
 
@@ -232,7 +233,7 @@ enum CommandWords {
     COMMAND_REQUEST_COLOR_VALUES = 201,
     COMMAND_REQUEST_WIFI_LIST = 202,
     COMMAND_REQUEST_AUTO_LDR = 203,
-    COMMAND_REQUEST_ANIMATION = 204,
+    COMMAND_REQUEST_TRANSITION = 204,
     COMMAND_REQUEST_MQTT_VALUES = 205,
 
     PLACEHOLDER_MAX_REQUEST = 255,

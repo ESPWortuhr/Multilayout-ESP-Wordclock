@@ -154,6 +154,8 @@ void parseColor(uint8_t *payload, uint8_t position = Foreground) {
     G.color[position] = {HsbColor(split(payload, 3) / 360.f,
                                   split(payload, 6) / 100.f,
                                   split(payload, 9) / 100.f)};
+    // TO DO: Better Position for EEPROM Write
+    eeprom::write();
 }
 
 //------------------------------------------------------------------------------
@@ -284,14 +286,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         }
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_ANIMATION: {
+        case COMMAND_MODE_TRANSITION: {
             G.progInit = true;
 
-            G.animType = split(payload, 3);
-            G.animDuration = split(payload, 6);
-            G.animSpeed = split(payload, 9);
-            G.animColorize = split(payload, 12);
-            G.animDemo = split(payload, 15);
+            G.transitionType = split(payload, 3);
+            G.transitionDuration = split(payload, 6);
+            G.transitionSpeed = split(payload, 9);
+            G.transitionColorize = split(payload, 12);
+            G.transitionDemo = split(payload, 15);
             ;
             break;
         }
@@ -536,7 +538,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_REQUEST_CONFIG_VALUES:
         case COMMAND_REQUEST_COLOR_VALUES:
         case COMMAND_REQUEST_WIFI_LIST:
-        case COMMAND_REQUEST_ANIMATION: {
+        case COMMAND_REQUEST_TRANSITION: {
             G.client_nr = num;
             break;
         }
