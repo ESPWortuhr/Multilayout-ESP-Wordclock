@@ -544,7 +544,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     case 10:
         if (G.UhrtypeDef == Fr10x11) {
             usedUhrType->show(FrontWord::m_zehn);
-        } else{
+        } else {
             usedUhrType->show(FrontWord::m_zehn);
             usedUhrType->show(FrontWord::nach);
         }
