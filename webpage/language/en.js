@@ -28,7 +28,7 @@ let TRANSLATION_EN_US = {
 		"h1": "Functions",
 		"mode": {
 			"h2": "Mode",
-			"wordclock": "Word Clock",
+			"wordclock": "Wordclock",
 			"color": "Color",
 			"seconds": "Seconds",
 			"digital-clock": "Digital Clock",
