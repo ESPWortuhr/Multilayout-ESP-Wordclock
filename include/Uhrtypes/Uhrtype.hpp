@@ -1,6 +1,6 @@
 #pragma once
 
-enum class LanguageAbbreviation { DE, EN, ES, IT, NL, HU };
+enum class LanguageAbbreviation { DE, EN, ES, IT, NL, HU, RO, FR };
 
 enum class FrontWord {
     error,
@@ -24,6 +24,7 @@ enum class FrontWord {
     m_neunzehn,
     m_zwanzig,
     m_twentyfive,
+    m_thirtyfive,
     m_num1,
     m_num2,
     m_num3,
@@ -68,6 +69,7 @@ enum class FrontWord {
     h_elf,
     h_zwoelf,
     h_dreizehn,
+    h_mitternacht,
 
     w_morgen,
     w_frueh,
@@ -136,6 +138,10 @@ public:
     virtual const bool hasZwanzig() { return true; }
 
     virtual const bool hasTwentyfive() { return false; }
+
+    virtual const bool hasThirtyfive() { return false; }
+
+    virtual const bool hasMitternacht() { return false; }
 
     virtual const bool has24HourLayout() { return false; }
 

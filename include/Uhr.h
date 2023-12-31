@@ -30,7 +30,8 @@ enum ClockWords {
     H_NEUN = 18,
     H_ZEHN = 19,
     H_ELF = 20,
-    H_ZWOELF = 21
+    H_ZWOELF = 21,
+    H_MITTERNACHT = 23
 };
 
 struct MqttData {
@@ -244,6 +245,7 @@ enum ClockType {
     Ger10x11AlternativeFrame = 4,
     Ger10x11Vertical = 12,
     Ger10x11Clock = 6,
+    Ger10x11schwaebisch =20,
     Ger10x11Nero = 11,
     Ger11x11 = 3,
     Ger11x11V2 = 8,
@@ -255,6 +257,9 @@ enum ClockType {
     Es10x11 = 15,
     It10x11 = 16,
     Hu10x10 = 17,
+    Ch10x11 = 18,
+    Ro10x11 = 19,
+    Fr10x11 = 21,
 };
 
 enum Icons {

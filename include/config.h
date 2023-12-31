@@ -26,6 +26,10 @@
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
 // from the original manufacturer
 //
+// #define DEFAULT_LAYOUT Ger10x11schwaebisch
+// 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
+// from the original manufacturer
+//
 // #define DEFAULT_LAYOUT Ger10x11Nero
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
 // from the Github user @n3roGit
@@ -96,6 +100,30 @@
 // 10 rows, 10 LED's per row + 4 LED's for minutes, with modified
 // layout for the Hungarian language
 
+/**********************/
+/*    Swiss German    */
+/**********************/
+//
+// #define DEFAULT_LAYOUT  Ch10x11
+// 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
+// layout for the Swiss German language
+
+/**********************/
+/*      Romanian      */
+/**********************/
+//
+// #define DEFAULT_LAYOUT  Ro10x11
+// 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
+// layout for the Romanian language
+
+/**********************/
+/*       French       */
+/**********************/
+//
+// #define DEFAULT_LAYOUT  Fr10x11
+// 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
+// layout for the French language
+
 //--------------------------------------------------------------------------
 // Define LED Type
 //--------------------------------------------------------------------------
@@ -157,7 +185,6 @@
  * Valid values [0 ... 255]
  */
 #define SERNR 33
-
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output
 //--------------------------------------------------------------------------
