@@ -122,7 +122,7 @@ public:
 
         case FrontWord::a_quarter:
         case FrontWord::viertel:
-            // min UN SFERT 
+            // min UN SFERT
             setFrontMatrixWord(7, 0, 1);
             setFrontMatrixWord(9, 0, 4);
             break;
