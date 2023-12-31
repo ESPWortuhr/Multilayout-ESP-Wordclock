@@ -542,7 +542,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     case 8:
     case 9:
     case 10:
-        if (G.UhrtypeDef == Fr10x11){
+        if (G.UhrtypeDef == Fr10x11) {
             usedUhrType->show(FrontWord::m_zehn);
         } else{
             usedUhrType->show(FrontWord::m_zehn);
@@ -628,10 +628,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         } else {
             if (G.UhrtypeDef == Fr10x11) {
                 usedUhrType->show(FrontWord::halb);
-            }
-            else{
-            usedUhrType->show(FrontWord::halb);
-            offsetHour = 1;
+            } else {
+                usedUhrType->show(FrontWord::halb);
+                offsetHour = 1;
             }
         }
         break;
