@@ -347,7 +347,7 @@ void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
 
 //------------------------------------------------------------------------------
 
-void Led::set(bool changed) {
+void Led::set(WordclockChanges changed) {
     setbyFrontMatrix(Foreground);
     setbyFrontMatrix(Background, false);
 

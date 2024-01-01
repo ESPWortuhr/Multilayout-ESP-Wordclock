@@ -765,17 +765,22 @@ void ClockWork::setHour(const uint8_t hour, const bool fullHour) {
 // Loop Helper Functions
 //------------------------------------------------------------------------------
 
-bool ClockWork::changesInClockface() {
-    if (lastMinuteArray != minuteArray) {
-        return true;
-    } else {
-        for (uint16_t i = 0; i < MAX_ROW_SIZE; i++) {
-            if (frontMatrix[i] != lastFrontMatrix[i]) {
-                return true;
-            }
+WordclockChanges ClockWork::changesInClockface() {
+    for (uint16_t i = 0; i < MAX_ROW_SIZE; i++) {
+        if (frontMatrix[i] != lastFrontMatrix[i]) {
+            return WordclockChanges::Words;
         }
     }
-    return false;
+    if (parametersChanged) {
+        parametersChanged = false;
+        return WordclockChanges::Parameters;
+    } else if (layoutChanged) {
+        layoutChanged = false;
+        return WordclockChanges::Layout;
+    } else if (lastMinuteArray != minuteArray) {
+        return WordclockChanges::Minute;
+    }
+    return WordclockChanges::Null;
 }
 
 //------------------------------------------------------------------------------
@@ -1239,17 +1244,21 @@ void ClockWork::loop(struct tm &tm) {
         clearClockByProgInit();
         calcClockface();
 
-        if (changesInClockface()) {
+        switch (changesInClockface()) {
+        case WordclockChanges::Words:
             lastMinuteArray = minuteArray;
             memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
-            led.set(true);
-        } else if (layoutChanged) {
-            led.set(true);
-            layoutChanged = false;
-        } else if (parametersChanged) {
-            led.set();
+            led.set(WordclockChanges::Words);
+            break;
+        case WordclockChanges::Layout:
+            led.set(WordclockChanges::Layout);
+            break;
+        case WordclockChanges::Parameters:
+            led.set(WordclockChanges::Parameters);
+            break;
+        default:
+            break;
         }
-        parametersChanged = false;
         G.prog = COMMAND_IDLE;
     }
     default:

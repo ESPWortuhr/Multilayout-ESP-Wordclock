@@ -41,7 +41,7 @@ private:
     //------------------------------------------------------------------------------
     // Loop Helper Functions
     //------------------------------------------------------------------------------
-    bool changesInClockface();
+    WordclockChanges changesInClockface();
     void calcClockface();
     void setClock();
     void clearClockByProgInit();

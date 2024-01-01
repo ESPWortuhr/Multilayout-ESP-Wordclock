@@ -197,7 +197,7 @@ public:
     void demoMode(uint8_t &_minute, uint8_t _second);
     void initTransitionStart();
     bool hasMinuteChanged();
-    bool isOverwrittenByTransition(bool flag, uint8_t minute);
+    bool isOverwrittenByTransition(WordclockChanges flag, uint8_t minute);
 
     //------------------------------------------------------------------------------
     // Loop Functions

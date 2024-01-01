@@ -53,7 +53,7 @@ public:
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                          uint8_t offsetRow, unsigned char unsigned_d1,
                          fontSize font);
-    void set(bool changed = false);
+    void set(WordclockChanges changed = WordclockChanges::Parameters);
 
     //------------------------------------------------------------------------------
     // Pixel get Functions
