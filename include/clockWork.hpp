@@ -891,6 +891,11 @@ void ClockWork::loop(struct tm &tm) {
     //------------------------------------------------
     if (lastMinute != _minute) {
         lastMinute = _minute;
+        if (colorChangedByWebsite) {
+            eeprom::write();
+            colorChangedByWebsite = false;
+            Serial.println("Saved Color");
+        }
     }
 
     switch (G.conf) {
