@@ -151,11 +151,16 @@ bool compareEffBriAndSpeedToOld(uint8_t *payload) {
 //------------------------------------------------------------------------------
 
 void parseColor(uint8_t *payload, uint8_t position = Foreground) {
-    G.color[position] = {HsbColor(split(payload, 3) / 360.f,
-                                  split(payload, 6) / 100.f,
-                                  split(payload, 9) / 100.f)};
-    // TO DO: Better Position for EEPROM Write
-    eeprom::write();
+    if (position == Background) {
+        G.color[position] = {HsbColor(split(payload, 12) / 360.f,
+                                      split(payload, 15) / 100.f,
+                                      split(payload, 18) / 100.f)};
+    } else {
+        G.color[position] = {HsbColor(split(payload, 3) / 360.f,
+                                      split(payload, 6) / 100.f,
+                                      split(payload, 9) / 100.f)};
+    }
+    colorChangedByWebsite = true;
 }
 
 //------------------------------------------------------------------------------
@@ -197,9 +202,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             }
             parametersChanged = true;
             parseColor(payload);
-            G.color[Background] = {HsbColor(split(payload, 12) / 360.f,
-                                            split(payload, 15) / 100.f,
-                                            split(payload, 18) / 100.f)};
+            parseColor(payload, Background);
             break;
         }
 

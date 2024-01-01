@@ -153,6 +153,7 @@ uint16_t minutePixelArray[4] = {0};
 uint64_t frameArray = 0;
 bool parametersChanged = false;
 bool layoutChanged = false;
+bool colorChangedByWebsite = false;
 uint8_t statusAccessPoint = 0;
 
 char str[1024];
