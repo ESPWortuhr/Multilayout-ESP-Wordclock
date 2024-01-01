@@ -75,6 +75,14 @@ enum class SecondVariant {
     FrameSectorToggle = 3,
 };
 
+enum class WordclockChanges {
+    Null,
+    Parameters,
+    Minute,
+    Layout,
+    Words,
+};
+
 struct GLOBAL {
     uint8_t sernr;
     uint16_t prog;

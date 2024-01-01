@@ -917,20 +917,22 @@ bool Transition::hasMinuteChanged() {
 }
 
 //------------------------------------------------------------------------------
-// changesInWordMatrix: 'false' changes, e.g. color
-// changesInWordMatrix: 'true'  changes in displayed content incl. MinuteArray
+// 'WordclockChanges::Parameters', e.g. color modifications -> Apply w/o Trans
+// 'WordclockChanges::Minute', e.g. minute iterations -> Apply w/o Transition
+// 'WordclockChanges::Words', e.g. word changes -> Apply with Transition
 
-bool Transition::isOverwrittenByTransition(bool changesInWordMatrix,
+bool Transition::isOverwrittenByTransition(WordclockChanges changesInWordMatrix,
                                            uint8_t minute) {
     if (transitionType == NO_TRANSITION) {
-        if (changesInWordMatrix && hasMinuteChanged()) {
+        if (changesInWordMatrix != WordclockChanges::Parameters &&
+            hasMinuteChanged()) {
             // Needed in Case the Transition is switched off
             matrixChanged = true;
         }
     } else {
-        if (changesInWordMatrix) {
-            // Start every 5 Minutes only
-            if (minuteArray == 0) {
+        if (changesInWordMatrix != WordclockChanges::Parameters) {
+            if (changesInWordMatrix == WordclockChanges::Words ||
+                changesInWordMatrix == WordclockChanges::Layout) {
                 initTransitionStart();
             }
             lastMinute = minute;
