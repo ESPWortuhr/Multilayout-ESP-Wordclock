@@ -805,7 +805,7 @@ uint16_t Transition::transitionFade() {
 
     if (phase == 1) {
         transitionDelay = calcDelay(frames);
-        copyMatrix(old, work);
+        //copyMatrix(old, work);
     }
     float progress = static_cast<float>(phase) / static_cast<float>(frames);
 
