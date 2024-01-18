@@ -24,6 +24,9 @@ i18next.init({
 		},
 		es: {
 			translation: TRANSLATION_ES
+		},
+		hu: {
+			translation: TRANSLATION_HU
 		}
 	}
 }, (error) => {

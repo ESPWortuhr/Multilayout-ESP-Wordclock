@@ -267,6 +267,7 @@
 		"TRANSLATION_NL": "readonly",
 		"TRANSLATION_IT": "readonly",
 		"TRANSLATION_ES": "readonly",
+		"TRANSLATION_HU": "readonly",
 		"i18next": "readonly",
 		"isLocalEnvironment": "readonly"
 	}
