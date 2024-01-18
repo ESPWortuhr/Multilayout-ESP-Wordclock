@@ -271,7 +271,7 @@ let TRANSLATION_HU = {
 	"about": {
 		"h1": "Rólunk",
 		"text-general": "Ennek a Szövegórának a szoftverje <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (Állapot 2019)</a> szoftverje alapján készült, amelyet a közösség <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>GitHub-on</a> fejleszt tovább.",
-		"text-update": "A szoftver frissítése lehetséges, ehhez kérjük <a href='update' onmouseover='javascript:event.target.port=81'>váltson az Update-oldalra auf die Update-Seite wechseln</a>.",
+		"text-update": "A szoftver frissítése lehetséges, ehhez kérjük <a href='update' onmouseover='javascript:event.target.port=81'>váltson az Update-oldalra</a>.",
 		"text-license": "Ez a projekt Open-Source-licensz alatt van a <span lang='en'>3-Clause BSD License</span> alapján.",
 		"software": "Könyvtárak és szoftver",
 		"debug": "Debug-Kiadás"
