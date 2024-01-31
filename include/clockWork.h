@@ -42,7 +42,7 @@ private:
     // Loop Helper Functions
     //------------------------------------------------------------------------------
 
-    bool isMidnight(const uint8_t hour){};
+    bool isMidnight(const uint8_t hour);
     WordclockChanges changesInClockface();
     void calcClockface();
     void setClock();
