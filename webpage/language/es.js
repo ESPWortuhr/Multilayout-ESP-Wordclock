@@ -10,7 +10,8 @@ let TRANSLATION_ES = {
 			"en": "🇬🇧 Inglés",
 			"nl": "🇳🇱 Holandés",
 			"es": "🇪🇸 Español",
-			"it": "🇮🇹 Italiano"
+			"it": "🇮🇹 Italiano",
+			"hu": "🇭🇺 Húngaro"
 		}
 	},
 
