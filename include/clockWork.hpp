@@ -74,6 +74,14 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_it10x11;
     case Hu10x10:
         return &_hu10x10;
+    case Ch10x11:
+        return &_ch10x11;
+    case Ro10x11:
+        return &_ro10x11;
+    case Ger10x11schwaebisch:
+        return &_de10x11schwaebisch;
+    case Fr10x11:
+        return &_fr10x11;
     default:
         return nullptr;
     }
@@ -526,11 +534,21 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     case 3:
     case 4:
     case 5:
+        usedUhrType->show(FrontWord::m_fuenf);
+        usedUhrType->show(FrontWord::nach);
+        break;
     case 6:
     case 7:
     case 8:
     case 9:
     case 10:
+        if (G.UhrtypeDef == Fr10x11) {
+            usedUhrType->show(FrontWord::m_zehn);
+        } else {
+            usedUhrType->show(FrontWord::m_zehn);
+            usedUhrType->show(FrontWord::nach);
+        }
+        break;
     case 11:
     case 12:
     case 13:
@@ -604,12 +622,16 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         break;
     case 30: // half
         if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == It10x11 ||
-            G.UhrtypeDef == Es10x11) {
+            G.UhrtypeDef == Es10x11 || G.UhrtypeDef == Ro10x11) {
             usedUhrType->show(FrontWord::halb);
             usedUhrType->show(FrontWord::nach);
         } else {
-            usedUhrType->show(FrontWord::halb);
-            offsetHour = 1;
+            if (G.UhrtypeDef == Fr10x11) {
+                usedUhrType->show(FrontWord::halb);
+            } else {
+                usedUhrType->show(FrontWord::halb);
+                offsetHour = 1;
+            }
         }
         break;
     case 31:
@@ -623,15 +645,21 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     case 33:
     case 34:
     case 35:
-        if (usedUhrType->hasTwentyfive()) {
-            usedUhrType->show(FrontWord::m_twentyfive);
-            usedUhrType->show(FrontWord::vor);
-        } else {
-            usedUhrType->show(FrontWord::m_fuenf);
+        if (usedUhrType->hasThirtyfive() || G.UhrtypeDef == Ro10x11) {
+            usedUhrType->show(FrontWord::m_thirtyfive);
             usedUhrType->show(FrontWord::nach);
-            usedUhrType->show(FrontWord::halb);
+        } else {
+            if (usedUhrType->hasTwentyfive() || !G.UhrtypeDef == Ro10x11) {
+                usedUhrType->show(FrontWord::m_twentyfive);
+                usedUhrType->show(FrontWord::vor);
+                offsetHour = 1;
+            } else {
+                usedUhrType->show(FrontWord::m_fuenf);
+                usedUhrType->show(FrontWord::nach);
+                usedUhrType->show(FrontWord::halb);
+                offsetHour = 1;
+            }
         }
-        offsetHour = 1;
         break;
     case 36:
     case 37:
@@ -712,9 +740,13 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
 //------------------------------------------------------------------------------
 
 void ClockWork::setHour(const uint8_t hour, const bool fullHour) {
-    switch (hour % 12) {
+    switch (hour % 24) {
     case 0:
-        usedUhrType->show(FrontWord::h_zwoelf);
+        if (usedUhrType->hasMitternacht()) {
+            usedUhrType->show(FrontWord::h_mitternacht);
+        } else {
+            usedUhrType->show(FrontWord::h_zwoelf);
+        }
         break;
     case 1:
         if (fullHour || usedUhrType->usedLang() != LanguageAbbreviation::DE) {
@@ -755,6 +787,50 @@ void ClockWork::setHour(const uint8_t hour, const bool fullHour) {
         break;
     case 12:
         usedUhrType->show(FrontWord::h_zwoelf);
+        break;
+    case 13:
+        if (fullHour || usedUhrType->usedLang() != LanguageAbbreviation::DE) {
+            usedUhrType->show(FrontWord::h_ein);
+        } else {
+            usedUhrType->show(FrontWord::eins);
+        }
+        break;
+    case 14:
+        usedUhrType->show(FrontWord::h_zwei);
+        break;
+    case 15:
+        usedUhrType->show(FrontWord::h_drei);
+        break;
+    case 16:
+        usedUhrType->show(FrontWord::h_vier);
+        break;
+    case 17:
+        usedUhrType->show(FrontWord::h_fuenf);
+        break;
+    case 18:
+        usedUhrType->show(FrontWord::h_sechs);
+        break;
+    case 19:
+        usedUhrType->show(FrontWord::h_sieben);
+        break;
+    case 20:
+        usedUhrType->show(FrontWord::h_acht);
+        break;
+    case 21:
+        usedUhrType->show(FrontWord::h_neun);
+        break;
+    case 22:
+        usedUhrType->show(FrontWord::h_zehn);
+        break;
+    case 23:
+        usedUhrType->show(FrontWord::h_elf);
+        break;
+    case 24:
+        if (usedUhrType->hasMitternacht()) {
+            usedUhrType->show(FrontWord::h_mitternacht);
+        } else {
+            usedUhrType->show(FrontWord::h_zwoelf);
+        }
         break;
     default:
         break;
