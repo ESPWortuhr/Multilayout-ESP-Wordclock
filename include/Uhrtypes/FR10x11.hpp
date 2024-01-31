@@ -161,8 +161,11 @@ public:
             setFrontMatrixWord(7, 9, 10);
             break;
 
-        case FrontWord::vor:
         case FrontWord::v_vor:
+            // [MOINS] LE
+            setFrontMatrixWord(6, 3, 4);
+
+        case FrontWord::vor:
             // MOINS ("Minus")
             setFrontMatrixWord(6, 6, 10);
             break;
