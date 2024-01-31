@@ -48,7 +48,7 @@ public:
                 break;
 
             case 2: // LEDs für "Corners" type minute display
-                returnArr[i] = 110 + i;
+                returnArr[i] = numPixelsWordMatrix + i;
                 break;
 
             default:
