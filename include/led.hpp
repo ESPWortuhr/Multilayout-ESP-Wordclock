@@ -221,12 +221,6 @@ void Led::setPixel(uint8_t row, uint8_t col, HsbColor color) {
 //------------------------------------------------------------------------------
 
 void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
-    static char text16x18[296] =
-        "ESAISTOVIERTELEINSDREINERSECHSIEBENEELFÜNFNEUNVIERACHTNULLZWEINZWÖLFZE"
-        "HNUNDOZWANZIGVIERZIGDREISSIGFÜNFZIGUHRMINUTENIVORUNDNACHEINDREIVIERTEL"
-        "HALBSIEBENEUNULLZWEINEFÜNFSECHSNACHTVIERDREINSUNDAELFEZEHNZWANZIGGRADR"
-        "EISSIGVIERZIGZWÖLFÜNFZIGMINUTENUHREFRÜHVORABENDSMITTERNACHTSMORGENSWAR"
-        "MMITTAGS";
 
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
@@ -235,12 +229,8 @@ void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
-        char buffer[18] = "-----------------";
         for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
             bool boolSetPixel = usedUhrType->getFrontMatrixPixel(row, col);
-            if (boolSetPixel){
-                buffer[col] = text16x18[usedUhrType->getFrontMatrixIndex(row, col)];
-            }
             if (colorPosition == Background) {
                 boolSetPixel = !boolSetPixel;
             }
@@ -251,7 +241,6 @@ void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
                 clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
             }
         }
-        Serial.println(buffer);
     }
 }
 

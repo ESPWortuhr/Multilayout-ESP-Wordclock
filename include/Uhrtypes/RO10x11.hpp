@@ -48,74 +48,74 @@ public:
             setFrontMatrixWord(0, 3, 5);
             break;
 
-        case FrontWord::h_ein:
+        case FrontWord::hour_1:
             // UNU
             setFrontMatrixWord(4, 4, 6);
             break;
 
-        case FrontWord::h_zwei:
+        case FrontWord::hour_2:
             // DOUĂ
             setFrontMatrixWord(1, 7, 10);
             break;
 
-        case FrontWord::h_drei:
+        case FrontWord::hour_3:
             // TREI
             setFrontMatrixWord(4, 0, 3);
             break;
 
-        case FrontWord::h_vier:
+        case FrontWord::hour_4:
             // PATRU
             setFrontMatrixWord(4, 6, 10);
             break;
 
-        case FrontWord::h_fuenf:
+        case FrontWord::hour_5:
             // CINCI
             setFrontMatrixWord(5, 1, 5);
             break;
 
-        case FrontWord::h_sechs:
+        case FrontWord::hour_6:
             // ŞASE
             setFrontMatrixWord(3, 0, 3);
             break;
 
-        case FrontWord::h_sieben:
+        case FrontWord::hour_7:
             // ŞAPTE
             setFrontMatrixWord(5, 6, 10);
             break;
 
-        case FrontWord::h_acht:
+        case FrontWord::hour_8:
             // OPT
             setFrontMatrixWord(3, 4, 6);
             break;
 
-        case FrontWord::h_neun:
+        case FrontWord::hour_9:
             // NOUĂ
             setFrontMatrixWord(3, 7, 10);
             break;
 
-        case FrontWord::h_zehn:
+        case FrontWord::hour_10:
             // ZECE
             setFrontMatrixWord(2, 1, 4);
             break;
 
-        case FrontWord::h_elf:
+        case FrontWord::hour_11:
             // UNSPREZECE
             setFrontMatrixWord(2, 1, 10);
             break;
 
-        case FrontWord::h_zwoelf:
+        case FrontWord::hour_12:
             // DOUĂ SPRE ZECE
             setFrontMatrixWord(1, 7, 10);
             setFrontMatrixWord(1, 2, 5);
             setFrontMatrixWord(2, 1, 4);
             break;
 
-        case FrontWord::m_fuenf:
+        case FrontWord::min_5:
             // min CINCI
             setFrontMatrixWord(9, 6, 10);
             break;
 
-        case FrontWord::m_zehn:
+        case FrontWord::min_10:
             // min ZECE
             setFrontMatrixWord(7, 2, 5);
             break;
@@ -127,12 +127,12 @@ public:
             setFrontMatrixWord(9, 0, 4);
             break;
 
-        case FrontWord::m_zwanzig:
+        case FrontWord::min_20:
             // min DOUĂZECI
             setFrontMatrixWord(8, 3, 10);
             break;
 
-        case FrontWord::m_twentyfive:
+        case FrontWord::min_25:
             // min DOUĂZECI ŞI CINCI
             setFrontMatrixWord(8, 3, 10);
             setFrontMatrixWord(8, 0, 1);
@@ -144,7 +144,7 @@ public:
             setFrontMatrixWord(6, 0, 7);
             break;
 
-        case FrontWord::m_thirtyfive:
+        case FrontWord::min_35:
             // TREIZECI ŞI CINCI
             setFrontMatrixWord(6, 0, 7);
             setFrontMatrixWord(8, 0, 1);
