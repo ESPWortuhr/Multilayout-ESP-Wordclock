@@ -1197,8 +1197,8 @@ void ClockWork::loop(struct tm &tm) {
 
         char d1[5];
         char d2[5];
-        sprintf(d1, "%d", (int)(_second / 10)); ///
-        sprintf(d2, "%d", (int)(_second % 10));
+        sprintf(d1, "%d", static_cast<uint8_t>(_second / 10));
+        sprintf(d2, "%d", static_cast<uint8_t>(_second % 10));
         led.showNumbers(d1[0], d2[0]);
         break;
     }
