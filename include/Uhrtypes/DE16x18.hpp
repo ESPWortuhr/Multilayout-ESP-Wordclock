@@ -491,6 +491,7 @@ public:
 
         case FrontWord::minuten:
             setFrontMatrixWord(13, 11, 17);
+            break;
 
         case FrontWord::es_ist:
             setFrontMatrixWord(0, 16, 17);
