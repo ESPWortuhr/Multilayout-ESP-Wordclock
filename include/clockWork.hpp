@@ -242,7 +242,7 @@ void ClockWork::displaySymbols(uint8_t iconNum) {
     case NOTE:
         led.setIcon(iconNum);
         break;
-        
+
     case SNOW:
         led.setIcon(iconNum);
         break;
