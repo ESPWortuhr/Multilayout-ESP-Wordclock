@@ -477,50 +477,96 @@ void Led::showNumbers(const char d1, const char d2) {
 
 //------------------------------------------------------------------------------
 
-void Led::showDigitalClock(const char min1, const char min0, const char h1,
-                           const char h0) {
-    resetFrontMatrixBuffer();
+fontSize Led::determineFontSize() {
+
+    if (G.UhrtypeDef == Ger16x18) {
+        return normalSizeASCII;
+    }
+    return smallSizeNumbers;
+}
+
+//------------------------------------------------------------------------------
+
+void Led::setupDigitalClock(fontSize &usedFontSize, uint8_t &offsetLetterH0,
+                            uint8_t &offsetLetterH1, uint8_t &offsetLetterMin0,
+                            uint8_t &offsetLetterMin1, uint8_t &offsetRow0,
+                            uint8_t &offsetRow1) {
 
     uint8_t letterSpacing = 1;
-    if (usedUhrType->rowsWordMatrix() >= fontHeight[smallSizeNumbers] * 2) {
+    if (usedUhrType->rowsWordMatrix() >=
+        pgm_read_byte(&(fontHeight[usedFontSize])) * 2) {
         letterSpacing++;
     }
 
     // 1st Row of letters vertical Offset
-    static uint8_t offsetLetterH0 = 0;
-    static uint8_t offsetLetterH1 =
-        offsetLetterH0 + fontWidth[smallSizeNumbers] + letterSpacing;
+    offsetLetterH0 = 0;
+    offsetLetterH1 = offsetLetterH0 +
+                     pgm_read_byte(&(fontWidth[usedFontSize])) + letterSpacing;
 
     // 2nd Row of letters vertical Offset
-    static uint8_t offsetLetterMin1 =
-        usedUhrType->colsWordMatrix() - fontWidth[smallSizeNumbers];
-    static uint8_t offsetLetterMin0 =
-        offsetLetterMin1 - fontWidth[smallSizeNumbers] - letterSpacing;
+    offsetLetterMin1 = usedUhrType->colsWordMatrix() -
+                       pgm_read_byte(&(fontWidth[usedFontSize]));
+    offsetLetterMin0 = offsetLetterMin1 -
+                       pgm_read_byte(&(fontWidth[usedFontSize])) -
+                       letterSpacing;
 
     // 1st Row of letters horizontal Offset
-    uint8_t offsetRow0 = 0;
+    offsetRow0 = 0;
     // 2nd Row of letters horizontal Offset
-    uint8_t offsetRow1 =
-        usedUhrType->rowsWordMatrix() - fontHeight[smallSizeNumbers];
+    offsetRow1 = usedUhrType->rowsWordMatrix() -
+                 pgm_read_byte(&(fontHeight[usedFontSize]));
+}
 
-    // Toggle second dots every second
+//------------------------------------------------------------------------------
+
+void Led::toggleDigitalClockSecond(const fontSize &usedFontSize,
+                                   const uint8_t &offsetRow1,
+                                   const uint8_t &offsetMin0) {
     if (_second % 2) {
-        usedUhrType->setFrontMatrixPixel(offsetRow1 + 1, offsetLetterMin0 - 2);
-        usedUhrType->setFrontMatrixPixel(offsetRow1 + 3, offsetLetterMin0 - 2);
+        if (usedFontSize == normalSizeASCII) {
+            usedUhrType->setFrontMatrixPixel(offsetRow1 + 2, offsetMin0 - 3);
+            usedUhrType->setFrontMatrixPixel(offsetRow1 + 4, offsetMin0 - 3);
+        } else {
+            usedUhrType->setFrontMatrixPixel(offsetRow1 + 1, offsetMin0 - 2);
+            usedUhrType->setFrontMatrixPixel(offsetRow1 + 3, offsetMin0 - 2);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Led::showDigitalClock(const char min1, const char min0, const char h1,
+                           const char h0, bool parametersChanged) {
+
+    static uint8_t offsetLetterH0, offsetLetterH1, offsetLetterMin0,
+        offsetLetterMin1, offsetRow0, offsetRow1;
+
+    resetFrontMatrixBuffer();
+
+    fontSize usedFontSize = determineFontSize();
+
+    if (parametersChanged) {
+        setupDigitalClock(usedFontSize, offsetLetterH0, offsetLetterH1,
+                          offsetLetterMin0, offsetLetterMin1, offsetRow0,
+                          offsetRow1);
     }
 
-    for (uint8_t col = 0; col < fontWidth[smallSizeNumbers]; col++) {
-        for (uint8_t row = 0; row < fontHeight[smallSizeNumbers]; row++) {
+    toggleDigitalClockSecond(usedFontSize, offsetRow1, offsetLetterMin0);
+
+    for (uint8_t col = 0; col < pgm_read_byte(&(fontWidth[usedFontSize]));
+         col++) {
+        for (uint8_t row = 0; row < pgm_read_byte(&(fontHeight[usedFontSize]));
+             row++) {
             // 1st Row
             setPixelForChar(col, row, offsetLetterH1, offsetRow0,
-                            static_cast<unsigned char>(h1), smallSizeNumbers);
+                            static_cast<unsigned char>(h1), usedFontSize);
             setPixelForChar(col, row, offsetLetterH0, offsetRow0,
-                            static_cast<unsigned char>(h0), smallSizeNumbers);
+                            static_cast<unsigned char>(h0), usedFontSize);
             // 2nd Row
             setPixelForChar(col, row, offsetLetterMin1, offsetRow1,
-                            static_cast<unsigned char>(min1), smallSizeNumbers);
+                            static_cast<unsigned char>(min1), usedFontSize);
             setPixelForChar(col, row, offsetLetterMin0, offsetRow1,
-                            static_cast<unsigned char>(min0), smallSizeNumbers);
+                            static_cast<unsigned char>(min0), usedFontSize);
         }
     }
 
