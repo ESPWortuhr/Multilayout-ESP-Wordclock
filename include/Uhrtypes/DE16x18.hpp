@@ -34,6 +34,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasMitternacht() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     virtual const uint8_t rowsWordMatrix() override { return 16; };
 
     //------------------------------------------------------------------------------
@@ -375,7 +379,8 @@ public:
             break;
 
         case FrontWord::hour_1:
-            setFrontMatrixWord(0, 0, 3);
+        case FrontWord::eins:
+            setFrontMatrixWord(0, 1, 3);
             break;
 
         case FrontWord::hour_2:

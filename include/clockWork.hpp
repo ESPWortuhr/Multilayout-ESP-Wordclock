@@ -448,13 +448,17 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
 void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     if (usedUhrType->has24HourLayout()) {
         usedUhrType->show(FrontWord::uhr);
-        usedUhrType->show(getFrontWordForNum(min));
-        if (min > 0) {
+
+        if (min == 0) {
+            fullHour = true;
+        } else if (min > 0) {
+            usedUhrType->show(getFrontWordForNum(min));
             usedUhrType->show(FrontWord::und);
         }
+
         if (min == 1) {
             usedUhrType->show(FrontWord::minute);
-        } else {
+        } else if (min > 1) {
             usedUhrType->show(FrontWord::minuten);
         }
     } else {
