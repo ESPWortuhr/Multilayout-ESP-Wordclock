@@ -1,7 +1,5 @@
 #include "network.h"
 
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
 #include <WiFiManager.h>
 
 WiFiManager wifiManager(Serial);

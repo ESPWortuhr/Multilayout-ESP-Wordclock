@@ -36,11 +36,13 @@ private:
     //------------------------------------------------------------------------------
     // Hour Functions
     //------------------------------------------------------------------------------
-    void setHour(const uint8_t std, const bool fullHour);
+    void setHour(uint8_t std, const bool fullHour);
 
     //------------------------------------------------------------------------------
     // Loop Helper Functions
     //------------------------------------------------------------------------------
+
+    bool isMidnight(const uint8_t hour);
     WordclockChanges changesInClockface();
     void calcClockface();
     void setClock();

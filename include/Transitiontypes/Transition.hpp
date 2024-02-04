@@ -5,7 +5,7 @@
 #define STRIPE NULL
 #define MAX_RANDOM 10
 
-Transition::Transition(uint8 rows, uint8 cols) {
+Transition::Transition(uint8_t rows, uint8_t cols) {
     maxRows = rows;
     maxCols = cols;
     sizeofColumn = cols * sizeof(RgbfColor);

@@ -12,6 +12,14 @@ private:
     bool getCharCol(fontSize font, uint8_t col, uint8_t row,
                     unsigned char unsigned_d1);
     void applyMirroringAndReverseIfDefined();
+    fontSize determineFontSize();
+    void setupDigitalClock(fontSize &usedFontSize, uint8_t &offsetLetterH0,
+                           uint8_t &offsetLetterH1, uint8_t &offsetLetterMin0,
+                           uint8_t &offsetLetterMin1, uint8_t &offsetRow0,
+                           uint8_t &offsetRow1);
+    void toggleDigitalClockSecond(const fontSize &usedFontSize,
+                                  const uint8_t &offsetRow1,
+                                  const uint8_t &offsetMin0);
 
 public:
     Led(/* args */) = default;
@@ -76,6 +84,6 @@ public:
     //------------------------------------------------------------------------------
     void showNumbers(const char d1, const char d2);
     void showDigitalClock(const char min1, const char min0, const char h1,
-                          const char h0);
+                          const char h0, bool parametersChanged);
     void show();
 };

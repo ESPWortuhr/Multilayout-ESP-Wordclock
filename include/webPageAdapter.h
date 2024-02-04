@@ -573,9 +573,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
     }
     case WStype_BIN: {
         Serial.printf("[%u] get binary length: %u\n", num, length);
-        hexdump(payload, length);
-        //--echo data back to browser
-        // webSocket.sendBIN(num, payload, length);
         break;
     }
     default:

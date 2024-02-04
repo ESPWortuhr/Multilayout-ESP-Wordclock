@@ -138,7 +138,7 @@ protected:
     uint8_t lastTransitionColorize;
 
     uint8_t maxRows, maxCols;
-    uint16 sizeofColumn;
+    uint16_t sizeofColumn;
     RgbfColor **old;
     RgbfColor **act;
     RgbfColor **work;
@@ -188,7 +188,7 @@ protected:
     uint16_t transitionSnake();
 
 public:
-    Transition(uint8 bottomRightRow, uint8 bottomRightCol);
+    Transition(uint8_t bottomRightRow, uint8_t bottomRightCol);
     ~Transition();
 
     //------------------------------------------------------------------------------
@@ -372,14 +372,14 @@ public:
 protected:
     struct Coord {
         bool useAct;
-        int8 row;
-        int8 col;
+        int8_t row;
+        int8_t col;
     };
     struct GoToPos {
         bool useAct;
-        int8 row;
-        int8 min;
-        int8 max;
+        int8_t row;
+        int8_t min;
+        int8_t max;
     };
     uint8_t maxRows, maxCols;
     GoToPos *motions;
@@ -409,7 +409,7 @@ public:
         getMotions(act, true, maxRows - 1, -1);
         motions[index] = {false, -1, 0, 0}; // move out on left side
         motions[index + 1] = {false, -2, 0,
-                              (int8)(maxCols - 1)}; // last on right side
+                              (int8_t)(maxCols - 1)}; // last on right side
         index = 0;
     }
 

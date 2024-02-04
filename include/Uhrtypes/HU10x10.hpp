@@ -66,11 +66,11 @@ public:
             setFrontMatrixWord(4, 4, 9);
             break;
 
-        case FrontWord::m_fuenf:
+        case FrontWord::min_5:
             setFrontMatrixWord(0, 8, 9);
             break;
 
-        case FrontWord::m_zehn:
+        case FrontWord::min_10:
             setFrontMatrixWord(0, 4, 6);
             break;
 
@@ -82,51 +82,51 @@ public:
             setFrontMatrixWord(9, 0, 2);
             break;
 
-        case FrontWord::h_ein:
+        case FrontWord::hour_1:
             setFrontMatrixWord(7, 2, 4);
             break;
 
-        case FrontWord::h_zwei:
+        case FrontWord::hour_2:
             setFrontMatrixWord(8, 0, 4);
             break;
 
-        case FrontWord::h_drei:
+        case FrontWord::hour_3:
             setFrontMatrixWord(5, 0, 4);
             break;
 
-        case FrontWord::h_vier:
+        case FrontWord::hour_4:
             setFrontMatrixWord(5, 6, 9);
             break;
 
-        case FrontWord::h_fuenf:
+        case FrontWord::hour_5:
             setFrontMatrixWord(6, 3, 4);
             break;
 
-        case FrontWord::h_sechs:
+        case FrontWord::hour_6:
             setFrontMatrixWord(4, 0, 2);
             break;
 
-        case FrontWord::h_sieben:
+        case FrontWord::hour_7:
             setFrontMatrixWord(6, 0, 2);
             break;
 
-        case FrontWord::h_acht:
+        case FrontWord::hour_8:
             setFrontMatrixWord(6, 5, 9);
             break;
 
-        case FrontWord::h_neun:
+        case FrontWord::hour_9:
             setFrontMatrixWord(9, 4, 9);
             break;
 
-        case FrontWord::h_zehn:
+        case FrontWord::hour_10:
             setFrontMatrixWord(7, 7, 9);
             break;
 
-        case FrontWord::h_elf:
+        case FrontWord::hour_11:
             setFrontMatrixWord(7, 2, 9);
             break;
 
-        case FrontWord::h_zwoelf:
+        case FrontWord::hour_12:
             setFrontMatrixWord(8, 0, 9);
             break;
 
