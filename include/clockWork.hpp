@@ -18,8 +18,8 @@ void ClockWork::loopLdrLogic() {
 
     if (G.autoLdrEnabled) {
         lux /= 4;
-        int minimum = min(G.autoLdrBright, G.autoLdrDark);
-        int maximum = max(G.autoLdrBright, G.autoLdrDark);
+        uint16_t minimum = min(G.autoLdrBright, G.autoLdrDark);
+        uint16_t maximum = max(G.autoLdrBright, G.autoLdrDark);
         if (lux >= maximum)
             lux = maximum;
         if (lux <= minimum)
