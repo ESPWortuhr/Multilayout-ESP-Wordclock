@@ -284,4 +284,6 @@ enum Icons {
     FIRE_6 = 8,
     HEART = 9,
     SMILEY = 10,
+    NOTE = 11,
+    SNOW = 12,
 };

@@ -232,11 +232,19 @@ void ClockWork::displaySymbols(uint8_t iconNum) {
             count = 0;
         }
         /* Heartbeat end */
-        led.setIcon(HEART);
+        led.setIcon(iconNum);
         break;
 
     case SMILEY:
-        led.setIcon(SMILEY);
+        led.setIcon(iconNum);
+        break;
+
+    case NOTE:
+        led.setIcon(iconNum);
+        break;
+        
+    case SNOW:
+        led.setIcon(iconNum);
         break;
 
     default:
@@ -1189,7 +1197,7 @@ void ClockWork::loop(struct tm &tm) {
 
         char d1[5];
         char d2[5];
-        sprintf(d1, "%d", (int)(_second / 10));
+        sprintf(d1, "%d", (int)(_second / 10)); ///
         sprintf(d2, "%d", (int)(_second % 10));
         led.showNumbers(d1[0], d2[0]);
         break;
