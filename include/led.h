@@ -44,7 +44,7 @@ public:
     float setBrightnessAuto(float val);
     void getCurrentManualBrightnessSetting(uint8_t &currentBrightness);
     void getColorbyPositionWithAppliedBrightness(HsbColor &color,
-                                                 uint8_t position);
+                                                 ColorPosition position);
     void shiftColumnToRight();
 
     //------------------------------------------------------------------------------
@@ -52,10 +52,10 @@ public:
     //------------------------------------------------------------------------------
     void setPixel(uint16_t ledIndex, HsbColor color);
     void setPixel(uint8_t row, uint8_t col, HsbColor color);
-    void setbyFrontMatrix(uint8_t ColorPosition = Foreground,
+    void setbyFrontMatrix(ColorPosition position = Foreground,
                           bool applyMirrorAndReverse = true);
-    void setbyMinuteArray(uint8_t ColorPosition = Foreground);
-    void setbySecondArray(uint8_t ColorPosition = Foreground);
+    void setbyMinuteArray(ColorPosition position = Foreground);
+    void setbySecondArray(ColorPosition panic = Foreground);
     void setIcon(uint8_t iconNum);
     void setSingle(uint8_t wait);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
