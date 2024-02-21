@@ -7,6 +7,7 @@
 #include <Hash.h>
 #include <NeoPixelBus.h>
 #include <RTClib.h>
+#include <BH1750.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
 #include <Wire.h>
@@ -52,6 +53,7 @@ Led led;
 ClockWork clockWork;
 Mqtt mqtt;
 Network network;
+BH1750 lightMeter(0x23);
 
 #include "Transitiontypes/Transition.hpp"
 #include "Wifi.hpp"
@@ -364,6 +366,18 @@ void setup() {
     Serial.println("");
 
     //-------------------------------------
+    // Ambient Light Sensor BH1750
+    //-------------------------------------
+    // Initialize the I2C bus using SCL and SDA pins
+    // (BH1750 library doesn't do this automatically)
+    Wire.begin(D4,D3);
+    // begin returns a boolean that can be used to detect setup problems.
+    if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
+      Serial.println(F("BH1750 Advanced begin"));
+    } else {
+      Serial.println(F("Error initialising BH1750"));
+    }
+    //-------------------------------------
     // Setup Done
     //-------------------------------------
     parametersChanged = true;
@@ -390,7 +404,16 @@ void loop() {
     httpServer.handleClient();
 
     webSocket.loop();
-
+    //-------------------------------------
+    // Ambient Light Sensor BH1750
+    //-------------------------------------
+    if (lightMeter.measurementReady()) {
+      float lux = lightMeter.readLightLevel();
+      Serial.print("BH1750: ");
+      Serial.print(lux);
+      Serial.println(" lx");
+    }
+ 
     //------------------------------------------------
     // MQTT
     //------------------------------------------------
