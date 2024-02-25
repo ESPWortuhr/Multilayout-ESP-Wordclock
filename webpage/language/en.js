@@ -112,6 +112,7 @@ let TRANSLATION_EN_US = {
 			"ch-10-11": "🇨🇭 10 x 11",
 			"ro-10-11": "🇷🇴 10 x 11",
 			"fr-10-11": "🇫🇷 10 x 11",
+			"se-10-11": "🇸🇪 10 × 11",
 			"invert-min-dir": "Invert Minute Counting Direction",
 			"mirror-vertically": "Mirror Word Clock Vertically",
 			"mirror-horizontally": "Mirror Word Clock Horizontally",

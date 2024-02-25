@@ -124,6 +124,14 @@
 // 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
 // layout for the French language
 
+/**********************/
+/*       Swedish      */
+/**********************/
+//
+// #define DEFAULT_LAYOUT  Se10x11
+// 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
+// layout for the Swedish language
+
 //--------------------------------------------------------------------------
 // Define LED Type
 //--------------------------------------------------------------------------
