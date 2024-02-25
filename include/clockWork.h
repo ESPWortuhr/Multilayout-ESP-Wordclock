@@ -6,12 +6,16 @@ class ClockWork {
 private:
     uint16_t countMillisSpeed = 0;
     uint32_t previousMillis = 0;
+    bool initBH1750 = false;
+    float lux = 0.0;
 
 private:
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
     void loopLdrLogic();
+    void initBH1750Logic();
+    void loopBH1750Logic();
     uint32_t num32BitWithOnesAccordingToColumns();
     bool isRomanLanguage();
 
@@ -49,7 +53,7 @@ private:
     void clearClockByProgInit();
 
 public:
-    ClockWork() = default;
+    //ClockWork() = default;
     ~ClockWork() = default;
 
     //------------------------------------------------------------------------------

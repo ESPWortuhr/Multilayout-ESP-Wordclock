@@ -5,19 +5,20 @@
 #include "clockWork.h"
 #include "openwmap.h"
 #include <Arduino.h>
+#include <BH1750.h>
 
 OpenWMap weather;
+BH1750 lightMeter(0x23);
 
 //------------------------------------------------------------------------------
 // Helper Functions
 //------------------------------------------------------------------------------
-
 void ClockWork::loopLdrLogic() {
     int16_t lux = analogRead(A0); // Range 0-1023
     uint8_t ldrValOld = ldrVal;
 
     if (G.autoLdrEnabled) {
-        lux /= 4;
+        lux /= 4; // Range 0-255
         uint16_t minimum = min(G.autoLdrBright, G.autoLdrDark);
         uint16_t maximum = max(G.autoLdrBright, G.autoLdrDark);
         if (lux >= maximum)
@@ -35,6 +36,70 @@ void ClockWork::loopLdrLogic() {
         led.set();
     }
 }
+
+
+// Ambient Light Sensor BH1750
+// Initialize the I2C bus using SCL and SDA pins
+// (BH1750 library doesn't do this automatically)
+void ClockWork::initBH1750Logic() {
+    Wire.begin(D4,D3);
+    // begin returns a boolean that can be used to detect setup problems.
+    if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
+      Serial.println(F("BH1750: Initialized"));
+    } else {
+      Serial.println(F("BH1750: Initialisation error"));
+    }
+}
+
+// Measure with Ambient Light Sensor BH1750
+// 
+// Inputs: autoLdrDark and autoLdrBright 0-255 to limit lux255 (lux normalized to 0-255)
+// Output: ldrVal 10-100%
+// TODO: (Improvements)
+// The high resolution of the BH1750 sensor is currently destroied due to: 
+// - the 8bit logic in this implementation
+// - the 90 increments ldrVal value
+// - may be the slope and offset should be reworked (currently: autoLdrDark and autoLdrBright)
+void ClockWork::loopBH1750Logic() {
+    uint8_t minimum = min(G.autoLdrBright, G.autoLdrDark);
+    uint8_t maximum = max(G.autoLdrBright, G.autoLdrDark);
+    uint8_t lux255 = maximum;
+    uint8_t ldrValOld = ldrVal;
+
+    if (!initBH1750) {
+        initBH1750Logic();
+        initBH1750 = true;
+    }
+    if (G.autoLdrEnabled) {
+        if (lightMeter.measurementReady()) {
+            lux = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
+            // Normalize the  illuminance to 0-255
+            lux255 = static_cast<uint8>(lux/214.166);
+        }
+        // Limit values between minimum and maximum
+        if (lux255 >= maximum)
+            lux255 = maximum;
+        if (lux255 <= minimum)
+            lux255 = minimum;
+        if (G.autoLdrDark == G.autoLdrBright) {
+            // map() //Would crash with division by zero
+            ldrVal = 100;
+        } else {
+            ldrVal = map(lux255, minimum, maximum, 10, 100);
+        }
+    }
+    if (ldrValOld != ldrVal) {
+        Serial.print("BH1750: LUX: ");
+        Serial.print(lux);
+        Serial.print(", NormalizedTo255: ");
+        Serial.print(lux255);
+        Serial.print(", ldrVal: ");
+        Serial.print(ldrVal);
+        Serial.println();
+        led.set();
+    }
+}
+
 
 //------------------------------------------------------------------------------
 
@@ -895,7 +960,8 @@ void ClockWork::loop(struct tm &tm) {
         // LDR Routine
         //--------------------------------------------
         if (G.autoLdrEnabled) {
-            loopLdrLogic();
+            //loopLdrLogic();
+            loopBH1750Logic();
         }
 
         if (G.prog == COMMAND_IDLE && G.conf == 0) {
@@ -1037,7 +1103,8 @@ void ClockWork::loop(struct tm &tm) {
             config["autoLdrBright"] = G.autoLdrBright;
             config["autoLdrDark"] = G.autoLdrDark;
         }
-        config["autoLdrValue"] = map(analogRead(A0), 0, 1023, 0, 255);
+        // config["autoLdrValue"] = map(analogRead(A0), 0, 1023, 0, 255);
+        config["autoLdrValue"] = lux;
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
         break;
