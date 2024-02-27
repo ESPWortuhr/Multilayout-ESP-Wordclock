@@ -19,6 +19,7 @@
  *  9  | T I O E L V A T O L V
  */
 
+
 class Se10x11_t : public iUhrType {
 public:
     virtual LanguageAbbreviation usedLang() override {
@@ -36,7 +37,7 @@ public:
 
         case FrontWord::es_ist:
             // Klockan är
-            setFrontMatrixWord(0, 6, 10);
+            setFrontMatrixWord(0, 4, 10);
             setFrontMatrixWord(0, 1, 2);
             break;
 
@@ -47,7 +48,7 @@ public:
 
         case FrontWord::hour_2:
             // Två
-            setFrontMatrixWord(6, 0, 2);
+            setFrontMatrixWord(5, 0, 2);
             break;
 
         case FrontWord::hour_3:
@@ -97,7 +98,7 @@ public:
 
         case FrontWord::hour_12:
             // Tolv
-            setFrontMatrixWord(8, 0, 3);
+            setFrontMatrixWord(9, 0, 3);
             break;
 
         case FrontWord::min_5:
@@ -107,7 +108,7 @@ public:
 
         case FrontWord::min_10:
             // Tio
-            setFrontMatrixWord(2, 2, 4);
+            setFrontMatrixWord(1, 2, 4);
             break;
 
         case FrontWord::viertel:
@@ -120,11 +121,6 @@ public:
             setFrontMatrixWord(3, 6, 10);
             break;
 
-/*         case FrontWord::min_25:
-            // Twentyfive
-            setFrontMatrixWord(2, 1, 10);
-            break; 
-*/
         case FrontWord::halb:
             // Halv
             setFrontMatrixWord(4, 0, 3);
@@ -141,12 +137,7 @@ public:
             // I
             setFrontMatrixWord(3, 2, 2);
             break;
-/* 
-        case FrontWord::uhr:
-            // O'Clock ska denna vara med?
-            setFrontMatrixWord(9, 0, 5);
-            break;
- */
+
         default:
             break;
         };
