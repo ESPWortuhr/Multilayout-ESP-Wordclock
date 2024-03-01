@@ -165,7 +165,23 @@ let TRANSLATION_DE_DE = {
 			"ip-address": "IP-Adresse anzeigen"
 		}
 	},
-
+	"birthdays": {
+		"h1": "Geburtstage",
+		"dates": {
+			"h2": "Termine",
+			"help": "Die Uhr kann an Geburtstagen auf eine spezielle Anzeige wechseln:\n" +
+					"Bei allen Uhrentypen wird jede volle Stunde eine Feuerwerk-Animation gestartet.\n" +
+					"Unterstützt der gewählte Uhrentypus die Wörter „Happy Birthday“, dann werden diese den ganzen Tag erleuchtet.\n\n" +
+					"Geburtstage vor dem Jahr 1000 werden ignoriert.",
+			"save": "Speichern",
+			"date1": {
+				"label": "Termin 1:"
+			},
+			"date2": {
+				"label": "Termin 2:"
+			}
+		}
+	},
 	"settings": {
 		"h1": "Einstellungen",
 		"status": {

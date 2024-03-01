@@ -111,8 +111,9 @@ WebPageAdapter webSocket = WebPageAdapter(80);
 //------------------------------------------------------------------------------
 
 uint16_t split(uint8_t *payload, uint8_t start, uint8_t length = 3) {
-    char buffer[length];
-    uint8_t m = 0;
+    // char buffer[length];
+    char buffer[4] = {'0','0','0','0'};
+    uint8_t m = 4-length;
     for (uint16_t k = start; k < (start + length); k++) {
         buffer[m] = payload[k];
         m++;
@@ -428,6 +429,20 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             break;
         }
 
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_BIRTHDAYS: {
+            G.birthday1.year = split(payload, 3, 4);
+            G.birthday1.month = split(payload, 8, 2);
+            G.birthday1.day = split(payload, 11, 2);
+            G.birthday2.year = split(payload, 13, 4);
+            G.birthday2.month = split(payload, 18, 2);
+            G.birthday2.day = split(payload, 21, 2);
+            Serial.println("Birthday dates set to: ");
+            Serial.printf("Birthday1: %02u.%02u.%04u\n",G.birthday1.day,G.birthday1.month,G.birthday1.year);
+            Serial.printf("Birthday2: %02u.%02u.%04u\n",G.birthday2.day,G.birthday2.month,G.birthday2.year);
+        }
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_COLORTYPE: {
@@ -538,6 +553,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_REQUEST_MQTT_VALUES:
+        case COMMAND_REQUEST_BIRTHDAYS:
         case COMMAND_REQUEST_CONFIG_VALUES:
         case COMMAND_REQUEST_COLOR_VALUES:
         case COMMAND_REQUEST_WIFI_LIST:

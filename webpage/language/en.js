@@ -165,7 +165,23 @@ let TRANSLATION_EN_US = {
 			"ip-address": "Show IP Address"
 		}
 	},
-
+	"birthdays": {
+		"h1": "Birthdays",
+		"dates": {
+			"h2": "Appointments",
+			"help": "The clock can switch to special appearance on birthdays:\n" +
+					"A fireworks animation starts every hour at all clock types.\n" +
+					"If the used clock type supports the words “Happy Birthday”, they will be illuminated all day long.\n\n" +
+					"Birthdays before the year 1000 are ignored.",
+			"save": "Save",
+			"date1": {
+				"label": "Date 1:"
+			},
+			"date2": {
+				"label": "Date 2:"
+			}
+		}
+	},
 	"settings": {
 		"h1": "Settings",
 		"status": {

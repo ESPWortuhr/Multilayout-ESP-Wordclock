@@ -54,6 +54,7 @@
                 <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="frontoptions" data-i18next="view.h1"></a></li>
                 <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="settings" data-i18next="settings.h1"></a></li>
                 <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="smart-home" data-i18next="smart-home.h1"></a></li>
+                <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="birthdays" data-i18next="birthdays.h1"></a></li>
                 <li class="pure-menu-item" role="none"><a href="#" class="pure-menu-link" role="menuitem" data-navigation="about" data-i18next="about.h1"></a></li>
 
                 <li class="pure-menu-heading" role="none"><label for="language" data-i18next="menu.language.label"></label></li>
@@ -643,6 +644,30 @@
                         <div class="pure-controls">
                             <button id="initial-values-button" class="pure-button" data-i18next="settings.restart.restart"></button>
                             <button id="reset-button" class="pure-button" data-i18next="settings.restart.reset"></button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="pure-u-24-24 section section-birthdays">
+                <header class="header">
+                    <svg aria-hidden="true"><use href="#eye"/></svg>
+                    <h1 data-i18next="birthdays.h1"></h1>
+                </header>
+                <div class="box">
+                    <h2 data-i18next="birthdays.dates.h2"></h2>
+                    <p data-i18next="birthdays.dates.help"></p>
+                    <form class="pure-form pure-form-aligned">
+                        <div class="pure-control-group">
+                            <label for="birthdays-date1" data-i18next="birthdays.dates.date1.label"></label>
+                            <input type="date" id="birthdays-date1" required>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="birthdays-date2" data-i18next="birthdays.dates.date2.label"></label>
+                            <input type="date" id="birthdays-date2" required>
+                        </div>
+                        <div class="pure-controls">
+                            <button id="birthdays-store-button" class="pure-button" data-i18next="birthdays.dates.save"></button>
                         </div>
                     </form>
                 </div>
