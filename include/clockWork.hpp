@@ -6,6 +6,7 @@
 #include "openwmap.h"
 #include <Arduino.h>
 
+
 OpenWMap weather;
 
 //------------------------------------------------------------------------------
@@ -82,6 +83,8 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_de10x11schwaebisch;
     case Fr10x11:
         return &_fr10x11;
+    case Se10x11:
+        return &_se10x11;
     default:
         return nullptr;
     }
