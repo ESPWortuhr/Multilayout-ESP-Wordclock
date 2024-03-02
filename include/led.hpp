@@ -220,7 +220,8 @@ void Led::setPixel(uint8_t row, uint8_t col, HsbColor color) {
 
 //------------------------------------------------------------------------------
 
-void Led::setbyFrontMatrix(ColorPosition colorPosition, bool applyMirrorAndReverse) {
+void Led::setbyFrontMatrix(ColorPosition colorPosition,
+                           bool applyMirrorAndReverse) {
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
     }
