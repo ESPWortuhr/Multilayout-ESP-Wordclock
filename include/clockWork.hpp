@@ -6,7 +6,6 @@
 #include "openwmap.h"
 #include <Arduino.h>
 
-
 OpenWMap weather;
 
 //------------------------------------------------------------------------------

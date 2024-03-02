@@ -7,18 +7,17 @@
  *                COL
  *       X 9 8 7 6 5 4 3 2 1 0
  * ROW + - - - - - - - - - - -
- *  0  | K L O C K A N T Ä R K 
- *  1  | F E M Y I S T I O N I 
- *  2  | K V A R T Q I E N Z O 
- *  3  | T J U G O L I V I P M 
- *  4  | Ö V E R K A M H A L V 
- *  5  | E T T U S V L X T V Å 
- *  6  | T R E M Y K Y F Y R A 
- *  7  | F E M S F L O R S E X 
- *  8  | S J U Å T T A I N I O 
+ *  0  | K L O C K A N T Ä R K
+ *  1  | F E M Y I S T I O N I
+ *  2  | K V A R T Q I E N Z O
+ *  3  | T J U G O L I V I P M
+ *  4  | Ö V E R K A M H A L V
+ *  5  | E T T U S V L X T V Å
+ *  6  | T R E M Y K Y F Y R A
+ *  7  | F E M S F L O R S E X
+ *  8  | S J U Å T T A I N I O
  *  9  | T I O E L V A T O L V
  */
-
 
 class Se10x11_t : public iUhrType {
 public:
