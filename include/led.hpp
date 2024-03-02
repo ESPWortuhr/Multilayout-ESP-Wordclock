@@ -151,8 +151,8 @@ void Led::getCurrentManualBrightnessSetting(uint8_t &currentBrightness) {
 //------------------------------------------------------------------------------
 
 void Led::getColorbyPositionWithAppliedBrightness(HsbColor &color,
-                                                  uint8_t colorPosition) {
-    color = G.color[colorPosition];
+                                                  ColorPosition position) {
+    color = G.color[position];
     uint8_t manBrightnessSetting = 100;
     getCurrentManualBrightnessSetting(manBrightnessSetting);
 
@@ -220,8 +220,8 @@ void Led::setPixel(uint8_t row, uint8_t col, HsbColor color) {
 
 //------------------------------------------------------------------------------
 
-void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
-
+void Led::setbyFrontMatrix(ColorPosition colorPosition,
+                           bool applyMirrorAndReverse) {
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
     }
@@ -246,7 +246,7 @@ void Led::setbyFrontMatrix(uint8_t colorPosition, bool applyMirrorAndReverse) {
 
 //------------------------------------------------------------------------------
 
-void Led::setbyMinuteArray(uint8_t colorPosition) {
+void Led::setbyMinuteArray(ColorPosition colorPosition) {
     HsbColor displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
@@ -261,7 +261,7 @@ void Led::setbyMinuteArray(uint8_t colorPosition) {
 
 //------------------------------------------------------------------------------
 
-void Led::setbySecondArray(uint8_t colorPosition) {
+void Led::setbySecondArray(ColorPosition colorPosition) {
     HsbColor displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 

@@ -150,7 +150,7 @@ bool compareEffBriAndSpeedToOld(uint8_t *payload) {
 
 //------------------------------------------------------------------------------
 
-void parseColor(uint8_t *payload, uint8_t position = Foreground) {
+void parseColor(uint8_t *payload, ColorPosition position = Foreground) {
     if (position == Background) {
         G.color[position] = {HsbColor(split(payload, 12) / 360.f,
                                       split(payload, 15) / 100.f,
