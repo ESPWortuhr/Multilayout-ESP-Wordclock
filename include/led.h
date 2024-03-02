@@ -55,7 +55,7 @@ public:
     void setbyFrontMatrix(ColorPosition position = Foreground,
                           bool applyMirrorAndReverse = true);
     void setbyMinuteArray(ColorPosition position = Foreground);
-    void setbySecondArray(ColorPosition panic = Foreground);
+    void setbySecondArray(ColorPosition position = Foreground);
     void setIcon(uint8_t iconNum);
     void setSingle(uint8_t wait);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
