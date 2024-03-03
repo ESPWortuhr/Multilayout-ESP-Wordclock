@@ -11,7 +11,8 @@ let TRANSLATION_HU = {
 			"nl": "🇳🇱 Holland",
 			"es": "🇪🇸 Spanyol",
 			"it": "🇮🇹 Olasz",
-			"hu": "🇭🇺 Magyar"
+			"hu": "🇭🇺 Magyar",
+			"ru": "🇷🇺 Orosz"
 		}
 	},
 
@@ -110,6 +111,7 @@ let TRANSLATION_HU = {
 			"it-10-11": "🇮🇹 10 × 11",
 			"hu-10-10": "🇭🇺 10 x 10",
 			"se-10-11": "🇸🇪 10 × 11",
+			"ru-10-11": "🇷🇺 10 × 11",
 			"invert-min-dir": "Percszámláló-irány megfordítása",
 			"mirror-vertically": "Szövegóra függőleges tükrözése",
 			"mirror-horizontally": "Szövegóra vízszintes tükrözése",

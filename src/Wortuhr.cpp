@@ -210,7 +210,7 @@ void setup() {
         G.transitionType = 0; // Transition::NO_TRANSITION;
         G.transitionDuration = 2;
         G.transitionSpeed = 30;
-        G.transitionColorize = 1;
+        G.transitionColorize = 0;
         G.transitionDemo = false;
 
         eeprom::write();
