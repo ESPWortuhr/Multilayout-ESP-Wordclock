@@ -11,7 +11,8 @@ let TRANSLATION_ES = {
 			"nl": "🇳🇱 Holandés",
 			"es": "🇪🇸 Español",
 			"it": "🇮🇹 Italiano",
-			"hu": "🇭🇺 Húngaro"
+			"hu": "🇭🇺 Húngaro",
+			"ru": "🇷🇺 Ruso"
 		}
 	},
 
@@ -113,6 +114,7 @@ let TRANSLATION_ES = {
 			"ro-10-11": "🇷🇴 10 x 11",
 			"fr-10-11": "🇫🇷 10 x 11",
 			"se-10-11": "🇸🇪 10 × 11",
+			"ru-10-11": "🇷🇺 10 × 11",
 			"invert-min-dir": "Invertir la dirección de conteo de minutos",
 			"mirror-vertically": "Voltear el reloj verticalmente",
 			"mirror-horizontally": "Voltear el reloj horizontalmente",
