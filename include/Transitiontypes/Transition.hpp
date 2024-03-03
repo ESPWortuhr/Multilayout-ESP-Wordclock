@@ -57,19 +57,15 @@ bool Transition::isSilvester(Transition_t &type, struct tm &tm, bool trigger) {
     static uint8_t minutesAfterMidnight;
 
     if (trigger) {
-#if 1
-        if ((tm.tm_mon == 12) && (tm.tm_mday == 31) && (tm.tm_hour == 23) &&
-            (tm.tm_min == 59))
-#else
-        if (tm.tm_min == G.autoLdrBright) // for testing
-#endif
-        {
+        // tm_mday=1..31, tm.tm_mon=0=Jan..11=Dec, tm_year=0=1900..n=1900+n
+        if ((tm.tm_mon == 11) && (tm.tm_mday == 31) && (tm.tm_hour == 23) && (tm.tm_min == 59)) {
             minutesAfterMidnight = 0;
             type = COUNTDOWN;
         } else {
             minutesAfterMidnight++;
         }
         if ((type == NEWYEAR) && (minutesAfterMidnight >= 11)) {
+            // switch back to standard type
             type = getTransitionType(true);
         }
     }
@@ -77,7 +73,7 @@ bool Transition::isSilvester(Transition_t &type, struct tm &tm, bool trigger) {
 }
 
 //------------------------------------------------------------------------------
-
+// Get configured transition type: Random or Fix type
 Transition_t Transition::getTransitionType(bool trigger) {
     if (G.transitionType == RANDOM) {
         if (trigger) {
@@ -686,7 +682,7 @@ uint16_t Transition::transitionFire() {
 //------------------------------------------------------------------------------
 
 uint16_t Transition::transitionCountdown(struct tm &tm) {
-    static uint8_t lastSecond = 99, countDown = 60;
+    static int8_t lastSecond = 99, countDown = 60;
     uint8_t _second = tm.tm_sec; // 0 - 59
     if (_second != lastSecond) {
         if (phase == 1) {

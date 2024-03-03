@@ -29,6 +29,7 @@ public:
     //------------------------------------------------------------------------------
 
     virtual const bool hasDreiviertel() override { return true; }
+    virtual const bool hasHappyBirthday() override { return true; }
 
     //------------------------------------------------------------------------------
 

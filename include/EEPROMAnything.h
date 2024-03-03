@@ -28,6 +28,7 @@ template <class T> int readAnything(int ee, T &value) {
 void write() {
     writeAnything(0, G);
     EEPROM.commit();
+    Serial.println("Written everything to the EEPROM");
 }
 
 //------------------------------------------------------------------------------
