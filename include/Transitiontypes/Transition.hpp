@@ -52,24 +52,44 @@ Transition::~Transition() {
 }
 
 //------------------------------------------------------------------------------
+// Make special events at silvester and birthday
+//------------------------------------------------------------------------------
 
-bool Transition::isSilvester(Transition_t &type, struct tm &tm, bool trigger) {
+bool Transition::isSpecialEvent(Transition_t &type, struct tm &tm, bool trigger) {
     static uint8_t minutesAfterMidnight;
+    bool isBirthday = false;
+    bool specialEventOngoing = false;
 
-    if (trigger) {
+    if (trigger) { 
+        specialEventOngoing = (type == NEWYEAR_COUNTDOWN) || (type == NEWYEAR_FIRE) || (type == BIRTHDAY);
         // tm_mday=1..31, tm.tm_mon=0=Jan..11=Dec, tm_year=0=1900..n=1900+n
-        if ((tm.tm_mon == 11) && (tm.tm_mday == 31) && (tm.tm_hour == 23) && (tm.tm_min == 59)) {
-            minutesAfterMidnight = 0;
-            type = COUNTDOWN;
-        } else {
-            minutesAfterMidnight++;
-        }
-        if ((type == NEWYEAR) && (minutesAfterMidnight >= 11)) {
-            // switch back to standard type
-            type = getTransitionType(true);
+        isBirthday = ((tm.tm_mon+1 == G.birthday1.month) && (tm.tm_mday == G.birthday1.day)) ||
+                     ((tm.tm_mon+1 == G.birthday2.month) && (tm.tm_mday == G.birthday2.day));
+
+        if (!specialEventOngoing) { // Start only new special events when no SE is pending
+            // Conditions to start a special events 
+            if ((tm.tm_mon == 11) && (tm.tm_mday == 31) && (tm.tm_hour == 23) && (tm.tm_min == 59)) {
+                minutesAfterMidnight = 0;
+                type = NEWYEAR_COUNTDOWN; // start transition by changing transitionType
+            } else if (isBirthday && (tm.tm_min % 5 == 2)) { // Make animation 2 minutes after each clock change
+                type = BIRTHDAY; // start transition by changing transitionType
+            }
+        } else  {
+            // State machine for animation sequences
+            if (type == NEWYEAR_COUNTDOWN) {
+                type = NEWYEAR_FIRE; // after one minute countdown, switch to fireworks
+            } else if (type == NEWYEAR_FIRE) {
+                minutesAfterMidnight++;
+                if (minutesAfterMidnight >= 10) {
+                    type = getTransitionType(true); // go back to standard transition 
+                }
+            } else if (type == BIRTHDAY) {
+                type = getTransitionType(true); // after one minute go back to standard transition
+            }
         }
     }
-    return (type == COUNTDOWN) || (type == NEWYEAR);
+    specialEventOngoing = (type == NEWYEAR_COUNTDOWN) || (type == NEWYEAR_FIRE) || (type == BIRTHDAY);
+    return specialEventOngoing;
 }
 
 //------------------------------------------------------------------------------
@@ -577,9 +597,27 @@ uint16_t Transition::transitionFire() {
         sparkle = false;
         subPhase = 1;
         firework->prepare(0, _white, FIRE_1, mirrored);
-        // use current colors to be blended to act
-        copyMatrix(old, work);
-        copyMatrixFlags(work, act);
+        if (transitionType == BIRTHDAY && usedUhrType->hasHappyBirthday()) {
+            /* 
+            An einem Geburtstag wird das Feuerwerk (zum Test) alle 5 Minuten für eine Minute aktiviert (für alle Uhrentypen)
+            (Bitte den Geburtstag im WebInterface auf heute programmieren)
+            Bei Uhrentypen ohne HappyBirthday wird das Feuerwerk mit der Uhrzeit zusammen angezeigt (wie gehabt)
+            Uhrentypen die HappyBirthday unterstützen sollten hingegen folgende Anzeige haben:
+               - Urzeit wird während des Feuerwerks nicht angezeigt (ansonsten Konflikt mit den Uhr-Wörtern)
+               - Stattdessen: Feuerwerk nur mit den Wörtern "Happy Birthday"
+               - Die Urzeit ist schon entfernt ;-)
+               - Wie kann man hier die Wörter "Happy Birthday" einschalten?
+            */
+            Serial.println("Please make the Happy Birthday patch here");
+            fillMatrix(work, background);
+            //led.resetFrontMatrixBuffer();
+            //usedUhrType->show(FrontWord::happy_birthday);
+            //copyMatrix(work, act);
+        } else {
+            // use current colors to be blended to act
+            copyMatrix(old, work);
+            copyMatrixFlags(work, act);
+        }
     }
 
     bool lastSubPhase = subPhase == blendingFrames;
@@ -610,11 +648,12 @@ uint16_t Transition::transitionFire() {
         case (FIRE_6 + 4):
             mirrored = !mirrored;
             copyMatrix(old, act); // old contains artefacts
-            if ((transitionType == NEWYEAR)) {
+            if ((transitionType == NEWYEAR_FIRE) || (transitionType == BIRTHDAY)) {
+                // While NEWYEAR_FIRE or BIRTHDAY repeat transition any 500ms (will be stopped by changing transitionType)
                 transitionDelay = 500;
-                return 1; // next transition in 500ms
+                return 1; // restart transition
             }
-            return 0; // end of transition
+            return 0; // end transition
             break;
         default:
             firework->prepare(0, _white, static_cast<Icons>(phase), mirrored);
@@ -682,17 +721,18 @@ uint16_t Transition::transitionFire() {
 //------------------------------------------------------------------------------
 
 uint16_t Transition::transitionCountdown(struct tm &tm) {
-    static int8_t lastSecond = 99, countDown = 60;
-    uint8_t _second = tm.tm_sec; // 0 - 59
+    static int8_t lastSecond = 0, countDown = 59;
+    uint8_t _second = tm.tm_sec; // 0..59
     if (_second != lastSecond) {
-        if (phase == 1) {
+        if (phase == 1) { // Initialize at start of animation
             transitionDelay = 50;
+            lastSecond = 0;
+            countDown = 59;
         }
-        if (countDown < 0) { // 60 - 0
-            countDown = 60;
-            lastSecond = 99;
-            transitionType = NEWYEAR;
-            return 1; // continue FIRE in phase 1
+        if (countDown < 0) { // Countdown finished?
+            lastSecond = 0;
+            countDown = 59;
+            return 0;
         }
         lastSecond = _second;
         fillMatrix(work, background);
@@ -903,6 +943,13 @@ void Transition::initTransitionStart() {
 }
 
 //------------------------------------------------------------------------------
+// TODO: This function is used in two different functions:
+// 1) Transition::isOverwrittenByTransition
+// 2) Transition::loop
+// It looks like that it is intended that function 1 and 2 both can reset the 
+// "MinuteChanged" status, so that only the first function calling the 
+// Transition::hasMinuteChanged is executed!?
+// Are there better implementations which are more obvious?
 
 bool Transition::hasMinuteChanged() {
     if (lastMinute != _minute) {
@@ -919,10 +966,10 @@ bool Transition::hasMinuteChanged() {
 
 bool Transition::isOverwrittenByTransition(WordclockChanges changesInWordMatrix,
                                            uint8_t minute) {
-    if (transitionType == NO_TRANSITION) {
+        if (transitionType == NO_TRANSITION) {
         if (changesInWordMatrix != WordclockChanges::Parameters &&
             hasMinuteChanged()) {
-            // Needed in Case the Transition is switched off
+                        // Needed in Case the Transition is switched off
             matrixChanged = true;
         }
     } else {
@@ -956,30 +1003,24 @@ void Transition::loop(struct tm &tm) {
     }
 
     if (G.prog == COMMAND_IDLE || G.prog == COMMAND_MODE_WORD_CLOCK) {
-        if (!isSilvester(transitionType, tm, hasMinuteChanged())) {
+        if (!isSpecialEvent(transitionType, tm, hasMinuteChanged())) {
             transitionType = getTransitionType(hasMinuteChanged());
         }
-
-        if (transitionType == NO_TRANSITION) {
-            if (lastTransitionType != NO_TRANSITION) {
-                lastTransitionType = NO_TRANSITION;
-                copyMatrix(work, act);
-                colorize(work);
-                copy2Stripe(work);
-                led.show();
-            }
-        } else {
+        if (transitionType != NO_TRANSITION) {
             if (changesInTransitionTypeDurationOrDemo()) {
                 lastTransitionType = transitionType;
                 lastTransitionDemo = G.transitionDemo;
                 lastTransitionDuration = G.transitionDuration;
+                copyMatrix(work, act);
+                colorize(work);
+                copy2Stripe(work);
+                led.show();
                 phase = 1;
             }
             if (G.transitionColorize != lastTransitionColorize) {
                 lastTransitionColorize = G.transitionColorize;
                 colorize(isIdle() ? work : act);
             }
-
             uint32_t now = millis();
             if ((!isIdle()) && (now >= nextActionTime)) {
                 nextActionTime = now + transitionDelay;
@@ -1010,14 +1051,15 @@ void Transition::loop(struct tm &tm) {
                 case BALLS:
                     phase = transitionBalls();
                     break;
-                case NEWYEAR:
+                case BIRTHDAY:
+                case NEWYEAR_FIRE:
                 case FIRE:
                     phase = transitionFire();
                     break;
                 case SNAKE:
                     phase = transitionSnake();
                     break;
-                case COUNTDOWN:
+                case NEWYEAR_COUNTDOWN:
                     phase = transitionCountdown(tm);
                     break;
                 case RANDOM:
@@ -1027,7 +1069,6 @@ void Transition::loop(struct tm &tm) {
             }
             transitionColorChange();
             copy2Stripe(work);
-            setMinute(); // TODO: Is setMinute() on the right place ?
             led.show();
         }
     }

@@ -1012,7 +1012,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_BIRTHDAYS: {
         DynamicJsonDocument config(1024);
         config["command"] = "birthdays";
-        char dateString[10];
+        char dateString[14];
         sprintf (dateString, "%04u-%02u-%02u", G.birthday1.year, G.birthday1.month, G.birthday1.day);
         config["birthdaysDate1"] = dateString;
         sprintf (dateString, "%04u-%02u-%02u", G.birthday2.year, G.birthday2.month, G.birthday2.day);
