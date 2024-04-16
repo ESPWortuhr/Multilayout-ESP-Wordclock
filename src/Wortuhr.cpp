@@ -204,9 +204,9 @@ void setup() {
         G.bootShowWifi = true;
         G.bootShowIP = BOOT_SHOWIP;
 
-        G.autoLdrEnabled = 0;
-        G.autoLdrBright = 100;
-        G.autoLdrDark = 10;
+        G.autoBrightEnabled = 0;
+        G.autoBrightOffset = 100;
+        G.autoBrightSlope = 10;
         G.transitionType = 0; // Transition::NO_TRANSITION;
         G.transitionDuration = 2;
         G.transitionSpeed = 30;

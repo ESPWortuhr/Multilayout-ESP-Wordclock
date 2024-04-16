@@ -156,7 +156,7 @@ void Led::getColorbyPositionWithAppliedBrightness(HsbColor &color,
     uint8_t manBrightnessSetting = 100;
     getCurrentManualBrightnessSetting(manBrightnessSetting);
 
-    if (G.autoLdrEnabled) {
+    if (G.autoBrightEnabled) {
         color.B = setBrightnessAuto(color.B);
     } else {
         color.B *= manBrightnessSetting / 100.f;

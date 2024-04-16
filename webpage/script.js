@@ -83,11 +83,11 @@ var bootLedBlink = 0;
 var bootLedSweep = 0;
 var bootShowWifi = 0;
 var bootShowIP = 0;
-var autoLdrInterval = null;
-var autoLdrEnabled = 0;
-var displayAutoLdr = 0;
-var autoLdrBright = " ";
-var autoLdrDark = " ";
+var autoBrightDisplay = 0;
+var autoBrightEnabled = 0;
+var autoBrightInterval = null;
+var autoBrightOffset = " ";
+var autoBrightSlope = " ";
 var transitionType = 0;
 var transitionDuration = 1;
 var transitionSpeed = 30;
@@ -143,7 +143,7 @@ var COMMAND_SET_WIFI_DISABLED = 98;
 var COMMAND_SET_WIFI_AND_RESTART = 99;
 var COMMAND_RESET = 100;
 var COMMAND_SET_BOOT = 101;
-var COMMAND_SET_AUTO_LDR = 102;
+var COMMAND_SET_AUTO_BRIGHT = 102;
 var COMMAND_SET_LAYOUT_VARIANT = 103;
 var COMMAND_SET_MQTT_HA_DISCOVERY = 104;
 
@@ -152,7 +152,7 @@ var COMMAND_SPEED = 152;
 var COMMAND_REQUEST_CONFIG_VALUES = 200;
 var COMMAND_REQUEST_COLOR_VALUES = 201;
 var COMMAND_REQUEST_WIFI_LIST = 202;
-var COMMAND_REQUEST_AUTO_LDR = 203;
+var COMMAND_REQUEST_AUTO_BRIGHT = 203;
 var COMMAND_REQUEST_TRANSITION = 204;
 var COMMAND_REQUEST_MQTT_VALUES = 205;
 
@@ -224,10 +224,10 @@ function initConfigValues() {
 	bootLedSweep = 0;
 	bootShowWifi = 0;
 	bootShowIP = 0;
-	displayAutoLdr = 0;
-	autoLdrEnabled = 0;
-	autoLdrBright = " ";
-	autoLdrDark = " ";
+	autoBrightDisplay = 0;
+	autoBrightEnabled = 0;
+	autoBrightOffset = 10;
+	autoBrightSlope = 127;
 	transitionType = 0;
 	transitionDuration = 1;
 	transitionSpeed = 30;
@@ -314,7 +314,7 @@ function initWebsocket() {
 		$("#section-connection-lost").set({
 			$display: "block"
 		});
-		autoLdrStop();
+		autoBrightStop();
 
 		debugMessage("The connection with the websocket was closed (code " + event.code + ").", event);
 	};
@@ -395,10 +395,10 @@ function initWebsocket() {
 			removeSpecificOption("show-minutes", "1", data.UhrtypeDef === 13); // Remove "LED4x" for Ger16x8
 			removeSpecificOption("show-minutes", "2", data.UhrtypeDef === 13); // Remove "LED7x" for Ger16x8
 
-			autoLdrEnabled = data.autoLdrEnabled;
-			$("#auto-ldr-enabled").set("value", autoLdrEnabled);
-			enableSpecific("specific-layout-brightness-man", autoLdrEnabled === 0);
-			enableSpecific("specific-layout-brightness-auto", autoLdrEnabled === 1);
+			autoBrightEnabled = data.autoBrightEnabled;
+			$("#auto-bright-enabled").set("value", autoBrightEnabled);
+			enableSpecific("specific-layout-brightness-man", autoBrightEnabled === 0);
+			enableSpecific("specific-layout-brightness-auto", autoBrightEnabled === 1);
 		}
 		if (data.command === "set") {
 			hsb[0][0] = data.hsb00;
@@ -432,11 +432,11 @@ function initWebsocket() {
 			transitionDemo = data.transitionDemo;
 			setTransition();
 		}
-		if (data.command === "autoLdr") {
-			$("#auto-ldr-enabled").set("value", data.autoLdrEnabled);
-			$("#auto-ldr-value").set("value", data.autoLdrValue);
-			$("#auto-ldr-bright").set("value", data.autoLdrBright);
-			$("#auto-ldr-dark").set("value", data.autoLdrDark);
+		if (data.command === "autoBright") {
+			$("#auto-bright-enabled").set("value", data.autoBrightEnabled);
+			$("#auto-bright-sensor").set("value", data.autoBrightSensor);
+			$("#auto-bright-offset").set("value", data.autoBrightOffset);
+			$("#auto-bright-slope").set("value", data.autoBrightSlope);
 		}
 	};
 	websocket.onerror = function(event) {
@@ -567,25 +567,25 @@ function updateManualTimeInput() {
 	$("#time").set("value", `${hours}:${minutes}`);
 }
 
-function autoLdrValueUpdater() {
-	if (autoLdrInterval !== null || autoLdrEnabled !== 1) {
+function autoBrightUpdater() {
+	if (autoBrightInterval !== null || autoBrightEnabled !== 1) {
 		return;
 	}
-	autoLdrInterval = setInterval(function() {
-		if ($("#auto-ldr-enabled").get("value") === "1") {
-			sendCmd(COMMAND_REQUEST_AUTO_LDR, 1);
+	autoBrightInterval = setInterval(function() {
+		if ($("#auto-bright-enabled").get("value") === "1") {
+			sendCmd(COMMAND_REQUEST_AUTO_BRIGHT, 1);
 		}
-	}, 1000);
-	debugMessage(`Start timer autoLdrInterval with ID ${autoLdrInterval}`);
+	}, 1000); // 1000 milliseconds intervall
+	debugMessage(`Start timer autoBrightInterval with ID ${autoBrightInterval}`);
 }
 
-function autoLdrStop() {
-	if (autoLdrInterval === null) {
+function autoBrightStop() {
+	if (autoBrightInterval === null) {
 		return;
 	}
-	debugMessage(`Stop timer autoLdrInterval with ID ${autoLdrInterval}`);
-	clearInterval(autoLdrInterval);
-	autoLdrInterval = null;
+	debugMessage(`Stop timer autoBrightInterval with ID ${autoBrightInterval}`);
+	clearInterval(autoBrightInterval);
+	autoBrightInterval = null;
 }
 
 function nstr5(number) {
@@ -694,11 +694,11 @@ $.ready(function() {
 		}
 		if (navigation === "settings" || navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
-			sendCmd(COMMAND_REQUEST_AUTO_LDR);
+			sendCmd(COMMAND_REQUEST_AUTO_BRIGHT);
 			updateManualTimeInput();
-			autoLdrValueUpdater();
+			autoBrightUpdater();
 		} else {
-			autoLdrStop();
+			autoBrightStop();
 		}
 
 		// show/hide sections
@@ -847,16 +847,16 @@ $.ready(function() {
 		debugMessage("WiFi" + debugMessageReconfigured);
 		return false;
 	});
-	$("[id*='auto-ldr']").on("change", function() {
-		autoLdrEnabled = $("#auto-ldr-enabled").get("value");
-		autoLdrBright = $("#auto-ldr-bright").get("value");
-		autoLdrDark = $("#auto-ldr-dark").get("value");
-		sendCmd(COMMAND_SET_AUTO_LDR, nstr(autoLdrEnabled) + nstr(autoLdrBright) + nstr(autoLdrDark));
-		sendCmd(COMMAND_REQUEST_AUTO_LDR);	// read back values
+	$("[id*='auto-bright']").on("change", function() {
+		autoBrightEnabled = $("#auto-bright-enabled").get("value");
+		autoBrightOffset = $("#auto-bright-offset").get("value");
+		autoBrightSlope = $("#auto-bright-slope").get("value");
+		sendCmd(COMMAND_SET_AUTO_BRIGHT, nstr(autoBrightEnabled) + nstr(autoBrightOffset) + nstr(autoBrightSlope));
+		sendCmd(COMMAND_REQUEST_AUTO_BRIGHT);	// read back values
 
-		displayAutoLdr = Number($("#auto-ldr-enabled").get("value"));
-		enableSpecific("specific-layout-brightness-man", !displayAutoLdr);
-		enableSpecific("specific-layout-brightness-auto", displayAutoLdr);
+		autoBrightDisplay = Number($("#auto-bright-enabled").get("value"));
+		enableSpecific("specific-layout-brightness-man", !autoBrightDisplay);
+		enableSpecific("specific-layout-brightness-auto", autoBrightDisplay);
 		return false;
 	});
 	$("#_wlanscan").on("click", function() {

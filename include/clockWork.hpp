@@ -17,19 +17,19 @@ void ClockWork::loopLdrLogic() {
     int16_t lux = analogRead(A0); // Range 0-1023
     uint8_t ldrValOld = ldrVal;
 
-    if (G.autoLdrEnabled) {
+    if (G.autoBrightEnabled) {
         lux /= 4; // Range 0-255
-        uint16_t minimum = min(G.autoLdrBright, G.autoLdrDark);
-        uint16_t maximum = max(G.autoLdrBright, G.autoLdrDark);
+        uint16_t minimum = min(G.autoBrightOffset, G.autoBrightSlope);
+        uint16_t maximum = max(G.autoBrightOffset, G.autoBrightSlope);
         if (lux >= maximum)
             lux = maximum;
         if (lux <= minimum)
             lux = minimum;
-        if (G.autoLdrDark == G.autoLdrBright) {
+        if (G.autoBrightSlope == G.autoBrightOffset) {
             // map() //Would crash with division by zero
             ldrVal = 100;
         } else {
-            ldrVal = map(lux, G.autoLdrDark, G.autoLdrBright, 10, 100);
+            ldrVal = map(lux, G.autoBrightSlope, G.autoBrightOffset, 10, 100);
         }
     }
     if (ldrValOld != ldrVal) {
@@ -53,16 +53,16 @@ void ClockWork::initBH1750Logic() {
 
 // Measure with Ambient Light Sensor BH1750
 // 
-// Inputs: autoLdrDark and autoLdrBright 0-255 to limit lux255 (lux normalized to 0-255)
+// Inputs: autoBrightSlope and autoBrightOffset 0-255 to limit lux255 (lux normalized to 0-255)
 // Output: ldrVal 10-100%
 // TODO: (Improvements)
 // The high resolution of the BH1750 sensor is currently destroied due to: 
 // - the 8bit logic in this implementation
 // - the 90 increments ldrVal value
-// - may be the slope and offset should be reworked (currently: autoLdrDark and autoLdrBright)
+// - may be the slope and offset should be reworked (currently: autoBrightSlope and autoBrightOffset)
 void ClockWork::loopBH1750Logic() {
-    uint8_t minimum = min(G.autoLdrBright, G.autoLdrDark);
-    uint8_t maximum = max(G.autoLdrBright, G.autoLdrDark);
+    uint8_t minimum = min(G.autoBrightOffset, G.autoBrightSlope);
+    uint8_t maximum = max(G.autoBrightOffset, G.autoBrightSlope);
     uint8_t lux255 = maximum;
     uint8_t ldrValOld = ldrVal;
 
@@ -70,7 +70,7 @@ void ClockWork::loopBH1750Logic() {
         initBH1750Logic();
         initBH1750 = true;
     }
-    if (G.autoLdrEnabled) {
+    if (G.autoBrightEnabled) {
         if (lightMeter.measurementReady()) {
             lux = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
             // Normalize the  illuminance to 0-255
@@ -81,7 +81,7 @@ void ClockWork::loopBH1750Logic() {
             lux255 = maximum;
         if (lux255 <= minimum)
             lux255 = minimum;
-        if (G.autoLdrDark == G.autoLdrBright) {
+        if (G.autoBrightSlope == G.autoBrightOffset) {
             // map() //Would crash with division by zero
             ldrVal = 100;
         } else {
@@ -959,7 +959,7 @@ void ClockWork::loop(struct tm &tm) {
         //--------------------------------------------
         // LDR Routine
         //--------------------------------------------
-        if (G.autoLdrEnabled) {
+        if (G.autoBrightEnabled) {
             //loopLdrLogic();
             loopBH1750Logic();
         }
@@ -1059,7 +1059,7 @@ void ClockWork::loop(struct tm &tm) {
         config["bootLedSweep"] = G.bootLedSweep;
         config["bootShowWifi"] = G.bootShowWifi;
         config["bootShowIP"] = G.bootShowIP;
-        config["autoLdrEnabled"] = G.autoLdrEnabled;
+        config["autoBrightEnabled"] = G.autoBrightEnabled;
         config["isRomanLanguage"] = isRomanLanguage();
         config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
         config["hasZwanzig"] = usedUhrType->hasZwanzig();
@@ -1095,16 +1095,16 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
-    case COMMAND_REQUEST_AUTO_LDR: {
+    case COMMAND_REQUEST_AUTO_BRIGHT: {
         DynamicJsonDocument config(1024);
-        config["command"] = "autoLdr";
+        config["command"] = "autoBright";
         if (G.param1 == 0) {
-            config["autoLdrEnabled"] = G.autoLdrEnabled;
-            config["autoLdrBright"] = G.autoLdrBright;
-            config["autoLdrDark"] = G.autoLdrDark;
+            config["autoBrightEnabled"] = G.autoBrightEnabled;
+            config["autoBrightOffset"] = G.autoBrightOffset;
+            config["autoBrightSlope"] = G.autoBrightSlope;
         }
-        // config["autoLdrValue"] = map(analogRead(A0), 0, 1023, 0, 255);
-        config["autoLdrValue"] = lux;
+        //Original: config["autoBrightSensor"] = map(analogRead(A0), 0, 1023, 0, 255);
+        config["autoBrightSensor"] = (int)lux;
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
         break;
@@ -1148,7 +1148,7 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_SET_MINUTE:
     case COMMAND_SET_BRIGHTNESS:
-    case COMMAND_SET_AUTO_LDR:
+    case COMMAND_SET_AUTO_BRIGHT:
     case COMMAND_SET_LANGUAGE_VARIANT:
     case COMMAND_SET_WHITETYPE:
     case COMMAND_SET_TIME_MANUAL: {
