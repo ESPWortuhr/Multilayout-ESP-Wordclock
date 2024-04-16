@@ -169,10 +169,9 @@ let TRANSLATION_DE_DE = {
 		"h1": "Geburtstage",
 		"dates": {
 			"h2": "Termine",
-			"help": "Die Uhr kann an Geburtstagen auf eine spezielle Anzeige wechseln:\n" +
-					"Bei allen Uhrentypen wird jede volle Stunde eine Feuerwerk-Animation gestartet.\n" +
-					"Unterstützt der gewählte Uhrentypus die Wörter „Happy Birthday“, dann werden diese den ganzen Tag erleuchtet.\n\n" +
-					"Geburtstage vor dem Jahr 1000 werden ignoriert.",
+			"help": "An Geburtstagen erscheint alle 5 Minuten eine Feuerwerk-Animation.\n" +
+					"Bei kompatiblen Uhrentypen werden während der Animation die Wörter „Happy Birthday“ statt der Uhrzeit angezeigt.\n" +
+					"Geburtstage vor dem Jahr 1900 werden nicht animiert.\n",
 			"save": "Speichern",
 			"date1": {
 				"label": "Termin 1:"
@@ -256,11 +255,12 @@ let TRANSLATION_DE_DE = {
 		},
 		"wifi": {
 			"h2": "Wi-Fi / WLAN",
-			"help": "Neukonfiguration erstellt ein eigenes WLAN.\n" +
-				"Mit diesem verbinden, dann kann das Zielnetz ausgewählt werden.",
+			"help": "Eine Rekonfiguration der WLAN Verbindung ist nur über den WIFI Accesspoint der Wortuhr möglich.\n" +
+				"Durch Drücken der Taste RESET werden die WLAN Verbindungsdaten gelöscht und in den WIFI Accesspoint Modus gewechselt.\n" +
+				"Der WIFI Accesspoint ist jetzt erreichbar unter dem Netzwerknamen Connect_to_Wordclock.",
 			"ssid": "WLAN-Name (SSID)",
-			"other-wifi": "Anderes WLAN",
-			"configure": "Konfigurieren",
+			"other-wifi": "WLAN",
+			"configure": "Reset",
 			"until-restart": "Bis zum Neustart",
 			"deactivate": "Ausschalten"
 		},

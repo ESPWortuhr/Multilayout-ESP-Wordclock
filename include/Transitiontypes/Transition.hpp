@@ -54,6 +54,10 @@ Transition::~Transition() {
 //------------------------------------------------------------------------------
 // Make special events at silvester and birthday
 //------------------------------------------------------------------------------
+// On Silvester, make a countdwon for the last minute of the year, then make a fireworks animation.
+// On birthdays, a fireworks animation appears every 5 minutes.
+// Compatible clock types will display the words “Happy Birthday” instead of the time during the animation.
+// Birthdays before 1900 are not animated.
 
 bool Transition::isSpecialEvent(Transition_t &type, struct tm &tm, bool trigger) {
     static uint8_t minutesAfterMidnight;
@@ -63,8 +67,8 @@ bool Transition::isSpecialEvent(Transition_t &type, struct tm &tm, bool trigger)
     if (trigger) { 
         specialEventOngoing = (type == NEWYEAR_COUNTDOWN) || (type == NEWYEAR_FIRE) || (type == BIRTHDAY);
         // tm_mday=1..31, tm.tm_mon=0=Jan..11=Dec, tm_year=0=1900..n=1900+n
-        isBirthday = ((tm.tm_mon+1 == G.birthday1.month) && (tm.tm_mday == G.birthday1.day)) ||
-                     ((tm.tm_mon+1 == G.birthday2.month) && (tm.tm_mday == G.birthday2.day));
+        isBirthday = ((G.birthday1.year > 1900) && (G.birthday1.month == tm.tm_mon+1) && (G.birthday1.day == tm.tm_mday)) ||
+                     ((G.birthday2.year > 1900) && (G.birthday2.month == tm.tm_mon+1) && (G.birthday2.day == tm.tm_mday));
 
         if (!specialEventOngoing) { // Start only new special events when no SE is pending
             // Conditions to start a special events 
@@ -599,20 +603,24 @@ uint16_t Transition::transitionFire() {
         firework->prepare(0, _white, FIRE_1, mirrored);
         if (transitionType == BIRTHDAY && usedUhrType->hasHappyBirthday()) {
             /* 
-            An einem Geburtstag wird das Feuerwerk (zum Test) alle 5 Minuten für eine Minute aktiviert (für alle Uhrentypen)
-            (Bitte den Geburtstag im WebInterface auf heute programmieren)
-            Bei Uhrentypen ohne HappyBirthday wird das Feuerwerk mit der Uhrzeit zusammen angezeigt (wie gehabt)
-            Uhrentypen die HappyBirthday unterstützen sollten hingegen folgende Anzeige haben:
-               - Urzeit wird während des Feuerwerks nicht angezeigt (ansonsten Konflikt mit den Uhr-Wörtern)
-               - Stattdessen: Feuerwerk nur mit den Wörtern "Happy Birthday"
-               - Die Urzeit ist schon entfernt ;-)
-               - Wie kann man hier die Wörter "Happy Birthday" einschalten?
+            On birthdays, a fireworks animation appears every 5 minutes.
+            Compatible clock types will display the words “Happy Birthday” instead of the time during the animation.
+            Birthdays before 1900 are not animated.
             */
-            Serial.println("Please make the Happy Birthday patch here");
             fillMatrix(work, background);
-            //led.resetFrontMatrixBuffer();
-            //usedUhrType->show(FrontWord::happy_birthday);
-            //copyMatrix(work, act);
+            HsbColor hsbColor = HsbColor(foreground);
+            hsbColor.H = pseudoRandomHue();
+            // TODO: This direct access to words undermines the Uhrtype concept!!!
+            // Switch on word "Happy"
+            for (uint8_t col = 3; col <= 7; col++) { 
+                work[3][col].changeRgb(hsbColor);
+            }
+            hsbColor.H = pseudoRandomHue();
+            // Switch on word "Birthday"
+            for (uint8_t col = 3; col <= 10; col++) { 
+                work[4][col].changeRgb(hsbColor);
+            }
+            copyMatrix(act,work);
         } else {
             // use current colors to be blended to act
             copyMatrix(old, work);

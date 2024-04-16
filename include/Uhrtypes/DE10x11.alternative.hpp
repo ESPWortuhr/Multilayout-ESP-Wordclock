@@ -84,10 +84,8 @@ public:
             break;
 
         case FrontWord::happy_birthday:
-            // happy
-            setFrontMatrixWord(3, 3, 7);
-            // happy
-            setFrontMatrixWord(4, 0, 7);
+            setFrontMatrixWord(3, 3,  7); // Happy
+            setFrontMatrixWord(4, 3, 10); // Birthday
             break;
 
         case FrontWord::hour_1:
