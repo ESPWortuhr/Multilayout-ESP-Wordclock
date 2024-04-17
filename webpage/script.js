@@ -435,6 +435,7 @@ function initWebsocket() {
 		if (data.command === "autoBright") {
 			$("#auto-bright-enabled").set("value", data.autoBrightEnabled);
 			$("#auto-bright-sensor").set("value", data.autoBrightSensor);
+			$("#auto-bright-gain").set("value", data.autoBrightGain);
 			$("#auto-bright-offset").set("value", data.autoBrightOffset);
 			$("#auto-bright-slope").set("value", data.autoBrightSlope);
 		}

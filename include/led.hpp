@@ -122,7 +122,7 @@ void Led::resetFrontMatrixBuffer() {
 
 float Led::setBrightnessAuto(float val) {
     // G.hh contains time-dependent brightness values in %.
-    return (val * ldrVal) / 100.f;
+    return (val * ledGain) / 100.f;
 }
 
 //------------------------------------------------------------------------------

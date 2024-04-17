@@ -137,7 +137,7 @@ struct GLOBAL {
 GLOBAL G = {};
 
 // LDR
-uint8_t ldrVal = 100;
+float ledGain = 100;
 
 uint8_t _second = 0;
 uint8_t _secondFrame = 0;

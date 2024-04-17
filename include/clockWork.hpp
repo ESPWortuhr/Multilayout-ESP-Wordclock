@@ -13,9 +13,10 @@ BH1750 lightMeter(0x23);
 //------------------------------------------------------------------------------
 // Helper Functions
 //------------------------------------------------------------------------------
+// TODO: Make original implementation with LDR again operational
 void ClockWork::loopLdrLogic() {
     int16_t lux = analogRead(A0); // Range 0-1023
-    uint8_t ldrValOld = ldrVal;
+    uint8_t ledGainOld = ledGain;
 
     if (G.autoBrightEnabled) {
         lux /= 4; // Range 0-255
@@ -27,12 +28,12 @@ void ClockWork::loopLdrLogic() {
             lux = minimum;
         if (G.autoBrightSlope == G.autoBrightOffset) {
             // map() //Would crash with division by zero
-            ldrVal = 100;
+            ledGain = 100;
         } else {
-            ldrVal = map(lux, G.autoBrightSlope, G.autoBrightOffset, 10, 100);
+            ledGain = map(lux, G.autoBrightSlope, G.autoBrightOffset, 10, 100);
         }
     }
-    if (ldrValOld != ldrVal) {
+    if (ledGainOld != ledGain) {
         led.set();
     }
 }
@@ -54,18 +55,12 @@ void ClockWork::initBH1750Logic() {
 // Measure with Ambient Light Sensor BH1750
 // 
 // Inputs: autoBrightSlope and autoBrightOffset 0-255 to limit lux255 (lux normalized to 0-255)
-// Output: ldrVal 10-100%
-// TODO: (Improvements)
-// The high resolution of the BH1750 sensor is currently destroied due to: 
-// - the 8bit logic in this implementation
-// - the 90 increments ldrVal value
-// - may be the slope and offset should be reworked (currently: autoBrightSlope and autoBrightOffset)
+// Outputs: 
+// lux = Ambient light [lux] 
+// ledGain = gain for the brightness of the LEDs 0.0-100.0%
+// 
 void ClockWork::loopBH1750Logic() {
-    uint8_t minimum = min(G.autoBrightOffset, G.autoBrightSlope);
-    uint8_t maximum = max(G.autoBrightOffset, G.autoBrightSlope);
-    uint8_t lux255 = maximum;
-    uint8_t ldrValOld = ldrVal;
-
+    float ledGainOld = ledGain;
     if (!initBH1750) {
         initBH1750Logic();
         initBH1750 = true;
@@ -73,29 +68,15 @@ void ClockWork::loopBH1750Logic() {
     if (G.autoBrightEnabled) {
         if (lightMeter.measurementReady()) {
             lux = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
-            // Normalize the  illuminance to 0-255
-            lux255 = static_cast<uint8>(lux/214.166);
         }
-        // Limit values between minimum and maximum
-        if (lux255 >= maximum)
-            lux255 = maximum;
-        if (lux255 <= minimum)
-            lux255 = minimum;
-        if (G.autoBrightSlope == G.autoBrightOffset) {
-            // map() //Would crash with division by zero
-            ldrVal = 100;
-        } else {
-            ldrVal = map(lux255, minimum, maximum, 10, 100);
-        }
+        // Derive the Brightness for the LEDs 0.0 - 100.0%
+        // Bias of autoBrightSlope+1=aBS is 16, i.e. the slope is x1, if aBS=1 then slope=1/16x, if aBS=256 then slope=16x, 
+        // When autoBrightOffset=0, and aBS=16 then ledGain should reach 100.0% at 500.0 LUX.
+        ledGain = (lux * (float)(G.autoBrightSlope+1)) / 80.0;
+        ledGain += G.autoBrightOffset;
+        if (ledGain > 100.0) ledGain = 100.0;
     }
-    if (ldrValOld != ldrVal) {
-        Serial.print("BH1750: LUX: ");
-        Serial.print(lux);
-        Serial.print(", NormalizedTo255: ");
-        Serial.print(lux255);
-        Serial.print(", ldrVal: ");
-        Serial.print(ldrVal);
-        Serial.println();
+    if (ledGainOld != ledGain) {
         led.set();
     }
 }
@@ -1105,6 +1086,7 @@ void ClockWork::loop(struct tm &tm) {
         }
         //Original: config["autoBrightSensor"] = map(analogRead(A0), 0, 1023, 0, 255);
         config["autoBrightSensor"] = (int)lux;
+        config["autoBrightGain"] = (int)ledGain;
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
         break;
