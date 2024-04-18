@@ -65,6 +65,10 @@ Network network;
 _Static_assert(sizeof(G) <= EEPROM_SIZE,
                "Datenstruktur G zu gross für reservierten EEPROM Bereich");
 
+uint16_t powerCycleCountAddr =
+    EEPROM_SIZE - 1;          // Address in EEPROM to store power cycle count
+uint16_t powerCycleCount = 0; // Variable to store power cycle count
+
 //------------------------------------------------------------------------------
 
 uint32_t sntp_startup_delay_MS_rfc_not_less_than_60000() {
@@ -113,6 +117,17 @@ void time_is_set() {
 }
 
 //------------------------------------------------------------------------------
+
+void incrementPowerCycleCount() {
+    if (powerCycleCount > 5) {
+        powerCycleCount = 0;
+    }
+    powerCycleCount++;
+    EEPROM.write(powerCycleCountAddr, powerCycleCount);
+    EEPROM.commit();
+}
+
+//------------------------------------------------------------------------------
 // Start setup()
 //------------------------------------------------------------------------------
 
@@ -130,9 +145,23 @@ void setup() {
     //-------------------------------------
     // Read / initialize EEPROM
     //-------------------------------------
-    EEPROM.begin(EEPROM_SIZE);
 
+    EEPROM.begin(EEPROM_SIZE);
     eeprom::read();
+
+    //-------------------------------------
+
+    // Read the power cycle count from EEPROM
+    powerCycleCount = EEPROM.read(powerCycleCountAddr);
+    incrementPowerCycleCount();
+    Serial.print("Power cycle count: ");
+    Serial.println(powerCycleCount);
+    if (powerCycleCount == 5) {
+        G.sernr++;
+        Serial.println("Reset to initial values");
+    }
+
+    //-------------------------------------
 
     if (G.sernr != SERNR) {
         for (uint16_t i = 0; i < EEPROM_SIZE; i++) {
