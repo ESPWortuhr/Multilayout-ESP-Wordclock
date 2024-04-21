@@ -154,12 +154,10 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     Serial.print("Received message [");
     Serial.print(topic);
     Serial.print("] ");
+
     char msg[length + 1];
-    for (uint32_t i = 0; i < length; i++) {
-        Serial.print((char)payload[i]);
-        msg[i] = (char)payload[i];
-    }
-    Serial.println();
+    // Convert payload to a null-terminated string
+    memcpy(msg, payload, length);
     msg[length] = '\0';
 
     // Deserialize JSON
@@ -173,9 +171,10 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
 
     // Process received JSON data
     if (doc.containsKey("state")) {
-        if (!strcmp(doc["state"], "ON")) {
+        const char *state = doc["state"];
+        if (!strcmp(state, "ON")) {
             G.state = true;
-        } else if (!strcmp(doc["state"], "OFF")) {
+        } else if (!strcmp(state, "OFF")) {
             led.clear();
             led.show();
             G.state = false;
@@ -183,22 +182,23 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         parametersChanged = true;
     }
 
+    const char *effect = doc["effect"];
     if (doc.containsKey("effect")) {
-        if (!strcmp("Wordclock", doc["effect"])) {
+        if (!strcmp("Wordclock", effect)) {
             G.prog = COMMAND_MODE_WORD_CLOCK;
-        } else if (!strcmp("Seconds", doc["effect"])) {
+        } else if (!strcmp("Seconds", effect)) {
             G.prog = COMMAND_MODE_SECONDS;
-        } else if (!strcmp("Digitalclock", doc["effect"])) {
+        } else if (!strcmp("Digitalclock", effect)) {
             G.prog = COMMAND_MODE_DIGITAL_CLOCK;
-        } else if (!strcmp("Scrollingtext", doc["effect"])) {
+        } else if (!strcmp("Scrollingtext", effect)) {
             G.prog = COMMAND_MODE_SCROLLINGTEXT;
-        } else if (!strcmp("Rainbowcycle", doc["effect"])) {
+        } else if (!strcmp("Rainbowcycle", effect)) {
             G.prog = COMMAND_MODE_RAINBOWCYCLE;
-        } else if (!strcmp("Rainbow", doc["effect"])) {
+        } else if (!strcmp("Rainbow", effect)) {
             G.prog = COMMAND_MODE_RAINBOW;
-        } else if (!strcmp("Color", doc["effect"])) {
+        } else if (!strcmp("Color", effect)) {
             G.prog = COMMAND_MODE_COLOR;
-        } else if (!strcmp("Symbol", doc["effect"])) {
+        } else if (!strcmp("Symbol", effect)) {
             G.prog = COMMAND_MODE_SYMBOL;
         }
     }
@@ -209,10 +209,11 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     }
 
     // Update color if present
-    if (doc.containsKey("color")) {
+    JsonObject color = doc["color"];
+    if (!color.isNull()) {
         G.color[Foreground] =
-            HsbColor(float(doc["color"]["h"]) / 360.f,
-                     float(doc["color"]["s"]) / 100.f, G.color[Foreground].B);
+            HsbColor(float(color["h"]) / 360.f, float(color["s"]) / 100.f,
+                     G.color[Foreground].B);
         parametersChanged = true;
     }
 
