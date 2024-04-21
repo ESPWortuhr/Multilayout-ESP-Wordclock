@@ -29,12 +29,12 @@ void Mqtt::reInit() {
 
 //------------------------------------------------------------------------------
 
-bool Mqtt::getConnected() { return mqttClient.connected(); }
+bool Mqtt::isConnected() { return mqttClient.connected(); }
 
 //------------------------------------------------------------------------------
 
 void Mqtt::loop() {
-    if (!mqttClient.connected()) {
+    if (!isConnected()) {
         reconnect();
     }
     mqttClient.loop();
