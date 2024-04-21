@@ -392,10 +392,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_MQTT: {
-            if (!G.mqtt.state) {
+            uint8_t newState = split(payload, 3);
+
+            if (newState && !G.mqtt.state) {
                 G.progInit = true;
             }
-            G.mqtt.state = split(payload, 3);
+
+            G.mqtt.state = newState;
             G.mqtt.port = split(payload, 6, 5);
             uint8_t index_start = 11;
             payloadTextHandling(payload, G.mqtt.serverAdress, index_start);
