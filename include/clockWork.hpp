@@ -1335,6 +1335,11 @@ void ClockWork::loop(struct tm &tm) {
         calcClockface();
 
         switch (changesInClockface()) {
+        case WordclockChanges::Minute:
+            lastMinuteArray = minuteArray;
+            memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
+            led.set(WordclockChanges::Minute);
+            break;
         case WordclockChanges::Words:
             lastMinuteArray = minuteArray;
             memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
