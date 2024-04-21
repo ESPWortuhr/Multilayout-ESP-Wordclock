@@ -11,6 +11,8 @@ extern WiFiClient client;
 
 PubSubClient mqttClient(client);
 
+//------------------------------------------------------------------------------
+
 /* Description:
 
 This function checks if a character array representing an MQTT user is empty. An
@@ -66,6 +68,21 @@ void Mqtt::init() {
 
 //------------------------------------------------------------------------------
 
+
+/* Description:
+
+This function attempts to reconnect the MQTT client to the broker after a loss
+of connection. It includes a retry mechanism with a maximum number of retries
+and a timeout duration.
+
+Input:
+
+None
+Output:
+
+None
+*/
+
 void Mqtt::reInit() {
     mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
     reconnect();
@@ -73,9 +90,38 @@ void Mqtt::reInit() {
 
 //------------------------------------------------------------------------------
 
+
+/* Description:
+
+This function checks whether the MQTT client is currently connected to the MQTT
+broker. It returns a boolean value indicating the connection status.
+
+Input:
+
+None
+Output:
+
+Boolean value:
+true if the MQTT client is connected to the broker.
+false if the MQTT client is not connected to the broker.
+ */
+
 bool Mqtt::isConnected() { return mqttClient.connected(); }
 
 //------------------------------------------------------------------------------
+
+
+/* Description:
+
+This function is responsible for managing the MQTT client's main loop. It checks the MQTT connection status and reinitializes the connection if necessary. Additionally, it invokes the loop() function of the underlying MQTT client library to handle incoming MQTT messages and maintain the connection.
+
+Input:
+
+None
+Output:
+
+None 
+*/
 
 void Mqtt::loop() {
     if (!isConnected()) {
@@ -85,6 +131,22 @@ void Mqtt::loop() {
 }
 
 //------------------------------------------------------------------------------
+
+/* Description:
+
+This function handles incoming MQTT messages received from the broker. It parses
+the payload as JSON data and updates the device's state and parameters
+accordingly.
+
+Input:
+
+char *topic: A pointer to a character array containing the topic of the received
+message. byte *payload: A pointer to an array of bytes containing the payload of
+the received message. unsigned int length: The length of the payload in bytes.
+Output:
+
+None
+*/
 
 void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     StaticJsonDocument<512> doc;
@@ -100,6 +162,7 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     Serial.println();
     msg[length] = '\0';
 
+    // Deserialize JSON
     DeserializationError error = deserializeJson(doc, msg);
 
     if (error) {
@@ -108,6 +171,7 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         return;
     }
 
+    // Process received JSON data
     if (doc.containsKey("state")) {
         if (!strcmp(doc["state"], "ON")) {
             G.state = true;
@@ -139,10 +203,12 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         }
     }
 
+    // Copy marquee_text if present
     if (doc.containsKey("marquee_text")) {
         strcpy(G.scrollingText, doc["marquee_text"]);
     }
 
+    // Update color if present
     if (doc.containsKey("color")) {
         G.color[Foreground] =
             HsbColor(float(doc["color"]["h"]) / 360.f,
@@ -150,6 +216,7 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         parametersChanged = true;
     }
 
+    // Update brightness if present
     if (doc.containsKey("brightness")) {
         G.color[Foreground] =
             HsbColor(G.color[Foreground].H, G.color[Foreground].S,
@@ -159,6 +226,22 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
 }
 
 //------------------------------------------------------------------------------
+
+/* Description:
+
+This function is responsible for publishing the current state of the device to
+an MQTT topic. It constructs a JSON message containing information about the
+device state, such as the power state (ON or OFF), color settings, and
+brightness. The constructed JSON message is then published to the MQTT broker on
+a specified topic.
+
+Input:
+
+None
+Output:
+
+None
+*/
 
 void Mqtt::sendState() {
     StaticJsonDocument<200> doc;
@@ -181,39 +264,55 @@ void Mqtt::sendState() {
 
 void Mqtt::sendDiscovery() {
 
-    // MQTT discovery for Home Assistant
-    // {
-    //     "brightness": true,
-    //     "color_mode": true,
-    //     "supported_color_modes": [
-    //         "hs"
-    //     ],
-    //     "schema": "json",
-    //     "name": "ESP",
-    //     "device": {
-    //         "identifiers": [
-    //             "ESPBuro"
-    //         ],
-    //         "name": "ESP",
-    //         "sw_version": "3.3",
-    //         "configuration_url": "http://<IP-Adress>"
-    //     },
-    //     "state_topic": "ESPBuro/status",
-    //     "command_topic": "ESPBuro/cmd",
-    //     "unique_id": "<MAC-Adress>",
-    //     "plattform": "mqtt",
-    //     "effect": true,
-    //     "effect_list": [
-    //         "Wordclock",
-    //         "Seconds",
-    //         "Digitalclock",
-    //         "Scrollingtext",
-    //         "Rainbowcycle",
-    //         "Rainbow",
-    //         "Color",
-    //         "Symbol"
-    //     ]
-    // }
+    /* Description:
+
+    This function publishes MQTT discovery messages for Home Assistant,
+    providing configuration details for a light entity. It constructs a JSON
+    payload according to Home Assistant's MQTT discovery format and publishes it
+    to the appropriate topic.
+
+    Input:
+
+    None
+    Output:
+
+    None
+     */
+
+    /* Example MQTT Message
+    {
+        "brightness": true,
+        "color_mode": true,
+        "supported_color_modes": [
+            "hs"
+        ],
+        "schema": "json",
+        "name": "ESP",
+        "device": {
+            "identifiers": [
+                "ESPBuro"
+            ],
+            "name": "ESP",
+            "sw_version": "3.3",
+            "configuration_url": "http://<IP-Adress>"
+        },
+        "state_topic": "ESPBuro/status",
+        "command_topic": "ESPBuro/cmd",
+        "unique_id": "<MAC-Adress>",
+        "plattform": "mqtt",
+        "effect": true,
+        "effect_list": [
+            "Wordclock",
+            "Seconds",
+            "Digitalclock",
+            "Scrollingtext",
+            "Rainbowcycle",
+            "Rainbow",
+            "Color",
+            "Symbol"
+        ]
+    }
+ */
 
     StaticJsonDocument<700> root;
     mqttClient.setBufferSize(700);
@@ -262,8 +361,24 @@ void Mqtt::sendDiscovery() {
 }
 
 //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+/* Description:
+
+This function is called upon successful reconnection to the MQTT broker. It
+performs post-connection tasks, such as subscribing to specific topics.
+
+Input:
+
+None
+Output:
+
+None
+*/
 
 void Mqtt::reconnect() {
+    // Subscribe to the desired topic
     mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
     Serial.println("MQTT Connected...");
+    delay(100);
 }
