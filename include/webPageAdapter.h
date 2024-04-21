@@ -408,12 +408,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             payloadTextHandling(payload, G.mqtt.clientId, index_start);
             index_start += PAYLOAD_LENGTH;
             payloadTextHandling(payload, G.mqtt.topic, index_start);
-            Serial.println("Webpageadapter.h411");
-            Serial.println(G.mqtt.serverAdress);
-            Serial.println(G.mqtt.user);
-            Serial.println(G.mqtt.password);
-            Serial.println(G.mqtt.clientId);
-            Serial.println(G.mqtt.topic);
             break;
         }
 
