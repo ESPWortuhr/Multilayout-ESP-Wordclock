@@ -111,13 +111,11 @@ WebPageAdapter webSocket = WebPageAdapter(80);
 //------------------------------------------------------------------------------
 
 uint16_t split(uint8_t *payload, uint8_t start, uint8_t length = 3) {
-    char buffer[length];
-    uint8_t m = 0;
-    for (uint16_t k = start; k < (start + length); k++) {
-        buffer[m] = payload[k];
-        m++;
+    String value;
+    for (uint16_t k = start; k < start + length; k++) {
+        value += char(payload[k]);
     }
-    return atoi(buffer);
+    return value.toInt();
 }
 
 //------------------------------------------------------------------------------
@@ -410,6 +408,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             payloadTextHandling(payload, G.mqtt.clientId, index_start);
             index_start += PAYLOAD_LENGTH;
             payloadTextHandling(payload, G.mqtt.topic, index_start);
+            Serial.println("Webpageadapter.h411");
+            Serial.println(G.mqtt.serverAdress);
+            Serial.println(G.mqtt.user);
+            Serial.println(G.mqtt.password);
+            Serial.println(G.mqtt.clientId);
+            Serial.println(G.mqtt.topic);
             break;
         }
 
