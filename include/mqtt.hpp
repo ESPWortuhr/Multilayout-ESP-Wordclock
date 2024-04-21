@@ -68,7 +68,6 @@ void Mqtt::init() {
 
 //------------------------------------------------------------------------------
 
-
 /* Description:
 
 This function attempts to reconnect the MQTT client to the broker after a loss
@@ -90,7 +89,6 @@ void Mqtt::reInit() {
 
 //------------------------------------------------------------------------------
 
-
 /* Description:
 
 This function checks whether the MQTT client is currently connected to the MQTT
@@ -110,17 +108,19 @@ bool Mqtt::isConnected() { return mqttClient.connected(); }
 
 //------------------------------------------------------------------------------
 
-
 /* Description:
 
-This function is responsible for managing the MQTT client's main loop. It checks the MQTT connection status and reinitializes the connection if necessary. Additionally, it invokes the loop() function of the underlying MQTT client library to handle incoming MQTT messages and maintain the connection.
+This function is responsible for managing the MQTT client's main loop. It checks
+the MQTT connection status and reinitializes the connection if necessary.
+Additionally, it invokes the loop() function of the underlying MQTT client
+library to handle incoming MQTT messages and maintain the connection.
 
 Input:
 
 None
 Output:
 
-None 
+None
 */
 
 void Mqtt::loop() {
@@ -360,7 +360,6 @@ void Mqtt::sendDiscovery() {
                        buffer, true);
 }
 
-//------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
 /* Description:
