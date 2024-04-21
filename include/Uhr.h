@@ -289,4 +289,8 @@ enum Icons {
     SMILEY = 10,
     NOTE = 11,
     SNOW = 12,
+    MAIL = 13,
+    BELL = 14,
+    STOP = 15,
+    STBY = 16,
 };

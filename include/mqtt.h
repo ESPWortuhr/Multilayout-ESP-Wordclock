@@ -17,5 +17,5 @@ public:
     void sendState();
     void sendDiscovery();
 
-    bool getConnected();
+    bool isConnected();
 };

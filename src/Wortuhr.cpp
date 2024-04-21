@@ -393,6 +393,14 @@ void setup() {
     Serial.println("");
 
     //-------------------------------------
+    // Reset Powercycle Counter
+    //-------------------------------------
+    delay(500);
+    powerCycleCount = 0;
+    EEPROM.write(powerCycleCountAddr, powerCycleCount);
+    EEPROM.commit();
+
+    //-------------------------------------
     // Setup Done
     //-------------------------------------
     parametersChanged = true;

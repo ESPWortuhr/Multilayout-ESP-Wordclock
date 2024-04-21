@@ -1174,7 +1174,7 @@ void ClockWork::loop(struct tm &tm) {
         }
         delay(100);
 
-        if (G.mqtt.state && !mqtt.getConnected()) {
+        if (G.mqtt.state && !mqtt.isConnected()) {
             mqtt.reInit();
         }
 
@@ -1335,6 +1335,11 @@ void ClockWork::loop(struct tm &tm) {
         calcClockface();
 
         switch (changesInClockface()) {
+        case WordclockChanges::Minute:
+            lastMinuteArray = minuteArray;
+            memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
+            led.set(WordclockChanges::Minute);
+            break;
         case WordclockChanges::Words:
             lastMinuteArray = minuteArray;
             memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
