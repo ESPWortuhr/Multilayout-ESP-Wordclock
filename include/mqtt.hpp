@@ -11,12 +11,56 @@ extern WiFiClient client;
 
 PubSubClient mqttClient(client);
 
+/* Description:
+
+This function checks if a character array representing an MQTT user is empty. An
+MQTT user is considered empty if it contains only null characters ('\0') up to
+the specified length.
+
+Input:
+
+None
+Output:
+
+true if the MQTT user array is empty.
+false if the MQTT user array is not empty.
+*/
+
+bool checkIfMqttUserIsEmpty() {
+    for (uint8_t i = 0; i < PAYLOAD_LENGTH; i++) {
+        if (G.mqtt.user[i] != '\0' && !isSpace(G.mqtt.user[i])) {
+            return false; // Array is not empty
+        }
+    }
+    return true; // Array is empty
+}
+
 //------------------------------------------------------------------------------
+
+/* Description:
+
+This function initializes an MQTT client connection on an ESP8266 device using
+the PubSubClient library. It sets up the MQTT client with the provided MQTT
+server address, port, client ID, and other optional parameters such as user
+credentials and topic subscription.
+
+Input:
+
+None
+Output:
+
+None
+*/
 
 void Mqtt::init() {
     mqttClient.setServer(G.mqtt.serverAdress, G.mqtt.port);
     mqttClient.setCallback(callback);
-    mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
+    if (checkIfMqttUserIsEmpty()) {
+        mqttClient.connect(G.mqtt.clientId);
+    } else {
+        mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
+    }
+    delay(100);
     mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
 }
 
