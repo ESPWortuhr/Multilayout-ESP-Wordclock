@@ -7,6 +7,11 @@
 
 #define HOMEASSISTANT_DISCOVERY_TOPIC "homeassistant"
 
+#define RETRY_INTERVALL_WITHIN_5_MINUTES 15000 // 15 Seconds
+#define MAX_RETRIES_WITHIN_5_MINUTES 20
+
+#define RETRY_INTERVALL 3600000 // 1 Hour
+
 extern WiFiClient client;
 
 PubSubClient mqttClient(client);
@@ -62,8 +67,12 @@ void Mqtt::init() {
     } else {
         mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
     }
-    delay(100);
+    delay(50);
     mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
+    delay(50);
+    if (isConnected()) {
+        Serial.println("MQTT Connected");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -83,8 +92,30 @@ None
 */
 
 void Mqtt::reInit() {
-    mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
-    reconnect();
+    static uint8_t retryCount = 0;
+    static uint32_t lastRetryTime = 0;
+    static uint32_t retryIntervall = RETRY_INTERVALL_WITHIN_5_MINUTES;
+
+    if (millis() - lastRetryTime >= retryIntervall) {
+        retryCount++;
+        Serial.print("Reconnecting to MQTT Server. Try ");
+        Serial.println(retryCount);
+        lastRetryTime = millis();
+
+        init();
+
+        // Check if maximum retries reached
+        if (retryCount >= MAX_RETRIES_WITHIN_5_MINUTES) {
+            Serial.println("Switched to hourly MQTT connect retry");
+            retryIntervall = RETRY_INTERVALL;
+            retryCount = 0;
+        }
+
+        if (isConnected()) {
+            retryCount = 0;
+            retryIntervall = RETRY_INTERVALL_WITHIN_5_MINUTES;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -125,7 +156,7 @@ None
 
 void Mqtt::loop() {
     if (!isConnected()) {
-        reconnect();
+        reInit();
     }
     mqttClient.loop();
 }
@@ -134,16 +165,16 @@ void Mqtt::loop() {
 
 /* Description:
 
-This function handles incoming MQTT messages received from the broker. It parses
-the payload as JSON data and updates the device's state and parameters
-accordingly.
+This function handles incoming MQTT messages received from the broker. It
+parses the payload as JSON data and updates the device's state and
+parameters accordingly.
 
 Input:
 
-char *topic: A pointer to a character array containing the topic of the received
-message. byte *payload: A pointer to an array of bytes containing the payload of
-the received message. unsigned int length: The length of the payload in bytes.
-Output:
+char *topic: A pointer to a character array containing the topic of the
+received message. byte *payload: A pointer to an array of bytes containing
+the payload of the received message. unsigned int length: The length of the
+payload in bytes. Output:
 
 None
 */
@@ -230,11 +261,11 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
 
 /* Description:
 
-This function is responsible for publishing the current state of the device to
-an MQTT topic. It constructs a JSON message containing information about the
-device state, such as the power state (ON or OFF), color settings, and
-brightness. The constructed JSON message is then published to the MQTT broker on
-a specified topic.
+This function is responsible for publishing the current state of the device
+to an MQTT topic. It constructs a JSON message containing information about
+the device state, such as the power state (ON or OFF), color settings, and
+brightness. The constructed JSON message is then published to the MQTT
+broker on a specified topic.
 
 Input:
 
@@ -269,8 +300,8 @@ void Mqtt::sendDiscovery() {
 
     This function publishes MQTT discovery messages for Home Assistant,
     providing configuration details for a light entity. It constructs a JSON
-    payload according to Home Assistant's MQTT discovery format and publishes it
-    to the appropriate topic.
+    payload according to Home Assistant's MQTT discovery format and
+    publishes it to the appropriate topic.
 
     Input:
 
@@ -359,26 +390,4 @@ void Mqtt::sendDiscovery() {
                         std::string("/light/config"))
                            .c_str(),
                        buffer, true);
-}
-
-//------------------------------------------------------------------------------
-
-/* Description:
-
-This function is called upon successful reconnection to the MQTT broker. It
-performs post-connection tasks, such as subscribing to specific topics.
-
-Input:
-
-None
-Output:
-
-None
-*/
-
-void Mqtt::reconnect() {
-    // Subscribe to the desired topic
-    mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
-    Serial.println("MQTT Connected...");
-    delay(100);
 }
