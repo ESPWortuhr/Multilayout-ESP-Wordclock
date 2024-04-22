@@ -134,16 +134,16 @@ void Mqtt::loop() {
 
 /* Description:
 
-This function handles incoming MQTT messages received from the broker. It parses
-the payload as JSON data and updates the device's state and parameters
-accordingly.
+This function handles incoming MQTT messages received from the broker. It
+parses the payload as JSON data and updates the device's state and
+parameters accordingly.
 
 Input:
 
-char *topic: A pointer to a character array containing the topic of the received
-message. byte *payload: A pointer to an array of bytes containing the payload of
-the received message. unsigned int length: The length of the payload in bytes.
-Output:
+char *topic: A pointer to a character array containing the topic of the
+received message. byte *payload: A pointer to an array of bytes containing
+the payload of the received message. unsigned int length: The length of the
+payload in bytes. Output:
 
 None
 */
@@ -230,11 +230,11 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
 
 /* Description:
 
-This function is responsible for publishing the current state of the device to
-an MQTT topic. It constructs a JSON message containing information about the
-device state, such as the power state (ON or OFF), color settings, and
-brightness. The constructed JSON message is then published to the MQTT broker on
-a specified topic.
+This function is responsible for publishing the current state of the device
+to an MQTT topic. It constructs a JSON message containing information about
+the device state, such as the power state (ON or OFF), color settings, and
+brightness. The constructed JSON message is then published to the MQTT
+broker on a specified topic.
 
 Input:
 
@@ -269,8 +269,8 @@ void Mqtt::sendDiscovery() {
 
     This function publishes MQTT discovery messages for Home Assistant,
     providing configuration details for a light entity. It constructs a JSON
-    payload according to Home Assistant's MQTT discovery format and publishes it
-    to the appropriate topic.
+    payload according to Home Assistant's MQTT discovery format and
+    publishes it to the appropriate topic.
 
     Input:
 
