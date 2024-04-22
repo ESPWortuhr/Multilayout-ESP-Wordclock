@@ -241,6 +241,12 @@ void setup() {
         G.transitionSpeed = 30;
         G.transitionColorize = 0;
         G.transitionDemo = false;
+        G.birthday1.day = 1;
+        G.birthday1.month = 1;
+        G.birthday1.year = 500;
+        G.birthday2.day = 1;
+        G.birthday2.month = 1;
+        G.birthday2.year = 500;
 
         eeprom::write();
         Serial.println("eeprom schreiben");
@@ -412,7 +418,7 @@ void setup() {
 
 void loop() {
     time_t utc = time(nullptr);
-    struct tm tm;
+    struct tm tm; // tm_mday=1..31, tm.tm_mon=0=Jan..11=Dec, tm_year=0=1900..n=1900+n
     localtime_r(&utc, &tm);
     if (utc > 100000000) {
         _second = tm.tm_sec;

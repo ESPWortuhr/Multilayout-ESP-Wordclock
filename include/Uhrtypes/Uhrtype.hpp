@@ -192,6 +192,8 @@ public:
 
     virtual const bool has24HourLayout() { return false; }
 
+    virtual const bool hasHappyBirthday() { return false; }
+
     virtual const bool hasWeatherLayout() { return false; }
 
     virtual const bool hasSecondsFrame() { return false; }

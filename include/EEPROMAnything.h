@@ -28,6 +28,7 @@ template <class T> int readAnything(int ee, T &value) {
 void write() {
     writeAnything(0, G);
     EEPROM.commit();
+    Serial.println("Written everything to the EEPROM");
 }
 
 //------------------------------------------------------------------------------
@@ -85,6 +86,10 @@ void read() {
     Serial.println(G.openWeatherMap.apikey);
     Serial.print("OWM_city  : ");
     Serial.println(G.openWeatherMap.cityid);
+
+    Serial.printf("Birthday1: %02u.%02u.%04u\n",G.birthday1.day,G.birthday1.month,G.birthday1.year);
+    Serial.printf("Birthday2: %02u.%02u.%04u\n",G.birthday2.day,G.birthday2.month,G.birthday2.year);
+
 
     delay(100);
 }

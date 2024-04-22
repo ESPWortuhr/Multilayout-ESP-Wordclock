@@ -168,7 +168,22 @@ let TRANSLATION_DE_DE = {
 			"ip-address": "IP-Adresse anzeigen"
 		}
 	},
-
+	"birthdays": {
+		"h1": "Geburtstage",
+		"dates": {
+			"h2": "Termine",
+			"help": "An Geburtstagen erscheint alle 5 Minuten eine Feuerwerk-Animation.\n" +
+					"Bei kompatiblen Uhrentypen werden während der Animation die Wörter „Happy Birthday“ statt der Uhrzeit angezeigt.\n" +
+					"Geburtstage vor dem Jahr 1900 werden nicht animiert.\n",
+			"save": "Speichern",
+			"date1": {
+				"label": "Termin 1:"
+			},
+			"date2": {
+				"label": "Termin 2:"
+			}
+		}
+	},
 	"settings": {
 		"h1": "Einstellungen",
 		"status": {
@@ -243,11 +258,12 @@ let TRANSLATION_DE_DE = {
 		},
 		"wifi": {
 			"h2": "Wi-Fi / WLAN",
-			"help": "Neukonfiguration erstellt ein eigenes WLAN.\n" +
-				"Mit diesem verbinden, dann kann das Zielnetz ausgewählt werden.",
+			"help": "Eine Rekonfiguration der WLAN Verbindung ist nur über den WIFI Accesspoint der Wortuhr möglich.\n" +
+				"Durch Drücken der Taste RESET werden die WLAN Verbindungsdaten gelöscht und in den WIFI Accesspoint Modus gewechselt.\n" +
+				"Der WIFI Accesspoint ist jetzt erreichbar unter dem Netzwerknamen Connect_to_Wordclock.",
 			"ssid": "WLAN-Name (SSID)",
-			"other-wifi": "Anderes WLAN",
-			"configure": "Konfigurieren",
+			"other-wifi": "WLAN",
+			"configure": "Reset",
 			"until-restart": "Bis zum Neustart",
 			"deactivate": "Ausschalten"
 		},

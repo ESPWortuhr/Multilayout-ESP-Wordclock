@@ -50,6 +50,12 @@ enum class WhiteType {
     ColdWhite = 2,
 };
 
+struct Birthday {
+    uint8_t day;
+    uint8_t month;
+    uint16_t year;
+};
+
 struct OpenWeatherMapData {
     char apikey[35];
     char cityid[8];
@@ -133,6 +139,8 @@ struct GLOBAL {
     bool bootLedSweep;
     bool bootShowWifi;
     bool bootShowIP;
+    Birthday birthday1;
+    Birthday birthday2;
 };
 GLOBAL G = {};
 
@@ -212,7 +220,7 @@ enum CommandWords {
 
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
-
+    COMMAND_SET_BIRTHDAYS = 83,
     COMMAND_SET_LANGUAGE_VARIANT = 84,
     COMMAND_SET_MQTT = 85,
     COMMAND_SET_TIME_MANUAL = 86,
@@ -245,6 +253,7 @@ enum CommandWords {
     COMMAND_REQUEST_AUTO_LDR = 203,
     COMMAND_REQUEST_TRANSITION = 204,
     COMMAND_REQUEST_MQTT_VALUES = 205,
+    COMMAND_REQUEST_BIRTHDAYS = 206,
 
     PLACEHOLDER_MAX_REQUEST = 255,
 };

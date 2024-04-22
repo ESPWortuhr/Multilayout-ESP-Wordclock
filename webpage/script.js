@@ -125,6 +125,7 @@ MODE_TO_INPUT_ID.set(COMMAND_MODE_TRANSITION, "mode-wordclock");
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
+var COMMAND_SET_BIRTHDAYS = 83;
 var COMMAND_SET_LANGUAGE_VARIANT = 84;
 var COMMAND_SET_MQTT = 85;
 var COMMAND_SET_TIME_MANUAL = 86;
@@ -155,6 +156,7 @@ var COMMAND_REQUEST_WIFI_LIST = 202;
 var COMMAND_REQUEST_AUTO_LDR = 203;
 var COMMAND_REQUEST_TRANSITION = 204;
 var COMMAND_REQUEST_MQTT_VALUES = 205;
+var COMMAND_REQUEST_BIRTHDAYS = 206;
 
 // colors
 var COLOR_FOREGROUND = 0;
@@ -333,6 +335,11 @@ function initWebsocket() {
 			$("#mqtt-pass").set("value", data.MQTT_Pass);
 			$("#mqtt-clientid").set("value", data.MQTT_ClientId);
 			$("#mqtt-topic").set("value", data.MQTT_Topic);
+		}
+
+		if (data.command === "birthdays") {
+			$("#birthdays-date1").set("value", data.birthdaysDate1);
+			$("#birthdays-date2").set("value", data.birthdaysDate2);
 		}
 
 		if (data.command === "config") {
@@ -692,6 +699,9 @@ $.ready(function() {
 		if (navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 		}
+		if (navigation === "birthdays") {
+			sendCmd(COMMAND_REQUEST_BIRTHDAYS);
+		}
 		if (navigation === "settings" || navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 			sendCmd(COMMAND_REQUEST_AUTO_LDR);
@@ -917,6 +927,9 @@ $.ready(function() {
 	});
 	$("#reset-button").on("click", function() {
 		sendCmd(COMMAND_RESET);
+	});
+	$("#birthdays-store-button").on("click", function() {
+		sendCmd(COMMAND_SET_BIRTHDAYS, getPaddedString($("#birthdays-date1").get("value"), 10) + getPaddedString($("#birthdays-date2").get("value"), 10));
 	});
 	$("#uhrzeit-button").on("click", function() {
 

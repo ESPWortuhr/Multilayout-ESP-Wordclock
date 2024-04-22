@@ -168,7 +168,22 @@ let TRANSLATION_EN_US = {
 			"ip-address": "Show IP Address"
 		}
 	},
-
+	"birthdays": {
+		"h1": "Birthdays",
+		"dates": {
+			"h2": "Appointments",
+			"help": "On birthdays, a fireworks animation appears every 5 minutes.\n" +
+					"Compatible clock types will display the words “Happy Birthday” instead of the time during the animation.\n" +
+					"Birthdays before 1900 are not animated.",
+			"save": "Save",
+			"date1": {
+				"label": "Date 1:"
+			},
+			"date2": {
+				"label": "Date 2:"
+			}
+		}
+	},
 	"settings": {
 		"h1": "Settings",
 		"status": {
@@ -243,11 +258,12 @@ let TRANSLATION_EN_US = {
 		},
 		"wifi": {
 			"h2": "Wi-Fi",
-			"help": "Reconfiguration creates its own wireless network.\n " +
-				"Connect to this temporary network, then the target network can be selected.",
+			"help": "A reconfiguration of the WLAN connection is only possible via the WIFI access point of the word clock.\n " +
+			"By pressing the RESET button, the WLAN connection data is deleted and the device switches to WIFI access point mode.\n " +
+			"The WIFI access point can now be reached under the network name Connect_to_Wordclock.",
 			"ssid": "Wi-Fi Name (SSID)",
-			"other-wifi": "Other Wi-Fi",
-			"configure": "Configure",
+			"other-wifi": "WLAN",
+			"configure": "Reset",
 			"until-restart": "Until Restart",
 			"deactivate": "Deactivate"
 		},
