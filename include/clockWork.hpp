@@ -1174,10 +1174,6 @@ void ClockWork::loop(struct tm &tm) {
         }
         delay(100);
 
-        if (G.mqtt.state && !mqtt.isConnected()) {
-            mqtt.reInit();
-        }
-
         eeprom::write();
         break;
     }

@@ -4,7 +4,7 @@
 
 class Mqtt {
 private:
-    void reconnect();
+    void reInit();
     static void callback(char *topic, byte *payload, unsigned int length);
 
 public:
@@ -12,7 +12,6 @@ public:
     ~Mqtt() = default;
 
     void init();
-    void reInit();
     void loop();
     void sendState();
     void sendDiscovery();

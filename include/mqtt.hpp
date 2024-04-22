@@ -6,6 +6,8 @@
 #include <WiFiClient.h>
 
 #define HOMEASSISTANT_DISCOVERY_TOPIC "homeassistant"
+#define RETRY_INTERVALL 10000 // Seconds
+#define MAX_RETRIES 50
 
 extern WiFiClient client;
 
@@ -83,8 +85,23 @@ None
 */
 
 void Mqtt::reInit() {
-    mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
-    reconnect();
+    static uint8_t retryCount = 0;
+    static ulong lastRetryTime = 0;
+
+    if (millis() - lastRetryTime >= RETRY_INTERVALL) {
+        retryCount++;
+        Serial.print("Reconnecting to MQTT Server. Try ");
+        Serial.println(retryCount);
+        lastRetryTime = millis();
+
+        init();
+
+        // Check if maximum retries reached
+        if (retryCount >= MAX_RETRIES) {
+            Serial.println("Maximum retries reached.");
+            G.mqtt.state = 0;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -125,7 +142,7 @@ None
 
 void Mqtt::loop() {
     if (!isConnected()) {
-        reconnect();
+        reInit();
     }
     mqttClient.loop();
 }
@@ -359,26 +376,4 @@ void Mqtt::sendDiscovery() {
                         std::string("/light/config"))
                            .c_str(),
                        buffer, true);
-}
-
-//------------------------------------------------------------------------------
-
-/* Description:
-
-This function is called upon successful reconnection to the MQTT broker. It
-performs post-connection tasks, such as subscribing to specific topics.
-
-Input:
-
-None
-Output:
-
-None
-*/
-
-void Mqtt::reconnect() {
-    // Subscribe to the desired topic
-    mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
-    Serial.println("MQTT Connected...");
-    delay(100);
 }
