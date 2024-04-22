@@ -172,6 +172,7 @@ bool externalRTC = false;
 enum ColorPosition {
     Foreground = 0,
     Background = 1,
+    Frame = 2,
 };
 
 enum LedColorVariants {
@@ -279,6 +280,8 @@ enum ClockType {
     Ch10x11 = 18,
     Ro10x11 = 19,
     Fr10x11 = 21,
+    Se10x11 = 22,
+    Ru10x11 = 23,
 };
 
 enum Icons {
@@ -295,4 +298,8 @@ enum Icons {
     SMILEY = 10,
     NOTE = 11,
     SNOW = 12,
+    MAIL = 13,
+    BELL = 14,
+    STOP = 15,
+    STBY = 16,
 };

@@ -1004,15 +1004,15 @@ bool Transition::isOverwrittenByTransition(WordclockChanges changesInWordMatrix,
 //------------------------------------------------------------------------------
 
 void Transition::loop(struct tm &tm) {
-    if (matrixChanged) {
-        matrixChanged = false;
-        saveMatrix();
-        copyMatrix(work, act);
-    }
-
     if (G.prog == COMMAND_IDLE || G.prog == COMMAND_MODE_WORD_CLOCK) {
         if (!isSpecialEvent(transitionType, tm, hasMinuteChanged())) {
             transitionType = getTransitionType(hasMinuteChanged());
+        }
+
+        if (matrixChanged) {
+            matrixChanged = false;
+            saveMatrix();
+            copyMatrix(work, act);
         }
         if (transitionType != NO_TRANSITION) {
             if (changesInTransitionTypeDurationOrDemo()) {
