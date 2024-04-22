@@ -6,8 +6,11 @@
 #include <WiFiClient.h>
 
 #define HOMEASSISTANT_DISCOVERY_TOPIC "homeassistant"
-#define RETRY_INTERVALL 10000 // Seconds
-#define MAX_RETRIES 50
+
+#define RETRY_INTERVALL_WITHIN_5_MINUTES 15000 // 15 Seconds
+#define MAX_RETRIES_WITHIN_5_MINUTES 20
+
+#define RETRY_INTERVALL 3600000 // 1 Hour
 
 extern WiFiClient client;
 
@@ -64,8 +67,12 @@ void Mqtt::init() {
     } else {
         mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
     }
-    delay(100);
+    delay(50);
     mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
+    delay(50);
+    if (isConnected()) {
+        Serial.println("MQTT Connected");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -86,9 +93,10 @@ None
 
 void Mqtt::reInit() {
     static uint8_t retryCount = 0;
-    static ulong lastRetryTime = 0;
+    static uint32_t lastRetryTime = 0;
+    static uint32_t retryIntervall = RETRY_INTERVALL_WITHIN_5_MINUTES;
 
-    if (millis() - lastRetryTime >= RETRY_INTERVALL) {
+    if (millis() - lastRetryTime >= retryIntervall) {
         retryCount++;
         Serial.print("Reconnecting to MQTT Server. Try ");
         Serial.println(retryCount);
@@ -97,9 +105,15 @@ void Mqtt::reInit() {
         init();
 
         // Check if maximum retries reached
-        if (retryCount >= MAX_RETRIES) {
-            Serial.println("Maximum retries reached.");
-            G.mqtt.state = 0;
+        if (retryCount >= MAX_RETRIES_WITHIN_5_MINUTES) {
+            Serial.println("Switched to hourly MQTT connect retry");
+            retryIntervall = RETRY_INTERVALL;
+            retryCount = 0;
+        }
+
+        if (isConnected()) {
+            retryCount = 0;
+            retryIntervall = RETRY_INTERVALL_WITHIN_5_MINUTES;
         }
     }
 }
