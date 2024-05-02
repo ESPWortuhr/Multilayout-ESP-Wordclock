@@ -1,4 +1,5 @@
 #pragma once
+#include "nowifi.hpp" 
 
 //---------------------------------------------------------
 // WLAN-Status
@@ -56,6 +57,7 @@ void WiFiEvent(WiFiEvent_t event) {
         break;
     case WIFI_EVENT_STAMODE_DISCONNECTED:
         Serial.println("WiFi lost connection");
+        enableAPAfterDelay();
         break;
     default:
         break;
