@@ -1310,8 +1310,12 @@ void ClockWork::loop(struct tm &tm) {
             for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
                 frontMatrix[row] = num32BitWithOnesAccordingToColumns();
             }
+        }
+
+        if (parametersChanged) {
             led.setbyFrontMatrix(Foreground, false);
             led.show();
+            parametersChanged = false;
         }
         break;
     }

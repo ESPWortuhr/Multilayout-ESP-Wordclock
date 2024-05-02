@@ -270,6 +270,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
 
+            parametersChanged = true;
             parseColor(payload);
             break;
         }

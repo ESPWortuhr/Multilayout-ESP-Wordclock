@@ -447,7 +447,11 @@ function initWebsocket() {
 function changeColor(color) {
 	hsb[color.index][0] = color.hue;
 	hsb[color.index][1] = color.saturation;
-	hsb[color.index][2] = color.value;
+	if (color.value !== 100) {
+		hsb[color.index][2] = color.value;
+	}
+
+	setColors();
 	sendColorData(command, nstr(1));
 }
 
