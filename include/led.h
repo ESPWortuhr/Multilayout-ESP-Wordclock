@@ -30,6 +30,7 @@ public:
     //------------------------------------------------------------------------------
     inline void checkIfHueIsOutOfBound(uint16_t &hue);
     void resetFrontMatrixBuffer();
+    void changeLedStateTo(bool newState);
 
     //------------------------------------------------------------------------------
     // Manipulate Functions

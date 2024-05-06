@@ -204,13 +204,10 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     if (doc.containsKey("state")) {
         const char *state = doc["state"];
         if (!strcmp(state, "ON")) {
-            G.state = true;
+            led.changeLedStateTo(true);
         } else if (!strcmp(state, "OFF")) {
-            led.clear();
-            led.show();
-            G.state = false;
+            led.changeLedStateTo(false);
         }
-        parametersChanged = true;
     }
 
     const char *effect = doc["effect"];

@@ -117,6 +117,19 @@ void Led::resetFrontMatrixBuffer() {
 }
 
 //------------------------------------------------------------------------------
+
+void Led::changeLedStateTo(bool newState) {
+    if (newState) {
+        G.state = true;
+    } else {
+        led.clear();
+        led.show();
+        G.state = false;
+    }
+    parametersChanged = true;
+}
+
+//------------------------------------------------------------------------------
 // Brightness Functions
 //------------------------------------------------------------------------------
 
