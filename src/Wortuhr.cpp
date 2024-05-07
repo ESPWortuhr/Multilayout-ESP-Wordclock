@@ -198,7 +198,7 @@ void setup() {
         strcpy(G.hostname, "ESPWordclock");
         strcpy(G.scrollingText, "HELLO WORLD ");
 
-        G.state = true;
+        G.oldBrightnessValue = 0;
         G.h6 = 100;
         G.h8 = 100;
         G.h12 = 100;

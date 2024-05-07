@@ -275,7 +275,7 @@ None
 void Mqtt::sendState() {
     StaticJsonDocument<200> doc;
 
-    doc["state"] = (G.state) ? "ON" : "OFF";
+    doc["state"] = (G.color[Foreground].B) > 0 ? "ON" : "OFF";
 
     JsonObject color = doc.createNestedObject("color");
 

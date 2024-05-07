@@ -120,11 +120,12 @@ void Led::resetFrontMatrixBuffer() {
 
 void Led::changeLedStateTo(bool newState) {
     if (newState) {
-        G.state = true;
+        G.color[Foreground].B = G.oldBrightnessValue;
     } else {
         led.clear();
         led.show();
-        G.state = false;
+        G.oldBrightnessValue = G.color[Foreground].B;
+        G.color[Foreground].B = 0;
     }
     parametersChanged = true;
 }
@@ -591,11 +592,9 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
 //------------------------------------------------------------------------------
 
 void Led::show() {
-    if (G.state) {
-        if (G.Colortype == Grbw) {
-            strip_RGBW->Show();
-        } else {
-            strip_RGB->Show();
-        }
+    if (G.Colortype == Grbw) {
+        strip_RGBW->Show();
+    } else {
+        strip_RGB->Show();
     }
 }
