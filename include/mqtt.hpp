@@ -204,9 +204,9 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     if (doc.containsKey("state")) {
         const char *state = doc["state"];
         if (!strcmp(state, "ON")) {
-            led.changeLedStateTo(true);
+            led.setState(true);
         } else if (!strcmp(state, "OFF")) {
-            led.changeLedStateTo(false);
+            led.setState(false);
         }
     }
 
@@ -275,7 +275,7 @@ None
 void Mqtt::sendState() {
     StaticJsonDocument<200> doc;
 
-    doc["state"] = (G.color[Foreground].B) > 0 ? "ON" : "OFF";
+    doc["state"] = (led.getState()) ? "ON" : "OFF";
 
     JsonObject color = doc.createNestedObject("color");
 

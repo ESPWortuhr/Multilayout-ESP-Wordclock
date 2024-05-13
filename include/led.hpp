@@ -117,20 +117,6 @@ void Led::resetFrontMatrixBuffer() {
 }
 
 //------------------------------------------------------------------------------
-
-void Led::changeLedStateTo(bool newState) {
-    if (newState) {
-        G.color[Foreground].B = G.oldBrightnessValue;
-    } else {
-        led.clear();
-        led.show();
-        G.oldBrightnessValue = G.color[Foreground].B;
-        G.color[Foreground].B = 0;
-    }
-    parametersChanged = true;
-}
-
-//------------------------------------------------------------------------------
 // Brightness Functions
 //------------------------------------------------------------------------------
 
@@ -215,6 +201,27 @@ void Led::shiftColumnToRight() {
 
 //------------------------------------------------------------------------------
 // Pixel set Functions
+//------------------------------------------------------------------------------
+
+void Led::setState(bool newState) {
+    static uint8_t oldBrightness[3];
+
+    if (newState) {
+        for (uint8_t i = 0; i < 3; i++) {
+            G.color[i].B = oldBrightness[i] / 100.f;
+        }
+    } else {
+        for (uint8_t i = 0; i < 3; i++) {
+            led.clear();
+            led.show();
+            oldBrightness[i] = G.color[i].B * 100;
+            G.color[i].B = 0;
+        }
+    }
+
+    parametersChanged = true;
+}
+
 //------------------------------------------------------------------------------
 
 void Led::setPixel(uint16_t ledIndex, HsbColor color) {
@@ -384,6 +391,17 @@ RgbColor Led::getPixel(uint16_t i) {
         return RgbColor(strip_RGBW->GetPixelColor(i));
     }
     return strip_RGB->GetPixelColor(i);
+}
+
+//------------------------------------------------------------------------------
+
+bool Led::getState() {
+    for (uint8_t i = 0; i < 3; i++) {
+        if (G.color[i].B > 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 //------------------------------------------------------------------------------

@@ -101,7 +101,7 @@ struct GLOBAL {
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char scrollingText[PAYLOAD_LENGTH];
-    float oldBrightnessValue;
+
     uint8_t h6;
     uint8_t h8;
     uint8_t h12;
