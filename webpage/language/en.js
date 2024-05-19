@@ -274,6 +274,31 @@ let TRANSLATION_EN_US = {
 			"discovery": "Send HA Discovery"
 		}
 	},
+	"birthdays": {
+		"h1": "Birthdays",
+		"dates": {
+			"h2": "Appointments",
+			"help": "On birthdays, a fireworks animation appears every 5 minutes.\n" +
+					"Compatible clock types will display the words “Happy Birthday” instead of the time during the animation.\n" +
+					"Birthdays before 1900 are not supported.",
+			"save": "Save",
+			"date1": {
+				"label": "Date 1:"
+			},
+			"date2": {
+				"label": "Date 2:"
+			},
+			"date3": {
+				"label": "Date 3:"
+			},
+			"date4": {
+				"label": "Date 4:"
+			},
+			"date5": {
+				"label": "Date 5:"
+			}
+		}
+	},
 	"about": {
 		"h1": "About",
 		"text-general": "The software of this Word Clock is based on the Word Clock by <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (as of 2019)</a> and is now being further developed <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>by the community</a> on <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",

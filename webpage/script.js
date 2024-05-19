@@ -125,6 +125,8 @@ MODE_TO_INPUT_ID.set(COMMAND_MODE_TRANSITION, "mode-wordclock");
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
+
+var COMMAND_SET_BIRTHDAYS = 83;
 var COMMAND_SET_LANGUAGE_VARIANT = 84;
 var COMMAND_SET_MQTT = 85;
 var COMMAND_SET_TIME_MANUAL = 86;
@@ -155,6 +157,7 @@ var COMMAND_REQUEST_WIFI_LIST = 202;
 var COMMAND_REQUEST_AUTO_LDR = 203;
 var COMMAND_REQUEST_TRANSITION = 204;
 var COMMAND_REQUEST_MQTT_VALUES = 205;
+var COMMAND_REQUEST_BIRTHDAYS = 206;
 
 // colors
 var COLOR_FOREGROUND = 0;
@@ -335,6 +338,14 @@ function initWebsocket() {
 			$("#mqtt-topic").set("value", data.MQTT_Topic);
 		}
 
+		if (data.command === "birthdays") {
+			$("#birthdays-date0").set("value", data.birthdayDate0);
+			$("#birthdays-date1").set("value", data.birthdayDate1);
+			$("#birthdays-date2").set("value", data.birthdayDate2);
+			$("#birthdays-date3").set("value", data.birthdayDate3);
+			$("#birthdays-date4").set("value", data.birthdayDate4);
+		}
+
 		if (data.command === "config") {
 
 			$("#ssid").set("value", data.ssid);
@@ -387,6 +398,7 @@ function initWebsocket() {
 			enableSpecific("specific-layout-4", data.hasSecondsFrame);
 			enableSpecific("specific-layout-5", data.hasWeatherLayout);
 			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // Add A-Quarter to (En10x11 exclusive)
+			enableSpecific("specific-layout-7", data.hasHappyBirthday);
 
 			enableSpecific("specific-colortype-4", data.colortype === 4);
 
@@ -696,6 +708,9 @@ $.ready(function() {
 		if (navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 		}
+		if (navigation === "birthdays") {
+			sendCmd(COMMAND_REQUEST_BIRTHDAYS);
+		}
 		if (navigation === "settings" || navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 			sendCmd(COMMAND_REQUEST_AUTO_LDR);
@@ -921,6 +936,9 @@ $.ready(function() {
 	});
 	$("#reset-button").on("click", function() {
 		sendCmd(COMMAND_RESET);
+	});
+	$("#birthdays-store-button").on("click", function() {
+		sendCmd(COMMAND_SET_BIRTHDAYS, getPaddedString($("#birthdays-date0").get("value"), 10) + getPaddedString($("#birthdays-date1").get("value"), 10) + getPaddedString($("#birthdays-date2").get("value"), 10) + getPaddedString($("#birthdays-date3").get("value"), 10) + getPaddedString($("#birthdays-date4").get("value"), 10));
 	});
 	$("#uhrzeit-button").on("click", function() {
 

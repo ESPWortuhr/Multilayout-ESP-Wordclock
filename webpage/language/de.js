@@ -274,7 +274,31 @@ let TRANSLATION_DE_DE = {
 			"discovery": "Sende HA Discovery"
 		}
 	},
-
+	"birthdays": {
+		"h1": "Geburtstage",
+		"dates": {
+			"h2": "Termine",
+			"help": "An Geburtstagen erscheint alle 5 Minuten eine Feuerwerk-Animation.\n" +
+					"Bei kompatiblen Uhrentypen werden während der Animation die Wörter „Happy Birthday“ statt der Uhrzeit angezeigt.\n" +
+					"Geburtstage vor dem Jahr 1900 werden nicht unterstützt.\n",
+			"save": "Speichern",
+			"date1": {
+				"label": "Termin 1:"
+			},
+			"date2": {
+				"label": "Termin 2:"
+			},
+			"date3": {
+				"label": "Termin 3:"
+			},
+			"date4": {
+				"label": "Termin 4:"
+			},
+			"date5": {
+				"label": "Termin 5:"
+			}
+		}
+	},
 	"about": {
 		"h1": "Über",
 		"text-general": "Die Software dieser Wortuhr basiert auf der Wortuhr von <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (Stand 2019)</a> und wird nun <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>von der Community</a> weiterentwickelt auf <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
