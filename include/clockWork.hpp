@@ -1058,7 +1058,26 @@ void ClockWork::loop(struct tm &tm) {
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["hasMinuteInWords"] = usedUhrType->hasMinuteInWords();
+        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
         config["numOfRows"] = usedUhrType->rowsWordMatrix();
+        serializeJson(config, str);
+        Serial.print("Sending Payload:");
+        Serial.println(str);
+        webSocket.sendTXT(G.client_nr, str, strlen(str));
+        break;
+    }
+
+    case COMMAND_REQUEST_BIRTHDAYS: {
+        DynamicJsonDocument config(1024);
+        config["command"] = "birthdays";
+        char dateString[10];
+        char string2Send[13];
+        for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
+            sprintf(string2Send, "birthdayDate%d", i);
+            sprintf(dateString, "%04u-%02u-%02u", G.birthday[i].year,
+                    G.birthday[i].month, G.birthday[i].day);
+            config[string2Send] = dateString;
+        }
         serializeJson(config, str);
         Serial.print("Sending Payload:");
         Serial.println(str);
@@ -1114,6 +1133,7 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
+    case COMMAND_SET_BIRTHDAYS:
     case COMMAND_SET_TIME:
     case COMMAND_SET_INITIAL_VALUES:
     case COMMAND_SET_WEATHER_DATA:
