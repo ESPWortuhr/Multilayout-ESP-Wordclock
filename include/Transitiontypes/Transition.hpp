@@ -73,15 +73,15 @@ bool Transition::isSpecialEvent(Transition_t &type, struct tm &tm,
 #endif
         {
             minutesAfterMidnight = 0;
-            type = COUNTDOWN;
+            type = NEWYEAR_COUNTDOWN;
         } else {
             minutesAfterMidnight++;
         }
-        if ((type == NEWYEAR) && (minutesAfterMidnight >= 11)) {
+        if ((type == NEWYEAR_FIRE) && (minutesAfterMidnight >= 11)) {
             type = getTransitionType(true);
         }
     }
-    return (type == COUNTDOWN) || (type == NEWYEAR);
+    return (type == NEWYEAR_COUNTDOWN) || (type == NEWYEAR_FIRE);
 }
 
 //------------------------------------------------------------------------------
@@ -623,7 +623,7 @@ uint16_t Transition::transitionFire() {
         case (FIRE_6 + 4):
             mirrored = !mirrored;
             copyMatrix(old, act); // old contains artefacts
-            if ((transitionType == NEWYEAR)) {
+            if ((transitionType == NEWYEAR_FIRE)) {
                 transitionDelay = 500;
                 return 1; // restart transition
             }
@@ -704,7 +704,7 @@ uint16_t Transition::transitionCountdown(struct tm &tm) {
         if (countDown < 0) { // 60 - 0
             countDown = 60;
             lastSecond = 99;
-            transitionType = NEWYEAR;
+            transitionType = NEWYEAR_FIRE;
             return 1; // continue FIRE in phase 1
         }
         lastSecond = _second;
