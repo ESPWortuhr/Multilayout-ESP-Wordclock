@@ -52,8 +52,14 @@ Transition::~Transition() {
 }
 
 //------------------------------------------------------------------------------
+// Make special events at silvester and birthday
+//------------------------------------------------------------------------------
+// On Silvester, make a countdwon for the last minute of the year, then make a
+// fireworks animation. On birthdays, a fireworks animation appears every 5
+// minutes. Compatible clock types will display the words “Happy Birthday”
+// instead of the time during the animation. Birthdays before 1900 are not
+// animated.
 
-bool Transition::isSilvester(Transition_t &type, struct tm &tm, bool trigger) {
     static uint8_t minutesAfterMidnight;
 
     if (trigger) {
@@ -77,6 +83,7 @@ bool Transition::isSilvester(Transition_t &type, struct tm &tm, bool trigger) {
 }
 
 //------------------------------------------------------------------------------
+// Get configured transition type: Random or Fix type
 
 Transition_t Transition::getTransitionType(bool trigger) {
     if (G.transitionType == RANDOM) {
@@ -616,9 +623,9 @@ uint16_t Transition::transitionFire() {
             copyMatrix(old, act); // old contains artefacts
             if ((transitionType == NEWYEAR)) {
                 transitionDelay = 500;
-                return 1; // next transition in 500ms
+                return 1; // restart transition
             }
-            return 0; // end of transition
+            return 0; // end transition
             break;
         default:
             firework->prepare(0, _white, static_cast<Icons>(phase), mirrored);
@@ -907,6 +914,13 @@ void Transition::initTransitionStart() {
 }
 
 //------------------------------------------------------------------------------
+// TODO: This function is used in two different functions:
+// 1) Transition::isOverwrittenByTransition
+// 2) Transition::loop
+// It looks like that it is intended that function 1 and 2 both can reset the
+// "MinuteChanged" status, so that only the first function calling the
+// Transition::hasMinuteChanged is executed!?
+// Are there better implementations which are more obvious?
 
 bool Transition::hasMinuteChanged() {
     if (lastMinute != _minute) {
