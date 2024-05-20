@@ -60,6 +60,7 @@ Transition::~Transition() {
 // instead of the time during the animation. Birthdays before 1900 are not
 // animated.
 
+bool Transition::isSpecialEvent(Transition_t &type, struct tm &tm) {
     static uint8_t minutesAfterMidnight;
 
     if (trigger) {
@@ -968,8 +969,9 @@ bool Transition::isOverwrittenByTransition(WordclockChanges changesInWordMatrix,
 
 void Transition::loop(struct tm &tm) {
     if (G.prog == COMMAND_IDLE || G.prog == COMMAND_MODE_WORD_CLOCK) {
-        if (!isSilvester(transitionType, tm, hasMinuteChanged())) {
-            transitionType = getTransitionType(matrixChanged);
+        if (!isSpecialEvent(transitionType, tm, hasMinuteChanged())) {
+            transitionType =
+                getTransitionType(matrixChanged); // hasMinuteChanged()
         }
 
         if (matrixChanged) {
@@ -1028,14 +1030,15 @@ void Transition::loop(struct tm &tm) {
                 case BALLS:
                     phase = transitionBalls();
                     break;
-                case NEWYEAR:
+                case BIRTHDAY:
+                case NEWYEAR_FIRE:
                 case FIRE:
                     phase = transitionFire();
                     break;
                 case SNAKE:
                     phase = transitionSnake();
                     break;
-                case COUNTDOWN:
+                case NEWYEAR_COUNTDOWN:
                     phase = transitionCountdown(tm);
                     break;
                 case RANDOM:
