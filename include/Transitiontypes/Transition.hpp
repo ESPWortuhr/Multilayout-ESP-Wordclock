@@ -60,7 +60,8 @@ Transition::~Transition() {
 // instead of the time during the animation. Birthdays before 1900 are not
 // animated.
 
-bool Transition::isSpecialEvent(Transition_t &type, struct tm &tm) {
+bool Transition::isSpecialEvent(Transition_t &type, struct tm &tm,
+                                bool trigger) {
     static uint8_t minutesAfterMidnight;
 
     if (trigger) {
@@ -1048,7 +1049,6 @@ void Transition::loop(struct tm &tm) {
             }
             transitionColorChange();
             copy2Stripe(work);
-            setMinute(); // TODO: Is setMinute() on the right place ?
             led.show();
         }
     }
