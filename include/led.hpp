@@ -267,6 +267,24 @@ void Led::setbyFrontMatrix(ColorPosition colorPosition,
 
 //------------------------------------------------------------------------------
 
+void Led::setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse) {
+    if (applyMirrorAndReverse) {
+        applyMirroringAndReverseIfDefined();
+    }
+
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
+            bool boolSetPixel = usedUhrType->getFrontMatrixPixel(row, col);
+
+            if (boolSetPixel) {
+                setPixel(row, col, color);
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Led::setbyMinuteArray(ColorPosition colorPosition) {
     HsbColor displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
