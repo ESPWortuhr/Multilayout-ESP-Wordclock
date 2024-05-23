@@ -966,9 +966,7 @@ bool Transition::isOverwrittenByTransition(WordclockChanges changesInWordMatrix,
 
 //------------------------------------------------------------------------------
 
-void Transition::init() {
-    saveMatrix();
-}
+void Transition::init() { saveMatrix(); }
 
 //------------------------------------------------------------------------------
 // Loop Functions
