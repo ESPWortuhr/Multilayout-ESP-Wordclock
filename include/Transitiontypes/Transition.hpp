@@ -61,7 +61,7 @@ bool Transition::isSilvester(Transition_t &type, struct tm &tm, bool trigger) {
         if ((tm.tm_mon == 12) && (tm.tm_mday == 31) && (tm.tm_hour == 23) &&
             (tm.tm_min == 59))
 #else
-        if (tm.tm_min == G.autoLdrBright) // for testing
+        if (tm.tm_min == G.autoBrightOffset) // for testing
 #endif
         {
             minutesAfterMidnight = 0;

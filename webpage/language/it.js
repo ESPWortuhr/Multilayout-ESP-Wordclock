@@ -223,9 +223,9 @@ let TRANSLATION_IT = {
 			"eighteen-to-twenty": "18:00 – 19:59",
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
-			"ldr-value": "Luminosità attuale dalla fotoresistenza (LDR)",
-			"value-bright": "Valore „Luminoso“ (0 – 255)",
-			"value-dark": "Valore „Buio“ (0 – 255)"
+			"value-sensor": "Luminosità attuale dalla fotoresistenza (LDR)",
+			"value-offset": "Valore „Luminoso“ (0 – 255)",
+			"value-slope": "Valore „Buio“ (0 – 255)"
 		},
 		"hostname": {
 			"h2": "Hostname",
