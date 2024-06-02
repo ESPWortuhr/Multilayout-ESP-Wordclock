@@ -111,13 +111,11 @@ WebPageAdapter webSocket = WebPageAdapter(80);
 //------------------------------------------------------------------------------
 
 uint16_t split(uint8_t *payload, uint8_t start, uint8_t length = 3) {
-    char buffer[length];
-    uint8_t m = 0;
-    for (uint16_t k = start; k < (start + length); k++) {
-        buffer[m] = payload[k];
-        m++;
+    String value;
+    for (uint16_t k = start; k < start + length; k++) {
+        value += char(payload[k]);
     }
-    return atoi(buffer);
+    return value.toInt();
 }
 
 //------------------------------------------------------------------------------
@@ -150,7 +148,7 @@ bool compareEffBriAndSpeedToOld(uint8_t *payload) {
 
 //------------------------------------------------------------------------------
 
-void parseColor(uint8_t *payload, uint8_t position = Foreground) {
+void parseColor(uint8_t *payload, ColorPosition position = Foreground) {
     if (position == Background) {
         G.color[position] = {HsbColor(split(payload, 12) / 360.f,
                                       split(payload, 15) / 100.f,
@@ -272,6 +270,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
 
+            parametersChanged = true;
             parseColor(payload);
             break;
         }
@@ -392,10 +391,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_MQTT: {
-            if (!G.mqtt.state) {
+            uint8_t newState = split(payload, 3);
+
+            if (newState && !G.mqtt.state) {
                 G.progInit = true;
             }
-            G.mqtt.state = split(payload, 3);
+
+            G.mqtt.state = newState;
             G.mqtt.port = split(payload, 6, 5);
             uint8_t index_start = 11;
             payloadTextHandling(payload, G.mqtt.serverAdress, index_start);

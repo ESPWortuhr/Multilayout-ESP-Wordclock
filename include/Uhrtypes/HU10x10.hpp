@@ -5,8 +5,8 @@
 /*
  *           Layout Front
  *                COL
- *       X 9 8 7 6 5 4 3 2 1 0
- * ROW + - - - - - - - - - - -
+ *       9 8 7 6 5 4 3 2 1 0
+ * ROW + - - - - - - - - - -
  *  0  | Ö T B T Í Z J A S U
  *  1  | P E R C C E L E W O
  *  2  | M Ú L T A M Ú L V A

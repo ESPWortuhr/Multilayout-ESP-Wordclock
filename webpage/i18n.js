@@ -27,6 +27,9 @@ i18next.init({
 		},
 		hu: {
 			translation: TRANSLATION_HU
+		},
+		ru: {
+			translation: TRANSLATION_RU
 		}
 	}
 }, (error) => {
