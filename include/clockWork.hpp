@@ -13,31 +13,53 @@ BH1750 lightMeter(0x23);
 //------------------------------------------------------------------------------
 // Helper Functions
 //------------------------------------------------------------------------------
-// TODO: Make original implementation with LDR again operational
-void ClockWork::loopLdrLogic() {
-    int16_t lux = analogRead(A0); // Range 0-1023
-    uint8_t ledGainOld = ledGain;
 
+// Automatic Brightness Control (enabled/dieabled by G.autoBrightEnabled)
+// 1. Measure ambient light with high resolution sensor BH1750, if available. If not, use legacy LDR.
+// 2. Derive the ledGain for the LEDs 0.0 - 100.0%
+// 3. When ledGain changed, execute led.set()
+// Inputs: autoBrightSlope, autoBrightOffset 0-255
+// Outputs: 
+//  lux = Ambient light [LUX] 
+//  ledGain = gain for the the LEDs: 0.0-100.0% (Gain means n % of the configured brightness: effectBri)
+void ClockWork::loopAutoBrightLogic() {
+    float ledGainOld = ledGain;
+    if (stateBH1750 == stateBH1750Type::toBeInitialized) {
+        initBH1750Logic();
+    }
     if (G.autoBrightEnabled) {
-        lux /= 4; // Range 0-255
-        uint16_t minimum = min(G.autoBrightOffset, G.autoBrightSlope);
-        uint16_t maximum = max(G.autoBrightOffset, G.autoBrightSlope);
-        if (lux >= maximum)
-            lux = maximum;
-        if (lux <= minimum)
-            lux = minimum;
-        if (G.autoBrightSlope == G.autoBrightOffset) {
-            // map() //Would crash with division by zero
-            ledGain = 100;
+        if (stateBH1750 == stateBH1750Type::Initialized) {
+            // Using BH1750 for ambient light measurement which directly provides the LUX value with high resolution!
+            if (lightMeter.measurementReady())
+                lux = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
         } else {
-            ledGain = map(lux, G.autoBrightSlope, G.autoBrightOffset, 10, 100);
+            // Using legacy LDR for ambient light measurement
+            // Electrical circuit = voltage divider: 3.3V--LDR-->ADC<--220 Ohm--GND
+            uint16 adcValue = analogRead(A0); // Read out ADC, pin TOUT = 0.0V - 1.0V = adcValue 0-1023
+            // Track lowest ADC value for offest correction at 0 LUX
+            if (adcValue < adcValue0Lux)
+                adcValue0Lux = adcValue;
+            float ldrValue = adcValue - adcValue0Lux;
+            // Derive LUX value from ldrValue via a second degree polinomial.
+            // The polinomial was derived using an Excel trend line, see LDR-Calibration.xlsx
+            const float x2 = 0.0427;
+            const float x1 = 2.679;
+            const float x0 = 10.857;
+            lux = x2 * ldrValue * ldrValue + x1 * ldrValue + x0;
         }
+
+        // Based on the LUX value derive the gain for the LEDs 0.0 - 100.0%
+        // Interpretation of autoBrightSlope+1=aBS: aBS=1 -> slope=1/16x, aBS=16 -> slope=1x, aBS=256 -> slope=16x, 
+        // When autoBrightOffset=0, and aBS=16 then ledGain should reach 100.0% at 500.0 LUX.
+        ledGain = (lux * (float)(G.autoBrightSlope+1)) / 80.0;
+        // Add autoBrightOffset 0-255
+        ledGain += ((uint16)100*(uint16)G.autoBrightOffset)/(uint16)255;
+        if (ledGain > 100.0) ledGain = 100.0;
     }
     if (ledGainOld != ledGain) {
         led.set();
     }
 }
-
 
 // Ambient Light Sensor BH1750
 // Initialize the I2C bus using SCL and SDA pins
@@ -46,38 +68,11 @@ void ClockWork::initBH1750Logic() {
     Wire.begin(D4,D3);
     // begin returns a boolean that can be used to detect setup problems.
     if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
-      Serial.println(F("BH1750: Initialized"));
+      Serial.println("BH1750 initialized. Using this sensor for ambient light measurement.");
+      stateBH1750 = stateBH1750Type::Initialized;
     } else {
-      Serial.println(F("BH1750: Initialisation error"));
-    }
-}
-
-// Measure with Ambient Light Sensor BH1750
-// 
-// Inputs: autoBrightSlope and autoBrightOffset 0-255 to limit lux255 (lux normalized to 0-255)
-// Outputs: 
-// lux = Ambient light [lux] 
-// ledGain = gain for the brightness of the LEDs 0.0-100.0%
-// 
-void ClockWork::loopBH1750Logic() {
-    float ledGainOld = ledGain;
-    if (!initBH1750) {
-        initBH1750Logic();
-        initBH1750 = true;
-    }
-    if (G.autoBrightEnabled) {
-        if (lightMeter.measurementReady()) {
-            lux = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
-        }
-        // Derive the Brightness for the LEDs 0.0 - 100.0%
-        // Bias of autoBrightSlope+1=aBS is 16, i.e. the slope is x1, if aBS=1 then slope=1/16x, if aBS=256 then slope=16x, 
-        // When autoBrightOffset=0, and aBS=16 then ledGain should reach 100.0% at 500.0 LUX.
-        ledGain = (lux * (float)(G.autoBrightSlope+1)) / 80.0;
-        ledGain += G.autoBrightOffset;
-        if (ledGain > 100.0) ledGain = 100.0;
-    }
-    if (ledGainOld != ledGain) {
-        led.set();
+      Serial.println("BH1750 initialisation error. Using legacy LDR for ambient light measurement");
+      stateBH1750 = stateBH1750Type::cannotBeInitialized;
     }
 }
 
@@ -938,11 +933,10 @@ void ClockWork::loop(struct tm &tm) {
         }
 
         //--------------------------------------------
-        // LDR Routine
+        // Auto Brightness Logic
         //--------------------------------------------
         if (G.autoBrightEnabled) {
-            //loopLdrLogic();
-            loopBH1750Logic();
+            loopAutoBrightLogic();
         }
 
         if (G.prog == COMMAND_IDLE && G.conf == 0) {
