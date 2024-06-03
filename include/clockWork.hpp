@@ -457,12 +457,6 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
 
 //------------------------------------------------------------------------------
 
-bool ClockWork::hasTwentyAndCheckForUsage() {
-    return usedUhrType->hasZwanzig() || G.languageVariant[ItIs40];
-}
-
-//------------------------------------------------------------------------------
-
 bool ClockWork::hasDreiviertelAndCheckForUsage() {
     if (usedUhrType->hasDreiviertel()) {
         if (usedUhrType->usedLang() != LanguageAbbreviation::DE) {
@@ -549,14 +543,14 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             usedUhrType->show(FrontWord::nach);
             break;
         case 20:
-            if (hasTwentyAndCheckForUsage()) {
-                usedUhrType->show(FrontWord::min_20);
-                usedUhrType->show(FrontWord::nach);
-            } else {
+            if (G.languageVariant[ItIs20]) {
                 usedUhrType->show(FrontWord::min_10);
                 usedUhrType->show(FrontWord::vor);
                 usedUhrType->show(FrontWord::halb);
                 offsetHour = 1;
+            } else {
+                usedUhrType->show(FrontWord::min_20);
+                usedUhrType->show(FrontWord::nach);
             }
             break;
         case 21:
@@ -639,15 +633,16 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         case 40:
             if (usedUhrType->hasForty()) {
                 usedUhrType->show(FrontWord::min_40);
-            } else if (hasTwentyAndCheckForUsage()) {
-                usedUhrType->show(FrontWord::min_20);
-                usedUhrType->show(FrontWord::vor);
-            } else {
+            } else if (G.languageVariant[ItIs40])  {
                 usedUhrType->show(FrontWord::min_10);
                 usedUhrType->show(FrontWord::nach);
                 usedUhrType->show(FrontWord::halb);
+                offsetHour = 1;
+            } else {
+                usedUhrType->show(FrontWord::min_20);
+                usedUhrType->show(FrontWord::vor);
+                offsetHour = 1;
             }
-            offsetHour = 1;
             break;
         case 41:
         case 42:
