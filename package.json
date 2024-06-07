@@ -85,7 +85,7 @@
 		"grunt-htmllint": "^0.3.0",
 		"grunt-terser": "^2.0.0",
 		"grunt-version": "^3.0.1",
-		"terser": "^5.31.0"
+		"terser": "^5.31.1"
 	},
 	"dependencies": {
 		"@jaames/iro": "^5.5.2",
