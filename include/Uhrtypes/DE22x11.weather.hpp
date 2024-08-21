@@ -1,5 +1,7 @@
 #pragma once
 
+// #define WEATHER_VERBOSE
+
 #include "Uhrtype.hpp"
 
 /*
@@ -28,8 +30,9 @@
  *  6  | O G E W I T T E R B N
  *  7  | U N T E R Z Ü B E R K
  *  8  | Y M I N U S A N U L L
- *  9  | H N Z W A N Z I G J T
- *  X  | D R E I ẞ I G O ° C X
+ *  9  | F Ü N F Z E H N U N D
+ *  X  | H N Z W A N Z I G J T
+ *  1  | D R E I ẞ I G O ° C X
  */
 
 class De22x11Weather_t : public iUhrType {
