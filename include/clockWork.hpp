@@ -549,7 +549,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             usedUhrType->show(FrontWord::nach);
             break;
         case 20:
-            if (hasTwentyAndCheckForUsage()) {
+            if (hasTwentyAndCheckForUsage() && G.UhrtypeDef == Fr10x11) {
+                usedUhrType->show(FrontWord::min_20);
+                } else if (hasTwentyAndCheckForUsage() && G.UhrtypeDef != Fr10x11) {
                 usedUhrType->show(FrontWord::min_20);
                 usedUhrType->show(FrontWord::nach);
             } else {
@@ -564,7 +566,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         case 23:
         case 24:
         case 25:
-            if (usedUhrType->hasTwentyfive()) {
+            if (usedUhrType->hasTwentyfive()&& G.UhrtypeDef == Fr10x11) {
+                usedUhrType->show(FrontWord::min_25);
+                } else if (usedUhrType->hasTwentyfive() && G.UhrtypeDef != Fr10x11) {
                 usedUhrType->show(FrontWord::min_25);
                 usedUhrType->show(FrontWord::nach);
             } else {
@@ -620,12 +624,13 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             } else if (usedUhrType->hasTwentyfive()) {
                 usedUhrType->show(FrontWord::min_25);
                 usedUhrType->show(FrontWord::vor);
+                offsetHour = 1;
             } else {
                 usedUhrType->show(FrontWord::min_5);
                 usedUhrType->show(FrontWord::nach);
                 usedUhrType->show(FrontWord::halb);
+                offsetHour = 1;
             }
-            offsetHour = 1;
             break;
         case 36:
         case 37:
