@@ -39,6 +39,30 @@ let TRANSLATION_EN_US = {
 			"color-change": "Color Change",
 			"symbol": "Symbol"
 		},
+		"birthdays": {
+			"h1": "Birthdays",
+			"help": "On birthdays, a fireworks animation appears every 5 minutes.\n" +
+					"Compatible clock types will display the words “Happy Birthday” instead of the time during the animation.\n" +
+					"Birthdays before 1900 are not supported.",
+			"dates": {
+				"save": "Save",
+				"date0": {
+					"label": "Date 1:"
+				},
+				"date1": {
+					"label": "Date 2:"
+				},
+				"date2": {
+					"label": "Date 3:"
+				},
+				"date3": {
+					"label": "Date 4:"
+				},
+				"date4": {
+					"label": "Date 5:"
+				}
+			}
+		},
 		"transition": {
 			"h2": "Transition",
 			"type": {
@@ -272,31 +296,6 @@ let TRANSLATION_EN_US = {
 			"topic": "Topic",
 			"save": "Save Settings",
 			"discovery": "Send HA Discovery"
-		}
-	},
-	"birthdays": {
-		"h1": "Birthdays",
-		"dates": {
-			"h2": "Appointments",
-			"help": "On birthdays, a fireworks animation appears every 5 minutes.\n" +
-					"Compatible clock types will display the words “Happy Birthday” instead of the time during the animation.\n" +
-					"Birthdays before 1900 are not supported.",
-			"save": "Save",
-			"date1": {
-				"label": "Date 1:"
-			},
-			"date2": {
-				"label": "Date 2:"
-			},
-			"date3": {
-				"label": "Date 3:"
-			},
-			"date4": {
-				"label": "Date 4:"
-			},
-			"date5": {
-				"label": "Date 5:"
-			}
 		}
 	},
 	"about": {

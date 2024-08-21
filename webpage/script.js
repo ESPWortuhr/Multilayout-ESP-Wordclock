@@ -68,7 +68,7 @@ var dialect = [0, 0, 0, 0, 0, 0];
 var layVar = [0, 0, 0];
 var showSeconds = 0;
 var showMinutes = 0;
-var UhrtypeDef = 0;
+var hasHappyBirthday = 0;
 var buildtype = 0;
 var wType = 0;
 var colortype = 0;
@@ -214,7 +214,7 @@ function initConfigValues() {
 	showMinutes = 0;
 	buildtype = 0;
 	wType = 0;
-	UhrtypeDef = 0;
+	hasHappyBirthday = 0;
 	colortype = 0;
 	MQTTState = 0;
 	MQTTPort = 0;
@@ -339,6 +339,7 @@ function initWebsocket() {
 		}
 
 		if (data.command === "birthdays") {
+			hasHappyBirthday = data.hasHappyBirthday;
 			$("#birthdays-date0").set("value", data.birthdayDate0);
 			$("#birthdays-date1").set("value", data.birthdayDate1);
 			$("#birthdays-date2").set("value", data.birthdayDate2);
@@ -382,6 +383,7 @@ function initWebsocket() {
 			$("#owm-api-key").set("value", data.apiKey);
 			$("#owm-city-id").set("value", data.cityid);
 
+			hasHappyBirthday = data.hasHappyBirthday;
 			$("#front-layout").set("value", data.UhrtypeDef);
 			$("#buildtype").set("value", data.buildtype);
 			$("#whitetype").set("value", data.wType);
@@ -398,7 +400,6 @@ function initWebsocket() {
 			enableSpecific("specific-layout-4", data.hasSecondsFrame);
 			enableSpecific("specific-layout-5", data.hasWeatherLayout);
 			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // Add A-Quarter to (En10x11 exclusive)
-			enableSpecific("specific-layout-7", data.hasHappyBirthday);
 
 			enableSpecific("specific-colortype-4", data.colortype === 4);
 
@@ -422,6 +423,7 @@ function initWebsocket() {
 			effectBri = data.effectBri;
 			effectSpeed = data.effectSpeed;
 			colortype = data.colortype;
+			hasHappyBirthday = data.hasHappyBirthday;
 
 			var prog = data.prog;
 			command = prog === 0 ? COMMAND_MODE_WORD_CLOCK : prog;	// 0 == COMMAND_IDLE
@@ -442,7 +444,7 @@ function initWebsocket() {
 			transitionSpeed = data.transitionSpeed;
 			transitionColorize = data.transitionColorize;
 			transitionDemo = data.transitionDemo;
-			setTransition();
+			setElementsForFunctionsMenu();
 		}
 		if (data.command === "autoLdr") {
 			$("#auto-ldr-enabled").set("value", data.autoLdrEnabled);
@@ -554,7 +556,7 @@ function setSliders() {
 	$("#slider-speed-value").fill(effectSpeed);
 }
 
-function setTransition() {
+function setElementsForFunctionsMenu() {
 	if (document.getElementById("mode-wordclock").checked) {
 		$("#transition-box").set({
 			$display: "block"
@@ -564,6 +566,17 @@ function setTransition() {
 			$display: "none"
 		});
 	}
+
+	if (hasHappyBirthday === true && document.getElementById("mode-wordclock").checked) {
+		$("#functions-birthdays").set({
+			$display: "block"
+		});
+	} else {
+		$("#functions-birthdays").set({
+			$display: "none"
+		});
+	}
+
 	$("#transition-types").set("value", transitionType);
 	$("#transition-duration").set("value", transitionDuration);
 	$("#transition-speed-value").fill(transitionSpeed);
@@ -652,7 +665,7 @@ $.ready(function() {
 	initConfigValues();
 	createColorPicker();
 	setSliders();
-	setTransition();
+	setElementsForFunctionsMenu();
 	initWebsocket();
 	setColors();
 
@@ -700,16 +713,14 @@ $.ready(function() {
 		document.getElementsByClassName("pure-menu-selected")[0].setAttribute("aria-current", "page");
 
 		if (navigation === "functions") {
-			setTransition();
+			sendCmd(COMMAND_REQUEST_BIRTHDAYS);
+			setElementsForFunctionsMenu();
 		}
 		if (navigation === "smart-home") {
 			sendCmd(COMMAND_REQUEST_MQTT_VALUES);
 		}
 		if (navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
-		}
-		if (navigation === "birthdays") {
-			sendCmd(COMMAND_REQUEST_BIRTHDAYS);
 		}
 		if (navigation === "settings" || navigation === "frontoptions") {
 			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
@@ -771,7 +782,7 @@ $.ready(function() {
 			command = COMMAND_MODE_SYMBOL;
 		}
 
-		setTransition();
+		setElementsForFunctionsMenu();
 
 		if (hasBrightness === true) {
 			$(".brightness").set({
@@ -855,7 +866,7 @@ $.ready(function() {
 
 		sendCmd(COMMAND_MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionColorize) + nstr(transitionDemo ? 1 : 0));
 		debugMessage("Transition" + debugMessageReconfigured);
-		setTransition();
+		setElementsForFunctionsMenu();
 		return false;
 	});
 	$("#initial-values-button").on("click", function() {

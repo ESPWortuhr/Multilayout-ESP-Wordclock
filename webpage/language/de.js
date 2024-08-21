@@ -39,6 +39,30 @@ let TRANSLATION_DE_DE = {
 			"color-change": "Farbwechsel",
 			"symbol": "Symbol"
 		},
+		"birthdays": {
+			"h1": "Geburtstage",
+			"help": "An Geburtstagen erscheint alle 5 Minuten eine Feuerwerk-Animation.\n" +
+						"Bei kompatiblen Uhrentypen werden während der Animation die Wörter „Happy Birthday“ statt der Uhrzeit angezeigt.\n" +
+						"Geburtstage vor dem Jahr 1900 werden nicht unterstützt.\n",
+			"dates": {
+				"save": "Speichern",
+				"date0": {
+					"label": "Termin 1:"
+				},
+				"date1": {
+					"label": "Termin 2:"
+				},
+				"date2": {
+					"label": "Termin 3:"
+				},
+				"date3": {
+					"label": "Termin 4:"
+				},
+				"date4": {
+					"label": "Termin 5:"
+				}
+			}
+		},
 		"transition": {
 			"h2": "Übergang",
 			"type": {
@@ -272,31 +296,6 @@ let TRANSLATION_DE_DE = {
 			"topic": "Topic",
 			"save": "Einstellungen Speichern",
 			"discovery": "Sende HA Discovery"
-		}
-	},
-	"birthdays": {
-		"h1": "Geburtstage",
-		"dates": {
-			"h2": "Termine",
-			"help": "An Geburtstagen erscheint alle 5 Minuten eine Feuerwerk-Animation.\n" +
-					"Bei kompatiblen Uhrentypen werden während der Animation die Wörter „Happy Birthday“ statt der Uhrzeit angezeigt.\n" +
-					"Geburtstage vor dem Jahr 1900 werden nicht unterstützt.\n",
-			"save": "Speichern",
-			"date1": {
-				"label": "Termin 1:"
-			},
-			"date2": {
-				"label": "Termin 2:"
-			},
-			"date3": {
-				"label": "Termin 3:"
-			},
-			"date4": {
-				"label": "Termin 4:"
-			},
-			"date5": {
-				"label": "Termin 5:"
-			}
 		}
 	},
 	"about": {

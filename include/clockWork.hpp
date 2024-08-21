@@ -1070,6 +1070,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_BIRTHDAYS: {
         DynamicJsonDocument config(1024);
         config["command"] = "birthdays";
+        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
         char dateString[14];
         char string2Send[14];
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
@@ -1100,6 +1101,7 @@ void ClockWork::loop(struct tm &tm) {
         config["effectBri"] = G.effectBri;
         config["effectSpeed"] = G.effectSpeed;
         config["colortype"] = G.Colortype;
+        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
         config["prog"] = G.prog;
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
