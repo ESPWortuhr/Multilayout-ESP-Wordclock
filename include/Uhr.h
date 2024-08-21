@@ -4,6 +4,7 @@
 
 #define PAYLOAD_LENGTH 30
 #define MAX_ROW_SIZE 22
+#define MAX_BIRTHDAY_COUNT 5
 
 enum ClockWords {
     ESIST = 0,
@@ -48,6 +49,12 @@ enum class WhiteType {
     WarmWhite = 0,
     NeutralWhite = 1,
     ColdWhite = 2,
+};
+
+struct Birthday {
+    uint8_t day;
+    uint8_t month;
+    uint16_t year;
 };
 
 struct OpenWeatherMapData {
@@ -101,7 +108,7 @@ struct GLOBAL {
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char scrollingText[PAYLOAD_LENGTH];
-    bool state;
+
     uint8_t h6;
     uint8_t h8;
     uint8_t h12;
@@ -133,6 +140,8 @@ struct GLOBAL {
     bool bootLedSweep;
     bool bootShowWifi;
     bool bootShowIP;
+
+    Birthday birthday[MAX_BIRTHDAY_COUNT];
 };
 GLOBAL G = {};
 
@@ -213,6 +222,7 @@ enum CommandWords {
     COMMAND_SET_INITIAL_VALUES = 20,
     COMMAND_SET_TIME = 30,
 
+    COMMAND_SET_BIRTHDAYS = 83,
     COMMAND_SET_LANGUAGE_VARIANT = 84,
     COMMAND_SET_MQTT = 85,
     COMMAND_SET_TIME_MANUAL = 86,
@@ -245,6 +255,7 @@ enum CommandWords {
     COMMAND_REQUEST_AUTO_LDR = 203,
     COMMAND_REQUEST_TRANSITION = 204,
     COMMAND_REQUEST_MQTT_VALUES = 205,
+    COMMAND_REQUEST_BIRTHDAYS = 206,
 
     PLACEHOLDER_MAX_REQUEST = 255,
 };

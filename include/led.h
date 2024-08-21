@@ -50,10 +50,12 @@ public:
     //------------------------------------------------------------------------------
     // Pixel set Functions
     //------------------------------------------------------------------------------
+    void setState(bool newState);
     void setPixel(uint16_t ledIndex, HsbColor color);
     void setPixel(uint8_t row, uint8_t col, HsbColor color);
     void setbyFrontMatrix(ColorPosition position = Foreground,
                           bool applyMirrorAndReverse = true);
+    void setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse = true);
     void setbyMinuteArray(ColorPosition position = Foreground);
     void setbySecondArray(ColorPosition position = Foreground);
     void setIcon(uint8_t iconNum);
@@ -66,6 +68,7 @@ public:
     //------------------------------------------------------------------------------
     // Pixel get Functions
     //------------------------------------------------------------------------------
+    bool getState();
     RgbColor getPixel(uint16_t i);
 
     //------------------------------------------------------------------------------

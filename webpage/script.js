@@ -68,7 +68,7 @@ var dialect = [0, 0, 0, 0, 0, 0];
 var layVar = [0, 0, 0];
 var showSeconds = 0;
 var showMinutes = 0;
-var UhrtypeDef = 0;
+var hasHappyBirthday = 0;
 var buildtype = 0;
 var wType = 0;
 var colortype = 0;
@@ -125,6 +125,8 @@ MODE_TO_INPUT_ID.set(COMMAND_MODE_TRANSITION, "mode-wordclock");
 // other commands
 var COMMAND_SET_INITIAL_VALUES = 20;
 var COMMAND_SET_TIME = 30;
+
+var COMMAND_SET_BIRTHDAYS = 83;
 var COMMAND_SET_LANGUAGE_VARIANT = 84;
 var COMMAND_SET_MQTT = 85;
 var COMMAND_SET_TIME_MANUAL = 86;
@@ -155,6 +157,7 @@ var COMMAND_REQUEST_WIFI_LIST = 202;
 var COMMAND_REQUEST_AUTO_LDR = 203;
 var COMMAND_REQUEST_TRANSITION = 204;
 var COMMAND_REQUEST_MQTT_VALUES = 205;
+var COMMAND_REQUEST_BIRTHDAYS = 206;
 
 // colors
 var COLOR_FOREGROUND = 0;
@@ -211,7 +214,7 @@ function initConfigValues() {
 	showMinutes = 0;
 	buildtype = 0;
 	wType = 0;
-	UhrtypeDef = 0;
+	hasHappyBirthday = 0;
 	colortype = 0;
 	MQTTState = 0;
 	MQTTPort = 0;
@@ -335,6 +338,15 @@ function initWebsocket() {
 			$("#mqtt-topic").set("value", data.MQTT_Topic);
 		}
 
+		if (data.command === "birthdays") {
+			hasHappyBirthday = data.hasHappyBirthday;
+			$("#birthdays-date0").set("value", data.birthdayDate0);
+			$("#birthdays-date1").set("value", data.birthdayDate1);
+			$("#birthdays-date2").set("value", data.birthdayDate2);
+			$("#birthdays-date3").set("value", data.birthdayDate3);
+			$("#birthdays-date4").set("value", data.birthdayDate4);
+		}
+
 		if (data.command === "config") {
 
 			$("#ssid").set("value", data.ssid);
@@ -371,6 +383,7 @@ function initWebsocket() {
 			$("#owm-api-key").set("value", data.apiKey);
 			$("#owm-city-id").set("value", data.cityid);
 
+			hasHappyBirthday = data.hasHappyBirthday;
 			$("#front-layout").set("value", data.UhrtypeDef);
 			$("#buildtype").set("value", data.buildtype);
 			$("#whitetype").set("value", data.wType);
@@ -410,6 +423,7 @@ function initWebsocket() {
 			effectBri = data.effectBri;
 			effectSpeed = data.effectSpeed;
 			colortype = data.colortype;
+			hasHappyBirthday = data.hasHappyBirthday;
 
 			var prog = data.prog;
 			command = prog === 0 ? COMMAND_MODE_WORD_CLOCK : prog;	// 0 == COMMAND_IDLE
@@ -430,7 +444,7 @@ function initWebsocket() {
 			transitionSpeed = data.transitionSpeed;
 			transitionColorize = data.transitionColorize;
 			transitionDemo = data.transitionDemo;
-			setTransition();
+			setElementsForFunctionsMenu();
 		}
 		if (data.command === "autoLdr") {
 			$("#auto-ldr-enabled").set("value", data.autoLdrEnabled);
@@ -542,7 +556,7 @@ function setSliders() {
 	$("#slider-speed-value").fill(effectSpeed);
 }
 
-function setTransition() {
+function setElementsForFunctionsMenu() {
 	if (document.getElementById("mode-wordclock").checked) {
 		$("#transition-box").set({
 			$display: "block"
@@ -552,6 +566,17 @@ function setTransition() {
 			$display: "none"
 		});
 	}
+
+	if (hasHappyBirthday === true && document.getElementById("mode-wordclock").checked) {
+		$("#functions-birthdays").set({
+			$display: "block"
+		});
+	} else {
+		$("#functions-birthdays").set({
+			$display: "none"
+		});
+	}
+
 	$("#transition-types").set("value", transitionType);
 	$("#transition-duration").set("value", transitionDuration);
 	$("#transition-speed-value").fill(transitionSpeed);
@@ -640,7 +665,7 @@ $.ready(function() {
 	initConfigValues();
 	createColorPicker();
 	setSliders();
-	setTransition();
+	setElementsForFunctionsMenu();
 	initWebsocket();
 	setColors();
 
@@ -688,7 +713,8 @@ $.ready(function() {
 		document.getElementsByClassName("pure-menu-selected")[0].setAttribute("aria-current", "page");
 
 		if (navigation === "functions") {
-			setTransition();
+			sendCmd(COMMAND_REQUEST_BIRTHDAYS);
+			setElementsForFunctionsMenu();
 		}
 		if (navigation === "smart-home") {
 			sendCmd(COMMAND_REQUEST_MQTT_VALUES);
@@ -756,7 +782,7 @@ $.ready(function() {
 			command = COMMAND_MODE_SYMBOL;
 		}
 
-		setTransition();
+		setElementsForFunctionsMenu();
 
 		if (hasBrightness === true) {
 			$(".brightness").set({
@@ -840,7 +866,7 @@ $.ready(function() {
 
 		sendCmd(COMMAND_MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionColorize) + nstr(transitionDemo ? 1 : 0));
 		debugMessage("Transition" + debugMessageReconfigured);
-		setTransition();
+		setElementsForFunctionsMenu();
 		return false;
 	});
 	$("#initial-values-button").on("click", function() {
@@ -921,6 +947,9 @@ $.ready(function() {
 	});
 	$("#reset-button").on("click", function() {
 		sendCmd(COMMAND_RESET);
+	});
+	$("#birthdays-store-button").on("click", function() {
+		sendCmd(COMMAND_SET_BIRTHDAYS, getPaddedString($("#birthdays-date0").get("value"), 10) + getPaddedString($("#birthdays-date1").get("value"), 10) + getPaddedString($("#birthdays-date2").get("value"), 10) + getPaddedString($("#birthdays-date3").get("value"), 10) + getPaddedString($("#birthdays-date4").get("value"), 10));
 	});
 	$("#uhrzeit-button").on("click", function() {
 

@@ -198,7 +198,6 @@ void setup() {
         strcpy(G.hostname, "ESPWordclock");
         strcpy(G.scrollingText, "HELLO WORLD ");
 
-        G.state = true;
         G.h6 = 100;
         G.h8 = 100;
         G.h12 = 100;
@@ -241,6 +240,12 @@ void setup() {
         G.transitionSpeed = 30;
         G.transitionColorize = 0;
         G.transitionDemo = false;
+
+        for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
+            G.birthday[i].day = 1;
+            G.birthday[i].month = 1;
+            G.birthday[i].year = 1900;
+        }
 
         eeprom::write();
         Serial.println("eeprom schreiben");
@@ -399,6 +404,11 @@ void setup() {
     powerCycleCount = 0;
     EEPROM.write(powerCycleCountAddr, powerCycleCount);
     EEPROM.commit();
+
+    //-------------------------------------
+    // Transition Init
+    //-------------------------------------
+    transition->init();
 
     //-------------------------------------
     // Setup Done
