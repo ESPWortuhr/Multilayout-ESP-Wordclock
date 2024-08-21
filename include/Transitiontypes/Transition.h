@@ -96,8 +96,10 @@ enum Transition_t {
     SNAKE = 10,
     // only internaly used
     RANDOM = 11,
-    COUNTDOWN = 98,
-    NEWYEAR = 99
+
+    BIRTHDAY = 97,
+    NEWYEAR_COUNTDOWN = 98,
+    NEWYEAR_FIRE = 99
 };
 
 enum Colorize { OFF = 0, WORDS = 1, CHARACTERS = 2 };
@@ -155,7 +157,7 @@ protected:
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                          unsigned char unsigned_d1, HsbColor color);
     inline bool isIdle() { return phase == 0; }
-    bool isSilvester(Transition_t &type, struct tm &tm, bool trigger);
+    bool isSpecialEvent(Transition_t &type, struct tm &tm, bool trigger);
     Transition_t getTransitionType(bool trigger);
     bool isColorization();
     bool changeBrightness();
@@ -198,6 +200,11 @@ public:
     void initTransitionStart();
     bool hasMinuteChanged();
     bool isOverwrittenByTransition(WordclockChanges flag, uint8_t minute);
+
+    //------------------------------------------------------------------------------
+    // Loop Functions
+    //------------------------------------------------------------------------------
+    void init();
 
     //------------------------------------------------------------------------------
     // Loop Functions

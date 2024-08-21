@@ -198,6 +198,8 @@ public:
 
     virtual const bool hasMinuteInWords() { return false; }
 
+    virtual const bool hasHappyBirthday() { return false; }
+
     virtual const uint16_t getFrontMatrixIndex(const uint8_t row, uint8_t col) {
 
         uint8_t newColsWordMatrix = colsWordMatrix();

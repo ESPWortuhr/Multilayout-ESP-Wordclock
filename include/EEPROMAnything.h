@@ -86,6 +86,11 @@ void read() {
     Serial.print("OWM_city  : ");
     Serial.println(G.openWeatherMap.cityid);
 
+    for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
+        Serial.printf("Birthday%1u: %02u.%02u.%04u\n", i, G.birthday[i].day,
+                      G.birthday[i].month, G.birthday[i].year);
+    }
+
     delay(100);
 }
 } // namespace eeprom

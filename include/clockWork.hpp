@@ -592,7 +592,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         case 20:
             if (hasTwentyAndCheckForUsage()) {
                 usedUhrType->show(FrontWord::min_20);
-                usedUhrType->show(FrontWord::nach);
+                if (G.UhrtypeDef != Fr10x11) {
+                    usedUhrType->show(FrontWord::nach);
+                }
             } else {
                 usedUhrType->show(FrontWord::min_10);
                 usedUhrType->show(FrontWord::vor);
@@ -607,7 +609,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         case 25:
             if (usedUhrType->hasTwentyfive()) {
                 usedUhrType->show(FrontWord::min_25);
-                usedUhrType->show(FrontWord::nach);
+                if (G.UhrtypeDef != Fr10x11) {
+                    usedUhrType->show(FrontWord::nach);
+                }
             } else {
                 usedUhrType->show(FrontWord::min_5);
                 usedUhrType->show(FrontWord::vor);
@@ -661,12 +665,13 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             } else if (usedUhrType->hasTwentyfive()) {
                 usedUhrType->show(FrontWord::min_25);
                 usedUhrType->show(FrontWord::vor);
+                offsetHour = 1;
             } else {
                 usedUhrType->show(FrontWord::min_5);
                 usedUhrType->show(FrontWord::nach);
                 usedUhrType->show(FrontWord::halb);
+                offsetHour = 1;
             }
-            offsetHour = 1;
             break;
         case 36:
         case 37:
@@ -1099,7 +1104,27 @@ void ClockWork::loop(struct tm &tm) {
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["hasMinuteInWords"] = usedUhrType->hasMinuteInWords();
+        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
         config["numOfRows"] = usedUhrType->rowsWordMatrix();
+        serializeJson(config, str);
+        Serial.print("Sending Payload:");
+        Serial.println(str);
+        webSocket.sendTXT(G.client_nr, str, strlen(str));
+        break;
+    }
+
+    case COMMAND_REQUEST_BIRTHDAYS: {
+        DynamicJsonDocument config(1024);
+        config["command"] = "birthdays";
+        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
+        char dateString[14];
+        char string2Send[14];
+        for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
+            sprintf(string2Send, "birthdayDate%d", i);
+            sprintf(dateString, "%04u-%02u-%02u", G.birthday[i].year,
+                    G.birthday[i].month, G.birthday[i].day);
+            config[string2Send] = dateString;
+        }
         serializeJson(config, str);
         Serial.print("Sending Payload:");
         Serial.println(str);
@@ -1122,6 +1147,7 @@ void ClockWork::loop(struct tm &tm) {
         config["effectBri"] = G.effectBri;
         config["effectSpeed"] = G.effectSpeed;
         config["colortype"] = G.Colortype;
+        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
         config["prog"] = G.prog;
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
@@ -1157,6 +1183,7 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
+    case COMMAND_SET_BIRTHDAYS:
     case COMMAND_SET_TIME:
     case COMMAND_SET_INITIAL_VALUES:
     case COMMAND_SET_WEATHER_DATA:

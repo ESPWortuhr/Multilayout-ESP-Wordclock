@@ -203,6 +203,27 @@ void Led::shiftColumnToRight() {
 // Pixel set Functions
 //------------------------------------------------------------------------------
 
+void Led::setState(bool newState) {
+    static uint8_t oldBrightness[3];
+
+    if (newState) {
+        for (uint8_t i = 0; i < 3; i++) {
+            G.color[i].B = oldBrightness[i] / 100.f;
+        }
+    } else {
+        for (uint8_t i = 0; i < 3; i++) {
+            led.clear();
+            led.show();
+            oldBrightness[i] = G.color[i].B * 100;
+            G.color[i].B = 0;
+        }
+    }
+
+    parametersChanged = true;
+}
+
+//------------------------------------------------------------------------------
+
 void Led::setPixel(uint16_t ledIndex, HsbColor color) {
     if (G.Colortype == Grbw) {
         strip_RGBW->SetPixelColor(ledIndex,
@@ -239,6 +260,24 @@ void Led::setbyFrontMatrix(ColorPosition colorPosition,
                 setPixel(row, col, displayedColor);
             } else if (colorPosition != Background) {
                 clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Led::setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse) {
+    if (applyMirrorAndReverse) {
+        applyMirroringAndReverseIfDefined();
+    }
+
+    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
+        for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
+            bool boolSetPixel = usedUhrType->getFrontMatrixPixel(row, col);
+
+            if (boolSetPixel) {
+                setPixel(row, col, color);
             }
         }
     }
@@ -370,6 +409,17 @@ RgbColor Led::getPixel(uint16_t i) {
         return RgbColor(strip_RGBW->GetPixelColor(i));
     }
     return strip_RGB->GetPixelColor(i);
+}
+
+//------------------------------------------------------------------------------
+
+bool Led::getState() {
+    for (uint8_t i = 0; i < 3; i++) {
+        if (G.color[i].B > 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -578,11 +628,9 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
 //------------------------------------------------------------------------------
 
 void Led::show() {
-    if (G.state) {
-        if (G.Colortype == Grbw) {
-            strip_RGBW->Show();
-        } else {
-            strip_RGB->Show();
-        }
+    if (G.Colortype == Grbw) {
+        strip_RGBW->Show();
+    } else {
+        strip_RGB->Show();
     }
 }

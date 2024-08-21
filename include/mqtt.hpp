@@ -204,13 +204,10 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     if (doc.containsKey("state")) {
         const char *state = doc["state"];
         if (!strcmp(state, "ON")) {
-            G.state = true;
+            led.setState(true);
         } else if (!strcmp(state, "OFF")) {
-            led.clear();
-            led.show();
-            G.state = false;
+            led.setState(false);
         }
-        parametersChanged = true;
     }
 
     const char *effect = doc["effect"];
@@ -278,7 +275,7 @@ None
 void Mqtt::sendState() {
     StaticJsonDocument<200> doc;
 
-    doc["state"] = (G.state) ? "ON" : "OFF";
+    doc["state"] = (led.getState()) ? "ON" : "OFF";
 
     JsonObject color = doc.createNestedObject("color");
 
