@@ -16,6 +16,7 @@ p {
     margin-bottom: 15px;
     margin-top: 0;
 }
+
 .box > p:last-child {
     margin-bottom: 0;
 }
@@ -24,24 +25,26 @@ p {
  * Links
  */
 a:link {
-    color: rgb(0, 0, 238);
-    text-decoration-color: #bbbbff;
-}
-a:link:hover {
-    text-decoration-color: rgb(0, 0, 238);;
+    color: rgb(0 0 238);
+    text-decoration-color: #bbf;
 }
 
 a:visited {
-    color: rgb(78, 33, 134);
+    color: rgb(78 33 134);
     text-decoration-color: #d0b8ee;
-}
-a:visited:hover {
-    text-decoration-color: rgb(78, 33, 134);
 }
 
 a:active, a:active:hover{
-    color: rgb(238, 0, 0);
-    text-decoration-color: #ffbbbb;
+    color: rgb(238 0 0);
+    text-decoration-color: #fbb;
+}
+
+a:link:hover {
+    text-decoration-color: rgb(0 0 238);
+}
+
+a:visited:hover {
+    text-decoration-color: rgb(78 33 134);
 }
 
 /*
@@ -51,10 +54,6 @@ a:active, a:active:hover{
 .layout,
 .menu,
 .hamburger {
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    -ms-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
     transition: all 0.2s ease-out;
 }
 
@@ -78,8 +77,9 @@ a:active, a:active:hover{
     padding: .5em;
     color: black;
     height: 1.9em;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgb(0 0 0 / 10%);
 }
+
 .header svg {
     float: left;
     margin-right: 0.6em;
@@ -87,10 +87,12 @@ a:active, a:active:hover{
     width: 1.9em;
     fill: #1A7CBD;
 }
+
 .header svg use {
     height: 1.9em;
     width: 1.9em;
 }
+
 .header h1 {
     margin: 0;
     padding: 0;
@@ -108,8 +110,8 @@ a:active, a:active:hover{
     height: 1.9em;
     width: 1.9em;
     padding: 0.5em;
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgb(0 0 0 / 10%);
+    border-bottom: 1px solid rgb(0 0 0 / 10%);
     background: #f7f7f7;
 }
 
@@ -142,8 +144,9 @@ a:active, a:active:hover{
     background: #5c5c5c;
     overflow-y: auto;
 }
+
 .menu a {
-    color: #ffffff;
+    color: #fff;
     border: none;
     padding: 0.6em 0 0.6em 0.6em;
 }
@@ -153,24 +156,30 @@ a:active, a:active:hover{
     border: none;
     background: transparent;
 }
+
 .menu .pure-menu li a:hover,
 .menu .pure-menu li a:focus {
     background: #424242;
 }
+
 .menu .pure-menu li a:active {
     background: #383838;
     color: white;
 }
+
 .menu .pure-menu-selected {
     background: #757575;
 }
+
 .menu .pure-menu-selected a {
     color: #fff;
 }
+
 .pure-menu-heading {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgb(255 255 255 / 80%);
     font-size: smaller;
 }
+
 .menu .title {
     background: #1A7CBD;
     font-size: 120%;
@@ -178,6 +187,7 @@ a:active, a:active:hover{
     margin: 0;
     text-transform: none;
 }
+
 .menu .title:active {
     color: #d3d3d3;
 }
@@ -193,12 +203,12 @@ a:active, a:active:hover{
  * Menu Responsive styles
  */
 
-@media (min-width: 41em) {
-
+@media (width >= 41em) {
     .layout {
         padding-left: 170px;
         left: 0;
     }
+
     .menu {
         left: 170px;
     }
@@ -214,18 +224,80 @@ a:active, a:active:hover{
     }
 }
 
-@media (max-width: 41em) {
-
+@media (width <= 41em) {
     .header {
         padding-left: 3.8em;
     }
+
     .header .page-icon {
         float: right;
     }
+
     .layout.active {
         position: relative;
         left: 170px;
     }
+}
+
+/**
+ * Mode
+ */
+@media (width >= 41em) {
+    .mode-form {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+}
+
+@media (width <= 41em) {
+    .mode-form {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.mode-form {
+    display: grid;
+    grid-gap: .5em;
+}
+
+.radio-select {
+    border: 2px solid #eee;
+    border-radius: .4em;
+    cursor: pointer;
+    padding: .4em;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.radio-select:hover {
+    border: 2px solid #d1d1d1;
+    background: #f8f8f8;
+}
+
+.radio-select input[type='radio'] {
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+}
+
+.radio-select svg {
+    width: 2em;
+    height: 2em;
+    display: block;
+    margin: auto;
+}
+
+.radio-select:has(input[type='radio']:checked) {
+    border: 2px solid #1a7cbd;
+    background: #1a7cbd;
+    box-shadow: inset 0 0 0 2px white;
+    color: white;
+}
+
+.radio-select:has(input[type='radio']:checked) svg {
+    filter: brightness(0) invert(1);
 }
 
 /**
@@ -238,22 +310,18 @@ a:active, a:active:hover{
     background: gray;
     margin-bottom: 15px;
     margin-top: 10px;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 30%);
 }
 
 .pure-g.colors > div {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
     box-sizing: border-box;
-}
-.pure-g.colors > div{
     padding: 0.3em;
 }
 
 .pure-g.colors button {
     width: 100%;
     height: 40px;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 30%);
 }
 
 /**
@@ -286,57 +354,52 @@ input[type="range"]::-moz-focus-outer{
 
 
 input[type="range"] {
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
     margin-top: 8px;
     margin-bottom: 8px;
     height: 20px;
 }
 
-input[type=range]::-webkit-slider-runnable-track {
+input[type="range"]::-webkit-slider-runnable-track {
     height: 6px;
     cursor: pointer;
     background: #ddd;
     border: none;
     border-radius: 100px;
-    box-shadow: inset 0 1px 1px 0 rgba(0, 0, 0, 0.3);
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    box-shadow: inset 0 1px 1px 0 rgb(0 0 0 / 30%);
+    appearance: none;
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
     height: 28px;
     width: 28px;
     margin-top: -11px; /* ios Safari needs this to correctly position the thumb/knob */
     border-radius: 200px;
-    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(235,235,235,1) 100%);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    background: linear-gradient(to bottom, rgb(255 255 255 / 100%) 0%, rgb(235 235 235 / 100%) 100%);
+    box-shadow: 0 1px 1px rgb(0 0 0 / 30%), inset 0 0 0 1px rgb(255 255 255 / 90%);
+    border: 1px solid rgb(0 0 0 / 30%);
     cursor: pointer;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
 }
 
-input[type=range]::-moz-range-track {
+input[type="range"]::-moz-range-track {
     height: 6px;
     background: #ddd;
     border: none;
     border-radius: 100px;
-    box-shadow: inset 0 1px 1px 0 rgba(0, 0, 0, 0.3);
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    box-shadow: inset 0 1px 1px 0 rgb(0 0 0 / 30%);
+    appearance: none;
 }
 
-input[type=range]::-moz-range-thumb {
+input[type="range"]::-moz-range-thumb {
     height: 28px;
     width: 28px;
     border-radius: 200px;
-    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(235,235,235,1) 100%);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    background: linear-gradient(to bottom, rgb(255 255 255 / 100%) 0%, rgb(235 235 235 / 100%) 100%);
+    box-shadow: 0 1px 1px rgb(0 0 0 / 30%), inset 0 0 0 1px rgb(255 255 255 / 90%);
+    border: 1px solid rgb(0 0 0 / 30%);
     cursor: pointer;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
 }
 
 .slider-label {
@@ -363,7 +426,7 @@ input[type=range]::-moz-range-thumb {
     color: red;
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (width <= 480px) {
     .pure-form-aligned input, .pure-form-aligned select, .pure-form-aligned textarea, .pure-form-message-inline {
         width: 100%;
     }
@@ -376,7 +439,7 @@ input[type=range]::-moz-range-thumb {
 .box {
     padding: 1em;
     margin: 0.8em;
-    box-shadow: 0 1px 1px 0 rgba(60, 64, 67, .08),0 1px 3px 1px rgba(60,64,67,.16);
+    box-shadow: 0 1px 1px 0 rgb(60 64 67 / 8%),0 1px 3px 1px rgb(60 64 67 / 16%);
     background: #fff;
     border-radius: 0.4em;
     text-align: justify;
@@ -410,7 +473,7 @@ input[type=range]::-moz-range-thumb {
 .pure-form select[readonly],
 .pure-form textarea[readonly] {
     background-color: #E8E8E8;
-    color: #666666;
+    color: #666;
     border-color: #ccc;
 }
 
@@ -418,7 +481,7 @@ input[type=range]::-moz-range-thumb {
     text-align: right;
     display: inline-block;
     vertical-align: middle;
-    margin: 0 1em 0;
+    margin: 0 1em;
 }
 
 .radio-wrapper {
@@ -431,6 +494,7 @@ input[type=range]::-moz-range-thumb {
 .pure-form-aligned .pure-control-group label.switch {
     width: 60px;
 }
+
 .switch {
     position: relative;
     display: inline-block;
@@ -448,16 +512,12 @@ input[type=range]::-moz-range-thumb {
 .slider {
     position: absolute;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background-color: #ccc;
-    -webkit-transition: .4s;
     transition: .4s;
 }
 
-.slider:before {
+.slider::before {
     position: absolute;
     content: "";
     height: 26px;
@@ -465,7 +525,6 @@ input[type=range]::-moz-range-thumb {
     left: 4px;
     bottom: 4px;
     background-color: white;
-    -webkit-transition: .4s;
     transition: .4s;
 }
 
@@ -477,9 +536,7 @@ input:focus + .slider {
     box-shadow: 0 0 1px #1f8dd6;
 }
 
-input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
+input:checked + .slider::before {
     transform: translateX(26px);
 }
 
@@ -488,12 +545,12 @@ input:checked + .slider:before {
     border-radius: 34px;
 }
 
-.slider.round:before {
+.slider.round::before {
     border-radius: 50%;
 }
 
-.IroWheelBorder, .IroSliderGradient {
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.5) !important;
+.IroWheelBorder, .IroSliderGradient { /* stylelint-disable-line selector-class-pattern */
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 50%) !important;
     border: none !important;
 }
 
@@ -508,7 +565,7 @@ input:checked + .slider:before {
 }
 
 .swatch {
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 50%);
     border-radius: 4px;
     cursor: pointer;
 }
@@ -530,7 +587,7 @@ input:checked + .slider:before {
     min-height: 2.3em;
 }
 
-@media (max-width: 41em) {
+@media (width <= 41em) {
     .section-connection-lost .box {
         margin-left: 3.8em;
     }

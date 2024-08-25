@@ -24,18 +24,8 @@ module.exports = function(grunt) {
 			]
 		},
 
-		csslint: {
-			files: ["<%= settings.srcDirectory %>/style.css"],
-			options: {
-				"ids": false,
-				"order-alphabetical": false,
-				"fallback-colors": false,
-				"box-sizing": false,
-				"adjoining-classes": false,
-				"qualified-headings": false,
-				"unique-headings": false,
-				"box-model": false
-			}
+		stylelint: {
+			all: ["<%= settings.srcDirectory %>/style.css"]
 		},
 
 		htmllint: {
@@ -44,7 +34,8 @@ module.exports = function(grunt) {
 				"id-class-style": "dash",
 				"attr-bans": ["align", "background", "bgcolor", "border", "frameborder", "longdesc", "marginwidth", "marginheight", "scrolling", "width"],
 				"line-end-style": false,
-				"attr-name-ignore-regex": "viewBox"
+				"attr-name-ignore-regex": "[viewBox|gradientUnits]",
+				"tag-name-lowercase": false
 			}
 		},
 
@@ -165,7 +156,7 @@ module.exports = function(grunt) {
 	});
 
 	// Linters
-	grunt.loadNpmTasks("grunt-contrib-csslint");
+	grunt.loadNpmTasks("grunt-stylelint");
 	grunt.loadNpmTasks("grunt-eslint");
 	grunt.loadNpmTasks("grunt-htmllint");
 
@@ -182,7 +173,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask("lint", [
 		"eslint",
-		"csslint",
+		"stylelint",
 		"htmllint"
 	]);
 
