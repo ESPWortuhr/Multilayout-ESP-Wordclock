@@ -316,18 +316,6 @@ void ClockWork::initBootShowIp(const char *buf) {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::initBootWifiSignalStrength(int strength) {
-    if (strength <= 100) {
-        led.setIcon(WLAN100);
-    } else if (strength <= 60) {
-        led.setIcon(WLAN60);
-    } else if (strength <= 30) {
-        led.setIcon(WLAN30);
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void ClockWork::initBootLedBlink() {
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
         frontMatrix[row] ^= num32BitWithOnesAccordingToColumns();
