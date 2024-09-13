@@ -203,10 +203,10 @@ void ClockWork::scrollingText(const char *buf) {
     led.show();
 
     i++;
-    if (i > pgm_read_byte(&(fontWidth[normalSizeASCII]))) {
+    if (i >= pgm_read_byte(&(fontWidth[normalSizeASCII]))) {
         i = 0;
         ii++;
-        if (ii > strlen(buf)) {
+        if (ii >= strlen(buf)) {
             ii = 0;
         }
     }
