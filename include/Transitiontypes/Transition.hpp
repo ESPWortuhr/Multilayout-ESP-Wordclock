@@ -927,8 +927,8 @@ uint16_t Transition::transitionMatrixRain() {
         }
     }
     float progress = static_cast<float>(phase) / static_cast<float>(frames);
-    for (col = 0; col < usedUhrType->rowsWordMatrix(); col++) {
-        for (row = 0; row < usedUhrType->colsWordMatrix(); row++) {
+    for (col = 0; col < usedUhrType->colsWordMatrix(); col++) {
+        for (row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
             fadeColor =
                 fadeColor.LinearBlend(old[row][col], act[row][col], progress);
             rainColor = rain[col].get(row);
