@@ -11,7 +11,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.12'  # Wähle die gewünschte Python-Version
+        python-version: '3.10'  # Wähle die gewünschte Python-Version
     - name: Install setuptools
       run: pip install setuptools
     - uses: DoozyX/clang-format-lint-action@v0.11
