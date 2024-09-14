@@ -4,7 +4,6 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
-#include <Hash.h>
 #include <NeoPixelBus.h>
 #include <RTClib.h>
 #include <WiFiClient.h>
