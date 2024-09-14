@@ -1,15 +1,23 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#ifdef ESP8266
 #include <ESP8266HTTPUpdateServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
+#include <coredecls.h>
+#elif defined(ESP32)
+#include <ESPmDNS.h>
+#include <HTTPUpdateServer.h>
+#include <Update.h>
+#include <WebServer.h>
+#include <WiFi.h>
+#endif
 #include <NeoPixelBus.h>
 #include <RTClib.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
 #include <Wire.h>
-#include <coredecls.h>
 #include <sntp.h>
 
 #include "Uhr.h"
@@ -22,14 +30,25 @@
 iUhrType *usedUhrType = nullptr;
 
 #include "NeoMultiFeature.hpp"
+
+#ifdef ESP8266
 NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
+#elif defined(ESP32)
+NeoPixelBus<NeoGrbwFeature, NeoEsp32I2s1X8Sk6812Method> *strip_RGBW = NULL;
+NeoPixelBus<NeoMultiFeature, NeoEsp32I2s1X8Ws2812xMethod> *strip_RGB = NULL;
+#endif
 
 WiFiClient client;
 
 //--OTA--
+#ifdef ESP8266
 ESP8266WebServer httpServer(81);
 ESP8266HTTPUpdateServer httpUpdater;
+#elif defined(ESP32)
+WebServer httpServer(81);
+HTTPUpdateServer httpUpdater;
+#endif
 //--OTA--
 
 // Timezone from
@@ -103,7 +122,12 @@ void time_is_set() {
     if (sntp_getreachability(0)) {
         origin = sntp_getservername(0);
         if (origin.length() == 0) {
-            origin = IPAddress(sntp_getserver(0)).toString();
+            const ip_addr_t *ip_addr = sntp_getserver(0);
+#ifdef ESP8266
+            origin = IPAddress(ip_addr->addr).toString();
+#elif defined(ESP32)
+            origin = IPAddress(ip_addr->u_addr.ip4.addr).toString();
+#endif
         }
     } else {
         origin = "SNTP not reachable";
@@ -306,7 +330,9 @@ void setup() {
         Serial.println("No external real-time clock found");
         externalRTC = false;
     }
+#ifdef ESP8266
     settimeofday_cb(time_is_set);
+#endif
 
     //-------------------------------------
     // Start WiFi
@@ -366,14 +392,16 @@ void setup() {
     Serial.println("--------------------------------------");
     Serial.println("ESP Uhr");
     Serial.printf("Version         : %s\n", VERSION);
-    Serial.printf("Chip ID         : %08X\n", ESP.getChipId());
-    Serial.printf("Flash ID        : %08X\n\n", ESP.getFlashChipId());
-    Serial.printf("CPU Speed       : %u MHz \n\n", ESP.getCpuFreqMHz());
 
-    Serial.printf("Flash real Size : %u KByte\n",
-                  ESP.getFlashChipRealSize() / 1024);
-    Serial.printf("Flash ide  Size : %u KByte\n",
-                  ESP.getFlashChipSize() / 1024);
+#ifdef ESP8266
+    Serial.printf("Chip ID         : %08X\n", ESP.getChipId());
+    Serial.printf("CPU Speed       : %u MHz \n\n", ESP.getCpuFreqMHz());
+#elif defined(ESP32)
+    Serial.printf("Chip ID         : %08X\n", (uint32_t)ESP.getEfuseMac());
+    Serial.printf("CPU Speed       : %u MHz \n\n", getCpuFrequencyMhz());
+#endif
+
+    Serial.printf("Flash Size : %u KByte\n", ESP.getFlashChipSize() / 1024);
     Serial.printf("Flash ide Speed : %u\n\n", ESP.getFlashChipSpeed());
 
     Serial.printf("Free Heap Size  : %u Byte\n", ESP.getFreeHeap());
@@ -381,8 +409,6 @@ void setup() {
     Serial.printf("Free Sketch Size: %u Byte \n\n", ESP.getFreeSketchSpace());
 
     Serial.printf("SDK Version     : %s\n", ESP.getSdkVersion());
-    Serial.print("RESET Info      : ");
-    Serial.println(ESP.getResetInfo());
     Serial.print("COMPILED        : ");
     Serial.print(__DATE__);
     Serial.print(" ");
@@ -428,7 +454,9 @@ void loop() {
 
     network.loop();
 
+#ifdef ESP8266
     MDNS.update();
+#endif
 
     httpServer.handleClient();
 
