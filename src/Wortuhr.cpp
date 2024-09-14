@@ -314,14 +314,11 @@ void setup() {
     //-------------------------------------
 
     if (G.bootShowWifi) {
-        clockWork.initBootWifiSignalStrength(0);
+        led.setIcon(WLAN100);
     }
     network.setup(G.hostname);
     int strength = network.getQuality();
     Serial.printf("Signal strength: %i\n", strength);
-    if (G.bootShowWifi) {
-        clockWork.initBootWifiSignalStrength(strength);
-    }
     wifiStart();
     configTime(0, 0, G.timeserver);
     setenv("TZ", TZ_Europe_Berlin, true);

@@ -203,10 +203,10 @@ void ClockWork::scrollingText(const char *buf) {
     led.show();
 
     i++;
-    if (i > pgm_read_byte(&(fontWidth[normalSizeASCII]))) {
+    if (i >= pgm_read_byte(&(fontWidth[normalSizeASCII]))) {
         i = 0;
         ii++;
-        if (ii > strlen(buf)) {
+        if (ii >= strlen(buf)) {
             ii = 0;
         }
     }
@@ -311,18 +311,6 @@ void ClockWork::initBootShowIp(const char *buf) {
     for (uint16_t i = 0; i <= StringLength; i++) {
         scrollingText(buf);
         delay(200);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ClockWork::initBootWifiSignalStrength(int strength) {
-    if (strength <= 100) {
-        led.setIcon(WLAN100);
-    } else if (strength <= 60) {
-        led.setIcon(WLAN60);
-    } else if (strength <= 30) {
-        led.setIcon(WLAN30);
     }
 }
 

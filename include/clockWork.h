@@ -73,7 +73,6 @@ public:
     void initBootLedBlink();
     void initBootLedSweep(uint32_t delay);
     void initBootShowIp(const char *buf);
-    void initBootWifiSignalStrength(int strength);
 
     //------------------------------------------------------------------------------
     // Loop Functions
