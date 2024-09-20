@@ -67,9 +67,9 @@ void read() {
     Serial.printf("MQTT_Topic    : %s\n", G.mqtt.topic);
     Serial.printf("MQTT_Port    : %u\n", G.mqtt.port);
 
-    Serial.printf("autoLdrEnabled    : %u\n", G.autoLdrEnabled);
-    Serial.printf("autoLdrBright    : %u\n", G.autoLdrBright);
-    Serial.printf("autoLdrDark    : %u\n", G.autoLdrDark);
+    Serial.printf("autoBrightEnabled    : %u\n", G.autoBrightEnabled);
+    Serial.printf("autoBrightOffset    : %u\n", G.autoBrightOffset);
+    Serial.printf("autoBrightSlope    : %u\n", G.autoBrightSlope);
     Serial.printf("Uhrtype    : %u\n", G.transitionDuration);
     Serial.printf("transitionType    : %u\n", G.transitionType);
     Serial.printf("transitionDuration    : %u\n", G.transitionSpeed);

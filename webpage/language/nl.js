@@ -226,9 +226,9 @@ let TRANSLATION_NL = {
 			"eighteen-to-twenty": "18:00 – 19:59",
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
-			"ldr-value": "Huidige helderheid volgens sensor",
-			"value-bright": "Licht (0 – 255)",
-			"value-dark": "Donker (0 – 255)"
+			"value-sensor": "Huidige helderheid volgens sensor",
+			"value-offset": "Licht (0 – 255)",
+			"value-slope": "Donker (0 – 255)"
 		},
 		"hostname": {
 			"h2": "Hostnaam",

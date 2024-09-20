@@ -250,9 +250,9 @@ let TRANSLATION_EN_US = {
 			"eighteen-to-twenty": "18:00 – 19:59",
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
-			"ldr-value": "Current Brightness from the Photoresistor (LDR)",
-			"value-bright": "Value “Bright” (0 – 255)",
-			"value-dark": "Value “Dark” (0 – 255)"
+			"value-sensor": "Current Brightness from the Photoresistor (LDR)",
+			"value-offset": "Value “Bright” (0 – 255)",
+			"value-slope": "Value “Dark” (0 – 255)"
 		},
 		"hostname": {
 			"h2": "Hostname",

@@ -360,10 +360,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_AUTO_LDR: {
-            G.autoLdrEnabled = split(payload, 3);
-            G.autoLdrBright = split(payload, 6);
-            G.autoLdrDark = split(payload, 9);
+        case COMMAND_SET_AUTO_BRIGHT: {
+            G.autoBrightEnabled = split(payload, 3);
+            G.autoBrightOffset = split(payload, 6);
+            G.autoBrightSlope = split(payload, 9);
             break;
         }
 
@@ -561,7 +561,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_REQUEST_AUTO_LDR: {
+        case COMMAND_REQUEST_AUTO_BRIGHT: {
 
             G.param1 = split(payload, 3);
             G.client_nr = num;

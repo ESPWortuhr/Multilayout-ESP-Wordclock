@@ -250,9 +250,14 @@ let TRANSLATION_DE_DE = {
 			"eighteen-to-twenty": "18:00 – 19:59",
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
-			"ldr-value": "Aktuelle Helligkeit vom Fotowiderstand (LDR)",
-			"value-bright": "Wert „Hell“ (0 – 255)",
-			"value-dark": "Wert „Dunkel“ (0 – 255)"
+			"value-sensor": "Licht Sensor [Lux]",
+			"value-gain": "LED Gain [%]",
+			"help-offset": "Konfiguration des Helligkeitsoffsets: Sie bestimmt die minimale Helligkeit der LEDs bei 0 Lux Umgebungslicht:\n" +
+				"0=LEDs aus, n=LED Helligkeit ist n/255, 255=LEDs haben immer die maximale Helligkeit",
+			"value-offset": "Offset (0–255)",
+			"help-slope": "Konfiguration der Steilheit: Sie bestimmt den Grad der LED-Helligkeitsänderung bei Änderung des Umgebungslichts.\n" +
+				"0=schwache LED-Helligkeitsänderung, 16=neutrale LED-Helligkeitsänderung, 255=starke LED-Helligkeitsänderung",
+			"value-slope": "Steilheit (0–255)"
 		},
 		"hostname": {
 			"h2": "Hostname",
