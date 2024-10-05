@@ -78,10 +78,9 @@ pio run -t upload
 * RX = DI / Datenbus
 * G = GND / Masse
 * VU = 5V
-* Pegelanpassung 3.3V bis 5V siehe Doku (optional)
 
-## Anschluss für den LDR (optional)
-![](pics/old/LDR.png)
+## Anschluss der Hardware
+![](pics/Schematic.png)
       
 ## Verzeichnisstruktur
 
@@ -165,10 +164,9 @@ pio run -t upload
 * RX = DI / Data Bus
 * G = GND / Masse
 * VU = 5V
-* Level adjustment 3.3V to 5V see docs
 
-## Connection for the LDR (optional)
-![](pics/old/LDR.png)
+## Connection of the hardware
+![](pics/Schematic.png)
       
 ## directory structure
 
