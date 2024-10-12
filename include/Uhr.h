@@ -181,7 +181,8 @@ enum LedColorVariants {
     Grb = 1,
     Rgb = 2,
     Rbg = 3,
-    Grbw = 4,
+    Bgr = 4,
+    Grbw = 5,
 };
 
 enum LanguageDialects {

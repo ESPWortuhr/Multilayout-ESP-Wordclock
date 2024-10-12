@@ -187,6 +187,7 @@ let TRANSLATION_NL = {
 			"ws2812-grb": "WS2812 GRB",
 			"ws2812-rgb": "WS2812 RGB",
 			"ws2812-rbg": "WS2812 RBG",
+			"ws2812-bgr": "WS2812 BGR",
 			"sk6812-brgw": "SK6812 RGBW",
 			"save": "Opslaan"
 		},

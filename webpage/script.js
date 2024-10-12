@@ -401,7 +401,7 @@ function initWebsocket() {
 			enableSpecific("specific-layout-5", data.hasWeatherLayout);
 			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // Add A-Quarter to (En10x11 exclusive)
 
-			enableSpecific("specific-colortype-4", data.colortype === 4);
+			enableSpecific("specific-colortype-4", data.colortype === 5);
 
 			removeSpecificOption("show-minutes", "3", data.numOfRows !== 11); // MinuteVariant "Corners" only for DE11x11 Variants
 			removeSpecificOption("show-minutes", "4", !data.hasMinuteInWords);
@@ -433,7 +433,7 @@ function initWebsocket() {
 			document.getElementById(inputID).checked = true;
 			setSliders();
 			setColors();
-			enableSpecific("specific-colortype-4", data.colortype === 4);
+			enableSpecific("specific-colortype-4", data.colortype === 5);
 		}
 		if (data.command === "wlan") {
 			document.getElementById("wlanlist").innerHTML = data.list;
