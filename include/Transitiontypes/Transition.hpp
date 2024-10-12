@@ -631,7 +631,7 @@ uint16_t Transition::transitionFire() {
     if (phase == 1) {
         // FIRE_1 .. 6 + 4 = 10
         transitionDelay = calcDelay(blendingFrames * 10) / 2;
-        phase = FIRE_1;
+        phase = FIRE_3;
         sparkle = false;
         subPhase = 1;
         firework->prepare(0, _white, FIRE_1, mirrored);
