@@ -631,7 +631,6 @@ uint16_t Transition::transitionFire() {
     if (phase == 1) {
         // FIRE_1 .. 6 + 4 = 10
         transitionDelay = calcDelay(blendingFrames * 10) / 2;
-        phase = FIRE_1;
         sparkle = false;
         subPhase = 1;
         firework->prepare(0, _white, FIRE_1, mirrored);
@@ -657,12 +656,12 @@ uint16_t Transition::transitionFire() {
             copyMatrix(old, work);
             copyMatrixFlags(work, act);
         }
+        phase++;
     }
 
     bool lastSubPhase = subPhase == blendingFrames;
     if (subPhase > blendingFrames) {
         subPhase = 1;
-        phase++;
         switch (phase) {
         case FIRE_4:
             firework->prepare(0, _red, FIRE_4, mirrored);
@@ -699,6 +698,7 @@ uint16_t Transition::transitionFire() {
         default:
             firework->prepare(0, _white, static_cast<Icons>(phase), mirrored);
         }
+        phase++;
     }
 
     RgbColor overlayColor;
