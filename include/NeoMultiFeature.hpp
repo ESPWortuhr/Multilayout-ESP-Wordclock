@@ -25,6 +25,11 @@ public:
         uint8_t *p = getPixelAddress(pPixels, indexPixel);
 
         switch (_colortype) {
+        case Bgr:
+            *p++ = color.B;
+            *p++ = color.G;
+            *p = color.R;
+            break;
         case Brg:
             *p++ = color.B;
             *p++ = color.R;
@@ -55,6 +60,11 @@ public:
         const uint8_t *p = getPixelAddress(pPixels, indexPixel);
 
         switch (_colortype) {
+        case Bgr:
+            color.B = *p++;
+            color.G = *p++;
+            color.R = *p;
+            break;
         case Brg:
             color.B = *p++;
             color.R = *p++;
@@ -88,6 +98,11 @@ public:
             getPixelAddress((const uint8_t *)pPixels, indexPixel);
 
         switch (_colortype) {
+        case Bgr:
+            color.B = pgm_read_byte(p++);
+            color.G = pgm_read_byte(p++);
+            color.R = pgm_read_byte(p);
+            break;
         case Brg:
             color.B = pgm_read_byte(p++);
             color.R = pgm_read_byte(p++);
