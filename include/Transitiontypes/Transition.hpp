@@ -1058,6 +1058,9 @@ void Transition::loop(struct tm &tm) {
 
         if (matrixChanged) {
             matrixChanged = false;
+            if (isColorization() && (G.transitionSpeed > 0)) {
+                copyMatrix(act, work);
+            }
             saveMatrix();
             copyMatrix(work, act);
         }
