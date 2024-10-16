@@ -352,8 +352,8 @@ void Transition::setMinute() {
         }
         for (uint8_t i = 0; i < 4; i++) {
             led.setPixel(minArray[i],
-                         HsbColor{m > i ? foreground : background});
-            // TODO: foregroundMinute
+                         HsbColor{m > i ? foregroundMinute : background});
+            // TODO: fading transition for Minutes
         }
     }
 }
