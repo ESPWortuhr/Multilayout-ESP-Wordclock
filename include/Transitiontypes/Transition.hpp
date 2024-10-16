@@ -1023,7 +1023,9 @@ bool Transition::isOverwrittenByTransition(WordclockChanges changesInWordMatrix,
                 initTransitionStart();
             }
             lastMinute = minute;
-            matrixChanged = true;
+            if (changesInWordMatrix != WordclockChanges::Minute) {
+                matrixChanged = true;
+            }
             return false;
         } else {
             if (changeBrightness()) {
