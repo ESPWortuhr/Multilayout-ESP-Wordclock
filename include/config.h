@@ -151,7 +151,7 @@
  * NeutralWhite (4300K) or ColdWhite (6500K)), in the case of RGB just leave it
  * at NeutralWhite.
  *
- * Valid values for DEFAULT_LEDTYPE [Brg, Grb, Rgb, Rbg, Grbw]
+ * Valid values for DEFAULT_LEDTYPE [Brg, Grb, Rgb, Rbg, Gbr, Grbw]
  *
  * Valid values for WHITE_LEDTYPE [WarmWhite, NeutralWhite, ColdWhite]
  */
@@ -198,9 +198,9 @@
 /*
  * To delete or initialize the EEPROM, enter another serial number here.
  *
- * Valid values [0 ... 255]
+ * Valid values [0 ... 65536]
  */
-#define SERNR 58
+#define SERNR 400
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output
 //--------------------------------------------------------------------------
