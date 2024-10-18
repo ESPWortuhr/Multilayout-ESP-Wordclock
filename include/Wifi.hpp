@@ -1,13 +1,18 @@
 #pragma once
 
+#ifdef ESP8266
+#include <ESP8266WiFi.h>
+#elif defined(ESP32)
+#include <WiFi.h>
+#endif
+
 //---------------------------------------------------------
 // WLAN-Status
 //---------------------------------------------------------
-char wstatus[7][25] = {
-
-    "WL_IDLE_STATUS", "WL_NO_SSID_AVAIL",  "WL_SCAN_COMPLETED",
-    "WL_CONNECTED",   "WL_CONNECT_FAILED", "WL_CONNECTION_LOST",
-    "WL_DISCONNECTED"};
+char wstatus[7][25] = {"WL_IDLE_STATUS",    "WL_NO_SSID_AVAIL",
+                       "WL_SCAN_COMPLETED", "WL_CONNECTED",
+                       "WL_CONNECT_FAILED", "WL_CONNECTION_LOST",
+                       "WL_DISCONNECTED"};
 // WL_NO_SHIELD        = 255,   // for compatibility with WiFi Shield library
 // WL_IDLE_STATUS      = 0,
 // WL_NO_SSID_AVAIL    = 1,
@@ -45,19 +50,43 @@ void wifiStart() {
 
 //------------------------------------------------------------------------------
 
-void WiFiEvent(WiFiEvent_t event) {
-    Serial.printf("[WiFi-event] event: %d\n", event);
-
-    switch (event) {
-    case WIFI_EVENT_STAMODE_GOT_IP:
+void handleWiFiEvent(const char *eventType, const IPAddress &ip) {
+    Serial.printf("[WiFi-event] event: %s\n", eventType);
+    if (strcmp(eventType, "GOT_IP") == 0) {
         Serial.println("WiFi connected");
         Serial.println("IP address: ");
-        Serial.println(WiFi.localIP());
+        Serial.println(ip);
+    } else if (strcmp(eventType, "DISCONNECTED") == 0) {
+        Serial.println("WiFi lost connection");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+#ifdef ESP8266
+void WiFiEvent(WiFiEvent_t event) {
+    switch (event) {
+    case WIFI_EVENT_STAMODE_GOT_IP:
+        handleWiFiEvent("GOT_IP", WiFi.localIP());
         break;
     case WIFI_EVENT_STAMODE_DISCONNECTED:
-        Serial.println("WiFi lost connection");
+        handleWiFiEvent("DISCONNECTED", IPAddress());
         break;
     default:
         break;
     }
 }
+#elif defined(ESP32)
+void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
+    switch (event) {
+    case SYSTEM_EVENT_STA_GOT_IP:
+        handleWiFiEvent("GOT_IP", WiFi.localIP());
+        break;
+    case SYSTEM_EVENT_STA_DISCONNECTED:
+        handleWiFiEvent("DISCONNECTED", IPAddress());
+        break;
+    default:
+        break;
+    }
+}
+#endif

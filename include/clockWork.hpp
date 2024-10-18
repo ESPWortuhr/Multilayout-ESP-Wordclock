@@ -152,7 +152,13 @@ void ClockWork::initLedStrip(uint8_t num) {
             strip_RGB = NULL;
         }
         if (strip_RGBW == NULL) {
+#ifdef ESP8266
             strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(500);
+#elif defined(ESP32)
+            strip_RGBW =
+                new NeoPixelBus<NeoGrbwFeature, NeoEsp32I2s1X8Sk6812Method>(500,
+                                                                            27);
+#endif
             strip_RGBW->Begin();
         }
     } else {
@@ -162,7 +168,13 @@ void ClockWork::initLedStrip(uint8_t num) {
             strip_RGBW = NULL;
         }
         if (strip_RGB == NULL) {
+#ifdef ESP8266
             strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(500);
+#elif defined(ESP32)
+            strip_RGB =
+                new NeoPixelBus<NeoMultiFeature, NeoEsp32I2s1X8Ws2812xMethod>(
+                    500, 27);
+#endif
             strip_RGB->Begin();
         }
     }
@@ -1030,8 +1042,13 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_RESET: {
         delay(500);
+#ifdef ESP8266
         ESP.reset();
         ESP.restart();
+#elif defined(ESP32)
+        ESP.restart();
+        esp_restart();
+#endif
         while (true) {
         }
         break;
