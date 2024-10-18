@@ -92,7 +92,7 @@ enum class WordclockChanges {
 };
 
 struct GLOBAL {
-    uint8_t sernr;
+    uint16_t sernr;
     uint16_t prog;
     uint8_t param1;
     bool progInit;

@@ -352,8 +352,8 @@ void Transition::setMinute() {
         }
         for (uint8_t i = 0; i < 4; i++) {
             led.setPixel(minArray[i],
-                         HsbColor{m > i ? foreground : background});
-            // TODO: foregroundMinute
+                         HsbColor{m > i ? foregroundMinute : background});
+            // TODO: fading transition for Minutes
         }
     }
 }
@@ -1023,7 +1023,9 @@ bool Transition::isOverwrittenByTransition(WordclockChanges changesInWordMatrix,
                 initTransitionStart();
             }
             lastMinute = minute;
-            matrixChanged = true;
+            if (changesInWordMatrix != WordclockChanges::Minute) {
+                matrixChanged = true;
+            }
             return false;
         } else {
             if (changeBrightness()) {
@@ -1056,6 +1058,9 @@ void Transition::loop(struct tm &tm) {
 
         if (matrixChanged) {
             matrixChanged = false;
+            if (isColorization() && (G.transitionSpeed > 0)) {
+                copyMatrix(act, work);
+            }
             saveMatrix();
             copyMatrix(work, act);
         }
@@ -1130,6 +1135,10 @@ void Transition::loop(struct tm &tm) {
             copy2Stripe(work);
             if (!specialEvent) {
                 setMinute();
+                if (G.secondVariant != SecondVariant::Off) {
+                    led.setbySecondArray();
+                    // Workaround: setbySecoundArray not in 'work'
+                }
             }
             led.show();
         }

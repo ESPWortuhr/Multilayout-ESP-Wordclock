@@ -253,7 +253,8 @@ void ClockWork::scrollingText(const char *buf) {
     led.show();
 
     i++;
-    if (i >= pgm_read_byte(&(fontWidth[normalSizeASCII]))) {
+    if (i >= pgm_read_byte(&(fontWidth[normalSizeASCII])) + 1) // +1 for spacing
+    {
         i = 0;
         ii++;
         if (ii >= strlen(buf)) {
