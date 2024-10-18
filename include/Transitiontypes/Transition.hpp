@@ -1135,6 +1135,10 @@ void Transition::loop(struct tm &tm) {
             copy2Stripe(work);
             if (!specialEvent) {
                 setMinute();
+                if (G.secondVariant != SecondVariant::Off) {
+                    led.setbySecondArray();
+                    // Workaround: setbySecoundArray not in 'work'
+                }
             }
             led.show();
         }
