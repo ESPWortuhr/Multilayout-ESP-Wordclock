@@ -39,7 +39,7 @@ void ClockWork::loopAutoBrightLogic() {
             // Using legacy LDR for ambient light measurement
             // Electrical circuit = voltage divider: 3.3V--LDR-->ADC<--220
             // Ohm--GND
-            uint16 adcValue = analogRead(
+            uint16_t adcValue = analogRead(
                 A0); // Read out ADC, pin TOUT = 0.0V - 1.0V = adcValue 0-1023
             // Track lowest ADC value for offest correction at 0 LUX
             if (adcValue < adcValue0Lux)
@@ -60,7 +60,8 @@ void ClockWork::loopAutoBrightLogic() {
         // aBS=16 then ledGain should reach 100.0% at 500.0 LUX.
         ledGain = (lux * (float)(G.autoBrightSlope + 1)) / 80.0;
         // Add autoBrightOffset 0-255
-        ledGain += ((uint16)100 * (uint16)G.autoBrightOffset) / (uint16)255;
+        ledGain +=
+            ((uint16_t)100 * (uint16_t)G.autoBrightOffset) / (uint16_t)255;
         if (ledGain > 100.0)
             ledGain = 100.0;
     }
@@ -73,7 +74,11 @@ void ClockWork::loopAutoBrightLogic() {
 // Initialize the I2C bus using SCL and SDA pins
 // (BH1750 library doesn't do this automatically)
 void ClockWork::initBH1750Logic() {
+#ifdef ESP8266
     Wire.begin(D4, D3);
+#elif defined(ESP32)
+    Wire.begin(21, 22);
+#endif
     // begin returns a boolean that can be used to detect setup problems.
     if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
         Serial.println("BH1750 initialized. Using this sensor for ambient "

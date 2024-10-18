@@ -13,8 +13,9 @@ private:
     };
     stateBH1750Type stateBH1750 = stateBH1750Type::toBeInitialized;
     float lux = 0.0;
-    uint16 adcValue0Lux = 10; // Hier wird der niedrigste LDR-ADC Wert getrackt,
-                              // für eine dynamische offset korrektur bei 0 LUX
+    uint16_t adcValue0Lux =
+        10; // Hier wird der niedrigste LDR-ADC Wert getrackt,
+            // für eine dynamische offset korrektur bei 0 LUX
 
 private:
     //------------------------------------------------------------------------------
