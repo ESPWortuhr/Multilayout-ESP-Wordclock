@@ -182,14 +182,14 @@ None
 void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     StaticJsonDocument<512> doc;
 
-    Serial.print("Received message [");
-    Serial.print(topic);
-    Serial.print("] ");
-
     char msg[length + 1];
     // Convert payload to a null-terminated string
     memcpy(msg, payload, length);
     msg[length] = '\0';
+
+    Serial.print("Received message [");
+    Serial.print(msg);
+    Serial.print("] ");
 
     // Deserialize JSON
     DeserializationError error = deserializeJson(doc, msg);
@@ -204,8 +204,10 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     if (doc.containsKey("state")) {
         const char *state = doc["state"];
         if (!strcmp(state, "ON")) {
+            Serial.println("ON");
             led.setState(true);
         } else if (!strcmp(state, "OFF")) {
+            Serial.println("OFF");
             led.setState(false);
         }
     }
