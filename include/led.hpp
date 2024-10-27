@@ -203,7 +203,7 @@ void Led::shiftColumnToRight() {
 // Pixel set Functions
 //------------------------------------------------------------------------------
 
-void Led::setState(bool newState) {
+void Led::setState(const bool newState) {
     static bool firstRun = true;
     static uint8_t oldBrightness[3];
 
