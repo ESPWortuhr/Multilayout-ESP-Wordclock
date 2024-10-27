@@ -6,19 +6,20 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <coredecls.h>
+#include <sntp.h>
 #elif defined(ESP32)
 #include <ESPmDNS.h>
 #include <HTTPUpdateServer.h>
 #include <Update.h>
 #include <WebServer.h>
 #include <WiFi.h>
+#include <esp_sntp.h>
 #endif
 #include <NeoPixelBus.h>
 #include <RTClib.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
 #include <Wire.h>
-#include <sntp.h>
 
 #include "Uhr.h"
 
@@ -86,20 +87,6 @@ _Static_assert(sizeof(G) <= EEPROM_SIZE,
 uint16_t powerCycleCountAddr =
     EEPROM_SIZE - 1;          // Address in EEPROM to store power cycle count
 uint16_t powerCycleCount = 0; // Variable to store power cycle count
-
-//------------------------------------------------------------------------------
-
-uint32_t sntp_startup_delay_MS_rfc_not_less_than_60000() {
-    if (externalRTC) {
-        Serial.println("SNTP startup delay 1min");
-        return 60000;
-    } else {
-        // yes this is against the RFC, but we don't have an RTC and want the
-        // time now.
-        Serial.println("no RTC clock - disable SNTP startup delay");
-        return 500;
-    }
-}
 
 //------------------------------------------------------------------------------
 
