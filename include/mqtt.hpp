@@ -16,6 +16,165 @@ extern WiFiClient client;
 
 PubSubClient mqttClient(client);
 
+// ToDo : MQTT Notify https: // www.home-assistant.io/integrations/notify.mqtt/
+
+//------------------------------------------------------------------------------
+// Helper Functions
+//------------------------------------------------------------------------------
+
+/* Description:
+
+This function processes the "state" key in the provided JSON document. If the
+"state" key is present, it checks its value and sets the LED state accordingly.
+The LED can be turned ON or OFF based on the value of the "state" key.
+
+Input:
+
+const JsonDocument &doc: The JSON document containing the "state" key.
+
+Output:
+
+None
+*/
+
+void Mqtt::processState(const JsonDocument &doc) {
+    if (doc.containsKey("state")) {
+        const char *state = doc["state"];
+        if (!strcmp(state, "ON")) {
+            Serial.println("ON");
+            led.setState(true);
+        } else if (!strcmp(state, "OFF")) {
+            Serial.println("OFF");
+            led.setState(false);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+/* Description:
+
+This function processes the "effect" key in the provided JSON document. If the
+"effect" key is present, it checks its value and sets the program mode
+accordingly. The program mode can be one of several predefined modes such as
+Wordclock, Seconds, Digitalclock, etc.
+
+Input:
+
+const JsonDocument &doc: The JSON document containing the "effect" key.
+
+Output:
+
+None
+*/
+
+void Mqtt::processEffect(const JsonDocument &doc) {
+    if (doc.containsKey("effect")) {
+        const char *effect = doc["effect"];
+        if (!strcmp("Wordclock", effect)) {
+            G.prog = COMMAND_MODE_WORD_CLOCK;
+            parametersChanged = true;
+        } else if (!strcmp("Seconds", effect)) {
+            G.prog = COMMAND_MODE_SECONDS;
+        } else if (!strcmp("Digitalclock", effect)) {
+            G.prog = COMMAND_MODE_DIGITAL_CLOCK;
+            parametersChanged = true;
+        } else if (!strcmp("Scrollingtext", effect)) {
+            G.prog = COMMAND_MODE_SCROLLINGTEXT;
+        } else if (!strcmp("Rainbowcycle", effect)) {
+            G.prog = COMMAND_MODE_RAINBOWCYCLE;
+        } else if (!strcmp("Rainbow", effect)) {
+            G.prog = COMMAND_MODE_RAINBOW;
+        } else if (!strcmp("Color", effect)) {
+            G.prog = COMMAND_MODE_COLOR;
+            parametersChanged = true;
+        } else if (!strcmp("Symbol", effect)) {
+            G.prog = COMMAND_MODE_SYMBOL;
+        }
+        G.progInit = true;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+/* Description:
+
+This function processes the "scrolling_text" key in the provided JSON document.
+If the "scrolling_text" key is present, it copies its value to the global
+scrolling text buffer.
+
+Input:
+
+const JsonDocument &doc: The JSON document containing the "scrolling_text" key.
+
+Output:
+
+None
+*/
+
+void Mqtt::processScrollingText(const JsonDocument &doc) {
+    if (doc.containsKey("scrolling_text")) {
+        strcpy(G.scrollingText, doc["scrolling_text"]);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+/* Description:
+
+This function processes the "color" key in the provided JSON document. If the
+"color" key is present, it updates the foreground color based on the hue (h) and
+saturation (s) values provided in the JSON document. The brightness component of
+the color remains unchanged.
+
+Input:
+
+const JsonDocument &doc: The JSON document containing the "color" key.
+
+Output:
+
+None
+*/
+
+void Mqtt::processColor(const JsonDocument &doc) {
+    JsonObjectConst color = doc["color"];
+    if (!color.isNull()) {
+        G.color[Foreground] =
+            HsbColor(float(color["h"]) / 360.f, float(color["s"]) / 100.f,
+                     G.color[Foreground].B);
+        parametersChanged = true;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+/* Description:
+
+This function processes the "brightness" key in the provided JSON document. If
+the "brightness" key is present, it updates the brightness of the foreground
+color based on the value associated with the "brightness" key. The brightness
+value is expected to be in the range of 0 to 255 and is normalized to a float
+between 0 and 1. The function also sets a flag indicating that parameters have
+changed.
+
+Input:
+
+const JsonDocument &doc: The JSON document containing the "brightness" key.
+
+Output:
+
+None
+*/
+
+void Mqtt::processBrightness(const JsonDocument &doc) {
+    if (doc.containsKey("brightness")) {
+        G.color[Foreground] =
+            HsbColor(G.color[Foreground].H, G.color[Foreground].S,
+                     uint8_t(doc["brightness"]) / 255.f);
+        parametersChanged = true;
+    }
+}
+
 //------------------------------------------------------------------------------
 
 /* Description:
@@ -182,8 +341,8 @@ None
 void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     StaticJsonDocument<512> doc;
 
-    char msg[length + 1];
     // Convert payload to a null-terminated string
+    char msg[length + 1];
     memcpy(msg, payload, length);
     msg[length] = '\0';
 
@@ -193,7 +352,6 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
 
     // Deserialize JSON
     DeserializationError error = deserializeJson(doc, msg);
-
     if (error) {
         Serial.print(F("deserializeJson() failed: "));
         Serial.println(error.c_str());
@@ -201,59 +359,11 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     }
 
     // Process received JSON data
-    if (doc.containsKey("state")) {
-        const char *state = doc["state"];
-        if (!strcmp(state, "ON")) {
-            Serial.println("ON");
-            led.setState(true);
-        } else if (!strcmp(state, "OFF")) {
-            Serial.println("OFF");
-            led.setState(false);
-        }
-    }
-
-    const char *effect = doc["effect"];
-    if (doc.containsKey("effect")) {
-        if (!strcmp("Wordclock", effect)) {
-            G.prog = COMMAND_MODE_WORD_CLOCK;
-        } else if (!strcmp("Seconds", effect)) {
-            G.prog = COMMAND_MODE_SECONDS;
-        } else if (!strcmp("Digitalclock", effect)) {
-            G.prog = COMMAND_MODE_DIGITAL_CLOCK;
-        } else if (!strcmp("Scrollingtext", effect)) {
-            G.prog = COMMAND_MODE_SCROLLINGTEXT;
-        } else if (!strcmp("Rainbowcycle", effect)) {
-            G.prog = COMMAND_MODE_RAINBOWCYCLE;
-        } else if (!strcmp("Rainbow", effect)) {
-            G.prog = COMMAND_MODE_RAINBOW;
-        } else if (!strcmp("Color", effect)) {
-            G.prog = COMMAND_MODE_COLOR;
-        } else if (!strcmp("Symbol", effect)) {
-            G.prog = COMMAND_MODE_SYMBOL;
-        }
-    }
-
-    // Copy marquee_text if present
-    if (doc.containsKey("marquee_text")) {
-        strcpy(G.scrollingText, doc["marquee_text"]);
-    }
-
-    // Update color if present
-    JsonObject color = doc["color"];
-    if (!color.isNull()) {
-        G.color[Foreground] =
-            HsbColor(float(color["h"]) / 360.f, float(color["s"]) / 100.f,
-                     G.color[Foreground].B);
-        parametersChanged = true;
-    }
-
-    // Update brightness if present
-    if (doc.containsKey("brightness")) {
-        G.color[Foreground] =
-            HsbColor(G.color[Foreground].H, G.color[Foreground].S,
-                     uint8_t(doc["brightness"]) / 255.f);
-        parametersChanged = true;
-    }
+    processState(doc);
+    processEffect(doc);
+    processScrollingText(doc);
+    processColor(doc);
+    processBrightness(doc);
 }
 
 //------------------------------------------------------------------------------
@@ -293,57 +403,57 @@ void Mqtt::sendState() {
 
 //------------------------------------------------------------------------------
 
-void Mqtt::sendDiscovery() {
+/* Description:
 
-    /* Description:
+This function publishes MQTT discovery messages for Home Assistant,
+providing configuration details for a light entity. It constructs a JSON
+payload according to Home Assistant's MQTT discovery format and
+publishes it to the appropriate topic.
 
-    This function publishes MQTT discovery messages for Home Assistant,
-    providing configuration details for a light entity. It constructs a JSON
-    payload according to Home Assistant's MQTT discovery format and
-    publishes it to the appropriate topic.
+Input:
 
-    Input:
+None
+Output:
 
-    None
-    Output:
-
-    None
-     */
-
-    /* Example MQTT Message
-    {
-        "brightness": true,
-        "color_mode": true,
-        "supported_color_modes": [
-            "hs"
-        ],
-        "schema": "json",
-        "name": "ESP",
-        "device": {
-            "identifiers": [
-                "ESPBuro"
-            ],
-            "name": "ESP",
-            "sw_version": "3.3",
-            "configuration_url": "http://<IP-Adress>"
-        },
-        "state_topic": "ESPBuro/status",
-        "command_topic": "ESPBuro/cmd",
-        "unique_id": "<MAC-Adress>",
-        "plattform": "mqtt",
-        "effect": true,
-        "effect_list": [
-            "Wordclock",
-            "Seconds",
-            "Digitalclock",
-            "Scrollingtext",
-            "Rainbowcycle",
-            "Rainbow",
-            "Color",
-            "Symbol"
-        ]
-    }
+None
  */
+
+/* Example MQTT Message
+{
+    "brightness": true,
+    "color_mode": true,
+    "supported_color_modes": [
+        "hs"
+    ],
+    "schema": "json",
+    "name": "ESP",
+    "device": {
+        "identifiers": [
+            "ESPBuro"
+        ],
+        "name": "ESP",
+        "sw_version": "3.3",
+        "configuration_url": "http://<IP-Adress>"
+    },
+    "state_topic": "ESPBuro/status",
+    "command_topic": "ESPBuro/cmd",
+    "unique_id": "<MAC-Adress>",
+    "plattform": "mqtt",
+    "effect": true,
+    "effect_list": [
+        "Wordclock",
+        "Seconds",
+        "Digitalclock",
+        "Scrollingtext",
+        "Rainbowcycle",
+        "Rainbow",
+        "Color",
+        "Symbol"
+    ]
+}
+*/
+
+void Mqtt::sendDiscovery() {
 
     StaticJsonDocument<700> root;
     mqttClient.setBufferSize(700);
