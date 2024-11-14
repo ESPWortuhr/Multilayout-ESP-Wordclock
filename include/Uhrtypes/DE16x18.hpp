@@ -52,6 +52,8 @@ public:
 
     virtual const bool has24HourLayout() override { return true; }
 
+    virtual const bool has60MinuteLayout() override { return true; }
+
     //------------------------------------------------------------------------------
 
     void show(FrontWord word) override {
