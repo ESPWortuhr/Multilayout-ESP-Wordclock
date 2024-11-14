@@ -641,20 +641,35 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
 
     toggleDigitalClockSecond(usedFontSize, offsetRow1, offsetLetterMin0);
 
-    for (uint8_t col = 0; col < pgm_read_byte(&(fontWidth[usedFontSize]));
-         col++) {
-        for (uint8_t row = 0; row < pgm_read_byte(&(fontHeight[usedFontSize]));
-             row++) {
-            // 1st Row
+    bool showHours = true;
+    bool showMinutes = true;
+    // toogle hours and minutes if clock is not high enough
+    if (usedUhrType->rowsWordMatrix() < (fontHeight[usedFontSize] * 2 + 1)) {
+        if (_second % 4 < 2 ) { // show hours every 2 seconds
+            showHours = true;
+            showMinutes = false;
+        } else { // show minutes
+            showHours = false;
+            showMinutes = true;
+        }
+    }
+
+    for (uint8_t col = 0; col < pgm_read_byte(&(fontWidth[usedFontSize])); col++) {
+        for (uint8_t row = 0; row < pgm_read_byte(&(fontHeight[usedFontSize])); row++) {
+            // 1st Row: Hours
+            if (showHours) {
             setPixelForChar(col, row, offsetLetterH1, offsetRow0,
                             static_cast<unsigned char>(h1), usedFontSize);
             setPixelForChar(col, row, offsetLetterH0, offsetRow0,
                             static_cast<unsigned char>(h0), usedFontSize);
-            // 2nd Row
+            }
+            // 2nd Row: Minutes
+            if (showMinutes) {
             setPixelForChar(col, row, offsetLetterMin1, offsetRow1,
                             static_cast<unsigned char>(min1), usedFontSize);
             setPixelForChar(col, row, offsetLetterMin0, offsetRow1,
                             static_cast<unsigned char>(min0), usedFontSize);
+            }
         }
     }
 
