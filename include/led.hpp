@@ -333,6 +333,20 @@ void Led::setbySecondArray(ColorPosition colorPosition) {
 
 void Led::setIcon(uint8_t iconNum) {
     resetFrontMatrixBuffer();
+    if (usedUhrType->colsWordMatrix() < 11 || usedUhrType->rowsWordMatrix() < 10) {
+        uint8_t offsetCol = (usedUhrType->colsWordMatrix() - GRAFIK_8X8_COLS) / 2;
+
+        for (uint8_t col = 0; col < GRAFIK_8X8_COLS; col++) {
+            for (uint8_t row = 0; row < GRAFIK_8X8_ROWS; row++) {
+                if (pgm_read_word(&(grafik_8x8[iconNum][row])) &
+                    (1 << (GRAFIK_8X8_COLS - col - 1))) {
+                    usedUhrType->setFrontMatrixPixel(row, col + offsetCol);
+                } else {
+                    usedUhrType->setFrontMatrixPixel(row, col + offsetCol, false);
+                }
+            }
+        }
+    } else {
     uint8_t offsetCol = (usedUhrType->colsWordMatrix() - GRAFIK_11X10_COLS) / 2;
 
     for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
@@ -342,6 +356,7 @@ void Led::setIcon(uint8_t iconNum) {
                 usedUhrType->setFrontMatrixPixel(row, col + offsetCol);
             } else {
                 usedUhrType->setFrontMatrixPixel(row, col + offsetCol, false);
+                }
             }
         }
     }

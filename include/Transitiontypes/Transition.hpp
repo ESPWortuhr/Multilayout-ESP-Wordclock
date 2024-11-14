@@ -410,13 +410,13 @@ bool Transition::changesInTransitionTypeDurationOrDemo() {
 
 //------------------------------------------------------------------------------
 
-uint16_t Transition::reverse(uint16_t num, bool mirrored) {
-    // reverse left 11 bits
+uint16_t Transition::reverse(uint16_t num, bool mirrored, uint8_t grafic_cols = 11) {
+    // reverse left bits
     if (mirrored) {
         uint16_t res = 0;
-        for (uint8_t i = 0; i < 11; i++) {
+        for (uint8_t i = 0; i < grafic_cols; i++) {
             if (num & (1 << i)) {
-                res |= 0b10000000000 >> i;
+                res |= (1 << (grafic_cols - 1)) >> i;
             }
         }
         num = res;
