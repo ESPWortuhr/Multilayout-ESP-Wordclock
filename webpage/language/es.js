@@ -54,6 +54,7 @@ let TRANSLATION_ES = {
 				"balls": "Bolas",
 				"fireworks": "Fuegos artificiales",
 				"snake": "Serpiente",
+				"colored": "Colorido",
 				"random": "Al azar"
 			},
 			"duration": {

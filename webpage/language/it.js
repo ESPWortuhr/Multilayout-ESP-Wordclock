@@ -54,6 +54,7 @@ let TRANSLATION_IT = {
 				"balls": "Palle",
 				"firework": "Fuoco d'artificio",
 				"snake": "Serpente",
+				"colored": "Colorato",
 				"random": "Casuale"
 			},
 			"duration": {

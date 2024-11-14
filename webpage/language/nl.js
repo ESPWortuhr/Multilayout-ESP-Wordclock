@@ -54,6 +54,7 @@ let TRANSLATION_NL = {
 				"balls": "Ballen",
 				"firework": "Vuurwerk",
 				"snake": "Slang",
+				"colored": "Kleurrijk",
 				"random": "Willekeurig"
 			},
 			"duration": {

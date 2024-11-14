@@ -54,6 +54,7 @@ let TRANSLATION_HU = {
 				"balls": "Labdák",
 				"firework": "Tűzijáték",
 				"snake": "Kígyó",
+				"colored": "Színes",
 				"random": "Véletlen"
 			},
 			"duration": {

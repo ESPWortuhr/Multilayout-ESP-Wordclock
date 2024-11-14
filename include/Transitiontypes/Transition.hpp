@@ -1123,6 +1123,10 @@ void Transition::loop(struct tm &tm) {
                 case SNAKE:
                     phase = transitionSnake();
                     break;
+                case COLORED:
+                    copyMatrix(work, act);
+                    phase = 0;
+                    break;
                 case NEWYEAR_COUNTDOWN:
                     phase = transitionCountdown(tm);
                     break;

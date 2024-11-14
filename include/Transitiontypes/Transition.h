@@ -94,6 +94,7 @@ enum Transition_t {
     BALLS = 8,
     FIRE = 9,
     SNAKE = 10,
+    COLORED = 12,
     // only internaly used
     RANDOM = 11,
 
