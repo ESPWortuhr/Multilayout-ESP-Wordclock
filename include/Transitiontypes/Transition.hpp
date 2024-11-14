@@ -454,8 +454,9 @@ uint16_t Transition::calcDelay(uint16_t frames) {
 //------------------------------------------------------------------------------
 
 void Transition::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                                 unsigned char unsigned_d1, HsbColor color) {
-    if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
+                                 unsigned char unsigned_d1, HsbColor color, 
+                                 fontSize font = normalSizeASCII) {
+    if (led.getCharCol(font, col, row, unsigned_d1)) {
         work[row + 1][col + offsetCol].changeRgb(color);
     }
 }
@@ -785,22 +786,29 @@ uint16_t Transition::transitionCountdown(struct tm &tm) {
         char seconds[8];
         // start 23:59:00     60 - 0
         snprintf(seconds, sizeof(seconds), "%d", countDown);
+        // determine font size according layout
+        //fontSize usedFontSize = determineFontSize(); // not applicable due to linkage to digital clock
+        fontSize usedFontSize = normalSizeASCII;
+        // convert second to acii
+        unsigned char unsigned_s0 = static_cast<unsigned char>(seconds[0]);
+        unsigned char unsigned_s1 = static_cast<unsigned char>(seconds[1]);
+        if (usedUhrType->colsWordMatrix() < (fontWidth[usedFontSize] * 2 + 1)
+                || usedUhrType->rowsWordMatrix() < fontHeight[usedFontSize]) {
+            usedFontSize = smallSizeNumbers;
+            // convert char to int due to differt definition in font.h
+            unsigned_s0 -= 48;
+            unsigned_s1 -= 48;
+        }
         // for (uint8_t i = 0; i < 5; i++) {
         for (uint8_t row = 0; row < 8; row++) {     // row
             for (uint8_t col = 0; col < 5; col++) { // column
                 if (countDown >= 10) {
                     // 1. Number without Offset
-                    setPixelForChar(col, row, 0,
-                                    static_cast<unsigned char>(seconds[0]),
-                                    hsbColor_1);
+                    setPixelForChar(col, row, 0, unsigned_s0, hsbColor_1, usedFontSize);
                     // 2. Number with Offset
-                    setPixelForChar(col, row, 6,
-                                    static_cast<unsigned char>(seconds[1]),
-                                    hsbColor_2);
+                    setPixelForChar(col, row, 6, unsigned_s1, hsbColor_2, usedFontSize);
                 } else {
-                    setPixelForChar(col, row, 3,
-                                    static_cast<unsigned char>(seconds[0]),
-                                    hsbColor_1);
+                    setPixelForChar(col, row, 3, unsigned_s0, hsbColor_1, usedFontSize);
                 }
             }
         }

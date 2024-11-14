@@ -156,7 +156,7 @@ protected:
     //------------------------------------------------------------------------------
     uint16_t reverse(uint16_t num, bool mirror, uint8_t grafic_cols);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                         unsigned char unsigned_d1, HsbColor color);
+                         unsigned char unsigned_d1, HsbColor color, fontSize font);
     inline bool isIdle() { return phase == 0; }
     bool isSpecialEvent(Transition_t &type, struct tm &tm, bool trigger);
     Transition_t getTransitionType(bool trigger);
@@ -549,8 +549,8 @@ public:
                             pgm_read_word(&(grafik_8x8[icons[layer]][row])),
                             mirrored, GRAFIK_8X8_COLS);
                     } else {
-                    pixels = transition->reverse(
-                        pgm_read_word(&(grafik_11x10[icons[layer]][row])),
+                        pixels = transition->reverse(
+                            pgm_read_word(&(grafik_11x10[icons[layer]][row])),
                             mirrored, GRAFIK_11X10_COLS);
                     }
                     if (pixels & (1 << col)) {

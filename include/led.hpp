@@ -521,25 +521,40 @@ inline void Led::clear() {
 
 void Led::showNumbers(const char d1, const char d2) {
     clearClock();
+
+    // determine font size according layout
+    //fontSize usedFontSize = determineFontSize(); // not applicable due to linkage to digital clock
+    fontSize usedFontSize = normalSizeASCII;
+    // convert second to acii
+    unsigned char unsigned_d1 = static_cast<unsigned char>(d1);
+    unsigned char unsigned_d2 = static_cast<unsigned char>(d2);
+    if (usedUhrType->colsWordMatrix() < (fontWidth[usedFontSize] * 2 + 1)
+            || usedUhrType->rowsWordMatrix() < fontHeight[usedFontSize]) {
+        usedFontSize = smallSizeNumbers;
+        // convert char to int due to differt definition in font.h
+        unsigned_d1 -= 48;
+        unsigned_d2 -= 48;
+    }
+
     static uint8_t offsetLetter0 =
-        usedUhrType->colsWordMatrix() / 2 - fontWidth[normalSizeASCII];
+        usedUhrType->colsWordMatrix() / 2 - fontWidth[usedFontSize];
     static uint8_t offsetLetter1 = usedUhrType->colsWordMatrix() / 2 + 1;
     uint8_t offsetRow =
-        (usedUhrType->rowsWordMatrix() - fontHeight[normalSizeASCII]) / 2;
+        (usedUhrType->rowsWordMatrix() - fontHeight[usedFontSize]) / 2;
 
     if (usedUhrType->has24HourLayout()) {
         offsetLetter0 = 3;
-        offsetLetter1 = fontWidth[normalSizeASCII] + 4;
+        offsetLetter1 = fontWidth[usedFontSize] + 4;
     }
 
-    for (uint8_t col = 0; col < fontWidth[normalSizeASCII]; col++) {
-        for (uint8_t row = 0; row < fontHeight[normalSizeASCII]; row++) {
+    for (uint8_t col = 0; col < fontWidth[usedFontSize]; col++) {
+        for (uint8_t row = 0; row < fontHeight[usedFontSize]; row++) {
             // 1. Number without Offset
             setPixelForChar(col, row, offsetLetter0, offsetRow,
-                            static_cast<unsigned char>(d1));
+                            unsigned_d1, usedFontSize);
             // 2. Number with Offset
             setPixelForChar(col, row, offsetLetter1, offsetRow,
-                            static_cast<unsigned char>(d2));
+                            unsigned_d2,usedFontSize);
         }
     }
 
