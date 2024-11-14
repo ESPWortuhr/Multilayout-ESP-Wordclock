@@ -263,6 +263,20 @@ void Transition::colorize(RgbfColor **dest) {
             }
         }
     }
+    // correct color of NACH and ZWEI due non horizontal alignment
+    if (G.UhrtypeDef == Ger08x08Viertel && (G.transitionColorize != CHARACTERS)) {
+        // set color of A for N, C and H (A has no other word before, compared to N (VIERTEL) and C (NEUN))
+        if (dest[1][7].isForeground()) {
+            dest[0][7] = dest[1][7];
+            dest[2][7] = dest[1][7];
+            dest[3][7] = dest[1][7];
+        }
+        // set color of Z, W for E and I if E and I are active (Z and W is also used for ZWÖLF)
+        if (dest[5][0].isForeground() && dest[5][1].isForeground()) {
+            dest[5][0] = dest[4][0];
+            dest[5][1] = dest[4][1];
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

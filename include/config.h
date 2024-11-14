@@ -59,6 +59,9 @@
 // 16 rows, each 18 LED's per row, with the layout WordClock24h of
 // mikrocontroller.net
 //
+// #define DEFAULT_LAYOUT Ger08x08Viertel
+// 8 rows, each 8 LED's per row, only quarter hours
+//
 //
 /**********************/
 /*       Dutch        */
