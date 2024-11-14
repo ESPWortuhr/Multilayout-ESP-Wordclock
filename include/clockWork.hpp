@@ -333,7 +333,7 @@ void ClockWork::countdownToMidnight() {
     switch (_second) {
     case 50:
         if (!usedUhrType->hasOnlyQuarterLayout()) {
-        usedUhrType->show(FrontWord::min_10);
+            usedUhrType->show(FrontWord::min_10);
         } else {
             usedUhrType->show(FrontWord::hour_10);
         }
@@ -352,7 +352,7 @@ void ClockWork::countdownToMidnight() {
         break;
     case 55:
         if (!usedUhrType->hasOnlyQuarterLayout()) {
-        usedUhrType->show(FrontWord::min_5);
+            usedUhrType->show(FrontWord::min_5);
         } else {
             usedUhrType->show(FrontWord::hour_5);
         }
@@ -1412,7 +1412,7 @@ void ClockWork::loop(struct tm &tm) {
         }
         if (parametersChanged) {
             led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
-                                 _hour / 10, parametersChanged);
+                                _hour / 10, parametersChanged);
             parametersChanged = false;
         }
         break;

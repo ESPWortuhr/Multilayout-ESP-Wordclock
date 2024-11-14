@@ -347,15 +347,15 @@ void Led::setIcon(uint8_t iconNum) {
             }
         }
     } else {
-    uint8_t offsetCol = (usedUhrType->colsWordMatrix() - GRAFIK_11X10_COLS) / 2;
+        uint8_t offsetCol = (usedUhrType->colsWordMatrix() - GRAFIK_11X10_COLS) / 2;
 
-    for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
-        for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
-            if (pgm_read_word(&(grafik_11x10[iconNum][row])) &
-                (1 << (GRAFIK_11X10_COLS - col - 1))) {
-                usedUhrType->setFrontMatrixPixel(row, col + offsetCol);
-            } else {
-                usedUhrType->setFrontMatrixPixel(row, col + offsetCol, false);
+        for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
+            for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
+                if (pgm_read_word(&(grafik_11x10[iconNum][row])) &
+                    (1 << (GRAFIK_11X10_COLS - col - 1))) {
+                    usedUhrType->setFrontMatrixPixel(row, col + offsetCol);
+                } else {
+                    usedUhrType->setFrontMatrixPixel(row, col + offsetCol, false);
                 }
             }
         }
@@ -658,17 +658,17 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
         for (uint8_t row = 0; row < pgm_read_byte(&(fontHeight[usedFontSize])); row++) {
             // 1st Row: Hours
             if (showHours) {
-            setPixelForChar(col, row, offsetLetterH1, offsetRow0,
-                            static_cast<unsigned char>(h1), usedFontSize);
-            setPixelForChar(col, row, offsetLetterH0, offsetRow0,
-                            static_cast<unsigned char>(h0), usedFontSize);
+                setPixelForChar(col, row, offsetLetterH1, offsetRow0,
+                                static_cast<unsigned char>(h1), usedFontSize);
+                setPixelForChar(col, row, offsetLetterH0, offsetRow0,
+                                static_cast<unsigned char>(h0), usedFontSize);
             }
             // 2nd Row: Minutes
             if (showMinutes) {
-            setPixelForChar(col, row, offsetLetterMin1, offsetRow1,
-                            static_cast<unsigned char>(min1), usedFontSize);
-            setPixelForChar(col, row, offsetLetterMin0, offsetRow1,
-                            static_cast<unsigned char>(min0), usedFontSize);
+                setPixelForChar(col, row, offsetLetterMin1, offsetRow1,
+                                static_cast<unsigned char>(min1), usedFontSize);
+                setPixelForChar(col, row, offsetLetterMin0, offsetRow1,
+                                static_cast<unsigned char>(min0), usedFontSize);
             }
         }
     }
