@@ -143,6 +143,8 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_se10x11;
     case Ru10x11:
         return &_ru10x11;
+    case Ch10x11V2:
+        return &_ch10x11V2;
     default:
         return nullptr;
     }

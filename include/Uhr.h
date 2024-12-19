@@ -285,6 +285,7 @@ enum ClockType {
     Fr10x11 = 21,
     Se10x11 = 22,
     Ru10x11 = 23,
+    Ch10x11V2 = 24,
 };
 
 enum Icons {
