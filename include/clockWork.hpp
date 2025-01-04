@@ -911,7 +911,6 @@ WordclockChanges ClockWork::changesInClockface() {
 
 void ClockWork::setClock() {
     uint8_t offsetHour = 0;
-    uint8_t offsetHour = 0;
     bool fullHour = 0;
 
     setMinute(_minute, offsetHour, fullHour);
@@ -940,7 +939,7 @@ void ClockWork::DetermineWhichItIsToShow(uint8_t hour, uint8_t min) {
             usedUhrType->show(FrontWord::es_ist);
             break;
         }
-    } else if (G.UhrtypeDef == Es10x11 && hour == 1 && min < 35) {
+    } else if (G.UhrtypeDef == Es10x11 && hour == 1) {
         usedUhrType->show(FrontWord::es_ist___plural___);
     } else if (G.UhrtypeDef == Es10x11 && hour == 0 && min > 34 ){
         usedUhrType->show(FrontWord::es_ist___plural___);
