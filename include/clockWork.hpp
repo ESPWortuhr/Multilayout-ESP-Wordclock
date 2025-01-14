@@ -515,8 +515,15 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
 
 //------------------------------------------------------------------------------
 
+bool ClockWork::checkTwentyUsage() {
+    return G.languageVariant[ItIs20] || G.languageVariant[ItIs40];
+}
+
+//------------------------------------------------------------------------------
+
 bool ClockWork::hasTwentyAndCheckForUsage() {
-    return usedUhrType->hasZwanzig() || G.languageVariant[ItIs40];
+    // ToDo: Is this true for every supoorted language variant?
+    return usedUhrType->hasZwanzig() && checkTwentyUsage();
 }
 
 //------------------------------------------------------------------------------
