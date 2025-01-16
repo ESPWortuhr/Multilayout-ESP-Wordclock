@@ -123,7 +123,12 @@ let TRANSLATION_HU = {
 		},
 		"language": {
 			"h2": "Nyelv",
-			"hide-it-is": "„Es ist“ kikapcsolása",
+			"hide-it-is": "„Mutasd meg a 'Ez a'“",
+			"it-is-off": "Off",
+			"it-is-hourly": "Óránként",
+			"it-is-half-hourly": "Félóránként",
+			"it-is-quarterly": "Negyedéves",
+			"it-is-permanent": "Állandó",
 			"at-nine-fifteen": "9:15-kor van...",
 			"quarter-past-nine": "kilenc óra tizenöt perc",
 			"quarter-nine": "negyed tíz",

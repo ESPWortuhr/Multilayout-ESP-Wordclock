@@ -918,16 +918,46 @@ WordclockChanges ClockWork::changesInClockface() {
 
 //------------------------------------------------------------------------------
 
+bool ClockWork::DetermineIfItIsIsShown(const uint8_t min) {
+    switch (G.itIsVariant) {
+    case ItIsVariant::Permanent:
+        return true;
+        break;
+    case ItIsVariant::Hourly:
+        return !min;
+        break;
+    case ItIsVariant::HalfHourly:
+        return !(min % 30);
+        break;
+    case ItIsVariant::Quarterly:
+        return !(min % 15);
+        break;
+    case ItIsVariant::Off:
+    default:
+        return false;
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+void ClockWork::setItIs(uint8_t min, const uint8_t offsetHour) {
+    min /= 5;
+    min *= 5;
+
+    if (DetermineIfItIsIsShown(min)) {
+        DetermineWhichItIsToShow(_hour + offsetHour);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::setClock() {
     uint8_t offsetHour = 0;
     bool fullHour = 0;
 
     setMinute(_minute, offsetHour, fullHour);
     setHour(_hour + offsetHour, fullHour);
-
-    if (!G.languageVariant[NotShowItIs]) {
-        DetermineWhichItIsToShow(_hour + offsetHour);
-    }
+    setItIs(_minute, offsetHour);
 }
 
 //------------------------------------------------------------------------------

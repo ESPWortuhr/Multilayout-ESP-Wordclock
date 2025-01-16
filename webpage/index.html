@@ -374,11 +374,15 @@
                     <h2 data-i18next="view.language.h2"></h2>
                     <form class="pure-form pure-form-aligned">
                         <div class="pure-control-group">
-                            <label for="dialect-4" data-i18next="view.language.hide-it-is"></label>
-                            <label class="switch">
-                                <input type="checkbox" id="dialect-4">
-                                <span class="slider round"></span>
-                            </label>
+                            <div class="pure-control-group">
+                                <label for="dialect-4" data-i18next="view.language.hide-it-is"></label><select name="dialect-4" id="dialect-4" size="1">
+                                <option value="0" selected data-i18next="view.language.it-is-permanent"></option>
+                                <option value="1" data-i18next="view.language.it-is-quarterly"></option>
+                                <option value="2" data-i18next="view.language.it-is-half-hourly"></option>
+                                <option value="3" data-i18next="view.language.it-is-hourly"></option>
+                                <option value="4" data-i18next="view.language.it-is-off"></option>
+                            </select>
+                            </div>
                         </div>
                         <div class="pure-control-group specific-layout-1">
                             <div class="pure-control-group">

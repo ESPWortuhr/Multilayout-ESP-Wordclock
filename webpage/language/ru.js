@@ -114,7 +114,12 @@ let TRANSLATION_RU = {
 		},
 		"language": {
 			"h2": "Язык",
-			"hide-it-is": "„ЧАС, ЧАСA, ЧАСОВ“ скрывать",
+			"hide-it-is": "Отображение 'ЧАС, ЧАСA, ЧАСОВ'“",
+			"it-is-off": "Выключено",
+			"it-is-hourly": "Почасовая",
+			"it-is-half-hourly": "Half-hourly",
+			"it-is-quarterly": "Ежеквартально",
+			"it-is-permanent": "Постоянный",
 			"at-nine-fifteen": "ЧАСОВ 9:15 ...",
 			"quarter-past-nine": "четверть десятого",
 			"quarter-nine": "четверть десяти",

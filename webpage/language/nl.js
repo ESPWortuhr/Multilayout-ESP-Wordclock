@@ -126,7 +126,12 @@ let TRANSLATION_NL = {
 		},
 		"language": {
 			"h2": "Taal",
-			"hide-it-is": "Verberg “Het is”",
+			"hide-it-is": "„Display 'Het is'“",
+			"it-is-off": "Uit",
+			"it-is-hourly": "Per uur",
+			"it-is-half-hourly": "Per half uur",
+			"it-is-quarterly": "Per kwartier",
+			"it-is-permanent": "Permanent",
 			"at-nine-fifteen": "Om 9:15 is het...",
 			"quarter-past-nine": "Kwart over negen",
 			"quarter-nine": "Kwart tien",

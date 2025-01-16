@@ -60,6 +60,8 @@ private:
     WordclockChanges changesInClockface();
     void calcClockface();
     void setClock();
+    void setItIs(uint8_t min, const uint8_t offsetHour);
+    bool DetermineIfItIsIsShown(const uint8_t min);
     void DetermineWhichItIsToShow(uint8_t offsetHour);
     void clearClockByProgInit();
 

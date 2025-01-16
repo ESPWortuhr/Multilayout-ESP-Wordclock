@@ -150,7 +150,12 @@ let TRANSLATION_EN_US = {
 		},
 		"language": {
 			"h2": "Language",
-			"hide-it-is": "Hide “It Is”",
+			"hide-it-is": "„Display 'It is'“",
+			"it-is-off": "Off",
+			"it-is-hourly": "Hourly",
+			"it-is-half-hourly": "Half-hourly",
+			"it-is-quarterly": "Quarterly",
+			"it-is-permanent": "Permanent",
 			"at-nine-fifteen": "On 9:15 It Is ...",
 			"quarter-past-nine": "Quarter Past Nine", // German: viertel nach neun
 			"quarter-nine": "Quarter Ten", // German: viertel zehn

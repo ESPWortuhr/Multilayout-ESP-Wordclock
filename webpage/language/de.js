@@ -28,6 +28,11 @@ let TRANSLATION_DE_DE = {
 
 	"functions": {
 		"h1": "Funktionen",
+		"color": {
+			"foreground": "Vordergrund",
+			"background": "Hintergrund",
+			"frame": "Rahmen"
+		},
 		"mode": {
 			"h2": "Modus",
 			"wordclock": "Wortuhr",
@@ -150,7 +155,12 @@ let TRANSLATION_DE_DE = {
 		},
 		"language": {
 			"h2": "Sprache",
-			"hide-it-is": "„Es ist“ ausblenden",
+			"hide-it-is": "„'Es ist' Anzeige“",
+			"it-is-off": "Aus",
+			"it-is-hourly": "Stündlich",
+			"it-is-half-hourly": "Halbstündlich",
+			"it-is-quarterly": "Viertelstündlich",
+			"it-is-permanent": "Permanent",
 			"at-nine-fifteen": "Um 9:15 ist es ...",
 			"quarter-past-nine": "viertel nach neun",
 			"quarter-nine": "viertel zehn",

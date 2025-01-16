@@ -126,7 +126,12 @@ let TRANSLATION_ES = {
 		},
 		"language": {
 			"h2": "Idioma",
-			"hide-it-is": "„Son las“ esconderse",
+			"hide-it-is": "Mostrar 'Son Las'“",
+			"it-is-off": "Apagado",
+			"it-is-hourly": "Por hora",
+			"it-is-half-hourly": "Media hora",
+			"it-is-quarterly": "Trimestral",
+			"it-is-permanent": "Permanente",
 			"at-nine-fifteen": "Son las 9:15 ...",
 			"quarter-past-nine": "las nueve y cuarto",
 			"quarter-nine": "un cuarto de diez",

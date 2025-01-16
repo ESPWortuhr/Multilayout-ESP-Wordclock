@@ -91,6 +91,14 @@ enum class WordclockChanges {
     Words,
 };
 
+enum class ItIsVariant {
+    Permanent = 0,
+    Quarterly = 1,
+    HalfHourly = 2,
+    Hourly = 3,
+    Off = 4,
+};
+
 struct GLOBAL {
     uint16_t sernr;
     uint16_t prog;
@@ -103,6 +111,7 @@ struct GLOBAL {
     uint8_t client_nr;
     SecondVariant secondVariant;
     MinuteVariant minuteVariant;
+    ItIsVariant itIsVariant;
     bool languageVariant[6];
     bool layoutVariant[3];
     char timeserver[PAYLOAD_LENGTH];
@@ -190,8 +199,7 @@ enum LanguageDialects {
     ItIs20 = 1,
     ItIs40 = 2,
     ItIs45 = 3,
-    NotShowItIs = 4,
-    EN_ShowAQuarter = 5,
+    EN_ShowAQuarter = 4,
 };
 
 enum LayoutVariants {

@@ -984,7 +984,7 @@ $.ready(function() {
 		dialect[1] = $("#dialect-1").get("value");
 		dialect[2] = $("#dialect-2").get("value");
 		dialect[3] = $("#dialect-3").get("value");
-		dialect[4] = $("#dialect-4").get("checked") | 0;
+		dialect[4] = $("#dialect-4").get("value");
 		dialect[5] = $("#dialect-5").get("value");
 
 		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]) + nstr(dialect[5]));

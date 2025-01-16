@@ -126,7 +126,12 @@ let TRANSLATION_IT = {
 		},
 		"language": {
 			"h2": "Lingua",
-			"hide-it-is": "„Sono le“ nascondi",
+			"hide-it-is": "Visualizza 'Sono le'“",
+			"it-is-off": "Spento",
+			"it-is-hourly": "Oario",
+			"it-is-half-hourly": "Mezz'ora",
+			"it-is-quarterly": "Trimestrale",
+			"it-is-permanent": "Permanente",
 			"at-nine-fifteen": "Sono le 9:15 ...",
 			"quarter-past-nine": "las nueve y quarto",
 			"quarter-nine": "un quarto di diez",
