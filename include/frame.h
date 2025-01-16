@@ -47,9 +47,7 @@ void SecondsFrame::setInitFrameSector() {
     switch (G.secondVariant) {
     case SecondVariant::FrameSectorToggle:
         if (_minute % 2 == 1) {
-            for (uint8_t i = 0; i <= numFramePixels; i++) {
-                frameArray[i] = true;
-            }
+            memset(frameArray,true,sizeof(numFramePixels));
         }
         /* intentianally no break */
     case SecondVariant::FrameSector:
@@ -91,14 +89,15 @@ void SecondsFrame::frameLogic() {
         switch (G.secondVariant) {
         case SecondVariant::FrameDot:
             frameArray[_secondFrame] = true;
-            frameArray[_secondFrame - 1] = false;
+             if (_secondFrame != 0) {
+                frameArray[_secondFrame - 1] = false;
+             }
             break;
         case SecondVariant::FrameSector:
         case SecondVariant::FrameSectorToggle:
             frameArray[_secondFrame] = !frameArray[_secondFrame];
             break;
         default:
-
             break;
         }
 
