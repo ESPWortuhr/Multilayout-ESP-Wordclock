@@ -21,7 +21,7 @@
 
 class De10x11NeroFrame_t : public De10x11Nero_t {
 public:
-    virtual inline const uint8_t numPixelsFrameMatrix() { return 60; }
+    virtual inline const uint8_t numPixelsFrameMatrix() { return 120; }
 
     //------------------------------------------------------------------------------
 

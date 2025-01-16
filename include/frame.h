@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 
 #include "Uhr.h"
 #include "led.h"
@@ -45,17 +45,16 @@ SecondsFrame::SecondsFrame(const uint8_t num) {
 
 void SecondsFrame::setInitFrameSector() {
     switch (G.secondVariant) {
-
     case SecondVariant::FrameSectorToggle:
         if (_minute % 2 == 1) {
             for (uint8_t i = 0; i <= numFramePixels; i++) {
-                frameArray |= 1ULL << i; // Setting Bits
+                frameArray[i] = true;
             }
         }
         /* intentianally no break */
     case SecondVariant::FrameSector:
         for (uint8_t i = 0; i <= _secondFrame; i++) {
-            frameArray ^= 1ULL << i; // Toggling Bits
+            frameArray[i] = !frameArray[i];
         }
         break;
     default:
@@ -77,11 +76,11 @@ void SecondsFrame::setup() {
 void SecondsFrame::frameLogic() {
     countMillisFrameIntervall = 0;
     _secondFrame++;
-
+    
     /*Every full minute */
     if (_secondFrame == numFramePixels) {
         led.clearFrame();
-        frameArray = 0;
+        memset(frameArray,false,sizeof(frameArray));
         setInitFrameSector();
         _secondFrame = 0;
     }
@@ -91,16 +90,15 @@ void SecondsFrame::frameLogic() {
 
         switch (G.secondVariant) {
         case SecondVariant::FrameDot:
-            frameArray |= 1ULL << _secondFrame; // Setting Bit to 1
-            if (_secondFrame != 0) {
-                frameArray &= ~(1ULL << (_secondFrame - 1)); // Setting Bit to 0
-            }
+            frameArray[_secondFrame] = true;
+            frameArray[_secondFrame - 1] = false;
             break;
         case SecondVariant::FrameSector:
         case SecondVariant::FrameSectorToggle:
-            frameArray ^= 1ULL << _secondFrame; // Toggle Bit
+            frameArray[_secondFrame] = !frameArray[_secondFrame];
             break;
         default:
+
             break;
         }
 
