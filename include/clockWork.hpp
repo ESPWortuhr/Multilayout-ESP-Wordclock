@@ -1207,6 +1207,7 @@ void ClockWork::loop(struct tm &tm) {
         config["effectSpeed"] = G.effectSpeed;
         config["colortype"] = G.Colortype;
         config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
+        config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["prog"] = G.prog;
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));

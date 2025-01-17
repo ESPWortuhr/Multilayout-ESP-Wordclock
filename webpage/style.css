@@ -259,6 +259,13 @@ a:visited:hover {
     grid-gap: .5em;
 }
 
+.mode-color-form {
+    display: inline-grid;
+    grid-gap: .5em;
+    margin-bottom: 1em;
+    grid-template-columns: 1fr 1fr;
+}
+
 .radio-select {
     border: 2px solid #eee;
     border-radius: .4em;
