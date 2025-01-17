@@ -311,11 +311,12 @@ void Led::setbyMinuteArray(ColorPosition colorPosition) {
 void Led::setbySecondArray(ColorPosition colorPosition) {
     HsbColor displayedColor;
     getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
-    const uint8_t offesetSecondsFrame = (usedUhrType->numPixelsFrameMatrix()/8);
+    const uint8_t offesetSecondsFrame = 
+        (usedUhrType->numPixelsFrameMatrix()/8);
 
     for (uint8_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
   
-          if (frameArray[i]) {
+        if (frameArray[i]) {
             if (i < usedUhrType->numPixelsFrameMatrix() - offesetSecondsFrame) {
                 setPixel(usedUhrType->getFrameMatrixIndex(i) +
                              offesetSecondsFrame,

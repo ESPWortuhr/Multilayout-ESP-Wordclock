@@ -1238,7 +1238,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_TIME_MANUAL: {
         eeprom::write();
         led.clear();
-        memset(frameArray,false,sizeof(frameArray));
+        memset(frameArray, false, sizeof(frameArray));
         parametersChanged = true;
         break;
     }
@@ -1246,7 +1246,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_LAYOUT_VARIANT: {
         eeprom::write();
         led.clear();
-        memset(frameArray,false,sizeof(frameArray));
+        memset(frameArray, false, sizeof(frameArray));
         layoutChanged = true;
         break;
     }
@@ -1254,7 +1254,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_SETTING_SECOND: {
         eeprom::write();
         led.clear();
-        memset(frameArray,false,sizeof(frameArray));
+        memset(frameArray, false, sizeof(frameArray));
         G.progInit = true;
         parametersChanged = true;
         break;

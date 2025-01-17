@@ -1,4 +1,4 @@
- #pragma once
+#pragma once
 
 #include "Uhr.h"
 #include "led.h"
@@ -47,7 +47,7 @@ void SecondsFrame::setInitFrameSector() {
     switch (G.secondVariant) {
     case SecondVariant::FrameSectorToggle:
         if (_minute % 2 == 1) {
-            memset(frameArray,true,sizeof(numFramePixels));
+            memset(frameArray, true, sizeof(numFramePixels));
         }
         /* intentianally no break */
     case SecondVariant::FrameSector:
@@ -78,20 +78,19 @@ void SecondsFrame::frameLogic() {
     /*Every full minute */
     if (_secondFrame == numFramePixels) {
         led.clearFrame();
-        memset(frameArray,false,sizeof(frameArray));
+        memset(frameArray, false, sizeof(frameArray));
         setInitFrameSector();
         _secondFrame = 0;
     }
 
     /*Every (Frame-)Second*/
     if (lastSecondFrame != _secondFrame) {
-
         switch (G.secondVariant) {
         case SecondVariant::FrameDot:
             frameArray[_secondFrame] = true;
-             if (_secondFrame != 0) {
+            if (_secondFrame != 0) {
                 frameArray[_secondFrame - 1] = false;
-             }
+            }
             break;
         case SecondVariant::FrameSector:
         case SecondVariant::FrameSectorToggle:
@@ -100,7 +99,6 @@ void SecondsFrame::frameLogic() {
         default:
             break;
         }
-
         lastSecondFrame = _secondFrame;
     }
 

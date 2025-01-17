@@ -40,7 +40,7 @@ public:
         for (uint8_t i = 0; i < 4; i++) {
             returnArr[i] = 110 + i;
         }
-     };
+    };
 };
 
 
