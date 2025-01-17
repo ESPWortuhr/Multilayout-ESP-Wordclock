@@ -143,6 +143,8 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_se10x11;
     case Ru10x11:
         return &_ru10x11;
+    case Ch10x11V2:
+        return &_ch10x11V2;
     default:
         return nullptr;
     }
@@ -513,8 +515,15 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
 
 //------------------------------------------------------------------------------
 
+bool ClockWork::checkTwentyUsage() {
+    return G.languageVariant[ItIs20] || G.languageVariant[ItIs40];
+}
+
+//------------------------------------------------------------------------------
+
 bool ClockWork::hasTwentyAndCheckForUsage() {
-    return usedUhrType->hasZwanzig() || G.languageVariant[ItIs40];
+    // ToDo: Is this true for every supoorted language variant?
+    return usedUhrType->hasZwanzig() && checkTwentyUsage();
 }
 
 //------------------------------------------------------------------------------
@@ -909,16 +918,46 @@ WordclockChanges ClockWork::changesInClockface() {
 
 //------------------------------------------------------------------------------
 
+bool ClockWork::DetermineIfItIsIsShown(const uint8_t min) {
+    switch (G.itIsVariant) {
+    case ItIsVariant::Permanent:
+        return true;
+        break;
+    case ItIsVariant::Hourly:
+        return !min;
+        break;
+    case ItIsVariant::HalfHourly:
+        return !(min % 30);
+        break;
+    case ItIsVariant::Quarterly:
+        return !(min % 15);
+        break;
+    case ItIsVariant::Off:
+    default:
+        return false;
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+void ClockWork::setItIs(uint8_t min, const uint8_t offsetHour) {
+    min /= 5;
+    min *= 5;
+
+    if (DetermineIfItIsIsShown(min)) {
+        DetermineWhichItIsToShow(_hour + offsetHour);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::setClock() {
     uint8_t offsetHour = 0;
     bool fullHour = 0;
 
     setMinute(_minute, offsetHour, fullHour);
     setHour(_hour + offsetHour, fullHour);
-
-    if (!G.languageVariant[NotShowItIs]) {
-        DetermineWhichItIsToShow(_hour + offsetHour);
-    }
+    setItIs(_minute, offsetHour);
 }
 
 //------------------------------------------------------------------------------
@@ -1168,6 +1207,7 @@ void ClockWork::loop(struct tm &tm) {
         config["effectSpeed"] = G.effectSpeed;
         config["colortype"] = G.Colortype;
         config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
+        config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["prog"] = G.prog;
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));

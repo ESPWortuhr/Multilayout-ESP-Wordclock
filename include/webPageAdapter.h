@@ -374,7 +374,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.languageVariant[ItIs20] = split(payload, 6);
             G.languageVariant[ItIs40] = split(payload, 9);
             G.languageVariant[ItIs45] = split(payload, 12);
-            G.languageVariant[NotShowItIs] = split(payload, 15);
+            G.itIsVariant = static_cast<ItIsVariant>(split(payload, 15));
             G.languageVariant[EN_ShowAQuarter] = split(payload, 18);
             break;
         }

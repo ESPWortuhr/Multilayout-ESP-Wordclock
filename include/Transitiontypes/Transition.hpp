@@ -1137,7 +1137,7 @@ void Transition::loop(struct tm &tm) {
                 setMinute();
                 if (G.secondVariant != SecondVariant::Off) {
                     led.setbySecondArray();
-                    // Workaround: setbySecoundArray not in 'work'
+                    // Workaround: setbySecondArray not in 'work'
                 }
             }
             led.show();
