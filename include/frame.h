@@ -105,7 +105,6 @@ void SecondsFrame::frameLogic() {
     /*Update LEDs corrosponding with mode Clockwork*/
     if (G.prog == 0 && G.conf == 0) {
         led.clear();
-        parametersChanged = true;
         G.prog = COMMAND_MODE_WORD_CLOCK;
     }
 }
