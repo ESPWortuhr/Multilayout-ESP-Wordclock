@@ -74,7 +74,7 @@ void SecondsFrame::setup() {
 void SecondsFrame::frameLogic() {
     countMillisFrameIntervall = 0;
     _secondFrame++;
-    
+
     /*Every full minute */
     if (_secondFrame == numFramePixels) {
         led.clearFrame();

@@ -43,5 +43,4 @@ public:
     };
 };
 
-
 De10x11NeroFrame_t _de10x11NeroFrame;
