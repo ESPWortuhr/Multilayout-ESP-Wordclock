@@ -917,15 +917,15 @@ void ClockWork::setClock() {
     setHour(_hour + offsetHour, fullHour);
 
     if (!G.languageVariant[NotShowItIs]) {
-        DetermineWhichItIsToShow(_hour + offsetHour);
+        DetermineWhichItIsToShow(_hour + offsetHour, _minute);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ClockWork::DetermineWhichItIsToShow(uint8_t hour) {
+void ClockWork::DetermineWhichItIsToShow(uint8_t hour, uint8_t min) {
+    hour %= 12;
     if (G.UhrtypeDef == Ru10x11) {
-        hour %= 12;
         switch (hour) {
         case 1:
             usedUhrType->show(FrontWord::es_ist__singular__);
@@ -939,7 +939,9 @@ void ClockWork::DetermineWhichItIsToShow(uint8_t hour) {
             usedUhrType->show(FrontWord::es_ist);
             break;
         }
-    } else if (G.UhrtypeDef == Es10x11 && hour == 1) {
+    } else if (G.UhrtypeDef == Es10x11 && hour == 1 && min < 35) {
+        usedUhrType->show(FrontWord::es_ist___plural___);
+    } else if (G.UhrtypeDef == Es10x11 && hour == 0 && min > 34) {
         usedUhrType->show(FrontWord::es_ist___plural___);
     } else {
         usedUhrType->show(FrontWord::es_ist);

@@ -59,7 +59,7 @@ private:
     WordclockChanges changesInClockface();
     void calcClockface();
     void setClock();
-    void DetermineWhichItIsToShow(uint8_t offsetHour);
+    void DetermineWhichItIsToShow(uint8_t offsetHour, uint8_t min);
     void clearClockByProgInit();
 
 public:
