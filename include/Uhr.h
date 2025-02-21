@@ -169,7 +169,7 @@ uint32_t lastFrontMatrix[MAX_ROW_SIZE] = {0};
 uint8_t minuteArray = 0; /* Using a byte as a per bit array */
 uint8_t lastMinuteArray = 0;
 uint16_t minutePixelArray[4] = {0};
-uint64_t frameArray = 0;
+bool frameArray[200] = {false};
 bool parametersChanged = false;
 bool layoutChanged = false;
 bool colorChangedByWebsite = false;
@@ -278,6 +278,7 @@ enum ClockType {
     Ger10x11Clock = 6,
     Ger10x11schwaebisch = 20,
     Ger10x11Nero = 11,
+    Ger10x11NeroFrame = 26,
     Ger11x11 = 3,
     Ger11x11V2 = 8,
     Ger11x11V3 = 14,
