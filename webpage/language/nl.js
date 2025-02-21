@@ -54,6 +54,7 @@ let TRANSLATION_NL = {
 				"balls": "Ballen",
 				"firework": "Vuurwerk",
 				"snake": "Slang",
+				"colored": "Kleurrijk",
 				"random": "Willekeurig"
 			},
 			"duration": {
@@ -105,6 +106,7 @@ let TRANSLATION_NL = {
 			"de-22-11-weather": "🇩🇪 10 × 11 Weer",
 			"de-16-8": "🇩🇪 16 × 8",
 			"de-16-18": "🇩🇪 16 × 18",
+			"de-08-08-viertel": "🇩🇪 8 × 8 Kwart uren",
 			"en-10-11": "🇬🇧 10 × 11",
 			"nl-10-11": "🇳🇱 10 × 11",
 			"es-10-11": "🇪🇸 10 × 11",

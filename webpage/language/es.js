@@ -54,6 +54,7 @@ let TRANSLATION_ES = {
 				"balls": "Bolas",
 				"fireworks": "Fuegos artificiales",
 				"snake": "Serpiente",
+				"colored": "Colorido",
 				"random": "Al azar"
 			},
 			"duration": {
@@ -105,6 +106,7 @@ let TRANSLATION_ES = {
 			"de-22-11-weather": "🇩🇪 10 × 11 Wetter",
 			"de-16-8": "🇩🇪 16 × 8",
 			"de-16-18": "🇩🇪 16 × 18",
+			"de-08-08-viertel": "🇩🇪 8 × 8 Cuartos",
 			"en-10-11": "🇬🇧 10 × 11",
 			"nl-10-11": "🇳🇱 10 × 11",
 			"es-10-11": "🇪🇸 10 × 11",
