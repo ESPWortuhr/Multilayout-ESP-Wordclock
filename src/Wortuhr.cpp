@@ -1,3 +1,7 @@
+// Define the I2C pins for the ESP32
+#define SDA_PIN_ESP32 7
+#define SCL_PIN_ESP32 6
+
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #ifdef ESP8266
@@ -305,6 +309,12 @@ void setup() {
     //-------------------------------------
     // Start external real-time clock
     //-------------------------------------
+
+#ifdef ESP8266
+    Wire.begin(D4, D3); // SDA, SCL
+#elif defined(ESP32)
+    Wire.begin(SDA_PIN_ESP32, SCL_PIN_ESP32); // SDA, SCL
+#endif
 
     if (RTC.begin() == true) {
         Serial.println("External real-time clock found");

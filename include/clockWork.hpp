@@ -76,11 +76,6 @@ void ClockWork::loopAutoBrightLogic() {
 // Initialize the I2C bus using SCL and SDA pins
 // (BH1750 library doesn't do this automatically)
 void ClockWork::initBH1750Logic() {
-#ifdef ESP8266
-    Wire.begin(D4, D3);
-#elif defined(ESP32)
-    Wire.begin(21, 22);
-#endif
     // begin returns a boolean that can be used to detect setup problems.
     if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
         Serial.println("BH1750 initialized. Using this sensor for ambient "
