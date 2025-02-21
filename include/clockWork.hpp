@@ -102,6 +102,8 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_de10x11Clock;
     case Ger10x11Nero:
         return &_de10x11Nero;
+    case Ger10x11NeroFrame:
+        return &_de10x11NeroFrame;
     case Nl10x11:
         return &_nl10x11;
     case Ger11x11:
@@ -1273,7 +1275,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_TIME_MANUAL: {
         eeprom::write();
         led.clear();
-        frameArray = 0;
+        memset(frameArray, false, sizeof(frameArray));
         parametersChanged = true;
         break;
     }
@@ -1281,7 +1283,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_LAYOUT_VARIANT: {
         eeprom::write();
         led.clear();
-        frameArray = 0;
+        memset(frameArray, false, sizeof(frameArray));
         layoutChanged = true;
         break;
     }
@@ -1289,7 +1291,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_SETTING_SECOND: {
         eeprom::write();
         led.clear();
-        frameArray = 0;
+        memset(frameArray, false, sizeof(frameArray));
         G.progInit = true;
         parametersChanged = true;
         break;

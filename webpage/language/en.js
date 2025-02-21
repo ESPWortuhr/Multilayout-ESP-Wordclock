@@ -122,6 +122,7 @@ let TRANSLATION_EN_US = {
 			"de-10-11-vertical": "🇩🇪 10 × 11 Vertical",
 			"de-10-11-clock": "🇩🇪 10 × 11 Clock",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
+			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Frame",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Swabian Style",
 			"de-11-11": "🇩🇪 11 × 11",
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
