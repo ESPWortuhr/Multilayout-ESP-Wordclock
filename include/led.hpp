@@ -313,7 +313,7 @@ void Led::setbySecondArray(ColorPosition colorPosition) {
     HsbColor displayedColor =
         getColorbyPositionWithAppliedBrightness(colorPosition);
 
-    const uint8_t offesetSecondsFrame = 
+    const uint8_t offesetSecondsFrame =
         (usedUhrType->numPixelsFrameMatrix() / 8);
 
     for (uint8_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
