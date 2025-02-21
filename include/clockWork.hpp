@@ -7,8 +7,6 @@
 #include <Arduino.h>
 #include <BH1750.h>
 
-#define LEDGPIO 27
-
 OpenWMap weather;
 BH1750 lightMeter(0x23);
 
@@ -160,7 +158,7 @@ void ClockWork::initLedStrip(uint8_t num) {
             strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(500);
 #elif defined(ESP32)
             strip_RGBW =
-                new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(500, LEDGPIO);
+                new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(500, LED_PIN);
 #endif
             strip_RGBW->Begin();
         }
@@ -175,7 +173,7 @@ void ClockWork::initLedStrip(uint8_t num) {
             strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(500);
 #elif defined(ESP32)
             strip_RGB = new NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod>(
-                500, LEDGPIO);
+                500, LED_PIN);
 #endif
             strip_RGB->Begin();
         }

@@ -1,7 +1,3 @@
-// Define the I2C pins for the ESP32
-#define SDA_PIN_ESP32 7
-#define SCL_PIN_ESP32 6
-
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #ifdef ESP8266
