@@ -202,6 +202,7 @@ void setup() {
 #ifdef MINUTE_LED7x
         G.minuteVariant = MinuteVariant::LED7x;
 #endif
+        G.itIsVariant = ItIsVariant::Permanent;
         strcpy(G.openWeatherMap.cityid, "");
         strcpy(G.openWeatherMap.apikey, "");
         strcpy(G.timeserver, "europe.pool.ntp.org");
@@ -305,6 +306,12 @@ void setup() {
     //-------------------------------------
     // Start external real-time clock
     //-------------------------------------
+
+#ifdef ESP8266
+    Wire.begin(D4, D3); // SDA, SCL
+#elif defined(ESP32)
+    Wire.begin(SDA_PIN_ESP32, SCL_PIN_ESP32); // SDA, SCL
+#endif
 
     if (RTC.begin() == true) {
         Serial.println("External real-time clock found");

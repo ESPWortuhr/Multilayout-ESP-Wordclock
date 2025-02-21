@@ -139,6 +139,7 @@ let TRANSLATION_EN_US = {
 			"fr-10-11": "🇫🇷 10 x 11",
 			"se-10-11": "🇸🇪 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
+			"ch-10-11-v2": "🇨🇭 10 x 11 Version 2",
 			"invert-min-dir": "Invert Minute Counting Direction",
 			"mirror-vertically": "Mirror Word Clock Vertically",
 			"mirror-horizontally": "Mirror Word Clock Horizontally",
@@ -149,7 +150,12 @@ let TRANSLATION_EN_US = {
 		},
 		"language": {
 			"h2": "Language",
-			"hide-it-is": "Hide “It Is”",
+			"hide-it-is": "„Display 'It is'“",
+			"it-is-off": "Off",
+			"it-is-hourly": "Hourly",
+			"it-is-half-hourly": "Half-hourly",
+			"it-is-quarterly": "Quarterly",
+			"it-is-permanent": "Permanent",
 			"at-nine-fifteen": "On 9:15 It Is ...",
 			"quarter-past-nine": "Quarter Past Nine", // German: viertel nach neun
 			"quarter-nine": "Quarter Ten", // German: viertel zehn

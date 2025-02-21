@@ -42,6 +42,7 @@ private:
     void showMinute(uint8_t min);
     void resetMinVariantIfNotAvailable();
     FrontWord getFrontWordForNum(uint8_t min);
+    bool checkTwentyUsage();
     bool hasTwentyAndCheckForUsage();
     bool hasDreiviertelAndCheckForUsage();
     void setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour);
@@ -59,6 +60,8 @@ private:
     WordclockChanges changesInClockface();
     void calcClockface();
     void setClock();
+    void setItIs(uint8_t min, const uint8_t offsetHour);
+    bool DetermineIfItIsIsShown(const uint8_t min);
     void DetermineWhichItIsToShow(uint8_t offsetHour, uint8_t min);
     void clearClockByProgInit();
 
