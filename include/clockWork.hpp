@@ -68,7 +68,7 @@ void ClockWork::loopAutoBrightLogic() {
             ledGain = 100.0;
     }
     if (ledGainOld != ledGain) {
-        led.set();
+        parametersChanged = true;
     }
 }
 
