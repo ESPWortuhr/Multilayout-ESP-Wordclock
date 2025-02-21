@@ -941,7 +941,7 @@ void ClockWork::DetermineWhichItIsToShow(uint8_t hour, uint8_t min) {
         }
     } else if (G.UhrtypeDef == Es10x11 && hour == 1 && min < 35) {
         usedUhrType->show(FrontWord::es_ist___plural___);
-    } else if (G.UhrtypeDef == Es10x11 && hour == 0 && min > 34 ){
+    } else if (G.UhrtypeDef == Es10x11 && hour == 0 && min > 34) {
         usedUhrType->show(FrontWord::es_ist___plural___);
     } else {
         usedUhrType->show(FrontWord::es_ist);
