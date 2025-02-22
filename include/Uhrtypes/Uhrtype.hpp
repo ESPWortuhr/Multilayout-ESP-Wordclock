@@ -198,7 +198,9 @@ public:
 
     virtual const bool hasMinuteInWords() { return false; }
 
-    virtual const bool hasHappyBirthday() { return false; }
+    virtual const bool hasSpecialWordHappyBirthday() { return false; }
+
+    virtual const bool hasSpecialWordBeen() { return false; }
 
     virtual const uint16_t getFrontMatrixIndex(const uint8_t row, uint8_t col) {
 

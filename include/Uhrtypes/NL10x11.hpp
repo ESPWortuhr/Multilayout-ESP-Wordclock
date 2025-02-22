@@ -27,7 +27,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasMinuteInWords() { return true; }
+    virtual const bool hasSpecialWordBeen() override { return true; }
 
     //------------------------------------------------------------------------------
 
