@@ -139,7 +139,7 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
     case Ru10x11:
         return &_ru10x11;
     case Ch10x11V2:
-        return &_ch10x11V2;
+        return &_ch10x11v2;
     default:
         return nullptr;
     }
@@ -408,6 +408,9 @@ void ClockWork::initBootLed() {
 
 uint8_t ClockWork::determineWhichMinuteVariant() {
     switch (G.minuteVariant) {
+    case MinuteVariant::Off:
+        return 0;
+        break;
     case MinuteVariant::LED4x:
         return 0;
         break;
@@ -429,36 +432,53 @@ uint8_t ClockWork::determineWhichMinuteVariant() {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::showMinuteInWords(uint8_t min) {
-    if (G.UhrtypeDef == Ger16x8 && min > 0) {
-        usedUhrType->show(FrontWord::plus);
-        usedUhrType->show(FrontWord::minute);
-        if (min % 5 > 1) {
-            usedUhrType->show(FrontWord::minuten);
+void ClockWork::showSpecialWordBeen(const uint8_t min) {
+    if (usedUhrType->hasSpecialWordBeen()) {
+        if (min == 0) {
+            usedUhrType->show(FrontWord::nur);
+        } else {
+            usedUhrType->show(FrontWord::gewesen);
         }
     }
-    switch (min) {
-    case 0:
-        usedUhrType->show(FrontWord::nur);
-        break;
+}
 
-    case 1:
-        usedUhrType->show(FrontWord::m_num1);
-        break;
+//------------------------------------------------------------------------------
 
-    case 2:
-        usedUhrType->show(FrontWord::m_num2);
-        break;
-    case 3:
-        usedUhrType->show(FrontWord::m_num3);
-        break;
-    case 4:
-        usedUhrType->show(FrontWord::m_num4);
-        usedUhrType->show(FrontWord::gewesen);
-        break;
+bool ClockWork::checkIfClockHasMinuteInWordsAndItIsSet() {
+    return usedUhrType->hasMinuteInWords() &&
+           G.minuteVariant == MinuteVariant::InWords;
+}
 
-    default:
-        break;
+//------------------------------------------------------------------------------
+
+void ClockWork::showMinuteInWords(const uint8_t min) {
+    if (checkIfClockHasMinuteInWordsAndItIsSet()) {
+        if (min > 0) {
+            usedUhrType->show(FrontWord::plus);
+            usedUhrType->show(FrontWord::minute);
+            if (min % 5 > 1) {
+                usedUhrType->show(FrontWord::minuten);
+            }
+        }
+        switch (min) {
+        case 0:
+            break;
+        case 1:
+            usedUhrType->show(FrontWord::m_num1);
+            break;
+        case 2:
+            usedUhrType->show(FrontWord::m_num2);
+            break;
+        case 3:
+            usedUhrType->show(FrontWord::m_num3);
+            break;
+        case 4:
+            usedUhrType->show(FrontWord::m_num4);
+            break;
+
+        default:
+            break;
+        }
     }
 }
 
@@ -481,17 +501,17 @@ void ClockWork::showMinute(uint8_t min) {
             minuteArray |= 1UL << i;
         }
     }
+    /* Show "Been" according to Uhrtypedef */
+    showSpecialWordBeen(min);
 
-    if (usedUhrType->hasMinuteInWords() &&
-        G.minuteVariant == MinuteVariant::InWords) {
-        showMinuteInWords(min);
-    }
+    /* Show Minute "In Words" according to Uhrtypedef */
+    showMinuteInWords(min);
 }
 
 //------------------------------------------------------------------------------
 
 void ClockWork::resetMinVariantIfNotAvailable() {
-    if (G.UhrtypeDef != Nl10x11 && G.minuteVariant == MinuteVariant::InWords) {
+    if (G.UhrtypeDef != Ger16x8 && G.minuteVariant == MinuteVariant::InWords) {
         G.minuteVariant = MinuteVariant::Off;
     } else if (usedUhrType->rowsWordMatrix() != 11 &&
                G.minuteVariant == MinuteVariant::Corners) {
@@ -1162,7 +1182,7 @@ void ClockWork::loop(struct tm &tm) {
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["hasMinuteInWords"] = usedUhrType->hasMinuteInWords();
-        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
+        config["hasHappyBirthday"] = usedUhrType->hasSpecialWordHappyBirthday();
         config["numOfRows"] = usedUhrType->rowsWordMatrix();
         serializeJson(config, str);
         Serial.print("Sending Payload:");
@@ -1174,7 +1194,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_BIRTHDAYS: {
         DynamicJsonDocument config(1024);
         config["command"] = "birthdays";
-        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
+        config["hasHappyBirthday"] = usedUhrType->hasSpecialWordHappyBirthday();
         char dateString[14];
         char string2Send[14];
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
@@ -1205,7 +1225,7 @@ void ClockWork::loop(struct tm &tm) {
         config["effectBri"] = G.effectBri;
         config["effectSpeed"] = G.effectSpeed;
         config["colortype"] = G.Colortype;
-        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
+        config["hasHappyBirthday"] = usedUhrType->hasSpecialWordHappyBirthday();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["prog"] = G.prog;
         serializeJson(config, str);
@@ -1419,7 +1439,15 @@ void ClockWork::loop(struct tm &tm) {
                 break;
             }
             case COMMAND_MODE_RAINBOW: {
-                rainbow();
+                if (G.progInit) {
+                    clearClockByProgInit();
+                    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix();
+                         row++) {
+                        frontMatrix[row] = num32BitWithOnesAccordingToColumns();
+                    }
+                }
+                led.setbyFrontMatrix(Foreground, false);
+                led.show();
                 break;
             }
             case COMMAND_MODE_SYMBOL: {

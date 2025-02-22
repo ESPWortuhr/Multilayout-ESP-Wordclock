@@ -38,7 +38,9 @@ private:
     //------------------------------------------------------------------------------
     // Minute Functions
     //------------------------------------------------------------------------------
+    void showSpecialWordBeen(const uint8_t min);
     void showMinuteInWords(uint8_t min);
+    bool checkIfClockHasMinuteInWordsAndItIsSet();
     void showMinute(uint8_t min);
     void resetMinVariantIfNotAvailable();
     FrontWord getFrontWordForNum(uint8_t min);

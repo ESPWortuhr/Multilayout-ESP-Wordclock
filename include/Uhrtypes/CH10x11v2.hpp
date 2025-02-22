@@ -19,11 +19,15 @@
  *  9  | Z W Ö U F I E N G S I
  */
 
-class Ch10x11V2_t : public Ch10x11_t {
+class Ch10x11v2_t : public iUhrType {
 public:
     virtual LanguageAbbreviation usedLang() override {
         return LanguageAbbreviation::DE;
     };
+
+    //------------------------------------------------------------------------------
+
+    virtual const bool hasSpecialWordBeen() override { return true; }
 
     //------------------------------------------------------------------------------
 
@@ -127,4 +131,4 @@ public:
     };
 };
 
-Ch10x11_t _ch10x11V2;
+Ch10x11v2_t _ch10x11v2;
