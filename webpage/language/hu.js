@@ -232,8 +232,13 @@ let TRANSLATION_HU = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "A fotóellenállás aktuális világossága (LDR)",
-			"value-offset": "Érték „Világos“ (0 – 255)",
-			"value-slope": "Érték „Sötét“ (0 – 255)"
+			"value-gain": "LED Nyereség [%]",
+			"help-offset": "A fényerő eltolás konfigurálása: Meghatározza a LED-ek minimális fényerejét 0 lux környezeti fénynél:\n" +
+			"0=LED-ek kikapcsolva, n=LED fényerőssége n/255, 255=LED-ek mindig maximális fényerősségűek.",
+			"value-offset": "Offset (0–255)",
+			"help-slope": "A lejtő konfigurációja: Meghatározza a LED fényerejének változásának mértékét, amikor a környezeti fény változik.\n" +
+			"0=gyenge LED-fényerő változás, 16=semleges LED-fényerő változás, 255=erős LED-fényerő változás.",
+			"value-slope": "Lejtő (0–255)"
 		},
 		"hostname": {
 			"h2": "Host-név",
