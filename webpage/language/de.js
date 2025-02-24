@@ -265,10 +265,10 @@ let TRANSLATION_DE_DE = {
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Licht Sensor [Lux]",
 			"value-gain": "LED Gain [%]",
-			"help-offset": "Konfiguration des Helligkeitsoffsets: Sie bestimmt die minimale Helligkeit der LEDs bei 0 Lux Umgebungslicht:\n" +
-				"0=LEDs aus, n=LED Helligkeit ist n/255, 255=LEDs haben immer die maximale Helligkeit",
+			"help-offset": "Konfiguration des Helligkeitsoffsets:<br/>Sie bestimmt die minimale Helligkeit der LEDs bei 0 Lux Umgebungslicht:<br/>" +
+				"0=LEDs aus, LED Helligkeit ist n/255, 255=LEDs haben immer die maximale Helligkeit",
 			"value-offset": "Offset (0–255)",
-			"help-slope": "Konfiguration der Steilheit: Sie bestimmt den Grad der LED-Helligkeitsänderung bei Änderung des Umgebungslichts.\n" +
+			"help-slope": "Konfiguration der Steilheit:<br/>Sie bestimmt den Grad der LED-Helligkeitsänderung bei Änderung des Umgebungslichts.<br/>" +
 				"0=schwache LED-Helligkeitsänderung, 16=neutrale LED-Helligkeitsänderung, 255=starke LED-Helligkeitsänderung",
 			"value-slope": "Steilheit (0–255)"
 		},

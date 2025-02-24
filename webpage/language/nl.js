@@ -236,10 +236,10 @@ let TRANSLATION_NL = {
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Huidige helderheid volgens sensor",
 			"value-gain": "LED Gain [%]",
-			"help-offset": "Configuratie van de helderheidsoffset: Deze bepaalt de minimale helderheid van de LED's bij 0 lux omgevingslicht:\n" +
+			"help-offset": "Configuratie van de helderheidsoffset:<br/>Deze bepaalt de minimale helderheid van de LED's bij 0 lux omgevingslicht:<br/>" +
 			"0=LEDs uit, n=LED-helderheid is n/255, 255=LEDs hebben altijd de maximale helderheid",
 			"value-offset": "Offset (0–255)",
-			"help-slope": "Configuratie van de helling: deze bepaalt de mate waarin de LED-helderheid verandert wanneer het omgevingslicht verandert.\n" +
+			"help-slope": "Configuratie van de helling:<br/>deze bepaalt de mate waarin de LED-helderheid verandert wanneer het omgevingslicht verandert.<br/>" +
 			"0=zwakke LED helderheidsverandering, 16=neutrale LED helderheidsverandering, 255=sterke LED helderheidsverandering",
 			"value-slope": "Donker (0 – 255)"
 		},
