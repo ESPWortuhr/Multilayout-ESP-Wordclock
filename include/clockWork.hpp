@@ -1439,15 +1439,7 @@ void ClockWork::loop(struct tm &tm) {
                 break;
             }
             case COMMAND_MODE_RAINBOW: {
-                if (G.progInit) {
-                    clearClockByProgInit();
-                    for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix();
-                         row++) {
-                        frontMatrix[row] = num32BitWithOnesAccordingToColumns();
-                    }
-                }
-                led.setbyFrontMatrix(Foreground, false);
-                led.show();
+                rainbow();
                 break;
             }
             case COMMAND_MODE_SYMBOL: {
