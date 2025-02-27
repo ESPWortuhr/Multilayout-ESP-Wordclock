@@ -28,6 +28,11 @@ let TRANSLATION_RU = {
 
 	"functions": {
 		"h1": "Характеристики",
+		"color": {
+			"foreground": "Передний план",
+			"background": "Фон",
+			"frame": "Рама"
+		},
 		"mode": {
 			"h2": "Режим",
 			"wordclock": "Словесные часы",
