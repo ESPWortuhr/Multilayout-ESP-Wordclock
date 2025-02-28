@@ -28,6 +28,11 @@ let TRANSLATION_IT = {
 
 	"functions": {
 		"h1": "Caratteristiche",
+		"color": {
+			"foreground": "Primo",
+			"background": "Sfondo",
+			"frame": "Telaio"
+		},
 		"mode": {
 			"h2": "Modalità",
 			"wordclock": "Orologio delle parole",

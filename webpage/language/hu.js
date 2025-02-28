@@ -28,6 +28,11 @@ let TRANSLATION_HU = {
 
 	"functions": {
 		"h1": "Funkciók",
+		"color": {
+			"foreground": "Új ismeretek",
+			"background": "Háttér",
+			"frame": "Keret"
+		},
 		"mode": {
 			"h2": "Mód",
 			"wordclock": "Szövegóra",

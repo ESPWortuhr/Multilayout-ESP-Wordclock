@@ -28,6 +28,11 @@ let TRANSLATION_NL = {
 
 	"functions": {
 		"h1": "Functies",
+		"color": {
+			"foreground": "Voorgrond",
+			"background": "Achtergrond",
+			"frame": "Frame"
+		},
 		"mode": {
 			"h2": "Modus",
 			"wordclock": "Woordklok",

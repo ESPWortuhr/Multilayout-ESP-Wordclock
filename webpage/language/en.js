@@ -28,6 +28,11 @@ let TRANSLATION_EN_US = {
 
 	"functions": {
 		"h1": "Functions",
+		"color": {
+			"foreground": "Foreground",
+			"background": "Background",
+			"frame": "Frame"
+		},
 		"mode": {
 			"h2": "Mode",
 			"wordclock": "Wordclock",
