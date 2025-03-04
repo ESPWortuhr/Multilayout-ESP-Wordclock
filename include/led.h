@@ -9,8 +9,6 @@ private:
     //------------------------------------------------------------------------------
     inline uint8_t reverse8BitOrder(uint8_t x);
     inline uint32_t reverse32BitOrder(uint32_t x);
-    bool getCharCol(fontSize font, uint8_t col, uint8_t row,
-                    unsigned char unsigned_d1);
     void applyMirroringAndReverseIfDefined();
     fontSize determineFontSize();
     void setupDigitalClock(fontSize &usedFontSize, uint8_t &offsetLetterH0,
@@ -30,6 +28,8 @@ public:
     //------------------------------------------------------------------------------
     inline void checkIfHueIsOutOfBound(uint16_t &hue);
     void resetFrontMatrixBuffer();
+    bool getCharCol(fontSize font, uint8_t col, uint8_t row,
+                    unsigned char unsigned_d1);
 
     //------------------------------------------------------------------------------
     // Manipulate Functions
