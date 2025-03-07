@@ -16,7 +16,7 @@
  *  6  | K A C H T E F Ü N F E
  *  7  | N E I N E V I E R E Q
  *  8  | Z W O I F E Z E H N E
- *  9  | Y S E C H S E F U H R 
+ *  9  | Y S E C H S E F U H R
  */
 
 class De10x11bayerisch_t : public iUhrType {
