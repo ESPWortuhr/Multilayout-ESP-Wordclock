@@ -220,6 +220,7 @@ void setup() {
         G.layoutVariant[ReverseMinDirection] = REVERSE_MINUTE_DIR;
         G.layoutVariant[MirrorVertical] = MIRROR_FRONT_VERTICAL;
         G.layoutVariant[MirrorHorizontal] = MIRROR_FRONT_HORIZONTAL;
+        G.ldrType = 0;  // Standard: Einzelner LDR
         for (uint8_t i = 0;
              i < sizeof(G.languageVariant) / sizeof(G.languageVariant[0]);
              i++) {

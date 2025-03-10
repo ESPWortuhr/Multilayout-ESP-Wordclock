@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
+#include <ArduinoJson.h>
 
 class Mqtt {
 private:
@@ -11,15 +11,23 @@ private:
     static void processScrollingText(const JsonDocument &doc);
     static void processColor(const JsonDocument &doc);
     static void processBrightness(const JsonDocument &doc);
+    static void processAutobrightSwitch(const JsonDocument &doc);
+    static void processBrightOffset(const JsonDocument &doc);
+    static void processBrightSlope(const JsonDocument &doc);
+    static void processScrollSpeed(const JsonDocument &doc);
+    static void processEffectSpeed(const JsonDocument &doc);
+    static bool checkIfMqttUserIsEmpty();
 
 public:
-    Mqtt() = default;
-    ~Mqtt() = default;
+    Mqtt();
+    ~Mqtt();
 
     void init();
     void loop();
     void sendState();
     void sendDiscovery();
-
     bool isConnected();
 };
+
+// Globale Instanz
+extern Mqtt* mqttInstance;

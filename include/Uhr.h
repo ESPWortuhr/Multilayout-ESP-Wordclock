@@ -151,6 +151,8 @@ struct GLOBAL {
     bool bootShowIP;
 
     Birthday birthday[MAX_BIRTHDAY_COUNT];
+
+    uint8_t ldrType;  // 0 = 1 LDR, 1 = 4 LDR parallel
 };
 GLOBAL G = {};
 
@@ -253,6 +255,7 @@ enum CommandWords {
     COMMAND_SET_AUTO_BRIGHT = 102,
     COMMAND_SET_LAYOUT_VARIANT = 103,
     COMMAND_SET_MQTT_HA_DISCOVERY = 104,
+    COMMAND_SET_LDR_TYPE = 105,
 
     COMMAND_SPEED = 152,
 
