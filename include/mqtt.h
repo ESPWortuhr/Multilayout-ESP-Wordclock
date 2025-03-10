@@ -6,7 +6,7 @@
 
 class Mqtt {
 private:
-    ClockWork& clockWork;  // Referenz auf ClockWork-Instanz
+    ClockWork &clockWork;  // Referenz auf ClockWork-Instanz
     void reInit();
     static void callback(char *topic, byte *payload, unsigned int length);
     static void processState(const JsonDocument &doc);
@@ -22,7 +22,7 @@ private:
     static bool checkIfMqttUserIsEmpty();
 
 public:
-    Mqtt(ClockWork& cw);  // Nur Deklaration
+    Mqtt(ClockWork &cw);  // Nur Deklaration
     ~Mqtt();
 
     void init();
@@ -33,4 +33,4 @@ public:
 };
 
 // Globale Instanz
-extern Mqtt* mqttInstance;
+extern Mqtt *mqttInstance;

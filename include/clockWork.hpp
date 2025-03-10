@@ -47,12 +47,12 @@ void ClockWork::loopAutoBrightLogic() {
             float ldrValue = adcValue - adcValue0Lux;
             
             // Derive LUX value from ldrValue via a second degree polinomial based on LDR type
-            if (G.ldrType == 0) {  // 1 LDR Sensor
+            if (G.ldrType == 0) { // 1 LDR Sensor
                 const float x2 = 0.0427;
                 const float x1 = 2.679;
                 const float x0 = 10.857;
                 lux = x2 * ldrValue * ldrValue + x1 * ldrValue + x0;
-            } else {  // 4 LDR Sensoren parallel
+            } else { // 4 LDR Sensoren parallel
                 const float x2 = 0.0005;
                 const float x1 = 0.0687;
                 const float x0 = 3.9907;
