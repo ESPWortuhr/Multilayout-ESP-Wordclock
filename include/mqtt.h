@@ -6,7 +6,9 @@
 
 class Mqtt {
 private:
-    ClockWork &clockWork;  // Referenz auf ClockWork-Instanz
+    ClockWork &clockWork; // Referenz auf ClockWork-Instanz
+    float lux = 0.0f; // Aktueller LUX-Wert
+    float ledGain = 0.0f; // Aktueller LED-Gain
     void reInit();
     static void callback(char *topic, byte *payload, unsigned int length);
     static void processState(const JsonDocument &doc);
@@ -19,10 +21,11 @@ private:
     static void processBrightSlope(const JsonDocument &doc);
     static void processScrollSpeed(const JsonDocument &doc);
     static void processEffectSpeed(const JsonDocument &doc);
+    static void processLuxCalculation(float ldrValue);
     static bool checkIfMqttUserIsEmpty();
 
 public:
-    Mqtt(ClockWork &cw);  // Nur Deklaration
+    Mqtt(ClockWork &cw); // Nur Deklaration
     ~Mqtt();
 
     void init();

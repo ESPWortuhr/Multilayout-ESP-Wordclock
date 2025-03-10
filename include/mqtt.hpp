@@ -19,7 +19,7 @@ Mqtt *mqttInstance = nullptr;
 PubSubClient mqttClient(client);
 
 // Konstruktor und Destruktor
-Mqtt::Mqtt(ClockWork& cw) : clockWork(cw) { mqttInstance = this; }
+Mqtt::Mqtt(ClockWork &cw) : clockWork(cw) { mqttInstance = this; }
 
 Mqtt::~Mqtt() {
     if (mqttInstance == this) {
@@ -159,7 +159,7 @@ void Mqtt::processScrollingText(const JsonDocument &doc) {
 This function processes the "color" key in the provided JSON document. If the
 "color" key is present, it updates the foreground color based on the hue (h) and
 saturation (s) values provided in the JSON document. The brightness component of
-the color remains unchanged.
+the color is preserved from the current foreground color.
 
 Input:
 
@@ -208,9 +208,12 @@ void Mqtt::processColor(const JsonDocument &doc) {
         // Sende Update an die Weboberfläche
         StaticJsonDocument<200> webDoc;
         webDoc["command"] = "color";
-        webDoc["h"] = round(h * 360); // Konvertiere zu 0-360 Grad
-        webDoc["s"] = round(s * 100); // Konvertiere zu 0-100%
-        webDoc["v"] = round(G.color[Foreground].B * 100); // Konvertiere zu 0-100%
+        webDoc["h"] = round(h * 360); 
+        // Konvertiere zu 0-360 Grad
+        webDoc["s"] = round(s * 100); 
+        // Konvertiere zu 0-100%
+        webDoc["v"] = round(G.color[Foreground].B * 100); 
+        // Konvertiere zu 0-100%
         char buffer[200];
         serializeJson(webDoc, buffer);
         webSocket.broadcastTXT(buffer, strlen(buffer));
@@ -326,17 +329,22 @@ void Mqtt::init() {
     mqttClient.publish(availabilityTopic.c_str(), "online", true);
 
     // Hauptsteuerung
-    mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/cmd").c_str());
     delay(50);
 
     // Zusätzliche Topics
-    mqttClient.subscribe((std::string(G.mqtt.topic) + "/scrolltext/set").c_str());
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/scrolltext/set").c_str());
     delay(50);
-    mqttClient.subscribe((std::string(G.mqtt.topic) + "/bright_offset/set").c_str());
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/bright_offset/set").c_str());
     delay(50);
-    mqttClient.subscribe((std::string(G.mqtt.topic) + "/bright_slope/set").c_str());
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/bright_slope/set").c_str());
     delay(50);
-    mqttClient.subscribe((std::string(G.mqtt.topic) + "/scrolling_text_speed/set").c_str());
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/scrolling_text_speed/set").c_str());
     delay(50);
 
     if (isConnected()) {
@@ -505,8 +513,10 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         parametersChanged = true;
 
         // Publish new state
-        String stateTopic = String(G.mqtt.topic) + "/scrolling_text_speed/state";
-        mqttClient.publish(stateTopic.c_str(), String(G.effectSpeed).c_str(),
+        String stateTopic = String(G.mqtt.topic) + 
+                           "/scrolling_text_speed/state";
+        mqttClient.publish(stateTopic.c_str(), 
+                         String(G.effectSpeed).c_str(),
                          true);
 
         // Send update to web interface
@@ -542,8 +552,8 @@ void Mqtt::sendState() {
     {
         StaticJsonDocument<200> doc;
         doc["state"] = (led.getState()) ? "ON" : "OFF";
-        doc["brightness"] =
-            round(G.color[Foreground].B * 255); // Konvertiere von 0-1 zu 0-255
+        doc["brightness"] = round(G.color[Foreground].B * 255); 
+        // Konvertiere von 0-1 zu 0-255
         doc["color_mode"] = "rgb";
 
         // Konvertiere HSB zu RGB
@@ -623,14 +633,19 @@ void Mqtt::sendState() {
     // Diagnose-Werte senden
     {
         StaticJsonDocument<200> doc;
-        doc["lux"] = round(clockWork.getLuxValue()); // Runde den Lux-Wert
-        doc["led_gain"] = round(ledGain); // Konvertiere zu Prozent und runde
-        doc["adc_value"] = clockWork.getAdcValue(); // Spannungswert (bereits gerundet)
-        doc["adc_raw"] = clockWork.getAdcRawValue(); // Roher ADC-Wert
+        doc["lux"] = round(clockWork.getLuxValue()); 
+        // Runde den Lux-Wert
+        doc["led_gain"] = round(ledGain); 
+        // Konvertiere zu Prozent und runde
+        doc["adc_value"] = clockWork.getAdcValue(); 
+        // Spannungswert (bereits gerundet)
+        doc["adc_raw"] = clockWork.getAdcRawValue(); 
+        // Roher ADC-Wert
         char buffer[200];
         serializeJson(doc, buffer);
-        mqttClient.publish((std::string(G.mqtt.topic) + "/diagnostics").c_str(),
-                         buffer, true);
+        mqttClient.publish(
+            (std::string(G.mqtt.topic) + "/diagnostics").c_str(),
+            buffer, true);
     }
 
     // Helligkeitsoffset Status
@@ -732,7 +747,8 @@ None
 void Mqtt::sendDiscovery() {
     // Erstelle eine unique_id basierend auf MAC-Adresse
     String unique_id = WiFi.macAddress();
-    unique_id.replace(":", ""); // Entferne die Doppelpunkte aus der MAC-Adresse
+    // Entferne die Doppelpunkte aus der MAC-Adresse
+    unique_id.replace(":", ""); 
 
     // Hauptlicht-Entity
     {
@@ -774,8 +790,8 @@ void Mqtt::sendDiscovery() {
 
         // Geräte-Information
         JsonObject device = root.createNestedObject("device");
-        JsonArray identifiers = device.createNestedArray("identifiers");
-        identifiers.add(unique_id);
+        JsonArray deviceIdentifiers = device.createNestedArray("identifiers");
+        deviceIdentifiers.add(unique_id);
         device["name"] = G.mqtt.clientId;
         device["sw_version"] = VERSION;
         device["model"] = "Word Clock";
@@ -800,13 +816,15 @@ void Mqtt::sendDiscovery() {
         root["icon"] = "mdi:text";
 
         JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers = deviceCopy.createNestedArray("identifiers");
+        JsonArray deviceIdentifiers = 
+            deviceCopy.createNestedArray("identifiers");
         deviceIdentifiers.add(unique_id);
         deviceCopy["name"] = G.mqtt.clientId;
         deviceCopy["sw_version"] = VERSION;
         deviceCopy["model"] = "Word Clock";
         deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+        deviceCopy["configuration_url"] = 
+            "http://" + WiFi.localIP().toString();
 
         root["state_topic"] = std::string(G.mqtt.topic) + "/scrolltext/state";
         root["command_topic"] = std::string(G.mqtt.topic) + "/scrolltext/set";
@@ -832,13 +850,15 @@ void Mqtt::sendDiscovery() {
         root["device_class"] = "speed"; // Korrekte Device Class
 
         JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers = deviceCopy.createNestedArray("identifiers");
+        JsonArray deviceIdentifiers = 
+            deviceCopy.createNestedArray("identifiers");
         deviceIdentifiers.add(unique_id);
         deviceCopy["name"] = G.mqtt.clientId;
         deviceCopy["sw_version"] = VERSION;
         deviceCopy["model"] = "Word Clock";
         deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+        deviceCopy["configuration_url"] = 
+            "http://" + WiFi.localIP().toString();
 
         root["state_topic"] =
             std::string(G.mqtt.topic) + "/scrolling_text_speed/state";
@@ -869,13 +889,15 @@ void Mqtt::sendDiscovery() {
         root["state_class"] = "measurement";
 
         JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers = deviceCopy.createNestedArray("identifiers");
+        JsonArray deviceIdentifiers = 
+            deviceCopy.createNestedArray("identifiers");
         deviceIdentifiers.add(unique_id);
         deviceCopy["name"] = G.mqtt.clientId;
         deviceCopy["sw_version"] = VERSION;
         deviceCopy["model"] = "Word Clock";
         deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+        deviceCopy["configuration_url"] = 
+            "http://" + WiFi.localIP().toString();
 
         root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
         root["value_template"] = "{{ value_json.lux }}";
@@ -900,13 +922,15 @@ void Mqtt::sendDiscovery() {
         root["state_class"] = "measurement";
 
         JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers = deviceCopy.createNestedArray("identifiers");
+        JsonArray deviceIdentifiers = 
+            deviceCopy.createNestedArray("identifiers");
         deviceIdentifiers.add(unique_id);
         deviceCopy["name"] = G.mqtt.clientId;
         deviceCopy["sw_version"] = VERSION;
         deviceCopy["model"] = "Word Clock";
         deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+        deviceCopy["configuration_url"] = 
+            "http://" + WiFi.localIP().toString();
 
         root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
         root["value_template"] = "{{ value_json.led_gain }}";
@@ -932,13 +956,15 @@ void Mqtt::sendDiscovery() {
         root["value_template"] = "{{ value_json.adc_value | round(2) }}";
 
         JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers = deviceCopy.createNestedArray("identifiers");
+        JsonArray deviceIdentifiers = 
+            deviceCopy.createNestedArray("identifiers");
         deviceIdentifiers.add(unique_id);
         deviceCopy["name"] = G.mqtt.clientId;
         deviceCopy["sw_version"] = VERSION;
         deviceCopy["model"] = "Word Clock";
         deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+        deviceCopy["configuration_url"] = 
+            "http://" + WiFi.localIP().toString();
 
         root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
 
@@ -961,13 +987,15 @@ void Mqtt::sendDiscovery() {
         root["state_class"] = "measurement";
 
         JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers = deviceCopy.createNestedArray("identifiers");
+        JsonArray deviceIdentifiers = 
+            deviceCopy.createNestedArray("identifiers");
         deviceIdentifiers.add(unique_id);
         deviceCopy["name"] = G.mqtt.clientId;
         deviceCopy["sw_version"] = VERSION;
         deviceCopy["model"] = "Word Clock";
         deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+        deviceCopy["configuration_url"] = 
+            "http://" + WiFi.localIP().toString();
 
         root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
         root["value_template"] = "{{ value_json.adc_raw | int }}";
