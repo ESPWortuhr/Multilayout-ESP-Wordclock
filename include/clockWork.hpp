@@ -45,13 +45,19 @@ void ClockWork::loopAutoBrightLogic() {
             if (adcValue < adcValue0Lux)
                 adcValue0Lux = adcValue;
             float ldrValue = adcValue - adcValue0Lux;
-            // Derive LUX value from ldrValue via a second degree polinomial.
-            // The polinomial was derived using an Excel trend line, see
-            // LDR-Calibration.xlsx
-            const float x2 = 0.0427;
-            const float x1 = 2.679;
-            const float x0 = 10.857;
-            lux = x2 * ldrValue * ldrValue + x1 * ldrValue + x0;
+            
+            // Derive LUX value from ldrValue via a second degree polinomial based on LDR type
+            if (G.ldrType == 0) {  // 1 LDR Sensor
+                const float x2 = 0.0427;
+                const float x1 = 2.679;
+                const float x0 = 10.857;
+                lux = x2 * ldrValue * ldrValue + x1 * ldrValue + x0;
+            } else {  // 4 LDR Sensoren parallel
+                const float x2 = 0.0005;
+                const float x1 = 0.0687;
+                const float x0 = 3.9907;
+                lux = x2 * ldrValue * ldrValue - x1 * ldrValue + x0;
+            }
         }
 
         // Based on the LUX value derive the gain for the LEDs 0.0 - 100.0%
@@ -104,6 +110,8 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_de10x11Nero;
     case Ger10x11NeroFrame:
         return &_de10x11NeroFrame;
+    case Ger10x11bayerisch:
+        return &_de10x11bayerisch;
     case Nl10x11:
         return &_nl10x11;
     case Ger11x11:
@@ -1176,6 +1184,7 @@ void ClockWork::loop(struct tm &tm) {
         config["bootShowWifi"] = G.bootShowWifi;
         config["bootShowIP"] = G.bootShowIP;
         config["autoBrightEnabled"] = G.autoBrightEnabled;
+        config["ldrType"] = G.ldrType;
         config["isRomanLanguage"] = isRomanLanguage();
         config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
         config["hasZwanzig"] = usedUhrType->hasZwanzig();

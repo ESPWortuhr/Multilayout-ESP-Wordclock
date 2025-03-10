@@ -128,6 +128,7 @@ let TRANSLATION_EN_US = {
 			"de-10-11-clock": "🇩🇪 10 × 11 Clock",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
 			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Frame",
+			"de-10-11-bayerisch": "🇩🇪 10 × 11 Bavarian",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Swabian Style",
 			"de-11-11": "🇩🇪 11 × 11",
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
@@ -270,7 +271,10 @@ let TRANSLATION_EN_US = {
 			"value-offset": "Offset (0–255)",
 			"help-slope": "Configuration of the slope:<br/>It determines the degree of LED brightness change when the ambient light changes.<br/>" +
 			"0=weak LED brightness change, 16=neutral LED brightness change, 255=strong LED brightness change",
-			"value-slope": "Slope (0–255)"
+			"value-slope": "Slope (0–255)",
+			"ldr-type": "LDR Configuration:",
+			"ldr-single": "Single LDR",
+			"ldr-quad": "Four LDR parallel"
 		},
 		"hostname": {
 			"h2": "Hostname",

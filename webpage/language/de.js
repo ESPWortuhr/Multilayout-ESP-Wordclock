@@ -128,6 +128,7 @@ let TRANSLATION_DE_DE = {
 			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
 			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Rahmen",
+			"de-10-11-bayerisch": "🇩🇪 10 × 11 Bayerisch",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Schwäbisch",
 			"de-11-11": "🇩🇪 11 × 11",
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
@@ -270,7 +271,10 @@ let TRANSLATION_DE_DE = {
 			"value-offset": "Offset (0–255)",
 			"help-slope": "Konfiguration der Steilheit:<br/>Sie bestimmt den Grad der LED-Helligkeitsänderung bei Änderung des Umgebungslichts.<br/>" +
 				"0=schwache LED-Helligkeitsänderung, 16=neutrale LED-Helligkeitsänderung, 255=starke LED-Helligkeitsänderung",
-			"value-slope": "Steilheit (0–255)"
+			"value-slope": "Steilheit (0–255)",
+			"ldr-type": "LDR-Konfiguration:",
+			"ldr-single": "Einzelner LDR",
+			"ldr-quad": "Vier LDR parallel"
 		},
 		"hostname": {
 			"h2": "Hostname",

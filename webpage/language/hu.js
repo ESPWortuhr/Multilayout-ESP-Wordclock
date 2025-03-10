@@ -104,6 +104,7 @@ let TRANSLATION_HU = {
 			"de-10-11-clock": "🇩🇪 10 × 11 óra",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
 			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero keretek",
+			"de-10-11-bayerisch": "🇩🇪 10 × 11 bajor",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 sváb stílus",
 			"de-11-11": "🇩🇪 11 × 11",
 			"de-11-11-v2": "🇩🇪 11 × 11 verzió 2",
@@ -241,9 +242,12 @@ let TRANSLATION_HU = {
 			"help-offset": "A fényerő eltolás konfigurálása:<br/>Meghatározza a LED-ek minimális fényerejét 0 lux környezeti fénynél:<br/> " +
 			"0=LED-ek kikapcsolva, n=LED fényerőssége n/255, 255=LED-ek mindig maximális fényerősségűek.",
 			"value-offset": "Offset (0–255)",
-			"help-slope": "A lejtő konfigurációja:<br/>Meghatározza a LED fényerejének változásának mértékét, amikor a környezeti fény változik.<br/>" +
-			"0=gyenge LED-fényerő változás, 16=semleges LED-fényerő változás, 255=erős LED-fényerő változás.",
-			"value-slope": "Lejtő (0–255)"
+			"help-slope": "A meredekség konfigurálása:<br/>Meghatározza a LED fényerő változásának mértékét a környezeti fény változásakor.<br/>" +
+			"0=gyenge LED fényerő változás, 16=semleges LED fényerő változás, 255=erős LED fényerő változás",
+			"value-slope": "Meredekség (0–255)",
+			"ldr-type": "LDR konfiguráció:",
+			"ldr-single": "Egyetlen LDR",
+			"ldr-quad": "Négy LDR párhuzamosan"
 		},
 		"hostname": {
 			"h2": "Host-név",
