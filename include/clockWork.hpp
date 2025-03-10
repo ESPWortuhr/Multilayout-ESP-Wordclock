@@ -45,8 +45,7 @@ void ClockWork::loopAutoBrightLogic() {
             if (adcValue < adcValue0Lux)
                 adcValue0Lux = adcValue;
             float ldrValue = adcValue - adcValue0Lux;
-            
-            
+
             // Derive LUX value from ldrValue via a second degree polinomial
             // based on LDR type
             if (G.ldrType == 0) { // 1 LDR Sensor

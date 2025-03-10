@@ -13,7 +13,6 @@ private:
     };
     stateBH1750Type stateBH1750 = stateBH1750Type::toBeInitialized;
     float lux = 0.0;
-    float ledGain = 1.0;
     uint16_t adcValue0Lux =
         10; // Hier wird der niedrigste LDR-ADC Wert getrackt,
             // für eine dynamische offset korrektur bei 0 LUX
@@ -78,7 +77,6 @@ public:
     iUhrType *getPointer(uint8_t type);
     void initLedStrip(uint8_t num);
     float getLuxValue() const { return lux; }
-    float getLedGain() const { return ledGain; }
     float getAdcValue() const {
         uint16_t adcRaw = analogRead(A0);
         float voltage = (adcRaw * 3.3f) / 1023.0f;

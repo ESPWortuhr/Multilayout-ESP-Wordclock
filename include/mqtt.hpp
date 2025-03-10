@@ -141,8 +141,7 @@ None
 void Mqtt::processScrollingText(const JsonDocument &doc) {
     if (doc.containsKey("scrolling_text")) {
         strcpy(G.scrollingText, doc["scrolling_text"]);
-        
-        
+
         // Send update to web interface
         StaticJsonDocument<200> webDoc;
         webDoc["command"] = "scrolltext";
@@ -160,7 +159,7 @@ void Mqtt::processScrollingText(const JsonDocument &doc) {
 This function processes the "color" key in the provided JSON document. If the
 "color" key is present, it updates the foreground color based on the hue (h) and
 saturation (s) values provided in the JSON document. The brightness component of
-the color is preserved from the current foreground color.
+the color remains unchanged.
 
 Input:
 
@@ -209,12 +208,10 @@ void Mqtt::processColor(const JsonDocument &doc) {
         // Sende Update an die Weboberfläche
         StaticJsonDocument<200> webDoc;
         webDoc["command"] = "color";
-        webDoc["h"] = round(h * 360); 
-        // Konvertiere zu 0-360 Grad
-        webDoc["s"] = round(s * 100); 
-        // Konvertiere zu 0-100%
-        webDoc["v"] = round(G.color[Foreground].B * 100); 
-        // Konvertiere zu 0-100%
+        webDoc["h"] = round(h * 360); // Konvertiere zu 0-360 Grad
+        webDoc["s"] = round(s * 100); // Konvertiere zu 0-100%
+        webDoc["v"] =
+            round(G.color[Foreground].B * 100); // Konvertiere zu 0-100%
         char buffer[200];
         serializeJson(webDoc, buffer);
         webSocket.broadcastTXT(buffer, strlen(buffer));
@@ -305,23 +302,21 @@ None
 void Mqtt::init() {
     mqttClient.setServer(G.mqtt.serverAdress, G.mqtt.port);
     mqttClient.setCallback(callback);
-    
+
     // LWT (Last Will and Testament) konfigurieren
     String availabilityTopic = String(G.mqtt.topic) + "/availability";
-    
+
     if (checkIfMqttUserIsEmpty()) {
-        mqttClient.connect(G.mqtt.clientId, availabilityTopic.c_str(), 
-                          0,          // QoS
-                          true,       // retain
-                          "offline"); // LWT Nachricht
+        mqttClient.connect(G.mqtt.clientId, availabilityTopic.c_str(),
+                           0,          // QoS
+                           true,       // retain
+                           "offline"); // LWT Nachricht
     } else {
-        mqttClient.connect(G.mqtt.clientId, 
-                          G.mqtt.user, 
-                          G.mqtt.password,
-                          availabilityTopic.c_str(), 
-                          0,          // QoS
-                          true,       // retain
-                          "offline"); // LWT Nachricht
+        mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password,
+                           availabilityTopic.c_str(),
+                           0,          // QoS
+                           true,       // retain
+                           "offline"); // LWT Nachricht
     }
     delay(50);
 
@@ -344,6 +339,9 @@ void Mqtt::init() {
     delay(50);
     mqttClient.subscribe(
         (std::string(G.mqtt.topic) + "/scrolling_text_speed/set").c_str());
+    delay(50);
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/auto_brightness/set").c_str());
     delay(50);
 
     if (isConnected()) {
@@ -465,7 +463,9 @@ None
 */
 
 void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
-    StaticJsonDocument<512> doc;
+    // Bestimme den Nachrichtentyp anhand des Topics
+    String topicStr = String(topic);
+    String baseTopic = String(G.mqtt.topic);
 
     // Convert payload to a null-terminated string
     char msg[length + 1];
@@ -477,7 +477,51 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     Serial.print("] ");
     Serial.println(msg);
 
-    // Deserialize JSON
+    // Debug: Sende die empfangene Nachricht
+    StaticJsonDocument<200> debugDoc;
+    debugDoc["received_msg"] = msg;
+    debugDoc["msg_length"] = length;
+    debugDoc["topic"] = topic;
+    char debugBuffer[200];
+    serializeJson(debugDoc, debugBuffer);
+
+    // Debug-Publish für alle Nachrichten
+    mqttClient.publish(
+        (std::string(G.mqtt.topic) + "/debug/auto_brightness").c_str(),
+        debugBuffer, true);
+
+    // Verarbeite Auto-Brightness-Nachrichten direkt als String
+    if (topicStr == baseTopic + "/auto_brightness/set") {
+        if (strcmp(msg, "ON") == 0) {
+            G.autoBrightEnabled = 1;
+            Serial.println("MQTT: Auto Brightness ON");
+        } else if (strcmp(msg, "OFF") == 0) {
+            G.autoBrightEnabled = 0;
+            Serial.println("MQTT: Auto Brightness OFF");
+        } else {
+            Serial.print("MQTT: Unknown command: ");
+            Serial.println(msg);
+        }
+
+        parametersChanged = true;
+
+        // Sende den neuen Status zurück
+        mqttClient.publish(
+            (std::string(G.mqtt.topic) + "/auto_brightness/state").c_str(),
+            G.autoBrightEnabled ? "ON" : "OFF", true);
+
+        // Sende Update an die Weboberfläche
+        StaticJsonDocument<200> webDoc;
+        webDoc["command"] = "autobright";
+        webDoc["value"] = G.autoBrightEnabled;
+        char buffer[200];
+        serializeJson(webDoc, buffer);
+        webSocket.broadcastTXT(buffer, strlen(buffer));
+        return;
+    }
+
+    // Für alle anderen Nachrichten: JSON-Deserialisierung
+    StaticJsonDocument<512> doc;
     DeserializationError error = deserializeJson(doc, msg);
     if (error) {
         Serial.print(F("deserializeJson() failed: "));
@@ -485,12 +529,8 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         return;
     }
 
-    // Bestimme den Nachrichtentyp anhand des Topics
-    String topicStr = String(topic);
-    String baseTopic = String(G.mqtt.topic);
-
+    // Verarbeite die restlichen Nachrichten
     if (topicStr == baseTopic + "/cmd") {
-        // Hauptsteuerung (wie bisher)
         processState(doc);
         processEffect(doc);
         processScrollingText(doc);
@@ -507,17 +547,15 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     } else if (topicStr == baseTopic + "/effect_speed/set") {
         processEffectSpeed(doc);
     } else if (topicStr == baseTopic + "/scrolling_text_speed/set") {
-        int speed = atoi(msg); // Konvertiere den String direkt in eine Zahl
+        int speed = atoi(msg);
         G.effectSpeed = constrain(speed, 1, 10);
         parametersChanged = true;
 
-        // Publish new state
         String stateTopic =
             String(G.mqtt.topic) + "/scrolling_text_speed/state";
         mqttClient.publish(stateTopic.c_str(), String(G.effectSpeed).c_str(),
                            true);
 
-        // Send update to web interface
         StaticJsonDocument<200> webDoc;
         webDoc["command"] = "speed";
         webDoc["value"] = G.effectSpeed;
@@ -550,9 +588,21 @@ void Mqtt::sendState() {
     {
         StaticJsonDocument<200> doc;
         doc["state"] = (led.getState()) ? "ON" : "OFF";
-        doc["brightness"] = round(G.color[Foreground].B * 255); 
-        // Konvertiere von 0-1 zu 0-255
-        
+
+        // Berechne den tatsächlichen Helligkeitswert
+        float actualBrightness;
+        if (G.autoBrightEnabled) {
+            // Wenn automatische Helligkeit aktiv ist, verwende den aktuellen
+            // LED-Gain
+            actualBrightness = (ledGain / 100.0f) * G.color[Foreground].B;
+        } else {
+            // Wenn automatische Helligkeit deaktiviert ist, verwende nur die
+            // manuelle Helligkeit
+            actualBrightness = G.color[Foreground].B;
+        }
+        doc["brightness"] =
+            round(actualBrightness * 255); // Konvertiere von 0-1 zu 0-255
+
         doc["color_mode"] = "rgb";
 
         // Konvertiere HSB zu RGB
@@ -632,18 +682,11 @@ void Mqtt::sendState() {
     // Diagnose-Werte senden
     {
         StaticJsonDocument<200> doc;
-        doc["lux"] = round(clockWork.getLuxValue()); 
-        // Runde den Lux-Wert
-
-        doc["led_gain"] = round(clockWork.getLedGain()); 
-        // Hole den LED-Gain-Wert von ClockWork
-
-        doc["adc_value"] = clockWork.getAdcValue(); 
-        // Spannungswert (bereits gerundet)
-
-        doc["adc_raw"] = clockWork.getAdcRawValue(); 
-        // Roher ADC-Wert
-        
+        doc["lux"] = round(clockWork.getLuxValue()); // Runde den Lux-Wert
+        doc["led_gain"] = round(ledGain); // Konvertiere zu Prozent und runde
+        doc["adc_value"] =
+            clockWork.getAdcValue(); // Spannungswert (bereits gerundet)
+        doc["adc_raw"] = clockWork.getAdcRawValue(); // Roher ADC-Wert
         char buffer[200];
         serializeJson(doc, buffer);
         mqttClient.publish((std::string(G.mqtt.topic) + "/diagnostics").c_str(),
@@ -689,9 +732,20 @@ void Mqtt::sendState() {
             String(G.effectSpeed).c_str(), true);
     }
 
+    // Helligkeitsautomatik Status
+    {
+        static bool lastAutoBrightState = G.autoBrightEnabled;
+        if (lastAutoBrightState != G.autoBrightEnabled) {
+            mqttClient.publish(
+                (std::string(G.mqtt.topic) + "/auto_brightness/state").c_str(),
+                G.autoBrightEnabled ? "ON" : "OFF", true);
+            lastAutoBrightState = G.autoBrightEnabled;
+        }
+    }
+
     // Aktualisiere den Online-Status
     mqttClient.publish((std::string(G.mqtt.topic) + "/availability").c_str(),
-                      "online", true);
+                       "online", true);
 }
 
 //------------------------------------------------------------------------------
@@ -749,8 +803,7 @@ None
 void Mqtt::sendDiscovery() {
     // Erstelle eine unique_id basierend auf MAC-Adresse
     String unique_id = WiFi.macAddress();
-    // Entferne die Doppelpunkte aus der MAC-Adresse
-    unique_id.replace(":", ""); 
+    unique_id.replace(":", ""); // Entferne die Doppelpunkte aus der MAC-Adresse
 
     // Hauptlicht-Entity
     {
@@ -792,8 +845,8 @@ void Mqtt::sendDiscovery() {
 
         // Geräte-Information
         JsonObject device = root.createNestedObject("device");
-        JsonArray deviceIdentifiers = device.createNestedArray("identifiers");
-        deviceIdentifiers.add(unique_id);
+        JsonArray identifiers = device.createNestedArray("identifiers");
+        identifiers.add(unique_id);
         device["name"] = G.mqtt.clientId;
         device["sw_version"] = VERSION;
         device["model"] = "Word Clock";
@@ -803,9 +856,8 @@ void Mqtt::sendDiscovery() {
         char buffer[700];
         serializeJson(root, buffer);
 
-        String discoveryTopic =
-            String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/light/" + unique_id +
-            "/config";
+        String discoveryTopic = String(HOMEASSISTANT_DISCOVERY_TOPIC) +
+                                "/light/" + unique_id + "/config";
         mqttClient.publish(discoveryTopic.c_str(), buffer, true);
     }
 
@@ -857,8 +909,7 @@ void Mqtt::sendDiscovery() {
         deviceCopy["sw_version"] = VERSION;
         deviceCopy["model"] = "Word Clock";
         deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] =
-            "http://" + WiFi.localIP().toString();
+        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
 
         root["state_topic"] =
             std::string(G.mqtt.topic) + "/scrolling_text_speed/state";
@@ -1003,6 +1054,69 @@ void Mqtt::sendDiscovery() {
     // Sende Online-Status
     mqttClient.publish((std::string(G.mqtt.topic) + "/availability").c_str(),
                        "online", true);
+
+    // Helligkeitsautomatik Switch
+    {
+        StaticJsonDocument<512> root;
+        root["name"] = "Auto Brightness";
+        root["unique_id"] = unique_id + "_auto_brightness";
+        root["icon"] = "mdi:brightness-auto";
+        root["device_class"] = "switch";
+
+        JsonObject deviceCopy = root.createNestedObject("device");
+        JsonArray deviceIdentifiers =
+            deviceCopy.createNestedArray("identifiers");
+        deviceIdentifiers.add(unique_id);
+        deviceCopy["name"] = G.mqtt.clientId;
+        deviceCopy["sw_version"] = VERSION;
+        deviceCopy["model"] = "Word Clock";
+        deviceCopy["manufacturer"] = "ESPWortuhr";
+        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+
+        root["state_topic"] =
+            std::string(G.mqtt.topic) + "/auto_brightness/state";
+        root["command_topic"] =
+            std::string(G.mqtt.topic) + "/auto_brightness/set";
+        root["payload_on"] = "ON";
+        root["payload_off"] = "OFF";
+
+        char buffer[512];
+        serializeJson(root, buffer);
+        mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/switch/" +
+                            unique_id + "_auto_brightness/config")
+                               .c_str(),
+                           buffer, true);
+    }
+
+    // Debug Sensor für Auto-Brightness
+    {
+        StaticJsonDocument<512> root;
+        root["name"] = "Auto Brightness Debug";
+        root["unique_id"] = unique_id + "_auto_brightness_debug";
+        root["icon"] = "mdi:bug";
+        root["device_class"] = "diagnostic";
+
+        JsonObject deviceCopy = root.createNestedObject("device");
+        JsonArray deviceIdentifiers =
+            deviceCopy.createNestedArray("identifiers");
+        deviceIdentifiers.add(unique_id);
+        deviceCopy["name"] = G.mqtt.clientId;
+        deviceCopy["sw_version"] = VERSION;
+        deviceCopy["model"] = "Word Clock";
+        deviceCopy["manufacturer"] = "ESPWortuhr";
+        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+
+        root["state_topic"] =
+            std::string(G.mqtt.topic) + "/debug/auto_brightness";
+        root["value_template"] = "{{ value_json.received_msg }}";
+
+        char buffer[512];
+        serializeJson(root, buffer);
+        mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/sensor/" +
+                            unique_id + "_auto_brightness_debug/config")
+                               .c_str(),
+                           buffer, true);
+    }
 }
 
 // Neue Callback-Funktionen für die zusätzlichen Entitäten
@@ -1041,4 +1155,3 @@ void Mqtt::processEffectSpeed(const JsonDocument &doc) {
             mqttInstance->sendState();
     }
 }
-
