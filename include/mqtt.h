@@ -1,13 +1,13 @@
 #pragma once
 
-#include <ArduinoJson.h>
+
 #include "Uhr.h"
 #include "clockWork.h"
-
+#include <ArduinoJson.h>
 class Mqtt {
 private:
     ClockWork &clockWork; // Referenz auf ClockWork-Instanz
-    float lux = 0.0f; // Aktueller LUX-Wert
+    float lux = 0.0f;     // Aktueller LUX-Wert
     float ledGain = 0.0f; // Aktueller LED-Gain
     void reInit();
     static void callback(char *topic, byte *payload, unsigned int length);
