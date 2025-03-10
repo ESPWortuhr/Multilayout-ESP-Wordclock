@@ -271,7 +271,10 @@ let TRANSLATION_DE_DE = {
 			"value-offset": "Offset (0–255)",
 			"help-slope": "Konfiguration der Steilheit:<br/>Sie bestimmt den Grad der LED-Helligkeitsänderung bei Änderung des Umgebungslichts.<br/>" +
 				"0=schwache LED-Helligkeitsänderung, 16=neutrale LED-Helligkeitsänderung, 255=starke LED-Helligkeitsänderung",
-			"value-slope": "Steilheit (0–255)"
+			"value-slope": "Steilheit (0–255)",
+			"ldr-type": "LDR-Konfiguration:",
+			"ldr-single": "Einzelner LDR",
+			"ldr-quad": "Vier LDR parallel"
 		},
 		"hostname": {
 			"h2": "Hostname",
