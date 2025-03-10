@@ -1,9 +1,12 @@
 #pragma once
 
 #include <ArduinoJson.h>
+#include "Uhr.h"
+#include "clockWork.h"
 
 class Mqtt {
 private:
+    ClockWork& clockWork;  // Referenz auf ClockWork-Instanz
     void reInit();
     static void callback(char *topic, byte *payload, unsigned int length);
     static void processState(const JsonDocument &doc);
@@ -19,7 +22,7 @@ private:
     static bool checkIfMqttUserIsEmpty();
 
 public:
-    Mqtt();
+    Mqtt(ClockWork& cw);  // Nur Deklaration
     ~Mqtt();
 
     void init();

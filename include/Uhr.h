@@ -152,7 +152,7 @@ struct GLOBAL {
 
     Birthday birthday[MAX_BIRTHDAY_COUNT];
 
-    uint8_t ldrType;  // 0 = 1 LDR, 1 = 4 LDR parallel
+    uint8_t ldrType; // 0 = 1 LDR, 1 = 4 LDR parallel
 };
 GLOBAL G = {};
 
