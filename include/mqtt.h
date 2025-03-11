@@ -14,15 +14,10 @@ private:
     static void processScrollingText(const JsonDocument &doc);
     static void processColor(const JsonDocument &doc);
     static void processBrightness(const JsonDocument &doc);
-    static void processAutobrightSwitch(const JsonDocument &doc);
-    static void processBrightOffset(const JsonDocument &doc);
-    static void processBrightSlope(const JsonDocument &doc);
-    static void processScrollSpeed(const JsonDocument &doc);
-    static void processEffectSpeed(const JsonDocument &doc);
     static bool checkIfMqttUserIsEmpty();
 
 public:
-    Mqtt(ClockWork &cw); // Nur Deklaration
+    Mqtt(ClockWork &cw);
     ~Mqtt();
 
     void init();
