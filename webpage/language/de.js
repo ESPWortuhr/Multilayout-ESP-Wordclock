@@ -83,6 +83,7 @@ let TRANSLATION_DE_DE = {
 				"balls": "Bälle",
 				"firework": "Feuerwerk",
 				"snake": "Schlange",
+				"colored": "Bunt",
 				"random": "Zufällig"
 			},
 			"duration": {
@@ -136,6 +137,7 @@ let TRANSLATION_DE_DE = {
 			"de-22-11-weather": "🇩🇪 10 × 11 Wetter",
 			"de-16-8": "🇩🇪 16 × 8",
 			"de-16-18": "🇩🇪 16 × 18",
+			"de-08-08-viertel": "🇩🇪 8 × 8 Viertelstunden",
 			"en-10-11": "🇬🇧 10 × 11",
 			"nl-10-11": "🇳🇱 10 × 11",
 			"es-10-11": "🇪🇸 10 × 11",
