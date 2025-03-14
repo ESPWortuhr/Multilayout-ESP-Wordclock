@@ -701,6 +701,14 @@
                                 <label for="auto-bright-gain" data-i18next="settings.brightness.value-gain"></label><input id="auto-bright-gain" type="text" value=" " readonly>
                             </div>
                             <br>
+                            <div class="pure-control-group">
+                                <label for="ldr-type" data-i18next="settings.brightness.ldr-type"></label>
+                                <select name="ldr-type" id="ldr-type" size="1">
+                                    <option value="0" data-i18next="settings.brightness.ldr-single"></option>
+                                    <option value="1" data-i18next="settings.brightness.ldr-quad"></option>
+                                </select>
+                            </div>
+                            <br>
                             <legend data-i18next="settings.brightness.help-offset"></legend>
                             <div class="pure-control-group">
                                 <label for="auto-bright-offset" data-i18next="settings.brightness.value-offset"></label><input id="auto-bright-offset" type="number" min="0" max="255">
