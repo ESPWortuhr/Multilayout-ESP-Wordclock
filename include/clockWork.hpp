@@ -129,6 +129,8 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_en10x11;
     case Es10x11:
         return &_es10x11;
+    case Es08x08Cuarto:
+        return &_es08x08Cuarto;
     case It10x11:
         return &_it10x11;
     case Hu10x10:

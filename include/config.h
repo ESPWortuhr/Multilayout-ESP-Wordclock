@@ -94,6 +94,10 @@
 // #define DEFAULT_LAYOUT  Es10x11
 // 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
 // layout for the Spanish language
+//
+// #define DEFAULT_LAYOUT  Es08x08Cuarto
+// 8 rows, each 8 LED's per row, only quarter hours
+// layout for the Spanish language
 
 /**********************/
 /*      Hungarian     */

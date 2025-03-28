@@ -279,6 +279,7 @@ enum ClockType {
     Ger08x08Viertel = 24,
     Nl10x11 = 9,
     Es10x11 = 15,
+    Es08x08Cuarto = 25,
     It10x11 = 16,
     Hu10x10 = 17,
     Ch10x11 = 18,

@@ -277,6 +277,24 @@ void Transition::colorize(RgbfColor **dest) {
             dest[5][1] = dest[4][1];
         }
     }
+
+    // correct color of DOCE and CUARTO due non horizontal alignment
+    if (G.UhrtypeDef == Es08x08Cuarto && (G.transitionColorize != CHARACTERS)) {
+        // set color of D for O, C and E 
+        if (dest[3][6].isForeground()) {
+            dest[3][7] = dest[3][6];
+            dest[4][6] = dest[3][6];
+            dest[4][7] = dest[3][6];
+        }
+        // set color of R for C, U, A, T and O
+        if (dest[7][5].isForeground()) {
+            dest[6][5] = dest[7][5];
+            dest[6][6] = dest[7][5];
+            dest[6][7] = dest[7][5];
+            dest[7][6] = dest[7][5];
+            dest[7][7] = dest[7][5];
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
