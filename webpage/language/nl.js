@@ -28,6 +28,11 @@ let TRANSLATION_NL = {
 
 	"functions": {
 		"h1": "Functies",
+		"color": {
+			"foreground": "Voorgrond",
+			"background": "Achtergrond",
+			"frame": "Frame"
+		},
 		"mode": {
 			"h2": "Modus",
 			"wordclock": "Woordklok",
@@ -99,6 +104,8 @@ let TRANSLATION_NL = {
 			"de-10-11-vertical": "🇩🇪 10 × 11 Verticaal",
 			"de-10-11-clock": "🇩🇪 10 × 11 Clock",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
+			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Frame",
+			"de-10-11-bayerisch": "🇩🇪 10 × 11 Beiers",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Zwabische stijl",
 			"de-11-11": "🇩🇪 11 × 11",
 			"de-11-11-v2": "🇩🇪 11 × 11 Versie 2",
@@ -118,6 +125,7 @@ let TRANSLATION_NL = {
 			"fr-10-11": "🇫🇷 10 x 11",
 			"se-10-11": "🇸🇪 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
+			"ch-10-11-v2": "🇨🇭 10 x 11 Versie 2",
 			"invert-min-dir": "Draai minuutrichting om",
 			"mirror-vertically": "Spiegel Woordklok verticaal",
 			"mirror-horizontally": "Spiegel Woordklok horizontaal",
@@ -128,7 +136,12 @@ let TRANSLATION_NL = {
 		},
 		"language": {
 			"h2": "Taal",
-			"hide-it-is": "Verberg “Het is”",
+			"hide-it-is": "„Display 'Het is'“",
+			"it-is-off": "Uit",
+			"it-is-hourly": "Per uur",
+			"it-is-half-hourly": "Per half uur",
+			"it-is-quarterly": "Per kwartier",
+			"it-is-permanent": "Permanent",
 			"at-nine-fifteen": "Om 9:15 is het...",
 			"quarter-past-nine": "Kwart over negen",
 			"quarter-nine": "Kwart tien",
@@ -231,7 +244,12 @@ let TRANSLATION_NL = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Huidige helderheid volgens sensor",
-			"value-offset": "Licht (0 – 255)",
+			"value-gain": "LED Gain [%]",
+			"help-offset": "Configuratie van de helderheidsoffset:<br/>Deze bepaalt de minimale helderheid van de LED's bij 0 lux omgevingslicht:<br/>" +
+			"0=LEDs uit, n=LED-helderheid is n/255, 255=LEDs hebben altijd de maximale helderheid",
+			"value-offset": "Offset (0–255)",
+			"help-slope": "Configuratie van de helling:<br/>deze bepaalt de mate waarin de LED-helderheid verandert wanneer het omgevingslicht verandert.<br/>" +
+			"0=zwakke LED helderheidsverandering, 16=neutrale LED helderheidsverandering, 255=sterke LED helderheidsverandering",
 			"value-slope": "Donker (0 – 255)"
 		},
 		"hostname": {

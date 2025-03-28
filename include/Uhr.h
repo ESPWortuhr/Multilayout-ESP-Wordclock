@@ -91,6 +91,14 @@ enum class WordclockChanges {
     Words,
 };
 
+enum class ItIsVariant {
+    Permanent = 0,
+    Quarterly = 1,
+    HalfHourly = 2,
+    Hourly = 3,
+    Off = 4,
+};
+
 struct GLOBAL {
     uint16_t sernr;
     uint16_t prog;
@@ -103,6 +111,7 @@ struct GLOBAL {
     uint8_t client_nr;
     SecondVariant secondVariant;
     MinuteVariant minuteVariant;
+    ItIsVariant itIsVariant;
     bool languageVariant[6];
     bool layoutVariant[3];
     char timeserver[PAYLOAD_LENGTH];
@@ -160,7 +169,7 @@ uint32_t lastFrontMatrix[MAX_ROW_SIZE] = {0};
 uint8_t minuteArray = 0; /* Using a byte as a per bit array */
 uint8_t lastMinuteArray = 0;
 uint16_t minutePixelArray[4] = {0};
-uint64_t frameArray = 0;
+bool frameArray[200] = {false};
 bool parametersChanged = false;
 bool layoutChanged = false;
 bool colorChangedByWebsite = false;
@@ -190,8 +199,7 @@ enum LanguageDialects {
     ItIs20 = 1,
     ItIs40 = 2,
     ItIs45 = 3,
-    NotShowItIs = 4,
-    EN_ShowAQuarter = 5,
+    EN_ShowAQuarter = 4,
 };
 
 enum LayoutVariants {
@@ -270,13 +278,15 @@ enum ClockType {
     Ger10x11Clock = 6,
     Ger10x11schwaebisch = 20,
     Ger10x11Nero = 11,
+    Ger10x11NeroFrame = 26,
+    Ger10x11bayerisch = 27,
     Ger11x11 = 3,
     Ger11x11V2 = 8,
     Ger11x11V3 = 14,
     Ger22x11Weather = 5,
     Ger16x8 = 13,
     Ger16x18 = 7,
-    Ger08x08Viertel = 24,
+    Ger08x08Viertel = 25,
     Nl10x11 = 9,
     Es10x11 = 15,
     Es08x08Cuarto = 25,
@@ -287,6 +297,7 @@ enum ClockType {
     Fr10x11 = 21,
     Se10x11 = 22,
     Ru10x11 = 23,
+    Ch10x11V2 = 24,
 };
 
 enum Icons {

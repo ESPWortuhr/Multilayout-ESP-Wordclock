@@ -127,40 +127,40 @@ float Led::setBrightnessAuto(float val) {
 
 //------------------------------------------------------------------------------
 
-void Led::getCurrentManualBrightnessSetting(uint8_t &currentBrightness) {
+uint8_t Led::getCurrentManualBrightnessSetting() {
     // Set Brighness hour dependent
     if (_hour < 6) {
-        currentBrightness = G.h24;
+        return G.h24;
     } else if (_hour < 8) {
-        currentBrightness = G.h6;
+        return G.h6;
     } else if (_hour < 12) {
-        currentBrightness = G.h8;
+        return G.h8;
     } else if (_hour < 16) {
-        currentBrightness = G.h12;
+        return G.h12;
     } else if (_hour < 18) {
-        currentBrightness = G.h16;
+        return G.h16;
     } else if (_hour < 20) {
-        currentBrightness = G.h18;
+        return G.h18;
     } else if (_hour < 22) {
-        currentBrightness = G.h20;
+        return G.h20;
     } else if (_hour < 24) {
-        currentBrightness = G.h22;
+        return G.h22;
+    } else {
+        return 100;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Led::getColorbyPositionWithAppliedBrightness(HsbColor &color,
-                                                  ColorPosition position) {
-    color = G.color[position];
-    uint8_t manBrightnessSetting = 100;
-    getCurrentManualBrightnessSetting(manBrightnessSetting);
+HsbColor Led::getColorbyPositionWithAppliedBrightness(ColorPosition position) {
+    HsbColor color = G.color[position];
 
     if (G.autoBrightEnabled) {
         color.B = setBrightnessAuto(color.B);
     } else {
-        color.B *= manBrightnessSetting / 100.f;
+        color.B *= getCurrentManualBrightnessSetting() / 100.f;
     }
+    return color;
 }
 
 //------------------------------------------------------------------------------
@@ -254,8 +254,8 @@ void Led::setbyFrontMatrix(ColorPosition colorPosition,
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
     }
-    HsbColor displayedColor;
-    getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
+    HsbColor displayedColor =
+        getColorbyPositionWithAppliedBrightness(colorPosition);
 
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
@@ -294,8 +294,8 @@ void Led::setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse) {
 //------------------------------------------------------------------------------
 
 void Led::setbyMinuteArray(ColorPosition colorPosition) {
-    HsbColor displayedColor;
-    getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
+    HsbColor displayedColor =
+        getColorbyPositionWithAppliedBrightness(colorPosition);
 
     /* Set minutes According to minute byte */
     for (uint8_t i = 0; i < 4; i++) {
@@ -309,12 +309,15 @@ void Led::setbyMinuteArray(ColorPosition colorPosition) {
 //------------------------------------------------------------------------------
 
 void Led::setbySecondArray(ColorPosition colorPosition) {
-    HsbColor displayedColor;
-    getColorbyPositionWithAppliedBrightness(displayedColor, colorPosition);
 
-    const uint8_t offesetSecondsFrame = 5;
+    HsbColor displayedColor =
+        getColorbyPositionWithAppliedBrightness(colorPosition);
+
+    const uint8_t offesetSecondsFrame =
+        (usedUhrType->numPixelsFrameMatrix() / 8);
+
     for (uint8_t i = 0; i < usedUhrType->numPixelsFrameMatrix(); i++) {
-        if ((frameArray >> i) & 1U) {
+        if (frameArray[i]) {
             if (i < usedUhrType->numPixelsFrameMatrix() - offesetSecondsFrame) {
                 setPixel(usedUhrType->getFrameMatrixIndex(i) +
                              offesetSecondsFrame,

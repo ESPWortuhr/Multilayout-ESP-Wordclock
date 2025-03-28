@@ -667,7 +667,8 @@ uint16_t Transition::transitionFire() {
         sparkle = false;
         subPhase = 1;
         firework->prepare(0, _white, FIRE_1, mirrored);
-        if (transitionType == BIRTHDAY && usedUhrType->hasHappyBirthday()) {
+        if (transitionType == BIRTHDAY &&
+            usedUhrType->hasSpecialWordHappyBirthday()) {
             /*
             On birthdays, a fireworks animation appears every 5 minutes.
             Compatible clock types will display the words “Happy Birthday”
@@ -1181,7 +1182,7 @@ void Transition::loop(struct tm &tm) {
                 setMinute();
                 if (G.secondVariant != SecondVariant::Off) {
                     led.setbySecondArray();
-                    // Workaround: setbySecoundArray not in 'work'
+                    // Workaround: setbySecondArray not in 'work'
                 }
             }
             led.show();

@@ -28,6 +28,11 @@ let TRANSLATION_IT = {
 
 	"functions": {
 		"h1": "Caratteristiche",
+		"color": {
+			"foreground": "Primo",
+			"background": "Sfondo",
+			"frame": "Telaio"
+		},
 		"mode": {
 			"h2": "Modalità",
 			"wordclock": "Orologio delle parole",
@@ -99,6 +104,8 @@ let TRANSLATION_IT = {
 			"de-10-11-vertical": "🇩🇪 10 × 11 Vertikal",
 			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
+			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Rahmen",
+			"de-10-11-bayerisch": "🇩🇪 10 × 11 bavarese",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Stile svevo",
 			"de-11-11": "🇩🇪 11 × 11",
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
@@ -118,6 +125,7 @@ let TRANSLATION_IT = {
 			"fr-10-11": "🇫🇷 10 x 11",
 			"se-10-11": "🇸🇪 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
+			"ch-10-11-v2": "🇨🇭 10 x 11 Version 2",
 			"invert-min-dir": "Invertire la direzione del conteggio dei minuti",
 			"mirror-vertically": "Capovolgi l'orologio verticalmente",
 			"mirror-horizontally": "Capovolgi l'orologio orizzontalmente",
@@ -128,7 +136,12 @@ let TRANSLATION_IT = {
 		},
 		"language": {
 			"h2": "Lingua",
-			"hide-it-is": "„Sono le“ nascondi",
+			"hide-it-is": "Visualizza 'Sono le'“",
+			"it-is-off": "Spento",
+			"it-is-hourly": "Oario",
+			"it-is-half-hourly": "Mezz'ora",
+			"it-is-quarterly": "Trimestrale",
+			"it-is-permanent": "Permanente",
 			"at-nine-fifteen": "Sono le 9:15 ...",
 			"quarter-past-nine": "las nueve y quarto",
 			"quarter-nine": "un quarto di diez",
@@ -228,8 +241,13 @@ let TRANSLATION_IT = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Luminosità attuale dalla fotoresistenza (LDR)",
-			"value-offset": "Valore „Luminoso“ (0 – 255)",
-			"value-slope": "Valore „Buio“ (0 – 255)"
+			"value-gain": "LED Guadagno [%]",
+			"help-offset": "Configurazione dell'offset di luminosità:<br/>Determina la luminosità minima dei LED a 0 lux di luce ambientale:<br/>" +
+			"0=LED spenti, n=luminosità dei LED pari a n/255, 255=LED sempre con la massima luminosità",
+			"value-offset": "Offset (0–255)",
+			"help-slope": "Configurazione della pendenza:<br/> Determina il grado di variazione della luminosità del LED al variare della luce ambientale.<br/>" +
+			"0=modifica debole della luminosità del LED, 16=modifica neutra della luminosità del LED, 255=modifica forte della luminosità del LED.",
+			"value-slope": "Pendenza (0–255)"
 		},
 		"hostname": {
 			"h2": "Hostname",

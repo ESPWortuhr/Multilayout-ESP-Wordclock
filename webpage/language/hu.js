@@ -28,6 +28,11 @@ let TRANSLATION_HU = {
 
 	"functions": {
 		"h1": "Funkciók",
+		"color": {
+			"foreground": "Új ismeretek",
+			"background": "Háttér",
+			"frame": "Keret"
+		},
 		"mode": {
 			"h2": "Mód",
 			"wordclock": "Szövegóra",
@@ -99,6 +104,8 @@ let TRANSLATION_HU = {
 			"de-10-11-vertical": "🇩🇪 10 × 11 függőleges",
 			"de-10-11-clock": "🇩🇪 10 × 11 óra",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
+			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero keretek",
+			"de-10-11-bayerisch": "🇩🇪 10 × 11 bajor",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 sváb stílus",
 			"de-11-11": "🇩🇪 11 × 11",
 			"de-11-11-v2": "🇩🇪 11 × 11 verzió 2",
@@ -115,6 +122,7 @@ let TRANSLATION_HU = {
 			"hu-10-10": "🇭🇺 10 x 10",
 			"se-10-11": "🇸🇪 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
+			"ch-10-11-v2": "🇨🇭 10 x 11 verzió 2",
 			"invert-min-dir": "Percszámláló-irány megfordítása",
 			"mirror-vertically": "Szövegóra függőleges tükrözése",
 			"mirror-horizontally": "Szövegóra vízszintes tükrözése",
@@ -125,7 +133,12 @@ let TRANSLATION_HU = {
 		},
 		"language": {
 			"h2": "Nyelv",
-			"hide-it-is": "„Es ist“ kikapcsolása",
+			"hide-it-is": "„Mutasd meg a 'Ez a'“",
+			"it-is-off": "Off",
+			"it-is-hourly": "Óránként",
+			"it-is-half-hourly": "Félóránként",
+			"it-is-quarterly": "Negyedéves",
+			"it-is-permanent": "Állandó",
 			"at-nine-fifteen": "9:15-kor van...",
 			"quarter-past-nine": "kilenc óra tizenöt perc",
 			"quarter-nine": "negyed tíz",
@@ -228,8 +241,13 @@ let TRANSLATION_HU = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "A fotóellenállás aktuális világossága (LDR)",
-			"value-offset": "Érték „Világos“ (0 – 255)",
-			"value-slope": "Érték „Sötét“ (0 – 255)"
+			"value-gain": "LED Nyereség [%]",
+			"help-offset": "A fényerő eltolás konfigurálása:<br/>Meghatározza a LED-ek minimális fényerejét 0 lux környezeti fénynél:<br/> " +
+			"0=LED-ek kikapcsolva, n=LED fényerőssége n/255, 255=LED-ek mindig maximális fényerősségűek.",
+			"value-offset": "Offset (0–255)",
+			"help-slope": "A lejtő konfigurációja:<br/>Meghatározza a LED fényerejének változásának mértékét, amikor a környezeti fény változik.<br/>" +
+			"0=gyenge LED-fényerő változás, 16=semleges LED-fényerő változás, 255=erős LED-fényerő változás.",
+			"value-slope": "Lejtő (0–255)"
 		},
 		"hostname": {
 			"h2": "Host-név",
