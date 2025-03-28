@@ -7,8 +7,6 @@
 #include <Arduino.h>
 #include <BH1750.h>
 
-#define LEDGPIO 27
-
 OpenWMap weather;
 BH1750 lightMeter(0x23);
 
@@ -68,7 +66,7 @@ void ClockWork::loopAutoBrightLogic() {
             ledGain = 100.0;
     }
     if (ledGainOld != ledGain) {
-        led.set();
+        parametersChanged = true;
     }
 }
 
@@ -76,11 +74,6 @@ void ClockWork::loopAutoBrightLogic() {
 // Initialize the I2C bus using SCL and SDA pins
 // (BH1750 library doesn't do this automatically)
 void ClockWork::initBH1750Logic() {
-#ifdef ESP8266
-    Wire.begin(D4, D3);
-#elif defined(ESP32)
-    Wire.begin(21, 22);
-#endif
     // begin returns a boolean that can be used to detect setup problems.
     if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
         Serial.println("BH1750 initialized. Using this sensor for ambient "
@@ -109,6 +102,10 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_de10x11Clock;
     case Ger10x11Nero:
         return &_de10x11Nero;
+    case Ger10x11NeroFrame:
+        return &_de10x11NeroFrame;
+    case Ger10x11bayerisch:
+        return &_de10x11bayerisch;
     case Nl10x11:
         return &_nl10x11;
     case Ger11x11:
@@ -145,6 +142,8 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_se10x11;
     case Ru10x11:
         return &_ru10x11;
+    case Ch10x11V2:
+        return &_ch10x11v2;
     default:
         return nullptr;
     }
@@ -164,8 +163,9 @@ void ClockWork::initLedStrip(uint8_t num) {
 #ifdef ESP8266
             strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(500);
 #elif defined(ESP32)
+            pinMode(LED_PIN, OUTPUT);
             strip_RGBW =
-                new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(500, LEDGPIO);
+                new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(500, LED_PIN);
 #endif
             strip_RGBW->Begin();
         }
@@ -179,8 +179,9 @@ void ClockWork::initLedStrip(uint8_t num) {
 #ifdef ESP8266
             strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(500);
 #elif defined(ESP32)
+            pinMode(LED_PIN, OUTPUT);
             strip_RGB = new NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod>(
-                500, LEDGPIO);
+                500, LED_PIN);
 #endif
             strip_RGB->Begin();
         }
@@ -419,6 +420,9 @@ void ClockWork::initBootLed() {
 
 uint8_t ClockWork::determineWhichMinuteVariant() {
     switch (G.minuteVariant) {
+    case MinuteVariant::Off:
+        return 0;
+        break;
     case MinuteVariant::LED4x:
         return 0;
         break;
@@ -440,36 +444,53 @@ uint8_t ClockWork::determineWhichMinuteVariant() {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::showMinuteInWords(uint8_t min) {
-    if (G.UhrtypeDef == Ger16x8 && min > 0) {
-        usedUhrType->show(FrontWord::plus);
-        usedUhrType->show(FrontWord::minute);
-        if (min % 5 > 1) {
-            usedUhrType->show(FrontWord::minuten);
+void ClockWork::showSpecialWordBeen(const uint8_t min) {
+    if (usedUhrType->hasSpecialWordBeen()) {
+        if (min == 0) {
+            usedUhrType->show(FrontWord::nur);
+        } else {
+            usedUhrType->show(FrontWord::gewesen);
         }
     }
-    switch (min) {
-    case 0:
-        usedUhrType->show(FrontWord::nur);
-        break;
+}
 
-    case 1:
-        usedUhrType->show(FrontWord::m_num1);
-        break;
+//------------------------------------------------------------------------------
 
-    case 2:
-        usedUhrType->show(FrontWord::m_num2);
-        break;
-    case 3:
-        usedUhrType->show(FrontWord::m_num3);
-        break;
-    case 4:
-        usedUhrType->show(FrontWord::m_num4);
-        usedUhrType->show(FrontWord::gewesen);
-        break;
+bool ClockWork::checkIfClockHasMinuteInWordsAndItIsSet() {
+    return usedUhrType->hasMinuteInWords() &&
+           G.minuteVariant == MinuteVariant::InWords;
+}
 
-    default:
-        break;
+//------------------------------------------------------------------------------
+
+void ClockWork::showMinuteInWords(const uint8_t min) {
+    if (checkIfClockHasMinuteInWordsAndItIsSet()) {
+        if (min > 0) {
+            usedUhrType->show(FrontWord::plus);
+            usedUhrType->show(FrontWord::minute);
+            if (min % 5 > 1) {
+                usedUhrType->show(FrontWord::minuten);
+            }
+        }
+        switch (min) {
+        case 0:
+            break;
+        case 1:
+            usedUhrType->show(FrontWord::m_num1);
+            break;
+        case 2:
+            usedUhrType->show(FrontWord::m_num2);
+            break;
+        case 3:
+            usedUhrType->show(FrontWord::m_num3);
+            break;
+        case 4:
+            usedUhrType->show(FrontWord::m_num4);
+            break;
+
+        default:
+            break;
+        }
     }
 }
 
@@ -492,17 +513,17 @@ void ClockWork::showMinute(uint8_t min) {
             minuteArray |= 1UL << i;
         }
     }
+    /* Show "Been" according to Uhrtypedef */
+    showSpecialWordBeen(min);
 
-    if (usedUhrType->hasMinuteInWords() &&
-        G.minuteVariant == MinuteVariant::InWords) {
-        showMinuteInWords(min);
-    }
+    /* Show Minute "In Words" according to Uhrtypedef */
+    showMinuteInWords(min);
 }
 
 //------------------------------------------------------------------------------
 
 void ClockWork::resetMinVariantIfNotAvailable() {
-    if (G.UhrtypeDef != Nl10x11 && G.minuteVariant == MinuteVariant::InWords) {
+    if (G.UhrtypeDef != Ger16x8 && G.minuteVariant == MinuteVariant::InWords) {
         G.minuteVariant = MinuteVariant::Off;
     } else if (usedUhrType->rowsWordMatrix() != 11 &&
                G.minuteVariant == MinuteVariant::Corners) {
@@ -523,8 +544,15 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
 
 //------------------------------------------------------------------------------
 
+bool ClockWork::checkTwentyUsage() {
+    return G.languageVariant[ItIs20] || G.languageVariant[ItIs40];
+}
+
+//------------------------------------------------------------------------------
+
 bool ClockWork::hasTwentyAndCheckForUsage() {
-    return usedUhrType->hasZwanzig() || G.languageVariant[ItIs40];
+    // ToDo: Is this true for every supoorted language variant?
+    return usedUhrType->hasZwanzig() && checkTwentyUsage();
 }
 
 //------------------------------------------------------------------------------
@@ -967,23 +995,53 @@ WordclockChanges ClockWork::changesInClockface() {
 
 //------------------------------------------------------------------------------
 
+bool ClockWork::DetermineIfItIsIsShown(const uint8_t min) {
+    switch (G.itIsVariant) {
+    case ItIsVariant::Permanent:
+        return true;
+        break;
+    case ItIsVariant::Hourly:
+        return !min;
+        break;
+    case ItIsVariant::HalfHourly:
+        return !(min % 30);
+        break;
+    case ItIsVariant::Quarterly:
+        return !(min % 15);
+        break;
+    case ItIsVariant::Off:
+    default:
+        return false;
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+void ClockWork::setItIs(uint8_t min, const uint8_t offsetHour) {
+    min /= 5;
+    min *= 5;
+
+    if (DetermineIfItIsIsShown(min)) {
+        DetermineWhichItIsToShow(_hour + offsetHour, min);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::setClock() {
     uint8_t offsetHour = 0;
     bool fullHour = 0;
 
     setMinute(_minute, offsetHour, fullHour);
     setHour(_hour + offsetHour, fullHour);
-
-    if (!G.languageVariant[NotShowItIs]) {
-        DetermineWhichItIsToShow(_hour + offsetHour);
-    }
+    setItIs(_minute, offsetHour);
 }
 
 //------------------------------------------------------------------------------
 
-void ClockWork::DetermineWhichItIsToShow(uint8_t hour) {
+void ClockWork::DetermineWhichItIsToShow(uint8_t hour, uint8_t min) {
+    hour %= 12;
     if (G.UhrtypeDef == Ru10x11) {
-        hour %= 12;
         switch (hour) {
         case 1:
             usedUhrType->show(FrontWord::es_ist__singular__);
@@ -997,7 +1055,9 @@ void ClockWork::DetermineWhichItIsToShow(uint8_t hour) {
             usedUhrType->show(FrontWord::es_ist);
             break;
         }
-    } else if (G.UhrtypeDef == Es10x11 && hour == 1) {
+    } else if (G.UhrtypeDef == Es10x11 && hour == 1 && min < 35) {
+        usedUhrType->show(FrontWord::es_ist___plural___);
+    } else if (G.UhrtypeDef == Es10x11 && hour == 0 && min > 34) {
         usedUhrType->show(FrontWord::es_ist___plural___);
     } else {
         usedUhrType->show(FrontWord::es_ist);
@@ -1182,7 +1242,7 @@ void ClockWork::loop(struct tm &tm) {
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["hasMinuteInWords"] = usedUhrType->hasMinuteInWords();
-        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
+        config["hasHappyBirthday"] = usedUhrType->hasSpecialWordHappyBirthday();
         config["numOfRows"] = usedUhrType->rowsWordMatrix();
         serializeJson(config, str);
         Serial.print("Sending Payload:");
@@ -1194,7 +1254,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_BIRTHDAYS: {
         DynamicJsonDocument config(1024);
         config["command"] = "birthdays";
-        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
+        config["hasHappyBirthday"] = usedUhrType->hasSpecialWordHappyBirthday();
         char dateString[14];
         char string2Send[14];
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
@@ -1225,7 +1285,8 @@ void ClockWork::loop(struct tm &tm) {
         config["effectBri"] = G.effectBri;
         config["effectSpeed"] = G.effectSpeed;
         config["colortype"] = G.Colortype;
-        config["hasHappyBirthday"] = usedUhrType->hasHappyBirthday();
+        config["hasHappyBirthday"] = usedUhrType->hasSpecialWordHappyBirthday();
+        config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["prog"] = G.prog;
         serializeJson(config, str);
         webSocket.sendTXT(G.client_nr, str, strlen(str));
@@ -1294,7 +1355,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_TIME_MANUAL: {
         eeprom::write();
         led.clear();
-        frameArray = 0;
+        memset(frameArray, false, sizeof(frameArray));
         parametersChanged = true;
         break;
     }
@@ -1302,7 +1363,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_LAYOUT_VARIANT: {
         eeprom::write();
         led.clear();
-        frameArray = 0;
+        memset(frameArray, false, sizeof(frameArray));
         layoutChanged = true;
         break;
     }
@@ -1310,7 +1371,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_SETTING_SECOND: {
         eeprom::write();
         led.clear();
-        frameArray = 0;
+        memset(frameArray, false, sizeof(frameArray));
         G.progInit = true;
         parametersChanged = true;
         break;

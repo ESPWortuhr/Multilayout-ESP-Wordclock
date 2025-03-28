@@ -1,28 +1,28 @@
 #pragma once
 
-#include "Uhrtype.hpp"
+#include "CH10x11.hpp"
 
 /*
  *           Layout Front
  *                COL
  *       X 9 8 7 6 5 4 3 2 1 0
  * ROW + - - - - - - - - - - -
- *  0  | H E T L I S H N U W S
- *  1  | T W I N T I G T I E N
- *  2  | V I J F B Y K W A R T
- *  3  | V O O R P M O V E R U
- *  4  | H A L F I T W E E N N
- *  5  | A C H T D R I E Z E S
- *  6  | Z E V E N E G E N T O
- *  7  | T W A A L F A T I E N
- *  8  | V I E R V I J F E L F
- *  9  | U U R A G E W E E S T
+ *  0  | E S K I S C H U F Ü F
+ *  1  | V I E R T U N F Z Ä Ä
+ *  2  | Z W Ä N Z G S E V O R
+ *  3  | A B C H A U B I E C M
+ *  4  | E I S Z W Ö I S D R Ü
+ *  5  | V I E R I F Ü F I S T
+ *  6  | S Ä C H S I S I B N I
+ *  7  | A C H T I N Ü N I E L
+ *  8  | Z Ä N I E C H E U F I
+ *  9  | Z W Ö U F I E N G S I
  */
 
-class NL10x11_t : public iUhrType {
+class Ch10x11v2_t : public iUhrType {
 public:
     virtual LanguageAbbreviation usedLang() override {
-        return LanguageAbbreviation::NL;
+        return LanguageAbbreviation::DE;
     };
 
     //------------------------------------------------------------------------------
@@ -35,100 +35,94 @@ public:
         switch (word) {
 
         case FrontWord::es_ist:
-            setFrontMatrixWord(0, 8, 10);
-            setFrontMatrixWord(0, 5, 6);
+            setFrontMatrixWord(0, 9, 10);
+            setFrontMatrixWord(0, 4, 7);
             break;
 
         case FrontWord::nach:
         case FrontWord::v_nach:
-            setFrontMatrixWord(3, 1, 4);
+            setFrontMatrixWord(3, 9, 10);
             break;
 
         case FrontWord::vor:
         case FrontWord::v_vor:
-            setFrontMatrixWord(3, 7, 10);
+            setFrontMatrixWord(2, 0, 2);
             break;
 
         case FrontWord::viertel:
-            setFrontMatrixWord(2, 0, 4);
+            setFrontMatrixWord(1, 5, 10);
             break;
 
         case FrontWord::min_5:
-            setFrontMatrixWord(2, 7, 10);
+            setFrontMatrixWord(0, 0, 2);
             break;
 
         case FrontWord::min_10:
-            setFrontMatrixWord(1, 0, 3);
+            setFrontMatrixWord(1, 0, 2);
             break;
 
         case FrontWord::min_20:
-            setFrontMatrixWord(1, 4, 10);
+            setFrontMatrixWord(2, 5, 10);
             break;
 
         case FrontWord::halb:
-            setFrontMatrixWord(4, 7, 10);
+            setFrontMatrixWord(3, 3, 7);
+            break;
+
+        case FrontWord::eins:
+            setFrontMatrixWord(4, 8, 10);
             break;
 
         case FrontWord::hour_1:
-            setFrontMatrixWord(4, 1, 3);
-            break;
-
-        case FrontWord::uhr:
-            setFrontMatrixWord(9, 8, 10);
+            setFrontMatrixWord(4, 8, 10);
             break;
 
         case FrontWord::hour_2:
-            setFrontMatrixWord(4, 2, 5);
+            setFrontMatrixWord(4, 4, 7);
             break;
 
         case FrontWord::hour_3:
-            setFrontMatrixWord(5, 3, 6);
+            setFrontMatrixWord(4, 0, 2);
             break;
 
         case FrontWord::hour_4:
-            setFrontMatrixWord(8, 7, 10);
+            setFrontMatrixWord(5, 6, 10);
             break;
 
         case FrontWord::hour_5:
-            setFrontMatrixWord(8, 3, 6);
+            setFrontMatrixWord(5, 2, 5);
             break;
 
         case FrontWord::hour_6:
-            setFrontMatrixWord(5, 0, 2);
+            setFrontMatrixWord(6, 5, 10);
             break;
 
         case FrontWord::hour_7:
-            setFrontMatrixWord(6, 6, 10);
+            setFrontMatrixWord(6, 0, 4);
             break;
 
         case FrontWord::hour_8:
-            setFrontMatrixWord(5, 7, 10);
+            setFrontMatrixWord(7, 6, 10);
             break;
 
         case FrontWord::hour_9:
-            setFrontMatrixWord(6, 2, 6);
+            setFrontMatrixWord(7, 2, 5);
             break;
 
         case FrontWord::hour_10:
-            setFrontMatrixWord(7, 0, 3);
+            setFrontMatrixWord(8, 7, 10);
             break;
 
         case FrontWord::hour_11:
-            setFrontMatrixWord(8, 0, 2);
+            setFrontMatrixWord(8, 0, 3);
             break;
 
         case FrontWord::hour_12:
-            setFrontMatrixWord(7, 5, 10);
-            break;
-
-        case FrontWord::nur:
-            // Nu
-            setFrontMatrixWord(0, 2, 3);
+            setFrontMatrixWord(9, 5, 10);
             break;
 
         case FrontWord::gewesen:
-            // Geweest
-            setFrontMatrixWord(9, 0, 6);
+            setFrontMatrixWord(9, 0, 2);
             break;
 
         default:
@@ -137,4 +131,4 @@ public:
     };
 };
 
-NL10x11_t _nl10x11;
+Ch10x11v2_t _ch10x11v2;

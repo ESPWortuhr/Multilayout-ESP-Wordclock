@@ -28,6 +28,11 @@ let TRANSLATION_ES = {
 
 	"functions": {
 		"h1": "Características",
+		"color": {
+			"foreground": "Primer",
+			"background": "Fondo",
+			"frame": "Marco"
+		},
 		"mode": {
 			"h2": "Modo",
 			"wordclock": "Reloj de Palabras",
@@ -99,6 +104,8 @@ let TRANSLATION_ES = {
 			"de-10-11-vertical": "🇩🇪 10 × 11 Vertikal",
 			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
+			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Rahmen",
+			"de-10-11-bayerisch": "🇩🇪 10 × 11 bávaro",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Estilo suabo",
 			"de-11-11": "🇩🇪 11 × 11",
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
@@ -117,6 +124,7 @@ let TRANSLATION_ES = {
 			"fr-10-11": "🇫🇷 10 x 11",
 			"se-10-11": "🇸🇪 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
+			"ch-10-11-v2": "🇨🇭 10 x 11 Version 2",
 			"invert-min-dir": "Invertir la dirección de conteo de minutos",
 			"mirror-vertically": "Voltear el reloj verticalmente",
 			"mirror-horizontally": "Voltear el reloj horizontalmente",
@@ -127,7 +135,12 @@ let TRANSLATION_ES = {
 		},
 		"language": {
 			"h2": "Idioma",
-			"hide-it-is": "„Son las“ esconderse",
+			"hide-it-is": "Mostrar 'Son Las'“",
+			"it-is-off": "Apagado",
+			"it-is-hourly": "Por hora",
+			"it-is-half-hourly": "Media hora",
+			"it-is-quarterly": "Trimestral",
+			"it-is-permanent": "Permanente",
 			"at-nine-fifteen": "Son las 9:15 ...",
 			"quarter-past-nine": "las nueve y cuarto",
 			"quarter-nine": "un cuarto de diez",
@@ -227,8 +240,13 @@ let TRANSLATION_ES = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Brillo actual del fotorresistor (LDR)",
-			"value-offset": "Valor „Brillante“ (0 – 255)",
-			"value-slope": "Valor „Oscuro“ (0 – 255)"
+			"value-gain": "LED Gain [%]",
+			"help-offset": "Configuration of the brightness offset:<br/>It determines the minimum brightness of the LEDs at 0 lux ambient light:<br/> " +
+			"0=LEDs off, n=LED brightness is n/255, 255=LEDs always have the maximum brightness",
+			"value-offset": "Offset (0–255)",
+			"help-slope": "Configuration of the slope:<br/>It determines the degree of LED brightness change when the ambient light changes.<br/> " +
+			"0=weak LED brightness change, 16=neutral LED brightness change, 255=strong LED brightness change",
+			"value-slope": "Slope (0–255)"
 		},
 		"hostname": {
 			"h2": "Hostname",

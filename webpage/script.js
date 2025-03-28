@@ -49,8 +49,10 @@ var debug = true;
 var command = 1;
 var hsb = [
 	[0, 100, 50],
-	[120, 100, 50]
+	[120, 100, 50],
+	[240, 100, 50]
 ];
+var colorPosition = 0;
 var effectBri = 2;
 var effectSpeed = 10;
 var sleep = 0;
@@ -193,7 +195,8 @@ function initConfigValues() {
 	command = 1;
 	hsb = [
 		[0, 100, 50],
-		[120, 100, 50]
+		[120, 100, 50],
+		[240, 100, 50]
 	];
 	effectBri = 2;
 	effectSpeed = 10;
@@ -324,6 +327,8 @@ function initWebsocket() {
 
 	websocket.onmessage = function(event) {
 
+		const modeColorForm = document.getElementById("mode-color-form");
+
 		var data = JSON.parse(event.data);
 
 		debugMessage("WebSocket response arrived (command " + data.command + ").", data);
@@ -394,12 +399,15 @@ function initWebsocket() {
 			document.getElementById("boot-show-wifi").checked = data.bootShowWifi;
 			document.getElementById("boot-show-ip").checked = data.bootShowIP;
 
+			modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
+
 			enableSpecific("specific-layout-1", !data.isRomanLanguage);
 			enableSpecific("specific-layout-2", data.hasDreiviertel);
 			enableSpecific("specific-layout-3", data.hasZwanzig);
 			enableSpecific("specific-layout-4", data.hasSecondsFrame);
 			enableSpecific("specific-layout-5", data.hasWeatherLayout);
 			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // Add A-Quarter to (En10x11 exclusive)
+			enableSpecific("specific-layout-7", data.hasSecondsFrame);
 
 			enableSpecific("specific-colortype-4", data.colortype === 5);
 
@@ -425,6 +433,8 @@ function initWebsocket() {
 			colortype = data.colortype;
 			hasHappyBirthday = data.hasHappyBirthday;
 
+			modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
+
 			var prog = data.prog;
 			command = prog === 0 ? COMMAND_MODE_WORD_CLOCK : prog;	// 0 == COMMAND_IDLE
 			const inputID = MODE_TO_INPUT_ID.get(prog);
@@ -434,6 +444,7 @@ function initWebsocket() {
 			setSliders();
 			setColors();
 			enableSpecific("specific-colortype-4", data.colortype === 5);
+			enableSpecific("specific-layout-7", data.hasSecondsFrame);
 		}
 		if (data.command === "wlan") {
 			document.getElementById("wlanlist").innerHTML = data.list;
@@ -460,10 +471,10 @@ function initWebsocket() {
 }
 
 function changeColor(color) {
-	hsb[color.index][0] = color.hue;
-	hsb[color.index][1] = color.saturation;
+	hsb[colorPosition][0] = color.hue;
+	hsb[colorPosition][1] = color.saturation;
 	if (color.value !== 100) {
-		hsb[color.index][2] = color.value;
+		hsb[colorPosition][2] = color.value;
 	}
 
 	setColors();
@@ -489,56 +500,16 @@ function createColorPicker() {
 }
 
 /**
- * show the color configuration in the color picker
- */
-function setColorPicker(withBackground) {
-	var hsbFg = {
-		h: hsb[COLOR_FOREGROUND][0],
-		s: hsb[COLOR_FOREGROUND][1],
-		v: hsb[COLOR_FOREGROUND][2]
-	};
-	var hsbBg = {
-		h: hsb[COLOR_BACKGROUND][0],
-		s: hsb[COLOR_BACKGROUND][1],
-		v: hsb[COLOR_BACKGROUND][2]
-	};
-	var colors = [hsbFg];
-	if (withBackground) {
-		colors.push(hsbBg);
-	}
-	colorPicker.setColors(colors);
-}
-
-/**
  * initialize background checkbox and color picker
  */
 function setColors() {
-	var withBackground =
-		hsb[COLOR_BACKGROUND][0] ||
-		hsb[COLOR_BACKGROUND][1] ||
-		hsb[COLOR_BACKGROUND][2];
-	setColorPicker(withBackground);
-	$("#with-background").set("checked", withBackground);
-}
-
-/**
- * toggle between no background and a default dark gray background
- */
-function toggleBackground() {
-	var withBackground = $("#with-background").get("checked") | 0;
-	if (withBackground) {
-		// set to dark gray
-		hsb[COLOR_BACKGROUND][0] = 0;
-		hsb[COLOR_BACKGROUND][1] = 0;
-		hsb[COLOR_BACKGROUND][2] = 10;
-	} else {
-		// set to black
-		hsb[COLOR_BACKGROUND][0] = 0;
-		hsb[COLOR_BACKGROUND][1] = 0;
-		hsb[COLOR_BACKGROUND][2] = 0;
-	}
-	setColorPicker(withBackground);
-	sendColorData(command, nstr(1));
+	var hsbFg = {
+		h: hsb[colorPosition][0],
+		s: hsb[colorPosition][1],
+		v: hsb[colorPosition][2]
+	};
+	var colors = [hsbFg];
+	colorPicker.setColors(colors);
 }
 
 /**
@@ -670,7 +641,19 @@ $.ready(function() {
 	initWebsocket();
 	setColors();
 
-	$("#with-background").on("change", toggleBackground);
+	$("input[name='colorwheel']").on("change", function() {
+		var id = $(this).get("id");
+		if (id === "colorwheel-frame") {
+			colorPosition = 2;
+		} else if (id === "colorwheel-background") {
+			colorPosition = 1;
+		} else {
+			colorPosition = 0;
+		}
+		console.log("colorPosition: " + colorPosition);
+		setColors();
+	});
+
 	$(".status-button").on("click", function() {
 		var value = $(this).get("value");
 		$("#status").fill("Verbinden ...");
@@ -984,7 +967,7 @@ $.ready(function() {
 		dialect[1] = $("#dialect-1").get("value");
 		dialect[2] = $("#dialect-2").get("value");
 		dialect[3] = $("#dialect-3").get("value");
-		dialect[4] = $("#dialect-4").get("checked") | 0;
+		dialect[4] = $("#dialect-4").get("value");
 		dialect[5] = $("#dialect-5").get("value");
 
 		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]) + nstr(dialect[5]));

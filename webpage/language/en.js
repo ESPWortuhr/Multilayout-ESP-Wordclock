@@ -28,6 +28,11 @@ let TRANSLATION_EN_US = {
 
 	"functions": {
 		"h1": "Functions",
+		"color": {
+			"foreground": "Foreground",
+			"background": "Background",
+			"frame": "Frame"
+		},
 		"mode": {
 			"h2": "Mode",
 			"wordclock": "Wordclock",
@@ -123,6 +128,8 @@ let TRANSLATION_EN_US = {
 			"de-10-11-vertical": "🇩🇪 10 × 11 Vertical",
 			"de-10-11-clock": "🇩🇪 10 × 11 Clock",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
+			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Frame",
+			"de-10-11-bayerisch": "🇩🇪 10 × 11 Bavarian",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Swabian Style",
 			"de-11-11": "🇩🇪 11 × 11",
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
@@ -141,6 +148,7 @@ let TRANSLATION_EN_US = {
 			"fr-10-11": "🇫🇷 10 x 11",
 			"se-10-11": "🇸🇪 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
+			"ch-10-11-v2": "🇨🇭 10 x 11 Version 2",
 			"invert-min-dir": "Invert Minute Counting Direction",
 			"mirror-vertically": "Mirror Word Clock Vertically",
 			"mirror-horizontally": "Mirror Word Clock Horizontally",
@@ -151,7 +159,12 @@ let TRANSLATION_EN_US = {
 		},
 		"language": {
 			"h2": "Language",
-			"hide-it-is": "Hide “It Is”",
+			"hide-it-is": "„Display 'It is'“",
+			"it-is-off": "Off",
+			"it-is-hourly": "Hourly",
+			"it-is-half-hourly": "Half-hourly",
+			"it-is-quarterly": "Quarterly",
+			"it-is-permanent": "Permanent",
 			"at-nine-fifteen": "On 9:15 It Is ...",
 			"quarter-past-nine": "Quarter Past Nine", // German: viertel nach neun
 			"quarter-nine": "Quarter Ten", // German: viertel zehn
@@ -254,8 +267,13 @@ let TRANSLATION_EN_US = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Current Brightness from the Photoresistor (LDR)",
-			"value-offset": "Value “Bright” (0 – 255)",
-			"value-slope": "Value “Dark” (0 – 255)"
+			"value-gain": "LED Gain [%]",
+			"help-offset": "Configuration of the brightness offset:<br/>It determines the minimum brightness of the LEDs at 0 lux ambient light:<br/>" +
+			"0=LEDs off, LED brightness is n/255, 255=LEDs always have the maximum brightness.",
+			"value-offset": "Offset (0–255)",
+			"help-slope": "Configuration of the slope:<br/>It determines the degree of LED brightness change when the ambient light changes.<br/>" +
+			"0=weak LED brightness change, 16=neutral LED brightness change, 255=strong LED brightness change",
+			"value-slope": "Slope (0–255)"
 		},
 		"hostname": {
 			"h2": "Hostname",

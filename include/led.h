@@ -42,9 +42,8 @@ public:
     // Brightness Functions
     //------------------------------------------------------------------------------
     float setBrightnessAuto(float val);
-    void getCurrentManualBrightnessSetting(uint8_t &currentBrightness);
-    void getColorbyPositionWithAppliedBrightness(HsbColor &color,
-                                                 ColorPosition position);
+    uint8_t getCurrentManualBrightnessSetting();
+    HsbColor getColorbyPositionWithAppliedBrightness(ColorPosition position);
     void shiftColumnToRight();
 
     //------------------------------------------------------------------------------

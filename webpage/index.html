@@ -68,6 +68,14 @@
     <symbol id="icon-mode-wordclock" viewBox="0 0 32 32">
         <path d="m5 2c-1.6447 0-3 1.3553-3 3v22c0 1.6447 1.3553 3 3 3h22c1.6447 0 3-1.3553 3-3v-22c0-1.6447-1.3553-3-3-3zm0 2h22c0.5713 0 1 0.4287 1 1v22c0 0.5713-0.4287 1-1 1h-22c-0.5713 0-1-0.4287-1-1v-22c0-0.5713 0.4287-1 1-1z" fill="#5c5c5c" stroke-linecap="round" stroke-linejoin="round"/><path d="m14 21h12v3h-12z" fill="#999"/><path d="m10 15h9v3h-9z" fill="#6c6c6c"/><path d="m14 10h12v3h-12z" fill="#525252"/><path d="m7 6h6v3h-6z" fill="#a6a6a6"/>
     </symbol>
+
+    <symbol id="icon-color-background" viewBox="0 0 32 32">
+        <path d="m5 28h22c0.6 0 1-0.4 1-1v-22c0-0.6-0.4-1-1-1h-22c-0.6 0-1 0.4-1 1v22c0 0.6 0.4 1 1 1zm21-4h-12v-3h12v3zm-16-6v-3h9v3h-9zm4-8h12v3h-12v-3zm-7-4h6v3h-6v-3z" fill="#7F8080" /><path d="M27,2H5C3.4,2,2,3.4,2,5v22c0,1.6,1.4,3,3,3h22c1.6,0,3-1.4,3-3V5C30,3.4,28.6,2,27,2z M28,27c0,0.6-0.4,1-1,1   H5c-0.6,0-1-0.4-1-1V5c0-0.6,0.4-1,1-1h22c0.6,0,1,0.4,1,1V27z" fill="#5C5C5C"/>
+    </symbol>
+
+    <symbol id="icon-color-frame" viewBox="0 0 32 32">
+        <path d="M 27.9,0 H 4.1 C 1.8,0 0,1.8 0,4.1 V 28 c 0,2.2 1.8,4 4.1,4 H 28 c 2.2,0 4.1,-1.8 4.1,-4.1 V 4.1 C 32,1.8 30.2,0 27.9,0 Z M 30,9.1 V 27 c 0,1.6 -1.4,3 -3,3 H 5 C 3.4,30 2,28.6 2,27 V 5 C 2,3.4 3.4,2 5,2 h 22 c 1.6,0 3,1.4 3,3 z" id="path1" fill="#999"/><path d="M 27,2 H 5 C 3.4,2 2,3.4 2,5 v 22 c 0,1.6 1.4,3 3,3 h 22 c 1.6,0 3,-1.4 3,-3 V 5 C 30,3.4 28.6,2 27,2 Z M 5,28 C 4.4,28 4,27.6 4,27 V 5 C 4,4.4 4.4,4 5,4 h 22 c 0.6,0 1,0.4 1,1 v 22 c 0,0.6 -0.4,1 -1,1 z" id="path2" fill="#5C5C5C"/>
+    </symbol>
 </svg>
 
     <a href="#menu" role="button" aria-controls="menu" aria-expanded="false" class="hamburger">
@@ -120,9 +128,25 @@
                 </header>
 
                 <div class="box box-color">
-                    <p>
-                        <input type="checkbox" id="with-background" checked=""/> <label for="with-background" class="pure-checkbox" data-i18next="colors.with-background"></label>
-                    </p>
+                    <form name="prog" class="mode-color-form" id="mode-color-form">
+                            <label for="colorwheel-foreground" class="radio-select">
+                                <input id="colorwheel-foreground" type="radio" name="colorwheel" value="color" checked>
+                                <svg aria-hidden="true"><use href="#icon-mode-wordclock"/></svg>
+                                <span data-i18next="functions.color.foreground"></span>
+                            </label>
+                            <label for="colorwheel-background" class="radio-select">
+                                <input id="colorwheel-background" type="radio" name="colorwheel" value="color">
+                                <svg aria-hidden="true"><use href="#icon-color-background"/></svg>
+                                <span data-i18next="functions.color.background"></span>
+                            </label>
+                            <div class="specific-layout-7">
+                            <label for="colorwheel-frame" class="radio-select">
+                                <input id="colorwheel-frame" type="radio" name="colorwheel" value="color">
+                                <svg aria-hidden="true"><use href="#icon-color-frame"/></svg>
+                                <span data-i18next="functions.color.frame"></span>
+                            </label>
+                            </div>
+                    </form>
                     <div id="color-picker" class="color-picker"></div>
                     <div class="swatch-grid" id="swatch-grid">
                         <div class="swatch" data-color="#ffffff" style="background: #ffffff"></div>
@@ -321,6 +345,8 @@
                                 <option value="6"  data-i18next="view.front.de-10-11-clock"></option>
                                 <option value="20"  data-i18next="view.front.de-10-11-schwaebisch"></option>
                                 <option value="11" data-i18next="view.front.de-10-11-nero"></option>
+                                <option value="26" data-i18next="view.front.de-10-11-nero-frame"></option>
+                                <option value="27" data-i18next="view.front.de-10-11-bayerisch"></option>
                                 <option value="3"  data-i18next="view.front.de-11-11"></option>
                                 <option value="8"  data-i18next="view.front.de-11-11-v2"></option>
                                 <option value="14"  data-i18next="view.front.de-11-11-v3"></option>
@@ -334,6 +360,7 @@
                                 <option value="16"  data-i18next="view.front.it-10-11"></option>
                                 <option value="17"  data-i18next="view.front.hu-10-10"></option>
                                 <option value="18"  data-i18next="view.front.ch-10-11"></option>
+                                <option value="24"  data-i18next="view.front.ch-10-11-v2"></option>
                                 <option value="19"  data-i18next="view.front.ro-10-11"></option>
                                 <option value="21"  data-i18next="view.front.fr-10-11"></option>
                                 <option value="22"  data-i18next="view.front.se-10-11"></option>
@@ -375,11 +402,15 @@
                     <h2 data-i18next="view.language.h2"></h2>
                     <form class="pure-form pure-form-aligned">
                         <div class="pure-control-group">
-                            <label for="dialect-4" data-i18next="view.language.hide-it-is"></label>
-                            <label class="switch">
-                                <input type="checkbox" id="dialect-4">
-                                <span class="slider round"></span>
-                            </label>
+                            <div class="pure-control-group">
+                                <label for="dialect-4" data-i18next="view.language.hide-it-is"></label><select name="dialect-4" id="dialect-4" size="1">
+                                <option value="0" selected data-i18next="view.language.it-is-permanent"></option>
+                                <option value="1" data-i18next="view.language.it-is-quarterly"></option>
+                                <option value="2" data-i18next="view.language.it-is-half-hourly"></option>
+                                <option value="3" data-i18next="view.language.it-is-hourly"></option>
+                                <option value="4" data-i18next="view.language.it-is-off"></option>
+                            </select>
+                            </div>
                         </div>
                         <div class="pure-control-group specific-layout-1">
                             <div class="pure-control-group">
@@ -390,14 +421,14 @@
                             </div>
                             <div class="pure-control-group specific-layout-3">
                                 <label for="dialect-1" data-i18next="view.language.at-nine-twenty"></label><select name="dialect-1" id="dialect-1" size="1">
-                                <option value="0" selected data-i18next="view.language.twenty-past-nine"></option>
-                                <option value="1" data-i18next="view.language.ten-before-half-past-ten"></option>
+                                <option value="0" selected data-i18next="view.language.ten-before-half-past-ten"></option>
+                                <option value="1" data-i18next="view.language.twenty-past-nine"></option>
                             </select>
                             </div>
                             <div class="pure-control-group specific-layout-3">
                                 <label for="dialect-2" data-i18next="view.language.at-nine-fourty"></label><select name="dialect-2" id="dialect-2" size="1">
-                                <option value="0" selected data-i18next="view.language.twenty-before-ten"></option>
-                                <option value="1" data-i18next="view.language.ten-after-half-past-ten"></option>
+                                <option value="0" selected data-i18next="view.language.ten-after-half-past-ten"></option>
+                                <option value="1" data-i18next="view.language.twenty-before-ten"></option>
                             </select>
                             </div>
                             <!-- Specific DE10x11Alternative Start-->

@@ -28,6 +28,11 @@ let TRANSLATION_DE_DE = {
 
 	"functions": {
 		"h1": "Funktionen",
+		"color": {
+			"foreground": "Vordergrund",
+			"background": "Hintergrund",
+			"frame": "Rahmen"
+		},
 		"mode": {
 			"h2": "Modus",
 			"wordclock": "Wortuhr",
@@ -123,6 +128,8 @@ let TRANSLATION_DE_DE = {
 			"de-10-11-vertical": "🇩🇪 10 × 11 Vertikal",
 			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
+			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Rahmen",
+			"de-10-11-bayerisch": "🇩🇪 10 × 11 Bayerisch",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Schwäbisch",
 			"de-11-11": "🇩🇪 11 × 11",
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
@@ -141,6 +148,7 @@ let TRANSLATION_DE_DE = {
 			"fr-10-11": "🇫🇷 10 x 11",
 			"se-10-11": "🇸🇪 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
+			"ch-10-11-v2": "🇨🇭 10 x 11 Version 2",
 			"invert-min-dir": "Minutenzählrichtung invertieren",
 			"mirror-vertically": "Wortuhr vertikal spiegeln",
 			"mirror-horizontally": "Wortuhr horizontal spiegeln",
@@ -151,7 +159,12 @@ let TRANSLATION_DE_DE = {
 		},
 		"language": {
 			"h2": "Sprache",
-			"hide-it-is": "„Es ist“ ausblenden",
+			"hide-it-is": "„'Es ist' Anzeige“",
+			"it-is-off": "Aus",
+			"it-is-hourly": "Stündlich",
+			"it-is-half-hourly": "Halbstündlich",
+			"it-is-quarterly": "Viertelstündlich",
+			"it-is-permanent": "Permanent",
 			"at-nine-fifteen": "Um 9:15 ist es ...",
 			"quarter-past-nine": "viertel nach neun",
 			"quarter-nine": "viertel zehn",
@@ -255,10 +268,10 @@ let TRANSLATION_DE_DE = {
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Licht Sensor [Lux]",
 			"value-gain": "LED Gain [%]",
-			"help-offset": "Konfiguration des Helligkeitsoffsets: Sie bestimmt die minimale Helligkeit der LEDs bei 0 Lux Umgebungslicht:\n" +
-				"0=LEDs aus, n=LED Helligkeit ist n/255, 255=LEDs haben immer die maximale Helligkeit",
+			"help-offset": "Konfiguration des Helligkeitsoffsets:<br/>Sie bestimmt die minimale Helligkeit der LEDs bei 0 Lux Umgebungslicht:<br/>" +
+				"0=LEDs aus, LED Helligkeit ist n/255, 255=LEDs haben immer die maximale Helligkeit",
 			"value-offset": "Offset (0–255)",
-			"help-slope": "Konfiguration der Steilheit: Sie bestimmt den Grad der LED-Helligkeitsänderung bei Änderung des Umgebungslichts.\n" +
+			"help-slope": "Konfiguration der Steilheit:<br/>Sie bestimmt den Grad der LED-Helligkeitsänderung bei Änderung des Umgebungslichts.<br/>" +
 				"0=schwache LED-Helligkeitsänderung, 16=neutrale LED-Helligkeitsänderung, 255=starke LED-Helligkeitsänderung",
 			"value-slope": "Steilheit (0–255)"
 		},

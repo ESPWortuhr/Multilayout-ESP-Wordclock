@@ -4,6 +4,16 @@
  */
 
 //--------------------------------------------------------------------------
+// PIN Configuration
+//--------------------------------------------------------------------------
+
+#define LED_PIN 3
+
+// Define the I2C pins for the ESP32
+#define SDA_PIN_ESP32 7
+#define SCL_PIN_ESP32 6
+
+//--------------------------------------------------------------------------
 // Front panel layout
 //--------------------------------------------------------------------------
 /**********************/
@@ -110,6 +120,10 @@
 // #define DEFAULT_LAYOUT  Ch10x11
 // 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
 // layout for the Swiss German language
+//
+// #define DEFAULT_LAYOUT  Ch10x11V2
+// 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
+// layout for the Swiss German language with "Gsi" option
 
 /**********************/
 /*      Romanian      */
@@ -203,7 +217,7 @@
  *
  * Valid values [0 ... 65536]
  */
-#define SERNR 400
+#define SERNR 410
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output
 //--------------------------------------------------------------------------
