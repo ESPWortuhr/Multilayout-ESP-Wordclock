@@ -295,6 +295,69 @@ void Transition::colorize(RgbfColor **dest) {
             dest[7][7] = dest[7][5];
         }
     }
+
+    // correct color of a lot words due crazy alignment
+    if (G.UhrtypeDef == Eng08x08 && (G.transitionColorize != CHARACTERS)) {
+        // set color of TWENTY
+        if (dest[2][1].isForeground()) {
+            dest[0][1] = dest[0][0];
+            dest[1][0] = dest[0][0];
+            dest[1][1] = dest[0][0];
+            dest[2][0] = dest[0][0];
+            dest[2][1] = dest[0][0];
+        }
+        // set color of TEN (minute)
+        else if (dest[0][0].isForeground()) {
+            dest[1][0] = dest[0][0];
+            dest[1][1] = dest[0][0];
+        }
+        // set color of FIVE (minute)
+        if (dest[1][2].isForeground()) {
+            dest[0][2] = dest[1][2];
+            dest[0][3] = dest[1][2];
+            dest[1][3] = dest[1][2];
+        }
+        // set color of FIFTEEN
+        if (dest[0][4].isForeground()) {
+            dest[0][2] = dest[0][4];
+            dest[0][3] = dest[0][4];
+            dest[0][5] = dest[0][4];
+            dest[1][3] = dest[0][4];
+            dest[1][4] = dest[0][4];
+            dest[1][5] = dest[0][4];
+        }
+        // set color of HALF
+        if (dest[0][6].isForeground()) {
+            dest[0][7] = dest[0][6];
+            dest[1][6] = dest[0][6];
+            dest[1][7] = dest[0][6];
+        }
+        // set color of TEN (hour)
+        if (dest[2][7].isForeground()) {
+            dest[3][7] = dest[2][7];
+            dest[4][7] = dest[2][7];
+        }
+        // set color of ELEVEN
+        if (dest[3][6].isForeground()) {
+            dest[3][5] = dest[3][6];
+            dest[3][7] = dest[3][6];
+            dest[4][5] = dest[3][6];
+            dest[4][6] = dest[3][6];
+            dest[4][7] = dest[3][6];
+        }
+        // set color of FIVE (hour)
+        if (dest[4][0].isForeground() && dest[5][1].isForeground()) {
+            dest[5][1] = dest[4][0];
+            dest[6][2] = dest[4][0];
+            dest[7][3] = dest[4][0];
+        }
+        // set color of NINE
+        if (dest[4][4].isForeground() && dest[5][4].isForeground()) {
+            dest[5][4] = dest[4][4];
+            dest[6][4] = dest[4][4];
+            dest[7][4] = dest[4][4];
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

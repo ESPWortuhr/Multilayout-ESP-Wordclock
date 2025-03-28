@@ -122,6 +122,8 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_de16x18;
     case Ger08x08Viertel:
         return &_de08x08Viertel;
+    case Eng08x08:
+        return &_en08x08;
     case Eng10x11:
         return &_en10x11;
     case Es10x11:
@@ -738,8 +740,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             offsetHour = 1;
             break;
         case 30: // half
-            if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == It10x11 ||
-                G.UhrtypeDef == Es10x11 || G.UhrtypeDef == Ro10x11) {
+            if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == Eng08x08 || 
+                G.UhrtypeDef == It10x11 || G.UhrtypeDef == Ro10x11 ||
+                G.UhrtypeDef == Es10x11 || G.UhrtypeDef == Es08x08Cuarto) {
                 usedUhrType->show(FrontWord::halb);
                 usedUhrType->show(FrontWord::nach);
             } else {
