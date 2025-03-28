@@ -7,14 +7,6 @@
 #include <Arduino.h>
 #include <BH1750.h>
 
-#if CONFIG_IDF_TARGET_ESP32S2
-    #define LEDGPIO 16
-#elif CONFIG_IDF_TARGET_ESP32C3
-    #define LEDGPIO 3
-#else
-    #define LEDGPIO 28
-#endif
-
 OpenWMap weather;
 BH1750 lightMeter(0x23);
 
