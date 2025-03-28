@@ -245,11 +245,11 @@ void setup() {
         G.autoBrightEnabled = 0;
         G.autoBrightOffset = 100;
         G.autoBrightSlope = 10;
-        G.transitionType = 0; // Transition::NO_TRANSITION;
+        G.transitionType = 12; // Transition::NO_TRANSITION;
         G.transitionDuration = 2;
-        G.transitionSpeed = 30;
-        G.transitionColorize = 0;
-        G.transitionDemo = false;
+        G.transitionSpeed = 45;
+        G.transitionColorize = 1;
+        G.transitionDemo = true;
 
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
             G.birthday[i].day = 1;
@@ -433,7 +433,7 @@ void loop() {
     time_t utc = time(nullptr);
     struct tm tm;
     localtime_r(&utc, &tm);
-    if (utc > 100000000) {
+    if (utc > 0) {
         _second = tm.tm_sec;
         _minute = tm.tm_min;
         _hour = tm.tm_hour;

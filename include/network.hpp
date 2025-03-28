@@ -29,7 +29,13 @@ void Network::setup(const char *hostname) {
 #if MANUAL_WIFI_SETTINGS
     wifiManager.preloadWiFi(WIFI_SSID, WIFI_PASSWORD);
 #endif
+    if (G.transitionDemo) {
+        wifiManager.setTimeout(30);
+    }
     wifiManager.autoConnect(connectionSSID);
+    if (WiFi.status() == WL_CONNECTED) {
+        G.transitionDemo = false;
+    }
     // explicitly disable AP, esp defaults to STA+AP
     WiFi.enableAP(false);
     Network::info();
