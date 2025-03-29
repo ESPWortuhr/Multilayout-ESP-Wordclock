@@ -266,6 +266,13 @@ void Transition::colorize(RgbfColor **dest) {
 
     // correct color of NACH and ZWEI due non horizontal alignment
     if (G.UhrtypeDef == Ger08x08 && (G.transitionColorize != CHARACTERS)) {
+        // set color of VOR (if FÜNFZEHN is colored it's the same)
+        if (dest[1][0].isForeground()) {
+            hsbColor.H = pseudoRandomHue();
+            dest[1][0].changeRgb(isColorization() ? hsbColor : foreground);
+            dest[1][1] = dest[1][0];
+            dest[1][2] = dest[1][0];
+        }
         // set color of EINS
         if (dest[1][7].isForeground()) {
             dest[1][7] = dest[2][7];
