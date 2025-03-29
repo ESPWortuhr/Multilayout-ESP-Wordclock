@@ -6,12 +6,11 @@
 //--------------------------------------------------------------------------
 // PIN Configuration
 //--------------------------------------------------------------------------
+#define LED_PIN 3 // Use direct pin number
+#define SDA_PIN_ESP32 21 // Use direct pin number
+#define SCL_PIN_ESP32 22 // Use direct pin number
 
-#define LED_PIN 3
 
-// Define the I2C pins for the ESP32
-#define SDA_PIN_ESP32 7
-#define SCL_PIN_ESP32 6
 
 //--------------------------------------------------------------------------
 // Front panel layout
@@ -276,8 +275,8 @@
  * Valid values [only one #define option]
  */
 // #define MINUTE_Off
-#define MINUTE_LED4x
-// #define MINUTE_LED7x
+//#define MINUTE_LED4x
+#define MINUTE_LED7x
 
 //--------------------------------------------------------------------------
 // Front Displaying Options
