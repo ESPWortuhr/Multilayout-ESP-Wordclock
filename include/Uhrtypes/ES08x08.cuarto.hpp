@@ -62,7 +62,7 @@ public:
     //------------------------------------------------------------------------------
 
     void show(FrontWord word) override {
-        
+
         switch (word) {
             break;
 
@@ -132,7 +132,7 @@ public:
             break;
 
         case FrontWord::halb:
-            setFrontMatrixPixel(5, 0); // y
+            setFrontMatrixPixel(5, 0);   // y
             setFrontMatrixWord(7, 3, 7); // media
 
         default:

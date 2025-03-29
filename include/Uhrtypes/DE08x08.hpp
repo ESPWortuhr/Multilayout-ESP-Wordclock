@@ -60,12 +60,12 @@ public:
     //------------------------------------------------------------------------------
 
     void show(FrontWord word) override {
-        
+
         switch (word) {
 
         case FrontWord::nach:
         case FrontWord::v_nach:
-        setFrontMatrixWord(1, 1, 4); // NACH
+            setFrontMatrixWord(1, 1, 4); // NACH
             break;
 
         case FrontWord::vor:
@@ -74,11 +74,11 @@ public:
             break;
 
         case FrontWord::min_5:
-        setFrontMatrixWord(0, 4, 7); // FÜNF
+            setFrontMatrixWord(0, 4, 7); // FÜNF
             break;
 
         case FrontWord::min_10:
-        setFrontMatrixWord(0, 0, 3); // ZEHN
+            setFrontMatrixWord(0, 0, 3); // ZEHN
             break;
 
         case FrontWord::viertel:
