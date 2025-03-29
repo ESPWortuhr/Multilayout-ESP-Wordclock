@@ -62,7 +62,7 @@ public:
     //------------------------------------------------------------------------------
 
     void show(FrontWord word) override {
-        
+
         switch (word) {
 
         case FrontWord::nach:

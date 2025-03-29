@@ -156,7 +156,8 @@ protected:
     //------------------------------------------------------------------------------
     uint16_t reverse(uint16_t num, bool mirror, uint8_t grafic_cols);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                         unsigned char unsigned_d1, HsbColor color, fontSize font);
+                         unsigned char unsigned_d1, HsbColor color,
+                         fontSize font);
     inline bool isIdle() { return phase == 0; }
     bool isSpecialEvent(Transition_t &type, struct tm &tm, bool trigger);
     Transition_t getTransitionType(bool trigger);
@@ -219,12 +220,12 @@ extern Transition *transition;
 
 class Rain {
 public:
-    Rain(){};
+    Rain() {};
     Rain(uint8_t rows, uint8_t cols) {
         maxRows = rows;
         maxCols = cols;
     }
-    virtual ~Rain(){};
+    virtual ~Rain() {};
 
     void begin(int32_t frames, int32_t stop, uint8_t helligkeit) {
         white = RgbaColor(helligkeit, 1.0f);
@@ -303,12 +304,12 @@ protected:
 
 class Ball {
 public:
-    Ball(){};
+    Ball() {};
     Ball(uint8_t maxRows) {
         unten = ((maxRows - 1) << 8);
         lastPos = ((maxRows - 3) << 8);
     }
-    virtual ~Ball(){};
+    virtual ~Ball() {};
 
     void begin(int32_t _row, int32_t _col, RgbfColor foreground,
                RgbfColor background, int32_t delay) {
@@ -543,8 +544,8 @@ public:
             uint16_t pixels = 0;
             for (int32_t layer = 0; layer <= maxLayer; layer++) {
                 if (icons[layer] != static_cast<Icons>(0)) {
-                     if (usedUhrType->colsWordMatrix() < 11 
-                            || usedUhrType->rowsWordMatrix() < 10) {
+                    if (usedUhrType->colsWordMatrix() < 11 ||
+                        usedUhrType->rowsWordMatrix() < 10) {
                         pixels = transition->reverse(
                             pgm_read_word(&(grafik_8x8[icons[layer]][row])),
                             mirrored, GRAFIK_8X8_COLS);

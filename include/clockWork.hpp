@@ -606,9 +606,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
                 usedUhrType->show(FrontWord::viertel);
                 usedUhrType->show(FrontWord::v_nach);
             }
-        }
-        else if (23 <= min && min <= 37)
-        { // half
+        } else if (23 <= min && min <= 37) { // half
             if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == It10x11 ||
                 G.UhrtypeDef == Es10x11 || G.UhrtypeDef == Ro10x11) {
                 usedUhrType->show(FrontWord::halb);
@@ -621,9 +619,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
                     offsetHour = 1;
                 }
             }
-        }
-        else if (38 <= min && min <= 52)
-        { // quarter to
+        } else if (38 <= min && min <= 52) { // quarter to
             if (hasDreiviertelAndCheckForUsage()) {
                 usedUhrType->show(FrontWord::dreiviertel);
             } else {
@@ -635,9 +631,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
                 usedUhrType->show(FrontWord::v_vor);
             }
             offsetHour = 1;
-        }
-        else if (53 <= min && min <= 59)
-        { // almost full hour
+        } else if (53 <= min && min <= 59) { // almost full hour
             offsetHour = 1;
         }
     } else {
@@ -742,7 +736,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             offsetHour = 1;
             break;
         case 30: // half
-            if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == Eng08x08 || 
+            if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == Eng08x08 ||
                 G.UhrtypeDef == It10x11 || G.UhrtypeDef == Ro10x11 ||
                 G.UhrtypeDef == Es10x11 || G.UhrtypeDef == Es08x08Cuarto) {
                 usedUhrType->show(FrontWord::halb);
