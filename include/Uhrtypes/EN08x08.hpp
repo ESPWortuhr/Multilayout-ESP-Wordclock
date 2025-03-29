@@ -20,7 +20,7 @@
 class En08x08_t : public iUhrType {
 public:
     virtual LanguageAbbreviation usedLang() override {
-        return LanguageAbbreviation::DE;
+        return LanguageAbbreviation::EN;
     };
 
     //------------------------------------------------------------------------------
