@@ -1480,7 +1480,7 @@ void ClockWork::loop(struct tm &tm) {
         }
         if (parametersChanged) {
             led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
-                                _hour / 10, parametersChanged);
+                                 _hour / 10, parametersChanged);
             parametersChanged = false;
         }
         break;
