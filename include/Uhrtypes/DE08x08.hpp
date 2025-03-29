@@ -10,11 +10,11 @@
  *  0  | F Ü N F Z E H N
  *  1  | V O R N A C H E
  *  2  | H A L B D R E I
- *  3  | M Z E H N E U N
+ *  3  | A C H T Z E H N
  *  4  | E L F S E C H S
- *  5  | Z W Ö L F Ü N F
- *  6  | E I S I E B E N
- *  7  | V I E R A C H T
+ *  5  | V I E R N E U N
+ *  6  | Z W Ö L F Ü N F
+ *  7  | E I S I E B E N
  */
 
 class De08x08_t : public iUhrType {
@@ -65,76 +65,73 @@ public:
 
         case FrontWord::nach:
         case FrontWord::v_nach:
-            setFrontMatrixPixel(0, 0); // n
-            setFrontMatrixPixel(1, 0); // a
-            setFrontMatrixPixel(2, 0); // c
-            setFrontMatrixPixel(3, 0); // h
+        setFrontMatrixWord(1, 1, 4); // NACH
             break;
 
         case FrontWord::vor:
         case FrontWord::v_vor:
-            setFrontMatrixWord(1, 1, 3); // vor
+            setFrontMatrixWord(1, 5, 7); // VOR
             break;
 
         case FrontWord::viertel:
-            setFrontMatrixWord(0, 1, 7); // viertel
+            setFrontMatrixWord(0, 0, 7); // FÜNFZEHN
             break;
 
         case FrontWord::halb:
-            setFrontMatrixWord(1, 4, 7); // halb
+            setFrontMatrixWord(2, 4, 7); // HALB
             break;
 
         case FrontWord::eins:
-            setFrontMatrixWord(3, 2, 5);
-            break;
-
         case FrontWord::hour_1:
-            setFrontMatrixWord(3, 3, 5);
+            setFrontMatrixPixel(1, 0); // E
+            setFrontMatrixPixel(2, 0); // I
+            setFrontMatrixPixel(3, 0); // N
+            setFrontMatrixPixel(4, 0); // S
             break;
 
         case FrontWord::hour_2:
-            setFrontMatrixWord(4, 6, 7);
-            setFrontMatrixWord(5, 6, 7);
+            setFrontMatrixWord(6, 6, 7); // ZW
+            setFrontMatrixWord(7, 6, 7); // EI
             break;
 
         case FrontWord::hour_3:
-            setFrontMatrixWord(3, 4, 7);
+            setFrontMatrixWord(2, 0, 3); // DREI
             break;
 
         case FrontWord::hour_4:
-            setFrontMatrixWord(7, 4, 7);
+            setFrontMatrixWord(5, 4, 7); // VIER
             break;
 
         case FrontWord::hour_5:
-            setFrontMatrixWord(4, 0, 3);
+            setFrontMatrixWord(6, 0, 3); // FÜNF
             break;
 
         case FrontWord::hour_6:
-            setFrontMatrixWord(6, 3, 7);
+            setFrontMatrixWord(4, 0, 4); // SECHS
             break;
 
         case FrontWord::hour_7:
-            setFrontMatrixWord(5, 0, 5);
+            setFrontMatrixWord(7, 0, 5); // SIEBEN
             break;
 
         case FrontWord::hour_8:
-            setFrontMatrixWord(7, 0, 3);
+            setFrontMatrixWord(3, 4, 7); // ACHT
             break;
 
         case FrontWord::hour_9:
-            setFrontMatrixWord(2, 1, 4);
+            setFrontMatrixWord(5, 0, 3); // NEUN
             break;
 
         case FrontWord::hour_10:
-            setFrontMatrixWord(2, 4, 7);
+            setFrontMatrixWord(3, 0, 3); // ZEHN
             break;
 
         case FrontWord::hour_11:
-            setFrontMatrixWord(6, 0, 2);
+            setFrontMatrixWord(4, 5, 7); // ELF
             break;
 
         case FrontWord::hour_12:
-            setFrontMatrixWord(4, 3, 7);
+            setFrontMatrixWord(6, 3, 7); // ZWÖLF
             break;
 
         default:

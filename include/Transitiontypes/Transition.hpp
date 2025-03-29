@@ -263,6 +263,31 @@ void Transition::colorize(RgbfColor **dest) {
             }
         }
     }
+
+    // correct color of NACH and ZWEI due non horizontal alignment
+    if (G.UhrtypeDef == Ger08x08 && (G.transitionColorize != CHARACTERS)) {
+        // set color of EINS
+        if (dest[1][7].isForeground()) {
+            dest[1][7] = dest[2][7];
+            dest[3][7] = dest[2][7];
+            dest[4][7] = dest[2][7];
+        }
+        // set color of ZWEI
+        if (dest[7][0].isForeground()) {
+            dest[6][0] = dest[7][0];
+            dest[6][1] = dest[7][0];
+            dest[7][1] = dest[7][0];
+        }
+        // set color of DREI
+        if (dest[2][4].isForeground()) {
+            hsbColor.H = pseudoRandomHue();
+            dest[2][4].changeRgb(isColorization() ? hsbColor : foreground);
+            dest[2][5] = dest[2][4];
+            dest[2][6] = dest[2][4];
+            dest[2][7] = dest[2][4];
+        }
+    }
+
     // correct color of NACH and ZWEI due non horizontal alignment
     if (G.UhrtypeDef == Ger08x08Viertel && (G.transitionColorize != CHARACTERS)) {
         // set color of A for N, C and H (A has no other word before, compared to N (VIERTEL) and C (NEUN))
