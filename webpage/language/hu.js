@@ -59,6 +59,7 @@ let TRANSLATION_HU = {
 				"balls": "Labdák",
 				"firework": "Tűzijáték",
 				"snake": "Kígyó",
+				"colored": "Színes",
 				"random": "Véletlen"
 			},
 			"duration": {
@@ -112,9 +113,13 @@ let TRANSLATION_HU = {
 			"de-22-11-weather": "🇩🇪 10 × 11 időjárás",
 			"de-16-8": "🇩🇪 16 × 8",
 			"de-16-18": "🇩🇪 16 × 18",
+			"de-08-08": "🇩🇪 8 × 8",
+			"de-08-08-viertel": "🇩🇪 8 × 8 Negyed órák",
 			"en-10-11": "🇬🇧 10 × 11",
+			"en-08-08": "🇬🇧 8 × 8",
 			"nl-10-11": "🇳🇱 10 × 11",
 			"es-10-11": "🇪🇸 10 × 11",
+			"es-08-08-cuarto": "🇪🇸 8 × 8 Negyed órák",
 			"it-10-11": "🇮🇹 10 × 11",
 			"hu-10-10": "🇭🇺 10 x 10",
 			"se-10-11": "🇸🇪 10 × 11",

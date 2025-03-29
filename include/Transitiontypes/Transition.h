@@ -94,6 +94,7 @@ enum Transition_t {
     BALLS = 8,
     FIRE = 9,
     SNAKE = 10,
+    COLORED = 12,
     // only internaly used
     RANDOM = 11,
 
@@ -153,9 +154,9 @@ protected:
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
-    uint16_t reverse(uint16_t num, bool mirror);
+    uint16_t reverse(uint16_t num, bool mirror, uint8_t grafic_cols);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                         unsigned char unsigned_d1, HsbColor color);
+                         unsigned char unsigned_d1, HsbColor color, fontSize font);
     inline bool isIdle() { return phase == 0; }
     bool isSpecialEvent(Transition_t &type, struct tm &tm, bool trigger);
     Transition_t getTransitionType(bool trigger);
@@ -542,9 +543,16 @@ public:
             uint16_t pixels = 0;
             for (int32_t layer = 0; layer <= maxLayer; layer++) {
                 if (icons[layer] != static_cast<Icons>(0)) {
-                    pixels = transition->reverse(
-                        pgm_read_word(&(grafik_11x10[icons[layer]][row])),
-                        mirrored);
+                     if (usedUhrType->colsWordMatrix() < 11 
+                            || usedUhrType->rowsWordMatrix() < 10) {
+                        pixels = transition->reverse(
+                            pgm_read_word(&(grafik_8x8[icons[layer]][row])),
+                            mirrored, GRAFIK_8X8_COLS);
+                    } else {
+                        pixels = transition->reverse(
+                            pgm_read_word(&(grafik_11x10[icons[layer]][row])),
+                            mirrored, GRAFIK_11X10_COLS);
+                    }
                     if (pixels & (1 << col)) {
                         color = colors[layer];
                         return true;

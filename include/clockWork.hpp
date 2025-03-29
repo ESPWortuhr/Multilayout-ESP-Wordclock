@@ -120,10 +120,18 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
         return &_de16x8;
     case Ger16x18:
         return &_de16x18;
+    case Ger08x08:
+        return &_de08x08;
+    case Ger08x08Viertel:
+        return &_de08x08Viertel;
+    case Eng08x08:
+        return &_en08x08;
     case Eng10x11:
         return &_en10x11;
     case Es10x11:
         return &_es10x11;
+    case Es08x08Cuarto:
+        return &_es08x08Cuarto;
     case It10x11:
         return &_it10x11;
     case Hu10x10:
@@ -331,7 +339,11 @@ void ClockWork::countdownToMidnight() {
     Serial.printf("Count down: %d\n", 60 - _second);
     switch (_second) {
     case 50:
-        usedUhrType->show(FrontWord::min_10);
+        if (!usedUhrType->hasOnlyQuarterLayout()) {
+            usedUhrType->show(FrontWord::min_10);
+        } else {
+            usedUhrType->show(FrontWord::hour_10);
+        }
         break;
     case 51:
         usedUhrType->show(FrontWord::hour_9);
@@ -346,7 +358,11 @@ void ClockWork::countdownToMidnight() {
         usedUhrType->show(FrontWord::hour_6);
         break;
     case 55:
-        usedUhrType->show(FrontWord::min_5);
+        if (!usedUhrType->hasOnlyQuarterLayout()) {
+            usedUhrType->show(FrontWord::min_5);
+        } else {
+            usedUhrType->show(FrontWord::hour_5);
+        }
         break;
     case 56:
         usedUhrType->show(FrontWord::hour_4);
@@ -576,6 +592,54 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         } else if (min > 1) {
             usedUhrType->show(FrontWord::minuten);
         }
+    } else if (usedUhrType->hasOnlyQuarterLayout()) {
+
+        if (8 <= min && min <= 22) {
+            if (G.languageVariant[ItIs15]) {
+                usedUhrType->show(FrontWord::viertel);
+                offsetHour = 1;
+            } else {
+                // A Quarter past
+                if (G.languageVariant[EN_ShowAQuarter]) {
+                    usedUhrType->show(FrontWord::a_quarter);
+                }
+                usedUhrType->show(FrontWord::viertel);
+                usedUhrType->show(FrontWord::v_nach);
+            }
+        }
+        else if (23 <= min && min <= 37)
+        { // half
+            if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == It10x11 ||
+                G.UhrtypeDef == Es10x11 || G.UhrtypeDef == Ro10x11) {
+                usedUhrType->show(FrontWord::halb);
+                usedUhrType->show(FrontWord::nach);
+            } else {
+                if (G.UhrtypeDef == Fr10x11 || G.UhrtypeDef == Ru10x11) {
+                    usedUhrType->show(FrontWord::halb);
+                } else {
+                    usedUhrType->show(FrontWord::halb);
+                    offsetHour = 1;
+                }
+            }
+        }
+        else if (38 <= min && min <= 52)
+        { // quarter to
+            if (hasDreiviertelAndCheckForUsage()) {
+                usedUhrType->show(FrontWord::dreiviertel);
+            } else {
+                // A Quarter to
+                if (G.languageVariant[EN_ShowAQuarter]) {
+                    usedUhrType->show(FrontWord::a_quarter);
+                }
+                usedUhrType->show(FrontWord::viertel);
+                usedUhrType->show(FrontWord::v_vor);
+            }
+            offsetHour = 1;
+        }
+        else if (53 <= min && min <= 59)
+        { // almost full hour
+            offsetHour = 1;
+        }
     } else {
         showMinute(min);
         min /= 5;
@@ -678,8 +742,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             offsetHour = 1;
             break;
         case 30: // half
-            if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == It10x11 ||
-                G.UhrtypeDef == Es10x11 || G.UhrtypeDef == Ro10x11) {
+            if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == Eng08x08 || 
+                G.UhrtypeDef == It10x11 || G.UhrtypeDef == Ro10x11 ||
+                G.UhrtypeDef == Es10x11 || G.UhrtypeDef == Es08x08Cuarto) {
                 usedUhrType->show(FrontWord::halb);
                 usedUhrType->show(FrontWord::nach);
             } else {

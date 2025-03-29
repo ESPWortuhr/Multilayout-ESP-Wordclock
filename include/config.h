@@ -66,6 +66,12 @@
 // 16 rows, each 18 LED's per row, with the layout WordClock24h of
 // mikrocontroller.net
 //
+// #define DEFAULT_LAYOUT Ger08x08
+// 8 rows, each 8 LED's per row in 5 minute steps
+//
+// #define DEFAULT_LAYOUT Ger08x08Viertel
+// 8 rows, each 8 LED's per row, only quarter hours
+//
 //
 /**********************/
 /*       Dutch        */
@@ -82,6 +88,9 @@
 // #define DEFAULT_LAYOUT  Eng10x11
 // 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
 // layout for the English language
+//
+// #define DEFAULT_LAYOUT Eng08x08
+// 8 rows, 8 LED's per row with modified layout for the English language
 
 /**********************/
 /*       Italian      */
@@ -97,6 +106,10 @@
 //
 // #define DEFAULT_LAYOUT  Es10x11
 // 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
+// layout for the Spanish language
+//
+// #define DEFAULT_LAYOUT  Es08x08Cuarto
+// 8 rows, each 8 LED's per row, only quarter hours
 // layout for the Spanish language
 
 /**********************/

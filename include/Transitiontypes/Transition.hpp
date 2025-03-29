@@ -263,6 +263,133 @@ void Transition::colorize(RgbfColor **dest) {
             }
         }
     }
+
+    // correct color of NACH and ZWEI due non horizontal alignment
+    if (G.UhrtypeDef == Ger08x08 && (G.transitionColorize != CHARACTERS)) {
+        // set color of VOR (if FÜNFZEHN is colored it's the same)
+        if (dest[1][0].isForeground()) {
+            hsbColor.H = pseudoRandomHue();
+            dest[1][0].changeRgb(isColorization() ? hsbColor : foreground);
+            dest[1][1] = dest[1][0];
+            dest[1][2] = dest[1][0];
+        }
+        // set color of EINS
+        if (dest[1][7].isForeground()) {
+            dest[1][7] = dest[2][7];
+            dest[3][7] = dest[2][7];
+            dest[4][7] = dest[2][7];
+        }
+        // set color of ZWEI
+        if (dest[7][0].isForeground()) {
+            dest[6][0] = dest[7][0];
+            dest[6][1] = dest[7][0];
+            dest[7][1] = dest[7][0];
+        }
+        // set color of DREI
+        if (dest[2][4].isForeground()) {
+            hsbColor.H = pseudoRandomHue();
+            dest[2][4].changeRgb(isColorization() ? hsbColor : foreground);
+            dest[2][5] = dest[2][4];
+            dest[2][6] = dest[2][4];
+            dest[2][7] = dest[2][4];
+        }
+    }
+
+    // correct color of NACH and ZWEI due non horizontal alignment
+    if (G.UhrtypeDef == Ger08x08Viertel && (G.transitionColorize != CHARACTERS)) {
+        // set color of A for N, C and H (A has no other word before, compared to N (VIERTEL) and C (NEUN))
+        if (dest[1][7].isForeground()) {
+            dest[0][7] = dest[1][7];
+            dest[2][7] = dest[1][7];
+            dest[3][7] = dest[1][7];
+        }
+        // set color of Z, W for E and I if E and I are active (Z and W is also used for ZWÖLF)
+        if (dest[5][0].isForeground() && dest[5][1].isForeground()) {
+            dest[5][0] = dest[4][0];
+            dest[5][1] = dest[4][1];
+        }
+    }
+
+    // correct color of DOCE and CUARTO due non horizontal alignment
+    if (G.UhrtypeDef == Es08x08Cuarto && (G.transitionColorize != CHARACTERS)) {
+        // set color of D for O, C and E 
+        if (dest[3][6].isForeground()) {
+            dest[3][7] = dest[3][6];
+            dest[4][6] = dest[3][6];
+            dest[4][7] = dest[3][6];
+        }
+        // set color of R for C, U, A, T and O
+        if (dest[7][5].isForeground()) {
+            dest[6][5] = dest[7][5];
+            dest[6][6] = dest[7][5];
+            dest[6][7] = dest[7][5];
+            dest[7][6] = dest[7][5];
+            dest[7][7] = dest[7][5];
+        }
+    }
+
+    // correct color of a lot words due crazy alignment
+    if (G.UhrtypeDef == Eng08x08 && (G.transitionColorize != CHARACTERS)) {
+        // set color of TWENTY
+        if (dest[2][1].isForeground()) {
+            dest[0][1] = dest[0][0];
+            dest[1][0] = dest[0][0];
+            dest[1][1] = dest[0][0];
+            dest[2][0] = dest[0][0];
+            dest[2][1] = dest[0][0];
+        }
+        // set color of TEN (minute)
+        else if (dest[0][0].isForeground()) {
+            dest[1][0] = dest[0][0];
+            dest[1][1] = dest[0][0];
+        }
+        // set color of FIVE (minute)
+        if (dest[1][2].isForeground()) {
+            dest[0][2] = dest[1][2];
+            dest[0][3] = dest[1][2];
+            dest[1][3] = dest[1][2];
+        }
+        // set color of FIFTEEN
+        if (dest[0][4].isForeground()) {
+            dest[0][2] = dest[0][4];
+            dest[0][3] = dest[0][4];
+            dest[0][5] = dest[0][4];
+            dest[1][3] = dest[0][4];
+            dest[1][4] = dest[0][4];
+            dest[1][5] = dest[0][4];
+        }
+        // set color of HALF
+        if (dest[0][6].isForeground()) {
+            dest[0][7] = dest[0][6];
+            dest[1][6] = dest[0][6];
+            dest[1][7] = dest[0][6];
+        }
+        // set color of TEN (hour)
+        if (dest[2][7].isForeground()) {
+            dest[3][7] = dest[2][7];
+            dest[4][7] = dest[2][7];
+        }
+        // set color of ELEVEN
+        if (dest[3][6].isForeground()) {
+            dest[3][5] = dest[3][6];
+            dest[3][7] = dest[3][6];
+            dest[4][5] = dest[3][6];
+            dest[4][6] = dest[3][6];
+            dest[4][7] = dest[3][6];
+        }
+        // set color of FIVE (hour)
+        if (dest[4][0].isForeground() && dest[5][1].isForeground()) {
+            dest[5][1] = dest[4][0];
+            dest[6][2] = dest[4][0];
+            dest[7][3] = dest[4][0];
+        }
+        // set color of NINE
+        if (dest[4][4].isForeground() && dest[5][4].isForeground()) {
+            dest[5][4] = dest[4][4];
+            dest[6][4] = dest[4][4];
+            dest[7][4] = dest[4][4];
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -410,13 +537,13 @@ bool Transition::changesInTransitionTypeDurationOrDemo() {
 
 //------------------------------------------------------------------------------
 
-uint16_t Transition::reverse(uint16_t num, bool mirrored) {
-    // reverse left 11 bits
+uint16_t Transition::reverse(uint16_t num, bool mirrored, uint8_t grafic_cols = 11) {
+    // reverse left bits
     if (mirrored) {
         uint16_t res = 0;
-        for (uint8_t i = 0; i < 11; i++) {
+        for (uint8_t i = 0; i < grafic_cols; i++) {
             if (num & (1 << i)) {
-                res |= 0b10000000000 >> i;
+                res |= (1 << (grafic_cols - 1)) >> i;
             }
         }
         num = res;
@@ -454,8 +581,9 @@ uint16_t Transition::calcDelay(uint16_t frames) {
 //------------------------------------------------------------------------------
 
 void Transition::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                                 unsigned char unsigned_d1, HsbColor color) {
-    if (pgm_read_byte(&(font_7x5[unsigned_d1][col])) & (1u << row)) {
+                                 unsigned char unsigned_d1, HsbColor color, 
+                                 fontSize font = normalSizeASCII) {
+    if (led.getCharCol(font, col, row, unsigned_d1)) {
         work[row + 1][col + offsetCol].changeRgb(color);
     }
 }
@@ -786,22 +914,29 @@ uint16_t Transition::transitionCountdown(struct tm &tm) {
         char seconds[8];
         // start 23:59:00     60 - 0
         snprintf(seconds, sizeof(seconds), "%d", countDown);
+        // determine font size according layout
+        //fontSize usedFontSize = determineFontSize(); // not applicable due to linkage to digital clock
+        fontSize usedFontSize = normalSizeASCII;
+        // convert second to acii
+        unsigned char unsigned_s0 = static_cast<unsigned char>(seconds[0]);
+        unsigned char unsigned_s1 = static_cast<unsigned char>(seconds[1]);
+        if (usedUhrType->colsWordMatrix() < (fontWidth[usedFontSize] * 2 + 1)
+                || usedUhrType->rowsWordMatrix() < fontHeight[usedFontSize]) {
+            usedFontSize = smallSizeNumbers;
+            // convert char to int due to differt definition in font.h
+            unsigned_s0 -= 48;
+            unsigned_s1 -= 48;
+        }
         // for (uint8_t i = 0; i < 5; i++) {
         for (uint8_t row = 0; row < 8; row++) {     // row
             for (uint8_t col = 0; col < 5; col++) { // column
                 if (countDown >= 10) {
                     // 1. Number without Offset
-                    setPixelForChar(col, row, 0,
-                                    static_cast<unsigned char>(seconds[0]),
-                                    hsbColor_1);
+                    setPixelForChar(col, row, 0, unsigned_s0, hsbColor_1, usedFontSize);
                     // 2. Number with Offset
-                    setPixelForChar(col, row, 6,
-                                    static_cast<unsigned char>(seconds[1]),
-                                    hsbColor_2);
+                    setPixelForChar(col, row, 6, unsigned_s1, hsbColor_2, usedFontSize);
                 } else {
-                    setPixelForChar(col, row, 3,
-                                    static_cast<unsigned char>(seconds[0]),
-                                    hsbColor_1);
+                    setPixelForChar(col, row, 3, unsigned_s0, hsbColor_1, usedFontSize);
                 }
             }
         }
@@ -1123,6 +1258,10 @@ void Transition::loop(struct tm &tm) {
                     break;
                 case SNAKE:
                     phase = transitionSnake();
+                    break;
+                case COLORED:
+                    copyMatrix(work, act);
+                    phase = 0;
                     break;
                 case NEWYEAR_COUNTDOWN:
                     phase = transitionCountdown(tm);
