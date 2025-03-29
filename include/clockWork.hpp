@@ -577,7 +577,7 @@ bool ClockWork::hasDreiviertelAndCheckForUsage() {
 //------------------------------------------------------------------------------
 
 void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
-    if (usedUhrType->has60MinuteLayout()) {
+    if (usedUhrType->has24HourLayout()) {
         usedUhrType->show(FrontWord::uhr);
 
         if (min == 0) {
