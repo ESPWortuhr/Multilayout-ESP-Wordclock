@@ -73,6 +73,14 @@ public:
             setFrontMatrixWord(1, 5, 7); // VOR
             break;
 
+        case FrontWord::min_5:
+        setFrontMatrixWord(0, 4, 7); // FÜNF
+            break;
+
+        case FrontWord::min_10:
+        setFrontMatrixWord(0, 0, 3); // ZEHN
+            break;
+
         case FrontWord::viertel:
             setFrontMatrixWord(0, 0, 7); // FÜNFZEHN
             break;
