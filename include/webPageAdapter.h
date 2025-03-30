@@ -369,6 +369,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+        case COMMAND_SET_LDR_TYPE: {
+            G.ldrType = split(payload, 3);
+            eeprom::write();
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
         case COMMAND_SET_LANGUAGE_VARIANT: {
             G.languageVariant[ItIs15] = split(payload, 3);
             G.languageVariant[ItIs20] = split(payload, 6);

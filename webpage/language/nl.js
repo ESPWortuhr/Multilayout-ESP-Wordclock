@@ -250,9 +250,12 @@ let TRANSLATION_NL = {
 			"help-offset": "Configuratie van de helderheidsoffset:<br/>Deze bepaalt de minimale helderheid van de LED's bij 0 lux omgevingslicht:<br/>" +
 			"0=LEDs uit, n=LED-helderheid is n/255, 255=LEDs hebben altijd de maximale helderheid",
 			"value-offset": "Offset (0–255)",
-			"help-slope": "Configuratie van de helling:<br/>deze bepaalt de mate waarin de LED-helderheid verandert wanneer het omgevingslicht verandert.<br/>" +
-			"0=zwakke LED helderheidsverandering, 16=neutrale LED helderheidsverandering, 255=sterke LED helderheidsverandering",
-			"value-slope": "Donker (0 – 255)"
+			"help-slope": "Configuratie van de helling:<br/>Bepaalt de mate van LED-helderheidsverandering bij verandering van omgevingslicht.<br/>" +
+			"0=zwakke LED-helderheidsverandering, 16=neutrale LED-helderheidsverandering, 255=sterke LED-helderheidsverandering",
+			"value-slope": "Helling (0–255)",
+			"ldr-type": "LDR-configuratie:",
+			"ldr-single": "Enkele LDR",
+			"ldr-quad": "Vier LDR parallel"
 		},
 		"hostname": {
 			"h2": "Hostnaam",

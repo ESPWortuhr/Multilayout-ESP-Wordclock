@@ -247,9 +247,12 @@ let TRANSLATION_IT = {
 			"help-offset": "Configurazione dell'offset di luminosità:<br/>Determina la luminosità minima dei LED a 0 lux di luce ambientale:<br/>" +
 			"0=LED spenti, n=luminosità dei LED pari a n/255, 255=LED sempre con la massima luminosità",
 			"value-offset": "Offset (0–255)",
-			"help-slope": "Configurazione della pendenza:<br/> Determina il grado di variazione della luminosità del LED al variare della luce ambientale.<br/>" +
-			"0=modifica debole della luminosità del LED, 16=modifica neutra della luminosità del LED, 255=modifica forte della luminosità del LED.",
-			"value-slope": "Pendenza (0–255)"
+			"help-slope": "Configurazione della pendenza:<br/>Determina il grado di variazione della luminosità del LED quando cambia la luce ambientale.<br/>" +
+			"0=variazione debole della luminosità LED, 16=variazione neutra della luminosità LED, 255=variazione forte della luminosità LED",
+			"value-slope": "Pendenza (0–255)",
+			"ldr-type": "Configurazione LDR:",
+			"ldr-single": "LDR singolo",
+			"ldr-quad": "Quattro LDR in parallelo"
 		},
 		"hostname": {
 			"h2": "Hostname",
