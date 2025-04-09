@@ -925,8 +925,8 @@ uint16_t Transition::transitionCountdown(struct tm &tm) {
         // convert second to acii
         unsigned char unsigned_s0 = static_cast<unsigned char>(seconds[0]);
         unsigned char unsigned_s1 = static_cast<unsigned char>(seconds[1]);
-        if (usedUhrType->colsWordMatrix() < (fontWidth[usedFontSize] * 2 + 1) ||
-            usedUhrType->rowsWordMatrix() < fontHeight[usedFontSize]) {
+        if (usedUhrType->colsWordMatrix() < (pgm_read_byte(&(fontWidth[usedFontSize])) * 2 + 1) ||
+            usedUhrType->rowsWordMatrix() < pgm_read_byte(&(fontHeight[usedFontSize]))) {
             usedFontSize = smallSizeNumbers;
             // convert char to int due to differt definition in font.h
             unsigned_s0 -= 48;

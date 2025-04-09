@@ -502,7 +502,7 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
     }
 
     for (uint8_t i = usedUhrType->rowsWordMatrix();
-         i > offsetRow + fontHeight[normalSizeASCII]; i--) {
+         i > offsetRow + pgm_read_byte(&(fontHeight[normalSizeASCII])); i--) {
         clearRow(i - 1);
     }
 }
@@ -537,27 +537,31 @@ void Led::showNumbers(const char d1, const char d2) {
     // convert second to acii
     unsigned char unsigned_d1 = static_cast<unsigned char>(d1);
     unsigned char unsigned_d2 = static_cast<unsigned char>(d2);
-    if (usedUhrType->colsWordMatrix() < (fontWidth[usedFontSize] * 2 + 1) ||
-        usedUhrType->rowsWordMatrix() < fontHeight[usedFontSize]) {
+    uint8_t usedFontWidth = pgm_read_byte(&(fontWidth[usedFontSize]));
+    uint8_t usedFontHeight = pgm_read_byte(&(fontHeight[usedFontSize]));
+    if (usedUhrType->colsWordMatrix() < (usedFontWidth * 2 + 1) ||
+        usedUhrType->rowsWordMatrix() < usedFontHeight) {
         usedFontSize = smallSizeNumbers;
+        usedFontWidth = pgm_read_byte(&(fontWidth[usedFontSize]));
+        usedFontHeight = pgm_read_byte(&(fontHeight[usedFontSize]));
         // convert char to int due to differt definition in font.h
         unsigned_d1 -= 48;
         unsigned_d2 -= 48;
     }
 
     static uint8_t offsetLetter0 =
-        usedUhrType->colsWordMatrix() / 2 - fontWidth[usedFontSize];
+        usedUhrType->colsWordMatrix() / 2 - usedFontWidth;
     static uint8_t offsetLetter1 = usedUhrType->colsWordMatrix() / 2 + 1;
     uint8_t offsetRow =
-        (usedUhrType->rowsWordMatrix() - fontHeight[usedFontSize]) / 2;
+        (usedUhrType->rowsWordMatrix() - usedFontHeight) / 2;
 
     if (usedUhrType->has24HourLayout()) {
         offsetLetter0 = 3;
-        offsetLetter1 = fontWidth[usedFontSize] + 4;
+        offsetLetter1 = usedFontWidth + 4;
     }
 
-    for (uint8_t col = 0; col < fontWidth[usedFontSize]; col++) {
-        for (uint8_t row = 0; row < fontHeight[usedFontSize]; row++) {
+    for (uint8_t col = 0; col < usedFontWidth; col++) {
+        for (uint8_t row = 0; row < usedFontHeight; row++) {
             // 1. Number without Offset
             setPixelForChar(col, row, offsetLetter0, offsetRow, unsigned_d1,
                             usedFontSize);
@@ -653,7 +657,7 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
     bool showHours = true;
     bool showMinutes = true;
     // toogle hours and minutes if clock is not high enough
-    if (usedUhrType->rowsWordMatrix() < (fontHeight[usedFontSize] * 2 + 1)) {
+    if (usedUhrType->rowsWordMatrix() < (pgm_read_byte(&(fontHeight[usedFontSize])) * 2 + 1)) {
         if (_second % 4 < 2) { // show hours every 2 seconds
             showHours = true;
             showMinutes = false;
