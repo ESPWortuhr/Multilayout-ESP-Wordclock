@@ -552,8 +552,7 @@ void Led::showNumbers(const char d1, const char d2) {
     static uint8_t offsetLetter0 =
         usedUhrType->colsWordMatrix() / 2 - usedFontWidth;
     static uint8_t offsetLetter1 = usedUhrType->colsWordMatrix() / 2 + 1;
-    uint8_t offsetRow =
-        (usedUhrType->rowsWordMatrix() - usedFontHeight) / 2;
+    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - usedFontHeight) / 2;
 
     if (usedUhrType->has24HourLayout()) {
         offsetLetter0 = 3;
@@ -657,7 +656,8 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
     bool showHours = true;
     bool showMinutes = true;
     // toogle hours and minutes if clock is not high enough
-    if (usedUhrType->rowsWordMatrix() < (pgm_read_byte(&(fontHeight[usedFontSize])) * 2 + 1)) {
+    if (usedUhrType->rowsWordMatrix() <
+        (pgm_read_byte(&(fontHeight[usedFontSize])) * 2 + 1)) {
         if (_second % 4 < 2) { // show hours every 2 seconds
             showHours = true;
             showMinutes = false;
