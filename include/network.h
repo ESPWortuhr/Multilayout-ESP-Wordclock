@@ -1,9 +1,6 @@
 #pragma once
 
 class Network {
-private:
-    const char *connectionSSID = "Connect_to_Wordclock";
-
 public:
     Network(/* args */) = default;
     ~Network() = default;
