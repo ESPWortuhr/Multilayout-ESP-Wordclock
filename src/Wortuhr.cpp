@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "Wortuhr.h"
 #include <ArduinoJson.h>
 #ifdef ESP8266
 #include <ESP8266HTTPUpdateServer.h>
@@ -134,6 +135,15 @@ void incrementPowerCycleCount() {
     powerCycleCount++;
     EEPROM.write(powerCycleCountAddr, powerCycleCount);
     EEPROM.commit();
+}
+
+//------------------------------------------------------------------------------
+
+void sendMQTTUpdate() {
+    // send status update via MQTT
+    if (G.mqtt.state && WiFi.status() == WL_CONNECTED) {
+        mqtt.sendState();
+    }
 }
 
 //------------------------------------------------------------------------------

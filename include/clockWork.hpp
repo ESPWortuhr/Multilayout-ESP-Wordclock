@@ -1121,14 +1121,6 @@ void ClockWork::loop(struct tm &tm) {
             weather.loop();
         }
 
-        //------------------------------------------------
-        // MQTT
-        //------------------------------------------------
-
-        if (G.mqtt.state && WiFi.status() == WL_CONNECTED) {
-            mqtt.sendState();
-        }
-
         //--------------------------------------------
         // Auto Brightness Logic
         //--------------------------------------------
@@ -1160,6 +1152,12 @@ void ClockWork::loop(struct tm &tm) {
             colorChangedByWebsite = false;
             Serial.println("Saved Color");
         }
+
+        //------------------------------------------------
+        // MQTT
+        //------------------------------------------------
+
+        sendMQTTUpdate();
     }
 
     switch (G.conf) {
