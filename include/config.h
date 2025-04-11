@@ -176,11 +176,12 @@
  * at NeutralWhite.
  *
  * Valid values for DEFAULT_LEDTYPE [Brg, Grb, Rgb, Rbg, Gbr, Grbw]
- *
  * Valid values for WHITE_LEDTYPE [WarmWhite, NeutralWhite, ColdWhite]
+ * Valid values for DEFAULT_HUE [integer 0-255]
  */
 #define DEFAULT_LEDTYPE Brg
 #define WHITE_LEDTYPE WhiteType::NeutralWhite
+#define DEFAULT_HUE 120
 
 //--------------------------------------------------------------------------
 // Define Build Type
