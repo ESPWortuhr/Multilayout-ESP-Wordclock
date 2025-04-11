@@ -229,11 +229,12 @@
 // Toggle Serial DEBUG Output
 //--------------------------------------------------------------------------
 /*
- * To delete or initialize the EEPROM, enter another serial number here.
+ * Enable or disable debug messages.
  *
  * Valid values [true, false]
  */
 #define GENERAL_VERBOSE true
+#define WIFI_VERBOSE false
 #define WEATHER_VERBOSE false
 
 //--------------------------------------------------------------------------

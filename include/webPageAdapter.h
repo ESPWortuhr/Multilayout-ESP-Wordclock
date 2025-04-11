@@ -403,8 +403,19 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             payloadTextHandling(payload, G.mqtt.serverAdress, index_start);
             index_start += PAYLOAD_LENGTH;
             payloadTextHandling(payload, G.mqtt.user, index_start);
+
+            // check if submitted password has changed compared to masked password
             index_start += PAYLOAD_LENGTH;
-            payloadTextHandling(payload, G.mqtt.password, index_start);
+            char passMasked[32];
+            strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
+            strncpy(passMasked, "******************************", (strlen(passMasked) - 3));
+            
+            char passSumitted[32];
+            payloadTextHandling(payload, passSumitted, index_start);
+            if (strcmp(passMasked, passSumitted) != 0) {
+                payloadTextHandling(payload, G.mqtt.password, index_start);
+            }
+
             index_start += PAYLOAD_LENGTH;
             payloadTextHandling(payload, G.mqtt.clientId, index_start);
             index_start += PAYLOAD_LENGTH;

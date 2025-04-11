@@ -335,12 +335,12 @@ function initWebsocket() {
 
 		if (data.command === "mqtt") {
 			$("#mqtt-port").set("value", data.MQTT_Port);
-			$("#mqtt-server").set("value", data.MQTT_Server);
+			$("#mqtt-server").set({ "value": data.MQTT_Server, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
 			document.getElementById("mqtt-state").checked = data.MQTT_State;
-			$("#mqtt-user").set("value", data.MQTT_User);
-			$("#mqtt-pass").set("value", data.MQTT_Pass);
-			$("#mqtt-clientid").set("value", data.MQTT_ClientId);
-			$("#mqtt-topic").set("value", data.MQTT_Topic);
+			$("#mqtt-user").set({ "value": data.MQTT_User, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
+			$("#mqtt-pass").set({ "value": data.MQTT_Pass, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
+			$("#mqtt-clientid").set({ "value": data.MQTT_ClientId, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
+			$("#mqtt-topic").set({ "value": data.MQTT_Topic, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
 		}
 
 		if (data.command === "birthdays") {

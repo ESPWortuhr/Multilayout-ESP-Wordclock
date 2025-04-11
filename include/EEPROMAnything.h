@@ -35,6 +35,7 @@ void write() {
 void read() {
     readAnything(0, G);
 
+#if GENERAL_VERBOSE
     Serial.printf("Version   : %s\n", VERSION);
     Serial.printf("Sernr     : %u\n", G.sernr);
     Serial.printf("Programm  : %u\n", G.prog);
@@ -62,7 +63,13 @@ void read() {
     Serial.printf("MQTT_State    : %u\n", G.mqtt.state);
     Serial.printf("MQTT_Server    : %s\n", G.mqtt.serverAdress);
     Serial.printf("MQTT_User    : %s\n", G.mqtt.user);
-    Serial.printf("MQTT_Pass    : %s\n", G.mqtt.password);
+
+    //don't expose password:
+    char passMasked[32];
+    strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
+    strncpy(passMasked, "******************************", (strlen(passMasked) - 3));
+    Serial.printf("MQTT_Pass (masked): %s\n", passMasked);
+
     Serial.printf("MQTT_ClientId    : %s\n", G.mqtt.clientId);
     Serial.printf("MQTT_Topic    : %s\n", G.mqtt.topic);
     Serial.printf("MQTT_Port    : %u\n", G.mqtt.port);
@@ -90,6 +97,7 @@ void read() {
         Serial.printf("Birthday%1u: %02u.%02u.%04u\n", i, G.birthday[i].day,
                       G.birthday[i].month, G.birthday[i].year);
     }
+#endif
 
     delay(100);
 }

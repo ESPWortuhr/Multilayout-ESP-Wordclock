@@ -4,7 +4,11 @@
 
 WiFiManager wifiManager(Serial);
 
-void Network::info() { WiFi.printDiag(Serial); }
+void Network::info() {
+#if WIFI_VERBOSE
+    WiFi.printDiag(Serial);
+#endif
+}
 
 int Network::getQuality() {
     int rssi = WiFi.RSSI();
