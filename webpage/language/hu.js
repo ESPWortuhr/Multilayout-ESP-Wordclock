@@ -247,9 +247,12 @@ let TRANSLATION_HU = {
 			"help-offset": "A fényerő eltolás konfigurálása:<br/>Meghatározza a LED-ek minimális fényerejét 0 lux környezeti fénynél:<br/> " +
 			"0=LED-ek kikapcsolva, n=LED fényerőssége n/255, 255=LED-ek mindig maximális fényerősségűek.",
 			"value-offset": "Offset (0–255)",
-			"help-slope": "A lejtő konfigurációja:<br/>Meghatározza a LED fényerejének változásának mértékét, amikor a környezeti fény változik.<br/>" +
-			"0=gyenge LED-fényerő változás, 16=semleges LED-fényerő változás, 255=erős LED-fényerő változás.",
-			"value-slope": "Lejtő (0–255)"
+			"help-slope": "A meredekség konfigurálása:<br/>Meghatározza a LED fényerő változásának mértékét a környezeti fény változásakor.<br/>" +
+			"0=gyenge LED fényerő változás, 16=semleges LED fényerő változás, 255=erős LED fényerő változás",
+			"value-slope": "Meredekség (0–255)",
+			"ldr-type": "LDR konfiguráció:",
+			"ldr-single": "Egyetlen LDR",
+			"ldr-quad": "Négy LDR párhuzamosan"
 		},
 		"hostname": {
 			"h2": "Host-név",

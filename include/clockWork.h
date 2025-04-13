@@ -76,6 +76,15 @@ public:
     //------------------------------------------------------------------------------
     iUhrType *getPointer(uint8_t type);
     void initLedStrip(uint8_t num);
+    float getLuxValue() const { return lux; }
+    float getAdcValue() const {
+        uint16_t adcRaw = analogRead(A0);
+        float voltage = (adcRaw * 3.3f) / 1023.0f;
+        return round(voltage * 100.0f) / 100.0f; // Runde auf 2 Nachkommastellen
+    }
+    uint16_t getAdcRawValue() const {
+        return analogRead(A0); // Roher ADC-Wert (0-1023)
+    }
 
     //------------------------------------------------------------------------------
     // Minute Functions

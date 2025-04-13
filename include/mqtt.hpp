@@ -1,4 +1,3 @@
-
 #include "Uhr.h"
 #include "mqtt.h"
 #include <ArduinoJson.h>
@@ -14,7 +13,19 @@
 
 extern WiFiClient client;
 
+// Global Instance
+Mqtt *mqttInstance = nullptr;
+
 PubSubClient mqttClient(client);
+
+// Constructor and Destructor
+Mqtt::Mqtt(ClockWork &cw) : clockWork(cw) { mqttInstance = this; }
+
+Mqtt::~Mqtt() {
+    if (mqttInstance == this) {
+        mqttInstance = nullptr;
+    }
+}
 
 // ToDo : MQTT Notify https: // www.home-assistant.io/integrations/notify.mqtt/
 
@@ -41,12 +52,14 @@ void Mqtt::processState(const JsonDocument &doc) {
     if (doc.containsKey("state")) {
         const char *state = doc["state"];
         if (!strcmp(state, "ON")) {
-            Serial.println("ON");
+            Serial.println("MQTT: Turning ON");
             led.setState(true);
         } else if (!strcmp(state, "OFF")) {
-            Serial.println("OFF");
+            Serial.println("MQTT: Turning OFF");
             led.setState(false);
         }
+        if (mqttInstance)
+            mqttInstance->sendState();
     }
 }
 
@@ -71,27 +84,40 @@ None
 void Mqtt::processEffect(const JsonDocument &doc) {
     if (doc.containsKey("effect")) {
         const char *effect = doc["effect"];
+        bool effectChanged = false;
+
         if (!strcmp("Wordclock", effect)) {
             G.prog = COMMAND_MODE_WORD_CLOCK;
-            parametersChanged = true;
+            effectChanged = true;
         } else if (!strcmp("Seconds", effect)) {
             G.prog = COMMAND_MODE_SECONDS;
+            effectChanged = true;
         } else if (!strcmp("Digitalclock", effect)) {
             G.prog = COMMAND_MODE_DIGITAL_CLOCK;
-            parametersChanged = true;
+            effectChanged = true;
         } else if (!strcmp("Scrollingtext", effect)) {
             G.prog = COMMAND_MODE_SCROLLINGTEXT;
+            effectChanged = true;
         } else if (!strcmp("Rainbowcycle", effect)) {
             G.prog = COMMAND_MODE_RAINBOWCYCLE;
+            effectChanged = true;
         } else if (!strcmp("Rainbow", effect)) {
             G.prog = COMMAND_MODE_RAINBOW;
+            effectChanged = true;
         } else if (!strcmp("Color", effect)) {
             G.prog = COMMAND_MODE_COLOR;
-            parametersChanged = true;
+            effectChanged = true;
         } else if (!strcmp("Symbol", effect)) {
             G.prog = COMMAND_MODE_SYMBOL;
+            effectChanged = true;
         }
-        G.progInit = true;
+
+        if (effectChanged) {
+            G.progInit = true;
+            parametersChanged = true;
+            if (mqttInstance)
+                mqttInstance->sendState();
+        }
     }
 }
 
@@ -115,6 +141,14 @@ None
 void Mqtt::processScrollingText(const JsonDocument &doc) {
     if (doc.containsKey("scrolling_text")) {
         strcpy(G.scrollingText, doc["scrolling_text"]);
+
+        // Send update to web interface
+        StaticJsonDocument<200> webDoc;
+        webDoc["command"] = "scrolltext";
+        webDoc["scrolling_text"] = G.scrollingText;
+        char buffer[200];
+        serializeJson(webDoc, buffer);
+        webSocket.broadcastTXT(buffer, strlen(buffer));
     }
 }
 
@@ -139,10 +173,31 @@ None
 void Mqtt::processColor(const JsonDocument &doc) {
     JsonObjectConst color = doc["color"];
     if (!color.isNull()) {
-        G.color[Foreground] =
-            HsbColor(float(color["h"]) / 360.f, float(color["s"]) / 100.f,
-                     G.color[Foreground].B);
+        // Convert values from Home Assistant (0-360 for Hue, 0-100 for
+        // Saturation) to clock format (0-1 for both)
+        float h = constrain(color["h"].as<float>(), 0, 360) / 360.0f;
+        float s = constrain(color["s"].as<float>(), 0, 100) / 100.0f;
+
+        // Keep current brightness
+        G.color[Foreground] = HsbColor(h, s, G.color[Foreground].B);
         parametersChanged = true;
+
+        // Save color in EEPROM
+        eeprom::write();
+
+        // Send update to web interface
+        StaticJsonDocument<200> webDoc;
+        webDoc["command"] = "color";
+        webDoc["h"] = round(h * 360); // Convert to 0-360 degrees
+        webDoc["s"] = round(s * 100); // Convert to 0-100%
+        webDoc["v"] = round(G.color[Foreground].B * 100); // Convert to 0-100%
+        char buffer[200];
+        serializeJson(webDoc, buffer);
+        webSocket.broadcastTXT(buffer, strlen(buffer));
+
+        if (mqttInstance) {
+            mqttInstance->sendState();
+        }
     }
 }
 
@@ -168,10 +223,27 @@ None
 
 void Mqtt::processBrightness(const JsonDocument &doc) {
     if (doc.containsKey("brightness")) {
+        // If Auto-Brightness is enabled, ignore brightness changes from Home
+        // Assistant
+        if (G.autoBrightEnabled) {
+            Serial.println("MQTT: Ignoring brightness change - auto brightness "
+                           "is enabled");
+            return;
+        }
+
+        float brightness = float(uint8_t(doc["brightness"])) / 255.0f;
+        brightness = max(0.0f, min(1.0f, brightness));
+
+        // Set brightness directly
         G.color[Foreground] =
-            HsbColor(G.color[Foreground].H, G.color[Foreground].S,
-                     uint8_t(doc["brightness"]) / 255.f);
+            HsbColor(G.color[Foreground].H, G.color[Foreground].S, brightness);
+        Serial.print("MQTT: Setting manual brightness: ");
+        Serial.println(brightness);
+
         parametersChanged = true;
+
+        if (mqttInstance)
+            mqttInstance->sendState();
     }
 }
 
@@ -192,7 +264,7 @@ true if the MQTT user array is empty.
 false if the MQTT user array is not empty.
 */
 
-bool checkIfMqttUserIsEmpty() {
+/* static */ bool Mqtt::checkIfMqttUserIsEmpty() {
     for (uint8_t i = 0; i < PAYLOAD_LENGTH; i++) {
         if (G.mqtt.user[i] != '\0' && !isSpace(G.mqtt.user[i])) {
             return false; // Array is not empty
@@ -221,16 +293,45 @@ None
 void Mqtt::init() {
     mqttClient.setServer(G.mqtt.serverAdress, G.mqtt.port);
     mqttClient.setCallback(callback);
+
+    // Configure LWT (Last Will and Testament)
+    String availabilityTopic = String(G.mqtt.topic) + "/availability";
+
     if (checkIfMqttUserIsEmpty()) {
-        mqttClient.connect(G.mqtt.clientId);
+        mqttClient.connect(G.mqtt.clientId, availabilityTopic.c_str(),
+                           0,          // QoS
+                           true,       // retain
+                           "offline"); // Last Will Message
     } else {
-        mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
+        mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password,
+                           availabilityTopic.c_str(),
+                           0,          // QoS
+                           true,       // retain
+                           "offline"); // Last Will Message
     }
     delay(50);
+
+    // Send online status immediately after connection
+    mqttClient.publish(availabilityTopic.c_str(), "online", true);
+
+    // Main control
     mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
     delay(50);
+
+    // Additional Topics
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/scrolltext/set").c_str());
+    delay(50);
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/effect_speed/set").c_str());
+    delay(50);
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/auto_brightness/set").c_str());
+    delay(50);
+
     if (isConnected()) {
         Serial.println("MQTT Connected");
+        sendState(); // Send initial state
     }
 }
 
@@ -263,7 +364,6 @@ void Mqtt::reInit() {
 
         init();
 
-        // Check if maximum retries reached
         if (retryCount >= MAX_RETRIES_WITHIN_5_MINUTES) {
             Serial.println("Switched to hourly MQTT connect retry");
             retryIntervall = RETRY_INTERVALL;
@@ -314,10 +414,19 @@ None
 */
 
 void Mqtt::loop() {
+    static uint32_t lastStateUpdate = 0;
+    const uint32_t STATE_UPDATE_INTERVAL = 30000; // Alle 30 Sekunden
+
     if (!isConnected()) {
         reInit();
     }
     mqttClient.loop();
+
+    // Regular status update
+    if (millis() - lastStateUpdate >= STATE_UPDATE_INTERVAL) {
+        sendState();
+        lastStateUpdate = millis();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -339,18 +448,47 @@ None
 */
 
 void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
-    StaticJsonDocument<512> doc;
+    // Determine message type based on topic
+    String topicStr = String(topic);
+    String baseTopic = String(G.mqtt.topic);
 
     // Convert payload to a null-terminated string
     char msg[length + 1];
     memcpy(msg, payload, length);
     msg[length] = '\0';
 
-    Serial.print("Received message [");
-    Serial.print(msg);
-    Serial.print("] ");
+    // Process Auto-Brightness messages directly as string
+    if (topicStr == baseTopic + "/auto_brightness/set") {
+        if (strcmp(msg, "ON") == 0) {
+            G.autoBrightEnabled = 1;
+            Serial.println("MQTT: Auto Brightness ON");
+        } else if (strcmp(msg, "OFF") == 0) {
+            G.autoBrightEnabled = 0;
+            Serial.println("MQTT: Auto Brightness OFF");
+        } else {
+            Serial.print("MQTT: Unknown command: ");
+            Serial.println(msg);
+        }
 
-    // Deserialize JSON
+        parametersChanged = true;
+
+        // Send the new status back
+        mqttClient.publish(
+            (std::string(G.mqtt.topic) + "/auto_brightness/state").c_str(),
+            G.autoBrightEnabled ? "ON" : "OFF", true);
+
+        // Send update to web interface
+        StaticJsonDocument<200> webDoc;
+        webDoc["command"] = "autobright";
+        webDoc["value"] = G.autoBrightEnabled;
+        char buffer[200];
+        serializeJson(webDoc, buffer);
+        webSocket.broadcastTXT(buffer, strlen(buffer));
+        return;
+    }
+
+    // For all other messages: JSON deserialization
+    StaticJsonDocument<512> doc;
     DeserializationError error = deserializeJson(doc, msg);
     if (error) {
         Serial.print(F("deserializeJson() failed: "));
@@ -358,12 +496,44 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         return;
     }
 
-    // Process received JSON data
-    processState(doc);
-    processEffect(doc);
-    processScrollingText(doc);
-    processColor(doc);
-    processBrightness(doc);
+    // Process remaining messages
+    if (topicStr == baseTopic + "/cmd") {
+        processState(doc);
+        processEffect(doc);
+        processScrollingText(doc);
+        processColor(doc);
+        processBrightness(doc);
+    } else if (topicStr == baseTopic + "/scrolltext/set") {
+        processScrollingText(doc);
+    } else if (topicStr == baseTopic + "/effect_speed/set") {
+        // Process direct string value
+        int speed = atoi(msg);
+        if (speed >= 1 && speed <= 10) {
+            G.effectSpeed = speed;
+
+            // Save changes to EEPROM
+            eeprom::write();
+            parametersChanged = true;
+
+            // If we are in scrolltext mode, reinitialize the program
+            if (G.prog == COMMAND_MODE_SCROLLINGTEXT) {
+                G.progInit = true;
+            }
+
+            // Send new state to Home Assistant
+            mqttClient.publish(
+                (std::string(G.mqtt.topic) + "/effect_speed/state").c_str(),
+                String(G.effectSpeed).c_str(), true);
+
+            // Send update to web interface
+            StaticJsonDocument<200> webDoc;
+            webDoc["command"] = "speed";
+            webDoc["value"] = G.effectSpeed;
+            char buffer[200];
+            serializeJson(webDoc, buffer);
+            webSocket.broadcastTXT(buffer, strlen(buffer));
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -385,20 +555,105 @@ None
 */
 
 void Mqtt::sendState() {
-    StaticJsonDocument<200> doc;
+    // Main status
+    {
+        StaticJsonDocument<200> doc;
+        doc["state"] = (led.getState()) ? "ON" : "OFF";
 
-    doc["state"] = (led.getState()) ? "ON" : "OFF";
+        // Calculate actual brightness value
+        float actualBrightness;
+        if (G.autoBrightEnabled) {
+            actualBrightness = (ledGain / 100.0f) * G.color[Foreground].B;
+        } else {
+            actualBrightness = G.color[Foreground].B;
+        }
+        doc["brightness"] = round(actualBrightness * 255);
+        doc["color_mode"] = "hs";
 
-    JsonObject color = doc.createNestedObject("color");
+        // Color as object with h and s
+        JsonObject color = doc.createNestedObject("color");
+        color["h"] = round(G.color[Foreground].H * 360); // Hue 0-360
+        color["s"] = round(G.color[Foreground].S * 100); // Saturation 0-100
 
-    color["h"] = G.color[Foreground].H * 360;
-    color["s"] = G.color[Foreground].S * 100;
+        switch (G.prog) {
+        case COMMAND_MODE_WORD_CLOCK:
+            doc["effect"] = "Wordclock";
+            break;
+        case COMMAND_MODE_SECONDS:
+            doc["effect"] = "Seconds";
+            break;
+        case COMMAND_MODE_DIGITAL_CLOCK:
+            doc["effect"] = "Digitalclock";
+            break;
+        case COMMAND_MODE_SCROLLINGTEXT:
+            doc["effect"] = "Scrollingtext";
+            break;
+        case COMMAND_MODE_RAINBOWCYCLE:
+            doc["effect"] = "Rainbowcycle";
+            break;
+        case COMMAND_MODE_RAINBOW:
+            doc["effect"] = "Rainbow";
+            break;
+        case COMMAND_MODE_COLOR:
+            doc["effect"] = "Color";
+            break;
+        case COMMAND_MODE_SYMBOL:
+            doc["effect"] = "Symbol";
+            break;
+        }
 
-    doc["brightness"] = G.color[Foreground].B * 255;
+        char buffer[200];
+        serializeJson(doc, buffer);
+        mqttClient.publish((std::string(G.mqtt.topic) + "/status").c_str(),
+                           buffer, true);
+    }
 
-    char buffer[200];
-    serializeJson(doc, buffer);
-    mqttClient.publish((std::string(G.mqtt.topic) + "/status").c_str(), buffer);
+    // Send diagnostic values
+    {
+        StaticJsonDocument<200> doc;
+        doc["lux"] = round(clockWork.getLuxValue()); // Round lux value
+        doc["led_gain"] = round(ledGain); // Convert to percent and round
+        doc["adc_value"] =
+            clockWork.getAdcValue(); // Voltage value (already rounded)
+        doc["adc_raw"] = clockWork.getAdcRawValue(); // Raw ADC value
+        char buffer[200];
+        serializeJson(doc, buffer);
+        mqttClient.publish((std::string(G.mqtt.topic) + "/diagnostics").c_str(),
+                           buffer, true);
+    }
+
+    // Effect speed status - Always update current value
+    {
+        mqttClient.publish(
+            (std::string(G.mqtt.topic) + "/effect_speed/state").c_str(),
+            String(G.effectSpeed).c_str(), true);
+    }
+
+    // Scrolling text status
+    {
+        StaticJsonDocument<200> doc;
+        doc["scrolling_text"] = G.scrollingText;
+        char buffer[200];
+        serializeJson(doc, buffer);
+        mqttClient.publish(
+            (std::string(G.mqtt.topic) + "/scrolltext/state").c_str(), buffer,
+            true);
+    }
+
+    // Auto brightness status
+    {
+        static bool lastAutoBrightState = G.autoBrightEnabled;
+        if (lastAutoBrightState != G.autoBrightEnabled) {
+            mqttClient.publish(
+                (std::string(G.mqtt.topic) + "/auto_brightness/state").c_str(),
+                G.autoBrightEnabled ? "ON" : "OFF", true);
+            lastAutoBrightState = G.autoBrightEnabled;
+        }
+    }
+
+    // Update online status
+    mqttClient.publish((std::string(G.mqtt.topic) + "/availability").c_str(),
+                       "online", true);
 }
 
 //------------------------------------------------------------------------------
@@ -416,87 +671,291 @@ None
 Output:
 
 None
- */
-
-/* Example MQTT Message
-{
-    "brightness": true,
-    "color_mode": true,
-    "supported_color_modes": [
-        "hs"
-    ],
-    "schema": "json",
-    "name": "ESP",
-    "device": {
-        "identifiers": [
-            "ESPBuro"
-        ],
-        "name": "ESP",
-        "sw_version": "3.3",
-        "configuration_url": "http://<IP-Adress>"
-    },
-    "state_topic": "ESPBuro/status",
-    "command_topic": "ESPBuro/cmd",
-    "unique_id": "<MAC-Adress>",
-    "plattform": "mqtt",
-    "effect": true,
-    "effect_list": [
-        "Wordclock",
-        "Seconds",
-        "Digitalclock",
-        "Scrollingtext",
-        "Rainbowcycle",
-        "Rainbow",
-        "Color",
-        "Symbol"
-    ]
-}
 */
 
 void Mqtt::sendDiscovery() {
+    // Create unique_id based on MAC address
+    String unique_id = WiFi.macAddress();
+    unique_id.replace(":", ""); // Remove colons from MAC address
 
-    StaticJsonDocument<700> root;
-    mqttClient.setBufferSize(700);
+    // Main light entity
+    {
+        StaticJsonDocument<700> root;
+        mqttClient.setBufferSize(700);
 
-    root["brightness"] = true;
-    root["color_mode"] = true;
+        // Base configuration
+        root["name"] = String(G.mqtt.clientId);
+        root["unique_id"] = unique_id;
 
-    JsonArray colorMode = root.createNestedArray("supported_color_modes");
-    colorMode.add("hs");
+        // Topics
+        root["state_topic"] = String(G.mqtt.topic) + "/status";
+        root["command_topic"] = String(G.mqtt.topic) + "/cmd";
+        root["availability_topic"] = String(G.mqtt.topic) + "/availability";
+        root["payload_available"] = "online";
+        root["payload_not_available"] = "offline";
 
-    root["schema"] = "json";
-    root["name"] = G.mqtt.clientId;
+        // Functions
+        root["brightness"] = true;
+        root["brightness_scale"] = 255;
+        JsonArray colorModes = root.createNestedArray("supported_color_modes");
+        colorModes.add("hs"); // Correct color mode
+        root["optimistic"] = false;
 
-    JsonObject device = root.createNestedObject("device");
+        // Schema
+        root["schema"] = "json";
 
-    JsonArray identifiers = device.createNestedArray("identifiers");
-    identifiers.add(G.mqtt.topic);
+        // Effects
+        root["effect"] = true;
+        JsonArray effectList = root.createNestedArray("effect_list");
+        effectList.add("Wordclock");
+        effectList.add("Seconds");
+        effectList.add("Digitalclock");
+        effectList.add("Scrollingtext");
+        effectList.add("Rainbowcycle");
+        effectList.add("Rainbow");
+        effectList.add("Color");
+        effectList.add("Symbol");
 
-    device["name"] = G.mqtt.clientId;
-    device["sw_version"] = VERSION;
-    device["configuration_url"] = "http://" + WiFi.localIP().toString();
+        // Device information
+        JsonObject device = root.createNestedObject("device");
+        JsonArray identifiers = device.createNestedArray("identifiers");
+        identifiers.add(unique_id);
+        device["name"] = G.mqtt.clientId;
+        device["sw_version"] = VERSION;
+        device["model"] = "Word Clock";
+        device["manufacturer"] = "ESPWortuhr";
+        device["configuration_url"] = "http://" + WiFi.localIP().toString();
 
-    root["state_topic"] = std::string(G.mqtt.topic) + "/status";
-    root["command_topic"] = std::string(G.mqtt.topic) + "/cmd";
-    root["unique_id"] = WiFi.macAddress();
-    root["plattform"] = "mqtt";
+        char buffer[700];
+        serializeJson(root, buffer);
 
-    root["effect"] = true;
-    JsonArray effectList = root.createNestedArray("effect_list");
-    effectList.add("Wordclock");
-    effectList.add("Seconds");
-    effectList.add("Digitalclock");
-    effectList.add("Scrollingtext");
-    effectList.add("Rainbowcycle");
-    effectList.add("Rainbow");
-    effectList.add("Color");
-    effectList.add("Symbol");
+        String discoveryTopic = String(HOMEASSISTANT_DISCOVERY_TOPIC) +
+                                "/light/" + unique_id + "/config";
+        mqttClient.publish(discoveryTopic.c_str(), buffer, true);
+    }
 
-    char buffer[700];
-    serializeJson(root, buffer);
-    mqttClient.publish((std::string(HOMEASSISTANT_DISCOVERY_TOPIC) +
-                        std::string("/light/") + std::string(G.mqtt.topic) +
-                        std::string("/light/config"))
-                           .c_str(),
-                       buffer, true);
+    // 2. Scrolling Text Switch
+    {
+        StaticJsonDocument<512> root;
+
+        root["name"] = "Scrolling Text";
+        root["unique_id"] = unique_id + "_scrolltext";
+        root["icon"] = "mdi:text";
+
+        JsonObject deviceCopy = root.createNestedObject("device");
+        JsonArray deviceIdentifiers =
+            deviceCopy.createNestedArray("identifiers");
+        deviceIdentifiers.add(unique_id);
+        deviceCopy["name"] = G.mqtt.clientId;
+        deviceCopy["sw_version"] = VERSION;
+        deviceCopy["model"] = "Word Clock";
+        deviceCopy["manufacturer"] = "ESPWortuhr";
+        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+
+        root["state_topic"] = std::string(G.mqtt.topic) + "/scrolltext/state";
+        root["command_topic"] = std::string(G.mqtt.topic) + "/scrolltext/set";
+        root["value_template"] = "{{ value_json.scrolling_text }}";
+        root["command_template"] = "{ \"scrolling_text\": \"{{ value }}\" }";
+
+        char buffer[512];
+        serializeJson(root, buffer);
+        mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/text/" +
+                            unique_id + "_scrolltext/config")
+                               .c_str(),
+                           buffer, true);
+    }
+
+    // 3. Effect Speed
+    {
+        StaticJsonDocument<512> root;
+
+        root["name"] = "Effect Speed";
+        root["unique_id"] = unique_id + "_effect_speed";
+        root["icon"] = "mdi:speedometer";
+        root["device_class"] = "speed";
+
+        JsonObject deviceCopy = root.createNestedObject("device");
+        JsonArray deviceIdentifiers =
+            deviceCopy.createNestedArray("identifiers");
+        deviceIdentifiers.add(unique_id);
+        deviceCopy["name"] = G.mqtt.clientId;
+        deviceCopy["sw_version"] = VERSION;
+        deviceCopy["model"] = "Word Clock";
+        deviceCopy["manufacturer"] = "ESPWortuhr";
+        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+
+        root["state_topic"] = std::string(G.mqtt.topic) + "/effect_speed/state";
+        root["command_topic"] = std::string(G.mqtt.topic) + "/effect_speed/set";
+        root["min"] = 1;
+        root["max"] = 10;
+        root["step"] = 1;
+
+        char buffer[512];
+        serializeJson(root, buffer);
+        mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/number/" +
+                            unique_id + "_effect_speed/config")
+                               .c_str(),
+                           buffer, true);
+    }
+
+    // Diagnostic Entities
+    {
+        // Lux Sensor
+        StaticJsonDocument<512> root;
+        root["name"] = "Illuminance";
+        root["unique_id"] = unique_id + "_lux";
+        root["device_class"] = "illuminance";
+        root["unit_of_measurement"] = "lx";
+        root["icon"] = "mdi:white-balance-sunny";
+        root["state_class"] = "measurement";
+
+        JsonObject deviceCopy = root.createNestedObject("device");
+        JsonArray deviceIdentifiers =
+            deviceCopy.createNestedArray("identifiers");
+        deviceIdentifiers.add(unique_id);
+        deviceCopy["name"] = G.mqtt.clientId;
+        deviceCopy["sw_version"] = VERSION;
+        deviceCopy["model"] = "Word Clock";
+        deviceCopy["manufacturer"] = "ESPWortuhr";
+        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+
+        root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
+        root["value_template"] = "{{ value_json.lux }}";
+
+        char buffer[512];
+        serializeJson(root, buffer);
+        mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/sensor/" +
+                            unique_id + "_lux/config")
+                               .c_str(),
+                           buffer, true);
+    }
+
+    {
+        // LED Gain Sensor
+        StaticJsonDocument<512> root;
+        root["name"] = "LED Gain";
+        root["unique_id"] = unique_id + "_led_gain";
+        root["device_class"] = "power_factor";
+        root["unit_of_measurement"] = "%";
+        root["icon"] = "mdi:brightness-percent";
+        root["state_class"] = "measurement";
+
+        JsonObject deviceCopy = root.createNestedObject("device");
+        JsonArray deviceIdentifiers =
+            deviceCopy.createNestedArray("identifiers");
+        deviceIdentifiers.add(unique_id);
+        deviceCopy["name"] = G.mqtt.clientId;
+        deviceCopy["sw_version"] = VERSION;
+        deviceCopy["model"] = "Word Clock";
+        deviceCopy["manufacturer"] = "ESPWortuhr";
+        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+
+        root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
+        root["value_template"] = "{{ value_json.led_gain }}";
+
+        char buffer[512];
+        serializeJson(root, buffer);
+        mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/sensor/" +
+                            unique_id + "_led_gain/config")
+                               .c_str(),
+                           buffer, true);
+    }
+
+    {
+        // ADC Value Sensor
+        StaticJsonDocument<512> root;
+        root["name"] = "ADC Value";
+        root["unique_id"] = unique_id + "_adc_value";
+        root["device_class"] = "voltage";
+        root["unit_of_measurement"] = "V";
+        root["icon"] = "mdi:flash";
+        root["state_class"] = "measurement";
+        root["value_template"] = "{{ value_json.adc_value | round(2) }}";
+
+        JsonObject deviceCopy = root.createNestedObject("device");
+        JsonArray deviceIdentifiers =
+            deviceCopy.createNestedArray("identifiers");
+        deviceIdentifiers.add(unique_id);
+        deviceCopy["name"] = G.mqtt.clientId;
+        deviceCopy["sw_version"] = VERSION;
+        deviceCopy["model"] = "Word Clock";
+        deviceCopy["manufacturer"] = "ESPWortuhr";
+        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+
+        root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
+
+        char buffer[512];
+        serializeJson(root, buffer);
+        mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/sensor/" +
+                            unique_id + "_adc_value/config")
+                               .c_str(),
+                           buffer, true);
+    }
+
+    {
+        // ADC Raw Value Sensor
+        StaticJsonDocument<512> root;
+        root["name"] = "ADC Raw Value";
+        root["unique_id"] = unique_id + "_adc_raw";
+        root["unit_of_measurement"] = "";
+        root["icon"] = "mdi:flash";
+        root["state_class"] = "measurement";
+
+        JsonObject deviceCopy = root.createNestedObject("device");
+        JsonArray deviceIdentifiers =
+            deviceCopy.createNestedArray("identifiers");
+        deviceIdentifiers.add(unique_id);
+        deviceCopy["name"] = G.mqtt.clientId;
+        deviceCopy["sw_version"] = VERSION;
+        deviceCopy["model"] = "Word Clock";
+        deviceCopy["manufacturer"] = "ESPWortuhr";
+        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+
+        root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
+        root["value_template"] = "{{ value_json.adc_raw | int }}";
+
+        char buffer[512];
+        serializeJson(root, buffer);
+        mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/sensor/" +
+                            unique_id + "_adc_raw/config")
+                               .c_str(),
+                           buffer, true);
+    }
+
+    // Send online status
+    mqttClient.publish((std::string(G.mqtt.topic) + "/availability").c_str(),
+                       "online", true);
+
+    // Auto brightness switch
+    {
+        StaticJsonDocument<512> root;
+        root["name"] = "Auto Brightness";
+        root["unique_id"] = unique_id + "_auto_brightness";
+        root["icon"] = "mdi:brightness-auto";
+        root["device_class"] = "switch";
+
+        JsonObject deviceCopy = root.createNestedObject("device");
+        JsonArray deviceIdentifiers =
+            deviceCopy.createNestedArray("identifiers");
+        deviceIdentifiers.add(unique_id);
+        deviceCopy["name"] = G.mqtt.clientId;
+        deviceCopy["sw_version"] = VERSION;
+        deviceCopy["model"] = "Word Clock";
+        deviceCopy["manufacturer"] = "ESPWortuhr";
+        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
+
+        root["state_topic"] =
+            std::string(G.mqtt.topic) + "/auto_brightness/state";
+        root["command_topic"] =
+            std::string(G.mqtt.topic) + "/auto_brightness/set";
+        root["payload_on"] = "ON";
+        root["payload_off"] = "OFF";
+
+        char buffer[512];
+        serializeJson(root, buffer);
+        mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/switch/" +
+                            unique_id + "_auto_brightness/config")
+                               .c_str(),
+                           buffer, true);
+    }
 }

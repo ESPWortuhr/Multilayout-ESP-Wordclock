@@ -247,9 +247,12 @@ let TRANSLATION_ES = {
 			"help-offset": "Configuration of the brightness offset:<br/>It determines the minimum brightness of the LEDs at 0 lux ambient light:<br/> " +
 			"0=LEDs off, n=LED brightness is n/255, 255=LEDs always have the maximum brightness",
 			"value-offset": "Offset (0–255)",
-			"help-slope": "Configuration of the slope:<br/>It determines the degree of LED brightness change when the ambient light changes.<br/> " +
-			"0=weak LED brightness change, 16=neutral LED brightness change, 255=strong LED brightness change",
-			"value-slope": "Slope (0–255)"
+			"help-slope": "Configuración de la pendiente:<br/>Determina el grado de cambio de brillo del LED cuando cambia la luz ambiental.<br/>" +
+			"0=cambio de brillo LED débil, 16=cambio de brillo LED neutral, 255=cambio de brillo LED fuerte",
+			"value-slope": "Pendiente (0–255)",
+			"ldr-type": "Configuración LDR:",
+			"ldr-single": "LDR individual",
+			"ldr-quad": "Cuatro LDR en paralelo"
 		},
 		"hostname": {
 			"h2": "Hostname",

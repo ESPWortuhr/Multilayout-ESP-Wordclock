@@ -150,6 +150,7 @@ var COMMAND_SET_BOOT = 101;
 var COMMAND_SET_AUTO_BRIGHT = 102;
 var COMMAND_SET_LAYOUT_VARIANT = 103;
 var COMMAND_SET_MQTT_HA_DISCOVERY = 104;
+var COMMAND_SET_LDR_TYPE = 105;
 
 var COMMAND_SPEED = 152;
 
@@ -343,6 +344,16 @@ function initWebsocket() {
 			$("#mqtt-topic").set({ "value": data.MQTT_Topic, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
 		}
 
+		if (data.command === "scrolltext") {
+			$("#scrollingtext").set("value", data.scrolling_text);
+		}
+
+		if (data.command === "speed") {
+			$("#slider-speed").set("value", data.value);
+			$("#slider-speed-value").fill(data.value);
+			effectSpeed = data.value;
+		}
+
 		if (data.command === "birthdays") {
 			hasHappyBirthday = data.hasHappyBirthday;
 			$("#birthdays-date0").set("value", data.birthdayDate0);
@@ -420,6 +431,7 @@ function initWebsocket() {
 			$("#auto-bright-enabled").set("value", autoBrightEnabled);
 			enableSpecific("specific-layout-brightness-man", autoBrightEnabled === 0);
 			enableSpecific("specific-layout-brightness-auto", autoBrightEnabled === 1);
+			$("#ldr-type").set("value", data.ldrType);
 		}
 		if (data.command === "set") {
 			hsb[0][0] = data.hsb00;
@@ -569,15 +581,9 @@ function updateManualTimeInput() {
 }
 
 function autoBrightUpdater() {
-	if (autoBrightInterval !== null || autoBrightEnabled !== 1) {
-		return;
+	if (autoBrightEnabled === 1) {
+		sendCmd(COMMAND_REQUEST_AUTO_BRIGHT);
 	}
-	autoBrightInterval = setInterval(function() {
-		if ($("#auto-bright-enabled").get("value") === "1") {
-			sendCmd(COMMAND_REQUEST_AUTO_BRIGHT, 1);
-		}
-	}, 1000); // 1000 milliseconds intervall
-	debugMessage(`Start timer autoBrightInterval with ID ${autoBrightInterval}`);
 }
 
 function autoBrightStop() {
@@ -993,4 +999,13 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_WHITETYPE, nstr(wType));
 		debugMessage("whitetype" + debugMessageReconfigured);
 	});
+	$("#ldr-type").on("change", function() {
+		setLdrType();
+	});
 });
+
+function setLdrType() {
+	var ldrType = $("#ldr-type").get("value");
+	sendCmd(COMMAND_SET_LDR_TYPE, ldrType);
+	debugMessage("LDR type" + debugMessageReconfigured);
+}
