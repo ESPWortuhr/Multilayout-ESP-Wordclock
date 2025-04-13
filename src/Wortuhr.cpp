@@ -15,12 +15,12 @@
 #include <WiFi.h>
 #include <esp_sntp.h>
 #endif
+#include "Wortuhr.h"
 #include <NeoPixelBus.h>
 #include <RTClib.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
 #include <Wire.h>
-#include "Wortuhr.h"
 
 #include "Uhr.h"
 #include "config.h"
