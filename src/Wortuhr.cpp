@@ -15,6 +15,7 @@
 #include <WiFi.h>
 #include <esp_sntp.h>
 #endif
+#include "Wortuhr.h"
 #include <NeoPixelBus.h>
 #include <RTClib.h>
 #include <WiFiClient.h>
@@ -135,6 +136,15 @@ void incrementPowerCycleCount() {
     powerCycleCount++;
     EEPROM.write(powerCycleCountAddr, powerCycleCount);
     EEPROM.commit();
+}
+
+//------------------------------------------------------------------------------
+
+void sendMQTTUpdate() {
+    // send status update via MQTT
+    if ((G.mqtt.state) && (WiFi.status() == WL_CONNECTED)) {
+        mqtt.sendState();
+    }
 }
 
 //------------------------------------------------------------------------------
