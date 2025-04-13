@@ -1189,7 +1189,7 @@ void ClockWork::loop(struct tm &tm) {
         // don't expose password:
         char passMasked[32];
         strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
-        strncpy(passMasked, "******************************", 
+        strncpy(passMasked, "******************************",
                 (strlen(passMasked) - 3));
         config["MQTT_Pass"] = passMasked;
 
