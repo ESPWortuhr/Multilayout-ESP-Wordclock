@@ -168,13 +168,12 @@ void setup() {
     Serial.println(powerCycleCount);
     if (powerCycleCount == 3) {
         Serial.println("Enable captive portal");
-        #if CP_PROTECTED
-            wifiManager.startConfigPortal(CP_SSID, CP_PASSWORD);
-        #else
-            wifiManager.startConfigPortal(CP_SSID);
-        #endif
-    }
-    else if (powerCycleCount == 6) {
+#if CP_PROTECTED
+        wifiManager.startConfigPortal(CP_SSID, CP_PASSWORD);
+#else
+        wifiManager.startConfigPortal(CP_SSID);
+#endif
+    } else if (powerCycleCount == 6) {
         G.sernr++;
         Serial.println("Reset to initial values");
     }

@@ -258,10 +258,10 @@
 // Captive portal settings
 //--------------------------------------------------------------------------
 /*
- * The captive portal is used to enter the WiFi credentials when 
+ * The captive portal is used to enter the WiFi credentials when
  * MANUAL_WIFI_SETTINGS is set to false. CP_SSID is used to set a custom
- * SSID for the captive portal. CP_PROTECTED allows you to enable password 
- * protection for the captive portal. In this case, remember to change 
+ * SSID for the captive portal. CP_PROTECTED allows you to enable password
+ * protection for the captive portal. In this case, remember to change
  * CP_PASSWORD to a secure password.
  *
  * Valid values CP_PROTECTED [true, false]
