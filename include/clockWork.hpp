@@ -1185,7 +1185,14 @@ void ClockWork::loop(struct tm &tm) {
         config["MQTT_Port"] = G.mqtt.port;
         config["MQTT_Server"] = G.mqtt.serverAdress;
         config["MQTT_User"] = G.mqtt.user;
-        config["MQTT_Pass"] = G.mqtt.password;
+
+        // don't expose password:
+        char passMasked[32];
+        strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
+        strncpy(passMasked, "******************************", 
+                (strlen(passMasked) - 3));
+        config["MQTT_Pass"] = passMasked;
+
         config["MQTT_ClientId"] = G.mqtt.clientId;
         config["MQTT_Topic"] = G.mqtt.topic;
         serializeJson(config, str);

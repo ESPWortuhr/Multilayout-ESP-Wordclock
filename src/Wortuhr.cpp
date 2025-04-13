@@ -21,10 +21,9 @@
 #include <WiFiUdp.h>
 #include <Wire.h>
 
-#include "Uhr.h"
-
-#include "EEPROMAnything.h"
 #include "config.h"
+#include "Uhr.h"
+#include "EEPROMAnything.h"
 #include "uhrtype.gen.h"
 #include "webPageAdapter.h"
 
@@ -336,8 +335,10 @@ void setup() {
         led.setIcon(WLAN100);
     }
     network.setup(G.hostname);
+#if WIFI_VERBOSE
     int strength = network.getQuality();
     Serial.printf("Signal strength: %i\n", strength);
+#endif
     wifiStart();
     configTime(0, 0, G.timeserver);
     setenv("TZ", TZ_Europe_Berlin, true);

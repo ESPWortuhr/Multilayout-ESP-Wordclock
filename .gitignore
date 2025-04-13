@@ -174,3 +174,12 @@ typings/
 .vscode/extensions.json
 .vscode/launch.json
 .vscode/settings.json
+
+
+#########################
+# place for local stuff #
+#########################
+
+_[Mm]aterial/
+_[Ss]tuff/
+_[Ll]ocal/
