@@ -64,10 +64,11 @@ void read() {
     Serial.printf("MQTT_Server    : %s\n", G.mqtt.serverAdress);
     Serial.printf("MQTT_User    : %s\n", G.mqtt.user);
 
-    //don't expose password:
+    // don't expose password:
     char passMasked[32];
     strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
-    strncpy(passMasked, "******************************", (strlen(passMasked) - 3));
+    strncpy(passMasked, "******************************",
+            (strlen(passMasked) - 3));
     Serial.printf("MQTT_Pass (masked): %s\n", passMasked);
 
     Serial.printf("MQTT_ClientId    : %s\n", G.mqtt.clientId);

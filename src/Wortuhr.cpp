@@ -21,11 +21,12 @@
 #include <WiFiUdp.h>
 #include <Wire.h>
 
-#include "config.h"
 #include "Uhr.h"
-#include "EEPROMAnything.h"
+#include "config.h"
 #include "uhrtype.gen.h"
 #include "webPageAdapter.h"
+
+#include "EEPROMAnything.h"
 
 iUhrType *usedUhrType = nullptr;
 
