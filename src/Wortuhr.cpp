@@ -21,9 +21,9 @@
 #include <WiFiUdp.h>
 #include <Wire.h>
 
-#include "config.h"
-#include "Uhr.h"
 #include "EEPROMAnything.h"
+#include "Uhr.h"
+#include "config.h"
 #include "uhrtype.gen.h"
 #include "webPageAdapter.h"
 
