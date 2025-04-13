@@ -258,6 +258,25 @@
 #define WIFI_PASSWORD "Password"
 
 //--------------------------------------------------------------------------
+// Captive portal settings
+//--------------------------------------------------------------------------
+/*
+ * The captive portal is used to enter the WiFi credentials when
+ * MANUAL_WIFI_SETTINGS is set to false. CP_SSID is used to set a custom
+ * SSID for the captive portal. CP_PROTECTED allows you to enable password
+ * protection for the captive portal. In this case, remember to change
+ * CP_PASSWORD to a secure password.
+ *
+ * Valid values CP_PROTECTED [true, false]
+ * Valid values CP_SSID [Alphanumeric Letters]
+ * Valid values CP_PASSWORD [Alphanumeric Letters]
+ *
+ */
+#define CP_PROTECTED false
+#define CP_SSID "Connect_to_Wordclock"
+#define CP_PASSWORD "CHANGE_THIS_PASSWORD"
+
+//--------------------------------------------------------------------------
 // Settings for Boot sequence
 //--------------------------------------------------------------------------
 /*

@@ -33,7 +33,12 @@ void Network::setup(const char *hostname) {
 #if MANUAL_WIFI_SETTINGS
     wifiManager.preloadWiFi(WIFI_SSID, WIFI_PASSWORD);
 #endif
-    wifiManager.autoConnect(connectionSSID);
+    wifiManager.setConnectTimeout(20);
+#if CP_PROTECTED
+    wifiManager.autoConnect(CP_SSID, CP_PASSWORD);
+#else
+    wifiManager.autoConnect(CP_SSID);
+#endif
     // explicitly disable AP, esp defaults to STA+AP
     WiFi.enableAP(false);
     Network::info();
