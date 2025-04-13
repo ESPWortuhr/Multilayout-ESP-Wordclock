@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include "Wortuhr.h"
 #include <ArduinoJson.h>
 #ifdef ESP8266
 #include <ESP8266HTTPUpdateServer.h>
@@ -21,6 +20,7 @@
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
 #include <Wire.h>
+#include "Wortuhr.h"
 
 #include "Uhr.h"
 #include "config.h"
@@ -142,7 +142,7 @@ void incrementPowerCycleCount() {
 
 void sendMQTTUpdate() {
     // send status update via MQTT
-    if (G.mqtt.state && WiFi.status() == WL_CONNECTED) {
+    if ((G.mqtt.state) && (WiFi.status() == WL_CONNECTED)) {
         mqtt.sendState();
     }
 }
