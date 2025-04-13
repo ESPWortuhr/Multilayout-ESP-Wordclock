@@ -22,7 +22,9 @@
 #include <Wire.h>
 
 #include "config.h"
+
 #include "Uhr.h"
+
 #include "EEPROMAnything.h"
 #include "uhrtype.gen.h"
 #include "webPageAdapter.h"

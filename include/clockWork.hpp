@@ -1186,10 +1186,11 @@ void ClockWork::loop(struct tm &tm) {
         config["MQTT_Server"] = G.mqtt.serverAdress;
         config["MQTT_User"] = G.mqtt.user;
 
-        //don't expose password:
+        // don't expose password:
         char passMasked[32];
         strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
-        strncpy(passMasked, "******************************", (strlen(passMasked) - 3));
+        strncpy(passMasked, "******************************", 
+                (strlen(passMasked) - 3));
         config["MQTT_Pass"] = passMasked;
 
         config["MQTT_ClientId"] = G.mqtt.clientId;
