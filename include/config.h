@@ -173,7 +173,9 @@
  * with DEFAULT_LEDTYPE. If you have an RGBW LED strip, you can also use
  * WHITE_LEDTYPE to specify the type of white LED used (WarmWhite (3000K),
  * NeutralWhite (4300K) or ColdWhite (6500K)), in the case of RGB just leave it
- * at NeutralWhite.
+ * at NeutralWhite. With DEFAULT_HUE it is possible to define the hue value
+ * of the default color scheme. Use https://colorizer.org to get a hue value
+ * of your choice.
  *
  * Valid values for DEFAULT_LEDTYPE [Brg, Grb, Rgb, Rbg, Gbr, Grbw]
  * Valid values for WHITE_LEDTYPE [WarmWhite, NeutralWhite, ColdWhite]
