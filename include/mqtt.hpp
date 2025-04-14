@@ -364,6 +364,8 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     processScrollingText(doc);
     processColor(doc);
     processBrightness(doc);
+
+    sendMQTTUpdate();
 }
 
 //------------------------------------------------------------------------------
