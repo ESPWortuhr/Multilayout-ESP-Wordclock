@@ -306,7 +306,13 @@
  * Valid values REVERSE_MINUTE_DIR [true, false]
  * Valid values MIRROR_FRONT_VERTICAL [true, false]
  * Valid values MIRROR_FRONT_HORIZONTAL [true, false]
+ * Valid values EXTRA_LED_PER_ROW [true, false]
+ * Valid values FLIP_HORIZONTAL_VERTICAL [true, false]
+ * Valid values MEANDER_ROWS [true, false]
  */
 #define REVERSE_MINUTE_DIR false
 #define MIRROR_FRONT_VERTICAL false
 #define MIRROR_FRONT_HORIZONTAL false
+#define EXTRA_LED_PER_ROW false
+#define FLIP_HORIZONTAL_VERTICAL false
+#define MEANDER_ROWS true

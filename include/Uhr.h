@@ -113,7 +113,7 @@ struct GLOBAL {
     MinuteVariant minuteVariant;
     ItIsVariant itIsVariant;
     bool languageVariant[6];
-    bool layoutVariant[3];
+    bool layoutVariant[6];
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
     char scrollingText[PAYLOAD_LENGTH];
@@ -206,6 +206,9 @@ enum LayoutVariants {
     ReverseMinDirection = 0,
     MirrorVertical = 1,
     MirrorHorizontal = 2,
+    FlipHorzVert = 3,
+    ExtraLedPerRow = 4,
+    MeanderRows = 5,
 };
 
 enum fontSize {
@@ -275,7 +278,6 @@ enum ClockType {
     Ger10x11 = 1,
     Ger10x11Alternative = 2,
     Ger10x11AlternativeFrame = 4,
-    Ger10x11Vertical = 12,
     Ger10x11Clock = 6,
     Ger10x11schwaebisch = 20,
     Ger10x11Nero = 11,

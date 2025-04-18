@@ -385,6 +385,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.layoutVariant[ReverseMinDirection] = split(payload, 3);
             G.layoutVariant[MirrorVertical] = split(payload, 6);
             G.layoutVariant[MirrorHorizontal] = split(payload, 9);
+            G.layoutVariant[FlipHorzVert] = split(payload, 12);
+            G.layoutVariant[ExtraLedPerRow] = split(payload, 15);
+            G.layoutVariant[MeanderRows] = split(payload, 18);
             break;
         }
 
