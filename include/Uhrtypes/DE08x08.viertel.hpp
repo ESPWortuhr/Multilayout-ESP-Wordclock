@@ -35,6 +35,8 @@ public:
 
     virtual const bool hasZwanzig() override { return false; }
 
+    //------------------------------------------------------------------------------
+
     virtual const bool hasOnlyQuarterLayout() override { return true; }
 
     //------------------------------------------------------------------------------
