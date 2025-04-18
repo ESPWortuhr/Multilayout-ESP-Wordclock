@@ -34,8 +34,8 @@ iUhrType *usedUhrType = nullptr;
 #include "NeoMultiFeature.hpp"
 
 #ifdef ESP8266
-NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod> *strip_RGB = NULL;
-NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
+NeoPixelBus<NeoMultiFeature, NeoEsp8266BitBangWs2812xMethod> *strip_RGB = NULL;
+NeoPixelBus<NeoGrbwFeature, NeoEsp8266BitBangWs2812xMethod> *strip_RGBW = NULL;
 #elif defined(ESP32)
 NeoPixelBus<NeoGrbwFeature, NeoSk6812Method> *strip_RGBW = NULL;
 NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod> *strip_RGB = NULL;
@@ -268,6 +268,8 @@ void setup() {
         G.transitionSpeed = 30;
         G.transitionColorize = 0;
         G.transitionDemo = false;
+
+        G.LEDpin = LED_PIN;
 
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
             G.birthday[i].day = 1;

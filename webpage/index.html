@@ -542,6 +542,33 @@
                 </div>
 
                 <div class="box">
+                    <h2 data-i18next="settings.led-pin.h2"></h2>
+                    <form class="pure-form pure-form-aligned">
+                        <fieldset>
+                            <div class="pure-control-group">
+                                <legend data-i18next="settings.led-pin.help"></legend>
+                                <label for="ledpin" data-i18next="settings.led-pin.label"></label><select name="ledpin" id="ledpin" size="1">
+                                    <option value="2"  data-i18next="settings.led-pin.GPIO2"></option>
+                                    <option value="3"  data-i18next="settings.led-pin.GPIO3"></option>
+                                    <option value="4"  data-i18next="settings.led-pin.GPIO4"></option>
+                                    <option value="5"  data-i18next="settings.led-pin.GPIO5"></option>
+                                    <option value="6"  data-i18next="settings.led-pin.GPIO6"></option>
+                                    <option value="7"  data-i18next="settings.led-pin.GPIO7"></option>
+                                    <option value="8"  data-i18next="settings.led-pin.GPIO8"></option>
+                                    <option value="9"  data-i18next="settings.led-pin.GPIO9"></option>
+                                    <option value="10"  data-i18next="settings.led-pin.GPIO10"></option>
+                                    <option value="20"  data-i18next="settings.led-pin.GPIO20"></option>
+                                    <option value="21"  data-i18next="settings.led-pin.GPIO21"></option>
+                                </select>
+                            </div>
+                            <div class="pure-controls">
+                                <button id="ledpin-button" class="pure-button" data-i18next="settings.led-pin.save"></button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+
+                <div class="box">
                     <h2 data-i18next="settings.led-type.h2"></h2>
                     <form class="pure-form pure-form-aligned">
                         <fieldset>

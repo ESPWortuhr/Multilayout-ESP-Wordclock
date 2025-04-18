@@ -167,11 +167,12 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
         if (strip_RGBW == NULL) {
 #ifdef ESP8266
-            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(500);
-#elif defined(ESP32)
-            pinMode(LED_PIN, OUTPUT);
             strip_RGBW =
-                new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(500, LED_PIN);
+                new NeoPixelBus<NeoGrbwFeature, NeoEsp8266BitBangWs2812xMethod>(500, G.LEDpin);
+#elif defined(ESP32)
+            pinMode(G.LEDpin, OUTPUT);
+            strip_RGBW =
+                new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(500, G.LEDpin);
 #endif
             strip_RGBW->Begin();
         }
@@ -183,11 +184,12 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
         if (strip_RGB == NULL) {
 #ifdef ESP8266
-            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(500);
+            strip_RGB =
+                new NeoPixelBus<NeoMultiFeature, NeoEsp8266BitBangWs2812xMethod>(500, G.LEDpin);
 #elif defined(ESP32)
-            pinMode(LED_PIN, OUTPUT);
+            pinMode(G.LEDpin, OUTPUT);
             strip_RGB = new NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod>(
-                500, LED_PIN);
+                500, G.LEDpin);
 #endif
             strip_RGB->Begin();
         }
@@ -1399,6 +1401,21 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
+    case COMMAND_SET_LEDPIN: {
+        led.clear();
+ 
+        // G.param1 sets new buildtype
+        Serial.printf("Clock LED pin: %u\n", G.param1);
+ 
+        G.LEDpin = G.param1;
+        eeprom::write();
+        initLedStrip(G.Colortype);
+
+        clearClockByProgInit();
+        parametersChanged = true;
+        break;
+    }
+ 
     case COMMAND_SET_COLORTYPE: {
         // G.param1 sets new Colortype
         Serial.printf("LED Colortype: %u\n", G.param1);
