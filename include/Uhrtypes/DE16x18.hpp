@@ -54,6 +54,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool has60MinuteLayout() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(FrontWord word) override {
         switch (word) {
 

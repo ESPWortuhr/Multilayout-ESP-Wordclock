@@ -54,6 +54,9 @@
 // Same Layout as Ger11x11, but with additional LED's to illuminate the frame
 // from the side
 //
+// #define DEFAULT_LAYOUT Ger13x13
+// 13 rows, 13 LEDs per row
+//
 // #define DEFAULT_LAYOUT Ger22x11Weather
 // 22 rows, each 11 LED's per row, with weather forecast on overall 242 LED's
 // based on design of Github user @Eisbaeeer

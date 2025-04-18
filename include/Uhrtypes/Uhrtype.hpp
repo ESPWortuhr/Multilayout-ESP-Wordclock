@@ -192,6 +192,8 @@ public:
 
     virtual const bool has24HourLayout() { return false; }
 
+    virtual const bool has60MinuteLayout() { return false; }
+
     virtual const bool hasOnlyQuarterLayout() { return false; }
 
     virtual const bool hasWeatherLayout() { return false; }
