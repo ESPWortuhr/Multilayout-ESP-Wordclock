@@ -46,7 +46,7 @@ public:
     virtual const bool has60MinuteLayout() override { return true; }
 
     //------------------------------------------------------------------------------
- 
+
     void show(FrontWord word) override {
         switch (word) {
 
@@ -363,7 +363,7 @@ public:
             show(FrontWord::min_8);
             setFrontMatrixWord(9, 10, 12); // und
             show(FrontWord::min_40);
-                break;
+            break;
 
         case FrontWord::min_49:
             show(FrontWord::min_9);
