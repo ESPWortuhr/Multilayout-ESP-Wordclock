@@ -168,7 +168,8 @@ void ClockWork::initLedStrip(uint8_t num) {
         if (strip_RGBW == NULL) {
 #ifdef ESP8266
             strip_RGBW =
-                new NeoPixelBus<NeoGrbwFeature, NeoEsp8266BitBangWs2812xMethod>(500, G.LEDpin);
+                new NeoPixelBus<NeoGrbwFeature, NeoEsp8266BitBangWs2812xMethod>(
+                    500, G.LEDpin);
 #elif defined(ESP32)
             pinMode(G.LEDpin, OUTPUT);
             strip_RGBW =
@@ -185,7 +186,8 @@ void ClockWork::initLedStrip(uint8_t num) {
         if (strip_RGB == NULL) {
 #ifdef ESP8266
             strip_RGB =
-                new NeoPixelBus<NeoMultiFeature, NeoEsp8266BitBangWs2812xMethod>(500, G.LEDpin);
+                new NeoPixelBus<NeoMultiFeature, NeoEsp8266BitBangWs2812xMethod>(
+                    500, G.LEDpin);
 #elif defined(ESP32)
             pinMode(G.LEDpin, OUTPUT);
             strip_RGB = new NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod>(
