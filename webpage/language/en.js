@@ -218,6 +218,25 @@ let TRANSLATION_EN_US = {
 			"label": "Connection Status",
 			"connect": "Connect"
 		},
+		"led-pin": {
+			"h2": "LED Pin",
+			"help": "Here you can set the pin used for the LED strip.\n " +
+				"Note: You need to set the GPIO pin, not the pin printed on your board!\n " +
+				"It may be neccessary to restart your Wordclock.",
+			"label": "LED pin",
+			"GPIO2": "GPIO2",
+			"GPIO3": "GPIO3",
+			"GPIO4": "GPIO4",
+			"GPIO5": "GPIO5",
+			"GPIO6": "GPIO6",
+			"GPIO7": "GPIO7",
+			"GPIO8": "GPIO8",
+			"GPIO9": "GPIO9",
+			"GPIO10": "GPIO10",
+			"GPIO20": "GPIO20",
+			"GPIO21": "GPIO21",
+			"save": "Save Setting"
+		},
 		"led-type": {
 			"h2": "LED Type",
 			"help": "Here you can set the type of LED strip used (WS2812 or SK6812).\n " +

@@ -150,6 +150,8 @@ struct GLOBAL {
     bool bootShowWifi;
     bool bootShowIP;
 
+    uint8_t LEDpin;
+
     Birthday birthday[MAX_BIRTHDAY_COUNT];
 };
 GLOBAL G = {};
@@ -253,6 +255,7 @@ enum CommandWords {
     COMMAND_SET_AUTO_BRIGHT = 102,
     COMMAND_SET_LAYOUT_VARIANT = 103,
     COMMAND_SET_MQTT_HA_DISCOVERY = 104,
+    COMMAND_SET_LEDPIN = 105,
 
     COMMAND_SPEED = 152,
 

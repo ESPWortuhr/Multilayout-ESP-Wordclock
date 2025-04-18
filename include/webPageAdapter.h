@@ -445,6 +445,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+        case COMMAND_SET_LEDPIN: {
+            G.progInit = true;
+
+            G.param1 = split(payload, 3);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
         case COMMAND_SET_BIRTHDAYS: {
 
             for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {

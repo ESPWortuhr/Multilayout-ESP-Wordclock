@@ -95,6 +95,7 @@ var transitionDuration = 1;
 var transitionSpeed = 30;
 var transitionColorize = 1;
 var transitionDemo = false;
+var ledpin = 3;
 
 // operation modes
 var COMMAND_MODE_WORD_CLOCK = 1;
@@ -150,6 +151,7 @@ var COMMAND_SET_BOOT = 101;
 var COMMAND_SET_AUTO_BRIGHT = 102;
 var COMMAND_SET_LAYOUT_VARIANT = 103;
 var COMMAND_SET_MQTT_HA_DISCOVERY = 104;
+var COMMAND_SET_LEDPIN = 105;
 
 var COMMAND_SPEED = 152;
 
@@ -239,6 +241,7 @@ function initConfigValues() {
 	transitionSpeed = 30;
 	transitionColorize = 1;
 	transitionDemo = false;
+	ledpin = 3;
 }
 
 /* eslint-disable no-console */
@@ -335,12 +338,12 @@ function initWebsocket() {
 
 		if (data.command === "mqtt") {
 			$("#mqtt-port").set("value", data.MQTT_Port);
-			$("#mqtt-server").set({ "value": data.MQTT_Server, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
+			$("#mqtt-server").set("value", data.MQTT_Server);
 			document.getElementById("mqtt-state").checked = data.MQTT_State;
-			$("#mqtt-user").set({ "value": data.MQTT_User, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
-			$("#mqtt-pass").set({ "value": data.MQTT_Pass, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
-			$("#mqtt-clientid").set({ "value": data.MQTT_ClientId, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
-			$("#mqtt-topic").set({ "value": data.MQTT_Topic, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
+			$("#mqtt-user").set("value", data.MQTT_User);
+			$("#mqtt-pass").set("value", data.MQTT_Pass);
+			$("#mqtt-clientid").set("value", data.MQTT_ClientId);
+			$("#mqtt-topic").set("value", data.MQTT_Topic);
 		}
 
 		if (data.command === "birthdays") {
@@ -392,6 +395,7 @@ function initWebsocket() {
 			$("#front-layout").set("value", data.UhrtypeDef);
 			$("#buildtype").set("value", data.buildtype);
 			$("#whitetype").set("value", data.wType);
+			$("#ledpin").set("value", data.ledpin);
 			$("#colortype").set("value", data.colortype);
 
 			document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
@@ -430,6 +434,7 @@ function initWebsocket() {
 			hsb[1][2] = data.hsb12;
 			effectBri = data.effectBri;
 			effectSpeed = data.effectSpeed;
+			ledpin = data.ledpin;
 			colortype = data.colortype;
 			hasHappyBirthday = data.hasHappyBirthday;
 
@@ -906,6 +911,12 @@ $.ready(function() {
 		sendCmd(COMMAND_SET_UHRTYPE, nstr($("#front-layout").get("value")));
 		sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 		debugMessage("FrontLayout" + debugMessageReconfigured);
+	});
+	$("#ledpin-button").on("click", function() {
+		ledpin = $("#ledpin").get("value");
+
+		sendCmd(COMMAND_SET_LEDPIN, nstr(ledpin));
+		debugMessage("ledpin" + debugMessageReconfigured);
 	});
 	$("#colortype-button").on("click", function() {
 		colortype = $("#colortype").get("value");
