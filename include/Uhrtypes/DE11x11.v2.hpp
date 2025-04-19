@@ -22,9 +22,6 @@
 
 class De11x11V2_t : public De11x11_t {
 public:
-    virtual LanguageAbbreviation usedLang() override {
-        return LanguageAbbreviation::DE;
-    };
 
     //------------------------------------------------------------------------------
 
