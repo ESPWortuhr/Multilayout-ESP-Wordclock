@@ -231,7 +231,7 @@ public:
             }
             returnValue = row + rowsWordMatrix() * (newColsWordMatrix - 1 - col);
             if (G.layoutVariant[ExtraLedPerRow]) {
-                returnValue += col;
+                returnValue += colsWordMatrix() - col;
                 numPixelsWordMatrix += colsWordMatrix() - 1;
             }
         }
