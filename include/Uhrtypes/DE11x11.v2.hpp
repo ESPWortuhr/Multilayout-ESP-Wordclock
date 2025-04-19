@@ -22,6 +22,12 @@
 
 class De11x11V2_t : public De11x11_t {
 public:
+    //------------------------------------------------------------------------------
+
+    virtual const bool hasZwanzig() override { return false; }
+
+    //------------------------------------------------------------------------------
+
     void show(FrontWord word) override {
         switch (word) {
 
