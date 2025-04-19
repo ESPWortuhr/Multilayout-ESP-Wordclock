@@ -74,6 +74,7 @@ public:
     // Pixel Clear Functions
     //------------------------------------------------------------------------------
     inline void clearPixel(uint16_t i);
+    inline void clearPixel(uint8_t row, uint8_t col);
     inline void clearClock();
     inline void clearRow(uint8_t row);
     inline void clearMinArray();

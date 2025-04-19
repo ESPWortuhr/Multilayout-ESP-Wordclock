@@ -158,7 +158,9 @@ let TRANSLATION_EN_US = {
 			"buildtype": "Buildtype",
 			"normal": "Each LED corresponds to one letter",
 			"doubleResM1": "Every second LED corresponds to one letter",
-			"doubleRes": "Two LEDs per letter"
+			"doubleRes": "Two LEDs per letter",
+			"trippleRes": "Three LEDs per letter",
+			"quadRes": "Four LEDs per letter"
 		},
 		"language": {
 			"h2": "Language",
