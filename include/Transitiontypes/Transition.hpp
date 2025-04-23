@@ -1124,7 +1124,7 @@ void Transition::demoMode(uint8_t &_hour, uint8_t &_minute, uint8_t _second) {
                     test_minute += 15;
                 } else if (usedUhrType->has60MinuteLayout()) {
                     test_minute += 1;
-                } else{
+                } else {
                     test_minute += 5;
                 }
             }
