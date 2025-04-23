@@ -1128,10 +1128,10 @@ void Transition::demoMode(uint8_t &_hour, uint8_t &_minute, uint8_t _second) {
                     test_minute += 5;
                 }
             }
-            // add one hour for 60 minutes
+            // add one hour every 60 minutes
             if (test_minute >= 60) {
                 test_minute %= 60;
-                test_hour += 1;
+                test_hour = (test_hour + 1) % 24;
             }
             // log demo time
             Serial.printf("Demo time: %02d:%02d\n", test_hour, test_minute);
