@@ -252,6 +252,13 @@ public:
         if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
             numPixelsWordMatrix = rowsWordMatrix() * (colsWordMatrix() * 2 - 1);
         }
+        if (G.layoutVariant[ExtraLedPerRow]) {
+            if (G.layoutVariant[FlipHorzVert] == false) {
+                numPixelsWordMatrix += rowsWordMatrix() - 1;
+            } else {
+                numPixelsWordMatrix += colsWordMatrix() - 1;
+            }
+        }
 
         for (uint8_t i = 0; i < 4; i++) {
             switch (col) {
