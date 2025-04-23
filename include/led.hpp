@@ -657,7 +657,7 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
     bool showMinutes = true;
     // toogle hours and minutes if clock is not high enough
     if (usedUhrType->rowsWordMatrix() <
-        (pgm_read_byte(&(fontHeight[usedFontSize])) * 2 + 1)) {
+        (pgm_read_byte(&(fontHeight[usedFontSize])) * 2)) {
         if (_second % 4 < 2) { // show hours every 2 seconds
             showHours = true;
             showMinutes = false;
