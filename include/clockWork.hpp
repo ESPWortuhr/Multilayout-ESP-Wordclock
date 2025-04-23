@@ -1101,7 +1101,7 @@ void ClockWork::loop(struct tm &tm) {
     previousMillis = currentMillis;
 
     // Faster runtime for demo
-    transition->demoMode(_minute, _second);
+    transition->demoMode(_hour, _minute, _second);
 
     //------------------------------------------------
     // Secounds and LDR Routine
