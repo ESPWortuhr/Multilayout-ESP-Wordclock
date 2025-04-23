@@ -198,7 +198,7 @@ public:
     //------------------------------------------------------------------------------
     // Loop Helper Functions
     //------------------------------------------------------------------------------
-    void demoMode(uint8_t &_minute, uint8_t _second);
+    void demoMode(uint8_t &_hour, uint8_t &_minute, uint8_t _second);
     void initTransitionStart();
     bool hasMinuteChanged();
     bool isOverwrittenByTransition(WordclockChanges flag, uint8_t minute);

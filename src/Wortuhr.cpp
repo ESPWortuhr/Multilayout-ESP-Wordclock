@@ -493,7 +493,7 @@ void loop() {
     transition->loop(tm); // must be called periodically
 
     // make the time run faster in the demo mode of the transition
-    transition->demoMode(_minute, _second);
+    transition->demoMode(_hour, _minute, _second);
 
     if (usedUhrType->numPixelsFrameMatrix() != 0) {
         secondsFrame->loop();
