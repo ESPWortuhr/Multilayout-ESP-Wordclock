@@ -218,12 +218,15 @@ let TRANSLATION_DE_DE = {
 			"label": "Verbindungsstatus",
 			"connect": "Verbinden"
 		},
-		"led-pin": {
-			"h2": "LED Pin",
+		"hardware-config": {
+			"h2": "Hardware Einstellung",
 			"help": "Hier kann der verwendete Pin für den LED-Streifen eingestellt werden.\n " +
 				"Hinweis: Es muss die GPIO-Nummer verwendet werden, nicht die aufgedruckte Zahl auf dem Board!\n " +
 				"Möglicherweise muss die Wortuhr neu gestartet werden.",
-			"label": "LED pin",
+			"led-pin": "LED pin",
+			"power-button": "Power Button",
+			"mode-button": "Mode Button",
+			"speed-button": "Speed Button",
 			"GPIO2": "GPIO2",
 			"GPIO3": "GPIO3",
 			"GPIO4": "GPIO4",
@@ -233,6 +236,8 @@ let TRANSLATION_DE_DE = {
 			"GPIO8": "GPIO8",
 			"GPIO9": "GPIO9",
 			"GPIO10": "GPIO10",
+			"GPIO13": "GPIO13",
+			"GPIO14": "GPIO14",
 			"GPIO20": "GPIO20",
 			"GPIO21": "GPIO21",
 			"save": "Einstellung speichern"

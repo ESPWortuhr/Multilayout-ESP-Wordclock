@@ -157,6 +157,9 @@ void setup() {
     //-------------------------------------
 #if GENERAL_VERBOSE
     Serial.begin(115200);
+    pinMode(G.powerButton, INPUT_PULLUP);
+    pinMode(G.modeButton, INPUT_PULLUP);
+    pinMode(G.speedButton, INPUT_PULLUP);
     Serial.println("");
     Serial.println("--------------------------------------");
     Serial.println("Begin Setup");
@@ -270,6 +273,9 @@ void setup() {
         G.transitionDemo = false;
 
         G.LEDpin = LED_PIN;
+        G.powerButton = POWER_BUTTON;
+        G.modeButton = MODE_BUTTON;
+        G.speedButton = SPEED_BUTTON;
 
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
             G.birthday[i].day = 1;

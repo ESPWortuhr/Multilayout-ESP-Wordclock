@@ -96,6 +96,9 @@ var transitionSpeed = 30;
 var transitionColorize = 1;
 var transitionDemo = false;
 var ledpin = 3;
+var powerbutton = 2;
+var modebutton = 13;
+var speedbutton = 14;
 
 // operation modes
 var COMMAND_MODE_WORD_CLOCK = 1;
@@ -151,7 +154,7 @@ var COMMAND_SET_BOOT = 101;
 var COMMAND_SET_AUTO_BRIGHT = 102;
 var COMMAND_SET_LAYOUT_VARIANT = 103;
 var COMMAND_SET_MQTT_HA_DISCOVERY = 104;
-var COMMAND_SET_LEDPIN = 105;
+var COMMAND_SET_GPIO = 105;
 
 var COMMAND_SPEED = 152;
 
@@ -242,6 +245,9 @@ function initConfigValues() {
 	transitionColorize = 1;
 	transitionDemo = false;
 	ledpin = 3;
+	powerbutton = 2;
+	modebutton = 13;
+	speedbutton = 14;
 }
 
 /* eslint-disable no-console */
@@ -396,7 +402,26 @@ function initWebsocket() {
 			$("#buildtype").set("value", data.buildtype);
 			$("#whitetype").set("value", data.wType);
 			$("#ledpin").set("value", data.ledpin);
+			$("#powerbutton").set("value", data.powerbutton);
+			$("#modebutton").set("value", data.modebutton);
+			$("#speedbutton").set("value", data.speedbutton);
 			$("#colortype").set("value", data.colortype);
+
+			removeSpecificOption("ledpin", data.powerbutton, true);
+			removeSpecificOption("ledpin", data.modebutton, true);
+			removeSpecificOption("ledpin", data.speedbutton, true);
+
+			removeSpecificOption("powerbutton", data.ledpin, true);
+			removeSpecificOption("powerbutton", data.modebutton, true);
+			removeSpecificOption("powerbutton", data.speedbutton, true);
+
+			removeSpecificOption("modebutton", data.ledpin, true);
+			removeSpecificOption("modebutton", data.powerbutton, true);
+			removeSpecificOption("modebutton", data.speedbutton, true);
+
+			removeSpecificOption("speedbutton", data.ledpin, true);
+			removeSpecificOption("speedbutton", data.powerbutton, true);
+			removeSpecificOption("speedbutton", data.modebutton, true);
 
 			document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
 			document.getElementById("boot-show-led-sweep").checked = data.bootLedSweep;
@@ -435,6 +460,9 @@ function initWebsocket() {
 			effectBri = data.effectBri;
 			effectSpeed = data.effectSpeed;
 			ledpin = data.ledpin;
+			powerbutton = data.powerbutton;
+			modebutton = data.modebutton;
+			speedbutton = data.speedbutton;
 			colortype = data.colortype;
 			hasHappyBirthday = data.hasHappyBirthday;
 
@@ -912,11 +940,14 @@ $.ready(function() {
 		sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
 		debugMessage("FrontLayout" + debugMessageReconfigured);
 	});
-	$("#ledpin-button").on("click", function() {
+	$("#hardware-config-save-button").on("click", function() {
 		ledpin = $("#ledpin").get("value");
+		powerbutton = $("#powerbutton").get("value");
+		modebutton = $("#modebutton").get("value");
+		speedbutton = $("#speedbutton").get("value");
 
-		sendCmd(COMMAND_SET_LEDPIN, nstr(ledpin));
-		debugMessage("ledpin" + debugMessageReconfigured);
+		sendCmd(COMMAND_SET_GPIO, nstr(ledpin) + nstr(powerbutton) + nstr(modebutton) + nstr(speedbutton));
+		debugMessage("hardware-config" + debugMessageReconfigured);
 	});
 	$("#colortype-button").on("click", function() {
 		colortype = $("#colortype").get("value");

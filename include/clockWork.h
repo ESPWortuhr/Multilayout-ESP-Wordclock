@@ -16,6 +16,8 @@ private:
     uint16_t adcValue0Lux =
         10; // Hier wird der niedrigste LDR-ADC Wert getrackt,
             // für eine dynamische offset korrektur bei 0 LUX
+    unsigned long buttonPressStart = 0; // Variable to store the time when the button was pressed
+    bool buttonPressed = false; // State of the button
 
 private:
     //------------------------------------------------------------------------------
@@ -23,6 +25,7 @@ private:
     //------------------------------------------------------------------------------
     void initBH1750Logic();
     void loopAutoBrightLogic();
+    void loopGPIOinput();
     uint32_t num32BitWithOnesAccordingToColumns();
     bool isRomanLanguage();
 

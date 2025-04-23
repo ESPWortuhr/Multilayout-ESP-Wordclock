@@ -88,6 +88,86 @@ void ClockWork::initBH1750Logic() {
 
 //------------------------------------------------------------------------------
 
+void ClockWork::loopGPIOinput() {
+    // Read the power button state
+    int powerButtonState = digitalRead(G.powerButton);
+
+    // Button is pressed
+    if (powerButtonState == HIGH && !buttonPressed) {
+        buttonPressed = true; // Button is now pressed
+        // Set off if brightness is set, set on if brightness is 0
+        if (G.color[0].B > 0) {
+            for (uint8_t i = 0; i < 3; i++) {
+                G.color[i].B = 0;
+            }
+        } else {
+            for (uint8_t i = 0; i < 3; i++) {
+                G.color[i].B = 1;
+            }
+        }
+    }
+
+    // Read the mode button state
+    int modeButtonState = digitalRead(G.modeButton);
+    
+    // Check if the button is pressed
+    if (modeButtonState == LOW && !buttonPressed) {
+        buttonPressed = true; // Button is now pressed
+        buttonPressStart = millis(); // Record the start time of the press
+    }
+    
+    // Check if the button is released
+    if (modeButtonState == HIGH && buttonPressed) {
+        buttonPressed = false; // Button is released
+        unsigned long pressDuration = millis() - buttonPressStart;
+        
+        if (pressDuration < 2000) { // Short press duration threshold (2000 ms)
+            // set next mode in range 1 - 8
+            G.prog = (G.prog % 8) + 1;
+        } else {
+            // set transition in range 0 - 12
+            G.transitionType = (G.transitionType + 1) % 13;
+        }
+    }
+
+    // Read the speed button state
+    int speedButtonState = digitalRead(G.speedButton);
+    
+    // Check if the button is pressed
+    if (speedButtonState == LOW && !buttonPressed) {
+        buttonPressed = true; // Button is now pressed
+        buttonPressStart = millis(); // Record the start time of the press
+    }
+    
+    // Check if the button is released
+    if (speedButtonState == HIGH && buttonPressed) {
+        buttonPressed = false; // Button is released
+        unsigned long pressDuration = millis() - buttonPressStart;
+        
+        if (pressDuration < 2000) { // Short press duration threshold (2000 ms)
+            // Set brightness in range 10% - 100% with step 10%
+            if (G.color[0].B == 1) {
+                G.color[0].B = 0.1;
+            } else if (G.color[0].B >= 0.9) {
+                G.color[0].B = 1;
+            } else {
+                G.color[0].B += 0.1;
+            }
+        } else {
+            // Set hue in range 0 - 360 with step 30
+            if (G.color[0].H == 360) {
+                G.color[0].B = 0;
+            } else if (G.color[0].B >= 330) {
+                G.color[0].B = 360;
+            } else {
+                G.color[0].B += 30;
+            }
+        }
+    }
+}
+
+ //------------------------------------------------------------------------------
+
 iUhrType *ClockWork::getPointer(uint8_t type) {
     switch (type) {
     case Ger10x11:
@@ -1403,13 +1483,15 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
-    case COMMAND_SET_LEDPIN: {
+    case COMMAND_SET_GPIO: {
         led.clear();
 
-        // G.param1 sets new buildtype
-        Serial.printf("Clock LED pin: %u\n", G.param1);
+        // Print new types
+        Serial.printf("Clock LED pin: GPIO%u\n", G.LEDpin);
+        Serial.printf("Clock power button: GPIO%u\n", G.powerButton);
+        Serial.printf("Clock mode button: GPIO%u\n", G.modeButton);
+        Serial.printf("Clock speed button: GPIO%u\n", G.speedButton);
 
-        G.LEDpin = G.param1;
         eeprom::write();
         initLedStrip(G.Colortype);
 

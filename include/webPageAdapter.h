@@ -445,10 +445,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_SET_LEDPIN: {
+        case COMMAND_SET_GPIO: {
             G.progInit = true;
 
-            G.param1 = split(payload, 3);
+            G.LEDpin = split(payload, 3);
+            G.powerButton = split(payload, 6);
+            G.modeButton = split(payload, 9);
+            G.speedButton = split(payload, 12);
             break;
         }
 

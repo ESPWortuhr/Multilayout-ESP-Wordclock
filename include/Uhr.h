@@ -151,6 +151,9 @@ struct GLOBAL {
     bool bootShowIP;
 
     uint8_t LEDpin;
+    uint8_t powerButton;
+    uint8_t modeButton;
+    uint8_t speedButton;
 
     Birthday birthday[MAX_BIRTHDAY_COUNT];
 };
@@ -255,7 +258,7 @@ enum CommandWords {
     COMMAND_SET_AUTO_BRIGHT = 102,
     COMMAND_SET_LAYOUT_VARIANT = 103,
     COMMAND_SET_MQTT_HA_DISCOVERY = 104,
-    COMMAND_SET_LEDPIN = 105,
+    COMMAND_SET_GPIO = 105,
 
     COMMAND_SPEED = 152,
 

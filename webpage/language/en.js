@@ -218,12 +218,15 @@ let TRANSLATION_EN_US = {
 			"label": "Connection Status",
 			"connect": "Connect"
 		},
-		"led-pin": {
-			"h2": "LED Pin",
+		"hardware-config": {
+			"h2": "Hardware configuration",
 			"help": "Here you can set the pin used for the LED strip.\n " +
 				"Note: You need to set the GPIO pin, not the pin printed on your board!\n " +
 				"It may be neccessary to restart your Wordclock.",
-			"label": "LED pin",
+			"led-pin": "LED pin",
+			"power-button": "Power Button",
+			"mode-button": "Mode Button",
+			"speed-button": "Speed Button",
 			"GPIO2": "GPIO2",
 			"GPIO3": "GPIO3",
 			"GPIO4": "GPIO4",
@@ -233,6 +236,8 @@ let TRANSLATION_EN_US = {
 			"GPIO8": "GPIO8",
 			"GPIO9": "GPIO9",
 			"GPIO10": "GPIO10",
+			"GPIO13": "GPIO13",
+			"GPIO14": "GPIO14",
 			"GPIO20": "GPIO20",
 			"GPIO21": "GPIO21",
 			"save": "Save Setting"
