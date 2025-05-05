@@ -146,7 +146,7 @@ uint8_t Led::getCurrentManualBrightnessSetting() {
     } else if (_hour < 24) {
         return G.h22;
     } else {
-        return 100;
+        return DEFAULT_BRIGHTNESS;
     }
 }
 
@@ -155,7 +155,7 @@ uint8_t Led::getCurrentManualBrightnessSetting() {
 HsbColor Led::getColorbyPositionWithAppliedBrightness(ColorPosition position) {
     HsbColor color = G.color[position];
 
-    if (G.autoBrightEnabled) {
+    if (G.autoBrightEnabled == 1) {
         color.B = setBrightnessAuto(color.B);
     } else {
         color.B *= getCurrentManualBrightnessSetting() / 100.f;

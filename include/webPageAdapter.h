@@ -296,7 +296,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.transitionSpeed = split(payload, 9);
             G.transitionColorize = split(payload, 12);
             G.transitionDemo = split(payload, 15);
-            ;
             break;
         }
 
@@ -362,8 +361,23 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_AUTO_BRIGHT: {
             G.autoBrightEnabled = split(payload, 3);
-            G.autoBrightOffset = split(payload, 6);
-            G.autoBrightSlope = split(payload, 9);
+            G.autoBrightMin = split(payload, 6);
+            G.autoBrightMax = split(payload, 9);
+            G.autoBrightPeak = split(payload, 12, 4);
+
+            if (G.autoBrightMin < 0)
+              G.autoBrightMin = 0;
+            if (G.autoBrightMin > 100)
+              G.autoBrightMin = 100;
+            if (G.autoBrightMax < 10)
+              G.autoBrightMax = 10;
+            if (G.autoBrightMax > 100)
+              G.autoBrightMax = 100;
+            if (G.autoBrightPeak < 10)
+              G.autoBrightPeak = 10;
+            if (G.autoBrightPeak > 1500)
+              G.autoBrightPeak = 1500;
+            
             break;
         }
 
