@@ -480,9 +480,21 @@ void Transition::setMinute() {
         if (G.layoutVariant[ReverseMinDirection]) {
             std::reverse(std::begin(minArray), std::end(minArray));
         }
-        for (uint8_t i = 0; i < 4; i++) {
-            led.setPixel(minArray[i],
-                         HsbColor{m > i ? foregroundMinute : background});
+
+        uint8_t numLEDsPerLetter = 1;
+        if (G.buildTypeDef == BuildTypeDef::DoubleRes) {
+            numLEDsPerLetter = 2;
+        } else if (G.buildTypeDef == BuildTypeDef::TrippleRes) {
+            numLEDsPerLetter = 3;
+        } else if (G.buildTypeDef == BuildTypeDef::QuadRes) {
+            numLEDsPerLetter = 4;
+        }
+
+        for (uint8_t m = 0; m < 4; m++) {
+            for (int i = 0; i < numLEDsPerLetter; i++) {
+                led.setPixel(minArray[m] * numLEDsPerLetter + i,
+                             HsbColor{m > i ? foregroundMinute : background});
+            }
             // TODO: fading transition for Minutes
         }
     }
