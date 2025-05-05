@@ -1122,16 +1122,34 @@ uint16_t Transition::transitionSnake() {
 // Loop Helper Functions
 //------------------------------------------------------------------------------
 
-void Transition::demoMode(uint8_t &_minute, uint8_t _second) {
-    static uint8_t test_second = 0;
-    static uint8_t test_minute = 45;
+void Transition::demoMode(uint8_t &_hour, uint8_t &_minute, uint8_t _second) {
+    static uint8_t test_second = _second;
+    static uint8_t test_minute = _minute;
+    static uint8_t test_hour = _hour;
     if (G.transitionDemo) {
-        if (isIdle() && ((_second % 10) == 0) && (test_second != _second)) {
-            test_minute += 5;
-            if (test_minute >= 60) {
-                test_minute = _minute % 5;
+        // increment every second
+        // by checking isIdle transitions are completely done
+        if (isIdle() && ((_second % 2) == 0) && (test_second != _second)) {
+            // select increment by clock type
+            if (usedUhrType != nullptr) {
+                if (usedUhrType->hasOnlyQuarterLayout()) {
+                    test_minute += 15;
+                } else if (usedUhrType->has60MinuteLayout()) {
+                    test_minute += 1;
+                } else {
+                    test_minute += 5;
+                }
             }
+            // add one hour every 60 minutes
+            if (test_minute >= 60) {
+                test_minute %= 60;
+                test_hour = (test_hour + 1) % 24;
+            }
+            // log demo time
+            Serial.printf("Demo time: %02d:%02d\n", test_hour, test_minute);
         }
+        // set to time variables
+        _hour = test_hour;
         _minute = test_minute;
         test_second = _second;
     }
