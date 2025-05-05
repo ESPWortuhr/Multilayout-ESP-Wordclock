@@ -245,8 +245,12 @@ void Led::setPixel(uint16_t ledIndex, HsbColor color) {
 
 void Led::setPixel(uint8_t row, uint8_t col, HsbColor color) {
     uint8_t numLEDsPerLetter = 1;
-    if (G.buildTypeDef >= BuildTypeDef::DoubleRes) {
-        numLEDsPerLetter = (uint8_t)BuildTypeDef::DoubleRes;
+    if (G.buildTypeDef == BuildTypeDef::DoubleRes) {
+        numLEDsPerLetter = 2;
+    } else if (G.buildTypeDef == BuildTypeDef::TrippleRes) {
+        numLEDsPerLetter = 3;
+    } else if (G.buildTypeDef == BuildTypeDef::QuadRes) {
+        numLEDsPerLetter = 4;
     }
 
     uint16_t ledIndex = usedUhrType->getFrontMatrixIndex(row, col);
@@ -467,8 +471,12 @@ bool Led::getState() {
 
 inline void Led::clearPixel(uint8_t row, uint8_t col) {
     uint8_t numLEDsPerLetter = 1;
-    if (G.buildTypeDef >= BuildTypeDef::DoubleRes) {
-        numLEDsPerLetter = (uint8_t)BuildTypeDef::DoubleRes;
+    if (G.buildTypeDef == BuildTypeDef::DoubleRes) {
+        numLEDsPerLetter = 2;
+    } else if (G.buildTypeDef == BuildTypeDef::TrippleRes) {
+        numLEDsPerLetter = 3;
+    } else if (G.buildTypeDef == BuildTypeDef::QuadRes) {
+        numLEDsPerLetter = 4;
     }
 
     uint16_t ledIndex = usedUhrType->getFrontMatrixIndex(row, col);
