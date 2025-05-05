@@ -231,7 +231,8 @@ public:
             if (G.layoutVariant[MeanderRows] && (col % 2 == 0)) {
                 row = rowsWordMatrix() - 1 - row;
             }
-            returnValue = row + rowsWordMatrix() * (newColsWordMatrix - 1 - col);
+            returnValue =
+                row + rowsWordMatrix() * (newColsWordMatrix - 1 - col);
             if (G.layoutVariant[ExtraLedPerRow]) {
                 returnValue += colsWordMatrix() - 1 - col;
                 numPixelsWordMatrix += colsWordMatrix() - 1;
