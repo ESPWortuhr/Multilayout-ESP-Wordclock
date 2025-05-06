@@ -366,17 +366,17 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.autoBrightPeak = split(payload, 12, 4);
 
             if (G.autoBrightMin < 0)
-              G.autoBrightMin = 0;
+                G.autoBrightMin = 0;
             if (G.autoBrightMin > 100)
-              G.autoBrightMin = 100;
+                G.autoBrightMin = 100;
             if (G.autoBrightMax < 10)
-              G.autoBrightMax = 10;
+                G.autoBrightMax = 10;
             if (G.autoBrightMax > 100)
-              G.autoBrightMax = 100;
+                G.autoBrightMax = 100;
             if (G.autoBrightPeak < 10)
-              G.autoBrightPeak = 10;
+                G.autoBrightPeak = 10;
             if (G.autoBrightPeak > 1500)
-              G.autoBrightPeak = 1500;
+                G.autoBrightPeak = 1500;
 
             break;
         }

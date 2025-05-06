@@ -6,9 +6,9 @@
 #include "openwmap.h"
 #include <Arduino.h>
 #if AUTOBRIGHT_USE_BH1750
-    #include <BH1750.h>
-    BH1750 lightMeter(0x23);
-    bool bh1750Initialized;
+#include <BH1750.h>
+BH1750 lightMeter(0x23);
+bool bh1750Initialized;
 #endif
 
 OpenWMap weather;
@@ -44,14 +44,14 @@ void ClockWork::loopAutoBrightLogic() {
     float luxNow = -1.0;
 
 #if AUTOBRIGHT_USE_BH1750
-    if (bh1750Initialized && lightMeter.measurementReady()){
+    if (bh1750Initialized && lightMeter.measurementReady()) {
         luxNow = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
     }
 #endif
 
 #if AUTOBRIGHT_USE_LDR
     // only use LDR, if no value from BH1750 is available
-    if (luxNow < 0){
+    if (luxNow < 0) {
         uint16_t adcValue = analogRead(A0); // Range 0-1023 (1024 on overflow)
 
         // The lux value is considerably misrepresented upwards at ADC values
@@ -60,7 +60,7 @@ void ClockWork::loopAutoBrightLogic() {
         // days, a fixed upper measurement limit of 980 is set here.
         // Regardless of this, a maximum value of 1023 has to be applied in
         // any case in order to avoid division by zero (analogRead is 0-1024)!
-        if (adcValue > 980){
+        if (adcValue > 980) {
             adcValue = 980;
         }
 
@@ -73,7 +73,7 @@ void ClockWork::loopAutoBrightLogic() {
     // If luxNow is still negative, no data could be retrieved from BH1750 or
     // LDR. We return to preserve the previous ledGain (potentially default).
     // Otherwise we may end up in a blinking light...
-    if (luxNow < 0){
+    if (luxNow < 0) {
         return;
     }
 
@@ -90,10 +90,10 @@ void ClockWork::loopAutoBrightLogic() {
     uint16_t minimum = min(G.autoBrightMin, G.autoBrightMax);
     uint16_t maximum = max(G.autoBrightMin, G.autoBrightMax);
 
-    if (ledGain >= maximum){
+    if (ledGain >= maximum) {
         ledGain = maximum;
     }
-    if (ledGain <= minimum){
+    if (ledGain <= minimum) {
         ledGain = minimum;
     }
 
