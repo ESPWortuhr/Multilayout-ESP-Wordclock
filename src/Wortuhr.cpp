@@ -237,6 +237,9 @@ void setup() {
         G.layoutVariant[ReverseMinDirection] = REVERSE_MINUTE_DIR;
         G.layoutVariant[MirrorVertical] = MIRROR_FRONT_VERTICAL;
         G.layoutVariant[MirrorHorizontal] = MIRROR_FRONT_HORIZONTAL;
+        G.layoutVariant[FlipHorzVert] = FLIP_HORIZONTAL_VERTICAL;
+        G.layoutVariant[ExtraLedPerRow] = EXTRA_LED_PER_ROW;
+        G.layoutVariant[MeanderRows] = MEANDER_ROWS;
         for (uint8_t i = 0;
              i < sizeof(G.languageVariant) / sizeof(G.languageVariant[0]);
              i++) {
