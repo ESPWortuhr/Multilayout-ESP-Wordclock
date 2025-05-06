@@ -97,7 +97,6 @@ void ClockWork::loopAutoBrightLogic() {
         ledGain = minimum;
     }
 
-
     if (ledGainOld != ledGain) {
         parametersChanged = true;
     }
