@@ -441,7 +441,7 @@ void setup() {
     if (G.autoBrightEnabled >= 9) {
         G.autoBrightEnabled = 0;
     }
-#endif    
+#endif
 
 #if AUTOBRIGHT_USE_BH1750
     // Initialize ambient light sensor BH1750 on I2C bus

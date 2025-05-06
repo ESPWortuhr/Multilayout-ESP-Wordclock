@@ -39,7 +39,7 @@ void ClockWork::loopAutoBrightLogic() {
         ledGain = G.autoBrightMax;
         return;
     }
-    
+
     float ledGainOld = ledGain;
     float luxNow = -1.0;
 
