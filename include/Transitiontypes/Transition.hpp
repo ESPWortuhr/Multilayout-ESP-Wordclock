@@ -473,7 +473,7 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
 
 void Transition::setMinute() {
     if (G.minuteVariant != MinuteVariant::Off) {
-        uint8_t m = lastMinute % 5;
+        uint8_t m5 = lastMinute % 5;
         uint16_t minArray[4];
         usedUhrType->getMinuteArray(minArray,
                                     clockWork.determineWhichMinuteVariant());
@@ -493,7 +493,7 @@ void Transition::setMinute() {
         for (uint8_t m = 0; m < 4; m++) {
             for (int i = 0; i < numLEDsPerLetter; i++) {
                 led.setPixel(minArray[m] * numLEDsPerLetter + i,
-                             HsbColor{m > i ? foregroundMinute : background});
+                             HsbColor{m5 > m ? foregroundMinute : background});
             }
             // TODO: fading transition for Minutes
         }
