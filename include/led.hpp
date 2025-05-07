@@ -518,8 +518,19 @@ inline void Led::clearRow(uint8_t row) {
 //------------------------------------------------------------------------------
 
 inline void Led::clearMinArray() {
-    for (uint16_t i = minutePixelArray[0]; i <= minutePixelArray[3]; i++) {
-        clearPixel(i);
+    for (uint16_t m = minutePixelArray[0]; m <= minutePixelArray[3]; m++) {
+        uint8_t numLEDsPerLetter = 1;
+        if (G.buildTypeDef == BuildTypeDef::DoubleRes) {
+            numLEDsPerLetter = 2;
+        } else if (G.buildTypeDef == BuildTypeDef::TrippleRes) {
+            numLEDsPerLetter = 3;
+        } else if (G.buildTypeDef == BuildTypeDef::QuadRes) {
+            numLEDsPerLetter = 4;
+        }
+
+        for (int i = 0; i < numLEDsPerLetter; i++) {
+            clearPixel(m * numLEDsPerLetter + i);
+        }
     }
     minuteArray = 0;
 }
