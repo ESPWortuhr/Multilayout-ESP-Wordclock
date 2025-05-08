@@ -6,22 +6,12 @@ class ClockWork {
 private:
     uint16_t countMillisSpeed = 0;
     uint32_t previousMillis = 0;
-    enum class stateBH1750Type {
-        toBeInitialized = 0,
-        Initialized = 1,
-        cannotBeInitialized = 2,
-    };
-    stateBH1750Type stateBH1750 = stateBH1750Type::toBeInitialized;
-    float lux = 0.0;
-    uint16_t adcValue0Lux =
-        10; // Hier wird der niedrigste LDR-ADC Wert getrackt,
-            // für eine dynamische offset korrektur bei 0 LUX
+    uint32_t lux = 0;
 
 private:
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
-    void initBH1750Logic();
     void loopAutoBrightLogic();
     uint32_t num32BitWithOnesAccordingToColumns();
     bool isRomanLanguage();
