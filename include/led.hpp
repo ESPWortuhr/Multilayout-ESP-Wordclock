@@ -309,11 +309,23 @@ void Led::setbyMinuteArray(ColorPosition colorPosition) {
     HsbColor displayedColor =
         getColorbyPositionWithAppliedBrightness(colorPosition);
 
+    uint8_t numLEDsPerLetter = 1;
+    if (G.buildTypeDef == BuildTypeDef::DoubleRes) {
+        numLEDsPerLetter = 2;
+    } else if (G.buildTypeDef == BuildTypeDef::TrippleRes) {
+        numLEDsPerLetter = 3;
+    } else if (G.buildTypeDef == BuildTypeDef::QuadRes) {
+        numLEDsPerLetter = 4;
+    }
+
     /* Set minutes According to minute byte */
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint8_t m = 0; m < 4; m++) {
         /* Bitwise check whether Pixel bit is set */
-        if ((minuteArray >> i) & 1U) {
-            setPixel(minutePixelArray[i], displayedColor);
+        if ((minuteArray >> m) & 1U) {
+            for (int i = 0; i < numLEDsPerLetter; i++) {
+                setPixel(minutePixelArray[m] * numLEDsPerLetter + i,
+                         displayedColor);
+            }
         }
     }
 }
