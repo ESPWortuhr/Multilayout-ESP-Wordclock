@@ -101,7 +101,6 @@ let TRANSLATION_NL = {
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternatief",
 			"de-10-11-alt-frame": "🇩🇪 10 × 11 Alternatief Frame",
-			"de-10-11-vertical": "🇩🇪 10 × 11 Verticaal",
 			"de-10-11-clock": "🇩🇪 10 × 11 Clock",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
 			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Frame",

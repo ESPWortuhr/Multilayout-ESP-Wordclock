@@ -25,28 +25,6 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getFrontMatrixIndex(const uint8_t row, uint8_t col) {
-
-        uint8_t newColsWordMatrix = colsWordMatrix();
-        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
-
-        if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
-            newColsWordMatrix = 2 * colsWordMatrix() - 1;
-            numPixelsWordMatrix = rowsWordMatrix() * newColsWordMatrix;
-            col *= 2;
-        }
-        uint16_t returnValue = col + (row * newColsWordMatrix);
-
-        if (returnValue > numPixelsWordMatrix) {
-            Serial.println(
-                "[ERROR] getFrontMatrixIndex() returnValue out of Bounds");
-        }
-
-        return returnValue;
-    };
-
-    //------------------------------------------------------------------------------
-
     virtual const uint8_t rowsWordMatrix() override { return 8; };
 
     //------------------------------------------------------------------------------

@@ -67,7 +67,7 @@ var h20 = 100;
 var h22 = 100;
 var h24 = 100;
 var dialect = [0, 0, 0, 0, 0, 0];
-var layVar = [0, 0, 0];
+var layVar = [0, 0, 0, 0, 0, 0];
 var showSeconds = 0;
 var showMinutes = 0;
 var hasHappyBirthday = 0;
@@ -213,7 +213,7 @@ function initConfigValues() {
 	h22 = 100;
 	h24 = 100;
 	dialect = [0, 0, 0, 0, 0, 0];
-	layVar = [0, 0, 0];
+	layVar = [0, 0, 0, 0, 0, 0];
 	showSeconds = 0;
 	showMinutes = 0;
 	buildtype = 0;
@@ -381,6 +381,9 @@ function initWebsocket() {
 			document.getElementById("layvar-0").checked = data.layVar0;
 			document.getElementById("layvar-1").checked = data.layVar1;
 			document.getElementById("layvar-2").checked = data.layVar2;
+			document.getElementById("layvar-3").checked = data.layVar3;
+			document.getElementById("layvar-4").checked = data.layVar4;
+			document.getElementById("layvar-5").checked = data.layVar5;
 
 			$("#slider-brightness").set("value", data.effectBri);
 			$("#slider-speed").set("value", data.effectSpeed); // TODO: there is no property effectSpeed!
@@ -1003,8 +1006,11 @@ $.ready(function() {
 		layVar[0] = $("#layvar-0").get("checked") | 0;
 		layVar[1] = $("#layvar-1").get("checked") | 0;
 		layVar[2] = $("#layvar-2").get("checked") | 0;
+		layVar[3] = $("#layvar-3").get("checked") | 0;
+		layVar[4] = $("#layvar-4").get("checked") | 0;
+		layVar[5] = $("#layvar-5").get("checked") | 0;
 
-		sendCmd(COMMAND_SET_LAYOUT_VARIANT, nstr(layVar[0]) + nstr(layVar[1]) + nstr(layVar[2]));
+		sendCmd(COMMAND_SET_LAYOUT_VARIANT, nstr(layVar[0]) + nstr(layVar[1]) + nstr(layVar[2]) + nstr(layVar[3]) + nstr(layVar[4]) + nstr(layVar[5]));
 		debugMessage("layVar" + debugMessageReconfigured);
 	});
 	$("[id*='buildtype']").on("change", function() {
