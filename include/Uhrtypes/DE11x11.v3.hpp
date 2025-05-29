@@ -67,7 +67,7 @@ public:
         case FrontWord::v_vor:
             setFrontMatrixWord(3, 2, 4);
             break;
-            
+
         case FrontWord::uhr:
             setFrontMatrixWord(9, 0, 2);
             break;
