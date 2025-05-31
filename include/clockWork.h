@@ -16,8 +16,11 @@ private:
     uint16_t adcValue0Lux =
         10; // Hier wird der niedrigste LDR-ADC Wert getrackt,
             // für eine dynamische offset korrektur bei 0 LUX
-    unsigned long buttonPressStart = 0; // Variable to store the time when the button was pressed
-    bool buttonPressed = false; // State of the button
+
+    // Variable to store the time when the button was pressed
+    unsigned long buttonPressStart = 0;
+    // State of the button
+    bool buttonPressed = false;
 
 private:
     //------------------------------------------------------------------------------

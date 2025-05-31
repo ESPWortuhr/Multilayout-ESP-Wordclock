@@ -109,18 +109,18 @@ void ClockWork::loopGPIOinput() {
 
     // Read the mode button state
     int modeButtonState = digitalRead(G.modeButton);
-    
+
     // Check if the button is pressed
     if (modeButtonState == LOW && !buttonPressed) {
-        buttonPressed = true; // Button is now pressed
+        buttonPressed = true;        // Button is now pressed
         buttonPressStart = millis(); // Record the start time of the press
     }
-    
+
     // Check if the button is released
     if (modeButtonState == HIGH && buttonPressed) {
         buttonPressed = false; // Button is released
         unsigned long pressDuration = millis() - buttonPressStart;
-        
+
         if (pressDuration < 2000) { // Short press duration threshold (2000 ms)
             // set next mode in range 1 - 8
             G.prog = (G.prog % 8) + 1;
@@ -132,18 +132,18 @@ void ClockWork::loopGPIOinput() {
 
     // Read the speed button state
     int speedButtonState = digitalRead(G.speedButton);
-    
+
     // Check if the button is pressed
     if (speedButtonState == LOW && !buttonPressed) {
-        buttonPressed = true; // Button is now pressed
+        buttonPressed = true;        // Button is now pressed
         buttonPressStart = millis(); // Record the start time of the press
     }
-    
+
     // Check if the button is released
     if (speedButtonState == HIGH && buttonPressed) {
         buttonPressed = false; // Button is released
         unsigned long pressDuration = millis() - buttonPressStart;
-        
+
         if (pressDuration < 2000) { // Short press duration threshold (2000 ms)
             // Set brightness in range 10% - 100% with step 10%
             if (G.color[0].B == 1) {
@@ -166,7 +166,7 @@ void ClockWork::loopGPIOinput() {
     }
 }
 
- //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 iUhrType *ClockWork::getPointer(uint8_t type) {
     switch (type) {
