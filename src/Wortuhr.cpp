@@ -15,6 +15,9 @@
 #include <WiFi.h>
 #include <esp_sntp.h>
 #endif
+
+#include "config.h"
+
 #include "Wortuhr.h"
 #include <NeoPixelBus.h>
 #include <RTClib.h>
@@ -23,7 +26,6 @@
 #include <Wire.h>
 
 #include "Uhr.h"
-#include "config.h"
 #include "uhrtype.gen.h"
 #include "webPageAdapter.h"
 
@@ -226,14 +228,14 @@ void setup() {
         strcpy(G.hostname, "ESPWordclock");
         strcpy(G.scrollingText, "HELLO WORLD ");
 
-        G.h6 = 100;
-        G.h8 = 100;
-        G.h12 = 100;
-        G.h16 = 100;
-        G.h18 = 100;
-        G.h20 = 100;
-        G.h22 = 100;
-        G.h24 = 100;
+        G.h6 = DEFAULT_BRIGHTNESS;
+        G.h8 = DEFAULT_BRIGHTNESS;
+        G.h12 = DEFAULT_BRIGHTNESS;
+        G.h16 = DEFAULT_BRIGHTNESS;
+        G.h18 = DEFAULT_BRIGHTNESS;
+        G.h20 = DEFAULT_BRIGHTNESS;
+        G.h22 = DEFAULT_BRIGHTNESS;
+        G.h24 = DEFAULT_BRIGHTNESS;
         G.layoutVariant[ReverseMinDirection] = REVERSE_MINUTE_DIR;
         G.layoutVariant[MirrorVertical] = MIRROR_FRONT_VERTICAL;
         G.layoutVariant[MirrorHorizontal] = MIRROR_FRONT_HORIZONTAL;
@@ -261,8 +263,9 @@ void setup() {
         G.bootShowIP = BOOT_SHOWIP;
 
         G.autoBrightEnabled = 0;
-        G.autoBrightOffset = 100;
-        G.autoBrightSlope = 10;
+        G.autoBrightMin = 10;
+        G.autoBrightMax = 80;
+        G.autoBrightPeak = 750;
         G.transitionType = 0; // Transition::NO_TRANSITION;
         G.transitionDuration = 2;
         G.transitionSpeed = 30;
@@ -426,6 +429,30 @@ void setup() {
     Serial.print(__DATE__);
     Serial.print(" ");
     Serial.println(__TIME__);
+
+    //------------------------------------------------------------------------------
+    // Auto brightness
+    //------------------------------------------------------------------------------
+
+#if !(AUTOBRIGHT_USE_BH1750) && !(AUTOBRIGHT_USE_LDR)
+    // Disable autoBright-Option if no sensor option is available
+    G.autoBrightEnabled = 9;
+#else
+    if (G.autoBrightEnabled >= 9) {
+        G.autoBrightEnabled = 0;
+    }
+#endif
+
+#if AUTOBRIGHT_USE_BH1750
+    // Initialize ambient light sensor BH1750 on I2C bus
+    if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
+        Serial.println("BH1750 initialized");
+        bh1750Initialized = true;
+    } else {
+        Serial.println("BH1750 initialisation error, using LDR if available");
+        bh1750Initialized = false;
+    }
+#endif
 
     Serial.println("--------------------------------------");
     Serial.println("Ende Setup");

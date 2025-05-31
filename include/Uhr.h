@@ -139,8 +139,9 @@ struct GLOBAL {
     OpenWeatherMapData openWeatherMap;
 
     uint8_t autoBrightEnabled;
-    uint8_t autoBrightOffset;
-    uint8_t autoBrightSlope;
+    uint8_t autoBrightMin;
+    uint8_t autoBrightMax;
+    uint16_t autoBrightPeak;
     uint8_t transitionType;
     uint8_t transitionDuration;
     uint8_t transitionSpeed;
@@ -157,7 +158,7 @@ struct GLOBAL {
 GLOBAL G = {};
 
 // LDR
-float ledGain = 100;
+float ledGain = DEFAULT_BRIGHTNESS;
 
 uint8_t _second = 0;
 uint8_t _secondFrame = 0;
