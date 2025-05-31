@@ -242,14 +242,20 @@ let TRANSLATION_IT = {
 			"eighteen-to-twenty": "18:00 – 19:59",
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
-			"value-sensor": "Luminosità attuale dalla fotoresistenza (LDR)",
-			"value-gain": "LED Guadagno [%]",
-			"help-offset": "Configurazione dell'offset di luminosità:<br/>Determina la luminosità minima dei LED a 0 lux di luce ambientale:<br/>" +
-			"0=LED spenti, n=luminosità dei LED pari a n/255, 255=LED sempre con la massima luminosità",
-			"value-offset": "Offset (0–255)",
-			"help-slope": "Configurazione della pendenza:<br/> Determina il grado di variazione della luminosità del LED al variare della luce ambientale.<br/>" +
-			"0=modifica debole della luminosità del LED, 16=modifica neutra della luminosità del LED, 255=modifica forte della luminosità del LED.",
-			"value-slope": "Pendenza (0–255)"
+			"value-sensor": "Luce ambientale (lx)",
+			"value-gain": "Luminosità del LED (%)",
+			"help-min": "Configurazione della luminosità minima:<br/>" +
+				"Definisce la luminosità minima dei LED in percentuale in condizioni di buio assoluto (0 lx).<br/>" +
+				"0 = LED spenti, 100 = i LED funzionano sempre alla massima luminosità (100 %)",
+			"value-min": "Luminosità minima (0–100)",
+			"help-max": "Configurazione della luminosità massima:<br/>" +
+				"Definisce la luminosità massima in percentuale con cui operano i LED.<br/>" +
+				"Con valori superiori all'80%, è prevedibile un maggiore degrado (invecchiamento) per i LED che si accendono in modo permanente o frequente.<br />" +
+				"10 = bassa luminosità (10 %), 100 = il più luminoso possibile (100 %)",
+			"value-max": "Luminosità massima (10–100)",
+			"help-peak": "Configurazione del punto di riferimento per la luminosità massima dei LED:<br/>" +
+				"Determina la luce ambientale (lx) alla quale i LED si accendono con la luminosità massima definita..",
+			"value-peak": "Luce ambiente di riferimento (10–1500)"
 		},
 		"hostname": {
 			"h2": "Hostname",

@@ -242,14 +242,20 @@ let TRANSLATION_HU = {
 			"eighteen-to-twenty": "18:00 – 19:59",
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
-			"value-sensor": "A fotóellenállás aktuális világossága (LDR)",
-			"value-gain": "LED Nyereség [%]",
-			"help-offset": "A fényerő eltolás konfigurálása:<br/>Meghatározza a LED-ek minimális fényerejét 0 lux környezeti fénynél:<br/> " +
-			"0=LED-ek kikapcsolva, n=LED fényerőssége n/255, 255=LED-ek mindig maximális fényerősségűek.",
-			"value-offset": "Offset (0–255)",
-			"help-slope": "A lejtő konfigurációja:<br/>Meghatározza a LED fényerejének változásának mértékét, amikor a környezeti fény változik.<br/>" +
-			"0=gyenge LED-fényerő változás, 16=semleges LED-fényerő változás, 255=erős LED-fényerő változás.",
-			"value-slope": "Lejtő (0–255)"
+			"value-sensor": "Környezeti fény (lx)",
+			"value-gain": "LED fényerő (%)",
+			"help-min": "A minimális fényerő beállítása:<br/>" +
+				"Meghatározza a LED-ek minimális fényerejét százalékban abszolút sötétben. (0 lx).<br/>" +
+				"0 = LED-ek ki, 100 = A LED-ek mindig maximális fényerővel működnek (100 %)",
+			"value-min": "Minimális fényerő (0–100)",
+			"help-max": "A maximális fényerő beállítása:<br/>" +
+				"Meghatározza a maximális fényerőt százalékban, amellyel a LED-ek működnek.<br/>" +
+				"80 % feletti értékeknél fokozott degradációra (öregedésre) kell számítani az állandóan vagy gyakran világító LED-ek esetében.<br />" +
+				"10 = alacsony fényerő (10 %), 100 = a lehető legvilágosabb (100 %)",
+			"value-max": "Maximális fényerő (10–100)",
+			"help-peak": "A maximális LED-fényerő referenciapontjának konfigurálása:<br/>" +
+				"Meghatározza a környezeti fényt (lx), amelynél a LED-ek a meghatározott maximális fényerővel világítanak..",
+			"value-peak": "Referencia környezeti fény (10–1500)"
 		},
 		"hostname": {
 			"h2": "Host-név",
