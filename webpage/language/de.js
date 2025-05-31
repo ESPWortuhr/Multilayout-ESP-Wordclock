@@ -294,14 +294,20 @@ let TRANSLATION_DE_DE = {
 			"eighteen-to-twenty": "18:00 – 19:59",
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
-			"value-sensor": "Licht Sensor [Lux]",
-			"value-gain": "LED Gain [%]",
-			"help-offset": "Konfiguration des Helligkeitsoffsets:<br/>Sie bestimmt die minimale Helligkeit der LEDs bei 0 Lux Umgebungslicht:<br/>" +
-				"0=LEDs aus, LED Helligkeit ist n/255, 255=LEDs haben immer die maximale Helligkeit",
-			"value-offset": "Offset (0–255)",
-			"help-slope": "Konfiguration der Steilheit:<br/>Sie bestimmt den Grad der LED-Helligkeitsänderung bei Änderung des Umgebungslichts.<br/>" +
-				"0=schwache LED-Helligkeitsänderung, 16=neutrale LED-Helligkeitsänderung, 255=starke LED-Helligkeitsänderung",
-			"value-slope": "Steilheit (0–255)"
+			"value-sensor": "Umgebungslicht (lx)",
+			"value-gain": "LED Helligkeit (%)",
+			"help-min": "Konfiguration der minimalen Helligkeit:<br/>" +
+				"Definiert die minimale Helligkeit der LEDs in Prozent bei absoluter Dunkelheit (0 lx).<br/>" +
+				"0 = LEDs aus, 100 = LEDs leuchten immer mit maximaler Helligkeit (100 %)",
+			"value-min": "Minimale Helligkeit (0–100)",
+			"help-max": "Konfiguration der maximalen Helligkeit:<br/>" +
+				"Definiert die maximale Helligkeit in Prozent, mit der die LEDs angesteuert werden.<br/>" +
+				"Bei Werten oberhalb von 80 % ist mit einer erhöhten Degradation (Alterung) der LEDs zu rechnen, die dauerhaft oder häufig leuchten.<br />" +
+				"10 = geringe Helligkeit (10 %), 100 = so hell wie möglich (100 %)",
+			"value-max": "Maximale Helligkeit (10–100)",
+			"help-peak": "Konfiguration des Referenzpunktes für die maximale LED-Helligkeit:<br/>" +
+				"Legt fest, ab welchem Umgebungslicht (lx) die LEDs mit der definierten maximalen Helligkeit leuchten.",
+			"value-peak": "Referenz-Umgebungslicht (10–1500)"
 		},
 		"hostname": {
 			"h2": "Hostname",

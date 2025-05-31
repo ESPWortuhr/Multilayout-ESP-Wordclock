@@ -787,13 +787,17 @@
                                 <label for="auto-bright-gain" data-i18next="settings.brightness.value-gain"></label><input id="auto-bright-gain" type="text" value=" " readonly>
                             </div>
                             <br>
-                            <legend data-i18next="settings.brightness.help-offset"></legend>
+                            <legend data-i18next="settings.brightness.help-min"></legend>
                             <div class="pure-control-group">
-                                <label for="auto-bright-offset" data-i18next="settings.brightness.value-offset"></label><input id="auto-bright-offset" type="number" min="0" max="255">
+                                <label for="auto-bright-min" data-i18next="settings.brightness.value-min"></label><input id="auto-bright-min" type="number" min="0" max="100"> %
                             </div>
-                            <legend data-i18next="settings.brightness.help-slope"></legend>
+                            <legend data-i18next="settings.brightness.help-max"></legend>
                             <div class="pure-control-group">
-                                <label for="auto-bright-slope" data-i18next="settings.brightness.value-slope"></label><input id="auto-bright-slope" type="number" min="0" max="255">
+                                <label for="auto-bright-max" data-i18next="settings.brightness.value-max"></label><input id="auto-bright-max" type="number" min="10" max="100"> %
+                            </div>
+                            <legend data-i18next="settings.brightness.help-peak"></legend>
+                            <div class="pure-control-group">
+                                <label for="auto-bright-peak" data-i18next="settings.brightness.value-peak"></label><input id="auto-bright-peak" type="number" min="10" max="1500"> lx
                             </div>
                             <!-- Specific Brightness-automatic End-->
                         </div>
