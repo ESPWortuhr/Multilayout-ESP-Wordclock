@@ -111,6 +111,8 @@ public:
         case FrontWord::vor:
         case FrontWord::v_vor:
             setFrontMatrixWord(3, 2, 4);
+            break;
+
         case FrontWord::uhr:
             setFrontMatrixWord(10, 0, 2);
             break;
