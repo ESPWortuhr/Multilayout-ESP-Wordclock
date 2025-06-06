@@ -244,7 +244,19 @@ void Led::setPixel(uint16_t ledIndex, HsbColor color) {
 //------------------------------------------------------------------------------
 
 void Led::setPixel(uint8_t row, uint8_t col, HsbColor color) {
-    setPixel(usedUhrType->getFrontMatrixIndex(row, col), color);
+    uint8_t numLEDsPerLetter = 1;
+    if (G.buildTypeDef == BuildTypeDef::DoubleRes) {
+        numLEDsPerLetter = 2;
+    } else if (G.buildTypeDef == BuildTypeDef::TrippleRes) {
+        numLEDsPerLetter = 3;
+    } else if (G.buildTypeDef == BuildTypeDef::QuadRes) {
+        numLEDsPerLetter = 4;
+    }
+
+    uint16_t ledIndex = usedUhrType->getFrontMatrixIndex(row, col);
+    for (int i = 0; i < numLEDsPerLetter; i++) {
+        setPixel(ledIndex * numLEDsPerLetter + i, color);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -267,7 +279,7 @@ void Led::setbyFrontMatrix(ColorPosition colorPosition,
             if (boolSetPixel) {
                 setPixel(row, col, displayedColor);
             } else if (colorPosition != Background) {
-                clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
+                clearPixel(row, col);
             }
         }
     }
@@ -297,11 +309,23 @@ void Led::setbyMinuteArray(ColorPosition colorPosition) {
     HsbColor displayedColor =
         getColorbyPositionWithAppliedBrightness(colorPosition);
 
+    uint8_t numLEDsPerLetter = 1;
+    if (G.buildTypeDef == BuildTypeDef::DoubleRes) {
+        numLEDsPerLetter = 2;
+    } else if (G.buildTypeDef == BuildTypeDef::TrippleRes) {
+        numLEDsPerLetter = 3;
+    } else if (G.buildTypeDef == BuildTypeDef::QuadRes) {
+        numLEDsPerLetter = 4;
+    }
+
     /* Set minutes According to minute byte */
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint8_t m = 0; m < 4; m++) {
         /* Bitwise check whether Pixel bit is set */
-        if ((minuteArray >> i) & 1U) {
-            setPixel(minutePixelArray[i], displayedColor);
+        if ((minuteArray >> m) & 1U) {
+            for (int i = 0; i < numLEDsPerLetter; i++) {
+                setPixel(minutePixelArray[m] * numLEDsPerLetter + i,
+                         displayedColor);
+            }
         }
     }
 }
@@ -457,6 +481,24 @@ bool Led::getState() {
 // Pixel Clear Functions
 //------------------------------------------------------------------------------
 
+inline void Led::clearPixel(uint8_t row, uint8_t col) {
+    uint8_t numLEDsPerLetter = 1;
+    if (G.buildTypeDef == BuildTypeDef::DoubleRes) {
+        numLEDsPerLetter = 2;
+    } else if (G.buildTypeDef == BuildTypeDef::TrippleRes) {
+        numLEDsPerLetter = 3;
+    } else if (G.buildTypeDef == BuildTypeDef::QuadRes) {
+        numLEDsPerLetter = 4;
+    }
+
+    uint16_t ledIndex = usedUhrType->getFrontMatrixIndex(row, col);
+    for (int i = 0; i < numLEDsPerLetter; i++) {
+        clearPixel(ledIndex * numLEDsPerLetter + i);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 inline void Led::clearPixel(uint16_t i) {
     if (G.Colortype == Grbw) {
         strip_RGBW->SetPixelColor(i, 0);
@@ -471,7 +513,7 @@ inline void Led::clearClock() {
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
             usedUhrType->setFrontMatrixPixel(row, col, false);
-            clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
+            clearPixel(row, col);
         }
     }
 }
@@ -481,15 +523,26 @@ inline void Led::clearClock() {
 inline void Led::clearRow(uint8_t row) {
     for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
         usedUhrType->setFrontMatrixPixel(row, col, false);
-        clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
+        clearPixel(row, col);
     }
 }
 
 //------------------------------------------------------------------------------
 
 inline void Led::clearMinArray() {
-    for (uint16_t i = minutePixelArray[0]; i <= minutePixelArray[3]; i++) {
-        clearPixel(i);
+    for (uint16_t m = minutePixelArray[0]; m <= minutePixelArray[3]; m++) {
+        uint8_t numLEDsPerLetter = 1;
+        if (G.buildTypeDef == BuildTypeDef::DoubleRes) {
+            numLEDsPerLetter = 2;
+        } else if (G.buildTypeDef == BuildTypeDef::TrippleRes) {
+            numLEDsPerLetter = 3;
+        } else if (G.buildTypeDef == BuildTypeDef::QuadRes) {
+            numLEDsPerLetter = 4;
+        }
+
+        for (int i = 0; i < numLEDsPerLetter; i++) {
+            clearPixel(m * numLEDsPerLetter + i);
+        }
     }
     minuteArray = 0;
 }

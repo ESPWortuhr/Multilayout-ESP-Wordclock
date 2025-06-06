@@ -66,6 +66,8 @@ enum class BuildTypeDef {
     Normal = 0,
     DoubleResM1 = 1,
     DoubleRes = 2,
+    TrippleRes = 3,
+    QuadRes = 4
 };
 
 enum class MinuteVariant {

@@ -159,7 +159,9 @@ let TRANSLATION_DE_DE = {
 			"buildtype": "Bauart",
 			"normal": "Jede LED entspricht einem Buchstaben",
 			"doubleResM1": "Jede zweite LED entspricht einem Buchstaben",
-			"doubleRes": "Je zwei LEDs pro Buchstabe"
+			"doubleRes": "Je zwei LEDs pro Buchstabe",
+			"trippleRes": "Je drei LEDs pro Buchstabe",
+			"quadRes": "Je vier LEDs pro Buchstabe"
 		},
 		"language": {
 			"h2": "Sprache",
