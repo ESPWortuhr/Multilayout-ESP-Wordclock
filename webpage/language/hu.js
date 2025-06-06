@@ -101,7 +101,6 @@ let TRANSLATION_HU = {
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternatív",
 			"de-10-11-alt-frame": "🇩🇪 10 × 11 Alternatív keretek",
-			"de-10-11-vertical": "🇩🇪 10 × 11 függőleges",
 			"de-10-11-clock": "🇩🇪 10 × 11 óra",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
 			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero keretek",

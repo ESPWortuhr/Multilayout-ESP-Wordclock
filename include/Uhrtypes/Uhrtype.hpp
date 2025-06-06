@@ -206,7 +206,7 @@ public:
 
     virtual const bool hasSpecialWordBeen() { return false; }
 
-    virtual const uint16_t getFrontMatrixIndex(const uint8_t row, uint8_t col) {
+    virtual const uint16_t getFrontMatrixIndex(uint8_t row, uint8_t col) {
 
         uint8_t newColsWordMatrix = colsWordMatrix();
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
@@ -216,10 +216,28 @@ public:
             numPixelsWordMatrix = rowsWordMatrix() * newColsWordMatrix;
             col *= 2;
         }
-        if (row % 2 != 0) {
-            col = newColsWordMatrix - col - 1;
+
+        uint16_t returnValue;
+        if (G.layoutVariant[FlipHorzVert] == false) {
+            if (G.layoutVariant[MeanderRows] && (row % 2 != 0)) {
+                col = newColsWordMatrix - col - 1;
+            }
+            returnValue = col + (row * newColsWordMatrix);
+            if (G.layoutVariant[ExtraLedPerRow]) {
+                returnValue += row;
+                numPixelsWordMatrix += rowsWordMatrix() - 1;
+            }
+        } else {
+            if (G.layoutVariant[MeanderRows] && (col % 2 == 0)) {
+                row = rowsWordMatrix() - 1 - row;
+            }
+            returnValue =
+                row + rowsWordMatrix() * (newColsWordMatrix - 1 - col);
+            if (G.layoutVariant[ExtraLedPerRow]) {
+                returnValue += colsWordMatrix() - 1 - col;
+                numPixelsWordMatrix += colsWordMatrix() - 1;
+            }
         }
-        uint16_t returnValue = col + (row * newColsWordMatrix);
 
         if (returnValue > numPixelsWordMatrix) {
             Serial.println(
@@ -234,6 +252,13 @@ public:
 
         if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
             numPixelsWordMatrix = rowsWordMatrix() * (colsWordMatrix() * 2 - 1);
+        }
+        if (G.layoutVariant[ExtraLedPerRow]) {
+            if (G.layoutVariant[FlipHorzVert] == false) {
+                numPixelsWordMatrix += rowsWordMatrix() - 1;
+            } else {
+                numPixelsWordMatrix += colsWordMatrix() - 1;
+            }
         }
 
         for (uint8_t i = 0; i < 4; i++) {
