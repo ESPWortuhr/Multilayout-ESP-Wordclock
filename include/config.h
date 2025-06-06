@@ -94,6 +94,9 @@
 //
 // #define DEFAULT_LAYOUT Eng08x08
 // 8 rows, 8 LED's per row with modified layout for the English language
+//
+// #define DEFAULT_LAYOUT Eng11x12
+// 11 rows, 12 LED's per row with modified layout for the English language
 
 /**********************/
 /*       Italian      */

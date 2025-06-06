@@ -273,6 +273,7 @@ enum CommandWords {
 enum ClockType {
     Eng10x11 = 10,
     Eng08x08 = 29,
+    Eng11x12 = 32,
     Ger10x11 = 1,
     Ger10x11Alternative = 2,
     Ger10x11AlternativeFrame = 4,
