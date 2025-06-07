@@ -486,6 +486,10 @@ void setup() {
 //------------------------------------------------------------------------------
 
 void loop() {
+
+    //------------------------------------------------
+    // Time
+    //------------------------------------------------
     time_t utc = time(nullptr);
     struct tm tm;
     localtime_r(&utc, &tm);
@@ -495,14 +499,18 @@ void loop() {
         _hour = tm.tm_hour;
     }
 
+    //------------------------------------------------
+    // Network
+    //------------------------------------------------
     network.loop();
-
 #ifdef ESP8266
     MDNS.update();
 #endif
-
     httpServer.handleClient();
 
+    //------------------------------------------------
+    // Websocket
+    //------------------------------------------------
     webSocket.loop();
 
     //------------------------------------------------
@@ -512,14 +520,21 @@ void loop() {
         mqtt.loop();
     }
 
+    //------------------------------------------------
+    // Transition
+    //------------------------------------------------
     transition->loop(tm); // must be called periodically
 
     // make the time run faster in the demo mode of the transition
     transition->demoMode(_hour, _minute, _second);
 
-    if (usedUhrType->numPixelsFrameMatrix() != 0) {
-        secondsFrame->loop();
-    }
-
+    //------------------------------------------------
+    // Frame
+    //------------------------------------------------
+    secondsFrame->loop();
+    
+    //------------------------------------------------
+    // Clockwork
+    //------------------------------------------------
     clockWork.loop(tm);
 }

@@ -208,6 +208,7 @@ public:
 
     virtual const uint16_t getFrontMatrixIndex(uint8_t row, uint8_t col) {
 
+        uint16_t returnValue;
         uint8_t newColsWordMatrix = colsWordMatrix();
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 
@@ -217,7 +218,6 @@ public:
             col *= 2;
         }
 
-        uint16_t returnValue;
         if (G.layoutVariant[FlipHorzVert] == false) {
             if (G.layoutVariant[MeanderRows] && (row % 2 != 0)) {
                 col = newColsWordMatrix - col - 1;
