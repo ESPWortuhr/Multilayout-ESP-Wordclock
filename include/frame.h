@@ -28,7 +28,7 @@ private:
     bool isFullMinute() const;
     void handleFullMinute();
     void handleSecondFrameChange();
-    void updateLedsIfClockworkMode() ;
+    void updateLedsIfClockworkMode();
 
 public:
     SecondsFrame(const uint8_t num);
