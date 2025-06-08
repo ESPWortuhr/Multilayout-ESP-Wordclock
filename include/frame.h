@@ -111,6 +111,8 @@ void SecondsFrame::toggleFrameSectorUpToCurrent() {
 //------------------------------------------------------------------------------
 
 void SecondsFrame::setInitFrameSector() {
+    memset(frameArray, false, sizeof(frameArray)); // Clear the frame array
+
     switch (G.secondVariant) {
     case SecondVariant::FrameSectorToggle:
         handleFrameSectorToggle();
@@ -171,7 +173,7 @@ void SecondsFrame::handleSecondFrameChange() {
 
 void SecondsFrame::updateLedsIfClockworkMode() {
     if (G.prog == 0 && G.conf == 0) {
-        led.clear();
+        led.clearFrame();
         parametersChanged = true;
         G.prog = COMMAND_MODE_WORD_CLOCK;
     }
