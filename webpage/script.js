@@ -646,12 +646,10 @@ function sendBrightnessData(command, addData = "") {
 }
 
 function sendColorData(command, addData = "") {
-	sendCmd(command, nstr(hsb[COLOR_FOREGROUND][0]) +
-	nstr(hsb[COLOR_FOREGROUND][1]) +
-	nstr(hsb[COLOR_FOREGROUND][2]) +
-	nstr(hsb[COLOR_BACKGROUND][0]) +
-	nstr(hsb[COLOR_BACKGROUND][1]) +
-	nstr(hsb[COLOR_BACKGROUND][2]) +
+	sendCmd(command, nstr(colorPosition) +
+	nstr(hsb[colorPosition][0]) +
+	nstr(hsb[colorPosition][1]) +
+	nstr(hsb[colorPosition][2]) +
 	nstr(effectBri) +
 	nstr(effectSpeed));
 }
