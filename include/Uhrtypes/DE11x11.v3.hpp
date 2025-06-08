@@ -37,7 +37,7 @@ public:
                 returnArr[i] = 3 + (i * 2); // 3,5,7,9
                 break;
 
-            case 1:                         // LEDs for "LED7x" minute display
+            case 1:                           // LEDs for "LED7x" minute display
                 returnArr[i] = 113 + (i * 2); // 3,5,7,9
                 break;
 
