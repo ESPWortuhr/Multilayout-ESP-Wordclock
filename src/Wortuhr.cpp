@@ -471,6 +471,13 @@ void setup() {
     EEPROM.commit();
 
     //-------------------------------------
+    // Frame Init
+    //-------------------------------------
+    if (usedUhrType->numPixelsFrameMatrix() != 0) {
+        secondsFrame->initFrame();
+    }
+
+    //-------------------------------------
     // Transition Init
     //-------------------------------------
     transition->init();
