@@ -1122,7 +1122,7 @@ void ClockWork::loop(struct tm &tm) {
     transition->demoMode(_hour, _minute, _second);
 
     //------------------------------------------------
-    // Secounds and LDR Routine
+    // Seconds and LDR Routine
     //------------------------------------------------
     if (lastSecond != _second) {
 
@@ -1146,7 +1146,7 @@ void ClockWork::loop(struct tm &tm) {
             loopAutoBrightLogic();
         }
 
-        if (G.prog == COMMAND_IDLE && G.conf == 0) {
+        if (G.prog == COMMAND_IDLE && G.conf == COMMAND_IDLE) {
             led.clear();
             G.prog = COMMAND_MODE_WORD_CLOCK;
         }

@@ -199,7 +199,7 @@ void setup() {
         EEPROM.commit();
 
         G.sernr = SERNR;
-        G.prog = 1;
+        G.prog = COMMAND_MODE_WORD_CLOCK;
         G.param1 = 0;
         G.progInit = true;
         G.conf = COMMAND_IDLE;

@@ -72,7 +72,7 @@ void SecondsFrame::updateMillisCounters() {
 //------------------------------------------------------------------------------
 
 bool SecondsFrame::checkIfFrameSetup() const {
-    return G.progInit && G.prog == 0;
+    return G.progInit && G.prog == COMMAND_IDLE;
 }
 
 //------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ void SecondsFrame::handleSecondFrameChange() {
 //------------------------------------------------------------------------------
 
 void SecondsFrame::updateLedsIfClockworkMode() {
-    if (G.prog == 0 && G.conf == 0) {
+    if (G.prog == COMMAND_IDLE && G.conf == COMMAND_IDLE) {
         led.clearFrame();
         parametersChanged = true;
         G.prog = COMMAND_MODE_WORD_CLOCK;
