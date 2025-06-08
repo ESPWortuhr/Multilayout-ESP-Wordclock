@@ -19,7 +19,7 @@ private:
     void frameLogic();
     bool checkIfFrameLoopShouldRun() const;
     void updateMillisCounters();
-    bool checkIfFrameSetup() const;
+    bool checkIfFrameInit() const;
     bool checkIftoRunFrameLogic() const;
     uint16_t calcCurrentSecondFrameVariable();
     void handleFrameSectorToggle();
@@ -34,7 +34,7 @@ public:
     SecondsFrame(const uint8_t num);
     ~SecondsFrame();
 
-    void setup();
+    void initFrame();
     void loop();
 };
 
@@ -71,7 +71,7 @@ void SecondsFrame::updateMillisCounters() {
 
 //------------------------------------------------------------------------------
 
-bool SecondsFrame::checkIfFrameSetup() const {
+bool SecondsFrame::checkIfFrameInit() const {
     return G.progInit && G.prog == COMMAND_IDLE;
 }
 
@@ -128,7 +128,7 @@ void SecondsFrame::setInitFrameSector() {
 
 //------------------------------------------------------------------------------
 
-void SecondsFrame::setup() {
+void SecondsFrame::initFrame() {
     led.clearFrame();
     _secondFrame = calcCurrentSecondFrameVariable();
     setInitFrameSector();
@@ -208,8 +208,8 @@ void SecondsFrame::loop() {
 
     updateMillisCounters();
 
-    if (checkIfFrameSetup()) {
-        setup();
+    if (checkIfFrameInit()) {
+        initFrame();
         G.progInit = false;
     }
 
