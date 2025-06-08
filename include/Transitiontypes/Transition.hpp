@@ -1289,7 +1289,7 @@ void Transition::loop(struct tm &tm) {
                 }
 
                 if (G.secondVariant != SecondVariant::Off) {
-                    led.setbySecondArray();
+                    led.setbySecondArray(Frame);
                     // Workaround: setbySecondArray not in 'work'
                 }
             }

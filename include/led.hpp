@@ -424,7 +424,7 @@ void Led::set(WordclockChanges changed) {
         }
 
         if (G.secondVariant != SecondVariant::Off) {
-            setbySecondArray(Foreground);
+            setbySecondArray(Frame);
         }
     }
 
