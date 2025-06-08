@@ -17,12 +17,24 @@ private:
 private:
     void setInitFrameSector();
     void frameLogic();
+    bool checkIfFrameLoopShouldRun() const;
+    void updateMillisCounters();
+    bool checkIfFrameInit() const;
+    bool checkIftoRunFrameLogic() const;
+    uint16_t calcCurrentSecondFrameVariable();
+    void handleFrameSectorToggle();
+    void handleFrameSector();
+    void toggleFrameSectorUpToCurrent();
+    bool isFullMinute() const;
+    void handleFullMinute();
+    void handleSecondFrameChange();
+    void updateLedsIfClockworkMode();
 
 public:
     SecondsFrame(const uint8_t num);
     ~SecondsFrame();
 
-    void setup();
+    void initFrame();
     void loop();
 };
 
@@ -42,18 +54,115 @@ SecondsFrame::SecondsFrame(const uint8_t num) {
 }
 
 //------------------------------------------------------------------------------
+// Helper functions
+//------------------------------------------------------------------------------
+
+bool SecondsFrame::checkIfFrameLoopShouldRun() const {
+    return usedUhrType->numPixelsFrameMatrix() == 0;
+}
+
+//------------------------------------------------------------------------------
+
+void SecondsFrame::updateMillisCounters() {
+    unsigned long currentMillis = millis();
+    countMillisFrameIntervall += currentMillis - previousMillis;
+    previousMillis = currentMillis;
+}
+
+//------------------------------------------------------------------------------
+
+bool SecondsFrame::checkIfFrameInit() const {
+    return G.progInit && G.prog == COMMAND_IDLE;
+}
+
+//------------------------------------------------------------------------------
+
+bool SecondsFrame::checkIftoRunFrameLogic() const {
+    return countMillisFrameIntervall >= frameIntervall;
+}
+
+//------------------------------------------------------------------------------
+
+uint16_t SecondsFrame::calcCurrentSecondFrameVariable() {
+    return _second / (60.f / numFramePixels);
+}
+
+//------------------------------------------------------------------------------
+
+void SecondsFrame::handleFrameSectorToggle() {
+    if (_minute % 2 == 1) {
+        memset(frameArray, true, sizeof(frameArray));
+    }
+    toggleFrameSectorUpToCurrent();
+}
+
+//------------------------------------------------------------------------------
+
+void SecondsFrame::handleFrameSector() { toggleFrameSectorUpToCurrent(); }
+
+//------------------------------------------------------------------------------
+
+void SecondsFrame::toggleFrameSectorUpToCurrent() {
+    for (uint8_t i = 0; i <= _secondFrame; i++) {
+        frameArray[i] = !frameArray[i];
+    }
+}
+
+//------------------------------------------------------------------------------
 
 void SecondsFrame::setInitFrameSector() {
+    memset(frameArray, false, sizeof(frameArray)); // Clear the frame array
+
     switch (G.secondVariant) {
     case SecondVariant::FrameSectorToggle:
-        if (_minute % 2 == 1) {
-            memset(frameArray, true, sizeof(numFramePixels));
-        }
-        /* intentianally no break */
+        handleFrameSectorToggle();
+        break;
     case SecondVariant::FrameSector:
-        for (uint8_t i = 0; i <= _secondFrame; i++) {
-            frameArray[i] = !frameArray[i];
+        handleFrameSector();
+        break;
+    default:
+        Serial.println("[ERROR] frame.h - Invalid second variant");
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SecondsFrame::initFrame() {
+    led.clearFrame();
+    _secondFrame = calcCurrentSecondFrameVariable();
+    setInitFrameSector();
+    parametersChanged = true;
+}
+
+//------------------------------------------------------------------------------
+
+bool SecondsFrame::isFullMinute() const {
+    return _secondFrame == numFramePixels;
+}
+
+//------------------------------------------------------------------------------
+
+void SecondsFrame::handleFullMinute() {
+    led.clearFrame();
+    memset(frameArray, false, sizeof(frameArray));
+    _secondFrame = 0;
+    setInitFrameSector();
+}
+
+//------------------------------------------------------------------------------
+
+void SecondsFrame::handleSecondFrameChange() {
+    switch (G.secondVariant) {
+    case SecondVariant::FrameDot:
+        frameArray[_secondFrame] = true;
+        if (_secondFrame != 0) {
+            frameArray[_secondFrame - 1] = false;
         }
+        break;
+    case SecondVariant::FrameSector:
+    case SecondVariant::FrameSectorToggle:
+        frameArray[_secondFrame] = !frameArray[_secondFrame];
         break;
     default:
         break;
@@ -62,11 +171,12 @@ void SecondsFrame::setInitFrameSector() {
 
 //------------------------------------------------------------------------------
 
-void SecondsFrame::setup() {
-    led.clearFrame();
-    _secondFrame = _second / (60.f / numFramePixels);
-    setInitFrameSector();
-    parametersChanged = true;
+void SecondsFrame::updateLedsIfClockworkMode() {
+    if (G.prog == COMMAND_IDLE && G.conf == COMMAND_IDLE) {
+        led.clearFrame();
+        parametersChanged = true;
+        G.prog = COMMAND_MODE_WORD_CLOCK;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -75,52 +185,35 @@ void SecondsFrame::frameLogic() {
     countMillisFrameIntervall = 0;
     _secondFrame++;
 
-    /*Every full minute */
-    if (_secondFrame == numFramePixels) {
-        led.clearFrame();
-        memset(frameArray, false, sizeof(frameArray));
-        setInitFrameSector();
-        _secondFrame = 0;
+    if (isFullMinute()) {
+        handleFullMinute();
     }
 
-    /*Every (Frame-)Second*/
     if (lastSecondFrame != _secondFrame) {
-        switch (G.secondVariant) {
-        case SecondVariant::FrameDot:
-            frameArray[_secondFrame] = true;
-            if (_secondFrame != 0) {
-                frameArray[_secondFrame - 1] = false;
-            }
-            break;
-        case SecondVariant::FrameSector:
-        case SecondVariant::FrameSectorToggle:
-            frameArray[_secondFrame] = !frameArray[_secondFrame];
-            break;
-        default:
-            break;
-        }
+        handleSecondFrameChange();
         lastSecondFrame = _secondFrame;
     }
 
-    /*Update LEDs corrosponding with mode Clockwork*/
-    if (G.prog == 0 && G.conf == 0) {
-        led.clear();
-        G.prog = COMMAND_MODE_WORD_CLOCK;
-    }
+    updateLedsIfClockworkMode();
 }
 
 //------------------------------------------------------------------------------
+// Loop function for SecondsFrame
+//------------------------------------------------------------------------------
 
 void SecondsFrame::loop() {
-    unsigned long currentMillis = millis();
-    countMillisFrameIntervall += currentMillis - previousMillis;
-    previousMillis = currentMillis;
+    if (checkIfFrameLoopShouldRun()) {
+        return;
+    }
 
-    if (G.progInit && G.prog == 0) {
-        setup();
+    updateMillisCounters();
+
+    if (checkIfFrameInit()) {
+        initFrame();
         G.progInit = false;
     }
-    if (countMillisFrameIntervall >= frameIntervall) {
+
+    if (checkIftoRunFrameLogic()) {
         frameLogic();
     }
 }

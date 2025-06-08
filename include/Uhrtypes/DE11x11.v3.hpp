@@ -17,11 +17,42 @@
  *  7  | E L F N E U N V I E R
  *  8  | W A C H T Z E H N R S
  *  9  | B S E C H S F M U H R
- *  X  | E V F X R N Z S L P I
+ *  X  | E V * X * N * S * P I
  */
 
 class De11x11V3_t : public De11x11_t {
 public:
+    virtual const void getMinuteArray(uint16_t *returnArr,
+                                      uint8_t col) override {
+
+        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
+
+        if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
+            numPixelsWordMatrix = rowsWordMatrix() * (colsWordMatrix() * 2 - 1);
+        }
+
+        for (uint8_t i = 0; i < 4; i++) {
+            switch (col) {
+            case 0:                         // LEDs for "LED4x" minute display
+                returnArr[i] = 3 + (i * 2); // 3,5,7,9
+                break;
+
+            case 1:                           // LEDs for "LED7x" minute display
+                returnArr[i] = 113 + (i * 2); // 3,5,7,9
+                break;
+
+            case 2: // LEDs für "Corners" type minute display
+                returnArr[i] = numPixelsWordMatrix + i;
+                break;
+
+            default:
+                break;
+            }
+        }
+    };
+
+    //------------------------------------------------------------------------------
+
     void show(FrontWord word) override {
         switch (word) {
 

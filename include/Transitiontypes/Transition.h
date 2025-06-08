@@ -169,7 +169,6 @@ protected:
     void saveMatrix();
     void analyzeColors(RgbfColor **dest, RgbfColor **source,
                        RgbfColor &foreground, RgbfColor &background);
-    void setMinute(void);
     void copy2Stripe(RgbfColor **source);
     void copyMatrix(RgbfColor **dest, RgbfColor **source);
     void copyMatrixFlags(RgbfColor **dest, RgbfColor **source);

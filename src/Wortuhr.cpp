@@ -199,7 +199,7 @@ void setup() {
         EEPROM.commit();
 
         G.sernr = SERNR;
-        G.prog = 1;
+        G.prog = COMMAND_MODE_WORD_CLOCK;
         G.param1 = 0;
         G.progInit = true;
         G.conf = COMMAND_IDLE;
@@ -471,6 +471,13 @@ void setup() {
     EEPROM.commit();
 
     //-------------------------------------
+    // Frame Init
+    //-------------------------------------
+    if (usedUhrType->numPixelsFrameMatrix() != 0) {
+        secondsFrame->initFrame();
+    }
+
+    //-------------------------------------
     // Transition Init
     //-------------------------------------
     transition->init();
@@ -486,6 +493,10 @@ void setup() {
 //------------------------------------------------------------------------------
 
 void loop() {
+
+    //------------------------------------------------
+    // Time
+    //------------------------------------------------
     time_t utc = time(nullptr);
     struct tm tm;
     localtime_r(&utc, &tm);
@@ -495,14 +506,18 @@ void loop() {
         _hour = tm.tm_hour;
     }
 
+    //------------------------------------------------
+    // Network
+    //------------------------------------------------
     network.loop();
-
 #ifdef ESP8266
     MDNS.update();
 #endif
-
     httpServer.handleClient();
 
+    //------------------------------------------------
+    // Websocket
+    //------------------------------------------------
     webSocket.loop();
 
     //------------------------------------------------
@@ -512,14 +527,21 @@ void loop() {
         mqtt.loop();
     }
 
+    //------------------------------------------------
+    // Frame
+    //------------------------------------------------
+    secondsFrame->loop();
+
+    //------------------------------------------------
+    // Transition
+    //------------------------------------------------
     transition->loop(tm); // must be called periodically
 
     // make the time run faster in the demo mode of the transition
     transition->demoMode(_hour, _minute, _second);
 
-    if (usedUhrType->numPixelsFrameMatrix() != 0) {
-        secondsFrame->loop();
-    }
-
+    //------------------------------------------------
+    // Clockwork
+    //------------------------------------------------
     clockWork.loop(tm);
 }

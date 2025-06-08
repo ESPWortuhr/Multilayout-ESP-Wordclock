@@ -418,16 +418,20 @@ void Led::set(WordclockChanges changed) {
     setbyFrontMatrix(Foreground);
     setbyFrontMatrix(Background, false);
 
-    if (G.minuteVariant != MinuteVariant::Off) {
-        setbyMinuteArray(Foreground);
-    }
+    if (G.transitionType == NO_TRANSITION) {
+        if (G.minuteVariant != MinuteVariant::Off) {
+            setbyMinuteArray(Foreground);
+        }
 
-    if (G.secondVariant != SecondVariant::Off) {
-        setbySecondArray(Foreground);
+        if (G.secondVariant != SecondVariant::Off) {
+            setbySecondArray(Frame);
+        }
     }
 
     if (transition->isOverwrittenByTransition(changed, _minute)) {
-        show();
+        if (G.transitionType == NO_TRANSITION) {
+            show();
+        }
     }
 }
 

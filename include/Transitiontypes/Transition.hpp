@@ -470,25 +470,6 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
 }
 
 //------------------------------------------------------------------------------
-
-void Transition::setMinute() {
-    if (G.minuteVariant != MinuteVariant::Off) {
-        uint8_t m = lastMinute % 5;
-        uint16_t minArray[4];
-        usedUhrType->getMinuteArray(minArray,
-                                    clockWork.determineWhichMinuteVariant());
-        if (G.layoutVariant[ReverseMinDirection]) {
-            std::reverse(std::begin(minArray), std::end(minArray));
-        }
-        for (uint8_t i = 0; i < 4; i++) {
-            led.setPixel(minArray[i],
-                         HsbColor{m > i ? foregroundMinute : background});
-            // TODO: fading transition for Minutes
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
 // Overwrite the LEDs with internal matrix
 
 void Transition::copy2Stripe(RgbfColor **source) {
@@ -1302,9 +1283,13 @@ void Transition::loop(struct tm &tm) {
             transitionColorChange();
             copy2Stripe(work);
             if (!specialEvent) {
-                setMinute();
+
+                if (G.minuteVariant != MinuteVariant::Off) {
+                    led.setbyMinuteArray(Foreground);
+                }
+
                 if (G.secondVariant != SecondVariant::Off) {
-                    led.setbySecondArray();
+                    led.setbySecondArray(Frame);
                     // Workaround: setbySecondArray not in 'work'
                 }
             }
