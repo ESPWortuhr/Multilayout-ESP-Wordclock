@@ -569,7 +569,8 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
 //------------------------------------------------------------------------------
 
 bool ClockWork::checkTwentyUsage() {
-    return G.languageVariant[ItIs20] || G.languageVariant[ItIs40];
+    return G.languageVariant[ItIs20] || G.languageVariant[ItIs40] ||
+           usedUhrType->usedLang() == LanguageAbbreviation::ES;
 }
 
 //------------------------------------------------------------------------------
