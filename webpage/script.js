@@ -408,7 +408,7 @@ function initWebsocket() {
 
 			enableSpecific("specific-layout-1", !data.isRomanLanguage);
 			enableSpecific("specific-layout-2", data.hasDreiviertel);
-			enableSpecific("specific-layout-3", data.hasZwanzig);
+			enableSpecific("specific-layout-3", data.hasTwenty);
 			enableSpecific("specific-layout-4", data.hasSecondsFrame);
 			enableSpecific("specific-layout-5", data.hasWeatherLayout);
 			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // Add A-Quarter to (En10x11 exclusive)

@@ -38,7 +38,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasZwanzig() override { return false; }
+    virtual const bool hasTwenty() override { return false; }
 
     //------------------------------------------------------------------------------
 
