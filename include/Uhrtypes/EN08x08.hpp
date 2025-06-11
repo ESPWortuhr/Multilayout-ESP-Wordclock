@@ -33,7 +33,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasZwanzig() override { return true; };
+    virtual const bool hasTwenty() override { return true; };
 
     //------------------------------------------------------------------------------
 

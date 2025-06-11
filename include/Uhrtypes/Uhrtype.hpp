@@ -176,7 +176,7 @@ public:
 
     virtual const bool hasDreiviertel() { return false; }
 
-    virtual const bool hasZwanzig() { return true; }
+    virtual const bool hasTwenty() { return true; }
 
     virtual const bool hasTwentyfive() { return false; }
 

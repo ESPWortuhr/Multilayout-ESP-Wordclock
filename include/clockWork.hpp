@@ -569,14 +569,15 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
 //------------------------------------------------------------------------------
 
 bool ClockWork::checkTwentyUsage() {
-    return G.languageVariant[ItIs20] || G.languageVariant[ItIs40];
+    return G.languageVariant[ItIs20] || G.languageVariant[ItIs40] ||
+           usedUhrType->usedLang() == LanguageAbbreviation::ES;
 }
 
 //------------------------------------------------------------------------------
 
 bool ClockWork::hasTwentyAndCheckForUsage() {
     // ToDo: Is this true for every supoorted language variant?
-    return usedUhrType->hasZwanzig() && checkTwentyUsage();
+    return usedUhrType->hasTwenty() && checkTwentyUsage();
 }
 
 //------------------------------------------------------------------------------
@@ -1262,7 +1263,7 @@ void ClockWork::loop(struct tm &tm) {
         config["autoBrightEnabled"] = G.autoBrightEnabled;
         config["isRomanLanguage"] = isRomanLanguage();
         config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
-        config["hasZwanzig"] = usedUhrType->hasZwanzig();
+        config["hasTwenty"] = usedUhrType->hasTwenty();
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["hasMinuteInWords"] = usedUhrType->hasMinuteInWords();
