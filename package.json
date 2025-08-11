@@ -85,7 +85,7 @@
 		"grunt-stylelint": "^0.20.1",
 		"grunt-terser": "^2.0.0",
 		"grunt-version": "^3.0.1",
-		"stylelint-config-standard": "^38.0.0",
+		"stylelint-config-standard": "^39.0.0",
 		"terser": "^5.43.1"
 	},
 	"dependencies": {
