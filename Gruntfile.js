@@ -1,3 +1,5 @@
+/* global process */
+
 module.exports = function(grunt) {
 
 	grunt.initConfig({
@@ -88,6 +90,22 @@ module.exports = function(grunt) {
 			}
 		},
 
+		replace: {
+			pioenv: {
+				options: {
+					patterns: [{
+						match: /PIOENVIRONMENTPLACEHOLDER/g,
+						replacement: process.env.PIO_ENV_NAME || "unknown"
+					}]
+				},
+				files: [{
+					expand: true,
+					overwrite: true,
+					src: "<%= settings.tempDirectory %>/index.html"
+				}]
+			}
+		},
+
 		copy: {
 			index: {
 				src: "<%= settings.srcDirectory %>/index.html",
@@ -170,6 +188,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-contrib-copy");
 	grunt.loadNpmTasks("grunt-contrib-clean");
 	grunt.loadNpmTasks("grunt-version");
+	grunt.loadNpmTasks("grunt-replace");
 
 	grunt.registerTask("lint", [
 		"eslint",
@@ -188,6 +207,7 @@ module.exports = function(grunt) {
 		"copy",
 		"copy:index",
 		"version:index",
+		"replace:pioenv",
 		"assets_inline",
 		"htmlmin",
 		"copy:html_to_h"
