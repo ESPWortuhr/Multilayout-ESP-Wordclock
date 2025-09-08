@@ -8,7 +8,7 @@ English description further below.
 Dies ist ein Projekt für eine mehrsprachige Wortuhr auf Grundlage eines ESP8266-Mikrocontrollers und einer programmierbaren LED-Leiste (WS2812 oder SK6812). Eine Wortuhr ist ein wunderschönes DIY-Projekt für Anfänger, das Technologie und Design kombiniert, um eine funktionale und ästhetisch ansprechende Uhr zu schaffen. 
 Egal, ob Sie ein Anfänger oder ein erfahrener Bastler sind, dieses Projekt ist eine großartige Möglichkeit, Ihre Fähigkeiten unter Beweis zu stellen und etwas wirklich Besonderes zu schaffen.
 Die Software hat viele Funktionen:
-- Mehrsprachig (🇬🇧, 🇩🇪, 🇪🇸, 🇮🇹, 🇳🇱, 🇭🇺, 🇷🇴, 🇨🇭, 🇷🇺, 🇸🇪, 🇫🇷)
+- Mehrsprachig (🇬🇧, 🇩🇪, 🇪🇸, 🇮🇹, 🇳🇱, 🇭🇺, 🇷🇴, 🇨🇭, 🇷🇺, 🇸🇪, 🇫🇷, 🇧🇩)
 - Unterstützung für mehrere Layouts und LED-Abstände
 - Farbwechsel der Displayfarbe möglich (RGB oder RGBW)
 - Digitale Uhranzeige
