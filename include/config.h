@@ -4,7 +4,7 @@
  */
 
 //--------------------------------------------------------------------------
-// PIN Configuration
+// PIN Configuration for ESP32 (ESP8266 currently unsupported)
 //--------------------------------------------------------------------------
 #define LED_PIN 3        // Use direct pin number
 #define SDA_PIN_ESP32 21 // Use direct pin number
