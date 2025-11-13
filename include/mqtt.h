@@ -11,6 +11,7 @@ private:
     static void processScrollingText(const JsonDocument &doc);
     static void processColor(const JsonDocument &doc);
     static void processBrightness(const JsonDocument &doc);
+    static const char* getEffectName();
 
 public:
     Mqtt() = default;
