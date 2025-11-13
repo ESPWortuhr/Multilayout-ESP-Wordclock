@@ -36,26 +36,26 @@ Output:
 const char*: The string name of the current effect.
 */
 
-const char* Mqtt::getEffectName() {
+const char *Mqtt::getEffectName() {
     switch (G.prog) {
-        case COMMAND_MODE_WORD_CLOCK:
-            return "Wordclock";
-        case COMMAND_MODE_SECONDS:
-            return "Seconds";
-        case COMMAND_MODE_DIGITAL_CLOCK:
-            return "Digitalclock";
-        case COMMAND_MODE_SCROLLINGTEXT:
-            return "Scrollingtext";
-        case COMMAND_MODE_RAINBOWCYCLE:
-            return "Rainbowcycle";
-        case COMMAND_MODE_RAINBOW:
-            return "Rainbow";
-        case COMMAND_MODE_COLOR:
-            return "Color";
-        case COMMAND_MODE_SYMBOL:
-            return "Symbol";
-        default:
-            return "Wordclock";
+    case COMMAND_MODE_WORD_CLOCK:
+        return "Wordclock";
+    case COMMAND_MODE_SECONDS:
+        return "Seconds";
+    case COMMAND_MODE_DIGITAL_CLOCK:
+        return "Digitalclock";
+    case COMMAND_MODE_SCROLLINGTEXT:
+        return "Scrollingtext";
+    case COMMAND_MODE_RAINBOWCYCLE:
+        return "Rainbowcycle";
+    case COMMAND_MODE_RAINBOW:
+        return "Rainbow";
+    case COMMAND_MODE_COLOR:
+        return "Color";
+    case COMMAND_MODE_SYMBOL:
+        return "Symbol";
+    default:
+        return "Wordclock";
     }
 }
 
@@ -265,10 +265,11 @@ void Mqtt::init() {
     std::string availabilityTopic = std::string(G.mqtt.topic) + "/availability";
 
     if (checkIfMqttUserIsEmpty()) {
-        mqttClient.connect(G.mqtt.clientId, availabilityTopic.c_str(), 0, true, "offline");
+        mqttClient.connect(G.mqtt.clientId, availabilityTopic.c_str(), 0, true,
+                           "offline");
     } else {
         mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password,
-                          availabilityTopic.c_str(), 0, true, "offline");
+                           availabilityTopic.c_str(), 0, true, "offline");
     }
     delay(50);
 
@@ -451,7 +452,8 @@ void Mqtt::sendState() {
 
     char buffer[256];
     serializeJson(doc, buffer);
-    mqttClient.publish((std::string(G.mqtt.topic) + "/status").c_str(), buffer, true);
+    mqttClient.publish((std::string(G.mqtt.topic) + "/status").c_str(), buffer,
+                       true);
 }
 
 //------------------------------------------------------------------------------
