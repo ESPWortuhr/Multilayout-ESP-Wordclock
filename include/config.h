@@ -170,6 +170,14 @@
 // 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
 // layout for the Swedish language
 
+/**********************/
+/*       Bengali      */
+/**********************/
+//
+// #define DEFAULT_LAYOUT  Bn9x7
+// 8 rows, 9 LED's per row + 4 LED's for minutes, with modified
+// layout for the Bengali language
+
 //--------------------------------------------------------------------------
 // Define LED Type
 //--------------------------------------------------------------------------
