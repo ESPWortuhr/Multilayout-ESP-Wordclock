@@ -24,6 +24,45 @@ PubSubClient mqttClient(client);
 
 /* Description:
 
+This function converts the current program mode (effect) to its string
+representation for MQTT communication with Home Assistant.
+
+Input:
+
+None
+
+Output:
+
+const char*: The string name of the current effect.
+*/
+
+const char *Mqtt::getEffectName() {
+    switch (G.prog) {
+    case COMMAND_MODE_WORD_CLOCK:
+        return "Wordclock";
+    case COMMAND_MODE_SECONDS:
+        return "Seconds";
+    case COMMAND_MODE_DIGITAL_CLOCK:
+        return "Digitalclock";
+    case COMMAND_MODE_SCROLLINGTEXT:
+        return "Scrollingtext";
+    case COMMAND_MODE_RAINBOWCYCLE:
+        return "Rainbowcycle";
+    case COMMAND_MODE_RAINBOW:
+        return "Rainbow";
+    case COMMAND_MODE_COLOR:
+        return "Color";
+    case COMMAND_MODE_SYMBOL:
+        return "Symbol";
+    default:
+        return "Wordclock";
+    }
+}
+
+//------------------------------------------------------------------------------
+
+/* Description:
+
 This function processes the "state" key in the provided JSON document. If the
 "state" key is present, it checks its value and sets the LED state accordingly.
 The LED can be turned ON or OFF based on the value of the "state" key.
@@ -221,17 +260,28 @@ None
 void Mqtt::init() {
     mqttClient.setServer(G.mqtt.serverAdress, G.mqtt.port);
     mqttClient.setCallback(callback);
+
+    // Set up Last Will and Testament (LWT) for availability tracking
+    std::string availabilityTopic = std::string(G.mqtt.topic) + "/availability";
+
     if (checkIfMqttUserIsEmpty()) {
-        mqttClient.connect(G.mqtt.clientId);
+        mqttClient.connect(G.mqtt.clientId, availabilityTopic.c_str(), 0, true,
+                           "offline");
     } else {
-        mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password);
+        mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password,
+                           availabilityTopic.c_str(), 0, true, "offline");
     }
     delay(50);
-    mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
-    delay(50);
+
     if (isConnected()) {
         Serial.println("MQTT Connected");
+        // Publish online status
+        mqttClient.publish(availabilityTopic.c_str(), "online", true);
+        delay(50);
     }
+
+    mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
+    delay(50);
 }
 
 //------------------------------------------------------------------------------
@@ -387,7 +437,7 @@ None
 */
 
 void Mqtt::sendState() {
-    StaticJsonDocument<200> doc;
+    StaticJsonDocument<256> doc;
 
     doc["state"] = (led.getState()) ? "ON" : "OFF";
 
@@ -397,10 +447,13 @@ void Mqtt::sendState() {
     color["s"] = G.color[Foreground].S * 100;
 
     doc["brightness"] = G.color[Foreground].B * 255;
+    doc["color_mode"] = "hs";
+    doc["effect"] = getEffectName();
 
-    char buffer[200];
+    char buffer[256];
     serializeJson(doc, buffer);
-    mqttClient.publish((std::string(G.mqtt.topic) + "/status").c_str(), buffer);
+    mqttClient.publish((std::string(G.mqtt.topic) + "/status").c_str(), buffer,
+                       true);
 }
 
 //------------------------------------------------------------------------------
@@ -457,8 +510,8 @@ None
 
 void Mqtt::sendDiscovery() {
 
-    StaticJsonDocument<700> root;
-    mqttClient.setBufferSize(700);
+    StaticJsonDocument<800> root;
+    mqttClient.setBufferSize(800);
 
     root["brightness"] = true;
     root["color_mode"] = true;
@@ -480,10 +533,12 @@ void Mqtt::sendDiscovery() {
 
     root["state_topic"] = std::string(G.mqtt.topic) + "/status";
     root["command_topic"] = std::string(G.mqtt.topic) + "/cmd";
+    root["availability_topic"] = std::string(G.mqtt.topic) + "/availability";
     root["unique_id"] = WiFi.macAddress();
     root["plattform"] = "mqtt";
 
     root["effect"] = true;
+    root["effect_state_topic"] = std::string(G.mqtt.topic) + "/status";
     JsonArray effectList = root.createNestedArray("effect_list");
     effectList.add("Wordclock");
     effectList.add("Seconds");
@@ -494,7 +549,7 @@ void Mqtt::sendDiscovery() {
     effectList.add("Color");
     effectList.add("Symbol");
 
-    char buffer[700];
+    char buffer[800];
     serializeJson(root, buffer);
     mqttClient.publish((std::string(HOMEASSISTANT_DISCOVERY_TOPIC) +
                         std::string("/light/") + std::string(G.mqtt.topic) +
