@@ -7,6 +7,9 @@
 // PIN Configuration for ESP32 (ESP8266 currently unsupported)
 //--------------------------------------------------------------------------
 #define LED_PIN 3        // Use direct pin number
+#define POWER_BUTTON 2   // Use direct pin number
+#define MODE_BUTTON 13   // Use direct pin number
+#define SPEED_BUTTON 14  // Use direct pin number
 #define SDA_PIN_ESP32 21 // Use direct pin number
 #define SCL_PIN_ESP32 22 // Use direct pin number
 
