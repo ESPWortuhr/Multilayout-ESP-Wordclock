@@ -1240,10 +1240,12 @@ void ClockWork::loop(struct tm &tm) {
             char string2Send[11];
             sprintf(string2Send, "langVar%d", i);
             if (i == 4) {
-                // langVar4 is used to transfer the "it is" variant (itIsVariant)
+                // langVar4 is used to transfer the "it is" variant
+                // (itIsVariant)
                 config[string2Send] = static_cast<uint8_t>(G.itIsVariant);
             } else {
-                config[string2Send] = static_cast<uint8_t>(G.languageVariant[i]);
+                config[string2Send] =
+                    static_cast<uint8_t>(G.languageVariant[i]);
             }
         }
         for (uint8_t i = 0;
