@@ -375,7 +375,7 @@ function initWebsocket() {
 			$("#dialect-1").set("value", data.langVar1);
 			$("#dialect-2").set("value", data.langVar2);
 			$("#dialect-3").set("value", data.langVar3);
-			document.getElementById("dialect-4").checked = data.langVar4;
+			$("#dialect-4").set("value", data.langVar4);
 			$("#dialect-5").set("value", data.langVar5);
 
 			document.getElementById("layvar-0").checked = data.layVar0;
