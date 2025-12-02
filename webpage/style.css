@@ -256,12 +256,12 @@ a:visited:hover {
 
 .mode-form {
     display: grid;
-    grid-gap: .5em;
+    gap: .5em;
 }
 
 .mode-color-form {
     display: inline-grid;
-    grid-gap: .5em;
+    gap: .5em;
     margin-bottom: 1em;
     grid-template-columns: 1fr 1fr;
 }
@@ -565,7 +565,7 @@ input:checked + .slider::before {
     display: grid;
     grid-template-columns: repeat(4, 68px);
     grid-template-rows: repeat(2, 50px);
-    grid-gap: 10px;
+    gap: 10px;
     margin-top: 1em;
     margin-bottom: 1em;
     justify-content: center;
