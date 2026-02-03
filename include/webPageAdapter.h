@@ -441,6 +441,18 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+        case COMMAND_SET_GPIO: {
+            G.progInit = true;
+
+            G.LEDpin = split(payload, 3);
+            G.powerButton = split(payload, 6);
+            G.modeButton = split(payload, 9);
+            G.speedButton = split(payload, 12);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
         case COMMAND_SET_BIRTHDAYS: {
 
             for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {

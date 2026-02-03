@@ -222,6 +222,30 @@ let TRANSLATION_DE_DE = {
 			"label": "Verbindungsstatus",
 			"connect": "Verbinden"
 		},
+		"hardware-config": {
+			"h2": "Hardware Einstellung",
+			"help": "Hier kann der verwendete Pin für den LED-Streifen eingestellt werden.\n " +
+				"Hinweis: Es muss die GPIO-Nummer verwendet werden, nicht die aufgedruckte Zahl auf dem Board!\n " +
+				"Möglicherweise muss die Wortuhr neu gestartet werden.",
+			"led-pin": "LED pin",
+			"power-button": "Power Button",
+			"mode-button": "Mode Button",
+			"speed-button": "Speed Button",
+			"GPIO2": "GPIO2",
+			"GPIO3": "GPIO3",
+			"GPIO4": "GPIO4",
+			"GPIO5": "GPIO5",
+			"GPIO6": "GPIO6",
+			"GPIO7": "GPIO7",
+			"GPIO8": "GPIO8",
+			"GPIO9": "GPIO9",
+			"GPIO10": "GPIO10",
+			"GPIO13": "GPIO13",
+			"GPIO14": "GPIO14",
+			"GPIO20": "GPIO20",
+			"GPIO21": "GPIO21",
+			"save": "Einstellung speichern"
+		},
 		"led-type": {
 			"h2": "LED-Typ",
 			"help": "Hier können Sie den Typ des verwendeten LED-Streifens (WS2812 oder SK6812) einstellen.\n" +

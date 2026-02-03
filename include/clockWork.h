@@ -8,11 +8,17 @@ private:
     uint32_t previousMillis = 0;
     uint32_t lux = 0;
 
+    // Variable to store the time when the button was pressed
+    unsigned long buttonPressStart = 0;
+    // State of the button
+    bool buttonPressed = false;
+
 private:
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
     void loopAutoBrightLogic();
+    void loopGPIOinput();
     uint32_t num32BitWithOnesAccordingToColumns();
     bool isRomanLanguage();
 
