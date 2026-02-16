@@ -87,12 +87,12 @@
 		"grunt-version": "^3.0.2",
 		"grunt-replace": "^2.0.2",
 		"stylelint-config-standard": "^40.0.0",
-		"terser": "^5.44.1"
+		"terser": "^5.46.0"
 	},
 	"dependencies": {
 		"@jaames/iro": "^5.5.2",
-		"i18next": "^25.7.4",
-		"i18next-browser-languagedetector": "^8.2.0",
+		"i18next": "^25.8.10",
+		"i18next-browser-languagedetector": "^8.2.1",
 		"minified": "^1.0.1",
 		"purecss": "^3.0.0"
 	}
