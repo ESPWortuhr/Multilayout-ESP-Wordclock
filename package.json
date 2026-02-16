@@ -87,7 +87,7 @@
 		"grunt-version": "^3.0.2",
 		"grunt-replace": "^2.0.2",
 		"stylelint-config-standard": "^39.0.1",
-		"terser": "^5.44.1"
+		"terser": "^5.46.0"
 	},
 	"dependencies": {
 		"@jaames/iro": "^5.5.2",
