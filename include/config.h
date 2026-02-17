@@ -41,6 +41,9 @@
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
 // from the Github user @n3roGit
 //
+// #define DEFAULT_LAYOUT Ger10x11Mrrioes
+// 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
+//
 // #define DEFAULT_LAYOUT Ger11x11
 // 11 rows, each 11 LED's per row + 4 LED's for minutes
 //
