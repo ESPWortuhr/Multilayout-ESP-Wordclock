@@ -117,21 +117,15 @@ uint32_t split(const uint8_t *payload, uint8_t start, uint8_t length = 3) {
 
 void payloadTextHandling(const uint8_t *payload, char *text,
                          uint8_t start = 3) {
-    uint8_t ii = 0;
-    for (uint8_t k = start; k < start + PAYLOAD_LENGTH - 1;
-         k++) // need space for  '\0'
-    {
-        text[ii] = payload[k];
-        ii++;
-    }
-    uint8_t index = PAYLOAD_LENGTH - 1;
-    for (int8_t counter = PAYLOAD_LENGTH - 2; counter > -1; counter--) {
-        if (!isSpace(text[counter])) {
-            index = counter + 1;
+    uint8_t len = PAYLOAD_LENGTH - 1;
+    memcpy(text, payload + start, len);
+    text[len] = '\0';
+    for (int8_t i = len - 1; i >= 0; i--) {
+        if (isSpace(text[i]))
+            text[i] = '\0';
+        else
             break;
-        }
     }
-    text[index] = '\0';
 }
 
 //------------------------------------------------------------------------------
