@@ -4,7 +4,6 @@
 #include "WebPageContent.h"
 #include "WebSocketsServer.h"
 
-#define RESPONSE_SIZE 900
 #define SIZE_OF_FAVICON 185
 
 const char favicon[] PROGMEM = {
@@ -87,20 +86,15 @@ public:
 
     void sendHtmlCode(const WSclient_t *client, const char *data,
                       uint32_t size) const {
-        char buf[RESPONSE_SIZE];
-        unsigned sent = 0;
-        unsigned blen = 0;
+        const uint16_t CHUNK_SIZE = 256;
+        char buf[CHUNK_SIZE];
+        uint32_t sent = 0;
+
         while (sent < size) {
-            buf[blen] = pgm_read_byte(&data[sent]);
-            blen++;
-            if (blen == RESPONSE_SIZE) {
-                client->tcp->write(buf, blen);
-                blen = 0;
-            }
-            sent++;
-        }
-        if (blen > 0) {
-            client->tcp->write(buf, blen);
+            uint32_t bytesToCopy = min((uint32_t)CHUNK_SIZE, size - sent);
+            memcpy_P(buf, data + sent, bytesToCopy);
+            client->tcp->write(buf, bytesToCopy);
+            sent += bytesToCopy;
         }
     }
 };
