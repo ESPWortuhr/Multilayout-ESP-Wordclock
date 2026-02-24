@@ -376,7 +376,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             // check if submitted password has changed compared to masked
             // password
             index_start += PAYLOAD_LENGTH;
-            char passMasked[32];
+            char passMasked[32] = {0};
             strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
             size_t passLen = strlen(passMasked);
             if (passLen > 3) {
