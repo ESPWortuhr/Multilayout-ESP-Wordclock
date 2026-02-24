@@ -54,7 +54,6 @@ enum class WhiteType {
 struct Birthday {
     uint8_t day;
     uint8_t month;
-    uint16_t year;
 };
 
 struct OpenWeatherMapData {

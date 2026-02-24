@@ -57,8 +57,7 @@ bool isBirthday(struct tm &tm) {
     // tm_mday=1..31, tm.tm_mon=0=Jan..11=Dec, tm_year=0=1900..n=1900+n
 
     for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
-        if ((G.birthday[i].year == tm.tm_year + 1900) &&
-            (G.birthday[i].month == tm.tm_mon + 1) &&
+        if ((G.birthday[i].month == tm.tm_mon + 1) &&
             (G.birthday[i].day == tm.tm_mday)) {
             return true;
         }

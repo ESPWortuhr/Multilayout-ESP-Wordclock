@@ -278,7 +278,6 @@ void setup() {
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
             G.birthday[i].day = 1;
             G.birthday[i].month = 1;
-            G.birthday[i].year = 1900;
         }
 
         eeprom::write();

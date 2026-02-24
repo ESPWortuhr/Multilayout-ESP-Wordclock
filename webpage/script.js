@@ -959,8 +959,21 @@ $.ready(function() {
 	$("#reset-button").on("click", function() {
 		sendCmd(COMMAND_RESET);
 	});
+	$(".birthdays input").on("input", function() {
+		let val = $(this).get("value").replace(/\D/g, "");
+		if (val.length > 2) {
+			val = val.substring(0, 2) + "-" + val.substring(2, 4);
+		}
+		$(this).set("value", val);
+	});
 	$("#birthdays-store-button").on("click", function() {
-		sendCmd(COMMAND_SET_BIRTHDAYS, getPaddedString($("#birthdays-date0").get("value"), 10) + getPaddedString($("#birthdays-date1").get("value"), 10) + getPaddedString($("#birthdays-date2").get("value"), 10) + getPaddedString($("#birthdays-date3").get("value"), 10) + getPaddedString($("#birthdays-date4").get("value"), 10));
+		sendCmd(COMMAND_SET_BIRTHDAYS,
+			getPaddedString($("#birthdays-date0").get("value"), 5) +
+			getPaddedString($("#birthdays-date1").get("value"), 5) +
+			getPaddedString($("#birthdays-date2").get("value"), 5) +
+			getPaddedString($("#birthdays-date3").get("value"), 5) +
+			getPaddedString($("#birthdays-date4").get("value"), 5)
+		);
 	});
 	$("#uhrzeit-button").on("click", function() {
 

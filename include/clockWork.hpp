@@ -1293,8 +1293,8 @@ void ClockWork::loop(struct tm &tm) {
         char string2Send[14];
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
             sprintf(string2Send, "birthdayDate%d", i);
-            sprintf(dateString, "%04u-%02u-%02u", G.birthday[i].year,
-                    G.birthday[i].month, G.birthday[i].day);
+            sprintf(dateString, "%02u-%02u", G.birthday[i].month,
+                    G.birthday[i].day);
             config[string2Send] = dateString;
         }
         serializeJson(config, str);
