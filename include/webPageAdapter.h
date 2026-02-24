@@ -110,12 +110,12 @@ WebPageAdapter webSocket = WebPageAdapter(80);
 
 //------------------------------------------------------------------------------
 
-uint16_t split(uint8_t *payload, uint8_t start, uint8_t length = 3) {
-    String value;
-    for (uint16_t k = start; k < start + length; k++) {
-        value += char(payload[k]);
-    }
-    return value.toInt();
+uint16_t split(const uint8_t *payload, uint8_t start, uint8_t length = 3) {
+    char buf[16] = {0};
+    if (length > 15) length = 15; 
+    
+    memcpy(buf, payload + start, length);
+    return atoi(buf);
 }
 
 //------------------------------------------------------------------------------
@@ -445,7 +445,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
                 G.birthday[i].year = split(payload, 3 + i * 10, 4);
-                G.birthday[i].month = split(payload, 8 + i * 10, 2);
+                G.birthday[i].month = split(payload,  + i * 10, 2);
                 G.birthday[i].day = split(payload, 11 + i * 10, 2);
             }
         }
