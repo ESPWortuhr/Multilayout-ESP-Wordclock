@@ -110,13 +110,13 @@ WebPageAdapter webSocket = WebPageAdapter(80);
 
 //------------------------------------------------------------------------------
 
-uint16_t split(const uint8_t *payload, uint8_t start, uint8_t length = 3) {
+uint32_t split(const uint8_t *payload, uint8_t start, uint8_t length = 3) {
     char buf[16] = {0};
     if (length > 15)
         length = 15;
 
     memcpy(buf, payload + start, length);
-    return atoi(buf);
+    return strtoul(buf, nullptr, 10);
 }
 
 //------------------------------------------------------------------------------
@@ -448,6 +448,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.birthday[i].month = split(payload, 3 + i * 5, 2);
                 G.birthday[i].day = split(payload, 6 + i * 5, 2);
             }
+            break;
         }
             //------------------------------------------------------------------------------
 
