@@ -32,7 +32,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasHappyBirthday() { return true; }
+    virtual const bool hasSpecialWordHappyBirthday() { return true; }
 
     //------------------------------------------------------------------------------
 

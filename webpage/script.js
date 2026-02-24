@@ -70,7 +70,7 @@ var dialect = [0, 0, 0, 0, 0, 0];
 var layVar = [0, 0, 0, 0, 0, 0];
 var showSeconds = 0;
 var showMinutes = 0;
-var hasHappyBirthday = 0;
+var hasSpecialWordHappyBirthday = 0;
 var buildtype = 0;
 var wType = 0;
 var colortype = 0;
@@ -218,7 +218,7 @@ function initConfigValues() {
 	showMinutes = 0;
 	buildtype = 0;
 	wType = 0;
-	hasHappyBirthday = 0;
+	hasSpecialWordHappyBirthday = 0;
 	colortype = 0;
 	MQTTState = 0;
 	MQTTPort = 0;
@@ -346,7 +346,7 @@ function initWebsocket() {
 		}
 
 		if (data.command === "birthdays") {
-			hasHappyBirthday = data.hasHappyBirthday;
+			hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
 			$("#birthdays-date0").set("value", data.birthdayDate0);
 			$("#birthdays-date1").set("value", data.birthdayDate1);
 			$("#birthdays-date2").set("value", data.birthdayDate2);
@@ -393,7 +393,7 @@ function initWebsocket() {
 			$("#owm-api-key").set("value", data.apiKey);
 			$("#owm-city-id").set("value", data.cityid);
 
-			hasHappyBirthday = data.hasHappyBirthday;
+			hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
 			$("#front-layout").set("value", data.UhrtypeDef);
 			$("#buildtype").set("value", data.buildtype);
 			$("#whitetype").set("value", data.wType);
@@ -448,7 +448,7 @@ function initWebsocket() {
 			effectBri = data.effectBri;
 			effectSpeed = data.effectSpeed;
 			colortype = data.colortype;
-			hasHappyBirthday = data.hasHappyBirthday;
+			hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
 
 			modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
 
@@ -562,7 +562,7 @@ function setElementsForFunctionsMenu() {
 		});
 	}
 
-	if (hasHappyBirthday === true && document.getElementById("mode-wordclock").checked) {
+	if (hasSpecialWordHappyBirthday === true && document.getElementById("mode-wordclock").checked) {
 		$("#functions-birthdays").set({
 			$display: "block"
 		});
