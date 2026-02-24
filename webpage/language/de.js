@@ -47,8 +47,7 @@ let TRANSLATION_DE_DE = {
 		"birthdays": {
 			"h1": "Geburtstage",
 			"help": "An Geburtstagen erscheint alle 5 Minuten eine Feuerwerk-Animation.\n" +
-						"Bei kompatiblen Uhrentypen werden während der Animation die Wörter „Happy Birthday“ statt der Uhrzeit angezeigt.\n" +
-						"Geburtstage vor dem Jahr 1900 werden nicht unterstützt.\n",
+						"Bei kompatiblen Uhrentypen werden während der Animation die Wörter „Happy Birthday“ statt der Uhrzeit angezeigt. Datumsformat MM-DD\n",
 			"dates": {
 				"save": "Speichern",
 				"date0": {
