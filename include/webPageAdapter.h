@@ -445,7 +445,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
                 G.birthday[i].year = split(payload, 3 + i * 10, 4);
-                G.birthday[i].month = split(payload, 9 + i * 10, 2);
+                G.birthday[i].month = split(payload, 8 + i * 10, 2);
                 G.birthday[i].day = split(payload, 11 + i * 10, 2);
             }
         }
