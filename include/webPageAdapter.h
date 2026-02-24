@@ -69,13 +69,11 @@ public:
                     "\r\n");
                 sendHtmlCode(client, html_code, html_size);
             } else {
-
-                // --------------------------------
-                int len = sprintf(buf, "HTTP/1.1 404 Not Found\r\n"
-                                       "Content-Type: text/plain\r\n\r\n"
-                                       "Seite ");
-                client->cUrl.toCharArray(buf + len, sizeof(buf) - len);
-                strcat(buf, " nicht gefunden\n");
+                snprintf(buf, sizeof(buf),
+                         "HTTP/1.1 404 Not Found\r\n"
+                         "Content-Type: text/plain\r\n\r\n"
+                         "Seite %s nicht gefunden\n",
+                         client->cUrl.c_str());
                 client->tcp->write(buf);
             }
         }
