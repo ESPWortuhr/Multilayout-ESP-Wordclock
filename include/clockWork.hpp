@@ -226,6 +226,18 @@ bool ClockWork::isRomanLanguage() {
 }
 
 //------------------------------------------------------------------------------
+
+void sendJsonToClient(uint8_t client_nr, const JsonDocument &doc) {
+    char str[1024];
+    size_t bytesWritten = serializeJson(doc, str);
+
+    Serial.print("Sending Payload:");
+    Serial.println(str);
+
+    webSocket.sendTXT(client_nr, str, bytesWritten);
+}
+
+//------------------------------------------------------------------------------
 // Front Effect Functions
 //------------------------------------------------------------------------------
 
@@ -1196,7 +1208,7 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_REQUEST_MQTT_VALUES: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(512);
         config["command"] = "mqtt";
         config["MQTT_State"] = G.mqtt.state;
         config["MQTT_Port"] = G.mqtt.port;
@@ -1212,10 +1224,10 @@ void ClockWork::loop(struct tm &tm) {
 
         config["MQTT_ClientId"] = G.mqtt.clientId;
         config["MQTT_Topic"] = G.mqtt.topic;
-        serializeJson(config, str);
-        Serial.print("Sending Payload:");
-        Serial.println(str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        char str[400];
+        size_t bytesWritten = serializeJson(config, str);
+        webSocket.sendTXT(G.client_nr, str, bytesWritten);
         break;
     }
 
@@ -1277,19 +1289,17 @@ void ClockWork::loop(struct tm &tm) {
         config["hasSpecialWordHappyBirthday"] =
             usedUhrType->hasSpecialWordHappyBirthday();
         config["numOfRows"] = usedUhrType->rowsWordMatrix();
-        serializeJson(config, str);
-        Serial.print("Sending Payload:");
-        Serial.println(str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
     case COMMAND_REQUEST_BIRTHDAYS: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(256);
         config["command"] = "birthdays";
         config["hasSpecialWordHappyBirthday"] =
             usedUhrType->hasSpecialWordHappyBirthday();
-        char dateString[14];
+        char dateString[6];
         char string2Send[14];
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
             sprintf(string2Send, "birthdayDate%d", i);
@@ -1297,15 +1307,13 @@ void ClockWork::loop(struct tm &tm) {
                     G.birthday[i].day);
             config[string2Send] = dateString;
         }
-        serializeJson(config, str);
-        Serial.print("Sending Payload:");
-        Serial.println(str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
     case COMMAND_REQUEST_COLOR_VALUES: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(512);
         config["command"] = "set";
         for (uint8_t i = 0; i < 2; i++) {
             char string2Send[7];
@@ -1323,13 +1331,13 @@ void ClockWork::loop(struct tm &tm) {
             usedUhrType->hasSpecialWordHappyBirthday();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["prog"] = G.prog;
-        serializeJson(config, str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
     case COMMAND_REQUEST_AUTO_BRIGHT: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(256);
         config["command"] = "autoBright";
         if (G.param1 == 0) {
             config["autoBrightEnabled"] = G.autoBrightEnabled;
@@ -1339,21 +1347,21 @@ void ClockWork::loop(struct tm &tm) {
         }
         config["autoBrightSensor"] = (uint32_t)lux;
         config["autoBrightGain"] = (uint8_t)ledGain;
-        serializeJson(config, str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
     case COMMAND_REQUEST_TRANSITION: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(256);
         config["command"] = "transition";
         config["transitionType"] = G.transitionType;
         config["transitionDuration"] = G.transitionDuration;
         config["transitionSpeed"] = G.transitionSpeed;
         config["transitionDemo"] = G.transitionDemo;
         config["transitionColorize"] = G.transitionColorize;
-        serializeJson(config, str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
