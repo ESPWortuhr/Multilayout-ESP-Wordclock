@@ -406,8 +406,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             index_start += PAYLOAD_LENGTH;
             char passMasked[32];
             strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
-            strncpy(passMasked, "******************************",
-                    (strlen(passMasked) - 3));
+            size_t passLen = strlen(passMasked);
+            if (passLen > 3) {
+                strncpy(passMasked, "******************************",
+                        passLen - 3);
+            }
 
             char passSumitted[32];
             payloadTextHandling(payload, passSumitted, index_start);
