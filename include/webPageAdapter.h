@@ -27,7 +27,6 @@ const char favicon[] PROGMEM = {
 class WebPageAdapter : public WebSocketsServer {
 
 public:
-    // forward the port to the parent class constructor
     WebPageAdapter(int port) : WebSocketsServer(port) {}
 
     /**
@@ -84,6 +83,8 @@ public:
         clientDisconnect(client);
     }
 
+    //------------------------------------------------------------------------------
+
     void sendHtmlCode(const WSclient_t *client, const char *data,
                       uint32_t size) const {
         const uint16_t CHUNK_SIZE = 256;
@@ -99,7 +100,6 @@ public:
     }
 };
 
-//-- WebSocketserver
 WebPageAdapter webSocket = WebPageAdapter(80);
 
 //------------------------------------------------------------------------------
@@ -162,9 +162,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
     if (statusAccessPoint > 0) {
         statusAccessPoint = 0;
     }
-    int ii;
-    int jj;
-    char tmp[30];
+
     payload = (payload == NULL) ? (uint8_t *)"" : payload;
     Serial.printf("Client-Nr.: [%u]  WStype: %u payload: %s\n", num, type,
                   payload);
@@ -292,18 +290,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_TIME: {
-            ii = 0;
-            tmp[0] = '\0';
+            char tmp[17] = {0};
             uint32_t tt = split(payload, 3, 16);
             Serial.println(tt);
-            for (uint8_t k = 12; k < 28; k++) {
-                tmp[ii] = payload[k];
-                ii++;
-            }
+            memcpy(tmp, payload + 12, 16);
+
             struct timeval tv;
             tv.tv_sec = atoi(tmp);
             tv.tv_usec = 0;
-            Serial.printf("Conf: Time: %lld\n", tv.tv_sec);
             settimeofday(&tv, nullptr);
             break;
         }
@@ -432,7 +426,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             tv.tv_sec = mktime(&tm);
             tv.tv_usec = 0;
             Serial.println("Time manually set");
-            Serial.printf("Conf: Time: %lld\n", tv.tv_sec);
             settimeofday(&tv, nullptr);
             break;
         }
@@ -482,21 +475,17 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_WEATHER_DATA: {
-            ii = 0;
+            uint8_t ii = 0;
             for (uint8_t k = 3; k < 10; k++) {
-                if (payload[k] != ' ') {
-                    G.openWeatherMap.cityid[ii] = payload[k];
-                    ii++;
-                }
+                if (payload[k] != ' ')
+                    G.openWeatherMap.cityid[ii++] = payload[k];
             }
             G.openWeatherMap.cityid[ii] = '\0';
-            //
-            jj = 0;
+
+            uint8_t jj = 0;
             for (uint8_t l = 11; l < 43; l++) {
-                if (payload[l] != ' ') {
-                    G.openWeatherMap.apikey[jj] = payload[l];
-                    jj++;
-                }
+                if (payload[l] != ' ')
+                    G.openWeatherMap.apikey[jj++] = payload[l];
             }
             G.openWeatherMap.apikey[jj] = '\0';
             Serial.println("write EEPROM!");
