@@ -213,16 +213,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_SCROLLINGTEXT: {
-            if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
-                G.progInit = true;
-            }
-
-            parseColor(payload);
-            break;
-        }
-
-            //------------------------------------------------------------------------------
         case COMMAND_MODE_RAINBOW:
         case COMMAND_MODE_RAINBOWCYCLE: {
             if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
@@ -243,7 +233,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             break;
         }
             //------------------------------------------------------------------------------
-
+        case COMMAND_MODE_SCROLLINGTEXT:
         case COMMAND_MODE_SYMBOL: {
             if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
                 G.progInit = true;
