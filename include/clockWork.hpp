@@ -1462,14 +1462,19 @@ void ClockWork::loop(struct tm &tm) {
         led.show();
         delay(10);
         Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
+
         usedUhrType = getPointer(G.UhrtypeDef);
         resetMinVariantIfNotAvailable();
+
+        delete secondsFrame;
+        secondsFrame = nullptr;
+
         if (usedUhrType->numPixelsFrameMatrix() != 0) {
-            delete secondsFrame;
             secondsFrame =
                 new SecondsFrame(usedUhrType->numPixelsFrameMatrix());
             G.progInit = true;
         }
+
         parametersChanged = true;
         break;
     }
