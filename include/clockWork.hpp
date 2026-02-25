@@ -11,6 +11,10 @@ BH1750 lightMeter(0x23);
 bool bh1750Initialized;
 #endif
 
+#define MAX_LED_COUNT                                                          \
+    300 // Biggest Wordclock so far is 16x18=288 plus potentially 4 for minutes,
+        // so 300 is a safe upper limit
+
 OpenWMap weather;
 
 //------------------------------------------------------------------------------
@@ -185,11 +189,12 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
         if (strip_RGBW == NULL) {
 #ifdef ESP8266
-            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(500);
+            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
+                MAX_LED_COUNT);
 #elif defined(ESP32)
             pinMode(LED_PIN, OUTPUT);
-            strip_RGBW =
-                new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(500, LED_PIN);
+            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(
+                MAX_LED_COUNT, LED_PIN);
 #endif
             strip_RGBW->Begin();
         }
@@ -201,11 +206,12 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
         if (strip_RGB == NULL) {
 #ifdef ESP8266
-            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(500);
+            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(
+                MAX_LED_COUNT);
 #elif defined(ESP32)
             pinMode(LED_PIN, OUTPUT);
             strip_RGB = new NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod>(
-                500, LED_PIN);
+                MAX_LED_COUNT, LED_PIN);
 #endif
             strip_RGB->Begin();
         }
