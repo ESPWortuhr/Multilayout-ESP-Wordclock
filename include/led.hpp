@@ -503,8 +503,8 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
 
     uint8_t height = pgm_read_byte(&(fontHeight[normalSizeASCII]));
 
-    for (uint8_t i = usedUhrType->rowsWordMatrix();
-         i > offsetRow + height; i--) {
+    for (uint8_t i = usedUhrType->rowsWordMatrix(); i > offsetRow + height;
+         i--) {
         clearRow(i - 1);
     }
 }
