@@ -21,7 +21,9 @@ const uint8_t whiteAdjB[3] = {107, 177, 253};
 /* Based on https://graphics.stanford.edu/~seander/bithacks.html */
 
 inline uint8_t Led::reverse8BitOrder(uint8_t x) {
-    return (x * 0x0202020202ULL & 0x010884422010ULL) % 1023;
+    x = ((x >> 1) & 0x55) | ((x << 1) & 0xAA);
+    x = ((x >> 2) & 0x33) | ((x << 2) & 0xCC);
+    return (x >> 4) | (x << 4);
 }
 
 //------------------------------------------------------------------------------
@@ -81,29 +83,25 @@ void Led::applyMirroringAndReverseIfDefined() {
 
 RgbwColor convertRgbToRgbw(RgbColor light, WhiteType wType) {
     RgbwColor returnColor;
+    uint8_t wIdx = static_cast<uint8_t>(wType);
 
-    // These values are what the 'white' value would need to
-    // be to get the corresponding color value.
-    float whiteValueR =
-        light.R * 255.0 / whiteAdjR[static_cast<uint8_t>(wType)];
-    float whiteValueG =
-        light.G * 255.0 / whiteAdjG[static_cast<uint8_t>(wType)];
-    float whiteValueB =
-        light.B * 255.0 / whiteAdjB[static_cast<uint8_t>(wType)];
+    // Use fast 32-bit integer math! (255 * 255 = 65025, easily fits in
+    // uint32_t)
+    uint32_t whiteValueR = (light.R * 255) / whiteAdjR[wIdx];
+    uint32_t whiteValueG = (light.G * 255) / whiteAdjG[wIdx];
+    uint32_t whiteValueB = (light.B * 255) / whiteAdjB[wIdx];
 
-    // Set the white value to the highest it can be for the given color
-    // (without over saturating any channel - thus the minimum of them).
-    float minValW = min(whiteValueR, min(whiteValueG, whiteValueB));
+    // Find the minimum using integer comparison
+    uint32_t minValW = min(whiteValueR, min(whiteValueG, whiteValueB));
     returnColor.W = (minValW <= 255 ? (uint8_t)minValW : 255);
 
-    // The rest of the channels will just be the original value minus the
-    // contribution by the white channel.
-    returnColor.R = static_cast<uint8_t>(
-        light.R - minValW * whiteAdjR[static_cast<uint8_t>(wType)] / 255);
-    returnColor.G = static_cast<uint8_t>(
-        light.G - minValW * whiteAdjG[static_cast<uint8_t>(wType)] / 255);
-    returnColor.B = static_cast<uint8_t>(
-        light.B - minValW * whiteAdjB[static_cast<uint8_t>(wType)] / 255);
+    // Integer math for the return channels
+    returnColor.R =
+        static_cast<uint8_t>(light.R - (minValW * whiteAdjR[wIdx]) / 255);
+    returnColor.G =
+        static_cast<uint8_t>(light.G - (minValW * whiteAdjG[wIdx]) / 255);
+    returnColor.B =
+        static_cast<uint8_t>(light.B - (minValW * whiteAdjB[wIdx]) / 255);
 
     return returnColor;
 }
@@ -341,30 +339,28 @@ void Led::setIcon(uint8_t iconNum) {
         uint8_t offsetCol =
             (usedUhrType->colsWordMatrix() - GRAFIK_8X8_COLS) / 2;
 
-        for (uint8_t col = 0; col < GRAFIK_8X8_COLS; col++) {
-            for (uint8_t row = 0; row < GRAFIK_8X8_ROWS; row++) {
-                if (pgm_read_word(&(grafik_8x8[iconNum][row])) &
-                    (1 << (GRAFIK_8X8_COLS - col - 1))) {
-                    usedUhrType->setFrontMatrixPixel(row, col + offsetCol);
-                } else {
-                    usedUhrType->setFrontMatrixPixel(row, col + offsetCol,
-                                                     false);
-                }
+        for (uint8_t row = 0; row < GRAFIK_8X8_ROWS; row++) {
+
+            uint16_t rowData = pgm_read_word(&(grafik_8x8[iconNum][row]));
+
+            for (uint8_t col = 0; col < GRAFIK_8X8_COLS; col++) {
+                usedUhrType->setFrontMatrixPixel(
+                    row, col + offsetCol,
+                    (rowData & (1 << (GRAFIK_8X8_COLS - col - 1))));
             }
         }
     } else {
         uint8_t offsetCol =
             (usedUhrType->colsWordMatrix() - GRAFIK_11X10_COLS) / 2;
 
-        for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
-            for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
-                if (pgm_read_word(&(grafik_11x10[iconNum][row])) &
-                    (1 << (GRAFIK_11X10_COLS - col - 1))) {
-                    usedUhrType->setFrontMatrixPixel(row, col + offsetCol);
-                } else {
-                    usedUhrType->setFrontMatrixPixel(row, col + offsetCol,
-                                                     false);
-                }
+        for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
+
+            uint16_t rowData = pgm_read_word(&(grafik_11x10[iconNum][row]));
+
+            for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
+                usedUhrType->setFrontMatrixPixel(
+                    row, col + offsetCol,
+                    (rowData & (1 << (GRAFIK_11X10_COLS - col - 1))));
             }
         }
     }
@@ -505,8 +501,10 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
         clearRow(i);
     }
 
+    uint8_t height = pgm_read_byte(&(fontHeight[normalSizeASCII]));
+
     for (uint8_t i = usedUhrType->rowsWordMatrix();
-         i > offsetRow + pgm_read_byte(&(fontHeight[normalSizeASCII])); i--) {
+         i > offsetRow + height; i--) {
         clearRow(i - 1);
     }
 }
@@ -671,10 +669,11 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
         }
     }
 
-    for (uint8_t col = 0; col < pgm_read_byte(&(fontWidth[usedFontSize]));
-         col++) {
-        for (uint8_t row = 0; row < pgm_read_byte(&(fontHeight[usedFontSize]));
-             row++) {
+    uint8_t width = pgm_read_byte(&(fontWidth[usedFontSize]));
+    uint8_t height = pgm_read_byte(&(fontHeight[usedFontSize]));
+
+    for (uint8_t col = 0; col < width; col++) {
+        for (uint8_t row = 0; row < height; row++) {
             // 1st Row: Hours
             if (showHours) {
                 setPixelForChar(col, row, offsetLetterH1, offsetRow0,
