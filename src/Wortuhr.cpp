@@ -472,7 +472,7 @@ void setup() {
     //-------------------------------------
     // Frame Init
     //-------------------------------------
-    if (usedUhrType->numPixelsFrameMatrix() != 0) {
+    if (secondsFrame) {
         secondsFrame->initFrame();
     }
 
@@ -529,7 +529,9 @@ void loop() {
     //------------------------------------------------
     // Frame
     //------------------------------------------------
-    secondsFrame->loop();
+    if (secondsFrame) {
+        secondsFrame->loop();
+    }
 
     //------------------------------------------------
     // Transition
