@@ -215,7 +215,7 @@ void ClockWork::initLedStrip(uint8_t num) {
 //------------------------------------------------------------------------------
 
 uint32_t ClockWork::num32BitWithOnesAccordingToColumns() {
-    return pow(2, usedUhrType->colsWordMatrix()) - 1;
+    return (1U << usedUhrType->colsWordMatrix()) - 1;
 }
 
 //------------------------------------------------------------------------------
