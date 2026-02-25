@@ -1225,9 +1225,7 @@ void ClockWork::loop(struct tm &tm) {
         config["MQTT_ClientId"] = G.mqtt.clientId;
         config["MQTT_Topic"] = G.mqtt.topic;
 
-        char str[400];
-        size_t bytesWritten = serializeJson(config, str);
-        webSocket.sendTXT(G.client_nr, str, bytesWritten);
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
