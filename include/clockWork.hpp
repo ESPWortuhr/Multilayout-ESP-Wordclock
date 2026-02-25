@@ -285,13 +285,23 @@ void ClockWork::scrollingText(const char *buf) {
     uint8_t offsetRow = (usedUhrType->rowsWordMatrix() -
                          pgm_read_byte(&(fontHeight[normalSizeASCII]))) /
                         2;
-    uint8_t fontIndex = buf[ii];
+
+    uint16_t len = strlen(buf);
+    uint8_t width = pgm_read_byte(&(fontWidth[normalSizeASCII]));
+    uint8_t charsToFlush = (usedUhrType->colsWordMatrix() / (width + 1)) + 1;
+
+    if (ii >= len + charsToFlush) {
+        ii = 0;
+        i = 0;
+    }
+
+    uint8_t fontIndex = (ii < len) ? buf[ii] : ' ';
 
     led.setbyFrontMatrix(Foreground); // Needed for Mirrored Display
     led.shiftColumnToRight();
     led.clearFrontExeptofFontspace(offsetRow);
 
-    if (i < pgm_read_byte(&(fontWidth[normalSizeASCII]))) {
+    if (i < width) {
         for (uint8_t row = 0;
              row < pgm_read_byte(&(fontHeight[normalSizeASCII])); row++) {
             usedUhrType->setFrontMatrixPixel(
@@ -309,11 +319,11 @@ void ClockWork::scrollingText(const char *buf) {
     led.show();
 
     i++;
-    if (i >= pgm_read_byte(&(fontWidth[normalSizeASCII])) + 1) // +1 for spacing
+    if (i >= width + 1) // +1 for spacing
     {
         i = 0;
         ii++;
-        if (ii >= strlen(buf)) {
+        if (ii >= len + charsToFlush) {
             ii = 0;
         }
     }
