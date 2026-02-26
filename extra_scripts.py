@@ -54,10 +54,12 @@ npm_ci = env.Command(
     action="npm ci --silent"
 )
 
+env["ENV"]["PIO_ENV_NAME"] = env.subst("$PIOENV")
+
 grunt_build = env.Command(
     target="include/WebPageContent.gen.inc",
     source="Gruntfile.js",
-    action="PIO_ENV_NAME=$PIOENV npx --no-install grunt build"
+    action="npx --no-install grunt build"
 )
 env.Depends(grunt_build, npm_ci)
 env.Depends(grunt_build, package_json)
