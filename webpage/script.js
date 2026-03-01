@@ -55,36 +55,9 @@ var hsb = [
 var colorPosition = 0;
 var effectBri = 2;
 var effectSpeed = 10;
-var sleep = 0;
-var sleeptime = 1;
-var color = 0;
-var h6 = 100;
-var h8 = 100;
-var h12 = 100;
-var h16 = 100;
-var h18 = 100;
-var h20 = 100;
-var h22 = 100;
-var h24 = 100;
 var dialect = [0, 0, 0, 0, 0, 0];
 var layVar = [0, 0, 0, 0, 0, 0];
-var showSeconds = 0;
-var showMinutes = 0;
 var hasSpecialWordHappyBirthday = 0;
-var buildtype = 0;
-var wType = 0;
-var colortype = 0;
-var MQTTState = 0;
-var MQTTPort = 0;
-var MQTTServer = 0;
-var MQTTUser = 0;
-var MQTTPass = 0;
-var MQTTClientId = 0;
-var MQTTTopic = 0;
-var bootLedBlink = 0;
-var bootLedSweep = 0;
-var bootShowWifi = 0;
-var bootShowIP = 0;
 var autoBrightDisplay = 0;
 var autoBrightEnabled = 0;
 var autoBrightInterval = null;
@@ -202,36 +175,9 @@ function initConfigValues() {
 	];
 	effectBri = 2;
 	effectSpeed = 10;
-	sleep = 0;
-	sleeptime = 1;
-	color = 0;
-	h6 = 100;
-	h8 = 100;
-	h12 = 100;
-	h16 = 100;
-	h18 = 100;
-	h20 = 100;
-	h22 = 100;
-	h24 = 100;
 	dialect = [0, 0, 0, 0, 0, 0];
 	layVar = [0, 0, 0, 0, 0, 0];
-	showSeconds = 0;
-	showMinutes = 0;
-	buildtype = 0;
-	wType = 0;
 	hasSpecialWordHappyBirthday = 0;
-	colortype = 0;
-	MQTTState = 0;
-	MQTTPort = 0;
-	MQTTServer = 0;
-	MQTTUser = 0;
-	MQTTPass = 0;
-	MQTTClientId = 0;
-	MQTTTopic = 0;
-	bootLedBlink = 0;
-	bootLedSweep = 0;
-	bootShowWifi = 0;
-	bootShowIP = 0;
 	autoBrightDisplay = 0;
 	autoBrightEnabled = 0;
 	autoBrightMin = 10;
@@ -336,157 +282,139 @@ function initWebsocket() {
 
 		debugMessage("WebSocket response arrived (command " + data.command + ").", data);
 
-		if (data.command === "mqtt") {
-			$("#mqtt-port").set("value", data.MQTT_Port);
-			$("#mqtt-server").set({ "value": data.MQTT_Server, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
-			document.getElementById("mqtt-state").checked = data.MQTT_State;
-			$("#mqtt-user").set({ "value": data.MQTT_User, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
-			$("#mqtt-pass").set({ "value": data.MQTT_Pass, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
-			$("#mqtt-clientid").set({ "value": data.MQTT_ClientId, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
-			$("#mqtt-topic").set({ "value": data.MQTT_Topic, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
-		}
+		switch (data.command) {
+			case "mqtt":
+				$("#mqtt-port").set("value", data.MQTT_Port);
+				$("#mqtt-server").set({ "value": data.MQTT_Server, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
+				document.getElementById("mqtt-state").checked = data.MQTT_State;
+				$("#mqtt-user").set({ "value": data.MQTT_User, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
+				$("#mqtt-pass").set({ "value": data.MQTT_Pass, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
+				$("#mqtt-clientid").set({ "value": data.MQTT_ClientId, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
+				$("#mqtt-topic").set({ "value": data.MQTT_Topic, "@maxlength": DATA_MQTT_RESPONSE_TEXT_LENGTH });
+				break;
 
-		if (data.command === "birthdays") {
-			hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
-			$("#birthdays-date0").set("value", data.birthdayDate0);
-			$("#birthdays-date1").set("value", data.birthdayDate1);
-			$("#birthdays-date2").set("value", data.birthdayDate2);
-			$("#birthdays-date3").set("value", data.birthdayDate3);
-			$("#birthdays-date4").set("value", data.birthdayDate4);
-		}
+			case "birthdays":
+				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
+				for (let i = 0; i < 5; i++) {
+					$(`#birthdays-date${i}`).set("value", data[`birthdayDate${i}`]);
+				}
+				break;
 
-		if (data.command === "config") {
+			case "config":
 
-			$("#ssid").set("value", data.ssid);
+				$("#ssid").set("value", data.ssid);
+				$("#timeserver").set("value", data.timeserver);
+				$("#hostname").set("value", data.hostname);
+				$("#scrollingtext").set("value", data.scrollingText);
 
-			$("#timeserver").set("value", data.timeserver);
-			$("#hostname").set("value", data.hostname);
-			$("#scrollingtext").set("value", data.scrollingText);
+				[6, 8, 12, 16, 18, 20, 22, 24].forEach(h => {
+					$(`#brightness-${h}`).set("value", data[`h${h}`]);
+				});
 
-			$("#brightness-6").set("value", data.h6);
-			$("#brightness-8").set("value", data.h8);
-			$("#brightness-12").set("value", data.h12);
-			$("#brightness-16").set("value", data.h16);
-			$("#brightness-18").set("value", data.h18);
-			$("#brightness-20").set("value", data.h20);
-			$("#brightness-22").set("value", data.h22);
-			$("#brightness-24").set("value", data.h24);
+				for (let i = 0; i < 6; i++) {
+					$(`#dialect-${i}`).set("value", data[`langVar${i}`]);
+					document.getElementById(`layvar-${i}`).checked = data[`layVar${i}`];
+				}
 
-			$("#dialect-0").set("value", data.langVar0);
-			$("#dialect-1").set("value", data.langVar1);
-			$("#dialect-2").set("value", data.langVar2);
-			$("#dialect-3").set("value", data.langVar3);
-			$("#dialect-4").set("value", data.langVar4);
-			$("#dialect-5").set("value", data.langVar5);
+				$("#slider-brightness").set("value", data.effectBri);
+				$("#slider-speed").set("value", data.effectSpeed);
+				$("#show-seconds").set("value", data.secondVariant);
+				$("#show-minutes").set("value", data.minuteVariant);
 
-			document.getElementById("layvar-0").checked = data.layVar0;
-			document.getElementById("layvar-1").checked = data.layVar1;
-			document.getElementById("layvar-2").checked = data.layVar2;
-			document.getElementById("layvar-3").checked = data.layVar3;
-			document.getElementById("layvar-4").checked = data.layVar4;
-			document.getElementById("layvar-5").checked = data.layVar5;
+				$("#owm-api-key").set("value", data.apiKey);
+				$("#owm-city-id").set("value", data.cityid);
 
-			$("#slider-brightness").set("value", data.effectBri);
-			$("#slider-speed").set("value", data.effectSpeed); // TODO: there is no property effectSpeed!
-			$("#show-seconds").set("value", data.secondVariant);
-			$("#show-minutes").set("value", data.minuteVariant);
+				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
+				$("#front-layout").set("value", data.UhrtypeDef);
+				$("#buildtype").set("value", data.buildtype);
+				$("#whitetype").set("value", data.wType);
+				$("#colortype").set("value", data.colortype);
 
-			$("#owm-api-key").set("value", data.apiKey);
-			$("#owm-city-id").set("value", data.cityid);
+				document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
+				document.getElementById("boot-show-led-sweep").checked = data.bootLedSweep;
+				document.getElementById("boot-show-wifi").checked = data.bootShowWifi;
+				document.getElementById("boot-show-ip").checked = data.bootShowIP;
 
-			hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
-			$("#front-layout").set("value", data.UhrtypeDef);
-			$("#buildtype").set("value", data.buildtype);
-			$("#whitetype").set("value", data.wType);
-			$("#colortype").set("value", data.colortype);
+				modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
 
-			document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
-			document.getElementById("boot-show-led-sweep").checked = data.bootLedSweep;
-			document.getElementById("boot-show-wifi").checked = data.bootShowWifi;
-			document.getElementById("boot-show-ip").checked = data.bootShowIP;
+				enableSpecific("specific-layout-1", !data.isRomanLanguage);
+				enableSpecific("specific-layout-2", data.hasDreiviertel);
+				enableSpecific("specific-layout-3", data.hasTwenty);
+				enableSpecific("specific-layout-4", data.hasSecondsFrame);
+				enableSpecific("specific-layout-5", data.hasWeatherLayout);
+				enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // Add A-Quarter to (En10x11 exclusive)
+				enableSpecific("specific-layout-7", data.hasSecondsFrame);
+				enableSpecific("specific-colortype-4", data.colortype === 5);
 
-			modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
+				removeSpecificOption("show-minutes", "3", data.numOfRows !== 11); // MinuteVariant "Corners" only for DE11x11 Variants
+				removeSpecificOption("show-minutes", "4", !data.hasMinuteInWords);
+				removeSpecificOption("show-minutes", "1", data.UhrtypeDef === 13); // Remove "LED4x" for Ger16x8
+				removeSpecificOption("show-minutes", "2", data.UhrtypeDef === 13); // Remove "LED7x" for Ger16x8
 
-			enableSpecific("specific-layout-1", !data.isRomanLanguage);
-			enableSpecific("specific-layout-2", data.hasDreiviertel);
-			enableSpecific("specific-layout-3", data.hasTwenty);
-			enableSpecific("specific-layout-4", data.hasSecondsFrame);
-			enableSpecific("specific-layout-5", data.hasWeatherLayout);
-			enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // Add A-Quarter to (En10x11 exclusive)
-			enableSpecific("specific-layout-7", data.hasSecondsFrame);
+				autoBrightEnabled = data.autoBrightEnabled;
+				if (autoBrightEnabled === 9) {
+					// hide auto/manual select box
+					$("#auto-bright-enabled").fill(EE("option", { "@value": "-1" }, "not available"));
+					$("#auto-bright-enabled").set("value", -1);
+					$("#auto-bright-enabled").up(".pure-control-group").hide();
+					autoBrightStop();
+				} else if (autoBrightEnabled === 1) {
+					$("#auto-bright-enabled").set("value", 1);
+					autoBrightUpdater();
+				} else {
+					$("#auto-bright-enabled").set("value", 0);
+					autoBrightStop();
+				}
+				enableSpecific("specific-layout-brightness-man", autoBrightEnabled !== 1);
+				enableSpecific("specific-layout-brightness-auto", autoBrightEnabled === 1);
+				break;
 
-			enableSpecific("specific-colortype-4", data.colortype === 5);
+			case "set": {
+				hsb[0] = [data.hsb00, data.hsb01, data.hsb02];
+				hsb[1] = [data.hsb10, data.hsb11, data.hsb12];
+				effectBri = data.effectBri;
+				effectSpeed = data.effectSpeed;
+				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
 
-			removeSpecificOption("show-minutes", "3", data.numOfRows !== 11); // MinuteVariant "Corners" only for DE11x11 Variants
-			removeSpecificOption("show-minutes", "4", !data.hasMinuteInWords);
-			removeSpecificOption("show-minutes", "1", data.UhrtypeDef === 13); // Remove "LED4x" for Ger16x8
-			removeSpecificOption("show-minutes", "2", data.UhrtypeDef === 13); // Remove "LED7x" for Ger16x8
+				modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
 
-			autoBrightEnabled = data.autoBrightEnabled;
-			if (autoBrightEnabled === 9) {
-				// hide auto/manual select box
-				$("#auto-bright-enabled").fill(EE("option", { "@value": "-1" }, "not available"));
-				$("#auto-bright-enabled").set("value", -1);
-				$("#auto-bright-enabled").up(".pure-control-group").hide();
-				autoBrightStop();
-			} else if (autoBrightEnabled === 1) {
-				$("#auto-bright-enabled").set("value", 1);
-				autoBrightUpdater();
-			} else {
-				$("#auto-bright-enabled").set("value", 0);
-				autoBrightStop();
+				command = data.prog === 0 ? CMD.MODE_WORD_CLOCK : data.prog;
+				const inputID = MODE_TO_INPUT_ID.get(data.prog);
+				debugMessage("Mode is " + data.prog + " (" + inputID + ")");
+
+				document.getElementById(inputID).checked = true;
+				setSliders();
+				setColors();
+				enableSpecific("specific-colortype-4", data.colortype === 5);
+				enableSpecific("specific-layout-7", data.hasSecondsFrame);
+				break;
 			}
-			enableSpecific("specific-layout-brightness-man", autoBrightEnabled !== 1);
-			enableSpecific("specific-layout-brightness-auto", autoBrightEnabled === 1);
-		}
-		if (data.command === "set") {
-			hsb[0][0] = data.hsb00;
-			hsb[0][1] = data.hsb01;
-			hsb[0][2] = data.hsb02;
-			hsb[1][0] = data.hsb10;
-			hsb[1][1] = data.hsb11;
-			hsb[1][2] = data.hsb12;
-			effectBri = data.effectBri;
-			effectSpeed = data.effectSpeed;
-			colortype = data.colortype;
-			hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
+			case "wlan":
+				document.getElementById("wlanlist").innerHTML = data.list;
+				break;
 
-			modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
+			case "transition":
+				transitionType = data.transitionType;
+				transitionDuration = data.transitionDuration;
+				transitionSpeed = data.transitionSpeed;
+				transitionColorize = data.transitionColorize;
+				transitionDemo = data.transitionDemo;
+				setElementsForFunctionsMenu();
+				break;
 
-			var prog = data.prog;
-			command = prog === 0 ? CMD.MODE_WORD_CLOCK : prog;	// 0 == CMD.IDLE
-			const inputID = MODE_TO_INPUT_ID.get(prog);
-			debugMessage("Mode is " + prog + " (" + inputID + ")");
-
-			document.getElementById(inputID).checked = true;
-			setSliders();
-			setColors();
-			enableSpecific("specific-colortype-4", data.colortype === 5);
-			enableSpecific("specific-layout-7", data.hasSecondsFrame);
-		}
-		if (data.command === "wlan") {
-			document.getElementById("wlanlist").innerHTML = data.list;
-		}
-		if (data.command === "transition") {
-			transitionType = data.transitionType;
-			transitionDuration = data.transitionDuration;
-			transitionSpeed = data.transitionSpeed;
-			transitionColorize = data.transitionColorize;
-			transitionDemo = data.transitionDemo;
-			setElementsForFunctionsMenu();
-		}
-		if (data.command === "autoBright") {
-			$("#auto-bright-enabled").set("value", data.autoBrightEnabled);
-			$("#auto-bright-sensor").set("value", data.autoBrightSensor);
-			$("#auto-bright-gain").set("value", data.autoBrightGain);
-			$("#auto-bright-min").set("value", data.autoBrightMin);
-			$("#auto-bright-max").set("value", data.autoBrightMax);
-			$("#auto-bright-peak").set("value", data.autoBrightPeak);
-			if (typeof data.autoBrightEnabled !== "undefined" && data.autoBrightEnabled === 1) {
-				autoBrightUpdater();
-			} else if (typeof data.autoBrightEnabled !== "undefined" && data.autoBrightEnabled !== 1) {
-				autoBrightStop();
-			}
+			case "autoBright":
+				$("#auto-bright-enabled").set("value", data.autoBrightEnabled);
+				$("#auto-bright-sensor").set("value", data.autoBrightSensor);
+				$("#auto-bright-gain").set("value", data.autoBrightGain);
+				$("#auto-bright-min").set("value", data.autoBrightMin);
+				$("#auto-bright-max").set("value", data.autoBrightMax);
+				$("#auto-bright-peak").set("value", data.autoBrightPeak);
+				if (data.autoBrightEnabled === 1) {
+					autoBrightUpdater();
+				} else {
+					autoBrightStop();
+				}
+				break;
 		}
 	};
 	websocket.onerror = function(event) {
@@ -632,17 +560,14 @@ function sendCmd(command, addData = "") {
 	websocket.send(data);
 }
 
-function sendBrightnessData(command, addData = "") {
-	h6 = $("#brightness-6").get("value");
-	h8 = $("#brightness-8").get("value");
-	h12 = $("#brightness-12").get("value");
-	h16 = $("#brightness-16").get("value");
-	h18 = $("#brightness-18").get("value");
-	h20 = $("#brightness-20").get("value");
-	h22 = $("#brightness-22").get("value");
-	h24 = $("#brightness-24").get("value");
-
-	sendCmd(CMD.SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + nstr(effectBri));
+function sendBrightnessData() {
+	let payload = "";
+	[6, 8, 12, 16, 18, 20, 22, 24].forEach(h => {
+		let val = $(`#brightness-${h}`).get("value");
+		window[`h${h}`] = val;
+		payload += nstr(val);
+	});
+	sendCmd(CMD.SET_BRIGHTNESS, payload + nstr(effectBri));
 	debugMessage("Brightness" + debugMessageReconfigured);
 }
 
@@ -753,109 +678,53 @@ $.ready(function() {
 	$("input[name='mode']").on("change", function() {
 		var id = $(this).get("id");
 
-		var hasBrightness = false;
-		var hasSpeed = false;
-		var hasText = false;
+		const MODE_MAP = {
+			"mode-wordclock": { cmd: CMD.MODE_WORD_CLOCK, bri: false, speed: false, txt: false },
+			"mode-seconds":	{ cmd: CMD.MODE_SECONDS, bri: false, speed: false, txt: false },
+			"mode-scrollingtext": { cmd: CMD.MODE_SCROLLINGTEXT, bri: false, speed: true, txt: true },
+			"mode-rainbow":	{ cmd: CMD.MODE_RAINBOWCYCLE, bri: true, speed: true, txt: false },
+			"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false },
+			"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false },
+			"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false },
+			"mode-symbol": { cmd: CMD.MODE_SYMBOL,	bri: false, speed: true, txt: false }
+		};
 
-		if (id === "mode-wordclock") {
-			command = CMD.MODE_WORD_CLOCK;
-		}
-		if (id === "mode-color") {
-			command = CMD.MODE_COLOR;
-		}
-		if (id === "mode-seconds") {
-			command = CMD.MODE_SECONDS;
-		}
-		if (id === "mode-digital-clock") {
-			command = CMD.MODE_DIGITAL_CLOCK;
-		}
-		if (id === "mode-scrollingtext") {
-			hasSpeed = true;
-			hasText = true;
-			command = CMD.MODE_SCROLLINGTEXT;
-		}
-		if (id === "mode-rainbow") {
-			hasBrightness = true;
-			hasSpeed = true;
-			command = CMD.MODE_RAINBOWCYCLE;
-		}
-		if (id === "mode-change") {
-			hasBrightness = true;
-			hasSpeed = true;
-			command = CMD.MODE_RAINBOW;
-		}
-		if (id === "mode-symbol") {
-			hasSpeed = true;
-			command = CMD.MODE_SYMBOL;
-		}
+		let selected = MODE_MAP[id];
+		if (selected) {
+			command = selected.cmd;
+			setElementsForFunctionsMenu();
 
-		setElementsForFunctionsMenu();
+			$(".brightness").set({ $display: selected.bri ? "block" : "none" });
+			$(".speed").set({ $display: selected.speed ? "block" : "none" });
+			$(".functions-settings").set({ $display: (selected.bri || selected.speed) ? "block" : "none" });
+			$(".text").set({ $display: selected.txt ? "block" : "none" });
 
-		if (hasBrightness === true) {
-			$(".brightness").set({
-				$display: "block"
-			});
-		} else {
-			$(".brightness").set({
-				$display: "none"
-			});
+			sendColorData(command);
+			setSliders();
+			setColors();
 		}
-
-		if (hasSpeed === true) {
-			$(".speed").set({
-				$display: "block"
-			});
-		} else {
-			$(".speed").set({
-				$display: "none"
-			});
-		}
-
-		if (hasBrightness || hasSpeed) {
-			$(".functions-settings").set({
-				$display: "block"
-			});
-		} else {
-			$(".functions-settings").set({
-				$display: "none"
-			});
-		}
-		if (hasText === true) {
-			$(".text").set({
-				$display: "block"
-			});
-		} else {
-			$(".text").set({
-				$display: "none"
-			});
-		}
-
-		sendColorData(command);
-		setSliders();
-		setColors();
 	});
 
+	let sliderTimeout = null;
+
 	$("[id*='slider']").onChange(function(event) {
+		if (sliderTimeout) return false;
+
 		var id = $(this).get("id");
-
-		if (sleep === 0) {
-			if (id === "slider-brightness") {
-				effectBri = $("#slider-brightness").get("value");
-				sendBrightnessData(CMD.SET_BRIGHTNESS);
-			}
-			if (id === "slider-speed") {
-				effectSpeed = $("#slider-speed").get("value");
-				sendCmd(CMD.SPEED, nstr(effectSpeed));
-			}
-			setSliders();
-
-			sleep = 1;
-			sleeptime = 20;
-
-			setTimeout(function() {
-				sleep = 0;
-			}, sleeptime);
+		if (id === "slider-brightness") {
+			effectBri = $(this).get("value");
+			sendBrightnessData();
 		}
+		if (id === "slider-speed") {
+			effectSpeed = $(this).get("value");
+			sendCmd(CMD.SPEED, nstr(effectSpeed));
+		}
+		setSliders();
+
+		sliderTimeout = setTimeout(function() {
+			sliderTimeout = null;
+		}, 20);
+
 		return false;
 	});
 
@@ -936,9 +805,7 @@ $.ready(function() {
 		debugMessage("FrontLayout" + debugMessageReconfigured);
 	});
 	$("#colortype-button").on("click", function() {
-		colortype = $("#colortype").get("value");
-
-		sendCmd(CMD.SET_COLORTYPE, nstr(colortype));
+		sendCmd(CMD.SET_COLORTYPE, nstr($("#colortype").get("value")));
 		debugMessage("Colortype" + debugMessageReconfigured);
 	});
 	$("#hostname-button").on("click", function() {
@@ -946,12 +813,12 @@ $.ready(function() {
 		debugMessage("Hostname" + debugMessageReconfigured);
 	});
 	$("[id*='boot-show']").on("change", function() {
-		bootLedBlink = $("#boot-show-led-blink").get("checked") | 0;
-		bootLedSweep = $("#boot-show-led-sweep").get("checked") | 0;
-		bootShowWifi = $("#boot-show-wifi").get("checked") | 0;
-		bootShowIP = $("#boot-show-ip").get("checked") | 0;
+		let blink = $("#boot-show-led-blink").get("checked") | 0;
+		let sweep = $("#boot-show-led-sweep").get("checked") | 0;
+		let wifi = $("#boot-show-wifi").get("checked") | 0;
+		let ip = $("#boot-show-ip").get("checked") | 0;
 
-		sendCmd(CMD.SET_BOOT, nstr(bootLedBlink) + nstr(bootLedSweep) + nstr(bootShowWifi) + nstr(bootShowIP));
+		sendCmd(CMD.SET_BOOT, nstr(blink) + nstr(sweep) + nstr(wifi) + nstr(ip));
 		debugMessage("Bootoption" + debugMessageReconfigured);
 	});
 	$("#disable-button").on("click", function() {
@@ -968,13 +835,11 @@ $.ready(function() {
 		$(this).set("value", val);
 	});
 	$("#birthdays-store-button").on("click", function() {
-		sendCmd(CMD.SET_BIRTHDAYS,
-			getPaddedString($("#birthdays-date0").get("value"), 5) +
-			getPaddedString($("#birthdays-date1").get("value"), 5) +
-			getPaddedString($("#birthdays-date2").get("value"), 5) +
-			getPaddedString($("#birthdays-date3").get("value"), 5) +
-			getPaddedString($("#birthdays-date4").get("value"), 5)
-		);
+		let payload = "";
+		for (let i = 0; i < 5; i++) {
+			payload += getPaddedString($(`#birthdays-date${i}`).get("value"), 5);
+		}
+		sendCmd(CMD.SET_BIRTHDAYS, payload);
 	});
 	$("#uhrzeit-button").on("click", function() {
 
@@ -988,15 +853,23 @@ $.ready(function() {
 		debugMessage(`Time manually set to ${hours}:${minutes}`);
 	});
 	$("#mqtt-button").on("click", function() {
-		MQTTState = $("#mqtt-state").get("checked") | 0;
-		MQTTPort = $("#mqtt-port").get("value");
-		MQTTServer = $("#mqtt-server").get("value");
-		MQTTUser = $("#mqtt-user").get("value");
-		MQTTPass = $("#mqtt-pass").get("value");
-		MQTTClientId = $("#mqtt-clientid").get("value");
-		MQTTTopic = $("#mqtt-topic").get("value");
+		const state = $("#mqtt-state").get("checked") | 0;
+		const port = $("#mqtt-port").get("value");
+		const server = $("#mqtt-server").get("value");
+		const user = $("#mqtt-user").get("value");
+		const pass = $("#mqtt-pass").get("value");
+		const clientId = $("#mqtt-clientid").get("value");
+		const topic = $("#mqtt-topic").get("value");
 
-		sendCmd(CMD.SET_MQTT, nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTUser, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTPass, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTClientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTTopic, DATA_MQTT_RESPONSE_TEXT_LENGTH));
+		const payload = nstr(state) +
+						nstr5(port) +
+						getPaddedString(server, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
+						getPaddedString(user, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
+						getPaddedString(pass, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
+						getPaddedString(clientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
+						getPaddedString(topic, DATA_MQTT_RESPONSE_TEXT_LENGTH);
+
+		sendCmd(CMD.SET_MQTT, payload);
 		debugMessage("MQTT config" + debugMessageReconfigured);
 	});
 	$("#mqtt-discovery-button").on("click", function() {
@@ -1004,37 +877,29 @@ $.ready(function() {
 		debugMessage("MQTT Discovery" + debugMessageReconfigured);
 	});
 	$("[id*='dialect']").on("change", function() {
-		dialect[0] = $("#dialect-0").get("value");
-		dialect[1] = $("#dialect-1").get("value");
-		dialect[2] = $("#dialect-2").get("value");
-		dialect[3] = $("#dialect-3").get("value");
-		dialect[4] = $("#dialect-4").get("value");
-		dialect[5] = $("#dialect-5").get("value");
-
-		sendCmd(CMD.SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]) + nstr(dialect[5]));
+		let payload = "";
+		for (let i = 0; i < 6; i++) {
+			dialect[i] = $(`#dialect-${i}`).get("value");
+			payload += nstr(dialect[i]);
+		}
+		sendCmd(CMD.SET_LANGUAGE_VARIANT, payload);
 		debugMessage("langVar" + debugMessageReconfigured);
 	});
 	$("[id*='layvar']").on("change", function() {
-		layVar[0] = $("#layvar-0").get("checked") | 0;
-		layVar[1] = $("#layvar-1").get("checked") | 0;
-		layVar[2] = $("#layvar-2").get("checked") | 0;
-		layVar[3] = $("#layvar-3").get("checked") | 0;
-		layVar[4] = $("#layvar-4").get("checked") | 0;
-		layVar[5] = $("#layvar-5").get("checked") | 0;
-
-		sendCmd(CMD.SET_LAYOUT_VARIANT, nstr(layVar[0]) + nstr(layVar[1]) + nstr(layVar[2]) + nstr(layVar[3]) + nstr(layVar[4]) + nstr(layVar[5]));
+		let payload = "";
+		for (let i = 0; i < 6; i++) {
+			layVar[i] = $(`#layvar-${i}`).get("checked") | 0;
+			payload += nstr(layVar[i]);
+		}
+		sendCmd(CMD.SET_LAYOUT_VARIANT, payload);
 		debugMessage("layVar" + debugMessageReconfigured);
 	});
 	$("[id*='buildtype']").on("change", function() {
-		buildtype = $("#buildtype").get("value");
-
-		sendCmd(CMD.SET_BUILDTYPE, nstr(buildtype));
+		sendCmd(CMD.SET_BUILDTYPE, nstr($(this).get("value")));
 		debugMessage("buildtype" + debugMessageReconfigured);
 	});
 	$("[id*='whitetype']").on("change", function() {
-		wType = $("#whitetype").get("value");
-
-		sendCmd(CMD.SET_WHITETYPE, nstr(wType));
+		sendCmd(CMD.SET_WHITETYPE, nstr($(this).get("value")));
 		debugMessage("whitetype" + debugMessageReconfigured);
 	});
 });
