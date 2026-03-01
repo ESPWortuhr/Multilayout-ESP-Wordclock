@@ -1313,15 +1313,15 @@ void ClockWork::loop(struct tm &tm) {
         config["command"] = "birthdays";
         config["hasSpecialWordHappyBirthday"] =
             usedUhrType->hasSpecialWordHappyBirthday();
-        char dateString[6];
-        char string2Send[14];
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
-            sprintf(string2Send, "birthdayDate%d", i);
-            sprintf(dateString, "%02u-%02u", G.birthday[i].month,
-                    G.birthday[i].day);
+            char dateString[10];
+            char string2Send[16];
+            snprintf(string2Send, sizeof(string2Send), "birthdayDate%d", i);
+            snprintf(dateString, sizeof(dateString), "%02u-%02u",
+                     G.birthday[i].month, G.birthday[i].day);
             config[string2Send] = dateString;
         }
-
+        
         sendJsonToClient(G.client_nr, config);
         break;
     }
