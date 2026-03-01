@@ -370,8 +370,8 @@
 // Manual MQTT Settings
 //--------------------------------------------------------------------------
 /*
- * Preconfigure your MQTT broker credentials and settings here. 
- * If your broker does not require a username or password, leave them 
+ * Preconfigure your MQTT broker credentials and settings here.
+ * If your broker does not require a username or password, leave them
  * as empty strings "".
  *
  * Valid values MQTT_SERVER [IP address or Hostname as string]
