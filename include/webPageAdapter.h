@@ -50,33 +50,26 @@ public:
                     "Connection: close\r\n"
                     "\r\n",
                     SIZE_OF_FAVICON);
-            client->tcp->write(buf);
-            for (int i = 0; i < SIZE_OF_FAVICON; i++) {
-                buf[i] = pgm_read_byte(&favicon[i]);
-            }
-            client->tcp->write(buf, SIZE_OF_FAVICON);
-
-        } else {
+            sendHtmlCode(client, (const uint8_t *)favicon, SIZE_OF_FAVICON);
+        } else if (url.equals("/")) {
             // ------------------------------------
-            if (url.equals("/")) {
-                client->tcp->write(
-                    "HTTP/1.1 200 OK\r\n"
-                    "Server: arduino-WebSocket-Server\r\n"
-                    "Content-Type: text/html\r\n"
-                    "Content-Encoding: gzip\r\n" // <--- CRITICAL FOR GZIP
-                    //--                    "Content-Length: 32\r\n"
-                    "Connection: close\r\n"
-                    //--                    "Sec-WebSocket-Version: 13\r\n"
-                    "\r\n");
-                sendHtmlCode(client, html_code, html_size);
-            } else {
-                snprintf(buf, sizeof(buf),
-                         "HTTP/1.1 404 Not Found\r\n"
-                         "Content-Type: text/plain\r\n\r\n"
-                         "Seite %s nicht gefunden\n",
-                         client->cUrl.c_str());
-                client->tcp->write(buf);
-            }
+            client->tcp->write(
+                "HTTP/1.1 200 OK\r\n"
+                "Server: arduino-WebSocket-Server\r\n"
+                "Content-Type: text/html\r\n"
+                "Content-Encoding: gzip\r\n" // <--- CRITICAL FOR GZIP
+                //--                    "Content-Length: 32\r\n"
+                "Connection: close\r\n"
+                //--                    "Sec-WebSocket-Version: 13\r\n"
+                "\r\n");
+            sendHtmlCode(client, html_code, html_size);
+        } else {
+            snprintf(buf, sizeof(buf),
+                     "HTTP/1.1 404 Not Found\r\n"
+                     "Content-Type: text/plain\r\n\r\n"
+                     "Seite %s nicht gefunden\n",
+                     client->cUrl.c_str());
+            client->tcp->write(buf);
         }
 
         clientDisconnect(client);
