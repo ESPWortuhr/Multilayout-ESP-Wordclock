@@ -247,13 +247,44 @@ void setup() {
              i++) {
             G.languageVariant[i] = false;
         }
-        G.mqtt.state = false;
-        G.mqtt.port = 1883;
+
+#ifdef MQTT_SERVER
+        strlcpy(G.mqtt.serverAdress, MQTT_SERVER, sizeof(G.mqtt.serverAdress));
+        G.mqtt.state = true;
+#else
         strcpy(G.mqtt.serverAdress, "192.168.4.1");
+        G.mqtt.state = false;
+#endif
+
+#ifdef MQTT_PORT
+        G.mqtt.port = MQTT_PORT;
+#else
+        G.mqtt.port = 1883;
+#endif
+
+#ifdef MQTT_USER
+        strlcpy(G.mqtt.user, MQTT_USER, sizeof(G.mqtt.user));
+#else
         strcpy(G.mqtt.user, "User");
+#endif
+
+#ifdef MQTT_PASSWORD
+        strlcpy(G.mqtt.password, MQTT_PASSWORD, sizeof(G.mqtt.password));
+#else
         strcpy(G.mqtt.password, "Password");
+#endif
+
+#ifdef MQTT_CLIENT_ID
+        strlcpy(G.mqtt.clientId, MQTT_CLIENT_ID, sizeof(G.mqtt.clientId));
+#else
         strcpy(G.mqtt.clientId, "ClientId");
+#endif
+
+#ifdef MQTT_TOPIC
+        strlcpy(G.mqtt.topic, MQTT_TOPIC, sizeof(G.mqtt.topic));
+#else
         strcpy(G.mqtt.topic, "ESPWordclock");
+#endif
 
         G.UhrtypeDef = DEFAULT_LAYOUT;
         G.buildTypeDef = DEFAULT_BUILDTYPE;

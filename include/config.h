@@ -17,10 +17,10 @@
 /*       German       */
 /**********************/
 //
-#define DEFAULT_LAYOUT Ger10x11
+// #define DEFAULT_LAYOUT Ger10x11
 // 10 rows, 11 LEDs per row + 4 LEDs for minutes
 //
-// #define DEFAULT_LAYOUT Ger10x11Alternative
+#define DEFAULT_LAYOUT Ger10x11Alternative
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with modified
 // layout for extra words in the matrix from the Github user @dbambus
 //
@@ -249,8 +249,8 @@
  * AUTOBRIGHT_LDR_RESDARK [number]
  * AUTOBRIGHT_LDR_RESDIVIDER [number]
  */
-#define AUTOBRIGHT_USE_BH1750 true
-#define AUTOBRIGHT_USE_LDR true
+#define AUTOBRIGHT_USE_BH1750 false
+#define AUTOBRIGHT_USE_LDR false
 
 #define AUTOBRIGHT_LDR_RESBRIGHT 15
 #define AUTOBRIGHT_LDR_RESDARK 1000
@@ -302,9 +302,9 @@
  * Valid values WIFI_PASSWORD [up to 64 Alphanumeric Letters]
  *
  */
-#define MANUAL_WIFI_SETTINGS false
-#define WIFI_SSID "WIFISSID"
-#define WIFI_PASSWORD "Password"
+#define MANUAL_WIFI_SETTINGS true
+#define WIFI_SSID "Geheim_24Ghz" // Change this to your WiFi SSID
+#define WIFI_PASSWORD "69830718001049910803"
 
 //--------------------------------------------------------------------------
 // Captive portal settings
@@ -335,7 +335,7 @@
  * Valid values BOOT_SHOWIP [true, false]
  * Valid values BOOT_LEDSWEEP [true, false]
  */
-#define BOOT_SHOWIP true
+#define BOOT_SHOWIP false
 #define BOOT_LEDSWEEP false
 
 //--------------------------------------------------------------------------
@@ -365,3 +365,25 @@
 #define EXTRA_LED_PER_ROW false
 #define FLIP_HORIZONTAL_VERTICAL false
 #define MEANDER_ROWS true
+
+//--------------------------------------------------------------------------
+// Manual MQTT Settings
+//--------------------------------------------------------------------------
+/*
+ * Preconfigure your MQTT broker credentials and settings here. 
+ * If your broker does not require a username or password, leave them 
+ * as empty strings "".
+ *
+ * Valid values MQTT_SERVER [IP address or Hostname as string]
+ * Valid values MQTT_PORT [Integer, default is usually 1883]
+ * Valid values MQTT_CLIENT_ID [Unique string]
+ * Valid values MQTT_USER [String]
+ * Valid values MQTT_PASSWORD [String]
+ * Valid values MQTT_TOPIC [String]
+ */
+// #define MQTT_SERVER "192.168.155.5"
+// #define MQTT_PORT 1883
+// #define MQTT_CLIENT_ID "Wordclock_ESP"
+// #define MQTT_USER "user"
+// #define MQTT_PASSWORD "password"
+// #define MQTT_TOPIC "Wordclock"
