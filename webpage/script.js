@@ -97,16 +97,54 @@ var transitionSpeed = 30;
 var transitionColorize = 1;
 var transitionDemo = false;
 
-// operation modes
-var COMMAND_MODE_WORD_CLOCK = 1;
-var COMMAND_MODE_SECONDS = 2;
-var COMMAND_MODE_SCROLLINGTEXT = 3;
-var COMMAND_MODE_RAINBOWCYCLE = 4;
-var COMMAND_MODE_RAINBOW = 5;
-var COMMAND_MODE_COLOR = 6;
-var COMMAND_MODE_DIGITAL_CLOCK = 7;
-var COMMAND_MODE_SYMBOL = 8;
-var COMMAND_MODE_TRANSITION = 10;
+const CMD = {
+	// Modes
+	MODE_WORD_CLOCK: 1,
+	MODE_SECONDS: 2,
+	MODE_SCROLLINGTEXT: 3,
+	MODE_RAINBOWCYCLE: 4,
+	MODE_RAINBOW: 5,
+	MODE_COLOR: 6,
+	MODE_DIGITAL_CLOCK: 7,
+	MODE_SYMBOL: 8,
+	MODE_TRANSITION: 10,
+
+	// Settings
+	SET_INITIAL_VALUES: 20,
+	SET_TIME: 30,
+	SET_BIRTHDAYS: 83,
+	SET_LANGUAGE_VARIANT: 84,
+	SET_MQTT: 85,
+	SET_TIME_MANUAL: 86,
+	SET_BUILDTYPE: 87,
+	SET_COLORTYPE: 88,
+	SET_UHRTYPE: 89,
+	SET_WEATHER_DATA: 90,
+	SET_WHITETYPE: 91,
+	SET_HOSTNAME: 92,
+	SET_SETTING_SECOND: 93,
+	SET_MINUTE: 94,
+	SET_BRIGHTNESS: 95,
+	SET_SCROLLINGTEXT: 96,
+	SET_TIMESERVER: 97,
+	SET_WIFI_DISABLED: 98,
+	SET_WIFI_AND_RESTART: 99,
+	RESET: 100,
+	SET_BOOT: 101,
+	SET_AUTO_BRIGHT: 102,
+	SET_LAYOUT_VARIANT: 103,
+	SET_MQTT_HA_DISCOVERY: 104,
+	SPEED: 152,
+
+	// Requests
+	REQ_CONFIG_VALUES: 200,
+	REQ_COLOR_VALUES: 201,
+	REQ_WIFI_LIST: 202,
+	REQ_AUTO_BRIGHT: 203,
+	REQ_TRANSITION: 204,
+	REQ_MQTT_VALUES: 205,
+	REQ_BIRTHDAYS: 206
+};
 
 /**
  * Maps the mode to the corresponding input id on the functions page.
@@ -114,53 +152,16 @@ var COMMAND_MODE_TRANSITION = 10;
  * @type {Map<number, String>}
  */
 const MODE_TO_INPUT_ID = new Map();
-MODE_TO_INPUT_ID.set(0, "mode-wordclock"); // Map COMMAND_IDLE to mode wordclock
-MODE_TO_INPUT_ID.set(COMMAND_MODE_WORD_CLOCK, "mode-wordclock");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_SECONDS, "mode-seconds");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_SCROLLINGTEXT, "mode-scrollingtext");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOWCYCLE, "mode-rainbow");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_RAINBOW, "mode-change"); // Color change
-MODE_TO_INPUT_ID.set(COMMAND_MODE_COLOR, "mode-color");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_DIGITAL_CLOCK, "mode-digital-clock");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_SYMBOL, "mode-symbol");
-MODE_TO_INPUT_ID.set(COMMAND_MODE_TRANSITION, "mode-wordclock");
-
-// other commands
-var COMMAND_SET_INITIAL_VALUES = 20;
-var COMMAND_SET_TIME = 30;
-
-var COMMAND_SET_BIRTHDAYS = 83;
-var COMMAND_SET_LANGUAGE_VARIANT = 84;
-var COMMAND_SET_MQTT = 85;
-var COMMAND_SET_TIME_MANUAL = 86;
-var COMMAND_SET_BUILDTYPE = 87;
-var COMMAND_SET_COLORTYPE = 88;
-var COMMAND_SET_UHRTYPE = 89;
-var COMMAND_SET_WEATHER_DATA = 90;
-var COMMAND_SET_WHITETYPE = 91;
-var COMMAND_SET_HOSTNAME = 92;
-var COMMAND_SET_SETTING_SECOND = 93;
-var COMMAND_SET_MINUTE = 94;
-var COMMAND_SET_BRIGHTNESS = 95;
-var COMMAND_SET_SCROLLINGTEXT = 96;
-var COMMAND_SET_TIMESERVER = 97;
-var COMMAND_SET_WIFI_DISABLED = 98;
-var COMMAND_SET_WIFI_AND_RESTART = 99;
-var COMMAND_RESET = 100;
-var COMMAND_SET_BOOT = 101;
-var COMMAND_SET_AUTO_BRIGHT = 102;
-var COMMAND_SET_LAYOUT_VARIANT = 103;
-var COMMAND_SET_MQTT_HA_DISCOVERY = 104;
-
-var COMMAND_SPEED = 152;
-
-var COMMAND_REQUEST_CONFIG_VALUES = 200;
-var COMMAND_REQUEST_COLOR_VALUES = 201;
-var COMMAND_REQUEST_WIFI_LIST = 202;
-var COMMAND_REQUEST_AUTO_BRIGHT = 203;
-var COMMAND_REQUEST_TRANSITION = 204;
-var COMMAND_REQUEST_MQTT_VALUES = 205;
-var COMMAND_REQUEST_BIRTHDAYS = 206;
+MODE_TO_INPUT_ID.set(0, "mode-wordclock"); // Map CMD.IDLE to mode wordclock
+MODE_TO_INPUT_ID.set(CMD.MODE_WORD_CLOCK, "mode-wordclock");
+MODE_TO_INPUT_ID.set(CMD.MODE_SECONDS, "mode-seconds");
+MODE_TO_INPUT_ID.set(CMD.MODE_SCROLLINGTEXT, "mode-scrollingtext");
+MODE_TO_INPUT_ID.set(CMD.MODE_RAINBOWCYCLE, "mode-rainbow");
+MODE_TO_INPUT_ID.set(CMD.MODE_RAINBOW, "mode-change"); // Color change
+MODE_TO_INPUT_ID.set(CMD.MODE_COLOR, "mode-color");
+MODE_TO_INPUT_ID.set(CMD.MODE_DIGITAL_CLOCK, "mode-digital-clock");
+MODE_TO_INPUT_ID.set(CMD.MODE_SYMBOL, "mode-symbol");
+MODE_TO_INPUT_ID.set(CMD.MODE_TRANSITION, "mode-wordclock");
 
 // colors
 var COLOR_FOREGROUND = 0;
@@ -308,8 +309,8 @@ function initWebsocket() {
 
 		debugMessage("The connection with the websocket has been established.", event);
 
-		sendCmd(COMMAND_REQUEST_COLOR_VALUES);
-		sendCmd(COMMAND_REQUEST_TRANSITION);
+		sendCmd(CMD.REQ_COLOR_VALUES);
+		sendCmd(CMD.REQ_TRANSITION);
 	};
 
 	websocket.onclose = function(event) {
@@ -453,7 +454,7 @@ function initWebsocket() {
 			modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
 
 			var prog = data.prog;
-			command = prog === 0 ? COMMAND_MODE_WORD_CLOCK : prog;	// 0 == COMMAND_IDLE
+			command = prog === 0 ? CMD.MODE_WORD_CLOCK : prog;	// 0 == CMD.IDLE
 			const inputID = MODE_TO_INPUT_ID.get(prog);
 			debugMessage("Mode is " + prog + " (" + inputID + ")");
 
@@ -598,7 +599,7 @@ function autoBrightUpdater() {
 	}
 	autoBrightInterval = setInterval(function() {
 		if ($("#auto-bright-enabled").get("value") === "1") {
-			sendCmd(COMMAND_REQUEST_AUTO_BRIGHT, 1);
+			sendCmd(CMD.REQ_AUTO_BRIGHT, 1);
 		}
 	}, 1000); // 1000 milliseconds intervall
 	debugMessage(`Start timer autoBrightInterval with ID ${autoBrightInterval}`);
@@ -641,7 +642,7 @@ function sendBrightnessData(command, addData = "") {
 	h22 = $("#brightness-22").get("value");
 	h24 = $("#brightness-24").get("value");
 
-	sendCmd(COMMAND_SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + nstr(effectBri));
+	sendCmd(CMD.SET_BRIGHTNESS, nstr(h6) + nstr(h8) + nstr(h12) + nstr(h16) + nstr(h18) + nstr(h20) + nstr(h22) + nstr(h24) + nstr(effectBri));
 	debugMessage("Brightness" + debugMessageReconfigured);
 }
 
@@ -698,7 +699,7 @@ $.ready(function() {
 		timeZoneOffset = timeZoneOffset / 60 * -1;
 		var time = date.getTime() / 1000;
 
-		sendCmd(COMMAND_SET_TIME, getPaddedString(nstr(timeZoneOffset) + time, 21));
+		sendCmd(CMD.SET_TIME, getPaddedString(nstr(timeZoneOffset) + time, 21));
 		debugMessage("Clock data: ");
 	});
 
@@ -719,18 +720,18 @@ $.ready(function() {
 		document.getElementsByClassName("pure-menu-selected")[0].setAttribute("aria-current", "page");
 
 		if (navigation === "functions") {
-			sendCmd(COMMAND_REQUEST_BIRTHDAYS);
+			sendCmd(CMD.REQ_BIRTHDAYS);
 			setElementsForFunctionsMenu();
 		}
 		if (navigation === "smart-home") {
-			sendCmd(COMMAND_REQUEST_MQTT_VALUES);
+			sendCmd(CMD.REQ_MQTT_VALUES);
 		}
 		if (navigation === "frontoptions") {
-			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
+			sendCmd(CMD.REQ_CONFIG_VALUES);
 		}
 		if (navigation === "settings" || navigation === "frontoptions") {
-			sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
-			sendCmd(COMMAND_REQUEST_AUTO_BRIGHT);
+			sendCmd(CMD.REQ_CONFIG_VALUES);
+			sendCmd(CMD.REQ_AUTO_BRIGHT);
 			updateManualTimeInput();
 			autoBrightUpdater();
 		} else {
@@ -757,35 +758,35 @@ $.ready(function() {
 		var hasText = false;
 
 		if (id === "mode-wordclock") {
-			command = COMMAND_MODE_WORD_CLOCK;
+			command = CMD.MODE_WORD_CLOCK;
 		}
 		if (id === "mode-color") {
-			command = COMMAND_MODE_COLOR;
+			command = CMD.MODE_COLOR;
 		}
 		if (id === "mode-seconds") {
-			command = COMMAND_MODE_SECONDS;
+			command = CMD.MODE_SECONDS;
 		}
 		if (id === "mode-digital-clock") {
-			command = COMMAND_MODE_DIGITAL_CLOCK;
+			command = CMD.MODE_DIGITAL_CLOCK;
 		}
 		if (id === "mode-scrollingtext") {
 			hasSpeed = true;
 			hasText = true;
-			command = COMMAND_MODE_SCROLLINGTEXT;
+			command = CMD.MODE_SCROLLINGTEXT;
 		}
 		if (id === "mode-rainbow") {
 			hasBrightness = true;
 			hasSpeed = true;
-			command = COMMAND_MODE_RAINBOWCYCLE;
+			command = CMD.MODE_RAINBOWCYCLE;
 		}
 		if (id === "mode-change") {
 			hasBrightness = true;
 			hasSpeed = true;
-			command = COMMAND_MODE_RAINBOW;
+			command = CMD.MODE_RAINBOW;
 		}
 		if (id === "mode-symbol") {
 			hasSpeed = true;
-			command = COMMAND_MODE_SYMBOL;
+			command = CMD.MODE_SYMBOL;
 		}
 
 		setElementsForFunctionsMenu();
@@ -840,11 +841,11 @@ $.ready(function() {
 		if (sleep === 0) {
 			if (id === "slider-brightness") {
 				effectBri = $("#slider-brightness").get("value");
-				sendBrightnessData(COMMAND_SET_BRIGHTNESS);
+				sendBrightnessData(CMD.SET_BRIGHTNESS);
 			}
 			if (id === "slider-speed") {
 				effectSpeed = $("#slider-speed").get("value");
-				sendCmd(COMMAND_SPEED, nstr(effectSpeed));
+				sendCmd(CMD.SPEED, nstr(effectSpeed));
 			}
 			setSliders();
 
@@ -870,16 +871,16 @@ $.ready(function() {
 		transitionColorize = $("#transition-colorize").get("value");
 		transitionDemo = document.getElementById("transition-demo").checked;
 
-		sendCmd(COMMAND_MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionColorize) + nstr(transitionDemo ? 1 : 0));
+		sendCmd(CMD.MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionColorize) + nstr(transitionDemo ? 1 : 0));
 		debugMessage("Transition" + debugMessageReconfigured);
 		setElementsForFunctionsMenu();
 		return false;
 	});
 	$("#initial-values-button").on("click", function() {
-		sendCmd(COMMAND_SET_INITIAL_VALUES);
+		sendCmd(CMD.SET_INITIAL_VALUES);
 	});
 	$("#wifi-button").on("click", function() {
-		sendCmd(COMMAND_SET_WIFI_AND_RESTART);
+		sendCmd(CMD.SET_WIFI_AND_RESTART);
 		debugMessage("WiFi" + debugMessageReconfigured);
 		return false;
 	});
@@ -892,8 +893,8 @@ $.ready(function() {
 			$("#auto-bright-max").set("value", autoBrightMax);
 		}
 		autoBrightPeak = $("#auto-bright-peak").get("value");
-		sendCmd(COMMAND_SET_AUTO_BRIGHT, nstr(autoBrightEnabled) + nstr(autoBrightMin) + nstr(autoBrightMax) + nstr(autoBrightPeak));
-		sendCmd(COMMAND_REQUEST_AUTO_BRIGHT);	// read back values
+		sendCmd(CMD.SET_AUTO_BRIGHT, nstr(autoBrightEnabled) + nstr(autoBrightMin) + nstr(autoBrightMax) + nstr(autoBrightPeak));
+		sendCmd(CMD.REQ_AUTO_BRIGHT);	// read back values
 
 		autoBrightDisplay = Number($("#auto-bright-enabled").get("value"));
 		enableSpecific("specific-layout-brightness-man", !autoBrightDisplay);
@@ -901,47 +902,47 @@ $.ready(function() {
 		return false;
 	});
 	$("#_wlanscan").on("click", function() {
-		sendCmd(COMMAND_REQUEST_WIFI_LIST);
+		sendCmd(CMD.REQ_WIFI_LIST);
 		document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
 		return false;
 	});
 	$("#timeserver-button").on("click", function() {
-		sendCmd(COMMAND_SET_TIMESERVER, getPaddedString($("#timeserver").get("value"), DATA_TIMESERVER_TEXT_LENGTH));
+		sendCmd(CMD.SET_TIMESERVER, getPaddedString($("#timeserver").get("value"), DATA_TIMESERVER_TEXT_LENGTH));
 		debugMessage("Timeserver" + debugMessageReconfigured);
 		return false;
 	});
 	$("#scrollingtext-button").on("click", function() {
-		sendCmd(COMMAND_SET_SCROLLINGTEXT, getPaddedString($("#scrollingtext").get("value"), DATA_SCROLLINGTEXT_LENGTH));
+		sendCmd(CMD.SET_SCROLLINGTEXT, getPaddedString($("#scrollingtext").get("value"), DATA_SCROLLINGTEXT_LENGTH));
 		debugMessage("ScrollingText" + debugMessageReconfigured);
 	});
 	$("[id*='brightness']").on("change", function() {
-		sendBrightnessData(COMMAND_SET_BRIGHTNESS);
+		sendBrightnessData(CMD.SET_BRIGHTNESS);
 	});
 	$("#weather-button").on("click", function() {
-		sendCmd(COMMAND_SET_WEATHER_DATA, $("#owm-city-id").get("value") + " " + $("#owm-api-key").get("value"));
+		sendCmd(CMD.SET_WEATHER_DATA, $("#owm-city-id").get("value") + " " + $("#owm-api-key").get("value"));
 		debugMessage("OpenWeatherMap Login" + debugMessageReconfigured);
 	});
 	$("#show-minutes").on("change", function() {
-		sendCmd(COMMAND_SET_MINUTE, nstr($("#show-minutes").get("value")));
+		sendCmd(CMD.SET_MINUTE, nstr($("#show-minutes").get("value")));
 		debugMessage("MinuteVariant" + debugMessageReconfigured);
 	});
 	$("#show-seconds").on("change", function() {
-		sendCmd(COMMAND_SET_SETTING_SECOND, nstr($("#show-seconds").get("value")));
+		sendCmd(CMD.SET_SETTING_SECOND, nstr($("#show-seconds").get("value")));
 		debugMessage("SecondVariant" + debugMessageReconfigured);
 	});
 	$("#front-layout").on("change", function() {
-		sendCmd(COMMAND_SET_UHRTYPE, nstr($("#front-layout").get("value")));
-		sendCmd(COMMAND_REQUEST_CONFIG_VALUES);
+		sendCmd(CMD.SET_UHRTYPE, nstr($("#front-layout").get("value")));
+		sendCmd(CMD.REQ_CONFIG_VALUES);
 		debugMessage("FrontLayout" + debugMessageReconfigured);
 	});
 	$("#colortype-button").on("click", function() {
 		colortype = $("#colortype").get("value");
 
-		sendCmd(COMMAND_SET_COLORTYPE, nstr(colortype));
+		sendCmd(CMD.SET_COLORTYPE, nstr(colortype));
 		debugMessage("Colortype" + debugMessageReconfigured);
 	});
 	$("#hostname-button").on("click", function() {
-		sendCmd(COMMAND_SET_HOSTNAME, getPaddedString($("#hostname").get("value"), DATA_HOST_TEXT_LENGTH));
+		sendCmd(CMD.SET_HOSTNAME, getPaddedString($("#hostname").get("value"), DATA_HOST_TEXT_LENGTH));
 		debugMessage("Hostname" + debugMessageReconfigured);
 	});
 	$("[id*='boot-show']").on("change", function() {
@@ -950,14 +951,14 @@ $.ready(function() {
 		bootShowWifi = $("#boot-show-wifi").get("checked") | 0;
 		bootShowIP = $("#boot-show-ip").get("checked") | 0;
 
-		sendCmd(COMMAND_SET_BOOT, nstr(bootLedBlink) + nstr(bootLedSweep) + nstr(bootShowWifi) + nstr(bootShowIP));
+		sendCmd(CMD.SET_BOOT, nstr(bootLedBlink) + nstr(bootLedSweep) + nstr(bootShowWifi) + nstr(bootShowIP));
 		debugMessage("Bootoption" + debugMessageReconfigured);
 	});
 	$("#disable-button").on("click", function() {
-		sendCmd(COMMAND_SET_WIFI_DISABLED);
+		sendCmd(CMD.SET_WIFI_DISABLED);
 	});
 	$("#reset-button").on("click", function() {
-		sendCmd(COMMAND_RESET);
+		sendCmd(CMD.RESET);
 	});
 	$(".birthdays input").on("input", function() {
 		let val = $(this).get("value").replace(/\D/g, "");
@@ -967,7 +968,7 @@ $.ready(function() {
 		$(this).set("value", val);
 	});
 	$("#birthdays-store-button").on("click", function() {
-		sendCmd(COMMAND_SET_BIRTHDAYS,
+		sendCmd(CMD.SET_BIRTHDAYS,
 			getPaddedString($("#birthdays-date0").get("value"), 5) +
 			getPaddedString($("#birthdays-date1").get("value"), 5) +
 			getPaddedString($("#birthdays-date2").get("value"), 5) +
@@ -983,7 +984,7 @@ $.ready(function() {
 		const timeString = $("#time").get("value");
 		const [hours, minutes] = timeString.split(":");
 
-		sendCmd(COMMAND_SET_TIME_MANUAL, nstr(hours) + nstr(minutes));
+		sendCmd(CMD.SET_TIME_MANUAL, nstr(hours) + nstr(minutes));
 		debugMessage(`Time manually set to ${hours}:${minutes}`);
 	});
 	$("#mqtt-button").on("click", function() {
@@ -995,11 +996,11 @@ $.ready(function() {
 		MQTTClientId = $("#mqtt-clientid").get("value");
 		MQTTTopic = $("#mqtt-topic").get("value");
 
-		sendCmd(COMMAND_SET_MQTT, nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTUser, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTPass, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTClientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTTopic, DATA_MQTT_RESPONSE_TEXT_LENGTH));
+		sendCmd(CMD.SET_MQTT, nstr(MQTTState) + nstr5(MQTTPort) + getPaddedString(MQTTServer, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTUser, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTPass, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTClientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) + getPaddedString(MQTTTopic, DATA_MQTT_RESPONSE_TEXT_LENGTH));
 		debugMessage("MQTT config" + debugMessageReconfigured);
 	});
 	$("#mqtt-discovery-button").on("click", function() {
-		sendCmd(COMMAND_SET_MQTT_HA_DISCOVERY);
+		sendCmd(CMD.SET_MQTT_HA_DISCOVERY);
 		debugMessage("MQTT Discovery" + debugMessageReconfigured);
 	});
 	$("[id*='dialect']").on("change", function() {
@@ -1010,7 +1011,7 @@ $.ready(function() {
 		dialect[4] = $("#dialect-4").get("value");
 		dialect[5] = $("#dialect-5").get("value");
 
-		sendCmd(COMMAND_SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]) + nstr(dialect[5]));
+		sendCmd(CMD.SET_LANGUAGE_VARIANT, nstr(dialect[0]) + nstr(dialect[1]) + nstr(dialect[2]) + nstr(dialect[3]) + nstr(dialect[4]) + nstr(dialect[5]));
 		debugMessage("langVar" + debugMessageReconfigured);
 	});
 	$("[id*='layvar']").on("change", function() {
@@ -1021,19 +1022,19 @@ $.ready(function() {
 		layVar[4] = $("#layvar-4").get("checked") | 0;
 		layVar[5] = $("#layvar-5").get("checked") | 0;
 
-		sendCmd(COMMAND_SET_LAYOUT_VARIANT, nstr(layVar[0]) + nstr(layVar[1]) + nstr(layVar[2]) + nstr(layVar[3]) + nstr(layVar[4]) + nstr(layVar[5]));
+		sendCmd(CMD.SET_LAYOUT_VARIANT, nstr(layVar[0]) + nstr(layVar[1]) + nstr(layVar[2]) + nstr(layVar[3]) + nstr(layVar[4]) + nstr(layVar[5]));
 		debugMessage("layVar" + debugMessageReconfigured);
 	});
 	$("[id*='buildtype']").on("change", function() {
 		buildtype = $("#buildtype").get("value");
 
-		sendCmd(COMMAND_SET_BUILDTYPE, nstr(buildtype));
+		sendCmd(CMD.SET_BUILDTYPE, nstr(buildtype));
 		debugMessage("buildtype" + debugMessageReconfigured);
 	});
 	$("[id*='whitetype']").on("change", function() {
 		wType = $("#whitetype").get("value");
 
-		sendCmd(COMMAND_SET_WHITETYPE, nstr(wType));
+		sendCmd(CMD.SET_WHITETYPE, nstr(wType));
 		debugMessage("whitetype" + debugMessageReconfigured);
 	});
 });
