@@ -63,6 +63,7 @@ public:
                     "HTTP/1.1 200 OK\r\n"
                     "Server: arduino-WebSocket-Server\r\n"
                     "Content-Type: text/html\r\n"
+                    "Content-Encoding: gzip\r\n" // <--- CRITICAL FOR GZIP
                     //--                    "Content-Length: 32\r\n"
                     "Connection: close\r\n"
                     //--                    "Sec-WebSocket-Version: 13\r\n"
@@ -83,10 +84,10 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void sendHtmlCode(const WSclient_t *client, const char *data,
+    void sendHtmlCode(const WSclient_t *client, const uint8_t *data,
                       uint32_t size) const {
         const uint16_t CHUNK_SIZE = 256;
-        char buf[CHUNK_SIZE];
+        uint8_t buf[CHUNK_SIZE];
         uint32_t sent = 0;
 
         while (sent < size) {
@@ -94,6 +95,7 @@ public:
             memcpy_P(buf, data + sent, bytesToCopy);
             client->tcp->write(buf, bytesToCopy);
             sent += bytesToCopy;
+            yield();
         }
     }
 };

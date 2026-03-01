@@ -45,7 +45,12 @@ module.exports = function(grunt) {
 			dev: {
 				options: {
 					removeComments: true,
-					collapseWhitespace: true
+					collapseWhitespace: true,
+					removeRedundantAttributes: true,
+					removeScriptTypeAttributes: true,
+					removeStyleLinkTypeAttributes: true,
+					minifyJS: true,
+					minifyCSS: true
 				},
 				files: {
 					"<%= settings.tempDirectory %>/index.html": "<%= settings.tempDirectory %>/index.html"
@@ -144,59 +149,67 @@ module.exports = function(grunt) {
 			},
 			html_to_h: {
 				options: {
-					process: function(content) {
-						let gen = "";
-						gen += "// generated file -- do not modify\n";
-						gen += "// change *.html/*.css/*.js files instead\n\n";
-						gen += "const char html_code[] PROGMEM = R\"=====(\n";
-						gen += content + "\n";
-						gen += ")=====\";\n";
-						gen += "const uint32_t html_size = sizeof(html_code);\n";
+					process: function(content, srcpath) {
+						const fs = require("fs");
+						const buffer = fs.readFileSync(srcpath);
+						let hexValues = [];
+						for (let i = 0; i < buffer.length; i++) {
+							hexValues.push("0x" + buffer[i].toString(16).padStart(2, "0"));
+						}
+
+						let gen = "// generated file -- do not modify\n";
+						gen += "#include <stdint.h>\n";
+						gen += "#include <pgmspace.h>\n\n";
+						gen += "const uint8_t html_code[] PROGMEM = {\n  ";
+						gen += hexValues.join(", ");
+						gen += "\n};\n";
+						gen += "const uint32_t html_size = " + buffer.length + ";\n";
 						return gen;
-					}
+					},
+					noProcess: ["**/*.gz"]
 				},
-				src: "<%= settings.tempDirectory %>/index.html",
+				src: "<%= settings.tempDirectory %>/index.html.gz",
 				dest: "<%= settings.target %>"
 			}
 		},
 
 		assets_inline: {
 			dev: {
-				options: {
-					assetsDir: "<%= settings.tempDirectory %>/"
-				},
-				files: {
-					"<%= settings.tempDirectory %>/index.html": "<%= settings.tempDirectory %>/index.html"
-				}
+				options: { assetsDir: "<%= settings.tempDirectory %>/" },
+				files: { "<%= settings.tempDirectory %>/index.html": "<%= settings.tempDirectory %>/index.html" }
+			}
+		},
+
+		compress: {
+			main: {
+				options: { mode: "gzip", level: 9 },
+				files: [{
+					expand: true,
+					cwd: "<%= settings.tempDirectory %>",
+					src: ["index.html"],
+					dest: "<%= settings.tempDirectory %>",
+					ext: ".html.gz"
+				}]
 			}
 		}
-
 	});
 
 	// Linters
 	grunt.loadNpmTasks("grunt-stylelint");
 	grunt.loadNpmTasks("grunt-eslint");
 	grunt.loadNpmTasks("grunt-htmllint");
-
-	// Minifiers
 	grunt.loadNpmTasks("grunt-contrib-htmlmin");
 	grunt.loadNpmTasks("grunt-contrib-cssmin");
 	grunt.loadNpmTasks("grunt-terser");
-
-	// Other
 	grunt.loadNpmTasks("grunt-assets-inline");
 	grunt.loadNpmTasks("grunt-contrib-copy");
 	grunt.loadNpmTasks("grunt-contrib-clean");
 	grunt.loadNpmTasks("grunt-version");
 	grunt.loadNpmTasks("grunt-replace");
+	grunt.loadNpmTasks("grunt-contrib-compress");
 
-	grunt.registerTask("lint", [
-		"eslint",
-		"stylelint",
-		"htmllint"
-	]);
+	grunt.registerTask("lint", ["eslint", "stylelint", "htmllint"]);
 
-	// tasks
 	grunt.registerTask("build", [
 		"lint",
 		"clean:temp",
@@ -204,16 +217,14 @@ module.exports = function(grunt) {
 		"copy:minified_css_files",
 		"terser",
 		"copy:minified_js_files",
-		"copy",
 		"copy:index",
 		"version:index",
 		"replace:pioenv",
 		"assets_inline",
 		"htmlmin",
+		"compress",
 		"copy:html_to_h"
 	]);
 
-	grunt.registerTask("default", [
-		"build"
-	]);
+	grunt.registerTask("default", ["build"]);
 };
