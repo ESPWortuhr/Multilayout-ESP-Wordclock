@@ -435,7 +435,7 @@ void setup() {
     //-------------------------------------
     MDNS.begin(G.hostname);
     MDNS.addService("http", "tcp", 80);
-    MDNS.addService("http", "tcp", 81);
+    MDNS.addService("ota", "tcp", 81);
 
     //-------------------------------------
     Serial.println("--------------------------------------");
