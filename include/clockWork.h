@@ -32,6 +32,7 @@ private:
     void showMinuteInWords(uint8_t min);
     bool checkIfClockHasMinuteInWordsAndItIsSet();
     void showMinute(uint8_t min);
+    void checkForValidLayoutVariant();
     void resetMinVariantIfNotAvailable();
     FrontWord getFrontWordForNum(uint8_t min);
     bool checkTwentyUsage();

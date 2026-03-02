@@ -183,7 +183,7 @@ let TRANSLATION_DE_DE = {
 			"at-nine-fourtyfive-german": "Um 9:45 ist es...",
 			"quarter-to-ten": "viertel vor zehn",
 			"three-quarter-ten": "dreiviertel zehn",
-			"at-nine-fourtyfive-english": "On 9:45 it is ...",
+			"at-nine-fourtyfive-english": "Um 9:45 ist es ...",
 			"quarter-to-ten-english": "Quarter to ten",
 			"a-quarter-to-ten-english": "A quarter to ten"
 		},

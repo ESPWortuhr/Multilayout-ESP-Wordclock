@@ -115,8 +115,8 @@ public:
             break;
 
         case FrontWord::a_quarter:
-            // A Quater
-            setFrontMatrixWord(1, 2, 9);
+            // A (Quater)
+            setFrontMatrixWord(1, 10, 10);
             break;
 
         case FrontWord::viertel:

@@ -337,12 +337,16 @@ function initWebsocket() {
 
 				modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
 
-				enableSpecific("specific-layout-1", !data.isRomanLanguage);
+				enableSpecific("specific-layout-0", !data.isRomanLanguage);
 				enableSpecific("specific-layout-2", data.hasDreiviertel);
 				enableSpecific("specific-layout-3", data.hasTwenty);
 				enableSpecific("specific-layout-4", data.hasSecondsFrame);
 				enableSpecific("specific-layout-5", data.hasWeatherLayout);
-				enableSpecific("specific-layout-6", data.UhrtypeDef === 10); // Add A-Quarter to (En10x11 exclusive)
+				if (data.UhrtypeDef === 10) { // (En10x11 exclusive)
+					enableSpecific("specific-layout-6", true); // Add A-Quarter to
+					enableSpecific("specific-layout-3", false);	// Remove "Twenty past" selector for En10x11
+					enableSpecific("specific-layout-1", false); // Remove "Quater Ten" selector for En10x11
+				}
 				enableSpecific("specific-layout-7", data.hasSecondsFrame);
 				enableSpecific("specific-colortype-4", data.colortype === 5);
 
