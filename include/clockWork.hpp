@@ -1321,7 +1321,7 @@ void ClockWork::loop(struct tm &tm) {
                      G.birthday[i].month, G.birthday[i].day);
             config[string2Send] = dateString;
         }
-        
+
         sendJsonToClient(G.client_nr, config);
         break;
     }
