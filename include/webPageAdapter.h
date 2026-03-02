@@ -45,7 +45,7 @@ public:
         if (url.endsWith("favicon.ico")) {
             sprintf(buf,
                     "HTTP/1.1 200 OK\r\n"
-                    "Content-Type: image/x-ico\r\n"
+                    "Content-Type: image/png\r\n"
                     "Content-Length: %d\r\n"
                     "Connection: close\r\n"
                     "\r\n",
