@@ -17,10 +17,10 @@
 /*       German       */
 /**********************/
 //
-#define DEFAULT_LAYOUT Ger10x11
+// #define DEFAULT_LAYOUT Ger10x11
 // 10 rows, 11 LEDs per row + 4 LEDs for minutes
 //
-// #define DEFAULT_LAYOUT Ger10x11Alternative
+#define DEFAULT_LAYOUT Ger10x11Alternative
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with modified
 // layout for extra words in the matrix from the Github user @dbambus
 //
@@ -252,8 +252,8 @@
  * AUTOBRIGHT_LDR_RESDARK [number]
  * AUTOBRIGHT_LDR_RESDIVIDER [number]
  */
-#define AUTOBRIGHT_USE_BH1750 true
-#define AUTOBRIGHT_USE_LDR true
+#define AUTOBRIGHT_USE_BH1750 false
+#define AUTOBRIGHT_USE_LDR false
 
 #define AUTOBRIGHT_LDR_RESBRIGHT 15
 #define AUTOBRIGHT_LDR_RESDARK 1000
@@ -305,9 +305,9 @@
  * Valid values WIFI_PASSWORD [up to 64 Alphanumeric Letters]
  *
  */
-#define MANUAL_WIFI_SETTINGS false
-#define WIFI_SSID "WIFISSID"
-#define WIFI_PASSWORD "Password"
+#define MANUAL_WIFI_SETTINGS true
+#define WIFI_SSID "Geheim_24Ghz" // Change this to your WiFi SSID
+#define WIFI_PASSWORD "69830718001049910803"
 
 //--------------------------------------------------------------------------
 // Captive portal settings
@@ -338,7 +338,7 @@
  * Valid values BOOT_SHOWIP [true, false]
  * Valid values BOOT_LEDSWEEP [true, false]
  */
-#define BOOT_SHOWIP true
+#define BOOT_SHOWIP false
 #define BOOT_LEDSWEEP false
 
 //--------------------------------------------------------------------------
@@ -350,6 +350,24 @@
 // #define MINUTE_Off
 #define MINUTE_LED4x
 // #define MINUTE_LED7x
+
+//--------------------------------------------------------------------------
+// Front Displaying Options
+//--------------------------------------------------------------------------
+/*
+ * Valid values REVERSE_MINUTE_DIR [true, false]
+ * Valid values MIRROR_FRONT_VERTICAL [true, false]
+ * Valid values MIRROR_FRONT_HORIZONTAL [true, false]
+ * Valid values EXTRA_LED_PER_ROW [true, false]
+ * Valid values FLIP_HORIZONTAL_VERTICAL [true, false]
+ * Valid values MEANDER_ROWS [true, false]
+ */
+#define REVERSE_MINUTE_DIR false
+#define MIRROR_FRONT_VERTICAL false
+#define MIRROR_FRONT_HORIZONTAL false
+#define EXTRA_LED_PER_ROW false
+#define FLIP_HORIZONTAL_VERTICAL false
+#define MEANDER_ROWS true
 
 //--------------------------------------------------------------------------
 // Front Displaying Options

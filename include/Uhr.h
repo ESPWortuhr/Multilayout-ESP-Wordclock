@@ -6,7 +6,7 @@
 #define MAX_ROW_SIZE 22
 #define MAX_BIRTHDAY_COUNT 5
 
-enum ClockWords {
+enum ClockWords : uint8_t {
     ESIST = 0,
     VOR = 1,
     NACH = 2,
@@ -45,7 +45,7 @@ struct MqttData {
     uint16_t port;
 };
 
-enum class WhiteType {
+enum class WhiteType : uint8_t {
     WarmWhite = 0,
     NeutralWhite = 1,
     ColdWhite = 2,
@@ -54,7 +54,6 @@ enum class WhiteType {
 struct Birthday {
     uint8_t day;
     uint8_t month;
-    uint16_t year;
 };
 
 struct OpenWeatherMapData {
@@ -62,13 +61,13 @@ struct OpenWeatherMapData {
     char cityid[8];
 };
 
-enum class BuildTypeDef {
+enum class BuildTypeDef : uint8_t {
     Normal = 0,
     DoubleResM1 = 1,
     DoubleRes = 2,
 };
 
-enum class MinuteVariant {
+enum class MinuteVariant : uint8_t {
     Off = 0,
     LED4x = 1,
     LED7x = 2,
@@ -76,14 +75,14 @@ enum class MinuteVariant {
     InWords = 4,
 };
 
-enum class SecondVariant {
+enum class SecondVariant : uint8_t {
     Off = 0,
     FrameDot = 1,
     FrameSector = 2,
     FrameSectorToggle = 3,
 };
 
-enum class WordclockChanges {
+enum class WordclockChanges : uint8_t {
     Null,
     Parameters,
     Minute,
@@ -91,7 +90,7 @@ enum class WordclockChanges {
     Words,
 };
 
-enum class ItIsVariant {
+enum class ItIsVariant : uint8_t {
     Permanent = 0,
     Quarterly = 1,
     HalfHourly = 2,
@@ -176,17 +175,15 @@ bool layoutChanged = false;
 bool colorChangedByWebsite = false;
 uint8_t statusAccessPoint = 0;
 
-char str[1024];
-
 bool externalRTC = false;
 
-enum ColorPosition {
+enum ColorPosition : uint8_t {
     Foreground = 0,
     Background = 1,
     Frame = 2,
 };
 
-enum LedColorVariants {
+enum LedColorVariants : uint8_t {
     Brg = 0,
     Grb = 1,
     Rgb = 2,
@@ -195,7 +192,7 @@ enum LedColorVariants {
     Grbw = 5,
 };
 
-enum LanguageDialects {
+enum LanguageDialects : uint8_t {
     ItIs15 = 0,
     ItIs20 = 1,
     ItIs40 = 2,
@@ -203,7 +200,7 @@ enum LanguageDialects {
     EN_ShowAQuarter = 4,
 };
 
-enum LayoutVariants {
+enum LayoutVariants : uint8_t {
     ReverseMinDirection = 0,
     MirrorVertical = 1,
     MirrorHorizontal = 2,
@@ -212,12 +209,12 @@ enum LayoutVariants {
     MeanderRows = 5,
 };
 
-enum fontSize {
+enum fontSize : uint8_t {
     normalSizeASCII = 0,
     smallSizeNumbers = 1,
 };
 
-enum CommandWords {
+enum CommandWords : uint8_t {
     COMMAND_IDLE = 0,
 
     COMMAND_MODE_WORD_CLOCK = 1,
@@ -273,7 +270,7 @@ enum CommandWords {
     PLACEHOLDER_MAX_REQUEST = 255,
 };
 
-enum ClockType {
+enum ClockType : uint8_t {
     Eng10x11 = 10,
     Eng08x08 = 29,
     Eng11x12 = 32,
@@ -308,7 +305,7 @@ enum ClockType {
     Ch10x11V2 = 24,
 };
 
-enum Icons {
+enum Icons : uint8_t {
     WLAN100,
     FIRE_1,
     FIRE_2,

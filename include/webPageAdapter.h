@@ -4,7 +4,6 @@
 #include "WebPageContent.h"
 #include "WebSocketsServer.h"
 
-#define RESPONSE_SIZE 900
 #define SIZE_OF_FAVICON 185
 
 const char favicon[] PROGMEM = {
@@ -28,7 +27,6 @@ const char favicon[] PROGMEM = {
 class WebPageAdapter : public WebSocketsServer {
 
 public:
-    // forward the port to the parent class constructor
     WebPageAdapter(int port) : WebSocketsServer(port) {}
 
     /**
@@ -47,96 +45,80 @@ public:
         if (url.endsWith("favicon.ico")) {
             sprintf(buf,
                     "HTTP/1.1 200 OK\r\n"
-                    "Content-Type: image/x-ico\r\n"
+                    "Content-Type: image/png\r\n"
                     "Content-Length: %d\r\n"
                     "Connection: close\r\n"
                     "\r\n",
                     SIZE_OF_FAVICON);
-            client->tcp->write(buf);
-            for (int i = 0; i < SIZE_OF_FAVICON; i++) {
-                buf[i] = pgm_read_byte(&favicon[i]);
-            }
-            client->tcp->write(buf, SIZE_OF_FAVICON);
-
-        } else {
+            sendHtmlCode(client, (const uint8_t *)favicon, SIZE_OF_FAVICON);
+        } else if (url.equals("/")) {
             // ------------------------------------
-            if (url.equals("/")) {
-                client->tcp->write(
-                    "HTTP/1.1 200 OK\r\n"
-                    "Server: arduino-WebSocket-Server\r\n"
-                    "Content-Type: text/html\r\n"
-                    //--                    "Content-Length: 32\r\n"
-                    "Connection: close\r\n"
-                    //--                    "Sec-WebSocket-Version: 13\r\n"
-                    "\r\n");
-                sendHtmlCode(client, html_code, html_size);
-            } else {
-
-                // --------------------------------
-                int len = sprintf(buf, "HTTP/1.1 404 Not Found\r\n"
-                                       "Content-Type: text/plain\r\n\r\n"
-                                       "Seite ");
-                client->cUrl.toCharArray(buf + len, sizeof(buf) - len);
-                strcat(buf, " nicht gefunden\n");
-                client->tcp->write(buf);
-            }
+            client->tcp->write(
+                "HTTP/1.1 200 OK\r\n"
+                "Server: arduino-WebSocket-Server\r\n"
+                "Content-Type: text/html\r\n"
+                "Content-Encoding: gzip\r\n" // <--- CRITICAL FOR GZIP
+                //--                    "Content-Length: 32\r\n"
+                "Connection: close\r\n"
+                //--                    "Sec-WebSocket-Version: 13\r\n"
+                "\r\n");
+            sendHtmlCode(client, html_code, html_size);
+        } else {
+            snprintf(buf, sizeof(buf),
+                     "HTTP/1.1 404 Not Found\r\n"
+                     "Content-Type: text/plain\r\n\r\n"
+                     "Seite %s nicht gefunden\n",
+                     client->cUrl.c_str());
+            client->tcp->write(buf);
         }
 
         clientDisconnect(client);
     }
 
-    void sendHtmlCode(const WSclient_t *client, const char *data,
+    //------------------------------------------------------------------------------
+
+    void sendHtmlCode(const WSclient_t *client, const uint8_t *data,
                       uint32_t size) const {
-        char buf[RESPONSE_SIZE];
-        unsigned sent = 0;
-        unsigned blen = 0;
+        const uint16_t CHUNK_SIZE = 256;
+        uint8_t buf[CHUNK_SIZE];
+        uint32_t sent = 0;
+
         while (sent < size) {
-            buf[blen] = pgm_read_byte(&data[sent]);
-            blen++;
-            if (blen == RESPONSE_SIZE) {
-                client->tcp->write(buf, blen);
-                blen = 0;
-            }
-            sent++;
-        }
-        if (blen > 0) {
-            client->tcp->write(buf, blen);
+            uint32_t bytesToCopy = min((uint32_t)CHUNK_SIZE, size - sent);
+            memcpy_P(buf, data + sent, bytesToCopy);
+            client->tcp->write(buf, bytesToCopy);
+            sent += bytesToCopy;
+            yield();
         }
     }
 };
 
-//-- WebSocketserver
 WebPageAdapter webSocket = WebPageAdapter(80);
 
 //------------------------------------------------------------------------------
 
-uint16_t split(uint8_t *payload, uint8_t start, uint8_t length = 3) {
-    String value;
-    for (uint16_t k = start; k < start + length; k++) {
-        value += char(payload[k]);
-    }
-    return value.toInt();
+uint32_t split(const uint8_t *payload, uint8_t start, uint8_t length = 3) {
+    char buf[16] = {0};
+    if (length > 15)
+        length = 15;
+
+    memcpy(buf, payload + start, length);
+    return strtoul(buf, nullptr, 10);
 }
 
 //------------------------------------------------------------------------------
 
 void payloadTextHandling(const uint8_t *payload, char *text,
                          uint8_t start = 3) {
-    uint8_t ii = 0;
-    for (uint8_t k = start; k < start + PAYLOAD_LENGTH - 1;
-         k++) // need space for  '\0'
-    {
-        text[ii] = payload[k];
-        ii++;
-    }
-    uint8_t index = PAYLOAD_LENGTH - 1;
-    for (int8_t counter = PAYLOAD_LENGTH - 2; counter > -1; counter--) {
-        if (!isSpace(text[counter])) {
-            index = counter + 1;
+    uint8_t len = PAYLOAD_LENGTH - 1;
+    memcpy(text, payload + start, len);
+    text[len] = '\0';
+    for (int8_t i = len - 1; i >= 0; i--) {
+        if (isSpace(text[i]))
+            text[i] = '\0';
+        else
             break;
-        }
     }
-    text[index] = '\0';
 }
 
 //------------------------------------------------------------------------------
@@ -167,9 +149,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
     if (statusAccessPoint > 0) {
         statusAccessPoint = 0;
     }
-    int ii;
-    int jj;
-    char tmp[30];
+
     payload = (payload == NULL) ? (uint8_t *)"" : payload;
     Serial.printf("Client-Nr.: [%u]  WStype: %u payload: %s\n", num, type,
                   payload);
@@ -226,16 +206,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
-        case COMMAND_MODE_SCROLLINGTEXT: {
-            if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
-                G.progInit = true;
-            }
-
-            parseColor(payload);
-            break;
-        }
-
-            //------------------------------------------------------------------------------
         case COMMAND_MODE_RAINBOW:
         case COMMAND_MODE_RAINBOWCYCLE: {
             if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
@@ -256,7 +226,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             break;
         }
             //------------------------------------------------------------------------------
-
+        case COMMAND_MODE_SCROLLINGTEXT:
         case COMMAND_MODE_SYMBOL: {
             if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
                 G.progInit = true;
@@ -297,18 +267,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_TIME: {
-            ii = 0;
-            tmp[0] = '\0';
+            char tmp[17] = {0};
             uint32_t tt = split(payload, 3, 16);
             Serial.println(tt);
-            for (uint8_t k = 12; k < 28; k++) {
-                tmp[ii] = payload[k];
-                ii++;
-            }
+            memcpy(tmp, payload + 12, 16);
+
             struct timeval tv;
             tv.tv_sec = atoi(tmp);
             tv.tv_usec = 0;
-            Serial.printf("Conf: Time: %lld\n", tv.tv_sec);
             settimeofday(&tv, nullptr);
             break;
         }
@@ -403,10 +369,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             // check if submitted password has changed compared to masked
             // password
             index_start += PAYLOAD_LENGTH;
-            char passMasked[32];
+            char passMasked[32] = {0};
             strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
-            strncpy(passMasked, "******************************",
-                    (strlen(passMasked) - 3));
+            size_t passLen = strlen(passMasked);
+            if (passLen > 3) {
+                strncpy(passMasked, "******************************",
+                        passLen - 3);
+            }
 
             char passSumitted[32];
             payloadTextHandling(payload, passSumitted, index_start);
@@ -434,7 +403,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             tv.tv_sec = mktime(&tm);
             tv.tv_usec = 0;
             Serial.println("Time manually set");
-            Serial.printf("Conf: Time: %lld\n", tv.tv_sec);
             settimeofday(&tv, nullptr);
             break;
         }
@@ -444,10 +412,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_BIRTHDAYS: {
 
             for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
-                G.birthday[i].year = split(payload, 3 + i * 10, 4);
-                G.birthday[i].month = split(payload, 9 + i * 10, 2);
-                G.birthday[i].day = split(payload, 11 + i * 10, 2);
+                G.birthday[i].month = split(payload, 3 + i * 5, 2);
+                G.birthday[i].day = split(payload, 6 + i * 5, 2);
             }
+            break;
         }
             //------------------------------------------------------------------------------
 
@@ -484,21 +452,17 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_WEATHER_DATA: {
-            ii = 0;
+            uint8_t ii = 0;
             for (uint8_t k = 3; k < 10; k++) {
-                if (payload[k] != ' ') {
-                    G.openWeatherMap.cityid[ii] = payload[k];
-                    ii++;
-                }
+                if (payload[k] != ' ')
+                    G.openWeatherMap.cityid[ii++] = payload[k];
             }
             G.openWeatherMap.cityid[ii] = '\0';
-            //
-            jj = 0;
+
+            uint8_t jj = 0;
             for (uint8_t l = 11; l < 43; l++) {
-                if (payload[l] != ' ') {
-                    G.openWeatherMap.apikey[jj] = payload[l];
-                    jj++;
-                }
+                if (payload[l] != ' ')
+                    G.openWeatherMap.apikey[jj++] = payload[l];
             }
             G.openWeatherMap.apikey[jj] = '\0';
             Serial.println("write EEPROM!");

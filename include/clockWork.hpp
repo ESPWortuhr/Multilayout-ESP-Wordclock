@@ -11,6 +11,10 @@ BH1750 lightMeter(0x23);
 bool bh1750Initialized;
 #endif
 
+#define MAX_LED_COUNT                                                          \
+    300 // Biggest Wordclock so far is 16x18=288 plus potentially 4 for minutes,
+        // so 300 is a safe upper limit
+
 OpenWMap weather;
 
 //------------------------------------------------------------------------------
@@ -187,11 +191,12 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
         if (strip_RGBW == NULL) {
 #ifdef ESP8266
-            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(500);
+            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
+                MAX_LED_COUNT);
 #elif defined(ESP32)
             pinMode(LED_PIN, OUTPUT);
-            strip_RGBW =
-                new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(500, LED_PIN);
+            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(
+                MAX_LED_COUNT, LED_PIN);
 #endif
             strip_RGBW->Begin();
         }
@@ -203,11 +208,12 @@ void ClockWork::initLedStrip(uint8_t num) {
         }
         if (strip_RGB == NULL) {
 #ifdef ESP8266
-            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(500);
+            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(
+                MAX_LED_COUNT);
 #elif defined(ESP32)
             pinMode(LED_PIN, OUTPUT);
             strip_RGB = new NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod>(
-                500, LED_PIN);
+                MAX_LED_COUNT, LED_PIN);
 #endif
             strip_RGB->Begin();
         }
@@ -217,7 +223,7 @@ void ClockWork::initLedStrip(uint8_t num) {
 //------------------------------------------------------------------------------
 
 uint32_t ClockWork::num32BitWithOnesAccordingToColumns() {
-    return pow(2, usedUhrType->colsWordMatrix()) - 1;
+    return (1U << usedUhrType->colsWordMatrix()) - 1;
 }
 
 //------------------------------------------------------------------------------
@@ -225,6 +231,18 @@ uint32_t ClockWork::num32BitWithOnesAccordingToColumns() {
 bool ClockWork::isRomanLanguage() {
     return usedUhrType->usedLang() == LanguageAbbreviation::ES ||
            usedUhrType->usedLang() == LanguageAbbreviation::IT;
+}
+
+//------------------------------------------------------------------------------
+
+void sendJsonToClient(uint8_t client_nr, const JsonDocument &doc) {
+    char str[1024];
+    size_t bytesWritten = serializeJson(doc, str);
+
+    Serial.print("Sending Payload:");
+    Serial.println(str);
+
+    webSocket.sendTXT(client_nr, str, bytesWritten);
 }
 
 //------------------------------------------------------------------------------
@@ -275,13 +293,23 @@ void ClockWork::scrollingText(const char *buf) {
     uint8_t offsetRow = (usedUhrType->rowsWordMatrix() -
                          pgm_read_byte(&(fontHeight[normalSizeASCII]))) /
                         2;
-    uint8_t fontIndex = buf[ii];
+
+    uint16_t len = strlen(buf);
+    uint8_t width = pgm_read_byte(&(fontWidth[normalSizeASCII]));
+    uint8_t charsToFlush = (usedUhrType->colsWordMatrix() / (width + 1)) + 1;
+
+    if (ii >= len + charsToFlush) {
+        ii = 0;
+        i = 0;
+    }
+
+    uint8_t fontIndex = (ii < len) ? buf[ii] : ' ';
 
     led.setbyFrontMatrix(Foreground); // Needed for Mirrored Display
     led.shiftColumnToRight();
     led.clearFrontExeptofFontspace(offsetRow);
 
-    if (i < pgm_read_byte(&(fontWidth[normalSizeASCII]))) {
+    if (i < width) {
         for (uint8_t row = 0;
              row < pgm_read_byte(&(fontHeight[normalSizeASCII])); row++) {
             usedUhrType->setFrontMatrixPixel(
@@ -299,11 +327,11 @@ void ClockWork::scrollingText(const char *buf) {
     led.show();
 
     i++;
-    if (i >= pgm_read_byte(&(fontWidth[normalSizeASCII])) + 1) // +1 for spacing
+    if (i >= width + 1) // +1 for spacing
     {
         i = 0;
         ii++;
-        if (ii >= strlen(buf)) {
+        if (ii >= len + charsToFlush) {
             ii = 0;
         }
     }
@@ -544,6 +572,20 @@ void ClockWork::showMinute(uint8_t min) {
 
     /* Show Minute "In Words" according to Uhrtypedef */
     showMinuteInWords(min);
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::checkForValidLayoutVariant() {
+    if (G.UhrtypeDef == Eng10x11) {
+        G.layoutVariant[ItIs15] = false;
+        G.layoutVariant[ItIs20] = true;
+        G.layoutVariant[ItIs40] = true;
+    } else { // default values
+        G.layoutVariant[ItIs15] = false;
+        G.layoutVariant[ItIs20] = false;
+        G.layoutVariant[ItIs40] = false;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -1198,7 +1240,7 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_REQUEST_MQTT_VALUES: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(512);
         config["command"] = "mqtt";
         config["MQTT_State"] = G.mqtt.state;
         config["MQTT_Port"] = G.mqtt.port;
@@ -1214,10 +1256,8 @@ void ClockWork::loop(struct tm &tm) {
 
         config["MQTT_ClientId"] = G.mqtt.clientId;
         config["MQTT_Topic"] = G.mqtt.topic;
-        serializeJson(config, str);
-        Serial.print("Sending Payload:");
-        Serial.println(str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
@@ -1276,36 +1316,34 @@ void ClockWork::loop(struct tm &tm) {
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["hasMinuteInWords"] = usedUhrType->hasMinuteInWords();
-        config["hasHappyBirthday"] = usedUhrType->hasSpecialWordHappyBirthday();
+        config["hasSpecialWordHappyBirthday"] =
+            usedUhrType->hasSpecialWordHappyBirthday();
         config["numOfRows"] = usedUhrType->rowsWordMatrix();
-        serializeJson(config, str);
-        Serial.print("Sending Payload:");
-        Serial.println(str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
     case COMMAND_REQUEST_BIRTHDAYS: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(256);
         config["command"] = "birthdays";
-        config["hasHappyBirthday"] = usedUhrType->hasSpecialWordHappyBirthday();
-        char dateString[14];
-        char string2Send[14];
+        config["hasSpecialWordHappyBirthday"] =
+            usedUhrType->hasSpecialWordHappyBirthday();
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
-            sprintf(string2Send, "birthdayDate%d", i);
-            sprintf(dateString, "%04u-%02u-%02u", G.birthday[i].year,
-                    G.birthday[i].month, G.birthday[i].day);
+            char dateString[10];
+            char string2Send[16];
+            snprintf(string2Send, sizeof(string2Send), "birthdayDate%d", i);
+            snprintf(dateString, sizeof(dateString), "%02u-%02u",
+                     G.birthday[i].month, G.birthday[i].day);
             config[string2Send] = dateString;
         }
-        serializeJson(config, str);
-        Serial.print("Sending Payload:");
-        Serial.println(str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
     case COMMAND_REQUEST_COLOR_VALUES: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(512);
         config["command"] = "set";
         for (uint8_t i = 0; i < 2; i++) {
             char string2Send[7];
@@ -1319,16 +1357,17 @@ void ClockWork::loop(struct tm &tm) {
         config["effectBri"] = G.effectBri;
         config["effectSpeed"] = G.effectSpeed;
         config["colortype"] = G.Colortype;
-        config["hasHappyBirthday"] = usedUhrType->hasSpecialWordHappyBirthday();
+        config["hasSpecialWordHappyBirthday"] =
+            usedUhrType->hasSpecialWordHappyBirthday();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["prog"] = G.prog;
-        serializeJson(config, str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
     case COMMAND_REQUEST_AUTO_BRIGHT: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(256);
         config["command"] = "autoBright";
         if (G.param1 == 0) {
             config["autoBrightEnabled"] = G.autoBrightEnabled;
@@ -1338,21 +1377,21 @@ void ClockWork::loop(struct tm &tm) {
         }
         config["autoBrightSensor"] = (uint32_t)lux;
         config["autoBrightGain"] = (uint8_t)ledGain;
-        serializeJson(config, str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
     case COMMAND_REQUEST_TRANSITION: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(256);
         config["command"] = "transition";
         config["transitionType"] = G.transitionType;
         config["transitionDuration"] = G.transitionDuration;
         config["transitionSpeed"] = G.transitionSpeed;
         config["transitionDemo"] = G.transitionDemo;
         config["transitionColorize"] = G.transitionColorize;
-        serializeJson(config, str);
-        webSocket.sendTXT(G.client_nr, str, strlen(str));
+
+        sendJsonToClient(G.client_nr, config);
         break;
     }
 
@@ -1439,14 +1478,21 @@ void ClockWork::loop(struct tm &tm) {
         led.show();
         delay(10);
         Serial.printf("Uhrtype: %u\n", G.UhrtypeDef);
+
         usedUhrType = getPointer(G.UhrtypeDef);
         resetMinVariantIfNotAvailable();
+
+        checkForValidLayoutVariant();
+
+        delete secondsFrame;
+        secondsFrame = nullptr;
+
         if (usedUhrType->numPixelsFrameMatrix() != 0) {
-            delete secondsFrame;
             secondsFrame =
                 new SecondsFrame(usedUhrType->numPixelsFrameMatrix());
             G.progInit = true;
         }
+
         parametersChanged = true;
         break;
     }

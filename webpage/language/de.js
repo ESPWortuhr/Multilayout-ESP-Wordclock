@@ -47,8 +47,7 @@ let TRANSLATION_DE_DE = {
 		"birthdays": {
 			"h1": "Geburtstage",
 			"help": "An Geburtstagen erscheint alle 5 Minuten eine Feuerwerk-Animation.\n" +
-						"Bei kompatiblen Uhrentypen werden während der Animation die Wörter „Happy Birthday“ statt der Uhrzeit angezeigt.\n" +
-						"Geburtstage vor dem Jahr 1900 werden nicht unterstützt.\n",
+						"Bei kompatiblen Uhrentypen werden während der Animation die Wörter „Happy Birthday“ statt der Uhrzeit angezeigt. Datumsformat MM-DD\n",
 			"dates": {
 				"save": "Speichern",
 				"date0": {
@@ -185,7 +184,7 @@ let TRANSLATION_DE_DE = {
 			"at-nine-fourtyfive-german": "Um 9:45 ist es...",
 			"quarter-to-ten": "viertel vor zehn",
 			"three-quarter-ten": "dreiviertel zehn",
-			"at-nine-fourtyfive-english": "On 9:45 it is ...",
+			"at-nine-fourtyfive-english": "Um 9:45 ist es ...",
 			"quarter-to-ten-english": "Quarter to ten",
 			"a-quarter-to-ten-english": "A quarter to ten"
 		},

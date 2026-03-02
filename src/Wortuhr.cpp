@@ -208,7 +208,7 @@ void setup() {
         }
         G.color[Foreground] = HsbColor(DEFAULT_HUE / 360.f, 1.f, 0.5f);
         G.effectBri = 2;
-        G.effectSpeed = 10;
+        G.effectSpeed = 5;
         G.client_nr = 0;
         G.secondVariant = SecondVariant::Off;
 // C++23 #elifdef doesn't work yet
@@ -247,13 +247,44 @@ void setup() {
              i++) {
             G.languageVariant[i] = false;
         }
-        G.mqtt.state = false;
-        G.mqtt.port = 1883;
+
+#ifdef MQTT_SERVER
+        strlcpy(G.mqtt.serverAdress, MQTT_SERVER, sizeof(G.mqtt.serverAdress));
+        G.mqtt.state = true;
+#else
         strcpy(G.mqtt.serverAdress, "192.168.4.1");
+        G.mqtt.state = false;
+#endif
+
+#ifdef MQTT_PORT
+        G.mqtt.port = MQTT_PORT;
+#else
+        G.mqtt.port = 1883;
+#endif
+
+#ifdef MQTT_USER
+        strlcpy(G.mqtt.user, MQTT_USER, sizeof(G.mqtt.user));
+#else
         strcpy(G.mqtt.user, "User");
+#endif
+
+#ifdef MQTT_PASSWORD
+        strlcpy(G.mqtt.password, MQTT_PASSWORD, sizeof(G.mqtt.password));
+#else
         strcpy(G.mqtt.password, "Password");
+#endif
+
+#ifdef MQTT_CLIENT_ID
+        strlcpy(G.mqtt.clientId, MQTT_CLIENT_ID, sizeof(G.mqtt.clientId));
+#else
         strcpy(G.mqtt.clientId, "ClientId");
+#endif
+
+#ifdef MQTT_TOPIC
+        strlcpy(G.mqtt.topic, MQTT_TOPIC, sizeof(G.mqtt.topic));
+#else
         strcpy(G.mqtt.topic, "ESPWordclock");
+#endif
 
         G.UhrtypeDef = DEFAULT_LAYOUT;
         G.buildTypeDef = DEFAULT_BUILDTYPE;
@@ -276,9 +307,8 @@ void setup() {
         G.transitionDemo = false;
 
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
-            G.birthday[i].day = 1;
-            G.birthday[i].month = 1;
-            G.birthday[i].year = 1900;
+            G.birthday[i].day = 0;
+            G.birthday[i].month = 0;
         }
 
         eeprom::write();
@@ -405,7 +435,7 @@ void setup() {
     //-------------------------------------
     MDNS.begin(G.hostname);
     MDNS.addService("http", "tcp", 80);
-    MDNS.addService("http", "tcp", 81);
+    MDNS.addService("ota", "tcp", 81);
 
     //-------------------------------------
     Serial.println("--------------------------------------");
@@ -473,7 +503,7 @@ void setup() {
     //-------------------------------------
     // Frame Init
     //-------------------------------------
-    if (usedUhrType->numPixelsFrameMatrix() != 0) {
+    if (secondsFrame) {
         secondsFrame->initFrame();
     }
 
@@ -530,7 +560,9 @@ void loop() {
     //------------------------------------------------
     // Frame
     //------------------------------------------------
-    secondsFrame->loop();
+    if (secondsFrame) {
+        secondsFrame->loop();
+    }
 
     //------------------------------------------------
     // Transition
