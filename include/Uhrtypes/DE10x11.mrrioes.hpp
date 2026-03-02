@@ -11,7 +11,7 @@
  *  1  | Z E H N V I E R T E L
  *  2  | Z W A N Z I G K V O R
  *  3  | P N A C H G H A L B M
- *  4  | E I N S R Z W E I P Y 
+ *  4  | E I N S R Z W E I P Y
  *  5  | K D R E I Y V I E R F
  *  6  | F Ü N F Q S E C H S K
  *  7  | M S I E B E N A C H T
