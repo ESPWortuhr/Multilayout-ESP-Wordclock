@@ -284,6 +284,7 @@ enum ClockType {
     Ger10x11schwaebisch = 20,
     Ger10x11Nero = 11,
     Ger10x11NeroFrame = 26,
+    Ger10x11Mrrioes = 33,
     Ger10x11bayerisch = 27,
     Ger11x11 = 3,
     Ger11x11V2 = 8,
