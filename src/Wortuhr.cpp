@@ -208,7 +208,7 @@ void setup() {
         }
         G.color[Foreground] = HsbColor(DEFAULT_HUE / 360.f, 1.f, 0.5f);
         G.effectBri = 2;
-        G.effectSpeed = 10;
+        G.effectSpeed = 5;
         G.client_nr = 0;
         G.secondVariant = SecondVariant::Off;
 // C++23 #elifdef doesn't work yet
