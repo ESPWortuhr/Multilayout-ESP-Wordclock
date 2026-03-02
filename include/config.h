@@ -41,6 +41,9 @@
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
 // from the Github user @n3roGit
 //
+// #define DEFAULT_LAYOUT Ger10x11Mrrioes
+// 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
+//
 // #define DEFAULT_LAYOUT Ger11x11
 // 11 rows, each 11 LED's per row + 4 LED's for minutes
 //
@@ -367,23 +370,19 @@
 #define MEANDER_ROWS true
 
 //--------------------------------------------------------------------------
-// Manual MQTT Settings
+// Front Displaying Options
 //--------------------------------------------------------------------------
 /*
- * Preconfigure your MQTT broker credentials and settings here.
- * If your broker does not require a username or password, leave them
- * as empty strings "".
- *
- * Valid values MQTT_SERVER [IP address or Hostname as string]
- * Valid values MQTT_PORT [Integer, default is usually 1883]
- * Valid values MQTT_CLIENT_ID [Unique string]
- * Valid values MQTT_USER [String]
- * Valid values MQTT_PASSWORD [String]
- * Valid values MQTT_TOPIC [String]
+ * Valid values REVERSE_MINUTE_DIR [true, false]
+ * Valid values MIRROR_FRONT_VERTICAL [true, false]
+ * Valid values MIRROR_FRONT_HORIZONTAL [true, false]
+ * Valid values EXTRA_LED_PER_ROW [true, false]
+ * Valid values FLIP_HORIZONTAL_VERTICAL [true, false]
+ * Valid values MEANDER_ROWS [true, false]
  */
-// #define MQTT_SERVER "192.168.155.5"
-// #define MQTT_PORT 1883
-// #define MQTT_CLIENT_ID "Wordclock_ESP"
-// #define MQTT_USER "user"
-// #define MQTT_PASSWORD "password"
-// #define MQTT_TOPIC "Wordclock"
+#define REVERSE_MINUTE_DIR false
+#define MIRROR_FRONT_VERTICAL false
+#define MIRROR_FRONT_HORIZONTAL false
+#define EXTRA_LED_PER_ROW false
+#define FLIP_HORIZONTAL_VERTICAL false
+#define MEANDER_ROWS true

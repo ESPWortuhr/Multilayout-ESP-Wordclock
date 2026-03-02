@@ -127,6 +127,7 @@ let TRANSLATION_DE_DE = {
 			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
 			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Rahmen",
+			"de-10-11-mrrioes": "🇩🇪 10 × 11 mrrioes",
 			"de-10-11-bayerisch": "🇩🇪 10 × 11 Bayerisch",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Schwäbisch",
 			"de-11-11": "🇩🇪 11 × 11",
