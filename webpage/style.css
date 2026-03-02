@@ -421,6 +421,14 @@ input[type="range"]::-moz-range-thumb {
     margin-left: 15px;
 }
 
+.pure-control-group .value {
+    display: inline-block;
+    min-width: 3ch;
+    text-align: right;
+    margin-right: 8px;
+    font-variant-numeric: tabular-nums;
+}
+
 /**
  * Settings
  */
