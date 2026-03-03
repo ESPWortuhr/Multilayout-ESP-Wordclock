@@ -1,6 +1,0 @@
-nvs, data, nvs, 0x9000, 0x6000,
-phy_init, data, phy, 0xf000, 0x1000,
-factory, app, factory, 0x10000, 0x150000,
-ota_0, app, ota_0, 0x160000,0x150000,
-ota_data, data, ota, 0x2b0000,0x2000,
-coredump, data, coredump,0x2b2000,0x8000,
