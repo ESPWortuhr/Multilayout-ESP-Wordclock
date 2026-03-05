@@ -110,70 +110,11 @@ void ClockWork::loopAutoBrightLogic() {
 
 iUhrType *ClockWork::getPointer(uint8_t type) {
     switch (type) {
-    case Ger10x11:
-        return &_de10x11;
-    case Ger10x11Alternative:
-        return &_de10x11Alternative;
-    case Ger10x11AlternativeFrame:
-        return &_de10x11AlternativeFrame;
-    case Ger10x11Clock:
-        return &_de10x11Clock;
-    case Ger10x11Nero:
-        return &_de10x11Nero;
-    case Ger10x11NeroFrame:
-        return &_de10x11NeroFrame;
-    case Ger10x11Mrrioes:
-        return &_de10x11Mrrioes;
-    case Ger10x11bayerisch:
-        return &_de10x11bayerisch;
-    case Nl10x11:
-        return &_nl10x11;
-    case Ger11x11:
-        return &_de11x11;
-    case Ger11x11V2:
-        return &_de11x11V2;
-    case Ger11x11V3:
-        return &_de11x11V3;
-    case Ger13x13:
-        return &_de13x13;
-    case Ger22x11Weather:
-        return &_de22x11Weather;
-    case Ger16x8:
-        return &_de16x8;
-    case Ger16x18:
-        return &_de16x18;
-    case Ger08x08:
-        return &_de08x08;
-    case Ger08x08Viertel:
-        return &_de08x08Viertel;
-    case Eng08x08:
-        return &_en08x08;
-    case Eng10x11:
-        return &_en10x11;
-    case Eng11x12:
-        return &_en11x12;
-    case Es10x11:
-        return &_es10x11;
-    case Es08x08Cuarto:
-        return &_es08x08Cuarto;
-    case It10x11:
-        return &_it10x11;
-    case Hu10x10:
-        return &_hu10x10;
-    case Ch10x11:
-        return &_ch10x11;
-    case Ro10x11:
-        return &_ro10x11;
-    case Ger10x11schwaebisch:
-        return &_de10x11schwaebisch;
-    case Fr10x11:
-        return &_fr10x11;
-    case Se10x11:
-        return &_se10x11;
-    case Ru10x11:
-        return &_ru10x11;
-    case Ch10x11V2:
-        return &_ch10x11v2;
+#define X(name, id, var)                                                       \
+    case name:                                                                 \
+        return &var;
+        CLOCK_TYPES_LIST
+#undef X
     default:
         return nullptr;
     }

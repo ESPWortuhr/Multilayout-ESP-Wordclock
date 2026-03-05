@@ -47,7 +47,7 @@ let TRANSLATION_EN_US = {
 		"birthdays": {
 			"h1": "Birthdays",
 			"help": "On birthdays, a fireworks animation appears every 5 minutes.\n" +
-					"Compatible clock types will display the words “Happy Birthday” instead of the time during the animation. Date format MM-DD\n",
+				"Compatible clock types will display the words “Happy Birthday” instead of the time during the animation. Date format MM-DD\n",
 			"dates": {
 				"save": "Save",
 				"date0": {
@@ -152,6 +152,7 @@ let TRANSLATION_EN_US = {
 			"fr-10-11": "🇫🇷 10 x 11",
 			"se-10-11": "🇸🇪 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
+			"bn-9-8": "🇧🇩 9 × 8",
 			"ch-10-11-v2": "🇨🇭 10 x 11 Version 2",
 			"invert-min-dir": "Invert Minute Counting Direction",
 			"mirror-vertically": "Mirror Word Clock Vertically",

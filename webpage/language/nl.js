@@ -128,6 +128,7 @@ let TRANSLATION_NL = {
 			"ro-10-11": "🇷🇴 10 x 11",
 			"fr-10-11": "🇫🇷 10 x 11",
 			"se-10-11": "🇸🇪 10 × 11",
+			"bn-9-8": "🇧🇩 9 × 8",
 			"ru-10-11": "🇷🇺 10 × 11",
 			"ch-10-11-v2": "🇨🇭 10 x 11 Versie 2",
 			"invert-min-dir": "Draai minuutrichting om",
