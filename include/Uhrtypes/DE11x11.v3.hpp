@@ -27,29 +27,14 @@ public:
 
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 
-        if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
-            numPixelsWordMatrix = rowsWordMatrix() * (colsWordMatrix() * 2 - 1);
-        }
-
         for (uint8_t i = 0; i < 4; i++) {
-            switch (col) {
-            case 0:                         // LEDs for "LED4x" minute display
-                returnArr[i] = 3 + (i * 2); // 3,5,7,9
-                break;
-
-            case 1:                           // LEDs for "LED7x" minute display
-                returnArr[i] = 113 + (i * 2); // 3,5,7,9
-                break;
-
-            case 2: // LEDs für "Corners" type minute display
-                returnArr[i] = numPixelsWordMatrix + i;
-                break;
-
-            default:
-                break;
-            }
+            returnArr[i] = numPixelsWordMatrix + i;
         }
     };
+
+    //------------------------------------------------------------------------------
+
+    virtual const bool hasMinuteInWords() { return true; }
 
     //------------------------------------------------------------------------------
 
@@ -152,6 +137,22 @@ public:
             break;
 
         case FrontWord::funk:
+            break;
+
+        case FrontWord::m_num1:
+            setFrontMatrixWord(10, 8, 8);
+            break;
+
+        case FrontWord::m_num2:
+            setFrontMatrixWord(10, 6, 6);
+            break;
+
+        case FrontWord::m_num3:
+            setFrontMatrixWord(10, 4, 4);
+            break;
+
+        case FrontWord::m_num4:
+            setFrontMatrixWord(10, 2, 2);
             break;
 
         default:

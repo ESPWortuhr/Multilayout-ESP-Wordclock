@@ -352,8 +352,8 @@ function initWebsocket() {
 
 				removeSpecificOption("show-minutes", "3", data.numOfRows !== 11); // MinuteVariant "Corners" only for DE11x11 Variants
 				removeSpecificOption("show-minutes", "4", !data.hasMinuteInWords);
-				removeSpecificOption("show-minutes", "1", data.UhrtypeDef === 13); // Remove "LED4x" for Ger16x8
-				removeSpecificOption("show-minutes", "2", data.UhrtypeDef === 13); // Remove "LED7x" for Ger16x8
+				removeSpecificOption("show-minutes", "1", data.UhrtypeDef === 13 || data.UhrtypeDef === 14); // Remove "LED4x" for Ger16x8 or Ger11x11v3
+				removeSpecificOption("show-minutes", "2", data.UhrtypeDef === 13 || data.UhrtypeDef === 14); // Remove "LED7x" for Ger16x8 or Ger11x11v3
 
 				autoBrightEnabled = data.autoBrightEnabled;
 				if (autoBrightEnabled === 9) {
