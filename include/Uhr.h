@@ -6,6 +6,55 @@
 #define MAX_ROW_SIZE 22
 #define MAX_BIRTHDAY_COUNT 5
 
+// The Unique ID is a cross-reference for HTML/JavaScript
+
+#define CLOCK_TYPES_LIST \
+    /* BN (Bengali) */ \
+    X(BN9x8,                    34, _bn9x8) \
+    /* CH (Swiss) */ \
+    X(Ch10x11,                  18, _ch10x11) \
+    X(Ch10x11V2,                24, _ch10x11v2) \
+    /* DE (German) */ \
+    X(Ger08x08,                 30, _de08x08) \
+    X(Ger08x08Viertel,          25, _de08x08Viertel) \
+    X(Ger10x11,                 1,  _de10x11) \
+    X(Ger10x11Alternative,      2,  _de10x11Alternative) \
+    X(Ger10x11AlternativeFrame, 4,  _de10x11AlternativeFrame) \
+    X(Ger10x11bayerisch,        27, _de10x11bayerisch) \
+    X(Ger10x11Clock,            6,  _de10x11Clock) \
+    X(Ger10x11Mrrioes,          33, _de10x11Mrrioes) \
+    X(Ger10x11Nero,             11, _de10x11Nero) \
+    X(Ger10x11NeroFrame,        26, _de10x11NeroFrame) \
+    X(Ger10x11schwaebisch,      20, _de10x11schwaebisch) \
+    X(Ger11x11,                 3,  _de11x11) \
+    X(Ger11x11V2,               8,  _de11x11V2) \
+    X(Ger11x11V3,               14, _de11x11V3) \
+    X(Ger13x13,                 31, _de13x13) \
+    X(Ger16x8,                  13, _de16x8) \
+    X(Ger16x18,                 7,  _de16x18) \
+    X(Ger22x11Weather,          5,  _de22x11Weather) \
+    /* EN (English) */ \
+    X(Eng08x08,                 29, _en08x08) \
+    X(Eng10x11,                 10, _en10x11) \
+    X(Eng11x12,                 32, _en11x12) \
+    /* ES (Spanish) */ \
+    X(Es08x08Cuarto,            28, _es08x08Cuarto) \
+    X(Es10x11,                  15, _es10x11) \
+    /* FR (French) */ \
+    X(Fr10x11,                  21, _fr10x11) \
+    /* HU (Hungarian) */ \
+    X(Hu10x10,                  17, _hu10x10) \
+    /* IT (Italian) */ \
+    X(It10x11,                  16, _it10x11) \
+    /* NL (Dutch) */ \
+    X(Nl10x11,                  9,  _nl10x11) \
+    /* RO (Romanian) */ \
+    X(Ro10x11,                  19, _ro10x11) \
+    /* RU (Russian) */ \
+    X(Ru10x11,                  23, _ru10x11) \
+    /* SE (Swedish) */ \
+    X(Se10x11,                  22, _se10x11)
+
 enum ClockWords : uint8_t {
     ESIST = 0,
     VOR = 1,
@@ -271,40 +320,9 @@ enum CommandWords : uint8_t {
 };
 
 enum ClockType : uint8_t {
-    Ger10x11 = 1,
-    Ger10x11Alternative = 2,
-    Ger11x11 = 3,
-    Ger10x11AlternativeFrame = 4,
-    Ger22x11Weather = 5,
-    Ger10x11Clock = 6,
-    Ger16x18 = 7,
-    Ger11x11V2 = 8,
-    Nl10x11 = 9,
-    Eng10x11 = 10,
-    Ger10x11Nero = 11,
-    // ID 12 is currently empty
-    Ger16x8 = 13,
-    Ger11x11V3 = 14,
-    Es10x11 = 15,
-    It10x11 = 16,
-    Hu10x10 = 17,
-    Ch10x11 = 18,
-    Ro10x11 = 19,
-    Ger10x11schwaebisch = 20,
-    Fr10x11 = 21,
-    Se10x11 = 22,
-    Ru10x11 = 23,
-    Ch10x11V2 = 24,
-    Ger08x08Viertel = 25,
-    Ger10x11NeroFrame = 26,
-    Ger10x11bayerisch = 27,
-    Es08x08Cuarto = 28,
-    Eng08x08 = 29,
-    Ger08x08 = 30,
-    Ger13x13 = 31,
-    Eng11x12 = 32,
-    Ger10x11Mrrioes = 33,
-    BN9x8 = 34
+#define X(name, id, var) name = id,
+    CLOCK_TYPES_LIST
+#undef X
 };
 
 enum Icons : uint8_t {
