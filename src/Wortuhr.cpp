@@ -93,7 +93,12 @@ uint16_t powerCycleCount = 0; // Variable to store power cycle count
 
 //------------------------------------------------------------------------------
 
+#if defined(ESP32)
+void time_is_set(struct timeval *tv) {
+    (void)tv;
+#else
 void time_is_set() {
+#endif
     time_t utc = time(nullptr);
     if (externalRTC) {
         RTC.adjust(DateTime(utc));
@@ -104,26 +109,35 @@ void time_is_set() {
     _second = tm.tm_sec;
     _minute = tm.tm_min;
     _hour = tm.tm_hour;
-    if (usedUhrType->numPixelsFrameMatrix() != 0) {
-        _secondFrame = _second / (usedUhrType->numPixelsFrameMatrix() / 60.f);
-    }
 
     String origin;
     if (sntp_getreachability(0)) {
         origin = sntp_getservername(0);
-        if (origin.length() == 0) {
+
+        if (origin.isEmpty()) {
             const ip_addr_t *ip_addr = sntp_getserver(0);
+
+            if (ip_addr != nullptr) {
 #ifdef ESP8266
-            origin = IPAddress(ip_addr->addr).toString();
+                origin = IPAddress(ip_addr->addr).toString();
 #elif defined(ESP32)
-            origin = IPAddress(ip_addr->u_addr.ip4.addr).toString();
+                origin = IPAddress(ip_addr->u_addr.ip4.addr).toString();
 #endif
+            } else {
+                origin = "Unknown IP";
+            }
         }
     } else {
         origin = "SNTP not reachable";
     }
     Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _hour, _minute,
                   _second, origin.c_str());
+
+    // Calc second frame for seconds variants that use a frame
+    uint16_t numPixels = usedUhrType->numPixelsFrameMatrix();
+    if (numPixels != 0) {
+        _secondFrame = (_second * numPixels) / 60;
+    }
 
     G.progInit = true;
     parametersChanged = true;
@@ -379,6 +393,8 @@ void setup() {
     }
 #ifdef ESP8266
     settimeofday_cb(time_is_set);
+#elif defined(ESP32)
+    sntp_set_time_sync_notification_cb(time_is_set);
 #endif
 
     //-------------------------------------
