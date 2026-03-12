@@ -551,24 +551,34 @@ void Led::showNumbers(const char d1, const char d2) {
         unsigned_d2 -= 48;
     }
 
-    static uint8_t offsetLetter0 =
-        usedUhrType->colsWordMatrix() / 2 - usedFontWidth;
-    static uint8_t offsetLetter1 = usedUhrType->colsWordMatrix() / 2 + 1;
     uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - usedFontHeight) / 2;
+    bool isSingleDigit = (d1 == ' ' || d1 == '0');
+    uint8_t offsetLetter0, offsetLetter1, offsetCenter;
 
-    if (usedUhrType->has24HourLayout()) {
-        offsetLetter0 = 3;
-        offsetLetter1 = usedFontWidth + 4;
+    if (isSingleDigit) {
+        offsetCenter = (usedUhrType->colsWordMatrix() - usedFontWidth) / 2;
+    } else {
+        offsetLetter0 = usedUhrType->colsWordMatrix() / 2 - usedFontWidth;
+        offsetLetter1 = usedUhrType->colsWordMatrix() / 2 + 1;
+
+        if (usedUhrType->has24HourLayout()) {
+            offsetLetter0 = 3;
+            offsetLetter1 = usedFontWidth + 4;
+        }
     }
 
     for (uint8_t col = 0; col < usedFontWidth; col++) {
         for (uint8_t row = 0; row < usedFontHeight; row++) {
-            // 1. Number without Offset
-            setPixelForChar(col, row, offsetLetter0, offsetRow, unsigned_d1,
-                            usedFontSize);
-            // 2. Number with Offset
-            setPixelForChar(col, row, offsetLetter1, offsetRow, unsigned_d2,
-                            usedFontSize);
+            
+            if (isSingleDigit) {
+                setPixelForChar(col, row, offsetCenter, offsetRow, unsigned_d2,
+                                usedFontSize);
+            } else {
+                setPixelForChar(col, row, offsetLetter0, offsetRow, unsigned_d1,
+                                usedFontSize);
+                setPixelForChar(col, row, offsetLetter1, offsetRow, unsigned_d2,
+                                usedFontSize);
+            }
         }
     }
 
