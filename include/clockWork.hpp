@@ -1002,20 +1002,15 @@ bool ClockWork::DetermineIfItIsIsShown(const uint8_t min) {
     switch (G.itIsVariant) {
     case ItIsVariant::Permanent:
         return true;
-        break;
     case ItIsVariant::Hourly:
         return !min;
-        break;
     case ItIsVariant::HalfHourly:
         return !(min % 30);
-        break;
     case ItIsVariant::Quarterly:
         return !(min % 15);
-        break;
     case ItIsVariant::Off:
     default:
         return false;
-        break;
     }
 }
 
