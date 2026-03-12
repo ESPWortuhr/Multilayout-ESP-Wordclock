@@ -126,8 +126,7 @@ void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
     if (num == Grbw) {
         if (strip_RGB != NULL) {
-            delete strip_RGB; // delete the previous dynamically created
-                              // strip
+            delete strip_RGB;
             strip_RGB = NULL;
         }
         if (strip_RGBW == NULL) {
@@ -136,15 +135,14 @@ void ClockWork::initLedStrip(uint8_t num) {
                 MAX_LED_COUNT);
 #elif defined(ESP32)
             pinMode(LED_PIN, OUTPUT);
-            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(
+            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, NeoEsp32Rmt0Ws2812xMethod>(
                 MAX_LED_COUNT, LED_PIN);
 #endif
             strip_RGBW->Begin();
         }
     } else {
         if (strip_RGBW != NULL) {
-            delete strip_RGBW; // delete the previous dynamically created
-                               // strip
+            delete strip_RGBW;
             strip_RGBW = NULL;
         }
         if (strip_RGB == NULL) {
@@ -153,7 +151,7 @@ void ClockWork::initLedStrip(uint8_t num) {
                 MAX_LED_COUNT);
 #elif defined(ESP32)
             pinMode(LED_PIN, OUTPUT);
-            strip_RGB = new NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod>(
+            strip_RGB = new NeoPixelBus<NeoMultiFeature, NeoEsp32Rmt0Ws2812xMethod>(
                 MAX_LED_COUNT, LED_PIN);
 #endif
             strip_RGB->Begin();

@@ -39,8 +39,8 @@ iUhrType *usedUhrType = nullptr;
 NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
 #elif defined(ESP32)
-NeoPixelBus<NeoGrbwFeature, NeoSk6812Method> *strip_RGBW = NULL;
-NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod> *strip_RGB = NULL;
+NeoPixelBus<NeoGrbwFeature, NeoEsp32Rmt0Ws2812xMethod> *strip_RGBW = NULL;
+NeoPixelBus<NeoMultiFeature, NeoEsp32Rmt0Ws2812xMethod> *strip_RGB = NULL;
 #endif
 
 WiFiClient client;
