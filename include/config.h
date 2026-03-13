@@ -200,7 +200,7 @@
  * Valid values for DEFAULT_HUE [integer 0-255]
  * Valid values for DEFAULT_BRIGHTNESS [one of these: 0, 20, 40, 60, 80, 100]
  */
-#define DEFAULT_LEDTYPE Brg
+#define DEFAULT_LEDTYPE Grb
 #define WHITE_LEDTYPE WhiteType::NeutralWhite
 #define DEFAULT_HUE 120
 #define DEFAULT_BRIGHTNESS 100
