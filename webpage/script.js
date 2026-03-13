@@ -107,6 +107,7 @@ const CMD = {
 	SET_AUTO_BRIGHT: 102,
 	SET_LAYOUT_VARIANT: 103,
 	SET_MQTT_HA_DISCOVERY: 104,
+	SET_SYMBOL: 105,
 	SPEED: 152,
 
 	// Requests
@@ -811,6 +812,10 @@ $.ready(function() {
 	$("#colortype-button").on("click", function() {
 		sendCmd(CMD.SET_COLORTYPE, nstr($("#colortype").get("value")));
 		debugMessage("Colortype" + debugMessageReconfigured);
+	});
+	$('input[name="symbol-choice"]').on("change", function(event) {
+		let selectedSymbol = event.target.value;
+		sendCmd(CMD.SET_SYMBOL, nstr(selectedSymbol));
 	});
 	$("#hostname-button").on("click", function() {
 		sendCmd(CMD.SET_HOSTNAME, getPaddedString($("#hostname").get("value"), DATA_HOST_TEXT_LENGTH));

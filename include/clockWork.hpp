@@ -280,41 +280,16 @@ void ClockWork::scrollingText(const char *buf) {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::displaySymbols(uint8_t iconNum) {
+void ClockWork::displaySymbols(BitmapSymbol symbolNum) {
     static uint8_t count = 0;
 
-    switch (iconNum) {
-    case HEART:
-        /* Heartbeat begin */
-        if (count < 10) {
-            G.color[Foreground].B += 0.03;
-            if (G.color[Foreground].B > 1) {
-                G.color[Foreground].B = 1;
-            }
-            count++;
-        } else if (count < 20) {
-            G.color[Foreground].B -= 0.03;
-            if (G.color[Foreground].B <= 0) {
-                G.color[Foreground].B = 0;
-            }
-            count++;
-        } else {
-            count = 0;
-        }
-        /* Heartbeat end */
-        led.setIcon(iconNum);
+    switch (symbolNum) {
+    case BitmapSymbol::HEART:
         break;
 
-    case SMILEY:
-        led.setIcon(iconNum);
+    case BitmapSymbol::SMILEY:
         break;
-
-    case NOTE:
-        led.setIcon(iconNum);
-        break;
-
-    case SNOW:
-        led.setIcon(iconNum);
+    case BitmapSymbol::NOTE:
         break;
 
     default:

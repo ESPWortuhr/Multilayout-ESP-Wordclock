@@ -3,7 +3,7 @@
 #include "Uhr.h"
 #include "Uhrtypes/Uhrtype.hpp"
 #include "font.h"
-#include "icons.h"
+#include "Symbols.h"
 #include "led.h"
 #include <Arduino.h>
 
@@ -332,40 +332,40 @@ void Led::setbySecondArray(ColorPosition colorPosition) {
 
 //------------------------------------------------------------------------------
 
-void Led::setIcon(uint8_t iconNum) {
+void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color) {
     resetFrontMatrixBuffer();
     if (usedUhrType->colsWordMatrix() < 11 ||
         usedUhrType->rowsWordMatrix() < 10) {
         uint8_t offsetCol =
-            (usedUhrType->colsWordMatrix() - GRAFIK_8X8_COLS) / 2;
+            (usedUhrType->colsWordMatrix() - SYMBOL_8X8_COLS) / 2;
 
-        for (uint8_t row = 0; row < GRAFIK_8X8_ROWS; row++) {
+        for (uint8_t row = 0; row < SYMBOL_8X8_ROWS; row++) {
 
-            uint16_t rowData = pgm_read_word(&(grafik_8x8[iconNum][row]));
+            uint16_t rowData = pgm_read_word(&(symbol_8x8[symbolNum][row]));
 
-            for (uint8_t col = 0; col < GRAFIK_8X8_COLS; col++) {
+            for (uint8_t col = 0; col < SYMBOL_8X8_COLS; col++) {
                 usedUhrType->setFrontMatrixPixel(
                     row, col + offsetCol,
-                    (rowData & (1 << (GRAFIK_8X8_COLS - col - 1))));
+                    (rowData & (1 << (SYMBOL_8X8_COLS - col - 1))));
             }
         }
     } else {
         uint8_t offsetCol =
-            (usedUhrType->colsWordMatrix() - GRAFIK_11X10_COLS) / 2;
+            (usedUhrType->colsWordMatrix() - SYMBOL_11X10_COLS) / 2;
 
-        for (uint8_t row = 0; row < GRAFIK_11X10_ROWS; row++) {
+        for (uint8_t row = 0; row < SYMBOL_11X10_ROWS; row++) {
 
-            uint16_t rowData = pgm_read_word(&(grafik_11x10[iconNum][row]));
+            uint16_t rowData = pgm_read_word(&(symbol_11x10[symbolNum][row]));
 
-            for (uint8_t col = 0; col < GRAFIK_11X10_COLS; col++) {
+            for (uint8_t col = 0; col < SYMBOL_11X10_COLS; col++) {
                 usedUhrType->setFrontMatrixPixel(
                     row, col + offsetCol,
-                    (rowData & (1 << (GRAFIK_11X10_COLS - col - 1))));
+                    (rowData & (1 << (SYMBOL_11X10_COLS - col - 1))));
             }
         }
     }
 
-    setbyFrontMatrix(Foreground);
+    setbyFrontMatrix(color);
     show();
 }
 

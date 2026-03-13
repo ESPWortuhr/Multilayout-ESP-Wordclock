@@ -809,7 +809,8 @@ uint16_t Transition::transitionFire() {
             return 0; // end transition
             break;
         default:
-            firework->prepare(0, _white, static_cast<Icons>(phase), mirrored);
+            firework->prepare(0, _white, static_cast<BitmapSymbol>(phase),
+                              mirrored);
         }
         phase++;
     }

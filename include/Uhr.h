@@ -147,6 +147,25 @@ enum class ItIsVariant : uint8_t {
     Off = 4,
 };
 
+enum BitmapSymbol : uint8_t {
+    WLAN100,
+    FIRE_1,
+    FIRE_2,
+    FIRE_3,
+    FIRE_4,
+    FIRE_5,
+    FIRE_6,
+    HEART,
+    SMILEY,
+    NOTE,
+    SNOW,
+    MAIL,
+    BELL,
+    STOP,
+    STBY,
+    MAX_BITMAP_SYMBOLS
+};
+
 struct GLOBAL {
     uint16_t sernr;
     uint16_t prog;
@@ -179,6 +198,7 @@ struct GLOBAL {
     BuildTypeDef buildTypeDef;
     uint8_t Colortype;
     WhiteType wType;
+    BitmapSymbol bitmapSymbol;
 
     MqttData mqtt;
 
@@ -303,6 +323,7 @@ enum CommandWords : uint8_t {
     COMMAND_SET_AUTO_BRIGHT = 102,
     COMMAND_SET_LAYOUT_VARIANT = 103,
     COMMAND_SET_MQTT_HA_DISCOVERY = 104,
+    COMMAND_SET_SYMBOL = 105,
 
     COMMAND_SPEED = 152,
 
@@ -323,22 +344,4 @@ enum ClockType : uint8_t {
 #define X(name, id, var) name = id,
     CLOCK_TYPES_LIST
 #undef X
-};
-
-enum Icons : uint8_t {
-    WLAN100,
-    FIRE_1,
-    FIRE_2,
-    FIRE_3,
-    FIRE_4,
-    FIRE_5,
-    FIRE_6,
-    HEART,
-    SMILEY,
-    NOTE,
-    SNOW,
-    MAIL,
-    BELL,
-    STOP,
-    STBY,
 };

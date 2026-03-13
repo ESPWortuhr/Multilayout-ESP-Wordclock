@@ -1,9 +1,9 @@
 #pragma once
 
-#define GRAFIK_11X10_ROWS 10
-#define GRAFIK_11X10_COLS 11
+#define SYMBOL_11X10_ROWS 10
+#define SYMBOL_11X10_COLS 11
 
-const uint16_t grafik_11x10[][11] PROGMEM = {
+const uint16_t symbol_11x10[][11] PROGMEM = {
     {0b00011111000,  // 0  WLAN100  0: . . . 0 0 0 0 0 . . . : 10
      0b01111111110,  // 1          21: . 0 0 0 0 0 0 0 0 0 . : 11
      0b11100000111,  // 2          22: 0 0 0 . . . . . 0 0 0 : 32
@@ -170,10 +170,10 @@ const uint16_t grafik_11x10[][11] PROGMEM = {
      0b00111111100}, // 9         109: . . 0 0 0 0 0 0 0 . . : 99
 };
 
-#define GRAFIK_8X8_ROWS 8
-#define GRAFIK_8X8_COLS 8
+#define SYMBOL_8X8_ROWS 8
+#define SYMBOL_8X8_COLS 8
 
-const uint16_t grafik_8x8[][8] PROGMEM = {
+const uint16_t symbol_8x8[][8] PROGMEM = {
     {0b01111110,  // 0  WLAN100  0: . 0 0 0 0 0 0 . :  7
      0b11111111,  // 1          15: 0 0 0 0 0 0 0 0 :  8
      0b10000001,  // 2          16: 0 . . . . . . 0 : 23

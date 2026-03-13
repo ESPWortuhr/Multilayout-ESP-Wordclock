@@ -75,10 +75,10 @@ ClockWork clockWork;
 Mqtt mqtt;
 Network network;
 
+#include "Symbols.h"
 #include "Transitiontypes/Transition.hpp"
 #include "Wifi.hpp"
 #include "clockWork.hpp"
-#include "icons.h"
 #include "led.hpp"
 #include "mqtt.hpp"
 #include "network.hpp"
@@ -225,6 +225,7 @@ void setup() {
         G.effectSpeed = 5;
         G.client_nr = 0;
         G.secondVariant = SecondVariant::Off;
+        G.bitmapSymbol = BitmapSymbol::HEART;
 // C++23 #elifdef doesn't work yet
 #ifdef MINUTE_Off
         G.minuteVariant = MinuteVariant::Off;
@@ -402,7 +403,7 @@ void setup() {
     //-------------------------------------
 
     if (G.bootShowWifi) {
-        led.setIcon(WLAN100);
+        led.setBitmapSymbol(WLAN100, HsbColor(0.66f, 1.0f, 0.2f));
     }
     network.setup(G.hostname);
 #if WIFI_VERBOSE
