@@ -34,41 +34,34 @@ const iro = window.iro; // require("@jaames/iro");
 
 }(this, this.document));
 
-var MINI = require("minified");
-// eslint-disable-next-line one-var
-var _ = MINI._,
-	$ = MINI.$,
-	$$ = MINI.$$,
-	EE = MINI.EE,
-	HTML = MINI.HTML;
-
-var debugMessageReconfigured = " was reconfigured.";
-var websocket;
-var ipEsp = "ws://192.168.4.1";
-var debug = true;
-var command = 1;
-var hsb = [
+const { _, $, $$, EE, HTML } = require("minified");
+let debugMessageReconfigured = " was reconfigured.";
+let websocket;
+let ipEsp = "ws://192.168.4.1";
+let debug = true;
+let command = 1;
+let hsb = [
 	[0, 100, 50],
 	[120, 100, 50],
 	[240, 100, 50]
 ];
-var colorPosition = 0;
-var effectBri = 2;
-var effectSpeed = 10;
-var dialect = [0, 0, 0, 0, 0, 0];
-var layVar = [0, 0, 0, 0, 0, 0];
-var hasSpecialWordHappyBirthday = 0;
-var autoBrightDisplay = 0;
-var autoBrightEnabled = 0;
-var autoBrightInterval = null;
-var autoBrightMin = 10;
-var autoBrightMax = 80;
-var autoBrightPeak = 750;
-var transitionType = 0;
-var transitionDuration = 1;
-var transitionSpeed = 30;
-var transitionColorize = 1;
-var transitionDemo = false;
+let colorPosition = 0;
+let effectBri = 2;
+let effectSpeed = 10;
+let dialect = [0, 0, 0, 0, 0, 0];
+let layVar = [0, 0, 0, 0, 0, 0];
+let hasSpecialWordHappyBirthday = 0;
+let autoBrightDisplay = 0;
+let autoBrightEnabled = 0;
+let autoBrightInterval = null;
+let autoBrightMin = 10;
+let autoBrightMax = 80;
+let autoBrightPeak = 750;
+let transitionType = 0;
+let transitionDuration = 1;
+let transitionSpeed = 30;
+let transitionColorize = 1;
+let transitionDemo = false;
 
 const CMD = {
 	// Modes
@@ -137,18 +130,14 @@ MODE_TO_INPUT_ID.set(CMD.MODE_DIGITAL_CLOCK, "mode-digital-clock");
 MODE_TO_INPUT_ID.set(CMD.MODE_SYMBOL, "mode-symbol");
 MODE_TO_INPUT_ID.set(CMD.MODE_TRANSITION, "mode-wordclock");
 
-// colors
-var COLOR_FOREGROUND = 0;
-var COLOR_BACKGROUND = 1;
-
 // data that gets send back to the esp
-var DATA_SCROLLINGTEXT_LENGTH = 30;
-var DATA_TIMESERVER_TEXT_LENGTH = 30;
-var DATA_MQTT_RESPONSE_TEXT_LENGTH = 30;
-var DATA_HOST_TEXT_LENGTH = 30;
+const DATA_SCROLLINGTEXT_LENGTH = 30;
+const DATA_TIMESERVER_TEXT_LENGTH = 30;
+const DATA_MQTT_RESPONSE_TEXT_LENGTH = 30;
+const DATA_HOST_TEXT_LENGTH = 30;
 
 // color pickers
-var colorPicker;
+let colorPicker;
 
 /**
  * Indicates local development of the webinterface.
@@ -210,15 +199,15 @@ function debugMessage(debugMessage, someObject) {
 /// only shows elements of class `cls` if `enbl` is true.
 function enableSpecific(cls, enbl) {
 	let items = document.getElementsByClassName(cls);
-	for (var item of items) {
+	for (const item of items) {
 		item.style.display = enbl ? "block" : "none";
 	}
 }
 
 function removeSpecificOption(cls, val, bool) {
 	if (bool) {
-		var selectobject = document.getElementById(cls);
-		for (var i = 0; i < selectobject.length; i++) {
+		let selectobject = document.getElementById(cls);
+		for (let i = 0; i < selectobject.length; i++) {
 			if (selectobject.options[i].value === val) {
 				selectobject.remove(i);
 			}
@@ -228,10 +217,10 @@ function removeSpecificOption(cls, val, bool) {
 
 // handle click events on the swatch
 
-var swatchGrid = document.getElementById("swatch-grid");
+let swatchGrid = document.getElementById("swatch-grid");
 
 swatchGrid.addEventListener("click", function(ext) {
-	var clickTarget = ext.target;
+	let clickTarget = ext.target;
 	// read data-color attribute
 	if (clickTarget.dataset.color) {
 	// update the color picker
@@ -279,7 +268,7 @@ function initWebsocket() {
 
 		const modeColorForm = document.getElementById("mode-color-form");
 
-		var data = JSON.parse(event.data);
+		let data = JSON.parse(event.data);
 
 		debugMessage("WebSocket response arrived (command " + data.command + ").", data);
 
@@ -460,12 +449,12 @@ function createColorPicker() {
  * initialize background checkbox and color picker
  */
 function setColors() {
-	var hsbFg = {
+	let hsbFg = {
 		h: hsb[colorPosition][0],
 		s: hsb[colorPosition][1],
 		v: hsb[colorPosition][2]
 	};
-	var colors = [hsbFg];
+	let colors = [hsbFg];
 	colorPicker.setColors(colors);
 }
 
@@ -560,7 +549,7 @@ function getPaddedString(string, maxStringLength) {
 }
 
 function sendCmd(command, addData = "") {
-	var data = nstr(command) + addData;
+	let data = nstr(command) + addData;
 	debugMessage("Send data: '" + data + "'");
 	websocket.send(data);
 }
@@ -595,7 +584,7 @@ $.ready(function() {
 	setColors();
 
 	$("input[name='colorwheel']").on("change", function() {
-		var id = $(this).get("id");
+		let id = $(this).get("id");
 		if (id === "colorwheel-frame") {
 			colorPosition = 2;
 		} else if (id === "colorwheel-background") {
@@ -608,7 +597,7 @@ $.ready(function() {
 	});
 
 	$(".status-button").on("click", function() {
-		var value = $(this).get("value");
+		let value = $(this).get("value");
 		$("#status").fill("Verbinden ...");
 		if (value === "1") {
 			value = 0;
@@ -624,10 +613,10 @@ $.ready(function() {
 
 	$("#_clock").on("click", function() {
 
-		var date = new Date();
-		var timeZoneOffset = date.getTimezoneOffset();
+		let date = new Date();
+		let timeZoneOffset = date.getTimezoneOffset();
 		timeZoneOffset = timeZoneOffset / 60 * -1;
-		var time = date.getTime() / 1000;
+		let time = date.getTime() / 1000;
 
 		sendCmd(CMD.SET_TIME, getPaddedString(nstr(timeZoneOffset) + time, 21));
 		debugMessage("Clock data: ");
@@ -637,7 +626,7 @@ $.ready(function() {
 	 * A menu item has been clicked.
 	 */
 	$("a[data-navigation]").on("click", function() {
-		var navigation = $(this)[0].dataset.navigation;
+		let navigation = $(this)[0].dataset.navigation;
 
 		// Remove classes and attributes
 		$(".pure-menu-link").set("-pure-menu-selected");
@@ -681,17 +670,17 @@ $.ready(function() {
 	 * The clock mode has been changed.
 	 */
 	$("input[name='mode']").on("change", function() {
-		var id = $(this).get("id");
+		let id = $(this).get("id");
 
 		const MODE_MAP = {
-			"mode-wordclock": { cmd: CMD.MODE_WORD_CLOCK, bri: false, speed: false, txt: false },
-			"mode-seconds":	{ cmd: CMD.MODE_SECONDS, bri: false, speed: false, txt: false },
-			"mode-scrollingtext": { cmd: CMD.MODE_SCROLLINGTEXT, bri: false, speed: true, txt: true },
-			"mode-rainbow":	{ cmd: CMD.MODE_RAINBOWCYCLE, bri: true, speed: true, txt: false },
-			"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false },
-			"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false },
-			"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false },
-			"mode-symbol": { cmd: CMD.MODE_SYMBOL,	bri: false, speed: true, txt: false }
+			"mode-wordclock": { cmd: CMD.MODE_WORD_CLOCK, bri: false, speed: false, txt: false, symbol: false },
+			"mode-seconds":	{ cmd: CMD.MODE_SECONDS, bri: false, speed: false, txt: false, symbol: false },
+			"mode-scrollingtext": { cmd: CMD.MODE_SCROLLINGTEXT, bri: false, speed: true, txt: true, symbol: false },
+			"mode-rainbow":	{ cmd: CMD.MODE_RAINBOWCYCLE, bri: true, speed: true, txt: false, symbol: false },
+			"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false, symbol: false },
+			"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false, symbol: false },
+			"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false, symbol: false },
+			"mode-symbol": { cmd: CMD.MODE_SYMBOL,	bri: false, speed: true, txt: false, symbol: true }
 		};
 
 		let selected = MODE_MAP[id];
@@ -703,6 +692,7 @@ $.ready(function() {
 			$(".speed").set({ $display: selected.speed ? "block" : "none" });
 			$(".functions-settings").set({ $display: (selected.bri || selected.speed) ? "block" : "none" });
 			$(".text").set({ $display: selected.txt ? "block" : "none" });
+			$(".symbol").set({ $display: selected.symbol ? "block" : "none" });
 
 			sendColorData(command);
 			setSliders();
@@ -715,7 +705,7 @@ $.ready(function() {
 	$("[id*='slider']").onChange(function(event) {
 		if (sliderTimeout) return false;
 
-		var id = $(this).get("id");
+		let id = $(this).get("id");
 		if (id === "slider-brightness") {
 			effectBri = $(this).get("value");
 			sendBrightnessData();
