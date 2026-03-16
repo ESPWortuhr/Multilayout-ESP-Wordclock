@@ -3,6 +3,7 @@
 #include "Uhr.h"
 #include "Uhrtypes/Uhrtype.hpp"
 #include "clockWork.h"
+#include "math.h"
 #include "openwmap.h"
 #include <Arduino.h>
 #if AUTOBRIGHT_USE_BH1750
@@ -225,6 +226,62 @@ void ClockWork::rainbowCycle() {
     led.show();
     hue++;
     led.checkIfHueIsOutOfBound(hue);
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::rainbowSpiralCycle() {
+    static uint16_t hue = 0;
+
+    uint8_t rows = usedUhrType->rowsWordMatrix();
+    uint8_t cols = usedUhrType->colsWordMatrix();
+
+    // 1. Mittelpunkt der Matrix berechnen
+    float centerRow = (rows - 1) / 2.0f;
+    float centerCol = (cols - 1) / 2.0f;
+
+    // 2. Maximalen Abstand vom Zentrum (zu einer der Ecken) berechnen
+    // Dies brauchen wir, um den Farbverlauf sauber auf die Größe der Matrix zu
+    // skalieren
+    float maxDist = sqrt(centerRow * centerRow + centerCol * centerCol);
+
+    for (uint8_t row = 0; row < rows; row++) {
+        for (uint8_t col = 0; col < cols; col++) {
+
+            // 3. Abstand des aktuellen Pixels zum Zentrum berechnen
+            float dRow = row - centerRow;
+            float dCol = col - centerCol;
+            float distance = sqrt(dRow * dRow + dCol * dCol);
+
+            // 4. Farbe basierend auf Abstand und Basis-Hue berechnen
+            // distance / maxDist ergibt einen Wert zwischen 0.0 und 1.0.
+            // Multipliziert mit 360 strecken wir den Regenbogen über den
+            // Radius.
+            float hueOffset = (distance / maxDist) * 360.0f;
+
+            // Wir addieren den Basis-Hue (für die Bewegung) und den Offset.
+            uint16_t pixelHue = hue + (uint16_t)hueOffset;
+
+            // Da wir hier direkt Werte über 360 generieren können, sichern wir
+            // das ab
+            while (pixelHue >= 360) {
+                pixelHue -= 360;
+            }
+
+            led.setPixel(row, col,
+                         HsbColor(pixelHue / 360.f, 1.f, G.effectBri / 100.f));
+        }
+    }
+
+    led.show();
+
+    // 5. Animation weiterbewegen.
+    // hue++ bewegt die Farben nach innen.
+    // hue-- (oder hue + 359) würde die Farben nach außen wandern lassen.
+    hue++;
+    if (hue >= 360) {
+        hue = 0;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -1485,7 +1542,7 @@ void ClockWork::loop(struct tm &tm) {
                 break;
             }
             case COMMAND_MODE_SYMBOL: {
-                displaySymbols(HEART);
+                displaySymbols(G.bitmapSymbol);
                 break;
             }
             default:
