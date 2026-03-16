@@ -1,9 +1,9 @@
 #include "NeoMultiFeature.hpp"
+#include "Symbols.h"
 #include "Transitiontypes/Transition.h"
 #include "Uhr.h"
 #include "Uhrtypes/Uhrtype.hpp"
 #include "font.h"
-#include "Symbols.h"
 #include "led.h"
 #include <Arduino.h>
 
@@ -569,7 +569,7 @@ void Led::showNumbers(const char d1, const char d2) {
 
     for (uint8_t col = 0; col < usedFontWidth; col++) {
         for (uint8_t row = 0; row < usedFontHeight; row++) {
-            
+
             if (isSingleDigit) {
                 setPixelForChar(col, row, offsetCenter, offsetRow, unsigned_d2,
                                 usedFontSize);

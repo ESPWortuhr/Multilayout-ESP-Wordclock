@@ -219,12 +219,12 @@ extern Transition *transition;
 
 class Rain {
 public:
-    Rain() {};
+    Rain(){};
     Rain(uint8_t rows, uint8_t cols) {
         maxRows = rows;
         maxCols = cols;
     }
-    virtual ~Rain() {};
+    virtual ~Rain(){};
 
     void begin(int32_t frames, int32_t stop, uint8_t helligkeit) {
         white = RgbaColor(helligkeit, 1.0f);
@@ -303,12 +303,12 @@ protected:
 
 class Ball {
 public:
-    Ball() {};
+    Ball(){};
     Ball(uint8_t maxRows) {
         unten = ((maxRows - 1) << 8);
         lastPos = ((maxRows - 3) << 8);
     }
-    virtual ~Ball() {};
+    virtual ~Ball(){};
 
     void begin(int32_t _row, int32_t _col, RgbfColor foreground,
                RgbfColor background, int32_t delay) {
