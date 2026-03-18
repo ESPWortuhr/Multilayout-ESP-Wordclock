@@ -293,7 +293,7 @@
  *
  * Valid values [0 ... 65536]
  */
-#define SERNR 410
+#define SERNR 430
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output
 //--------------------------------------------------------------------------
@@ -364,6 +364,18 @@
 // #define MINUTE_Off
 #define MINUTE_LED4x
 // #define MINUTE_LED7x
+
+//--------------------------------------------------------------------------
+// Displaying Option for "It Is"
+//--------------------------------------------------------------------------
+/*
+ * Valid values [only one #define option]
+ */
+// #define IT_IS_Off
+#define IT_IS_Permanent
+// #define IT_IS_Quarterly
+// #define IT_IS_HalfHourly
+// #define IT_IS_Hourly
 
 //--------------------------------------------------------------------------
 // Front Displaying Options

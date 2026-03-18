@@ -262,7 +262,22 @@ void setup() {
         G.languageVariant[ItIs40] = false;
         G.languageVariant[ItIs45] = false;
         G.languageVariant[EN_ShowAQuarter] = false;
+
+#ifdef IT_IS_Off
+        G.itIsVariant = ItIsVariant::Off;
+
+#elif defined(IT_IS_Permanent)
         G.itIsVariant = ItIsVariant::Permanent;
+
+#elif defined(IT_IS_Quarterly)
+        G.itIsVariant = ItIsVariant::Quarterly;
+
+#elif defined(IT_IS_HalfHourly)
+        G.itIsVariant = ItIsVariant::HalfHourly;
+
+#elif defined(IT_IS_Hourly)
+        G.itIsVariant = ItIsVariant::Hourly;
+#endif
 
 #ifdef MQTT_SERVER
         strlcpy(G.mqtt.serverAdress, MQTT_SERVER, sizeof(G.mqtt.serverAdress));
