@@ -257,11 +257,12 @@ void setup() {
         G.layoutVariant[FlipHorzVert] = FLIP_HORIZONTAL_VERTICAL;
         G.layoutVariant[ExtraLedPerRow] = EXTRA_LED_PER_ROW;
         G.layoutVariant[MeanderRows] = MEANDER_ROWS;
-        for (uint8_t i = 0;
-             i < sizeof(G.languageVariant) / sizeof(G.languageVariant[0]);
-             i++) {
-            G.languageVariant[i] = false;
-        }
+        G.languageVariant[ItIs15] = false;
+        G.languageVariant[ItIs20] = false;
+        G.languageVariant[ItIs40] = false;
+        G.languageVariant[ItIs45] = false;
+        G.languageVariant[EN_ShowAQuarter] = false;
+        G.itIsVariant = ItIsVariant::Permanent;
 
 #ifdef MQTT_SERVER
         strlcpy(G.mqtt.serverAdress, MQTT_SERVER, sizeof(G.mqtt.serverAdress));

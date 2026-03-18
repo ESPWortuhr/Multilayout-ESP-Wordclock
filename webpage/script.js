@@ -49,8 +49,9 @@ let hsb = [
 let colorPosition = 0;
 let effectBri = 2;
 let effectSpeed = 10;
-let dialect = [0, 0, 0, 0, 0, 0];
+let langVar = [0, 0, 0, 0, 0];
 let layVar = [0, 0, 0, 0, 0, 0];
+let itIsVar = 0;
 let hasSpecialWordHappyBirthday = 0;
 let autoBrightDisplay = 0;
 let autoBrightEnabled = 0;
@@ -102,6 +103,7 @@ const CMD = {
 	SET_LAYOUT_VARIANT: 103,
 	SET_MQTT_HA_DISCOVERY: 104,
 	SET_SYMBOL: 105,
+	SET_IT_IS_VARIANT: 106,
 	SPEED: 152,
 
 	// Requests
@@ -166,8 +168,9 @@ function initConfigValues() {
 	];
 	effectBri = 2;
 	effectSpeed = 10;
-	dialect = [0, 0, 0, 0, 0, 0];
+	langVar = [0, 0, 0, 0, 0];
 	layVar = [0, 0, 0, 0, 0, 0];
+	itIsVar = 0;
 	hasSpecialWordHappyBirthday = 0;
 	autoBrightDisplay = 0;
 	autoBrightEnabled = 0;
@@ -329,13 +332,18 @@ function initWebsocket() {
 					if (el) el.value = data[`h${h}`];
 				});
 
+				for (let i = 0; i < 5; i++) {
+					const langVarEl = document.getElementById(`langvar-${i}`);
+					if (langVarEl) langVarEl.value = data[`langVar${i}`];
+				}
+
 				for (let i = 0; i < 6; i++) {
-					const dialectEl = document.getElementById(`dialect-${i}`);
-					if (dialectEl) dialectEl.value = data[`langVar${i}`];
 					const layvarEl = document.getElementById(`layvar-${i}`);
 					if (layvarEl) layvarEl.checked = data[`layVar${i}`];
 				}
 
+				itIsVar = data.itIsVariant;
+				document.getElementById("it-is-variant").value = data.itIsVariant;
 				document.getElementById("slider-brightness").value = data.effectBri;
 				document.getElementById("slider-speed").value = data.effectSpeed;
 				document.getElementById("show-seconds").value = data.secondVariant;
@@ -997,12 +1005,22 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	}
 
-	document.querySelectorAll("[id*='dialect']").forEach(el => {
+	document.querySelectorAll("[id*='it-is-variant']").forEach(el => {
 		el.addEventListener("change", function() {
 			let payload = "";
-			for (let i = 0; i < 6; i++) {
-				dialect[i] = document.getElementById(`dialect-${i}`).value;
-				payload += nstr(dialect[i]);
+			itIsVar = document.getElementById(`it-is-variant`).value;
+			payload += nstr(itIsVar);
+			sendCmd(CMD.SET_IT_IS_VARIANT, payload);
+			debugMessage(`itIsVar${debugMessageReconfigured}`);
+		});
+	});
+
+	document.querySelectorAll("[id*='langvar']").forEach(el => {
+		el.addEventListener("change", function() {
+			let payload = "";
+			for (let i = 0; i < 5; i++) {
+				langVar[i] = document.getElementById(`langvar-${i}`).value;
+				payload += nstr(langVar[i]);
 			}
 			sendCmd(CMD.SET_LANGUAGE_VARIANT, payload);
 			debugMessage(`langVar${debugMessageReconfigured}`);

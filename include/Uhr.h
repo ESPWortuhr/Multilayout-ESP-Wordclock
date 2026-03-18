@@ -179,7 +179,7 @@ struct GLOBAL {
     SecondVariant secondVariant;
     MinuteVariant minuteVariant;
     ItIsVariant itIsVariant;
-    bool languageVariant[6];
+    bool languageVariant[5];
     bool layoutVariant[6];
     char timeserver[PAYLOAD_LENGTH];
     char hostname[PAYLOAD_LENGTH];
@@ -324,6 +324,7 @@ enum CommandWords : uint8_t {
     COMMAND_SET_LAYOUT_VARIANT = 103,
     COMMAND_SET_MQTT_HA_DISCOVERY = 104,
     COMMAND_SET_SYMBOL = 105,
+    COMMAND_SET_IT_IS_VARIANT = 106,
 
     COMMAND_SPEED = 152,
 

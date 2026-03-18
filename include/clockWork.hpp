@@ -1249,14 +1249,7 @@ void ClockWork::loop(struct tm &tm) {
              i++) {
             char string2Send[11];
             sprintf(string2Send, "langVar%d", i);
-            if (i == 4) {
-                // langVar4 is used to transfer the "it is" variant
-                // (itIsVariant)
-                config[string2Send] = static_cast<uint8_t>(G.itIsVariant);
-            } else {
-                config[string2Send] =
-                    static_cast<uint8_t>(G.languageVariant[i]);
-            }
+            config[string2Send] = static_cast<uint8_t>(G.languageVariant[i]);
         }
         for (uint8_t i = 0;
              i < sizeof(G.layoutVariant) / sizeof(G.layoutVariant[0]); i++) {
@@ -1265,6 +1258,7 @@ void ClockWork::loop(struct tm &tm) {
             config[string2Send] = static_cast<uint8_t>(G.layoutVariant[i]);
         }
         config["effectBri"] = G.effectBri;
+        config["itIsVariant"] = static_cast<uint8_t>(G.itIsVariant);
         config["secondVariant"] = static_cast<uint8_t>(G.secondVariant);
         config["minuteVariant"] = static_cast<uint8_t>(G.minuteVariant);
         config["cityid"] = G.openWeatherMap.cityid;
