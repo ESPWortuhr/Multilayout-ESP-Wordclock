@@ -372,14 +372,18 @@ void setup() {
     G.conf = COMMAND_IDLE;
 
     //-------------------------------------
-    // Start external real-time clock
+    // Initialize I2C
     //-------------------------------------
 
 #ifdef ESP8266
-    Wire.begin(D4, D3); // SDA, SCL
+    Wire.begin(SDA_PIN_ESP8266, SCL_PIN_ESP8266);
 #elif defined(ESP32)
     Wire.begin(SDA_PIN_ESP32, SCL_PIN_ESP32); // SDA, SCL
 #endif
+
+    //-------------------------------------
+    // Start external real-time clock
+    //-------------------------------------
 
     if (RTC.begin() == true) {
         Serial.println("External real-time clock found");
