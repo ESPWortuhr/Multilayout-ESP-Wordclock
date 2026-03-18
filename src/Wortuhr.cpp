@@ -39,8 +39,8 @@ iUhrType *usedUhrType = nullptr;
 NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod> *strip_RGB = NULL;
 NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
 #elif defined(ESP32)
-NeoPixelBus<NeoGrbwFeature, NeoSk6812Method> *strip_RGBW = NULL;
-NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod> *strip_RGB = NULL;
+NeoPixelBus<NeoGrbwFeature, NeoEsp32Rmt0Ws2812xMethod> *strip_RGBW = NULL;
+NeoPixelBus<NeoMultiFeature, NeoEsp32Rmt0Ws2812xMethod> *strip_RGB = NULL;
 #endif
 
 WiFiClient client;
@@ -75,10 +75,10 @@ ClockWork clockWork;
 Mqtt mqtt;
 Network network;
 
+#include "Symbols.h"
 #include "Transitiontypes/Transition.hpp"
 #include "Wifi.hpp"
 #include "clockWork.hpp"
-#include "icons.h"
 #include "led.hpp"
 #include "mqtt.hpp"
 #include "network.hpp"
@@ -93,7 +93,12 @@ uint16_t powerCycleCount = 0; // Variable to store power cycle count
 
 //------------------------------------------------------------------------------
 
+#if defined(ESP32)
+void time_is_set(struct timeval *tv) {
+    (void)tv;
+#else
 void time_is_set() {
+#endif
     time_t utc = time(nullptr);
     if (externalRTC) {
         RTC.adjust(DateTime(utc));
@@ -104,26 +109,35 @@ void time_is_set() {
     _second = tm.tm_sec;
     _minute = tm.tm_min;
     _hour = tm.tm_hour;
-    if (usedUhrType->numPixelsFrameMatrix() != 0) {
-        _secondFrame = _second / (usedUhrType->numPixelsFrameMatrix() / 60.f);
-    }
 
     String origin;
     if (sntp_getreachability(0)) {
         origin = sntp_getservername(0);
-        if (origin.length() == 0) {
+
+        if (origin.isEmpty()) {
             const ip_addr_t *ip_addr = sntp_getserver(0);
+
+            if (ip_addr != nullptr) {
 #ifdef ESP8266
-            origin = IPAddress(ip_addr->addr).toString();
+                origin = IPAddress(ip_addr->addr).toString();
 #elif defined(ESP32)
-            origin = IPAddress(ip_addr->u_addr.ip4.addr).toString();
+                origin = IPAddress(ip_addr->u_addr.ip4.addr).toString();
 #endif
+            } else {
+                origin = "Unknown IP";
+            }
         }
     } else {
         origin = "SNTP not reachable";
     }
     Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _hour, _minute,
                   _second, origin.c_str());
+
+    // Calc second frame for seconds variants that use a frame
+    uint16_t numPixels = usedUhrType->numPixelsFrameMatrix();
+    if (numPixels != 0) {
+        _secondFrame = (_second * numPixels) / 60;
+    }
 
     G.progInit = true;
     parametersChanged = true;
@@ -211,6 +225,7 @@ void setup() {
         G.effectSpeed = 5;
         G.client_nr = 0;
         G.secondVariant = SecondVariant::Off;
+        G.bitmapSymbol = BitmapSymbol::HEART;
 // C++23 #elifdef doesn't work yet
 #ifdef MINUTE_Off
         G.minuteVariant = MinuteVariant::Off;
@@ -242,11 +257,27 @@ void setup() {
         G.layoutVariant[FlipHorzVert] = FLIP_HORIZONTAL_VERTICAL;
         G.layoutVariant[ExtraLedPerRow] = EXTRA_LED_PER_ROW;
         G.layoutVariant[MeanderRows] = MEANDER_ROWS;
-        for (uint8_t i = 0;
-             i < sizeof(G.languageVariant) / sizeof(G.languageVariant[0]);
-             i++) {
-            G.languageVariant[i] = false;
-        }
+        G.languageVariant[ItIs15] = false;
+        G.languageVariant[ItIs20] = false;
+        G.languageVariant[ItIs40] = false;
+        G.languageVariant[ItIs45] = false;
+        G.languageVariant[EN_ShowAQuarter] = false;
+
+#ifdef IT_IS_Off
+        G.itIsVariant = ItIsVariant::Off;
+
+#elif defined(IT_IS_Permanent)
+        G.itIsVariant = ItIsVariant::Permanent;
+
+#elif defined(IT_IS_Quarterly)
+        G.itIsVariant = ItIsVariant::Quarterly;
+
+#elif defined(IT_IS_HalfHourly)
+        G.itIsVariant = ItIsVariant::HalfHourly;
+
+#elif defined(IT_IS_Hourly)
+        G.itIsVariant = ItIsVariant::Hourly;
+#endif
 
 #ifdef MQTT_SERVER
         strlcpy(G.mqtt.serverAdress, MQTT_SERVER, sizeof(G.mqtt.serverAdress));
@@ -357,14 +388,18 @@ void setup() {
     G.conf = COMMAND_IDLE;
 
     //-------------------------------------
-    // Start external real-time clock
+    // Initialize I2C
     //-------------------------------------
 
 #ifdef ESP8266
-    Wire.begin(D4, D3); // SDA, SCL
+    Wire.begin(SDA_PIN_ESP8266, SCL_PIN_ESP8266);
 #elif defined(ESP32)
     Wire.begin(SDA_PIN_ESP32, SCL_PIN_ESP32); // SDA, SCL
 #endif
+
+    //-------------------------------------
+    // Start external real-time clock
+    //-------------------------------------
 
     if (RTC.begin() == true) {
         Serial.println("External real-time clock found");
@@ -379,6 +414,8 @@ void setup() {
     }
 #ifdef ESP8266
     settimeofday_cb(time_is_set);
+#elif defined(ESP32)
+    sntp_set_time_sync_notification_cb(time_is_set);
 #endif
 
     //-------------------------------------
@@ -386,7 +423,7 @@ void setup() {
     //-------------------------------------
 
     if (G.bootShowWifi) {
-        led.setIcon(WLAN100);
+        led.setBitmapSymbol(WLAN100, HsbColor(0.66f, 1.0f, 0.2f));
     }
     network.setup(G.hostname);
 #if WIFI_VERBOSE

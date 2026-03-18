@@ -3,6 +3,7 @@
 #include "Uhr.h"
 #include "Uhrtypes/Uhrtype.hpp"
 #include "clockWork.h"
+#include "math.h"
 #include "openwmap.h"
 #include <Arduino.h>
 #if AUTOBRIGHT_USE_BH1750
@@ -126,8 +127,7 @@ void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
     if (num == Grbw) {
         if (strip_RGB != NULL) {
-            delete strip_RGB; // delete the previous dynamically created
-                              // strip
+            delete strip_RGB;
             strip_RGB = NULL;
         }
         if (strip_RGBW == NULL) {
@@ -136,15 +136,15 @@ void ClockWork::initLedStrip(uint8_t num) {
                 MAX_LED_COUNT);
 #elif defined(ESP32)
             pinMode(LED_PIN, OUTPUT);
-            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, NeoSk6812Method>(
-                MAX_LED_COUNT, LED_PIN);
+            strip_RGBW =
+                new NeoPixelBus<NeoGrbwFeature, NeoEsp32Rmt0Ws2812xMethod>(
+                    MAX_LED_COUNT, LED_PIN);
 #endif
             strip_RGBW->Begin();
         }
     } else {
         if (strip_RGBW != NULL) {
-            delete strip_RGBW; // delete the previous dynamically created
-                               // strip
+            delete strip_RGBW;
             strip_RGBW = NULL;
         }
         if (strip_RGB == NULL) {
@@ -153,8 +153,9 @@ void ClockWork::initLedStrip(uint8_t num) {
                 MAX_LED_COUNT);
 #elif defined(ESP32)
             pinMode(LED_PIN, OUTPUT);
-            strip_RGB = new NeoPixelBus<NeoMultiFeature, NeoWs2812xMethod>(
-                MAX_LED_COUNT, LED_PIN);
+            strip_RGB =
+                new NeoPixelBus<NeoMultiFeature, NeoEsp32Rmt0Ws2812xMethod>(
+                    MAX_LED_COUNT, LED_PIN);
 #endif
             strip_RGB->Begin();
         }
@@ -229,6 +230,62 @@ void ClockWork::rainbowCycle() {
 
 //------------------------------------------------------------------------------
 
+void ClockWork::rainbowSpiralCycle() {
+    static uint16_t hue = 0;
+
+    uint8_t rows = usedUhrType->rowsWordMatrix();
+    uint8_t cols = usedUhrType->colsWordMatrix();
+
+    // 1. Mittelpunkt der Matrix berechnen
+    float centerRow = (rows - 1) / 2.0f;
+    float centerCol = (cols - 1) / 2.0f;
+
+    // 2. Maximalen Abstand vom Zentrum (zu einer der Ecken) berechnen
+    // Dies brauchen wir, um den Farbverlauf sauber auf die Größe der Matrix zu
+    // skalieren
+    float maxDist = sqrt(centerRow * centerRow + centerCol * centerCol);
+
+    for (uint8_t row = 0; row < rows; row++) {
+        for (uint8_t col = 0; col < cols; col++) {
+
+            // 3. Abstand des aktuellen Pixels zum Zentrum berechnen
+            float dRow = row - centerRow;
+            float dCol = col - centerCol;
+            float distance = sqrt(dRow * dRow + dCol * dCol);
+
+            // 4. Farbe basierend auf Abstand und Basis-Hue berechnen
+            // distance / maxDist ergibt einen Wert zwischen 0.0 und 1.0.
+            // Multipliziert mit 360 strecken wir den Regenbogen über den
+            // Radius.
+            float hueOffset = (distance / maxDist) * 360.0f;
+
+            // Wir addieren den Basis-Hue (für die Bewegung) und den Offset.
+            uint16_t pixelHue = hue + (uint16_t)hueOffset;
+
+            // Da wir hier direkt Werte über 360 generieren können, sichern wir
+            // das ab
+            while (pixelHue >= 360) {
+                pixelHue -= 360;
+            }
+
+            led.setPixel(row, col,
+                         HsbColor(pixelHue / 360.f, 1.f, G.effectBri / 100.f));
+        }
+    }
+
+    led.show();
+
+    // 5. Animation weiterbewegen.
+    // hue++ bewegt die Farben nach innen.
+    // hue-- (oder hue + 359) würde die Farben nach außen wandern lassen.
+    hue++;
+    if (hue >= 360) {
+        hue = 0;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::scrollingText(const char *buf) {
     static uint8_t i = 0, ii = 0;
     uint8_t offsetRow = (usedUhrType->rowsWordMatrix() -
@@ -280,41 +337,16 @@ void ClockWork::scrollingText(const char *buf) {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::displaySymbols(uint8_t iconNum) {
+void ClockWork::displaySymbols(BitmapSymbol symbolNum) {
     static uint8_t count = 0;
 
-    switch (iconNum) {
-    case HEART:
-        /* Heartbeat begin */
-        if (count < 10) {
-            G.color[Foreground].B += 0.03;
-            if (G.color[Foreground].B > 1) {
-                G.color[Foreground].B = 1;
-            }
-            count++;
-        } else if (count < 20) {
-            G.color[Foreground].B -= 0.03;
-            if (G.color[Foreground].B <= 0) {
-                G.color[Foreground].B = 0;
-            }
-            count++;
-        } else {
-            count = 0;
-        }
-        /* Heartbeat end */
-        led.setIcon(iconNum);
+    switch (symbolNum) {
+    case BitmapSymbol::HEART:
         break;
 
-    case SMILEY:
-        led.setIcon(iconNum);
+    case BitmapSymbol::SMILEY:
         break;
-
-    case NOTE:
-        led.setIcon(iconNum);
-        break;
-
-    case SNOW:
-        led.setIcon(iconNum);
+    case BitmapSymbol::NOTE:
         break;
 
     default:
@@ -1004,20 +1036,15 @@ bool ClockWork::DetermineIfItIsIsShown(const uint8_t min) {
     switch (G.itIsVariant) {
     case ItIsVariant::Permanent:
         return true;
-        break;
     case ItIsVariant::Hourly:
         return !min;
-        break;
     case ItIsVariant::HalfHourly:
         return !(min % 30);
-        break;
     case ItIsVariant::Quarterly:
         return !(min % 15);
-        break;
     case ItIsVariant::Off:
     default:
         return false;
-        break;
     }
 }
 
@@ -1222,14 +1249,7 @@ void ClockWork::loop(struct tm &tm) {
              i++) {
             char string2Send[11];
             sprintf(string2Send, "langVar%d", i);
-            if (i == 4) {
-                // langVar4 is used to transfer the "it is" variant
-                // (itIsVariant)
-                config[string2Send] = static_cast<uint8_t>(G.itIsVariant);
-            } else {
-                config[string2Send] =
-                    static_cast<uint8_t>(G.languageVariant[i]);
-            }
+            config[string2Send] = static_cast<uint8_t>(G.languageVariant[i]);
         }
         for (uint8_t i = 0;
              i < sizeof(G.layoutVariant) / sizeof(G.layoutVariant[0]); i++) {
@@ -1238,6 +1258,7 @@ void ClockWork::loop(struct tm &tm) {
             config[string2Send] = static_cast<uint8_t>(G.layoutVariant[i]);
         }
         config["effectBri"] = G.effectBri;
+        config["itIsVariant"] = static_cast<uint8_t>(G.itIsVariant);
         config["secondVariant"] = static_cast<uint8_t>(G.secondVariant);
         config["minuteVariant"] = static_cast<uint8_t>(G.minuteVariant);
         config["cityid"] = G.openWeatherMap.cityid;
@@ -1515,7 +1536,7 @@ void ClockWork::loop(struct tm &tm) {
                 break;
             }
             case COMMAND_MODE_SYMBOL: {
-                displaySymbols(HEART);
+                displaySymbols(G.bitmapSymbol);
                 break;
             }
             default:

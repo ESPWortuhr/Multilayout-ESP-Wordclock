@@ -4,11 +4,17 @@
  */
 
 //--------------------------------------------------------------------------
-// PIN Configuration for ESP32 (ESP8266 currently unsupported)
+// PIN Configuration
 //--------------------------------------------------------------------------
-#define LED_PIN 3        // Use direct pin number
+#define LED_PIN 3 // Use direct pin number (ESP8266 currently unsupported)
+
+// ESP32
 #define SDA_PIN_ESP32 21 // Use direct pin number
 #define SCL_PIN_ESP32 22 // Use direct pin number
+
+// ESP8266
+#define SDA_PIN_ESP8266 D2
+#define SCL_PIN_ESP8266 D1
 
 //--------------------------------------------------------------------------
 // Front panel layout
@@ -200,7 +206,7 @@
  * Valid values for DEFAULT_HUE [integer 0-255]
  * Valid values for DEFAULT_BRIGHTNESS [one of these: 0, 20, 40, 60, 80, 100]
  */
-#define DEFAULT_LEDTYPE Brg
+#define DEFAULT_LEDTYPE Grb
 #define WHITE_LEDTYPE WhiteType::NeutralWhite
 #define DEFAULT_HUE 120
 #define DEFAULT_BRIGHTNESS 100
@@ -287,7 +293,7 @@
  *
  * Valid values [0 ... 65536]
  */
-#define SERNR 410
+#define SERNR 430
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output
 //--------------------------------------------------------------------------
@@ -313,9 +319,9 @@
  * Valid values WIFI_PASSWORD [up to 64 Alphanumeric Letters]
  *
  */
-#define MANUAL_WIFI_SETTINGS true
-#define WIFI_SSID "Geheim_24Ghz" // Change this to your WiFi SSID
-#define WIFI_PASSWORD "69830718001049910803"
+#define MANUAL_WIFI_SETTINGS false
+#define WIFI_SSID "YOUR_WIFI_SSID"
+#define WIFI_PASSWORD "YOUR_WIFI_PASSWORD"
 
 //--------------------------------------------------------------------------
 // Captive portal settings
@@ -360,22 +366,16 @@
 // #define MINUTE_LED7x
 
 //--------------------------------------------------------------------------
-// Front Displaying Options
+// Displaying Option for "It Is"
 //--------------------------------------------------------------------------
 /*
- * Valid values REVERSE_MINUTE_DIR [true, false]
- * Valid values MIRROR_FRONT_VERTICAL [true, false]
- * Valid values MIRROR_FRONT_HORIZONTAL [true, false]
- * Valid values EXTRA_LED_PER_ROW [true, false]
- * Valid values FLIP_HORIZONTAL_VERTICAL [true, false]
- * Valid values MEANDER_ROWS [true, false]
+ * Valid values [only one #define option]
  */
-#define REVERSE_MINUTE_DIR false
-#define MIRROR_FRONT_VERTICAL false
-#define MIRROR_FRONT_HORIZONTAL false
-#define EXTRA_LED_PER_ROW false
-#define FLIP_HORIZONTAL_VERTICAL false
-#define MEANDER_ROWS true
+// #define IT_IS_Off
+#define IT_IS_Permanent
+// #define IT_IS_Quarterly
+// #define IT_IS_HalfHourly
+// #define IT_IS_Hourly
 
 //--------------------------------------------------------------------------
 // Front Displaying Options
@@ -394,3 +394,25 @@
 #define EXTRA_LED_PER_ROW false
 #define FLIP_HORIZONTAL_VERTICAL false
 #define MEANDER_ROWS true
+
+//--------------------------------------------------------------------------
+// Manual MQTT Settings
+//--------------------------------------------------------------------------
+/*
+ * Preconfigure your MQTT broker credentials and settings here.
+ * If your broker does not require a username or password, leave them
+ * as empty strings "".
+ *
+ * Valid values MQTT_SERVER [IP address or Hostname as string]
+ * Valid values MQTT_PORT [Integer, default is usually 1883]
+ * Valid values MQTT_CLIENT_ID [Unique string]
+ * Valid values MQTT_USER [String]
+ * Valid values MQTT_PASSWORD [String]
+ * Valid values MQTT_TOPIC [String]
+ */
+// #define MQTT_SERVER "192.168.155.5"
+// #define MQTT_PORT 1883
+// #define MQTT_CLIENT_ID "Wordclock_ESP"
+// #define MQTT_USER "user"
+// #define MQTT_PASSWORD "password"
+// #define MQTT_TOPIC "Wordclock"

@@ -21,8 +21,9 @@ private:
     //------------------------------------------------------------------------------
     void rainbow();
     void rainbowCycle();
+    void rainbowSpiralCycle();
     void scrollingText(const char *buf);
-    void displaySymbols(uint8_t iconNum);
+    void displaySymbols(BitmapSymbol bitmapSymbolnum);
     void countdownToMidnight();
 
     //------------------------------------------------------------------------------

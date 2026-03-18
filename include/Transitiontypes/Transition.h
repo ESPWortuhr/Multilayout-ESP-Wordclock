@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Symbols.h"
 #include "font.h"
-#include "icons.h"
 #include <queue>
 
 // ###############################################################################
@@ -511,7 +511,7 @@ protected:
 class Firework {
 protected:
     RgbColor colors[3];
-    Icons icons[3];
+    BitmapSymbol bitmapSymbol[3];
     bool mirrored;
     int32_t maxLayer;
     uint8_t maxRows, maxCols;
@@ -523,14 +523,15 @@ public:
     }
 
     // layers must be prepared in ascending order !!!
-    void prepare(int32_t layer, RgbColor &color, Icons icon, bool mirrored) {
+    void prepare(int32_t layer, RgbColor &color, BitmapSymbol newSymbol,
+                 bool mirrored) {
         if (layer == 0) {
-            icons[1] = static_cast<Icons>(0);
-            icons[2] = static_cast<Icons>(0);
+            bitmapSymbol[1] = static_cast<BitmapSymbol>(0);
+            bitmapSymbol[2] = static_cast<BitmapSymbol>(0);
             this->mirrored = mirrored;
         }
         colors[layer] = color;
-        icons[layer] = icon;
+        bitmapSymbol[static_cast<BitmapSymbol>(layer)] = newSymbol;
         maxLayer = layer;
     }
 
@@ -542,16 +543,18 @@ public:
         if ((row < 10) && (row < maxRows) && (col < 11) && (col < maxCols)) {
             uint16_t pixels = 0;
             for (int32_t layer = 0; layer <= maxLayer; layer++) {
-                if (icons[layer] != static_cast<Icons>(0)) {
+                if (bitmapSymbol[layer] != static_cast<BitmapSymbol>(0)) {
                     if (usedUhrType->colsWordMatrix() < 11 ||
                         usedUhrType->rowsWordMatrix() < 10) {
                         pixels = transition->reverse(
-                            pgm_read_word(&(grafik_8x8[icons[layer]][row])),
-                            mirrored, GRAFIK_8X8_COLS);
+                            pgm_read_word(
+                                &(symbol_8x8[bitmapSymbol[layer]][row])),
+                            mirrored, SYMBOL_8X8_COLS);
                     } else {
                         pixels = transition->reverse(
-                            pgm_read_word(&(grafik_11x10[icons[layer]][row])),
-                            mirrored, GRAFIK_11X10_COLS);
+                            pgm_read_word(
+                                &(symbol_11x10[bitmapSymbol[layer]][row])),
+                            mirrored, SYMBOL_11X10_COLS);
                     }
                     if (pixels & (1 << col)) {
                         color = colors[layer];

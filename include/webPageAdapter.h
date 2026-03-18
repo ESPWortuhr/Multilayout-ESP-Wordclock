@@ -328,13 +328,19 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+        case COMMAND_SET_IT_IS_VARIANT: {
+            G.itIsVariant = static_cast<ItIsVariant>(split(payload, 3));
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
         case COMMAND_SET_LANGUAGE_VARIANT: {
             G.languageVariant[ItIs15] = split(payload, 3);
             G.languageVariant[ItIs20] = split(payload, 6);
             G.languageVariant[ItIs40] = split(payload, 9);
             G.languageVariant[ItIs45] = split(payload, 12);
-            G.itIsVariant = static_cast<ItIsVariant>(split(payload, 15));
-            G.languageVariant[EN_ShowAQuarter] = split(payload, 18);
+            G.languageVariant[EN_ShowAQuarter] = split(payload, 15);
             break;
         }
 
@@ -415,6 +421,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.birthday[i].month = split(payload, 3 + i * 5, 2);
                 G.birthday[i].day = split(payload, 6 + i * 5, 2);
             }
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_SYMBOL: {
+            G.bitmapSymbol = static_cast<BitmapSymbol>(split(payload, 3));
+            G.progInit = true;
             break;
         }
             //------------------------------------------------------------------------------

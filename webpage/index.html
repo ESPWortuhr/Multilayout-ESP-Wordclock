@@ -430,7 +430,7 @@
                     <form class="pure-form pure-form-aligned">
                         <div class="pure-control-group">
                             <div class="pure-control-group">
-                                <label for="dialect-4" data-i18next="view.language.hide-it-is"></label><select name="dialect-4" id="dialect-4" size="1">
+                                <label for="it-is-variant" data-i18next="view.language.hide-it-is"></label><select name="it-is-variant" id="it-is-variant" size="1">
                                 <option value="0" selected data-i18next="view.language.it-is-permanent"></option>
                                 <option value="1" data-i18next="view.language.it-is-quarterly"></option>
                                 <option value="2" data-i18next="view.language.it-is-half-hourly"></option>
@@ -441,26 +441,26 @@
                         </div>
                         <div class="pure-control-group specific-layout-0">
                             <div class="pure-control-group specific-layout-1">
-                                <label for="dialect-0" data-i18next="view.language.at-nine-fifteen"></label><select name="dialect-0" id="dialect-0" size="1">
+                                <label for="langvar-0" data-i18next="view.language.at-nine-fifteen"></label><select name="langvar-0" id="langvar-0" size="1">
                                 <option value="0" selected data-i18next="view.language.quarter-past-nine"></option>
                                 <option value="1" data-i18next="view.language.quarter-nine"></option>
                             </select>
                             </div>
                             <div class="pure-control-group specific-layout-3">
-                                <label for="dialect-1" data-i18next="view.language.at-nine-twenty"></label><select name="dialect-1" id="dialect-1" size="1">
+                                <label for="langvar-1" data-i18next="view.language.at-nine-twenty"></label><select name="langvar-1" id="langvar-1" size="1">
                                 <option value="0" selected data-i18next="view.language.ten-before-half-past-ten"></option>
                                 <option value="1" data-i18next="view.language.twenty-past-nine"></option>
                             </select>
                             </div>
                             <div class="pure-control-group specific-layout-3">
-                                <label for="dialect-2" data-i18next="view.language.at-nine-fourty"></label><select name="dialect-2" id="dialect-2" size="1">
+                                <label for="langvar-2" data-i18next="view.language.at-nine-fourty"></label><select name="langvar-2" id="langvar-2" size="1">
                                 <option value="0" selected data-i18next="view.language.ten-after-half-past-ten"></option>
                                 <option value="1" data-i18next="view.language.twenty-before-ten"></option>
                             </select>
                             </div>
                             <!-- Specific DE10x11Alternative Start-->
                             <div class="pure-control-group specific-layout-2">
-                                <label for="dialect-3" data-i18next="view.language.at-nine-fourtyfive-german"></label><select name="dialect-3" id="dialect-3" size="1">
+                                <label for="langvar-3" data-i18next="view.language.at-nine-fourtyfive-german"></label><select name="langvar-3" id="langvar-3" size="1">
                                 <option value="0" selected data-i18next="view.language.quarter-to-ten"></option>
                                 <option value="1" data-i18next="view.language.three-quarter-ten"></option>
                             </select>
@@ -468,7 +468,7 @@
                             <!-- Specific DE10x11Alternative End-->
                             <!-- Specific EN10x11 Start-->
                             <div class="pure-control-group specific-layout-6">
-                                <label for="dialect-5" data-i18next="view.language.at-nine-fourtyfive-english"></label><select name="dialect-5" id="dialect-5" size="1">
+                                <label for="langvar-4" data-i18next="view.language.at-nine-fourtyfive-english"></label><select name="langvar-4" id="langvar-4" size="1">
                                 <option value="0" selected data-i18next="view.language.quarter-to-ten-english"></option>
                                 <option value="1" data-i18next="view.language.a-quarter-to-ten-english"></option>
                             </select>
@@ -764,7 +764,7 @@
                     <h2 data-i18next="settings.weather.h2"></h2>
                     <form class="pure-form pure-form-aligned">
                         <div class="pure-control-group">
-                            <label for="owm-api-key" data-i18next="settings.weather.api-key"></label><input id="owm-api-key" type="text" minlength="32" maxlength="32">
+                            <label for="owm-api-key" data-i18next="settings.weather.api-key"></label><input id="owm-api-key" type="password" minlength="32" maxlength="32">
                         </div>
                         <div class="pure-control-group">
                             <label for="owm-city-id" data-i18next="settings.weather.city-id"></label><input id="owm-city-id" type="text" minlength="7" maxlength="7">
@@ -827,22 +827,22 @@
                         </label>
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-server" data-i18next="smart-home.mqtt.server"></label><input id="mqtt-server" type="text">
+                            <label for="mqtt-server" data-i18next="smart-home.mqtt.server"></label><input id="mqtt-server" type="text" required spellcheck="false">
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-port" data-i18next="smart-home.mqtt.port"></label><input id="mqtt-port" type="text">
+                            <label for="mqtt-port" data-i18next="smart-home.mqtt.port"></label><input id="mqtt-port" type="number" min="1" max="65535" value="1883" required>
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-user" data-i18next="smart-home.mqtt.username"></label><input id="mqtt-user" type="text">
+                            <label for="mqtt-user" data-i18next="smart-home.mqtt.username"></label><input id="mqtt-user" type="text" autocomplete="username" spellcheck="false" autocapitalize="none">
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-pass" data-i18next="smart-home.mqtt.password"></label><input id="mqtt-pass" type="text">
+                            <label for="mqtt-pass" data-i18next="smart-home.mqtt.password"></label><input id="mqtt-pass" type="password" autocomplete="current-password">
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-clientid" data-i18next="smart-home.mqtt.client-id"></label><input id="mqtt-clientid" type="text">
+                            <label for="mqtt-clientid" data-i18next="smart-home.mqtt.client-id"></label><input id="mqtt-clientid" type="text" spellcheck="false" autocapitalize="none">
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-topic" data-i18next="smart-home.mqtt.topic"></label><input id="mqtt-topic" type="text">
+                            <label for="mqtt-topic" data-i18next="smart-home.mqtt.topic"></label><input id="mqtt-topic" type="text" spellcheck="false" autocapitalize="none">
                         </div>
                         <div class="pure-controls">
                             <button id="mqtt-button" class="pure-button" data-i18next="smart-home.mqtt.save"></button>
@@ -872,8 +872,6 @@
                     <div class="pure-g">
                         <div class="pure-u-1 pure-u-md-1-3"><p>Pure.css</p></div>
                         <div class="pure-u-1 pure-u-md-2-3"><p><a href="https://purecss.io">https://purecss.io</a></p></div>
-                        <div class="pure-u-1 pure-u-md-1-3"><p>Minified.js</p></div>
-                        <div class="pure-u-1 pure-u-md-2-3"><p><a href="http://minifiedjs.com">http://minifiedjs.com</a></p></div>
                     </div>
                 </div>
 
@@ -895,7 +893,6 @@
 <!-- scripts -->
 <script src="./i18next.min.js"></script>
 <script src="./i18nextBrowserLanguageDetector.min.js"></script>
-<script src="./minified-web.js"></script>
 <script src="./iro.min.js"></script>
 <script src="./script.js"></script>
 <script src="./language/en.js"></script>
