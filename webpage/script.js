@@ -387,14 +387,7 @@ function initWebsocket() {
 
 				autoBrightEnabled = data.autoBrightEnabled;
 				const autoBrightSelect = document.getElementById("auto-bright-enabled");
-				if (autoBrightEnabled === 9) {
-					if (autoBrightSelect) {
-						autoBrightSelect.innerHTML = '<option value="-1">not available</option>';
-						autoBrightSelect.value = -1;
-						autoBrightSelect.closest(".pure-control-group").style.display = "none";
-					}
-					autoBrightStop();
-				} else if (autoBrightEnabled === 1) {
+				if (autoBrightEnabled === 1) {
 					if (autoBrightSelect) autoBrightSelect.value = 1;
 					autoBrightUpdater();
 				} else {
