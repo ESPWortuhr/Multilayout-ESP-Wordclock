@@ -6,34 +6,33 @@
 #include "math.h"
 #include "openwmap.h"
 #include <Arduino.h>
-#if AUTOBRIGHT_USE_BH1750
 #include <BH1750.h>
-BH1750 lightMeter(0x23);
-bool bh1750Initialized;
-#endif
 
-#define MAX_LED_COUNT                                                          \
-    300 // Biggest Wordclock so far is 16x18=288 plus potentially 4 for minutes,
-        // so 300 is a safe upper limit
+#define MAX_LED_COUNT 300
 
+BH1750 lightMeter;
 OpenWMap weather;
 
 //------------------------------------------------------------------------------
 // Helper Functions
 //------------------------------------------------------------------------------
 
-// Automatic Brightness Control (enabled/disabled by G.autoBrightEnabled)
-// 1. Measure ambient light with high resolution sensor BH1750, if available.
-//    If not, use legacy LDR.
-// 2. Derive the ledGain for the LEDs 0.0 - 100.0%
-// 3. When ledGain changed, set parametersChanged = true
-// Inputs:
-//   G.autoBrightEnabled, G.autoBrightMin, G.autoBrightMax, G.autoBrightPeak
-//   AUTOBRIGHT_LDR_RESBRIGHT, AUTOBRIGHT_LDR_RESDARK, AUTOBRIGHT_LDR_RESDIVIDER
-// Outputs:
-//  lux = Ambient light [LUX]
-//  ledGain = gain for the the LEDs: 0.0-100.0% (Gain means n % of the
-//    configured brightness: effectBri)
+/*
+Automatic Brightness Control (enabled/disabled by G.autoBrightEnabled)
+
+1. Measure ambient light with sensor BH1750, if available. If not, use LDR.
+2. Derive the ledGain for the LEDs 0.0 - 100.0%
+3. When ledGain changed, set parametersChanged = true
+
+Inputs:
+G.autoBrightEnabled, G.autoBrightMin, G.autoBrightMax, G.autoBrightPeak
+AUTOBRIGHT_LDR_RESBRIGHT, AUTOBRIGHT_LDR_RESDARK, AUTOBRIGHT_LDR_RESDIVIDER
+
+Outputs:
+lux = Ambient light [LUX]
+ledGain = gain for LEDs: 0.0-100.0% (n % of the configured bri:effectBri)
+*/
+
 void ClockWork::loopAutoBrightLogic() {
     if (G.autoBrightEnabled != 1)
         return;
@@ -48,23 +47,23 @@ void ClockWork::loopAutoBrightLogic() {
     float ledGainOld = ledGain;
     float luxNow = -1.0;
 
-#if AUTOBRIGHT_USE_BH1750
     if (bh1750Initialized && lightMeter.measurementReady()) {
+        /*
+        If BH1750 is not available or did not return a value, try to use LDR
+        */
         luxNow = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
     }
-#endif
 
-#if AUTOBRIGHT_USE_LDR
-    // only use LDR, if no value from BH1750 is available
-    if (luxNow < 0) {
-        uint16_t adcValue = analogRead(A0); // Range 0-1023 (1024 on overflow)
-
-        // The lux value is considerably misrepresented upwards at ADC values
-        // above 980. As 980 with an LDR5528 corresponds to approx. 1500 lux,
-        // but usually no more than 1000 lux are reached indoors even on sunny
-        // days, a fixed upper measurement limit of 980 is set here.
-        // Regardless of this, a maximum value of 1023 has to be applied in
-        // any case in order to avoid division by zero (analogRead is 0-1024)!
+    else if (luxNow < 0) {
+        /*
+        The lux value is considerably misrepresented upwards at ADC values above
+        980. As 980 with an LDR5528 corresponds to approx. 1500 lux, but usually
+        no more than 1000 lux are reached indoors even on sunny days, a fixed
+        upper measurement limit of 980 is set here. Regardless of this, a
+        maximum value of 1023 has to be applied in any case in order to avoid
+        division by zero (analogRead is 0-1023)!
+        */
+        uint16_t adcValue = analogRead(A0);
         if (adcValue > 980) {
             adcValue = 980;
         }
@@ -73,20 +72,23 @@ void ClockWork::loopAutoBrightLogic() {
                  (AUTOBRIGHT_LDR_RESBRIGHT * AUTOBRIGHT_LDR_RESDIVIDER *
                   (1024 - adcValue));
     }
-#endif
 
-    // If luxNow is still negative, no data could be retrieved from BH1750 or
-    // LDR. We return to preserve the previous ledGain (potentially default).
-    // Otherwise we may end up in a blinking light...
-    if (luxNow < 0) {
+    else {
+        /*
+        If luxNow is still negative, no data could be retrieved from BH1750 or
+        LDR. We return to preserve the previous ledGain (potentially default).
+        Otherwise we may end up in a blinking light.
+        */
         return;
     }
 
-    // Even in HIGH_RES_MODE, the BH1750 only has a precision of 1 lux. The
-    // decimal point values supplied by the library should therefore be
-    // considered as 'noise' and their use makes little to no sense.
-    // Also: in order to not trigger parametersChanged more often than
-    // necessary, the value gets rounded.
+    /*
+    Even in HIGH_RES_MODE, the BH1750 only has a precision of 1 lux. The decimal
+    point values supplied by the library should therefore be considered as
+    'noise' and their use makes little to no sense. Also: in order to not
+    trigger parametersChanged more often than necessary, the value gets rounded.
+    */
+
     lux = round(luxNow);
 
     ledGain = map(lux, 0, G.autoBrightPeak, G.autoBrightMin, G.autoBrightMax);
@@ -1331,8 +1333,8 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_AUTO_BRIGHT: {
         DynamicJsonDocument config(256);
         config["command"] = "autoBright";
-        if (G.param1 == 0) {
-            config["autoBrightEnabled"] = G.autoBrightEnabled;
+        config["autoBrightEnabled"] = G.autoBrightEnabled;
+        if (G.param1 == 1) {
             config["autoBrightMin"] = G.autoBrightMin;
             config["autoBrightMax"] = G.autoBrightMax;
             config["autoBrightPeak"] = G.autoBrightPeak;

@@ -242,12 +242,7 @@
  * used for this purpose. If both measurement methods are activated and the
  * corresponding hardware is available and functional, the BH1750 is the
  * preferred choice.
- *
- * By setting AUTOBRIGHT_USE_LDR or AUTOBRIGHT_USE_BH1750 to false, the
- * respective variant will be disabled and the program code on the
- * microcontroller can thus be reduced. If both modes are deactivated,
- * the option for automatic brightness control in the web interface is no
- * longer available.
+
  *
  * For the LDR variant, a voltage divider with an LDR (R1) and a resistor R2
  * is used. As LDR a type 5528 and as R2 a 10k resistor is recommended. In
@@ -260,14 +255,10 @@
  * AUTOBRIGHT_LDR_RESDIVIDER resistance of the divider resistor (R2) in KΩ
  *
  * Valid values:
- * AUTOBRIGHT_USE_BH1750 [true, false]
- * AUTOBRIGHT_USE_LDR [true, false]
  * AUTOBRIGHT_LDR_RESBRIGHT [number]
  * AUTOBRIGHT_LDR_RESDARK [number]
  * AUTOBRIGHT_LDR_RESDIVIDER [number]
  */
-#define AUTOBRIGHT_USE_BH1750 false
-#define AUTOBRIGHT_USE_LDR false
 
 #define AUTOBRIGHT_LDR_RESBRIGHT 15
 #define AUTOBRIGHT_LDR_RESDARK 1000

@@ -164,6 +164,20 @@ void sendMQTTUpdate() {
 }
 
 //------------------------------------------------------------------------------
+
+byte findBH1750Address() {
+    Wire.beginTransmission(0x23);
+    if (Wire.endTransmission() == 0) {
+        return 0x23;
+    }
+    Wire.beginTransmission(0x5C);
+    if (Wire.endTransmission() == 0) {
+        return 0x5C;
+    }
+    return 0;
+}
+
+//------------------------------------------------------------------------------
 // Start setup()
 //------------------------------------------------------------------------------
 
@@ -500,29 +514,23 @@ void setup() {
     Serial.print(" ");
     Serial.println(__TIME__);
 
-    //------------------------------------------------------------------------------
+    //-------------------------------------
     // Auto brightness
-    //------------------------------------------------------------------------------
+    //-------------------------------------
 
-#if !(AUTOBRIGHT_USE_BH1750) && !(AUTOBRIGHT_USE_LDR)
-    // Disable autoBright-Option if no sensor option is available
-    G.autoBrightEnabled = 9;
-#else
-    if (G.autoBrightEnabled >= 9) {
-        G.autoBrightEnabled = 0;
-    }
-#endif
+    // Find BH1750 and initialize if available else fallback to LDR if available
+    byte bh1750Address = findBH1750Address();
 
-#if AUTOBRIGHT_USE_BH1750
-    // Initialize ambient light sensor BH1750 on I2C bus
-    if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
+    if (bh1750Address != 0) {
+        lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, bh1750Address);
         Serial.println("BH1750 initialized");
         bh1750Initialized = true;
     } else {
         Serial.println("BH1750 initialisation error, using LDR if available");
         bh1750Initialized = false;
     }
-#endif
+
+    //-------------------------------------
 
     Serial.println("--------------------------------------");
     Serial.println("Ende Setup");
