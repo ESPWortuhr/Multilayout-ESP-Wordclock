@@ -549,7 +549,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_REQUEST_AUTO_BRIGHT: {
-            //G.param1 = split(payload, 3);
+            // G.param1 = split(payload, 3);
             G.client_nr = num;
             break;
         }
