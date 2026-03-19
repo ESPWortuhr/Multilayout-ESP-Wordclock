@@ -1333,8 +1333,8 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_AUTO_BRIGHT: {
         DynamicJsonDocument config(256);
         config["command"] = "autoBright";
-        if (G.param1 == 0) {
-            config["autoBrightEnabled"] = G.autoBrightEnabled;
+        config["autoBrightEnabled"] = G.autoBrightEnabled;
+        if (G.param1 == 1) {
             config["autoBrightMin"] = G.autoBrightMin;
             config["autoBrightMax"] = G.autoBrightMax;
             config["autoBrightPeak"] = G.autoBrightPeak;

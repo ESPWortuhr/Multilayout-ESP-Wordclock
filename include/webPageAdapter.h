@@ -309,7 +309,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.autoBrightMin = split(payload, 6);
             G.autoBrightMax = split(payload, 9);
             G.autoBrightPeak = split(payload, 12, 4);
-
+            G.param1 = 1;
             if (G.autoBrightMin < 0)
                 G.autoBrightMin = 0;
             if (G.autoBrightMin > 100)
@@ -549,8 +549,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_REQUEST_AUTO_BRIGHT: {
-
-            G.param1 = split(payload, 3);
+            //G.param1 = split(payload, 3);
             G.client_nr = num;
             break;
         }

@@ -396,6 +396,9 @@ function initWebsocket() {
 				}
 				enableSpecific("specific-layout-brightness-man", autoBrightEnabled !== 1);
 				enableSpecific("specific-layout-brightness-auto", autoBrightEnabled === 1);
+				document.getElementById("auto-bright-min").value = autoBrightMin;
+				document.getElementById("auto-bright-max").value = autoBrightMax;
+				document.getElementById("auto-bright-peak").value = autoBrightPeak;
 				break;
 			}
 			case "set": {
@@ -439,9 +442,14 @@ function initWebsocket() {
 				document.getElementById("auto-bright-enabled").value = data.autoBrightEnabled;
 				document.getElementById("auto-bright-sensor").value = data.autoBrightSensor;
 				document.getElementById("auto-bright-gain").value = data.autoBrightGain;
-				document.getElementById("auto-bright-min").value = data.autoBrightMin;
-				document.getElementById("auto-bright-max").value = data.autoBrightMax;
-				document.getElementById("auto-bright-peak").value = data.autoBrightPeak;
+				if (data.autoBrightMin && data.autoBrightMax && data.autoBrightPeak) {
+					autoBrightMin = data.autoBrightMin;
+					autoBrightMax = data.autoBrightMax;
+					autoBrightPeak = data.autoBrightPeak;
+					document.getElementById("auto-bright-min").value = autoBrightMin;
+					document.getElementById("auto-bright-max").value = autoBrightMax;
+					document.getElementById("auto-bright-peak").value = autoBrightPeak;
+				}
 
 				if (data.autoBrightEnabled === 1) {
 					autoBrightUpdater();
