@@ -172,13 +172,6 @@ uint32_t ClockWork::num32BitWithOnesAccordingToColumns() {
 
 //------------------------------------------------------------------------------
 
-bool ClockWork::isRomanLanguage() {
-    return usedUhrType->usedLang() == LanguageAbbreviation::ES ||
-           usedUhrType->usedLang() == LanguageAbbreviation::IT;
-}
-
-//------------------------------------------------------------------------------
-
 void sendJsonToClient(uint8_t client_nr, const JsonDocument &doc) {
     char str[1024];
     size_t bytesWritten = serializeJson(doc, str);
@@ -1274,7 +1267,7 @@ void ClockWork::loop(struct tm &tm) {
         config["bootShowWifi"] = G.bootShowWifi;
         config["bootShowIP"] = G.bootShowIP;
         config["autoBrightEnabled"] = G.autoBrightEnabled;
-        config["isRomanLanguage"] = isRomanLanguage();
+        config["isRomanLanguage"] = usedUhrType->isRomanLanguage();
         config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
         config["hasTwenty"] = usedUhrType->hasTwenty();
         config["hasWeatherLayout"] = usedUhrType->hasWeatherLayout();
