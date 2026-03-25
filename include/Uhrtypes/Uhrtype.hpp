@@ -174,7 +174,17 @@ public:
 
     virtual const uint16_t getFrameMatrixIndex(uint16_t index) { return 0; }
 
+    // --- Language & General Properties ---
+
+    virtual const bool isRomanLanguage() { return false; }
+
+    // --- Time-Specific Words ---
+
+    virtual const bool hasAQuarter() { return false; }
+
     virtual const bool hasDreiviertel() { return false; }
+
+    virtual const bool hasQuarterTen() { return true; }
 
     virtual const bool hasTwenty() { return true; }
 
@@ -190,6 +200,8 @@ public:
 
     virtual const bool hasMitternacht() { return false; }
 
+    // --- Layout & Mode Capabilities ---
+
     virtual const bool has24HourLayout() { return false; }
 
     virtual const bool has60MinuteLayout() { return false; }
@@ -200,11 +212,23 @@ public:
 
     virtual const bool hasSecondsFrame() { return false; }
 
+    // --- Minute Display Capabilities ---
+
+    virtual const bool hasLed4x() { return true; }
+
+    virtual const bool hasLed7x() { return true; }
+
+    virtual const bool hasMinuteCorners() { return rowsWordMatrix() == 11; }
+
     virtual const bool hasMinuteInWords() { return false; }
+
+    // --- Special Words ---
+
+    virtual const bool hasSpecialWordBeen() { return false; }
 
     virtual const bool hasSpecialWordHappyBirthday() { return false; }
 
-    virtual const bool hasSpecialWordBeen() { return false; }
+    // --- General ---
 
     virtual const uint16_t getFrontMatrixIndex(uint8_t row, uint8_t col) {
 
