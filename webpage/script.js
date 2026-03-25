@@ -372,11 +372,12 @@ function initWebsocket() {
 				enableSpecific("specific-layout-3", data.hasTwenty);
 				enableSpecific("specific-layout-4", data.hasSecondsFrame);
 				enableSpecific("specific-layout-5", data.hasWeatherLayout);
-				if (data.UhrtypeDef === 10) {
-					enableSpecific("specific-layout-6", true);
-					enableSpecific("specific-layout-3", false);
-					enableSpecific("specific-layout-1", false);
-				}
+
+				// UhrtypeDef 10 is EN10x11, doesn't need the options of layout 1 and 3, but needs its own layout 6.
+				enableSpecific("specific-layout-6", data.UhrtypeDef === 10);
+				enableSpecific("specific-layout-3", data.UhrtypeDef !== 10);
+				enableSpecific("specific-layout-1", data.UhrtypeDef !== 10);
+
 				enableSpecific("specific-layout-7", data.hasSecondsFrame);
 				enableSpecific("specific-colortype-4", data.colortype === 5);
 
