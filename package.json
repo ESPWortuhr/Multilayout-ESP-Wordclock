@@ -88,7 +88,7 @@
 		"grunt-eslint": "^24.3.0",
 		"grunt-htmllint": "^0.3.0",
 		"grunt-replace": "^2.0.2",
-		"grunt-stylelint": "^0.20.1",
+		"grunt-stylelint": "^0.21.0",
 		"grunt-terser": "^2.0.0",
 		"grunt-version": "^3.0.2",
 		"stylelint-config-standard": "^39.0.1",
