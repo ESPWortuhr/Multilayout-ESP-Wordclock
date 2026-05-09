@@ -72,7 +72,7 @@ Transition *transition;
 SecondsFrame *secondsFrame;
 Led led;
 ClockWork clockWork;
-Mqtt mqtt;
+Mqtt mqtt(clockWork);
 Network network;
 
 #include "Symbols.h"
