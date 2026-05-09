@@ -1,9 +1,12 @@
 #pragma once
 
-#include <Arduino.h>
+#include "Uhr.h"
+#include "clockWork.h"
+#include <ArduinoJson.h>
 
 class Mqtt {
 private:
+    ClockWork &clockWork;
     void reInit();
     static void callback(char *topic, byte *payload, unsigned int length);
     static void processState(const JsonDocument &doc);
@@ -11,11 +14,12 @@ private:
     static void processScrollingText(const JsonDocument &doc);
     static void processColor(const JsonDocument &doc);
     static void processBrightness(const JsonDocument &doc);
+    static bool checkIfMqttUserIsEmpty();
     static const char *getEffectName();
 
 public:
-    Mqtt() = default;
-    ~Mqtt() = default;
+    Mqtt(ClockWork &cw);
+    ~Mqtt();
 
     void init();
     void loop();
@@ -24,3 +28,5 @@ public:
 
     bool isConnected();
 };
+
+extern Mqtt *mqttInstance;
