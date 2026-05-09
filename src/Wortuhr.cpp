@@ -75,6 +75,9 @@ ClockWork clockWork;
 Mqtt mqtt(clockWork);
 Network network;
 
+void setDefaultHardwarePins();
+bool hardwarePinsAreValid();
+
 #include "Symbols.h"
 #include "Transitiontypes/Transition.hpp"
 #include "Wifi.hpp"
@@ -84,7 +87,7 @@ Network network;
 #include "network.hpp"
 
 #define EEPROM_SIZE 512
-_Static_assert(sizeof(G) <= EEPROM_SIZE,
+_Static_assert(sizeof(G) < EEPROM_SIZE,
                "Datenstruktur G zu gross für reservierten EEPROM Bereich");
 
 uint16_t powerCycleCountAddr =
@@ -165,6 +168,65 @@ void sendMQTTUpdate() {
 
 //------------------------------------------------------------------------------
 
+void setDefaultHardwarePins() {
+    G.hardwarePins.led = LED_PIN;
+    G.hardwarePins.powerButton = POWER_BUTTON_PIN;
+    G.hardwarePins.modeButton = MODE_BUTTON_PIN;
+    G.hardwarePins.speedButton = SPEED_BUTTON_PIN;
+}
+
+//------------------------------------------------------------------------------
+
+bool isHardwarePinInRange(uint8_t pin) {
+#ifdef ESP8266
+    return pin <= 16;
+#elif defined(ESP32)
+    return pin <= 39;
+#else
+    return pin <= 39;
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+bool hasDuplicateHardwarePins() {
+    const uint8_t pins[] = {G.hardwarePins.led, G.hardwarePins.powerButton,
+                            G.hardwarePins.modeButton,
+                            G.hardwarePins.speedButton};
+    for (uint8_t i = 0; i < 4; i++) {
+        for (uint8_t j = i + 1; j < 4; j++) {
+            if (pins[i] == pins[j]) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+bool hardwarePinsAreValid() {
+    return isHardwarePinInRange(G.hardwarePins.led) &&
+           isHardwarePinInRange(G.hardwarePins.powerButton) &&
+           isHardwarePinInRange(G.hardwarePins.modeButton) &&
+           isHardwarePinInRange(G.hardwarePins.speedButton) &&
+           !hasDuplicateHardwarePins();
+}
+
+//------------------------------------------------------------------------------
+
+void ensureHardwarePins() {
+    if (hardwarePinsAreValid()) {
+        return;
+    }
+
+    Serial.println("Invalid hardware pins in EEPROM, restoring defaults");
+    setDefaultHardwarePins();
+    eeprom::write();
+}
+
+//------------------------------------------------------------------------------
+
 byte findBH1750Address() {
     Wire.beginTransmission(0x23);
     if (Wire.endTransmission() == 0) {
@@ -198,6 +260,7 @@ void setup() {
 
     EEPROM.begin(EEPROM_SIZE);
     eeprom::read();
+    ensureHardwarePins();
 
     //-------------------------------------
 
@@ -355,6 +418,7 @@ void setup() {
             G.birthday[i].day = 0;
             G.birthday[i].month = 0;
         }
+        setDefaultHardwarePins();
 
         eeprom::write();
         Serial.println("eeprom schreiben");

@@ -89,6 +89,10 @@ void read() {
     Serial.printf("bootLedSweep    : %u\n", G.bootLedSweep);
     Serial.printf("bootShowWifi    : %u\n", G.bootShowWifi);
     Serial.printf("bootShowIP    : %u\n", G.bootShowIP);
+    Serial.printf("ledPin    : %u\n", G.hardwarePins.led);
+    Serial.printf("powerButtonPin    : %u\n", G.hardwarePins.powerButton);
+    Serial.printf("modeButtonPin    : %u\n", G.hardwarePins.modeButton);
+    Serial.printf("speedButtonPin    : %u\n", G.hardwarePins.speedButton);
     Serial.printf("Colortype    : %u\n", G.Colortype);
     Serial.print("OWM_apikey: ");
     Serial.println(G.openWeatherMap.apikey);

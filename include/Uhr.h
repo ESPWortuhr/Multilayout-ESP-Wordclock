@@ -105,6 +105,13 @@ struct Birthday {
     uint8_t month;
 };
 
+struct HardwarePins {
+    uint8_t led;
+    uint8_t powerButton;
+    uint8_t modeButton;
+    uint8_t speedButton;
+};
+
 struct OpenWeatherMapData {
     char apikey[35];
     char cityid[8];
@@ -220,6 +227,8 @@ struct GLOBAL {
     bool bootShowIP;
 
     Birthday birthday[MAX_BIRTHDAY_COUNT];
+
+    HardwarePins hardwarePins;
 };
 GLOBAL G = {};
 
@@ -326,6 +335,7 @@ enum CommandWords : uint8_t {
     COMMAND_SET_MQTT_HA_DISCOVERY = 104,
     COMMAND_SET_SYMBOL = 105,
     COMMAND_SET_IT_IS_VARIANT = 106,
+    COMMAND_SET_HARDWARE_PINS = 107,
 
     COMMAND_SPEED = 152,
 

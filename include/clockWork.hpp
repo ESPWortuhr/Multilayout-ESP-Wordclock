@@ -1225,7 +1225,7 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_REQUEST_CONFIG_VALUES: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(1152);
         config["command"] = "config";
         config["ssid"] = network.getSSID();
         config["timeserver"] = G.timeserver;
@@ -1266,6 +1266,10 @@ void ClockWork::loop(struct tm &tm) {
         config["bootLedSweep"] = G.bootLedSweep;
         config["bootShowWifi"] = G.bootShowWifi;
         config["bootShowIP"] = G.bootShowIP;
+        config["ledPin"] = G.hardwarePins.led;
+        config["powerButtonPin"] = G.hardwarePins.powerButton;
+        config["modeButtonPin"] = G.hardwarePins.modeButton;
+        config["speedButtonPin"] = G.hardwarePins.speedButton;
         config["autoBrightEnabled"] = G.autoBrightEnabled;
         config["isRomanLanguage"] = usedUhrType->isRomanLanguage();
         config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
@@ -1411,6 +1415,25 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_SET_MQTT_HA_DISCOVERY: {
         mqtt.sendDiscovery();
+        break;
+    }
+
+    case COMMAND_SET_HARDWARE_PINS: {
+        if (!hardwarePinsAreValid()) {
+            Serial.println("Invalid hardware pin configuration, restoring "
+                           "defaults");
+            setDefaultHardwarePins();
+        }
+
+        Serial.printf("Hardware LED pin: GPIO%u\n", G.hardwarePins.led);
+        Serial.printf("Hardware power button pin: GPIO%u\n",
+                      G.hardwarePins.powerButton);
+        Serial.printf("Hardware mode button pin: GPIO%u\n",
+                      G.hardwarePins.modeButton);
+        Serial.printf("Hardware speed button pin: GPIO%u\n",
+                      G.hardwarePins.speedButton);
+
+        eeprom::write();
         break;
     }
 
