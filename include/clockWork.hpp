@@ -16,6 +16,9 @@ OpenWMap weather;
 uint8_t activeLedPin = UINT8_MAX;
 uint8_t activeLedColorType = UINT8_MAX;
 
+static constexpr uint32_t HARDWARE_BUTTON_DEBOUNCE_MS = 40;
+static constexpr uint32_t HARDWARE_BUTTON_LONG_PRESS_MS = 2000;
+
 //------------------------------------------------------------------------------
 // Helper Functions
 //------------------------------------------------------------------------------
@@ -109,6 +112,204 @@ void ClockWork::loopAutoBrightLogic() {
 
     if (ledGainOld != ledGain) {
         parametersChanged = true;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+uint8_t ClockWork::hardwareButtonPin(HardwareButtonId button) const {
+    switch (button) {
+    case PowerButton:
+        return G.hardwarePins.powerButton;
+    case ModeButton:
+        return G.hardwarePins.modeButton;
+    case SpeedButton:
+        return G.hardwarePins.speedButton;
+    default:
+        return G.hardwarePins.powerButton;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::initHardwareButtons() {
+    for (uint8_t i = 0; i < HardwareButtonCount; i++) {
+        const auto button = static_cast<HardwareButtonId>(i);
+        pinMode(hardwareButtonPin(button), INPUT_PULLUP);
+        hardwareButtons[i] = HardwareButtonState{};
+        hardwareButtons[i].stableLevel = digitalRead(hardwareButtonPin(button));
+        hardwareButtons[i].lastLevel = hardwareButtons[i].stableLevel;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::toggleHardwareButtonPower() {
+    bool isOn = false;
+    for (uint8_t i = 0; i < 3; i++) {
+        if (G.color[i].B > 0.0f) {
+            isOn = true;
+            break;
+        }
+    }
+
+    if (isOn) {
+        for (uint8_t i = 0; i < 3; i++) {
+            restoredButtonColors[i] = G.color[i];
+            G.color[i].B = 0.0f;
+        }
+        hasRestoredButtonColors = true;
+    } else {
+        for (uint8_t i = 0; i < 3; i++) {
+            G.color[i] = hasRestoredButtonColors
+                             ? restoredButtonColors[i]
+                             : HsbColor(G.color[i].H, G.color[i].S, 1.0f);
+        }
+    }
+
+    requestHardwareButtonDisplayRefresh();
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::nextHardwareButtonMode() {
+    static const uint8_t modes[] = {
+        COMMAND_MODE_WORD_CLOCK,    COMMAND_MODE_SECONDS,
+        COMMAND_MODE_SCROLLINGTEXT, COMMAND_MODE_RAINBOWCYCLE,
+        COMMAND_MODE_RAINBOW,       COMMAND_MODE_COLOR,
+        COMMAND_MODE_DIGITAL_CLOCK, COMMAND_MODE_SYMBOL};
+
+    uint8_t nextMode = modes[0];
+    for (uint8_t i = 0; i < sizeof(modes) / sizeof(modes[0]); i++) {
+        if (G.prog == modes[i] ||
+            (G.prog == COMMAND_IDLE && modes[i] == COMMAND_MODE_WORD_CLOCK)) {
+            nextMode = modes[(i + 1) % (sizeof(modes) / sizeof(modes[0]))];
+            break;
+        }
+    }
+
+    G.prog = nextMode;
+    G.progInit = true;
+    parametersChanged = true;
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::nextHardwareButtonTransition() {
+    static const uint8_t transitions[] = {
+        NO_TRANSITION, ROLL_UP, ROLL_DOWN,   SHIFT_LEFT, SHIFT_RIGHT,
+        FADE,          LASER,   MATRIX_RAIN, BALLS,      FIRE,
+        SNAKE,         COLORED, RANDOM};
+
+    uint8_t nextTransition = transitions[0];
+    for (uint8_t i = 0; i < sizeof(transitions) / sizeof(transitions[0]); i++) {
+        if (G.transitionType == transitions[i]) {
+            nextTransition = transitions[(i + 1) % (sizeof(transitions) /
+                                                    sizeof(transitions[0]))];
+            break;
+        }
+    }
+
+    G.transitionType = nextTransition;
+    G.prog = COMMAND_MODE_TRANSITION;
+    G.progInit = true;
+    parametersChanged = true;
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::increaseHardwareButtonBrightness() {
+    float brightness = G.color[Foreground].B;
+    if (brightness <= 0.0f) {
+        brightness = 0.1f;
+    } else if (brightness >= 1.0f) {
+        brightness = 0.1f;
+    } else {
+        brightness += 0.1f;
+        if (brightness > 1.0f) {
+            brightness = 1.0f;
+        }
+    }
+
+    G.color[Foreground].B = brightness;
+    requestHardwareButtonDisplayRefresh();
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::nextHardwareButtonHue() {
+    float hue = G.color[Foreground].H + (30.0f / 360.0f);
+    if (hue >= 1.0f) {
+        hue -= 1.0f;
+    }
+    G.color[Foreground].H = hue;
+    requestHardwareButtonDisplayRefresh();
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::requestHardwareButtonDisplayRefresh() {
+    parametersChanged = true;
+    if (G.prog == COMMAND_IDLE) {
+        G.prog = COMMAND_MODE_WORD_CLOCK;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::handleHardwareButtonPress(HardwareButtonId button,
+                                          uint32_t pressDurationMillis) {
+    switch (button) {
+    case PowerButton:
+        toggleHardwareButtonPower();
+        break;
+    case ModeButton:
+        if (pressDurationMillis >= HARDWARE_BUTTON_LONG_PRESS_MS) {
+            nextHardwareButtonTransition();
+        } else {
+            nextHardwareButtonMode();
+        }
+        break;
+    case SpeedButton:
+        if (pressDurationMillis >= HARDWARE_BUTTON_LONG_PRESS_MS) {
+            nextHardwareButtonHue();
+        } else {
+            increaseHardwareButtonBrightness();
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::loopHardwareButtons() {
+    const uint32_t now = millis();
+
+    for (uint8_t i = 0; i < HardwareButtonCount; i++) {
+        const auto button = static_cast<HardwareButtonId>(i);
+        HardwareButtonState &state = hardwareButtons[i];
+        const bool level = digitalRead(hardwareButtonPin(button));
+
+        if (level != state.lastLevel) {
+            state.lastLevel = level;
+            state.lastChangeMillis = now;
+        }
+
+        if ((now - state.lastChangeMillis) < HARDWARE_BUTTON_DEBOUNCE_MS ||
+            level == state.stableLevel) {
+            continue;
+        }
+
+        state.stableLevel = level;
+        if (state.stableLevel == LOW) {
+            state.isPressed = true;
+            state.pressedMillis = now;
+        } else if (state.isPressed) {
+            state.isPressed = false;
+            handleHardwareButtonPress(button, now - state.pressedMillis);
+        }
     }
 }
 
@@ -1132,6 +1333,7 @@ void ClockWork::loop(struct tm &tm) {
     unsigned long currentMillis = millis();
     countMillisSpeed += currentMillis - previousMillis;
     previousMillis = currentMillis;
+    loopHardwareButtons();
 
     // Faster runtime for demo
     transition->demoMode(_hour, _minute, _second);
@@ -1441,6 +1643,7 @@ void ClockWork::loop(struct tm &tm) {
                       G.hardwarePins.speedButton);
 
         eeprom::write();
+        initHardwareButtons();
         initLedStrip(G.Colortype);
         led.clear();
         parametersChanged = true;

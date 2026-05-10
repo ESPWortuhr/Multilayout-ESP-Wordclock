@@ -1,18 +1,47 @@
 #pragma once
 
+#include <Arduino.h>
 #include <NeoPixelBus.h>
 
 class ClockWork {
 private:
+    enum HardwareButtonId : uint8_t {
+        PowerButton = 0,
+        ModeButton = 1,
+        SpeedButton = 2,
+        HardwareButtonCount = 3
+    };
+
+    struct HardwareButtonState {
+        bool isPressed = false;
+        bool stableLevel = HIGH;
+        bool lastLevel = HIGH;
+        uint32_t lastChangeMillis = 0;
+        uint32_t pressedMillis = 0;
+    };
+
     uint16_t countMillisSpeed = 0;
     uint32_t previousMillis = 0;
     uint32_t lux = 0;
+    HardwareButtonState hardwareButtons[HardwareButtonCount];
+    HsbColor restoredButtonColors[3];
+    bool hasRestoredButtonColors = false;
 
 private:
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
     void loopAutoBrightLogic();
+    void loopHardwareButtons();
+    void handleHardwareButtonPress(HardwareButtonId button,
+                                   uint32_t pressDurationMillis);
+    uint8_t hardwareButtonPin(HardwareButtonId button) const;
+    void toggleHardwareButtonPower();
+    void nextHardwareButtonMode();
+    void nextHardwareButtonTransition();
+    void increaseHardwareButtonBrightness();
+    void nextHardwareButtonHue();
+    void requestHardwareButtonDisplayRefresh();
     uint32_t num32BitWithOnesAccordingToColumns();
 
     //------------------------------------------------------------------------------
@@ -67,6 +96,7 @@ public:
     //------------------------------------------------------------------------------
     iUhrType *getPointer(uint8_t type);
     void initLedStrip(uint8_t num);
+    void initHardwareButtons();
     uint32_t getLuxValue() const { return lux; }
     float getAdcValue() const {
         uint16_t adcRaw = analogRead(A0);

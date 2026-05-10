@@ -452,6 +452,8 @@ void setup() {
     // Initialize LEDs
     //-------------------------------------
 
+    clockWork.initHardwareButtons();
+
     Serial.println("LED Init");
     clockWork.initLedStrip(G.Colortype);
     if (G.bootLedBlink) {
