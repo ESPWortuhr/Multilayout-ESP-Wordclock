@@ -209,6 +209,16 @@ let TRANSLATION_HU = {
 			"sk6812-brgw": "SK6812 RGBW",
 			"save": "Beállítás mentése"
 		},
+		"hardware-pins": {
+			"h2": "Hardware pinek",
+			"help": "Itt állíthatók be a LED-szalaghoz és a hardver gombokhoz használt GPIO számok. A GPIO számot használd, ne a panelre nyomtatott jelölést.",
+			"led-pin": "LED-szalag",
+			"power-button": "Bekapcsoló gomb",
+			"mode-button": "Mód gomb",
+			"speed-button": "Sebesség gomb",
+			"duplicate": "Minden pin csak egyszer használható.",
+			"save": "Beállítás mentése"
+		},
 		"whitetype": {
 			"h2": "Fehér LED típusa",
 			"in-border": "RGBW sávok fehér LED típusának beállítása",

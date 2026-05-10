@@ -104,6 +104,7 @@ const CMD = {
 	SET_MQTT_HA_DISCOVERY: 104,
 	SET_SYMBOL: 105,
 	SET_IT_IS_VARIANT: 106,
+	SET_HARDWARE_PINS: 107,
 	SPEED: 152,
 
 	// Requests
@@ -357,6 +358,10 @@ function initWebsocket() {
 				document.getElementById("buildtype").value = data.buildtype;
 				document.getElementById("whitetype").value = data.wType;
 				document.getElementById("colortype").value = data.colortype;
+				document.getElementById("led-pin").value = data.ledPin;
+				document.getElementById("power-button-pin").value = data.powerButtonPin;
+				document.getElementById("mode-button-pin").value = data.modeButtonPin;
+				document.getElementById("speed-button-pin").value = data.speedButtonPin;
 
 				document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
 				document.getElementById("boot-show-led-sweep").checked = data.bootLedSweep;
@@ -904,6 +909,39 @@ document.addEventListener("DOMContentLoaded", function() {
 		colorTypeBtn.addEventListener("click", function() {
 			sendCmd(CMD.SET_COLORTYPE, nstr(document.getElementById("colortype").value));
 			debugMessage(`Colortype${debugMessageReconfigured}`);
+		});
+	}
+
+	const hardwarePinsBtn = document.getElementById("hardware-pins-button");
+	if (hardwarePinsBtn) {
+		hardwarePinsBtn.addEventListener("click", function() {
+			const pinInputs = [
+				document.getElementById("led-pin"),
+				document.getElementById("power-button-pin"),
+				document.getElementById("mode-button-pin"),
+				document.getElementById("speed-button-pin")
+			];
+
+			pinInputs.forEach(input => {
+				input.setCustomValidity("");
+			});
+			if (pinInputs.some(input => !input.reportValidity())) {
+				return;
+			}
+
+			const pins = pinInputs.map(input => input.value);
+			const hasDuplicate = new Set(pins).size !== pins.length;
+			if (hasDuplicate) {
+				pinInputs.forEach(input => {
+					input.setCustomValidity(i18next.t("settings.hardware-pins.duplicate"));
+				});
+				pinInputs[0].reportValidity();
+				return;
+			}
+
+			sendCmd(CMD.SET_HARDWARE_PINS, pins.map(nstr).join(""));
+			sendCmd(CMD.REQ_CONFIG_VALUES);
+			debugMessage(`Hardware pins${debugMessageReconfigured}`);
 		});
 	}
 

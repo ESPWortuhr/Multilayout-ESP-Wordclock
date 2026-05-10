@@ -238,6 +238,16 @@ let TRANSLATION_EN_US = {
 			"sk6812-brgw": "SK6812 RGBW",
 			"save": "Save Setting"
 		},
+		"hardware-pins": {
+			"h2": "Hardware pins",
+			"help": "Set the GPIO numbers used for the LED strip and hardware buttons. Use the GPIO number, not the label printed on the board.",
+			"led-pin": "LED strip",
+			"power-button": "Power button",
+			"mode-button": "Mode button",
+			"speed-button": "Speed button",
+			"duplicate": "Each pin can only be used once.",
+			"save": "Save Setting"
+		},
 		"whitetype": {
 			"h2": "White LED type",
 			"in-border": "Setting the type of white LED of the RGBW strip",
