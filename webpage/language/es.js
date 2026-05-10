@@ -209,6 +209,16 @@ let TRANSLATION_ES = {
 			"sk6812-brgw": "SK6812 RGBW",
 			"save": "Guardar ajustes"
 		},
+		"hardware-pins": {
+			"h2": "Pines de hardware",
+			"help": "Configure los números GPIO usados para la tira LED y los botones de hardware. Use el número GPIO, no la etiqueta impresa en la placa.",
+			"led-pin": "Tira LED",
+			"power-button": "Botón de encendido",
+			"mode-button": "Botón de modo",
+			"speed-button": "Botón de velocidad",
+			"duplicate": "Cada pin solo se puede usar una vez.",
+			"save": "Guardar ajustes"
+		},
 		"whitetype": {
 			"h2": "Tipo de LED blanco",
 			"in-border": "Configuración del tipo de LED blanco de la tira RGBW",

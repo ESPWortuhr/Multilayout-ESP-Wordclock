@@ -212,6 +212,16 @@ let TRANSLATION_NL = {
 			"sk6812-brgw": "SK6812 RGBW",
 			"save": "Opslaan"
 		},
+		"hardware-pins": {
+			"h2": "Hardware-pinnen",
+			"help": "Stel de GPIO-nummers in voor de LED-strip en hardwareknoppen. Gebruik het GPIO-nummer, niet het label op het board.",
+			"led-pin": "LED-strip",
+			"power-button": "Powerknop",
+			"mode-button": "Modeknop",
+			"speed-button": "Speedknop",
+			"duplicate": "Elke pin mag maar één keer worden gebruikt.",
+			"save": "Opslaan"
+		},
 		"wit type": {
 			"h2": "Type witte LED",
 			"in-border": "Instelling van het type witte LED van de RGBW-strip",
