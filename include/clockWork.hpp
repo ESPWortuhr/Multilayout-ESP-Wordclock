@@ -13,6 +13,9 @@
 BH1750 lightMeter;
 OpenWMap weather;
 
+uint8_t activeLedPin = UINT8_MAX;
+uint8_t activeLedColorType = UINT8_MAX;
+
 //------------------------------------------------------------------------------
 // Helper Functions
 //------------------------------------------------------------------------------
@@ -127,41 +130,45 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
 
 void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
-    if (num == Grbw) {
-        if (strip_RGB != NULL) {
-            delete strip_RGB;
-            strip_RGB = NULL;
-        }
-        if (strip_RGBW == NULL) {
-#ifdef ESP8266
-            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
-                MAX_LED_COUNT);
-#elif defined(ESP32)
-            pinMode(LED_PIN, OUTPUT);
-            strip_RGBW =
-                new NeoPixelBus<NeoGrbwFeature, NeoEsp32Rmt0Ws2812xMethod>(
-                    MAX_LED_COUNT, LED_PIN);
-#endif
-            strip_RGBW->Begin();
-        }
-    } else {
-        if (strip_RGBW != NULL) {
-            delete strip_RGBW;
-            strip_RGBW = NULL;
-        }
-        if (strip_RGB == NULL) {
-#ifdef ESP8266
-            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(
-                MAX_LED_COUNT);
-#elif defined(ESP32)
-            pinMode(LED_PIN, OUTPUT);
-            strip_RGB =
-                new NeoPixelBus<NeoMultiFeature, NeoEsp32Rmt0Ws2812xMethod>(
-                    MAX_LED_COUNT, LED_PIN);
-#endif
-            strip_RGB->Begin();
-        }
+    if (activeLedPin != G.hardwarePins.led || activeLedColorType != num) {
+        deleteActiveLedStrip();
+        activeLedPin = G.hardwarePins.led;
+        activeLedColorType = num;
     }
+
+    if (activeLedStrip != nullptr) {
+        return;
+    }
+
+#ifdef ESP8266
+    if (num == Grbw) {
+        if (G.hardwarePins.led == LED_PIN) {
+            activeLedStrip =
+                new RgbwLedStripAdapter<Neo800KbpsMethod>(MAX_LED_COUNT);
+        } else {
+            activeLedStrip =
+                new RgbwLedStripAdapter<NeoEsp8266BitBangWs2812xMethod>(
+                    MAX_LED_COUNT, G.hardwarePins.led);
+        }
+    } else if (G.hardwarePins.led == LED_PIN) {
+        activeLedStrip =
+            new RgbLedStripAdapter<Neo800KbpsMethod>(MAX_LED_COUNT);
+    } else {
+        activeLedStrip = new RgbLedStripAdapter<NeoEsp8266BitBangWs2812xMethod>(
+            MAX_LED_COUNT, G.hardwarePins.led);
+    }
+#else
+#if defined(ESP32)
+    pinMode(G.hardwarePins.led, OUTPUT);
+#endif
+    if (num == Grbw) {
+        activeLedStrip = new RgbwLedStripAdapter<NeoEsp32Rmt0Ws2812xMethod>(
+            MAX_LED_COUNT, G.hardwarePins.led);
+    } else {
+        activeLedStrip = new RgbLedStripAdapter<NeoEsp32Rmt0Ws2812xMethod>(
+            MAX_LED_COUNT, G.hardwarePins.led);
+    }
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -1434,6 +1441,9 @@ void ClockWork::loop(struct tm &tm) {
                       G.hardwarePins.speedButton);
 
         eeprom::write();
+        initLedStrip(G.Colortype);
+        led.clear();
+        parametersChanged = true;
         break;
     }
 

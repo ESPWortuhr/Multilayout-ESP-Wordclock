@@ -33,15 +33,8 @@
 
 iUhrType *usedUhrType = nullptr;
 
-#include "NeoMultiFeature.hpp"
-
-#ifdef ESP8266
-NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod> *strip_RGB = NULL;
-NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> *strip_RGBW = NULL;
-#elif defined(ESP32)
-NeoPixelBus<NeoGrbwFeature, NeoEsp32Rmt0Ws2812xMethod> *strip_RGBW = NULL;
-NeoPixelBus<NeoMultiFeature, NeoEsp32Rmt0Ws2812xMethod> *strip_RGB = NULL;
-#endif
+#include "LedStripInterface.h"
+#include "NeoPixelBusLedStripAdapter.h"
 
 WiFiClient client;
 
@@ -77,6 +70,13 @@ Network network;
 
 void setDefaultHardwarePins();
 bool hardwarePinsAreValid();
+
+LedStripInterface *activeLedStrip = nullptr;
+
+void deleteActiveLedStrip() {
+    delete activeLedStrip;
+    activeLedStrip = nullptr;
+}
 
 #include "Symbols.h"
 #include "Transitiontypes/Transition.hpp"
