@@ -1,3 +1,4 @@
+#include "HardwareButtonController.hpp"
 #include "NeoMultiFeature.hpp"
 #include "Transitiontypes/Transition.h"
 #include "Uhr.h"
@@ -15,9 +16,6 @@ OpenWMap weather;
 
 uint8_t activeLedPin = UINT8_MAX;
 uint8_t activeLedColorType = UINT8_MAX;
-
-static constexpr uint32_t HARDWARE_BUTTON_DEBOUNCE_MS = 40;
-static constexpr uint32_t HARDWARE_BUTTON_LONG_PRESS_MS = 2000;
 
 //------------------------------------------------------------------------------
 // Helper Functions
@@ -117,29 +115,8 @@ void ClockWork::loopAutoBrightLogic() {
 
 //------------------------------------------------------------------------------
 
-uint8_t ClockWork::hardwareButtonPin(HardwareButtonId button) const {
-    switch (button) {
-    case PowerButton:
-        return G.hardwarePins.powerButton;
-    case ModeButton:
-        return G.hardwarePins.modeButton;
-    case SpeedButton:
-        return G.hardwarePins.speedButton;
-    default:
-        return G.hardwarePins.powerButton;
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void ClockWork::initHardwareButtons() {
-    for (uint8_t i = 0; i < HardwareButtonCount; i++) {
-        const auto button = static_cast<HardwareButtonId>(i);
-        pinMode(hardwareButtonPin(button), INPUT_PULLUP);
-        hardwareButtons[i] = HardwareButtonState{};
-        hardwareButtons[i].stableLevel = digitalRead(hardwareButtonPin(button));
-        hardwareButtons[i].lastLevel = hardwareButtons[i].stableLevel;
-    }
+    hardwareButtonController.begin(G.hardwarePins);
 }
 
 //------------------------------------------------------------------------------
@@ -257,25 +234,22 @@ void ClockWork::requestHardwareButtonDisplayRefresh() {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::handleHardwareButtonPress(HardwareButtonId button,
-                                          uint32_t pressDurationMillis) {
-    switch (button) {
-    case PowerButton:
+void ClockWork::handleHardwareButtonAction(HardwareButtonAction action) {
+    switch (action) {
+    case HardwareButtonAction::TogglePower:
         toggleHardwareButtonPower();
         break;
-    case ModeButton:
-        if (pressDurationMillis >= HARDWARE_BUTTON_LONG_PRESS_MS) {
-            nextHardwareButtonTransition();
-        } else {
-            nextHardwareButtonMode();
-        }
+    case HardwareButtonAction::NextMode:
+        nextHardwareButtonMode();
         break;
-    case SpeedButton:
-        if (pressDurationMillis >= HARDWARE_BUTTON_LONG_PRESS_MS) {
-            nextHardwareButtonHue();
-        } else {
-            increaseHardwareButtonBrightness();
-        }
+    case HardwareButtonAction::NextTransition:
+        nextHardwareButtonTransition();
+        break;
+    case HardwareButtonAction::IncreaseBrightness:
+        increaseHardwareButtonBrightness();
+        break;
+    case HardwareButtonAction::NextHue:
+        nextHardwareButtonHue();
         break;
     default:
         break;
@@ -285,31 +259,9 @@ void ClockWork::handleHardwareButtonPress(HardwareButtonId button,
 //------------------------------------------------------------------------------
 
 void ClockWork::loopHardwareButtons() {
-    const uint32_t now = millis();
-
-    for (uint8_t i = 0; i < HardwareButtonCount; i++) {
-        const auto button = static_cast<HardwareButtonId>(i);
-        HardwareButtonState &state = hardwareButtons[i];
-        const bool level = digitalRead(hardwareButtonPin(button));
-
-        if (level != state.lastLevel) {
-            state.lastLevel = level;
-            state.lastChangeMillis = now;
-        }
-
-        if ((now - state.lastChangeMillis) < HARDWARE_BUTTON_DEBOUNCE_MS ||
-            level == state.stableLevel) {
-            continue;
-        }
-
-        state.stableLevel = level;
-        if (state.stableLevel == LOW) {
-            state.isPressed = true;
-            state.pressedMillis = now;
-        } else if (state.isPressed) {
-            state.isPressed = false;
-            handleHardwareButtonPress(button, now - state.pressedMillis);
-        }
+    const HardwareButtonAction action = hardwareButtonController.loop();
+    if (action != HardwareButtonAction::None) {
+        handleHardwareButtonAction(action);
     }
 }
 
