@@ -238,6 +238,16 @@ let TRANSLATION_DE_DE = {
 			"sk6812-brgw": "SK6812 RGBW",
 			"save": "Einstellung speichern"
 		},
+		"hardware-pins": {
+			"h2": "Hardware-Pins",
+			"help": "Hier können die GPIO-Nummern für den LED-Streifen und die Hardware-Tasten eingestellt werden. Es muss die GPIO-Nummer verwendet werden, nicht die aufgedruckte Board-Bezeichnung.",
+			"led-pin": "LED-Streifen",
+			"power-button": "Power-Taste",
+			"mode-button": "Mode-Taste",
+			"speed-button": "Speed-Taste",
+			"duplicate": "Jeder Pin darf nur einmal verwendet werden.",
+			"save": "Einstellung speichern"
+		},
 		"whitetype": {
 			"h2": "Typ der Weiß LED",
 			"in-border": "Einstellung des Types der Weißen LED des RGBW Stripes",

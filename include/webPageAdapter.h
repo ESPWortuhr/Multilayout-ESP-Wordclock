@@ -415,6 +415,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+        case COMMAND_SET_HARDWARE_PINS: {
+            G.hardwarePins.led = split(payload, 3);
+            G.hardwarePins.powerButton = split(payload, 6);
+            G.hardwarePins.modeButton = split(payload, 9);
+            G.hardwarePins.speedButton = split(payload, 12);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
         case COMMAND_SET_BIRTHDAYS: {
 
             for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {

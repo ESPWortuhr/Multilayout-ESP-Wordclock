@@ -209,6 +209,16 @@ let TRANSLATION_IT = {
 			"sk6812-brgw": "SK6812 RGBW",
 			"save": "Salva le impostazioni"
 		},
+		"hardware-pins": {
+			"h2": "Pin hardware",
+			"help": "Imposta i numeri GPIO usati per la striscia LED e i pulsanti hardware. Usa il numero GPIO, non l'etichetta stampata sulla scheda.",
+			"led-pin": "Striscia LED",
+			"power-button": "Pulsante power",
+			"mode-button": "Pulsante mode",
+			"speed-button": "Pulsante speed",
+			"duplicate": "Ogni pin può essere usato una sola volta.",
+			"save": "Salva le impostazioni"
+		},
 		"whitetype": {
 			"h2": "Tipo LED bianco",
 			"in-border": "Impostazione del tipo di striscia LED bianca RGBW",

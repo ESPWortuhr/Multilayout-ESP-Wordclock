@@ -1,3 +1,4 @@
+#include "HardwareButtonController.hpp"
 #include "NeoMultiFeature.hpp"
 #include "Transitiontypes/Transition.h"
 #include "Uhr.h"
@@ -12,6 +13,9 @@
 
 BH1750 lightMeter;
 OpenWMap weather;
+
+uint8_t activeLedPin = UINT8_MAX;
+uint8_t activeLedColorType = UINT8_MAX;
 
 //------------------------------------------------------------------------------
 // Helper Functions
@@ -111,6 +115,158 @@ void ClockWork::loopAutoBrightLogic() {
 
 //------------------------------------------------------------------------------
 
+void ClockWork::initHardwareButtons() {
+    hardwareButtonController.begin(G.hardwarePins);
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::toggleHardwareButtonPower() {
+    bool isOn = false;
+    for (uint8_t i = 0; i < 3; i++) {
+        if (G.color[i].B > 0.0f) {
+            isOn = true;
+            break;
+        }
+    }
+
+    if (isOn) {
+        for (uint8_t i = 0; i < 3; i++) {
+            restoredButtonColors[i] = G.color[i];
+            G.color[i].B = 0.0f;
+        }
+        hasRestoredButtonColors = true;
+    } else {
+        for (uint8_t i = 0; i < 3; i++) {
+            G.color[i] = hasRestoredButtonColors
+                             ? restoredButtonColors[i]
+                             : HsbColor(G.color[i].H, G.color[i].S, 1.0f);
+        }
+    }
+
+    requestHardwareButtonDisplayRefresh();
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::nextHardwareButtonMode() {
+    static const uint8_t modes[] = {
+        COMMAND_MODE_WORD_CLOCK,    COMMAND_MODE_SECONDS,
+        COMMAND_MODE_SCROLLINGTEXT, COMMAND_MODE_RAINBOWCYCLE,
+        COMMAND_MODE_RAINBOW,       COMMAND_MODE_COLOR,
+        COMMAND_MODE_DIGITAL_CLOCK, COMMAND_MODE_SYMBOL};
+
+    uint8_t nextMode = modes[0];
+    for (uint8_t i = 0; i < sizeof(modes) / sizeof(modes[0]); i++) {
+        if (G.prog == modes[i] ||
+            (G.prog == COMMAND_IDLE && modes[i] == COMMAND_MODE_WORD_CLOCK)) {
+            nextMode = modes[(i + 1) % (sizeof(modes) / sizeof(modes[0]))];
+            break;
+        }
+    }
+
+    G.prog = nextMode;
+    G.progInit = true;
+    parametersChanged = true;
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::nextHardwareButtonTransition() {
+    static const uint8_t transitions[] = {
+        NO_TRANSITION, ROLL_UP, ROLL_DOWN,   SHIFT_LEFT, SHIFT_RIGHT,
+        FADE,          LASER,   MATRIX_RAIN, BALLS,      FIRE,
+        SNAKE,         COLORED, RANDOM};
+
+    uint8_t nextTransition = transitions[0];
+    for (uint8_t i = 0; i < sizeof(transitions) / sizeof(transitions[0]); i++) {
+        if (G.transitionType == transitions[i]) {
+            nextTransition = transitions[(i + 1) % (sizeof(transitions) /
+                                                    sizeof(transitions[0]))];
+            break;
+        }
+    }
+
+    G.transitionType = nextTransition;
+    G.prog = COMMAND_MODE_TRANSITION;
+    G.progInit = true;
+    parametersChanged = true;
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::increaseHardwareButtonBrightness() {
+    float brightness = G.color[Foreground].B;
+    if (brightness <= 0.0f) {
+        brightness = 0.1f;
+    } else if (brightness >= 1.0f) {
+        brightness = 0.1f;
+    } else {
+        brightness += 0.1f;
+        if (brightness > 1.0f) {
+            brightness = 1.0f;
+        }
+    }
+
+    G.color[Foreground].B = brightness;
+    requestHardwareButtonDisplayRefresh();
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::nextHardwareButtonHue() {
+    float hue = G.color[Foreground].H + (30.0f / 360.0f);
+    if (hue >= 1.0f) {
+        hue -= 1.0f;
+    }
+    G.color[Foreground].H = hue;
+    requestHardwareButtonDisplayRefresh();
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::requestHardwareButtonDisplayRefresh() {
+    parametersChanged = true;
+    if (G.prog == COMMAND_IDLE) {
+        G.prog = COMMAND_MODE_WORD_CLOCK;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::handleHardwareButtonAction(HardwareButtonAction action) {
+    switch (action) {
+    case HardwareButtonAction::TogglePower:
+        toggleHardwareButtonPower();
+        break;
+    case HardwareButtonAction::NextMode:
+        nextHardwareButtonMode();
+        break;
+    case HardwareButtonAction::NextTransition:
+        nextHardwareButtonTransition();
+        break;
+    case HardwareButtonAction::IncreaseBrightness:
+        increaseHardwareButtonBrightness();
+        break;
+    case HardwareButtonAction::NextHue:
+        nextHardwareButtonHue();
+        break;
+    default:
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::loopHardwareButtons() {
+    const HardwareButtonAction action = hardwareButtonController.loop();
+    if (action != HardwareButtonAction::None) {
+        handleHardwareButtonAction(action);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 iUhrType *ClockWork::getPointer(uint8_t type) {
     switch (type) {
 #define X(name, id, var)                                                       \
@@ -127,41 +283,45 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
 
 void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
-    if (num == Grbw) {
-        if (strip_RGB != NULL) {
-            delete strip_RGB;
-            strip_RGB = NULL;
-        }
-        if (strip_RGBW == NULL) {
-#ifdef ESP8266
-            strip_RGBW = new NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod>(
-                MAX_LED_COUNT);
-#elif defined(ESP32)
-            pinMode(LED_PIN, OUTPUT);
-            strip_RGBW =
-                new NeoPixelBus<NeoGrbwFeature, NeoEsp32Rmt0Ws2812xMethod>(
-                    MAX_LED_COUNT, LED_PIN);
-#endif
-            strip_RGBW->Begin();
-        }
-    } else {
-        if (strip_RGBW != NULL) {
-            delete strip_RGBW;
-            strip_RGBW = NULL;
-        }
-        if (strip_RGB == NULL) {
-#ifdef ESP8266
-            strip_RGB = new NeoPixelBus<NeoMultiFeature, Neo800KbpsMethod>(
-                MAX_LED_COUNT);
-#elif defined(ESP32)
-            pinMode(LED_PIN, OUTPUT);
-            strip_RGB =
-                new NeoPixelBus<NeoMultiFeature, NeoEsp32Rmt0Ws2812xMethod>(
-                    MAX_LED_COUNT, LED_PIN);
-#endif
-            strip_RGB->Begin();
-        }
+    if (activeLedPin != G.hardwarePins.led || activeLedColorType != num) {
+        deleteActiveLedStrip();
+        activeLedPin = G.hardwarePins.led;
+        activeLedColorType = num;
     }
+
+    if (activeLedStrip != nullptr) {
+        return;
+    }
+
+#ifdef ESP8266
+    if (num == Grbw) {
+        if (G.hardwarePins.led == LED_PIN) {
+            activeLedStrip =
+                new RgbwLedStripAdapter<Neo800KbpsMethod>(MAX_LED_COUNT);
+        } else {
+            activeLedStrip =
+                new RgbwLedStripAdapter<NeoEsp8266BitBangWs2812xMethod>(
+                    MAX_LED_COUNT, G.hardwarePins.led);
+        }
+    } else if (G.hardwarePins.led == LED_PIN) {
+        activeLedStrip =
+            new RgbLedStripAdapter<Neo800KbpsMethod>(MAX_LED_COUNT);
+    } else {
+        activeLedStrip = new RgbLedStripAdapter<NeoEsp8266BitBangWs2812xMethod>(
+            MAX_LED_COUNT, G.hardwarePins.led);
+    }
+#else
+#if defined(ESP32)
+    pinMode(G.hardwarePins.led, OUTPUT);
+#endif
+    if (num == Grbw) {
+        activeLedStrip = new RgbwLedStripAdapter<NeoEsp32Rmt0Ws2812xMethod>(
+            MAX_LED_COUNT, G.hardwarePins.led);
+    } else {
+        activeLedStrip = new RgbLedStripAdapter<NeoEsp32Rmt0Ws2812xMethod>(
+            MAX_LED_COUNT, G.hardwarePins.led);
+    }
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -1125,6 +1285,7 @@ void ClockWork::loop(struct tm &tm) {
     unsigned long currentMillis = millis();
     countMillisSpeed += currentMillis - previousMillis;
     previousMillis = currentMillis;
+    loopHardwareButtons();
 
     // Faster runtime for demo
     transition->demoMode(_hour, _minute, _second);
@@ -1225,7 +1386,7 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_REQUEST_CONFIG_VALUES: {
-        DynamicJsonDocument config(1024);
+        DynamicJsonDocument config(1152);
         config["command"] = "config";
         config["ssid"] = network.getSSID();
         config["timeserver"] = G.timeserver;
@@ -1266,6 +1427,10 @@ void ClockWork::loop(struct tm &tm) {
         config["bootLedSweep"] = G.bootLedSweep;
         config["bootShowWifi"] = G.bootShowWifi;
         config["bootShowIP"] = G.bootShowIP;
+        config["ledPin"] = G.hardwarePins.led;
+        config["powerButtonPin"] = G.hardwarePins.powerButton;
+        config["modeButtonPin"] = G.hardwarePins.modeButton;
+        config["speedButtonPin"] = G.hardwarePins.speedButton;
         config["autoBrightEnabled"] = G.autoBrightEnabled;
         config["isRomanLanguage"] = usedUhrType->isRomanLanguage();
         config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
@@ -1411,6 +1576,29 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_SET_MQTT_HA_DISCOVERY: {
         mqtt.sendDiscovery();
+        break;
+    }
+
+    case COMMAND_SET_HARDWARE_PINS: {
+        if (!hardwarePinsAreValid()) {
+            Serial.println("Invalid hardware pin configuration, restoring "
+                           "defaults");
+            setDefaultHardwarePins();
+        }
+
+        Serial.printf("Hardware LED pin: GPIO%u\n", G.hardwarePins.led);
+        Serial.printf("Hardware power button pin: GPIO%u\n",
+                      G.hardwarePins.powerButton);
+        Serial.printf("Hardware mode button pin: GPIO%u\n",
+                      G.hardwarePins.modeButton);
+        Serial.printf("Hardware speed button pin: GPIO%u\n",
+                      G.hardwarePins.speedButton);
+
+        eeprom::write();
+        initHardwareButtons();
+        initLedStrip(G.Colortype);
+        led.clear();
+        parametersChanged = true;
         break;
     }
 
