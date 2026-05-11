@@ -440,24 +440,8 @@ label.pure-radio {
     display: inline-block;
 }
 
-.pure-form-aligned .pure-control-group:has(> label + select) {
-    display: grid;
-    grid-template-columns: minmax(8em, 16em) minmax(0, 1fr);
-    column-gap: 1em;
-    align-items: center;
-}
-
-.pure-form-aligned .pure-control-group:has(> label + select) > label {
-    width: auto;
-    margin: 0;
-    text-align: right;
-}
-
-.pure-form-aligned .pure-control-group:has(> label + select) > select {
-    justify-self: start;
-    min-width: 0;
-    max-width: 100%;
-    width: fit-content;
+.pure-form-aligned .pure-control-group > select {
+    max-width: calc(100% - 12em);
     box-sizing: border-box;
     text-overflow: ellipsis;
 }
@@ -474,6 +458,13 @@ label.pure-radio {
     border-radius: var(--app-radius);
     background: rgb(255 255 255 / 76%);
     box-shadow: inset 0 1px 0 rgb(255 255 255 / 82%);
+}
+
+.pure-form select {
+    height: auto;
+    line-height: 1.35;
+    padding-top: 0.45em;
+    padding-bottom: 0.45em;
 }
 
 .pure-form input[type="text"]:focus,
@@ -590,18 +581,9 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @media only screen and (width <= 480px) {
-    .pure-form-aligned .pure-control-group:has(> label + select) {
-        grid-template-columns: minmax(0, 1fr);
-        row-gap: 0.35em;
-    }
-
-    .pure-form-aligned .pure-control-group:has(> label + select) > label {
-        display: block;
-        text-align: left;
-    }
-
     .pure-form-aligned input, .pure-form-aligned select, .pure-form-aligned textarea, .pure-form-message-inline {
         width: 100%;
+        max-width: 100%;
     }
 }
 
