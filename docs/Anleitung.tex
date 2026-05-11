@@ -184,6 +184,7 @@ Für den Aufbau der Wortuhr wird folgende elektronische Hardware benötigt:
     \item NodeMCU oder vergleichbares Board mit ESP8266 oder ESP8285 Chip
     \item RGB-LED-Streifen WS2812B oder RGBW-Streifen SK6812
     \item Stromversorgung 5V 2A
+    \item Optional: Hardware-Taster für Power, Modus und Geschwindigkeit/Farbe
     \item Optional: LDR, 10 KOhm Widerstand
     \item Optional: BH1750 (digitaler Helligkeitssensor, ersetzt LDR)
     \item Optional: DS3231 (Echtzeituhr, für Offline-Betrieb)
@@ -211,7 +212,7 @@ Die erste LED wird nun mit einer Diode in der Plus Leitung betrieben. Die Durchl
 Das heißt, die erste LED wird sozusagen als Pegelanpassung missbraucht.
 
 \section{Anschlussbeispiel}
-Der Datenpin des LED Stripes muss zwingend an dem Port \say{Rx} angeschlossen werden. Grund für den festen Pin ist die verwendete Library. Der Pin kann nicht verändert werden (auch nicht in der Config). Wie auf dem muss eine Diode in die +5V Leitung der 1. LED. Die +5V Leitung zwischen der 1. und 2. LED muss durchtrennt werden (aber nur diese, nicht die Daten und GND!).
+Der Datenpin des LED Stripes ist in der Grundeinstellung an dem Port \say{Rx} (GPIO3) angeschlossen. Damit bleibt die bisherige ESP8266-Ansteuerung mit festem RX-Pin kompatibel. Wird der LED-Pin in der Hardware-Konfiguration geändert, verwendet die Firmware auf dem ESP8266 automatisch die Bit-Bang-Ansteuerung für den gewählten GPIO. Wie auf dem Schaltbild muss eine Diode in die +5V Leitung der 1. LED. Die +5V Leitung zwischen der 1. und 2. LED muss durchtrennt werden (aber nur diese, nicht die Daten und GND!).
 Am 2. Streifen wird dann zusätzlich vom Netzteil die +5V eingespeist. Die LED´s vom 1. Stripe werden dann sozusagen "rückwärts" mit den nötigen +5V versorgt.
 
     \begin{figure} [h]
@@ -220,6 +221,88 @@ Am 2. Streifen wird dann zusätzlich vom Netzteil die +5V eingespeist. Die LED´
 		\caption{Anschlussbeispiel}
 		\label{abb.Schematic}
 	\end{figure}
+
+\section{Konfigurierbare Hardware-Pins}
+
+Die Firmware kann den Datenpin des LED-Streifens und drei optionale Hardware-Taster konfigurieren. Die Konfiguration wird im Web-Frontend unter \say{Einstellungen} im Bereich \say{Hardware-Pins} vorgenommen. Es muss immer die GPIO-Nummer des Controllers eingetragen werden, nicht die auf dem Board aufgedruckte Bezeichnung. Bei NodeMCU-Boards ist zum Beispiel \say{D4} nicht die richtige Eingabe, sondern die zugehörige GPIO-Nummer.
+
+    \begin{figure} [H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{Logos/HardwarePinsWeb.png}
+        \caption{Hardware-Pin-Konfiguration im Web-Frontend}
+        \label{abb.HardwarePinsWeb}
+    \end{figure}
+
+\subsection{Standard-Pins}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{|l|l|X|}
+        \hline
+        Funktion & Standard-GPIO & Hinweis \\
+        \hline
+        LED-Streifen & GPIO3 & Auf ESP8266 entspricht dies RX und nutzt die alte, feste Standard-Ansteuerung. \\
+        \hline
+        Power-Taste & GPIO2 & Taster gegen GND; wird per internem Pull-up gelesen. \\
+        \hline
+        Mode-Taste & GPIO13 & Kurzer Druck: nächster Modus; langer Druck: nächste Transition. \\
+        \hline
+        Speed-Taste & GPIO14 & Kurzer Druck: Helligkeit; langer Druck: Farbton. \\
+        \hline
+    \end{tabularx}
+    \caption{Standardbelegung der konfigurierbaren Hardware-Pins}
+    \label{tab.HardwarePinsDefaults}
+\end{table}
+
+Die Taster werden mit \texttt{INPUT\_PULLUP} betrieben. Ein Taster verbindet den GPIO daher beim Drücken mit GND. Für alle vier Hardware-Pins gilt: Jeder GPIO darf nur einmal verwendet werden. Die Firmware prüft doppelte Pins und ungültige Werte und stellt bei ungültigen EEPROM-Werten wieder die Standard-Pins her.
+
+\subsection{Geeignete Pins je Controller}
+
+Die folgenden Empfehlungen beziehen sich auf die in diesem Projekt verwendeten Controller-Varianten. Zusätzlich muss geprüft werden, welche Pins auf dem konkreten Entwicklungsboard wirklich herausgeführt sind. Einige Hersteller drucken Board-Bezeichnungen wie \say{D1} oder \say{RX} auf; in der Web-Konfiguration wird trotzdem die GPIO-Nummer eingetragen.
+
+\subsubsection{ESP8266 / ESP8285}
+
+Für ESP8266-Boards akzeptiert die Firmware GPIO0 bis GPIO16. Empfehlenswert sind:
+
+\begin{itemize}
+    \item LED-Streifen: Standard GPIO3/RX. Alternativ GPIO4, GPIO5, GPIO12, GPIO13 oder GPIO14.
+    \item Hardware-Taster: GPIO4, GPIO5, GPIO12, GPIO13 oder GPIO14. GPIO2 ist als Standard für die Power-Taste nutzbar, darf beim Booten aber nicht auf LOW gezogen werden.
+    \item Nicht verwenden: GPIO6 bis GPIO11, da diese üblicherweise mit dem Flash-Speicher verbunden sind.
+    \item Mit Vorsicht verwenden: GPIO0, GPIO2 und GPIO15 sind Boot-Strapping-Pins. Falsche Pegel beim Einschalten können den Bootvorgang verhindern. GPIO16 hat keinen normalen internen Pull-up und ist deshalb für die Taster-Schaltung nicht empfohlen.
+\end{itemize}
+
+\subsubsection{ESP32}
+
+Für ESP32-Boards akzeptiert die Firmware GPIO0 bis GPIO39. Empfehlenswert sind:
+
+\begin{itemize}
+    \item LED-Streifen: GPIO4, GPIO13 bis GPIO19, GPIO21 bis GPIO23, GPIO25 bis GPIO27, GPIO32 oder GPIO33. GPIO3 bleibt als Standard aus Kompatibilitätsgründen möglich, liegt aber oft auf RX0.
+    \item Hardware-Taster: GPIO4, GPIO13 bis GPIO19, GPIO21 bis GPIO23, GPIO25 bis GPIO27, GPIO32 oder GPIO33.
+    \item Nicht verwenden: GPIO6 bis GPIO11, da diese üblicherweise mit dem SPI-Flash verbunden sind.
+    \item Nicht für den LED-Streifen verwenden: GPIO34 bis GPIO39, da diese nur Eingang sind. Für Taster sind sie nur mit externem Pull-up geeignet, da sie keine internen Pull-up-/Pull-down-Widerstände besitzen.
+    \item Mit Vorsicht verwenden: GPIO0, GPIO2, GPIO5, GPIO12 und GPIO15 sind Boot-Strapping-Pins. GPIO1 und GPIO3 sind die Standard-UART-Pins und können die serielle Ausgabe stören.
+\end{itemize}
+
+\subsubsection{ESP32-C3}
+
+Der ESP32-C3 besitzt GPIO0 bis GPIO21. Auch wenn die Weboberfläche höhere Zahlen nicht verhindert, sollten nur tatsächlich vorhandene Pins des Boards verwendet werden. Empfehlenswert sind:
+
+\begin{itemize}
+    \item LED-Streifen und Hardware-Taster: GPIO0, GPIO1, GPIO3, GPIO4, GPIO5, GPIO6, GPIO7, GPIO10, GPIO11, GPIO20 oder GPIO21, sofern diese Pins auf dem verwendeten Board herausgeführt sind.
+    \item Nicht verwenden: GPIO12 bis GPIO17, da diese üblicherweise mit SPI-Flash oder PSRAM verbunden sind.
+    \item Mit Vorsicht verwenden: GPIO2, GPIO8 und GPIO9 sind Boot-Strapping-Pins. GPIO18 und GPIO19 sind standardmäßig für USB-JTAG vorgesehen.
+    \item Hinweis zu den Standard-Pins: GPIO13 und GPIO14 sind auf ESP32-C3-Boards häufig nicht als freie GPIOs nutzbar. Für ESP32-C3 sollten die Button-Pins daher vor dem Verdrahten auf geeignete freie GPIOs geändert werden.
+\end{itemize}
+
+Die Einschränkungen orientieren sich an den GPIO-Hinweisen der Espressif-Dokumentation für ESP32 und ESP32-C3 sowie den bekannten ESP8266-Boot- und Flash-Pins.
+
+\subsection{Bedienung der Hardware-Taster}
+
+\begin{itemize}
+    \item Power-Taste: schaltet die LEDs aus und bei erneutem Druck wieder mit den vorherigen Farben ein.
+    \item Mode-Taste: kurzer Druck wechselt zum nächsten Anzeigemodus, langer Druck zur nächsten Transition.
+    \item Speed-Taste: kurzer Druck erhöht die Helligkeit, langer Druck wechselt den Farbton.
+\end{itemize}
 
 \chapter{Funktionen der Uhrensoftware auf dem ESP}
 
