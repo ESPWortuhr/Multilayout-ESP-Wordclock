@@ -21,6 +21,11 @@ let TRANSLATION_ES = {
 		"text": "Se perdió la conexión con el reloj."
 	},
 
+	"reboot-recommended": {
+		"button": "Reiniciar",
+		"text": "Se recomienda reiniciar para aplicar la configuración modificada."
+	},
+
 	"colors": {
 		"h1": "Colores",
 		"with-background": "Con color de fondo"
@@ -137,7 +142,9 @@ let TRANSLATION_ES = {
 			"buildtype": "Tipo de Diseño",
 			"normal": "Cada LED corresponde a una letra",
 			"doubleResM1": "Cada segundo LED corresponde a una letra",
-			"doubleRes": "Dos LED por letra"
+			"doubleRes": "Dos LED por letra",
+			"trippleRes": "Tres LED por letra",
+			"quadRes": "Cuatro LED por letra"
 		},
 		"language": {
 			"h2": "Idioma",

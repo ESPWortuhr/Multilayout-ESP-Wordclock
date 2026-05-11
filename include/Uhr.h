@@ -121,7 +121,22 @@ enum class BuildTypeDef : uint8_t {
     Normal = 0,
     DoubleResM1 = 1,
     DoubleRes = 2,
+    TrippleRes = 3,
+    QuadRes = 4,
 };
+
+inline uint8_t getLedsPerLetter(BuildTypeDef buildTypeDef) {
+    switch (buildTypeDef) {
+    case BuildTypeDef::DoubleRes:
+        return 2;
+    case BuildTypeDef::TrippleRes:
+        return 3;
+    case BuildTypeDef::QuadRes:
+        return 4;
+    default:
+        return 1;
+    }
+}
 
 enum class MinuteVariant : uint8_t {
     Off = 0,

@@ -242,7 +242,11 @@ void Led::setPixel(uint16_t ledIndex, HsbColor color) {
 //------------------------------------------------------------------------------
 
 void Led::setPixel(uint8_t row, uint8_t col, HsbColor color) {
-    setPixel(usedUhrType->getFrontMatrixIndex(row, col), color);
+    const uint8_t numLEDsPerLetter = getLedsPerLetter(G.buildTypeDef);
+    uint16_t ledIndex = usedUhrType->getFrontMatrixIndex(row, col);
+    for (int i = 0; i < numLEDsPerLetter; i++) {
+        setPixel(ledIndex * numLEDsPerLetter + i, color);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -265,7 +269,7 @@ void Led::setbyFrontMatrix(ColorPosition colorPosition,
             if (boolSetPixel) {
                 setPixel(row, col, displayedColor);
             } else if (colorPosition != Background) {
-                clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
+                clearPixel(row, col);
             }
         }
     }
@@ -452,6 +456,16 @@ bool Led::getState() {
 // Pixel Clear Functions
 //------------------------------------------------------------------------------
 
+inline void Led::clearPixel(uint8_t row, uint8_t col) {
+    const uint8_t numLEDsPerLetter = getLedsPerLetter(G.buildTypeDef);
+    uint16_t ledIndex = usedUhrType->getFrontMatrixIndex(row, col);
+    for (int i = 0; i < numLEDsPerLetter; i++) {
+        clearPixel(ledIndex * numLEDsPerLetter + i);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 inline void Led::clearPixel(uint16_t i) { activeLedStrip->clearPixel(i); }
 
 //------------------------------------------------------------------------------
@@ -460,7 +474,7 @@ inline void Led::clearClock() {
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
             usedUhrType->setFrontMatrixPixel(row, col, false);
-            clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
+            clearPixel(row, col);
         }
     }
 }
@@ -470,7 +484,7 @@ inline void Led::clearClock() {
 inline void Led::clearRow(uint8_t row) {
     for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
         usedUhrType->setFrontMatrixPixel(row, col, false);
-        clearPixel(usedUhrType->getFrontMatrixIndex(row, col));
+        clearPixel(row, col);
     }
 }
 

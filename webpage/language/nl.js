@@ -21,6 +21,11 @@ let TRANSLATION_NL = {
 		"text": "De verbinding met de Woordklok is verbroken."
 	},
 
+	"reboot-recommended": {
+		"button": "Herstart",
+		"text": "Een herstart wordt aanbevolen om de gewijzigde instelling toe te passen."
+	},
+
 	"colors": {
 		"h1": "Kleuren",
 		"with-background": "Met achtergrondkleur"
@@ -137,7 +142,9 @@ let TRANSLATION_NL = {
 			"buildtype": "bouwtype",
 			"normal": "Elke LED komt overeen met een letter",
 			"doubleResM1": "Elke tweede LED komt overeen met een letter",
-			"doubleRes": "Twee LED's per letter"
+			"doubleRes": "Twee LED's per letter",
+			"trippleRes": "Drie LED's per letter",
+			"quadRes": "Vier LED's per letter"
 		},
 		"language": {
 			"h2": "Taal",

@@ -419,11 +419,13 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
                                RgbfColor &foreground, RgbfColor &background) {
     RgbfColor color, color1(0), color2(0);
     uint32_t colorCounter1 = 0, colorCounter2 = 0;
+    const uint8_t numLEDsPerLetter = getLedsPerLetter(G.buildTypeDef);
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
             if (source == STRIPE) {
-                color = RgbfColor(
-                    led.getPixel(usedUhrType->getFrontMatrixIndex(row, col)));
+                color = RgbfColor(led.getPixel(
+                    usedUhrType->getFrontMatrixIndex(row, col) *
+                    numLEDsPerLetter));
             } else {
                 color = source[row][col];
             }
@@ -474,10 +476,10 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
 void Transition::copy2Stripe(RgbfColor **source) {
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
-            led.setPixel(
-                usedUhrType->getFrontMatrixIndex(row, col),
-                HsbColor{RgbColor(source[row][col].R, source[row][col].G,
-                                  source[row][col].B)});
+            led.setPixel(row, col,
+                         HsbColor{RgbColor(source[row][col].R,
+                                           source[row][col].G,
+                                           source[row][col].B)});
         }
     }
 }

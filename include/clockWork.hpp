@@ -16,6 +16,7 @@ OpenWMap weather;
 
 uint8_t activeLedPin = UINT8_MAX;
 uint8_t activeLedColorType = UINT8_MAX;
+uint16_t activeLedCount = 0;
 
 //------------------------------------------------------------------------------
 // Helper Functions
@@ -283,10 +284,15 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
 
 void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
-    if (activeLedPin != G.hardwarePins.led || activeLedColorType != num) {
+    const uint16_t ledCount =
+        MAX_LED_COUNT * getLedsPerLetter(G.buildTypeDef);
+
+    if (activeLedPin != G.hardwarePins.led || activeLedColorType != num ||
+        activeLedCount != ledCount) {
         deleteActiveLedStrip();
         activeLedPin = G.hardwarePins.led;
         activeLedColorType = num;
+        activeLedCount = ledCount;
     }
 
     if (activeLedStrip != nullptr) {
@@ -297,18 +303,18 @@ void ClockWork::initLedStrip(uint8_t num) {
     if (num == Grbw) {
         if (G.hardwarePins.led == LED_PIN) {
             activeLedStrip =
-                new RgbwLedStripAdapter<Neo800KbpsMethod>(MAX_LED_COUNT);
+                new RgbwLedStripAdapter<Neo800KbpsMethod>(ledCount);
         } else {
             activeLedStrip =
                 new RgbwLedStripAdapter<NeoEsp8266BitBangWs2812xMethod>(
-                    MAX_LED_COUNT, G.hardwarePins.led);
+                    ledCount, G.hardwarePins.led);
         }
     } else if (G.hardwarePins.led == LED_PIN) {
         activeLedStrip =
-            new RgbLedStripAdapter<Neo800KbpsMethod>(MAX_LED_COUNT);
+            new RgbLedStripAdapter<Neo800KbpsMethod>(ledCount);
     } else {
         activeLedStrip = new RgbLedStripAdapter<NeoEsp8266BitBangWs2812xMethod>(
-            MAX_LED_COUNT, G.hardwarePins.led);
+            ledCount, G.hardwarePins.led);
     }
 #else
 #if defined(ESP32)
@@ -316,10 +322,10 @@ void ClockWork::initLedStrip(uint8_t num) {
 #endif
     if (num == Grbw) {
         activeLedStrip = new RgbwLedStripAdapter<NeoEsp32Rmt0Ws2812xMethod>(
-            MAX_LED_COUNT, G.hardwarePins.led);
+            ledCount, G.hardwarePins.led);
     } else {
         activeLedStrip = new RgbLedStripAdapter<NeoEsp32Rmt0Ws2812xMethod>(
-            MAX_LED_COUNT, G.hardwarePins.led);
+            ledCount, G.hardwarePins.led);
     }
 #endif
 }
