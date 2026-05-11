@@ -284,8 +284,7 @@ iUhrType *ClockWork::getPointer(uint8_t type) {
 
 void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
-    const uint16_t ledCount =
-        MAX_LED_COUNT * getLedsPerLetter(G.buildTypeDef);
+    const uint16_t ledCount = MAX_LED_COUNT * getLedsPerLetter(G.buildTypeDef);
 
     if (activeLedPin != G.hardwarePins.led || activeLedColorType != num ||
         activeLedCount != ledCount) {
@@ -310,8 +309,7 @@ void ClockWork::initLedStrip(uint8_t num) {
                     ledCount, G.hardwarePins.led);
         }
     } else if (G.hardwarePins.led == LED_PIN) {
-        activeLedStrip =
-            new RgbLedStripAdapter<Neo800KbpsMethod>(ledCount);
+        activeLedStrip = new RgbLedStripAdapter<Neo800KbpsMethod>(ledCount);
     } else {
         activeLedStrip = new RgbLedStripAdapter<NeoEsp8266BitBangWs2812xMethod>(
             ledCount, G.hardwarePins.led);

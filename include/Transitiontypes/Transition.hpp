@@ -423,9 +423,9 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
             if (source == STRIPE) {
-                color = RgbfColor(led.getPixel(
-                    usedUhrType->getFrontMatrixIndex(row, col) *
-                    numLEDsPerLetter));
+                color = RgbfColor(
+                    led.getPixel(usedUhrType->getFrontMatrixIndex(row, col) *
+                                 numLEDsPerLetter));
             } else {
                 color = source[row][col];
             }
@@ -476,10 +476,10 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
 void Transition::copy2Stripe(RgbfColor **source) {
     for (uint8_t row = 0; row < usedUhrType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedUhrType->colsWordMatrix(); col++) {
-            led.setPixel(row, col,
-                         HsbColor{RgbColor(source[row][col].R,
-                                           source[row][col].G,
-                                           source[row][col].B)});
+            led.setPixel(
+                row, col,
+                HsbColor{RgbColor(source[row][col].R, source[row][col].G,
+                                  source[row][col].B)});
         }
     }
 }
