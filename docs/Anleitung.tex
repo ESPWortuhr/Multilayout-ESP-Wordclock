@@ -84,15 +84,15 @@
 
 \chapter{Einleitung}
 
-Diese Anleitung soll helfen, eine mehrsprachige Wortuhr zu bauen, die auf einem ESP8266 Mikrocontroller und einer programmierbaren LED-Leiste (WS2812 oder SK6812) basiert. Dieses Projekt wurde über mehrere Jahre von einer Vielzahl von Mitwirkenden auf Github entwickelt und frei zur Verfügung gestellt.\\
-Eine Wortuhr (auch als Wordclock bekannt) ist ein schönes DIY-Projekt für Anfänger, das Technologie und Design kombiniert, um eine funktionelle und ästhetisch ansprechende Uhr zu schaffen. Egal, ob Sie Anfänger oder erfahrener Bastler sind, dieses Projekt ist eine großartige Gelegenheit, Ihre Fähigkeiten unter Beweis zu stellen und etwas wirklich Besonderes zu schaffen. Die Gestaltungsmöglichkeiten liegen vor allem im Rahmen und in der Wahl der Oberfläche der Uhr. 
+Diese Anleitung soll helfen, eine mehrsprachige Wortuhr zu bauen, die auf einem ESP8266-, ESP8285-, ESP32- oder ESP32-C3-Mikrocontroller und einer programmierbaren LED-Leiste (WS2812 oder SK6812) basiert. Dieses Projekt wurde über mehrere Jahre von einer Vielzahl von Mitwirkenden auf GitHub entwickelt und frei zur Verfügung gestellt.\\
+Eine Wortuhr (auch als Wordclock bekannt) ist ein schönes DIY-Projekt für Anfänger, das Technologie und Design kombiniert, um eine funktionale und ästhetisch ansprechende Uhr zu schaffen. Egal, ob Sie Anfänger oder erfahrener Bastler sind, dieses Projekt ist eine großartige Gelegenheit, Ihre Fähigkeiten unter Beweis zu stellen und etwas wirklich Besonderes zu schaffen. Die Gestaltungsmöglichkeiten liegen vor allem im Rahmen und in der Wahl der Oberfläche der Uhr.
 
 \section{Hauptfunktionen}
 
 Die bereitgestellte Software zum Betreiben der Wortuhr hat mehrere Funktionen:
 
 \begin{itemize}
-    \item Mehrsprachig (Deutsch, Englisch, Niederländisch, Italienisch, Spanisch, Ungarisch, Französisch, Römänisch, Schweizer Deutsch, Russisch und Schwedisch)
+    \item Mehrsprachig (Deutsch, Englisch, Niederländisch, Italienisch, Spanisch, Ungarisch, Französisch, Rumänisch, Schweizer Deutsch, Russisch und Schwedisch)
     \item Unterstützung für mehrere Matrizengrößen und LED-Abstände
     \item Farbwechsel der Anzeigefarbe möglich (RGB oder RGBW)
     \item Digitale Uhranzeige
@@ -104,7 +104,19 @@ Die bereitgestellte Software zum Betreiben der Wortuhr hat mehrere Funktionen:
     \item Home-Assistant-Einbindung mit Autodiscovery
 \end{itemize}
 
-\section{Uhren Varianten}
+\section{Uhrenvarianten}
+
+Die Firmware unterstützt verschiedene Frontplatten und Matrixgrößen. Die passende Variante wird später im Web-Frontend unter \say{Anzeigeoptionen} im Bereich \say{Front} ausgewählt. Wichtig ist, dass die eingestellte Matrix zur tatsächlich gebauten Buchstabenmaske und zur Anordnung der LEDs passt.
+
+\begin{itemize}
+    \item Klassische deutsche Layouts mit 10 \(\times\) 11, 11 \(\times\) 11, 13 \(\times\) 13, 16 \(\times\) 8 oder 16 \(\times\) 18 LEDs
+    \item Kompakte Varianten mit 8 \(\times\) 8 LEDs, teilweise für Viertelstunden-Anzeige
+    \item Internationale Layouts, unter anderem Englisch, Niederländisch, Spanisch, Italienisch, Ungarisch, Französisch, Rumänisch, Schweizer Deutsch, Russisch, Schwedisch und Bengalisch
+    \item Dialekt- und Sondervarianten wie Bayerisch, Schwäbisch, Nero, mrrioes oder Wetter-Layout
+    \item Bauarten mit einer LED pro Buchstabe oder erhöhter Auflösung, bei der jede zweite LED einem Buchstaben entspricht
+\end{itemize}
+
+Zusätzlich können im Web-Frontend die Minutenzählrichtung, horizontale oder vertikale Spiegelung, gedrehte Layouts, zusätzliche LEDs pro Reihe und mäanderförmig verlegte LED-Streifen eingestellt werden. Diese Optionen sind hilfreich, wenn die LED-Streifen anders herum eingebaut wurden oder die Frontplatte gespiegelt gefertigt ist.
 
 \section{Voraussetzungen}
 
@@ -113,41 +125,41 @@ Die folgende Hardware/Software wird für dieses Projekt benötigt:
 \subsubsection{Hardware}
 
 \begin{itemize}
-    \item NodeMCU oder vergleichbares Board mit einem dem ESP8266 oder ESP8285 Chip
+    \item NodeMCU oder vergleichbares Board mit ESP8266-, ESP8285-, ESP32- oder ESP32-C3-Chip
     \item WS2812B RGB-LED-Streifen oder SK6812 RGBW-Streifen
-    \item Stromversorgung 5V 2A
+    \item Stromversorgung 5 V / 2 A
     \item Optional: LDR, 10 KOhm-Widerstand
-    \item Optional: BH1750 (digitaler Helligkeitssensor, anstallt LDR)
-    \item Optional: DS3231 (Echtzeituhr, für den offline Betrieb)
+    \item Optional: BH1750 (digitaler Helligkeitssensor, anstatt LDR)
+    \item Optional: DS3231 (Echtzeituhr, für den Offline-Betrieb)
 \end{itemize}
 
 \subsubsection{Software}
 
 \begin{itemize}
-    \item PlatformIO Core oder IDE (bspw. VIsual Studio Code)
+    \item PlatformIO Core oder IDE (bspw. Visual Studio Code)
     \item Node.js
     \item Git
 \end{itemize}
 
 \chapter{Installation der Wortuhr Software}
 
-\section{Erstmaliges Aufspielen mittels Binary}
-Für das erstmalige Aufspielen liegen auf der Githubseite Rechts \say{Releases} zur Verfügung. Dabei handelt es sich um fertig compilierte Versionen der Software. Programme zum aufspielen der binary findet man z.B. unter \say{https://github.com/nodemcu/nodemcu-flasher}
+\section{Erstmaliges Aufspielen einer Binary}
+Für das erstmalige Aufspielen stehen auf der GitHub-Seite rechts unter \say{Releases} fertige Versionen der Software zur Verfügung. Programme zum Aufspielen der Binary findet man z.B. unter \say{https://github.com/nodemcu/nodemcu-flasher}.
 
 \section{Windows}
 
 \begin{enumerate}
-    \item Installieren Sie die aktellsten Versionen von PlatformIO, Node.js und Git manuell
+    \item Installieren Sie die aktuellsten Versionen von PlatformIO, Node.js und Git manuell
     \item Dadurch wird Visual Studio Code installiert, mit einem PlatformIO-Symbol (Ameisenkopf/Alien) in der Seitenleiste
     \item Gehen Sie zu \say{Quick Access / Miscellaneous} und geben Sie den Befehl \say{Clone Git Project} ein, und geben Sie \href{https://github.com/ESPWortuhr/Multilayout-ESP-Wordclock}{https://github.com/ESPWortuhr/Multilayout-ESP-Wordclock} als URL ein
     \item Gehen Sie dann zu \say{Projekte}, fügen Sie das neue Projekt mit \say{Vorhandenes hinzufügen} zur Liste hinzu und klicken Sie auf \say{Öffnen}.
-    \item In der PlatformIO-Seitenleiste erscheint nun \say{Project Tasks}. Wählen Sie den Befehl \say{General / Upload'} (dauert ein paar Minuten, die Software wird zuerst erstellt).
+    \item In der PlatformIO-Seitenleiste erscheint nun \say{Project Tasks}. Wählen Sie den Befehl \say{General / Upload} (dauert ein paar Minuten, die Software wird zuerst erstellt).
     \item Schließen Sie den ESP8266 über USB an. Wenn die Wortuhr-Software erstellt ist, wird sie auf dem ESP installiert.
 \end{enumerate}
 
-\section{MacOS}
+\section{macOS}
 
-Der einfachste Weg wäre mit \say{homebrew}:
+Der einfachste Weg ist die Installation mit \say{Homebrew}:
 
 \begin{lstlisting}
     brew install platformio
@@ -157,7 +169,7 @@ Der einfachste Weg wäre mit \say{homebrew}:
     pio run -t upload
 \end{lstlisting}
 
-Dabei ist der ESP8266 über USB angeschlossen. Die Wortuhr-Software wird dabei mittels Plattformio erstellt und auf den ESP übertragen.
+Dabei ist der ESP über USB angeschlossen. Die Wortuhr-Software wird dabei mittels PlatformIO erstellt und auf den ESP übertragen.
 
 \section{Linux}
 
@@ -169,7 +181,18 @@ Dabei ist der ESP8266 über USB angeschlossen. Die Wortuhr-Software wird dabei m
     pio run -t upload
 \end{lstlisting}
 
-Dabei ist der ESP8266 über USB angeschlossen. Die Wortuhr-Software wird dabei mittels Plattformio erstellt und auf den ESP übertragen.
+Dabei ist der ESP über USB angeschlossen. Die Wortuhr-Software wird dabei mittels PlatformIO erstellt und auf den ESP übertragen.
+
+\section{Erster Start und WLAN-Einrichtung}
+Nach dem erfolgreichen Aufspielen startet die Uhr neu. Falls noch keine WLAN-Daten hinterlegt sind, erstellt sie ein eigenes WLAN für die Einrichtung. Die Standard-SSID ist \say{Connect\_to\_Wordclock}, sofern sie in der Firmware-Konfiguration nicht geändert wurde.
+
+\begin{enumerate}
+    \item Mit Smartphone oder Laptop mit dem WLAN der Uhr verbinden.
+    \item Falls sich kein Anmeldefenster öffnet, im Browser \say{http://192.168.4.1} aufrufen.
+    \item Das heimische WLAN auswählen und die Zugangsdaten eintragen.
+    \item Nach dem Speichern startet die Uhr neu und verbindet sich mit dem Heimnetzwerk.
+    \item Die danach verwendete IP-Adresse wird in der Grundeinstellung beim Start als Laufschrift ausgegeben.
+\end{enumerate}
 
 \section{Update der Firmware über das Web-Frontend}
 Mit der Software ist es möglich, die Firmware \textbf{OTA} (over the air), über den in der Uhr eingebauten Webserver zu aktualisieren. Dies ist in den meisten Fällen einfacher als das direkte Flashen.
@@ -181,19 +204,19 @@ http://<IP-Adresse der Uhr>:81/update erreichbar (Beispiel: http://192.168.4.1:8
 Für den Aufbau der Wortuhr wird folgende elektronische Hardware benötigt:
 
 \begin{itemize}
-    \item NodeMCU oder vergleichbares Board mit ESP8266 oder ESP8285 Chip
+    \item NodeMCU oder vergleichbares Board mit ESP8266-, ESP8285-, ESP32- oder ESP32-C3-Chip
     \item RGB-LED-Streifen WS2812B oder RGBW-Streifen SK6812
-    \item Stromversorgung 5V 2A
+    \item Stromversorgung 5 V / 2 A
     \item Optional: Hardware-Taster für Power, Modus und Geschwindigkeit/Farbe
     \item Optional: LDR, 10 KOhm Widerstand
     \item Optional: BH1750 (digitaler Helligkeitssensor, ersetzt LDR)
     \item Optional: DS3231 (Echtzeituhr, für Offline-Betrieb)
 \end{itemize}
 
-Ich möchte dich gerne darüber informieren, was du noch alles für den Bau benötigst. Da es verschiedene Arten gibt, eine Uhr zu bauen, werde ich dir hier nur die grundlegenden Dinge aufzählen, die ich oft verwende:
+Neben der Elektronik werden für den mechanischen Aufbau weitere Materialien benötigt. Da es verschiedene Arten gibt, eine Uhr zu bauen, sind hier nur die grundlegenden Dinge aufgeführt:
 
 \begin{itemize}
-    \item Bilderrahmen (Holz oder Metall mit mindestens 14mm Rahmenhöhe)
+    \item Bilderrahmen (Holz oder Metall mit mindestens 14 mm Rahmenhöhe)
     \item Diffusorfolie
     \item Buchstabenmaske
     \item Abstandsgitter (Holz oder Kunststoffschaum)
@@ -201,19 +224,19 @@ Ich möchte dich gerne darüber informieren, was du noch alles für den Bau ben�
 
 \section{Pegelanpassung}
 
-Der ESP arbeitet intern mit einer Betriebsspannung von 3,3V. Die WS2812(B) Streifen arbeiten dagegen mit 5V. Dies erfordert eine Pegelanpassung, damit die digitalen Signale fehlerfrei zu den Stripes übertragen warden können. Ohne Anpassung kann es auch funktionieren, muss es aber nicht. 
+Der ESP arbeitet intern mit einer Betriebsspannung von 3,3 V. Die WS2812(B)-Streifen arbeiten dagegen mit 5 V. Dies erfordert eine Pegelanpassung, damit die digitalen Signale fehlerfrei zu den Streifen übertragen werden können. Ohne Anpassung kann es auch funktionieren, muss es aber nicht.
 Es gilt: "Der minimale High-Pegel des Ausgangs muss höher sein als der minimale High-Pegel des Eingangs"
 Was heißt das im Klartext?
-Laut Datenblatt des Stripes sind folgende Pegel notwendig, um ein "sauberes" HIGH und LOW Signal zu bekommen.
-Um ein HIGH Signal am Eingang des WS2812B Stripes zu erzeugen, muss laut Datenblatt (Bild 1) mindestens ein Pegel von 4,3V erzeugt werden. Da der ESP aber maximal 3,3V erzeugen kann, wird hier kein sicheres HIGH Signal erzeugt.
+Laut Datenblatt des LED-Streifens sind folgende Pegel notwendig, um ein \say{sauberes} HIGH- und LOW-Signal zu bekommen.
+Um ein HIGH-Signal am Eingang des WS2812B-Streifens zu erzeugen, muss laut Datenblatt (Bild 1) mindestens ein Pegel von 4,3 V erzeugt werden. Da der ESP aber maximal 3,3 V erzeugen kann, wird hier kein sicheres HIGH-Signal erzeugt.
 
 Nun kommt der Trick mit der Diode:
-Die erste LED wird nun mit einer Diode in der Plus Leitung betrieben. Die Durchlassspannung der Diode beträgt 0,7V. Das heißt, dass die erste Diode mit 4,3V betrieben wird. Das ist laut Datenblatt auch zulässig. Bei 4,3V beträgt der benötigte HIGH Pegel nun noch 3,6V. Da die Hersteller noch Toleranzen mit einberechnen funktioniert das ganze Konstrukt wieder. Nun gibt die erste LED den Pegel mit 4,3V an die nächste LED weiter (diese wird wieder mit 5V betrieben und der HIGH Pegel liegt mit 4,3V wieder im Datenblatt in der Toleranz). Die zweite LED verstärkt sozusagen das Signal wieder auf die volle 5V.
+Die erste LED wird nun mit einer Diode in der Plus-Leitung betrieben. Die Durchlassspannung der Diode beträgt 0,7 V. Das heißt, dass die erste LED mit 4,3 V betrieben wird. Das ist laut Datenblatt auch zulässig. Bei 4,3 V beträgt der benötigte HIGH-Pegel nun noch 3,6 V. Da die Hersteller noch Toleranzen mit einberechnen, funktioniert das ganze Konstrukt wieder. Nun gibt die erste LED den Pegel mit 4,3 V an die nächste LED weiter. Diese wird wieder mit 5 V betrieben und der HIGH-Pegel liegt mit 4,3 V wieder innerhalb der Datenblatt-Toleranz. Die zweite LED verstärkt sozusagen das Signal wieder auf die vollen 5 V.
 Das heißt, die erste LED wird sozusagen als Pegelanpassung missbraucht.
 
 \section{Anschlussbeispiel}
-Der Datenpin des LED Stripes ist in der Grundeinstellung an dem Port \say{Rx} (GPIO3) angeschlossen. Damit bleibt die bisherige ESP8266-Ansteuerung mit festem RX-Pin kompatibel. Wird der LED-Pin in der Hardware-Konfiguration geändert, verwendet die Firmware auf dem ESP8266 automatisch die Bit-Bang-Ansteuerung für den gewählten GPIO. Wie auf dem Schaltbild muss eine Diode in die +5V Leitung der 1. LED. Die +5V Leitung zwischen der 1. und 2. LED muss durchtrennt werden (aber nur diese, nicht die Daten und GND!).
-Am 2. Streifen wird dann zusätzlich vom Netzteil die +5V eingespeist. Die LED´s vom 1. Stripe werden dann sozusagen "rückwärts" mit den nötigen +5V versorgt.
+Der Datenpin des LED-Streifens ist in der Grundeinstellung an dem Port \say{Rx} (GPIO3) angeschlossen. Damit bleibt die bisherige ESP8266-Ansteuerung mit festem RX-Pin kompatibel. Wird der LED-Pin in der Hardware-Konfiguration geändert, verwendet die Firmware auf dem ESP8266 automatisch die Bit-Bang-Ansteuerung für den gewählten GPIO. Wie auf dem Schaltbild muss eine Diode in die +5-V-Leitung der ersten LED. Die +5-V-Leitung zwischen der ersten und zweiten LED muss durchtrennt werden (aber nur diese, nicht Daten und GND!).
+Am zweiten Streifen wird dann zusätzlich vom Netzteil +5 V eingespeist. Die LEDs vom ersten Streifen werden dann sozusagen \say{rückwärts} mit den nötigen +5 V versorgt.
 
     \begin{figure} [h]
 		\centering
@@ -228,7 +251,7 @@ Die Firmware kann den Datenpin des LED-Streifens und drei optionale Hardware-Tas
 
     \begin{figure} [H]
         \centering
-        \includegraphics[width=0.9\linewidth]{Logos/HardwarePinsWeb.png}
+        \includegraphics[width=0.9\linewidth]{Logos/WebFrontendHardwarePins.png}
         \caption{Hardware-Pin-Konfiguration im Web-Frontend}
         \label{abb.HardwarePinsWeb}
     \end{figure}
@@ -308,11 +331,61 @@ Die Einschränkungen orientieren sich an den GPIO-Hinweisen der Espressif-Dokume
 
 \section{Verbinden der Uhr mit dem eigenen WLAN}
 Nach dem erfolgreichen Verbinden kann die Uhr nach Eingabe der angezeigten IP-Adresse in einem Browser konfiguriert werden. Dabei kann die Uhr auch mit dem eigenen WLAN Netz verbunden werden.
+
+Die WLAN-Konfiguration befindet sich im Web-Frontend unter \say{Einstellungen} im Bereich \say{Wi-Fi / WLAN}. Dort kann die Neukonfiguration gestartet oder das WLAN bis zum Neustart deaktiviert werden.
+
+    \begin{figure} [H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{Logos/WebFrontendWifi.png}
+        \caption{WLAN-Konfiguration im Web-Frontend}
+        \label{abb.WebFrontendWifi}
+    \end{figure}
  
 \section{Zeitserver (NTP Server)}
 Falls die Uhr an das eigene WLAN mit Internet angebunden wird, kann ein Zeitserver hinterlegt werden. Dieser sorgt dafür, dass die Uhrzeit zyklisch sekundengenau gestellt wird. 
+
+Der Zeitserver wird im Web-Frontend unter \say{Einstellungen} im Bereich \say{Zeitserver} eingetragen und gespeichert.
+
+    \begin{figure} [H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{Logos/WebFrontendTimeServer.png}
+        \caption{Zeitserver-Konfiguration im Web-Frontend}
+        \label{abb.WebFrontendTimeServer}
+    \end{figure}
  
 \section{Automatische Helligkeitsregelung}
 Falls der optionale LDR an der Uhr angeschlossen wurde, ist es möglich, die Helligkeit automatisch, abhängig der Umgebungshelligkeit, regeln zu lassen. Dazu muss folgende Einstellung aktiviert werden. Durch das Feld Kalibrierung kann man die Grundhelligkeit an seine eigenen Wünsche anpassen.
+
+Die automatische Helligkeit wird im Web-Frontend unter \say{Einstellungen} im Bereich \say{Helligkeit} konfiguriert. Im Modus \say{Automatisch} können minimale und maximale LED-Helligkeit sowie das Referenz-Umgebungslicht angepasst werden.
+
+    \begin{figure} [H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{Logos/WebFrontendAutoBrightness.png}
+        \caption{Automatische Helligkeitsregelung im Web-Frontend}
+        \label{abb.WebFrontendAutoBrightness}
+    \end{figure}
+
+\section{Fehlersuche}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        Problem & Mögliche Ursache und Lösung \\
+        \hline
+        Kein WLAN der Uhr sichtbar & Die Uhr neu starten und einige Sekunden warten. Falls bereits WLAN-Daten gespeichert sind, startet kein Captive Portal. Dann die aktuelle IP-Adresse verwenden oder die WLAN-Konfiguration im Web-Frontend erneut starten. \\
+        \hline
+        Web-Frontend ist nicht erreichbar & Prüfen, ob sich Gerät und Uhr im gleichen Netzwerk befinden. Die beim Start angezeigte IP-Adresse verwenden und bei OTA-Updates den Port \texttt{:81} ergänzen. \\
+        \hline
+        LEDs bleiben dunkel & 5-V-Versorgung, GND-Verbindung, Datenrichtung des LED-Streifens und den eingestellten LED-Pin prüfen. Bei optionalen Tastern darf kein Boot-Strapping-Pin dauerhaft auf LOW gezogen werden. \\
+        \hline
+        Farben werden falsch angezeigt & Im Web-Frontend unter \say{Einstellungen} den LED-Typ bzw. die Farbreihenfolge anpassen. Unterschiedliche LED-Streifen verwenden verschiedene RGB-/RGBW-Reihenfolgen. \\
+        \hline
+        Uhrzeit stimmt nicht & WLAN-Verbindung, Zeitserver und Internetzugang prüfen. Für den Offline-Betrieb muss eine RTC wie DS3231 korrekt angeschlossen sein. \\
+        \hline
+    \end{tabularx}
+    \caption{Häufige Fehler und erste Prüfschritte}
+    \label{tab.Troubleshooting}
+\end{table}
 
 \end{document}
