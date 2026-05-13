@@ -117,6 +117,7 @@ enum class FrontWord {
     w_abend,
     w_mittag,
     w_nacht,
+    mitternachts,
     w_schnee,
     w_klar,
     w_warnung,
@@ -211,6 +212,8 @@ public:
     virtual const bool hasWeatherLayout() { return false; }
 
     virtual const bool hasSecondsFrame() { return false; }
+
+    virtual const bool hasDaytimeWords() { return false; }
 
     // --- Minute Display Capabilities ---
 

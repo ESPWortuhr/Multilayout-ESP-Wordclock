@@ -58,6 +58,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual const bool hasDaytimeWords() override { return true; }
+
+    //------------------------------------------------------------------------------
+
     void show(FrontWord word) override {
         switch (word) {
 
@@ -508,6 +512,52 @@ public:
 
         case FrontWord::und:
             setFrontMatrixWord(6, 4, 6);
+            break;
+
+        case FrontWord::nach:
+        case FrontWord::v_nach:
+            setFrontMatrixWord(6, 0, 3);
+            break;
+
+        case FrontWord::vor:
+        case FrontWord::v_vor:
+            setFrontMatrixWord(6, 7, 9);
+            break;
+
+        case FrontWord::viertel:
+            setFrontMatrixWord(7, 4, 10);
+            break;
+
+        case FrontWord::dreiviertel:
+            setFrontMatrixWord(7, 4, 14);
+            break;
+
+        case FrontWord::halb:
+            setFrontMatrixWord(7, 0, 3);
+            break;
+
+        case FrontWord::w_frueh:
+            setFrontMatrixWord(13, 3, 6);
+            break;
+
+        case FrontWord::w_abend:
+            setFrontMatrixWord(14, 12, 17);
+            break;
+
+        case FrontWord::mitternachts:
+            setFrontMatrixWord(14, 0, 11);
+            break;
+
+        case FrontWord::w_nacht:
+            setFrontMatrixWord(14, 0, 5);
+            break;
+
+        case FrontWord::w_morgen:
+            setFrontMatrixWord(15, 11, 17);
+            break;
+
+        case FrontWord::w_mittag:
+            setFrontMatrixWord(15, 0, 5);
             break;
 
         default:
