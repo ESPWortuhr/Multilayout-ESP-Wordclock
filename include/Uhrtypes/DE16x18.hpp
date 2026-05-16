@@ -536,11 +536,11 @@ public:
             setFrontMatrixWord(7, 0, 3);
             break;
 
-        case FrontWord::w_frueh:
+        case FrontWord::day_early:
             setFrontMatrixWord(13, 3, 6);
             break;
 
-        case FrontWord::w_abend:
+        case FrontWord::day_evening:
             setFrontMatrixWord(14, 12, 17);
             break;
 
@@ -548,16 +548,16 @@ public:
             setFrontMatrixWord(14, 0, 11);
             break;
 
-        case FrontWord::w_nacht:
+        case FrontWord::day_night:
             setFrontMatrixWord(14, 0, 5);
             break;
 
-        case FrontWord::w_morgen:
+        case FrontWord::day_morning:
             setFrontMatrixWord(15, 11, 17);
             break;
 
-        case FrontWord::w_mittag:
-            setFrontMatrixWord(15, 0, 5);
+        case FrontWord::day_noon:
+            setFrontMatrixWord(15, 0, 6);
             break;
 
         default:

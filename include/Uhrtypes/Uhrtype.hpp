@@ -112,6 +112,12 @@ enum class FrontWord {
     hour_22,
     hour_23,
 
+    day_morning,
+    day_early,
+    day_evening,
+    day_noon,
+    day_night,
+
     w_morgen,
     w_frueh,
     w_abend,

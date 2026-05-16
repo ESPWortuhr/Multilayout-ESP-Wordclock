@@ -1237,16 +1237,16 @@ void ClockWork::setDaytimeWords(uint8_t hour) {
     if (hour == 0) {
         usedUhrType->show(FrontWord::mitternachts);
     } else if (hour < 5) {
-        usedUhrType->show(FrontWord::w_nacht);
+        usedUhrType->show(FrontWord::day_night);
     } else if (hour < 10) {
-        usedUhrType->show(FrontWord::w_morgen);
-        usedUhrType->show(FrontWord::w_frueh);
+        usedUhrType->show(FrontWord::day_morning);
+        usedUhrType->show(FrontWord::day_early);
     } else if (hour < 12) {
-        usedUhrType->show(FrontWord::w_morgen);
+        usedUhrType->show(FrontWord::day_morning);
     } else if (hour < 14) {
-        usedUhrType->show(FrontWord::w_mittag);
+        usedUhrType->show(FrontWord::day_noon);
     } else if (hour >= 18) {
-        usedUhrType->show(FrontWord::w_abend);
+        usedUhrType->show(FrontWord::day_evening);
     }
 }
 
