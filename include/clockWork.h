@@ -65,6 +65,7 @@ private:
     WordclockChanges changesInClockface();
     void calcClockface();
     void setClock();
+    void setDaytimeWords(uint8_t hour);
     void setItIs(uint8_t min, const uint8_t offsetHour);
     bool DetermineIfItIsIsShown(const uint8_t min);
     void DetermineWhichItIsToShow(uint8_t offsetHour, uint8_t min);
