@@ -21,6 +21,11 @@ let TRANSLATION_HU = {
 		"text": "A kapcsolódás a Szövegórához megszakadt."
 	},
 
+	"reboot-recommended": {
+		"button": "Újraindítás",
+		"text": "Az újraindítás ajánlott a módosított beállítás alkalmazásához."
+	},
+
 	"colors": {
 		"h1": "Színek",
 		"with-background": "Háttérszínnel"
@@ -134,7 +139,9 @@ let TRANSLATION_HU = {
 			"buildtype": "Felépítés",
 			"normal": "Minden LED egy betűnek felel meg",
 			"doubleResM1": "Minden második LED egy betűnek felel meg",
-			"doubleRes": "Két LED betűnként"
+			"doubleRes": "Két LED betűnként",
+			"trippleRes": "Három LED betűnként",
+			"quadRes": "Négy LED betűnként"
 		},
 		"language": {
 			"h2": "Nyelv",

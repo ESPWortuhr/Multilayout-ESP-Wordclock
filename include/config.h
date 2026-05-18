@@ -220,19 +220,32 @@
 /*
  * There are several ways to build wordclocks:
  *
- * For small and mediumsized wordclocks, each LED is used in a strip, such as.
+ * For small and medium sized word clocks, each LED is used in a strip, such as:
  *
  * [x x x x x x x x] = (Normal)
  *
- * Some variants of wordclocks (mostly midsized - 40x40 cm) rely on Ledstripes
- * with 74LEDs/m with one LED skipped for the Frontmatrix. It is build with 21
+ * Some variants of word clocks (mostly midsized - 40x40 cm) rely on LED strips
+ * with 74 LEDs/m with one LED skipped for the front matrix. It is built with 21
  * LEDs per line, for example:
  *
  * [x - x - x - x - x - x - x - x - x] = (DoubleResM1)
  *
+ * Other variants use multiple physical LEDs for each letter in the front
+ * matrix. External minute LEDs and seconds-frame LEDs are not expanded by these
+ * settings.
+ *
+ * [xx xx xx xx xx xx xx xx] = (DoubleRes)
+ * [xxx xxx xxx xxx xxx xxx] = (TrippleRes)
+ * [xxxx xxxx xxxx xxxx xxxx] = (QuadRes)
  *
  * Valid values:
- * [BuildTypeDef::Normal, BuildTypeDef::DoubleResM1]
+ * [BuildTypeDef::Normal, BuildTypeDef::DoubleResM1,
+ *  BuildTypeDef::DoubleRes, BuildTypeDef::TrippleRes,
+ *  BuildTypeDef::QuadRes]
+ *
+ * Changing this setting in the web interface writes the new value to EEPROM.
+ * Restart the clock afterwards so the LED strip allocation matches the selected
+ * build type.
  */
 #define DEFAULT_BUILDTYPE BuildTypeDef::Normal
 

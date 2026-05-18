@@ -767,35 +767,44 @@ input:checked + .slider::before {
  * Sections
  */
 
-.section, .section-connection-lost {
+.section, .section-connection-lost, .section-reboot-recommended {
     display: none;
 }
 
-.section-connection-lost .box {
+.section-connection-lost .box, .section-reboot-recommended .box {
     display: flex;
     align-items: center;
     gap: 1em;
-    background: rgb(255 239 239 / 90%);
-    color: #9d3333;
     text-align: center;
-    border: 1px solid rgb(195 76 76 / 24%);
     box-shadow: var(--app-shadow-soft);
     min-height: 2.3em;
 }
 
-.section-connection-lost .box p {
+.section-connection-lost .box {
+    background: rgb(255 239 239 / 90%);
+    color: #9d3333;
+    border: 1px solid rgb(195 76 76 / 24%);
+}
+
+.section-reboot-recommended .box {
+    background: rgb(255 248 225 / 92%);
+    color: #856404;
+    border: 1px solid rgb(179 134 0 / 24%);
+}
+
+.section-connection-lost .box p, .section-reboot-recommended .box p {
     flex: 1;
     margin: 0;
     order: 1;
 }
 
 @media (width <= 41em) {
-    .section-connection-lost .box {
+    .section-connection-lost .box, .section-reboot-recommended .box {
         margin-left: 3.8em;
     }
 }
 
-.section-connection-lost .status-button {
+.section-connection-lost .status-button, .section-reboot-recommended button {
     flex: 0 0 auto;
     order: 2;
     color: #fff;
@@ -803,6 +812,11 @@ input:checked + .slider::before {
     background: linear-gradient(180deg, #d9534f, #c9433f);
     border-color: rgb(155 45 42 / 28%);
     margin-left: 0;
+}
+
+.section-reboot-recommended button {
+    background: linear-gradient(180deg, #f0ad4e, #d8922f);
+    border-color: rgb(133 100 4 / 28%);
 }
 
 .section-main {

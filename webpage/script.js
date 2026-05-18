@@ -623,6 +623,16 @@ function sendColorData(command, addData = "") {
 	nstr(effectSpeed));
 }
 
+function showRebootRecommendedBanner() {
+	const rebootRecommendedEl = document.getElementById("section-reboot-recommended");
+	if (rebootRecommendedEl) rebootRecommendedEl.style.display = "block";
+}
+
+function hideRebootRecommendedBanner() {
+	const rebootRecommendedEl = document.getElementById("section-reboot-recommended");
+	if (rebootRecommendedEl) rebootRecommendedEl.style.display = "none";
+}
+
 // Replaced $.ready with DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -978,6 +988,14 @@ document.addEventListener("DOMContentLoaded", function() {
 	const resetBtn = document.getElementById("reset-button");
 	if (resetBtn) resetBtn.addEventListener("click", () => sendCmd(CMD.RESET));
 
+	const rebootRecommendedBtn = document.getElementById("reboot-recommended-button");
+	if (rebootRecommendedBtn) {
+		rebootRecommendedBtn.addEventListener("click", function() {
+			hideRebootRecommendedBanner();
+			sendCmd(CMD.RESET);
+		});
+	}
+
 	document.querySelectorAll(".birthdays input").forEach(input => {
 		input.addEventListener("input", function(event) {
 			let val = event.target.value.replace(/\D/g, "");
@@ -1082,6 +1100,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.querySelectorAll("[id*='buildtype']").forEach(el => {
 		el.addEventListener("change", function(event) {
 			sendCmd(CMD.SET_BUILDTYPE, nstr(event.target.value));
+			showRebootRecommendedBanner();
 			debugMessage(`buildtype${debugMessageReconfigured}`);
 		});
 	});

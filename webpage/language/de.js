@@ -21,6 +21,11 @@ let TRANSLATION_DE_DE = {
 		"text": "Die Verbindung zur Wortuhr wurde unterbrochen."
 	},
 
+	"reboot-recommended": {
+		"button": "Neu starten",
+		"text": "Ein Neustart wird empfohlen, um die geänderte Einstellung zu übernehmen."
+	},
+
 	"colors": {
 		"h1": "Farben",
 		"with-background": "Mit Hintergrundfarbe"
@@ -163,7 +168,9 @@ let TRANSLATION_DE_DE = {
 			"buildtype": "Bauart",
 			"normal": "Jede LED entspricht einem Buchstaben",
 			"doubleResM1": "Jede zweite LED entspricht einem Buchstaben",
-			"doubleRes": "Je zwei LEDs pro Buchstabe"
+			"doubleRes": "Je zwei LEDs pro Buchstabe",
+			"trippleRes": "Je drei LEDs pro Buchstabe",
+			"quadRes": "Je vier LEDs pro Buchstabe"
 		},
 		"language": {
 			"h2": "Sprache",

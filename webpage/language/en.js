@@ -21,6 +21,11 @@ let TRANSLATION_EN_US = {
 		"text": "The connection to the Word Clock has been lost."
 	},
 
+	"reboot-recommended": {
+		"button": "Restart",
+		"text": "A restart is recommended to apply the changed setting."
+	},
+
 	"colors": {
 		"h1": "Colors",
 		"with-background": "With Background Color"
@@ -163,7 +168,9 @@ let TRANSLATION_EN_US = {
 			"buildtype": "Buildtype",
 			"normal": "Each LED corresponds to one letter",
 			"doubleResM1": "Every second LED corresponds to one letter",
-			"doubleRes": "Two LEDs per letter"
+			"doubleRes": "Two LEDs per letter",
+			"trippleRes": "Three LEDs per letter",
+			"quadRes": "Four LEDs per letter"
 		},
 		"language": {
 			"h2": "Language",

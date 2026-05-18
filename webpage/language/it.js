@@ -21,6 +21,11 @@ let TRANSLATION_IT = {
 		"text": "La connessione con l'orologio è stata persa."
 	},
 
+	"reboot-recommended": {
+		"button": "Riavvia",
+		"text": "Si consiglia un riavvio per applicare l'impostazione modificata."
+	},
+
 	"colors": {
 		"h1": "Colori",
 		"with-background": "Con colore di sfondo"
@@ -137,7 +142,9 @@ let TRANSLATION_IT = {
 			"buildtype": "Tipo di progetto",
 			"normal": "Ogni LED corrisponde ad una lettera",
 			"doubleResM1": "Ogni secondo LED corrisponde a una lettera",
-			"doubleRes": "Due LED per lettera"
+			"doubleRes": "Due LED per lettera",
+			"trippleRes": "Tre LED per lettera",
+			"quadRes": "Quattro LED per lettera"
 		},
 		"language": {
 			"h2": "Lingua",
