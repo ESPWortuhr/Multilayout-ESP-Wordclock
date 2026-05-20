@@ -231,6 +231,11 @@ let TRANSLATION_HU = {
 			"label": "Időszerver",
 			"save": "Beállítás mentése"
 		},
+		"timezone": {
+			"h2": "Időzóna",
+			"label": "POSIX időzóna",
+			"save": "Beállítás mentése"
+		},
 		"manual-time": {
 			"h2": "Óra kézi beállítása",
 			"time": "Idő",

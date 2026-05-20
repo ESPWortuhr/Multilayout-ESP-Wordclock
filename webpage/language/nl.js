@@ -234,6 +234,11 @@ let TRANSLATION_NL = {
 			"label": "Tijdserver",
 			"save": "Opslaan"
 		},
+		"timezone": {
+			"h2": "Tijdzone",
+			"label": "POSIX-tijdzone",
+			"save": "Opslaan"
+		},
 		"manual-time": {
 			"h2": "Tijd handmatig instellen",
 			"time": "Tijd",

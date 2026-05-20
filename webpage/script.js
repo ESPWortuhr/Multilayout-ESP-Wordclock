@@ -105,6 +105,7 @@ const CMD = {
 	SET_SYMBOL: 105,
 	SET_IT_IS_VARIANT: 106,
 	SET_HARDWARE_PINS: 107,
+	SET_TIMEZONE: 108,
 	SPEED: 152,
 
 	// Requests
@@ -137,8 +138,10 @@ MODE_TO_INPUT_ID.set(CMD.MODE_TRANSITION, "mode-wordclock");
 // data that gets send back to the esp
 const DATA_SCROLLINGTEXT_LENGTH = 30;
 const DATA_TIMESERVER_TEXT_LENGTH = 30;
+const DATA_TIMEZONE_TEXT_LENGTH = 30;
 const DATA_MQTT_RESPONSE_TEXT_LENGTH = 30;
 const DATA_HOST_TEXT_LENGTH = 30;
+const DEFAULT_TIMEZONE = "CET-1CEST,M3.5.0,M10.5.0/3";
 
 // color pickers
 let colorPicker;
@@ -261,6 +264,7 @@ function initWebsocket() {
 
 		sendCmd(CMD.REQ_COLOR_VALUES);
 		sendCmd(CMD.REQ_TRANSITION);
+		sendCmd(CMD.REQ_CONFIG_VALUES);
 	};
 
 	websocket.onclose = function(event) {
@@ -325,6 +329,9 @@ function initWebsocket() {
 			case "config": {
 				document.getElementById("ssid").value = data.ssid;
 				document.getElementById("timeserver").value = data.timeserver;
+				const timezone = document.getElementById("timezone");
+				timezone.value = data.timezone || DEFAULT_TIMEZONE;
+				timezone.setAttribute("maxlength", DATA_TIMEZONE_TEXT_LENGTH);
 				document.getElementById("hostname").value = data.hostname;
 				document.getElementById("scrollingtext").value = data.scrollingText;
 
@@ -856,6 +863,16 @@ document.addEventListener("DOMContentLoaded", function() {
 			event.preventDefault();
 			sendCmd(CMD.SET_TIMESERVER, getPaddedString(document.getElementById("timeserver").value, DATA_TIMESERVER_TEXT_LENGTH));
 			debugMessage(`Timeserver${debugMessageReconfigured}`);
+		});
+	}
+
+	const timezoneBtn = document.getElementById("timezone-button");
+	if (timezoneBtn) {
+		timezoneBtn.addEventListener("click", function(event) {
+			event.preventDefault();
+			sendCmd(CMD.SET_TIMEZONE, getPaddedString(document.getElementById("timezone").value, DATA_TIMEZONE_TEXT_LENGTH));
+			sendCmd(CMD.REQ_CONFIG_VALUES);
+			debugMessage(`Timezone${debugMessageReconfigured}`);
 		});
 	}
 

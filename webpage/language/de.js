@@ -260,6 +260,11 @@ let TRANSLATION_DE_DE = {
 			"label": "Zeitserver",
 			"save": "Einstellung speichern"
 		},
+		"timezone": {
+			"h2": "Zeitzone",
+			"label": "POSIX-Zeitzone",
+			"save": "Einstellung speichern"
+		},
 		"manual-time": {
 			"h2": "Uhrzeit manuell einstellen",
 			"time": "Zeit",

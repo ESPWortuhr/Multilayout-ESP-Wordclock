@@ -231,6 +231,11 @@ let TRANSLATION_IT = {
 			"label": "Server del tempo",
 			"save": "Salva le impostazioni"
 		},
+		"timezone": {
+			"h2": "Fuso orario",
+			"label": "Fuso orario POSIX",
+			"save": "Salva le impostazioni"
+		},
 		"manual-time": {
 			"h2": "Impostare l'ora manualmente",
 			"time": "Tempo",
