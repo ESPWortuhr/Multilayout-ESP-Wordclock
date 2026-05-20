@@ -154,6 +154,7 @@ let TRANSLATION_DE_DE = {
 			"ru-10-11": "🇷🇺 10 × 11",
 			"ch-10-11-v2": "🇨🇭 10 x 11 Version 2",
 			"bn-9-8": "🇧🇩 9 × 8",
+			"tr-10-11": "🇹🇷 10 × 11",
 			"invert-min-dir": "Minutenzählrichtung invertieren",
 			"mirror-vertically": "Wortuhr vertikal spiegeln",
 			"mirror-horizontally": "Wortuhr horizontal spiegeln",

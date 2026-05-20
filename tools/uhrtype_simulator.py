@@ -431,6 +431,7 @@ def set_minute(
 
     show_minute(uhrtype, minute, words, minute_variant=minute_variant)
     minute = rounded_minute(minute)
+    is_turkish = uhrtype.lang == "TR"
 
     if minute == 0:
         words.append("uhr")
@@ -443,7 +444,9 @@ def set_minute(
         add_number_word(minute, words)
         words.append("nach")
     elif minute == 15:
-        if use_15:
+        if is_turkish:
+            words.extend(["viertel", "nach"])
+        elif use_15:
             words.append("viertel")
             offset_hour = 1
         else:
@@ -454,7 +457,9 @@ def set_minute(
         add_number_word(minute, words)
         words.append("nach")
     elif minute == 20:
-        if has_twenty_and_check_for_usage(uhrtype, use_twenty=use_20, use_forty=use_40):
+        if is_turkish or has_twenty_and_check_for_usage(
+            uhrtype, use_twenty=use_20, use_forty=use_40
+        ):
             words.append("min_20")
             if uhrtype.normalized_name != "FR10X11":
                 words.append("nach")
@@ -477,7 +482,10 @@ def set_minute(
         words.extend(["min_1", "minute", "vor", "halb"])
         offset_hour = 1
     elif minute == 30:
-        if uhrtype.normalized_name in ROMAN_HALF_AFTER:
+        if is_turkish:
+            words.append("halb")
+            full_hour = True
+        elif uhrtype.normalized_name in ROMAN_HALF_AFTER:
             words.extend(["halb", "nach"])
         elif uhrtype.normalized_name in HALF_WITHOUT_OFFSET:
             words.append("halb")
@@ -501,39 +509,51 @@ def set_minute(
         words.extend(["nach", "halb"])
         offset_hour = 1
     elif minute == 40:
-        if uhrtype.has("hasForty"):
+        if is_turkish:
+            words.extend(["min_40", "nach"])
+        elif uhrtype.has("hasForty"):
             words.append("min_40")
         elif has_twenty_and_check_for_usage(uhrtype, use_twenty=use_20, use_forty=use_40):
             words.extend(["min_20", "vor"])
         else:
             words.extend(["min_10", "nach", "halb"])
-        offset_hour = 1
+        if not is_turkish:
+            offset_hour = 1
     elif 41 <= minute <= 44:
         add_number_word(60 - minute, words)
         words.append("vor")
         offset_hour = 1
     elif minute == 45:
-        if has_dreiviertel_and_check_for_usage(uhrtype, use_45=use_45):
+        if is_turkish:
+            words.extend(["min_45", "nach"])
+        elif has_dreiviertel_and_check_for_usage(uhrtype, use_45=use_45):
             words.append("dreiviertel")
         else:
             if show_a_quarter:
                 words.append("a_quarter")
             words.extend(["viertel", "v_vor"])
-        offset_hour = 1
+        if not is_turkish:
+            offset_hour = 1
     elif 46 <= minute <= 50:
-        if uhrtype.has("hasFifty"):
+        if is_turkish:
+            words.extend(["min_50", "nach"])
+        elif uhrtype.has("hasFifty"):
             words.append("min_50")
         else:
             add_number_word(60 - minute, words)
             words.append("vor")
-        offset_hour = 1
+        if not is_turkish:
+            offset_hour = 1
     elif 51 <= minute <= 55:
-        if uhrtype.has("hasFiftyFive"):
+        if is_turkish:
+            words.extend(["min_55", "nach"])
+        elif uhrtype.has("hasFiftyFive"):
             words.append("min_55")
         else:
             add_number_word(60 - minute, words)
             words.append("vor")
-        offset_hour = 1
+        if not is_turkish:
+            offset_hour = 1
     elif 56 <= minute <= 58:
         add_number_word(60 - minute, words)
         words.extend(["minuten", "vor"])
@@ -552,7 +572,9 @@ def set_hour(uhrtype: Uhrtype, hour: int, full_hour: bool, words: list[str]) -> 
     if not uhrtype.has("has24HourLayout"):
         hour %= 12
 
-    if hour == 0:
+    if uhrtype.lang == "TR" and full_hour:
+        words.append("hour_0" if hour == 0 else f"hour_{hour + 12}")
+    elif hour == 0:
         words.append("hour_0" if midnight else "hour_12")
     elif hour == 1:
         if full_hour or uhrtype.lang != "DE":

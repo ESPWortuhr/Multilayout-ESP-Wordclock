@@ -53,7 +53,9 @@
     /* RU (Russian) */                                                         \
     X(Ru10x11, 23, _ru10x11)                                                   \
     /* SE (Swedish) */                                                         \
-    X(Se10x11, 22, _se10x11)
+    X(Se10x11, 22, _se10x11)                                                   \
+    /* TR (Turkish) */                                                         \
+    X(Tr10x11, 35, _tr10x11)
 
 enum ClockWords : uint8_t {
     ESIST = 0,

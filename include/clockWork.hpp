@@ -742,7 +742,8 @@ FrontWord ClockWork::getFrontWordForNum(uint8_t min) {
 
 bool ClockWork::checkTwentyUsage() {
     return G.languageVariant[ItIs20] || G.languageVariant[ItIs40] ||
-           usedUhrType->usedLang() == LanguageAbbreviation::ES;
+           usedUhrType->usedLang() == LanguageAbbreviation::ES ||
+           usedUhrType->usedLang() == LanguageAbbreviation::TR;
 }
 
 //------------------------------------------------------------------------------
@@ -927,9 +928,13 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             offsetHour = 1;
             break;
         case 30: // half
-            if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == Eng08x08 ||
-                G.UhrtypeDef == It10x11 || G.UhrtypeDef == Ro10x11 ||
-                G.UhrtypeDef == Es10x11 || G.UhrtypeDef == Es08x08Cuarto) {
+            if (G.UhrtypeDef == Tr10x11) {
+                usedUhrType->show(FrontWord::halb);
+                fullHour = true;
+            } else if (G.UhrtypeDef == Eng10x11 || G.UhrtypeDef == Eng08x08 ||
+                       G.UhrtypeDef == It10x11 || G.UhrtypeDef == Ro10x11 ||
+                       G.UhrtypeDef == Es10x11 ||
+                       G.UhrtypeDef == Es08x08Cuarto) {
                 usedUhrType->show(FrontWord::halb);
                 usedUhrType->show(FrontWord::nach);
             } else {
@@ -986,7 +991,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
                 usedUhrType->show(FrontWord::nach);
                 usedUhrType->show(FrontWord::halb);
             }
-            offsetHour = 1;
+            if (G.UhrtypeDef != Tr10x11) {
+                offsetHour = 1;
+            }
             break;
         case 41:
         case 42:
@@ -997,7 +1004,10 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             offsetHour = 1;
             break;
         case 45: // quarter to
-            if (hasDreiviertelAndCheckForUsage()) {
+            if (G.UhrtypeDef == Tr10x11) {
+                usedUhrType->show(FrontWord::min_45);
+                usedUhrType->show(FrontWord::nach);
+            } else if (hasDreiviertelAndCheckForUsage()) {
                 usedUhrType->show(FrontWord::dreiviertel);
             } else {
                 // A Quarter to
@@ -1007,7 +1017,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
                 usedUhrType->show(FrontWord::viertel);
                 usedUhrType->show(FrontWord::v_vor);
             }
-            offsetHour = 1;
+            if (G.UhrtypeDef != Tr10x11) {
+                offsetHour = 1;
+            }
             break;
         case 46:
         case 47:
@@ -1020,7 +1032,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
                 usedUhrType->show(getFrontWordForNum(60 - min));
                 usedUhrType->show(FrontWord::vor);
             }
-            offsetHour = 1;
+            if (G.UhrtypeDef != Tr10x11) {
+                offsetHour = 1;
+            }
             break;
         case 51:
         case 52:
@@ -1033,7 +1047,9 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
                 usedUhrType->show(getFrontWordForNum(60 - min));
                 usedUhrType->show(FrontWord::vor);
             }
-            offsetHour = 1;
+            if (G.UhrtypeDef != Tr10x11) {
+                offsetHour = 1;
+            }
             break;
         case 56:
         case 57:
@@ -1070,9 +1086,17 @@ void ClockWork::setHour(uint8_t hour, const bool fullHour) {
         hour %= 12;
     }
 
+    bool turkishBaseHour =
+        usedUhrType->usedLang() == LanguageAbbreviation::TR && fullHour;
+    if (turkishBaseHour && hour != 0) {
+        hour += 12;
+    }
+
     switch (hour) {
     case 0:
-        if (midnight) {
+        if (turkishBaseHour) {
+            usedUhrType->show(FrontWord::hour_0);
+        } else if (midnight) {
             usedUhrType->show(FrontWord::hour_0);
         } else {
             usedUhrType->show(FrontWord::hour_12);

@@ -189,6 +189,14 @@
 // #define DEFAULT_LAYOUT  Bn9x7
 // 8 rows, 9 LED's per row + 4 LED's for minutes, with modified
 // layout for the Bengali language
+//
+/**********************/
+/*       Turkish      */
+/**********************/
+//
+// #define DEFAULT_LAYOUT  Tr10x11
+// 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
+// layout for the Turkish language
 
 //--------------------------------------------------------------------------
 // Define LED Type
