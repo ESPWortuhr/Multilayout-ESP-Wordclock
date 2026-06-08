@@ -861,9 +861,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	const scrollTextBtn = document.getElementById("scrollingtext-button");
 	if (scrollTextBtn) {
-		scrollTextBtn.addEventListener("click", function() {
+		scrollTextBtn.addEventListener("click", function(event) {
+			event.preventDefault();
 			sendCmd(CMD.SET_SCROLLINGTEXT, getPaddedString(document.getElementById("scrollingtext").value, DATA_SCROLLINGTEXT_LENGTH));
 			debugMessage(`ScrollingText${debugMessageReconfigured}`);
+		});
+	}
+
+	const functionsSettingsForm = document.getElementById("functions-settings-form");
+	if (functionsSettingsForm) {
+		functionsSettingsForm.addEventListener("submit", function(event) {
+			event.preventDefault();
 		});
 	}
 

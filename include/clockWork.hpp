@@ -441,8 +441,99 @@ void ClockWork::rainbowSpiralCycle() {
 
 //------------------------------------------------------------------------------
 
+bool ClockWork::getStaticScrollingTextInfo(const char *buf,
+                                           StaticScrollingText &info) {
+    uint16_t textStart = 0;
+    uint16_t textEnd = strlen(buf);
+
+    auto isTrimmedWhitespace = [](char c) {
+        return c == ' ' || c == '\t' || c == '\r' || c == '\n';
+    };
+
+    while (textStart < textEnd && isTrimmedWhitespace(buf[textStart])) {
+        textStart++;
+    }
+
+    while (textEnd > textStart && isTrimmedWhitespace(buf[textEnd - 1])) {
+        textEnd--;
+    }
+
+    uint16_t trimmedLen = textEnd - textStart;
+    if (trimmedLen == 0 || trimmedLen > 2) {
+        return false;
+    }
+
+    info.start = static_cast<uint8_t>(textStart);
+    info.len = static_cast<uint8_t>(trimmedLen);
+    info.onlyDigits = true;
+
+    for (uint16_t i = textStart; i < textEnd; i++) {
+        if (buf[i] < '0' || buf[i] > '9') {
+            info.onlyDigits = false;
+            break;
+        }
+    }
+
+    if (!info.onlyDigits) {
+        info.width = pgm_read_byte(&(fontWidth[normalSizeASCII]));
+        info.height = pgm_read_byte(&(fontHeight[normalSizeASCII]));
+        info.totalWidth = info.len * info.width + info.len - 1;
+
+        if (usedUhrType->colsWordMatrix() < info.totalWidth ||
+            usedUhrType->rowsWordMatrix() < info.height) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::displayStaticScrollingText(const char *buf,
+                                           const StaticScrollingText &info) {
+    if (info.onlyDigits) {
+        led.showNumbers(info.len == 1 ? ' ' : buf[info.start],
+                        buf[info.start + info.len - 1]);
+        return;
+    }
+
+    led.clearClock();
+
+    uint8_t offsetRow = (usedUhrType->rowsWordMatrix() - info.height) / 2;
+    uint8_t offsetCol = (usedUhrType->colsWordMatrix() - info.totalWidth) / 2;
+
+    for (uint8_t charIndex = 0; charIndex < info.len; charIndex++) {
+        uint8_t charOffsetCol = offsetCol + charIndex * (info.width + 1);
+        unsigned char fontIndex =
+            static_cast<unsigned char>(buf[info.start + charIndex]);
+
+        for (uint8_t col = 0; col < info.width; col++) {
+            for (uint8_t row = 0; row < info.height; row++) {
+                led.setPixelForChar(col, row, charOffsetCol, offsetRow,
+                                    fontIndex, normalSizeASCII);
+            }
+        }
+    }
+
+    led.mirrorFrontMatrixVertical();
+    led.setbyFrontMatrix(Foreground);
+    led.show();
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::scrollingText(const char *buf) {
     static uint8_t i = 0, ii = 0;
+    StaticScrollingText staticText;
+
+    if (getStaticScrollingTextInfo(buf, staticText)) {
+        i = 0;
+        ii = 0;
+        displayStaticScrollingText(buf, staticText);
+        return;
+    }
+
     uint8_t offsetRow = (usedUhrType->rowsWordMatrix() -
                          pgm_read_byte(&(fontHeight[normalSizeASCII]))) /
                         2;

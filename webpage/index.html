@@ -296,7 +296,7 @@
                 <div class="box functions-settings">
                     <h2 data-i18next="functions.settings.h2"></h2>
 
-                    <form class="pure-form pure-form-aligned">
+                    <form id="functions-settings-form" class="pure-form pure-form-aligned">
                         <div class="pure-control-group brightness">
                             <label class="slider-label" for="slider-brightness" data-i18next="functions.settings.brightness"></label><span class="value" id="slider-brightness-value">0</span>
                             <input id="slider-brightness" type="range" min="0" max="100" value="1">
@@ -305,7 +305,7 @@
                             <label for="scrollingtext" data-i18next="functions.settings.scrollingtext"></label>
                             <input id="scrollingtext" type="text">
                             <div class="pure-controls">
-                                <button id="scrollingtext-button" class="pure-button" data-i18next="functions.settings.save"></button>
+                                <button id="scrollingtext-button" type="button" class="pure-button" data-i18next="functions.settings.save"></button>
                             </div>
                         </div>
                         <div class="pure-control-group speed">
