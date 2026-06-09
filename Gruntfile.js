@@ -116,6 +116,14 @@ module.exports = function(grunt) {
 				src: "<%= settings.srcDirectory %>/index.html",
 				dest: "<%= settings.tempDirectory %>/index.html"
 			},
+			icons: {
+				files: [{
+					expand: true,
+					cwd: "<%= settings.srcDirectory %>/icons/",
+					src: ["*.svg"],
+					dest: "<%= settings.tempDirectory %>/icons/"
+				}]
+			},
 			minified_js_files: {
 				files: [{
 					expand: true,
@@ -218,6 +226,7 @@ module.exports = function(grunt) {
 		"terser",
 		"copy:minified_js_files",
 		"copy:index",
+		"copy:icons",
 		"version:index",
 		"replace:pioenv",
 		"assets_inline",

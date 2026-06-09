@@ -134,6 +134,17 @@ MODE_TO_INPUT_ID.set(CMD.MODE_DIGITAL_CLOCK, "mode-digital-clock");
 MODE_TO_INPUT_ID.set(CMD.MODE_SYMBOL, "mode-symbol");
 MODE_TO_INPUT_ID.set(CMD.MODE_TRANSITION, "mode-wordclock");
 
+const MODE_CONTROL_STATE = {
+	"mode-wordclock": { cmd: CMD.MODE_WORD_CLOCK, bri: false, speed: false, txt: false, symbol: false },
+	"mode-seconds": { cmd: CMD.MODE_SECONDS, bri: false, speed: false, txt: false, symbol: false },
+	"mode-scrollingtext": { cmd: CMD.MODE_SCROLLINGTEXT, bri: false, speed: true, txt: true, symbol: false },
+	"mode-rainbow": { cmd: CMD.MODE_RAINBOWCYCLE, bri: true, speed: true, txt: false, symbol: false },
+	"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false, symbol: false },
+	"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false, symbol: false },
+	"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false, symbol: false },
+	"mode-symbol": { cmd: CMD.MODE_SYMBOL, bri: false, speed: true, txt: false, symbol: true }
+};
+
 // data that gets send back to the esp
 const DATA_SCROLLINGTEXT_LENGTH = 30;
 const DATA_TIMESERVER_TEXT_LENGTH = 30;
@@ -358,6 +369,7 @@ function initWebsocket() {
 				document.getElementById("buildtype").value = data.buildtype;
 				document.getElementById("whitetype").value = data.wType;
 				document.getElementById("colortype").value = data.colortype;
+				setSelectedSymbol(data.bitmapSymbol);
 				document.getElementById("led-pin").value = data.ledPin;
 				document.getElementById("power-button-pin").value = data.powerButtonPin;
 				document.getElementById("mode-button-pin").value = data.modeButtonPin;
@@ -413,6 +425,7 @@ function initWebsocket() {
 				effectBri = data.effectBri;
 				effectSpeed = data.effectSpeed;
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
+				setSelectedSymbol(data.bitmapSymbol);
 
 				if (modeColorForm) {
 					modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
@@ -429,6 +442,7 @@ function initWebsocket() {
 				setColors();
 				enableSpecific("specific-colortype-4", data.colortype === 5);
 				enableSpecific("specific-layout-7", data.hasSecondsFrame);
+				setElementsForFunctionsMenu();
 				break;
 			}
 			case "wlan":
@@ -520,9 +534,28 @@ function setSliders() {
 	if (speedValue) speedValue.textContent = effectSpeed;
 }
 
+function setSelectedSymbol(symbolValue) {
+	const symbolEl = document.querySelector(`input[name='symbol-choice'][value='${symbolValue}']`);
+	if (symbolEl) symbolEl.checked = true;
+}
+
+function getSelectedModeControlState() {
+	const selectedMode = document.querySelector("input[name='mode']:checked");
+	return selectedMode ? MODE_CONTROL_STATE[selectedMode.id] : MODE_CONTROL_STATE["mode-wordclock"];
+}
+
+function setModeSpecificControls(selected) {
+	document.querySelectorAll(".brightness").forEach(el => { el.style.display = selected.bri ? "block" : "none"; });
+	document.querySelectorAll(".speed").forEach(el => { el.style.display = selected.speed ? "block" : "none"; });
+	document.querySelectorAll(".functions-settings").forEach(el => { el.style.display = (selected.bri || selected.speed) ? "block" : "none"; });
+	document.querySelectorAll(".text").forEach(el => { el.style.display = selected.txt ? "block" : "none"; });
+	document.querySelectorAll(".symbol").forEach(el => { el.style.display = selected.symbol ? "block" : "none"; });
+}
+
 function setElementsForFunctionsMenu() {
 	const modeWordclock = document.getElementById("mode-wordclock");
 	const isWordclockChecked = modeWordclock && modeWordclock.checked;
+	setModeSpecificControls(getSelectedModeControlState());
 
 	const transitionBox = document.getElementById("transition-box");
 	if (transitionBox) {
@@ -730,28 +763,10 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.querySelectorAll("input[name='mode']").forEach(input => {
 		input.addEventListener("change", function(event) {
 			let id = event.target.id;
-
-			const MODE_MAP = {
-				"mode-wordclock": { cmd: CMD.MODE_WORD_CLOCK, bri: false, speed: false, txt: false, symbol: false },
-				"mode-seconds": { cmd: CMD.MODE_SECONDS, bri: false, speed: false, txt: false, symbol: false },
-				"mode-scrollingtext": { cmd: CMD.MODE_SCROLLINGTEXT, bri: false, speed: true, txt: true, symbol: false },
-				"mode-rainbow": { cmd: CMD.MODE_RAINBOWCYCLE, bri: true, speed: true, txt: false, symbol: false },
-				"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false, symbol: false },
-				"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false, symbol: false },
-				"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false, symbol: false },
-				"mode-symbol": { cmd: CMD.MODE_SYMBOL, bri: false, speed: true, txt: false, symbol: true }
-			};
-
-			let selected = MODE_MAP[id];
+			let selected = MODE_CONTROL_STATE[id];
 			if (selected) {
 				command = selected.cmd;
 				setElementsForFunctionsMenu();
-
-				document.querySelectorAll(".brightness").forEach(el => { el.style.display = selected.bri ? "block" : "none"; });
-				document.querySelectorAll(".speed").forEach(el => { el.style.display = selected.speed ? "block" : "none"; });
-				document.querySelectorAll(".functions-settings").forEach(el => { el.style.display = (selected.bri || selected.speed) ? "block" : "none"; });
-				document.querySelectorAll(".text").forEach(el => { el.style.display = selected.txt ? "block" : "none"; });
-				document.querySelectorAll(".symbol").forEach(el => { el.style.display = selected.symbol ? "block" : "none"; });
 
 				sendColorData(command);
 				setSliders();
@@ -957,6 +972,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		el.addEventListener("change", function(event) {
 			let selectedSymbol = event.target.value;
 			sendCmd(CMD.SET_SYMBOL, nstr(selectedSymbol));
+			debugMessage(`Symbol${debugMessageReconfigured}`);
 		});
 	});
 

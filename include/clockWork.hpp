@@ -584,20 +584,13 @@ void ClockWork::scrollingText(const char *buf) {
 //------------------------------------------------------------------------------
 
 void ClockWork::displaySymbols(BitmapSymbol symbolNum) {
-    static uint8_t count = 0;
-
-    switch (symbolNum) {
-    case BitmapSymbol::HEART:
-        break;
-
-    case BitmapSymbol::SMILEY:
-        break;
-    case BitmapSymbol::NOTE:
-        break;
-
-    default:
-        break;
+    if (symbolNum >= BitmapSymbol::MAX_BITMAP_SYMBOLS) {
+        symbolNum = BitmapSymbol::HEART;
     }
+
+    HsbColor color = G.color[Foreground];
+    color.B = G.effectBri / 100.f;
+    led.setBitmapSymbol(symbolNum, color);
 }
 
 //------------------------------------------------------------------------------
@@ -1514,6 +1507,7 @@ void ClockWork::loop(struct tm &tm) {
         config["buildtype"] = static_cast<uint8_t>(G.buildTypeDef);
         config["wType"] = static_cast<uint8_t>(G.wType);
         config["UhrtypeDef"] = G.UhrtypeDef;
+        config["bitmapSymbol"] = static_cast<uint8_t>(G.bitmapSymbol);
         config["bootLedBlink"] = G.bootLedBlink;
         config["bootLedSweep"] = G.bootLedSweep;
         config["bootShowWifi"] = G.bootShowWifi;
@@ -1574,6 +1568,7 @@ void ClockWork::loop(struct tm &tm) {
             usedUhrType->hasSpecialWordHappyBirthday();
         config["hasSecondsFrame"] = usedUhrType->hasSecondsFrame();
         config["prog"] = G.prog;
+        config["bitmapSymbol"] = static_cast<uint8_t>(G.bitmapSymbol);
 
         sendJsonToClient(G.client_nr, config);
         break;
