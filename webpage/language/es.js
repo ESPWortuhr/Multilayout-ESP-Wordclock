@@ -238,6 +238,11 @@ let TRANSLATION_ES = {
 			"label": "Servidor de tiempo",
 			"save": "Guardar ajustes"
 		},
+		"timezone": {
+			"h2": "Zona horaria",
+			"label": "Zona horaria POSIX",
+			"save": "Guardar ajustes"
+		},
 		"manual-time": {
 			"h2": "Establecer la hora manualmente",
 			"time": "Tiempo",

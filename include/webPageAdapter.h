@@ -531,6 +531,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+        case COMMAND_SET_TIMEZONE: {
+            payloadTextHandling(payload, G.timezone);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
         case COMMAND_SET_BOOT: {
             G.bootLedBlink = split(payload, 3);
             G.bootLedSweep = split(payload, 6);

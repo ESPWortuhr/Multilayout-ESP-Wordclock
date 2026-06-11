@@ -57,6 +57,7 @@ void printConfig() {
     Serial.printf("FrCol.S   : %f\n", G.color[Frame].S);
     Serial.printf("FrCol.V   : %f\n", G.color[Frame].B);
     printSafeString("Zeitserver: ", G.timeserver);
+    printSafeString("Zeitzone  : ", G.timezone);
     printSafeString("Lauftext  : ", G.scrollingText);
     Serial.printf("H6        : %u\n", G.h6);
     Serial.printf("H8        : %u\n", G.h8);

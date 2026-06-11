@@ -1500,10 +1500,11 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_REQUEST_CONFIG_VALUES: {
-        DynamicJsonDocument config(1152);
+        DynamicJsonDocument config(1280);
         config["command"] = "config";
         config["ssid"] = network.getSSID();
         config["timeserver"] = G.timeserver;
+        config["timezone"] = G.timezone;
         config["hostname"] = G.hostname;
         config["scrollingText"] = G.scrollingText;
         config["h6"] = G.h6;
@@ -1638,8 +1639,17 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_INITIAL_VALUES:
     case COMMAND_SET_WEATHER_DATA:
     case COMMAND_SET_SCROLLINGTEXT:
+    case COMMAND_SET_TIMESERVER:
     case COMMAND_SET_BOOT: {
         eeprom::write();
+        delay(100);
+        break;
+    }
+
+    case COMMAND_SET_TIMEZONE: {
+        applyTimezone();
+        eeprom::write();
+        parametersChanged = true;
         delay(100);
         break;
     }

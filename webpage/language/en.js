@@ -267,6 +267,11 @@ let TRANSLATION_EN_US = {
 			"label": "Time Server",
 			"save": "Save Setting"
 		},
+		"timezone": {
+			"h2": "Timezone",
+			"label": "POSIX timezone",
+			"save": "Save Setting"
+		},
 		"manual-time": {
 			"h2": "Set Time Manually",
 			"time": "Time",

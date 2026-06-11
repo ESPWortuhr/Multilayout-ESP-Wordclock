@@ -70,6 +70,7 @@ Network network;
 
 void setDefaultHardwarePins();
 bool hardwarePinsAreValid();
+void ensureTimezone();
 
 LedStripInterface *activeLedStrip = nullptr;
 
@@ -215,6 +216,37 @@ bool hardwarePinsAreValid() {
 
 //------------------------------------------------------------------------------
 
+bool timezoneIsValid() {
+    for (uint8_t i = 0; i < sizeof(G.timezone); i++) {
+        const char c = G.timezone[i];
+        if (c == '\0') {
+            return i > 0;
+        }
+        if (c < 33 || c > 126) {
+            return false;
+        }
+    }
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+void ensureTimezone() {
+    if (!timezoneIsValid()) {
+        strlcpy(G.timezone, TZ_Europe_Berlin, sizeof(G.timezone));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void applyTimezone() {
+    ensureTimezone();
+    setenv("TZ", G.timezone, true);
+    tzset();
+}
+
+//------------------------------------------------------------------------------
+
 void ensureHardwarePins() {
     if (hardwarePinsAreValid()) {
         return;
@@ -261,6 +293,7 @@ void setup() {
     EEPROM.begin(EEPROM_SIZE);
     eeprom::read();
     ensureHardwarePins();
+    ensureTimezone();
 
     //-------------------------------------
 
@@ -317,6 +350,7 @@ void setup() {
         strcpy(G.openWeatherMap.cityid, "");
         strcpy(G.openWeatherMap.apikey, "");
         strcpy(G.timeserver, "europe.pool.ntp.org");
+        strlcpy(G.timezone, TZ_Europe_Berlin, sizeof(G.timezone));
         strcpy(G.hostname, "ESPWordclock");
         strcpy(G.scrollingText, "HELLO WORLD ");
 
@@ -512,8 +546,7 @@ void setup() {
 #endif
     wifiStart();
     configTime(0, 0, G.timeserver);
-    setenv("TZ", TZ_Europe_Berlin, true);
-    tzset();
+    applyTimezone();
 
     delay(50);
 

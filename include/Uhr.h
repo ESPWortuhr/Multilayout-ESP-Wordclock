@@ -244,6 +244,7 @@ struct GLOBAL {
     Birthday birthday[MAX_BIRTHDAY_COUNT];
 
     HardwarePins hardwarePins;
+    char timezone[PAYLOAD_LENGTH];
 };
 GLOBAL G = {};
 
@@ -351,6 +352,7 @@ enum CommandWords : uint8_t {
     COMMAND_SET_SYMBOL = 105,
     COMMAND_SET_IT_IS_VARIANT = 106,
     COMMAND_SET_HARDWARE_PINS = 107,
+    COMMAND_SET_TIMEZONE = 108,
 
     COMMAND_SPEED = 152,
 
