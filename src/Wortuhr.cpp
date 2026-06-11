@@ -554,7 +554,11 @@ void setup() {
     // OTA
     //-------------------------------------
 
+#if WEB_PROTECTED
+    httpUpdater.setup(&httpServer, WEB_USER, WEB_PASSWORD);
+#else
     httpUpdater.setup(&httpServer);
+#endif
     httpServer.onNotFound([]() {
         // redirect port 81 not found pages to port 80
         httpServer.sendHeader(
@@ -575,6 +579,9 @@ void setup() {
     // Start Websocket
     //-------------------------------------
 
+#if WEB_PROTECTED
+    webSocket.setAuthorization(WEB_USER, WEB_PASSWORD);
+#endif
     webSocket.begin();
     webSocket.onEvent(webSocketEvent);
 
