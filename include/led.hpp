@@ -125,6 +125,51 @@ float Led::setBrightnessAuto(float val) {
 
 //------------------------------------------------------------------------------
 
+uint8_t Led::getPowerLimitBrightnessPercent() {
+    if (G.powerLimitMilliAmps == 0) {
+        return 100;
+    }
+
+    uint16_t ledCount =
+        usedUhrType->rowsWordMatrix() * usedUhrType->colsWordMatrix();
+    if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
+        ledCount = usedUhrType->rowsWordMatrix() *
+                   (usedUhrType->colsWordMatrix() * 2 - 1);
+    }
+    if (G.layoutVariant[ExtraLedPerRow]) {
+        ledCount += G.layoutVariant[FlipHorzVert]
+                        ? usedUhrType->colsWordMatrix() - 1
+                        : usedUhrType->rowsWordMatrix() - 1;
+    }
+    uint16_t additionalLedCount = usedUhrType->numPixelsFrameMatrix();
+    if (additionalLedCount < 4) {
+        additionalLedCount = 4;
+    }
+    ledCount += additionalLedCount;
+
+    uint16_t milliAmpsPerLed = G.Colortype == Grbw ? 80 : 60;
+    uint32_t maxMilliAmps = static_cast<uint32_t>(ledCount) * milliAmpsPerLed;
+
+    if (maxMilliAmps == 0 || G.powerLimitMilliAmps >= maxMilliAmps) {
+        return 100;
+    }
+
+    uint8_t brightnessPercent =
+        (static_cast<uint32_t>(G.powerLimitMilliAmps) * 100) / maxMilliAmps;
+    if (brightnessPercent < 1) {
+        brightnessPercent = 1;
+    }
+    return brightnessPercent;
+}
+
+//------------------------------------------------------------------------------
+
+float Led::applyPowerLimit(float brightness) {
+    return min(brightness, getPowerLimitBrightnessPercent() / 100.f);
+}
+
+//------------------------------------------------------------------------------
+
 uint8_t Led::getCurrentManualBrightnessSetting() {
     // Set Brighness hour dependent
     if (_hour < 6) {
@@ -158,6 +203,7 @@ HsbColor Led::getColorbyPositionWithAppliedBrightness(ColorPosition position) {
     } else {
         color.B *= getCurrentManualBrightnessSetting() / 100.f;
     }
+    color.B = applyPowerLimit(color.B);
     return color;
 }
 
@@ -231,6 +277,7 @@ void Led::setState(const bool newState) {
 //------------------------------------------------------------------------------
 
 void Led::setPixel(uint16_t ledIndex, HsbColor color) {
+    color.B = applyPowerLimit(color.B);
     if (G.Colortype == Grbw) {
         activeLedStrip->setRgbwPixel(
             ledIndex, convertRgbToRgbw(RgbColor(color), G.wType));

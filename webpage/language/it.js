@@ -267,6 +267,10 @@ let TRANSLATION_IT = {
 			"eighteen-to-twenty": "18:00 – 19:59",
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
+			"help-power-limit": "Optional power-supply protection:<br/>" +
+				"0 mA disables the limit. When a power-supply current is configured, the maximum LED brightness is limited conservatively based on the LED count.",
+			"value-power-limit": "Maximum power-supply current (0–20000)",
+			"value-power-limit-brightness": "Calculated brightness limit",
 			"value-sensor": "Luce ambientale (lx)",
 			"value-gain": "Luminosità del LED (%)",
 			"help-min": "Configurazione della luminosità minima:<br/>" +

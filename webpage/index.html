@@ -749,6 +749,13 @@
                                 <option value="0" data-i18next="settings.brightness.manual"></option>
                             </select>
                         </div>
+                        <legend data-i18next="settings.brightness.help-power-limit"></legend>
+                        <div class="pure-control-group">
+                            <label for="power-limit-ma" data-i18next="settings.brightness.value-power-limit"></label><input id="power-limit-ma" type="number" min="0" max="20000" step="100"> mA
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="power-limit-brightness" data-i18next="settings.brightness.value-power-limit-brightness"></label><input id="power-limit-brightness" type="text" value=" " readonly> %
+                        </div>
                         <br>
                         <!-- Specific Brightness-manual Start-->
                         <div class="specific-layout-brightness-man">

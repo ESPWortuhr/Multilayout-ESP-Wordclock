@@ -1548,6 +1548,8 @@ void ClockWork::loop(struct tm &tm) {
         config["modeButtonPin"] = G.hardwarePins.modeButton;
         config["speedButtonPin"] = G.hardwarePins.speedButton;
         config["autoBrightEnabled"] = G.autoBrightEnabled;
+        config["powerLimitMilliAmps"] = G.powerLimitMilliAmps;
+        config["powerLimitBrightness"] = led.getPowerLimitBrightnessPercent();
         config["isRomanLanguage"] = usedUhrType->isRomanLanguage();
         config["hasDreiviertel"] = usedUhrType->hasDreiviertel();
         config["hasTwenty"] = usedUhrType->hasTwenty();
@@ -1670,6 +1672,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_MINUTE:
     case COMMAND_SET_BRIGHTNESS:
     case COMMAND_SET_AUTO_BRIGHT:
+    case COMMAND_SET_POWER_LIMIT:
     case COMMAND_SET_WHITETYPE:
     case COMMAND_SET_TIME_MANUAL:
     case COMMAND_SET_LAYOUT_VARIANT: {

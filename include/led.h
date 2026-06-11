@@ -42,6 +42,8 @@ public:
     // Brightness Functions
     //------------------------------------------------------------------------------
     float setBrightnessAuto(float val);
+    float applyPowerLimit(float brightness);
+    uint8_t getPowerLimitBrightnessPercent();
     uint8_t getCurrentManualBrightnessSetting();
     HsbColor getColorbyPositionWithAppliedBrightness(ColorPosition position);
     void shiftColumnToRight();

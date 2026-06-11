@@ -328,6 +328,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+        case COMMAND_SET_POWER_LIMIT: {
+            G.powerLimitMilliAmps = split(payload, 3, 5);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
         case COMMAND_SET_IT_IS_VARIANT: {
             G.itIsVariant = static_cast<ItIsVariant>(split(payload, 3));
             break;

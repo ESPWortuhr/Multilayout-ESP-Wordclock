@@ -59,6 +59,7 @@ let autoBrightInterval = null;
 let autoBrightMin = 10;
 let autoBrightMax = 80;
 let autoBrightPeak = 750;
+let powerLimitMilliAmps = 0;
 let transitionType = 0;
 let transitionDuration = 1;
 let transitionSpeed = 30;
@@ -105,7 +106,8 @@ const CMD = {
 	SET_SYMBOL: 105,
 	SET_IT_IS_VARIANT: 106,
 	SET_HARDWARE_PINS: 107,
-	SET_TIMEZONE: 108,
+	SET_POWER_LIMIT: 108,
+	SET_TIMEZONE: 109,
 	SPEED: 152,
 
 	// Requests
@@ -381,6 +383,8 @@ function initWebsocket() {
 				document.getElementById("power-button-pin").value = data.powerButtonPin;
 				document.getElementById("mode-button-pin").value = data.modeButtonPin;
 				document.getElementById("speed-button-pin").value = data.speedButtonPin;
+				document.getElementById("power-limit-ma").value = data.powerLimitMilliAmps;
+				document.getElementById("power-limit-brightness").value = data.powerLimitBrightness;
 
 				document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
 				document.getElementById("boot-show-led-sweep").checked = data.bootLedSweep;
@@ -872,6 +876,17 @@ document.addEventListener("DOMContentLoaded", function() {
 			enableSpecific("specific-layout-brightness-auto", autoBrightDisplay);
 		});
 	});
+
+	const powerLimitEl = document.getElementById("power-limit-ma");
+	if (powerLimitEl) {
+		powerLimitEl.addEventListener("change", function(event) {
+			powerLimitMilliAmps = Math.max(0, Math.min(20000, event.target.value));
+			event.target.value = powerLimitMilliAmps;
+			sendCmd(CMD.SET_POWER_LIMIT, nstr5(powerLimitMilliAmps));
+			sendCmd(CMD.REQ_CONFIG_VALUES);
+			debugMessage(`Power limit${debugMessageReconfigured}`);
+		});
+	}
 
 	const wlanScanBtn = document.getElementById("_wlanscan");
 	if (wlanScanBtn) {

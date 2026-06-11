@@ -230,6 +230,7 @@ struct GLOBAL {
     uint8_t autoBrightMin;
     uint8_t autoBrightMax;
     uint16_t autoBrightPeak;
+    uint16_t powerLimitMilliAmps;
     uint8_t transitionType;
     uint8_t transitionDuration;
     uint8_t transitionSpeed;
@@ -352,7 +353,8 @@ enum CommandWords : uint8_t {
     COMMAND_SET_SYMBOL = 105,
     COMMAND_SET_IT_IS_VARIANT = 106,
     COMMAND_SET_HARDWARE_PINS = 107,
-    COMMAND_SET_TIMEZONE = 108,
+    COMMAND_SET_POWER_LIMIT = 108,
+    COMMAND_SET_TIMEZONE = 109,
 
     COMMAND_SPEED = 152,
 

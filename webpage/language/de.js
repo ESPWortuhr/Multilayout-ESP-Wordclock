@@ -296,6 +296,10 @@ let TRANSLATION_DE_DE = {
 			"eighteen-to-twenty": "18:00 – 19:59",
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
+			"help-power-limit": "Optionaler Netzteil-Schutz:<br/>" +
+				"0 mA deaktiviert die Begrenzung. Bei einem eingetragenen Netzteil-Strom wird die maximale LED-Helligkeit anhand der LED-Anzahl konservativ begrenzt.",
+			"value-power-limit": "Maximaler Netzteil-Strom (0–20000)",
+			"value-power-limit-brightness": "Berechnete Helligkeitsgrenze",
 			"value-sensor": "Umgebungslicht (lx)",
 			"value-gain": "LED Helligkeit (%)",
 			"help-min": "Konfiguration der minimalen Helligkeit:<br/>" +

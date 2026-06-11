@@ -442,6 +442,7 @@ void setup() {
         G.autoBrightMin = 10;
         G.autoBrightMax = 80;
         G.autoBrightPeak = 750;
+        G.powerLimitMilliAmps = 0;
         G.transitionType = 0; // Transition::NO_TRANSITION;
         G.transitionDuration = 2;
         G.transitionSpeed = 30;
