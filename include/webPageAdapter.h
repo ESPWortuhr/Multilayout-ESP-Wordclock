@@ -438,6 +438,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_SYMBOL: {
             G.bitmapSymbol = static_cast<BitmapSymbol>(split(payload, 3));
+            if (G.bitmapSymbol >= BitmapSymbol::MAX_BITMAP_SYMBOLS) {
+                G.bitmapSymbol = BitmapSymbol::HEART;
+            }
             G.progInit = true;
             break;
         }

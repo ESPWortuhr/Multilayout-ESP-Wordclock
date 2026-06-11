@@ -30,9 +30,21 @@ private:
     //------------------------------------------------------------------------------
     // Front Effect Functions
     //------------------------------------------------------------------------------
+    struct StaticScrollingText {
+        uint8_t start = 0;
+        uint8_t len = 0;
+        uint8_t width = 0;
+        uint8_t height = 0;
+        uint8_t totalWidth = 0;
+        bool onlyDigits = true;
+    };
+
     void rainbow();
     void rainbowCycle();
     void rainbowSpiralCycle();
+    bool getStaticScrollingTextInfo(const char *buf, StaticScrollingText &info);
+    void displayStaticScrollingText(const char *buf,
+                                    const StaticScrollingText &info);
     void scrollingText(const char *buf);
     void displaySymbols(BitmapSymbol bitmapSymbolnum);
     void countdownToMidnight();
