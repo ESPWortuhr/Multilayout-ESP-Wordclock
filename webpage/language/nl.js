@@ -221,7 +221,7 @@ let TRANSLATION_NL = {
 		},
 		"hardware-pins": {
 			"h2": "Hardware-pinnen",
-			"help": "Stel de GPIO-nummers in voor de LED-strip en hardwareknoppen. Gebruik het GPIO-nummer, niet het label op het board.",
+			"help": "Hier kunnen de GPIO-pin voor de LED-strip en de hardwareknoppen worden ingesteld. Let erop dat het GPIO-nummer moet worden gebruikt en niet het label dat op het board is gedrukt. Voor de ESP8266 is de RX-pin de standaard en deze wordt ook aanbevolen.",
 			"led-pin": "LED-strip",
 			"power-button": "Powerknop",
 			"mode-button": "Modeknop",

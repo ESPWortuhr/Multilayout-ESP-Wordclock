@@ -218,7 +218,7 @@ let TRANSLATION_ES = {
 		},
 		"hardware-pins": {
 			"h2": "Pines de hardware",
-			"help": "Configure los números GPIO usados para la tira LED y los botones de hardware. Use el número GPIO, no la etiqueta impresa en la placa.",
+			"help": "Aquí se puede configurar el pin GPIO de la tira LED y los botones de hardware. Tenga en cuenta que debe usarse el número GPIO y no la etiqueta impresa en la placa. En el ESP8266, el pin RX es el predeterminado y también se recomienda.",
 			"led-pin": "Tira LED",
 			"power-button": "Botón de encendido",
 			"mode-button": "Botón de modo",

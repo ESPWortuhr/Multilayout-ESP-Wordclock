@@ -247,7 +247,7 @@ let TRANSLATION_DE_DE = {
 		},
 		"hardware-pins": {
 			"h2": "Hardware-Pins",
-			"help": "Hier können die GPIO-Nummern für den LED-Streifen und die Hardware-Tasten eingestellt werden. Es muss die GPIO-Nummer verwendet werden, nicht die aufgedruckte Board-Bezeichnung.",
+			"help": "Hier können der GPIO-Pin für den LED-Streifen sowie die Hardware-Tasten eingestellt werden. Dabei ist zu beachten, dass die GPIO-Nummer und nicht die aufgedruckte Board-Bezeichnung verwendet werden muss. Für den ESP8266 ist der RX-Pin der Standard, dieser wird auch empfohlen.",
 			"led-pin": "LED-Streifen",
 			"power-button": "Power-Taste",
 			"mode-button": "Mode-Taste",
