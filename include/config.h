@@ -326,9 +326,9 @@
  * Valid values WIFI_PASSWORD [up to 64 Alphanumeric Letters]
  *
  */
-#define MANUAL_WIFI_SETTINGS false
-#define WIFI_SSID "YOUR_WIFI_SSID"
-#define WIFI_PASSWORD "YOUR_WIFI_PASSWORD"
+#define MANUAL_WIFI_SETTINGS true
+#define WIFI_SSID "Geheim_24Ghz"
+#define WIFI_PASSWORD "69830718001049910803"
 
 //--------------------------------------------------------------------------
 // Captive portal settings
@@ -348,6 +348,23 @@
 #define CP_PROTECTED false
 #define CP_SSID "Connect_to_Wordclock"
 #define CP_PASSWORD "CHANGE_THIS_PASSWORD"
+
+//--------------------------------------------------------------------------
+// Web interface settings
+//--------------------------------------------------------------------------
+/*
+ * WEB_PROTECTED allows you to enable HTTP basic authentication for the web
+ * interface, websocket connection and OTA update page. In this case, remember
+ * to change WEB_PASSWORD to a secure password.
+ *
+ * Valid values WEB_PROTECTED [true, false]
+ * Valid values WEB_USER [Alphanumeric Letters]
+ * Valid values WEB_PASSWORD [Alphanumeric Letters]
+ *
+ */
+#define WEB_PROTECTED false
+#define WEB_USER "admin"
+#define WEB_PASSWORD "CHANGE_THIS_PASSWORD"
 
 //--------------------------------------------------------------------------
 // Settings for Boot sequence
