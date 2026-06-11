@@ -1,6 +1,19 @@
 #pragma once
 
-enum class LanguageAbbreviation { DE, EN, ES, IT, NL, HU, RO, FR, SE, RU, BN, TR };
+enum class LanguageAbbreviation {
+    DE,
+    EN,
+    ES,
+    IT,
+    NL,
+    HU,
+    RO,
+    FR,
+    SE,
+    RU,
+    BN,
+    TR
+};
 
 enum class FrontWord {
     error,
