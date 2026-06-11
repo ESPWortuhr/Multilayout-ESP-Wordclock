@@ -96,12 +96,15 @@ Die bereitgestellte Software zum Betreiben der Wortuhr hat mehrere Funktionen:
     \item Unterstützung für mehrere Matrizengrößen und LED-Abstände
     \item Farbwechsel der Anzeigefarbe möglich (RGB oder RGBW)
     \item Digitale Uhranzeige
+    \item Laufschrift, kurzer statischer Text und Symbol-Anzeige
     \item Regenbogenfarbwechsel
     \item Umgebungslicht (als Sekundenzeiger ausgeführt oder Ambientlight)
     \item Automatische Helligkeitsregelung (optional über Sensor)
     \item Offlinebetrieb (optional über entsprechende RTC)
+    \item Zeitserver, Zeitzone und manuelle Uhrzeit im Web-Frontend einstellbar
     \item Auswahl an dialektspezifischen Anzeigen
     \item Home-Assistant-Einbindung mit Autodiscovery
+    \item Optionaler Passwortschutz für das Web-Frontend
 \end{itemize}
 
 \section{Uhrenvarianten}
@@ -113,10 +116,17 @@ Die Firmware unterstützt verschiedene Frontplatten und Matrixgrößen. Die pass
     \item Kompakte Varianten mit 8 \(\times\) 8 LEDs, teilweise für Viertelstunden-Anzeige
     \item Internationale Layouts, unter anderem Englisch, Niederländisch, Spanisch, Italienisch, Ungarisch, Französisch, Rumänisch, Schweizer Deutsch, Russisch, Schwedisch und Bengalisch
     \item Dialekt- und Sondervarianten wie Bayerisch, Schwäbisch, Nero, mrrioes oder Wetter-Layout
-    \item Bauarten mit einer LED pro Buchstabe oder erhöhter Auflösung, bei der jede zweite LED einem Buchstaben entspricht
+    \item Bauarten mit einer LED pro Buchstabe, jeder zweiten LED pro Buchstabe oder zwei, drei bzw. vier LEDs pro Buchstabe
 \end{itemize}
 
-Zusätzlich können im Web-Frontend die Minutenzählrichtung, horizontale oder vertikale Spiegelung, gedrehte Layouts, zusätzliche LEDs pro Reihe und mäanderförmig verlegte LED-Streifen eingestellt werden. Diese Optionen sind hilfreich, wenn die LED-Streifen anders herum eingebaut wurden oder die Frontplatte gespiegelt gefertigt ist.
+Zusätzlich können im Web-Frontend die Minutenzählrichtung, horizontale oder vertikale Spiegelung, gedrehte Layouts, zusätzliche LEDs pro Reihe, mäanderförmig verlegte LED-Streifen und die Bauart der LED-Matrix eingestellt werden. Diese Optionen sind hilfreich, wenn die LED-Streifen anders herum eingebaut wurden, die Frontplatte gespiegelt gefertigt ist oder mehrere physische LEDs einen Buchstaben ausleuchten. Änderungen an Matrixgröße und Bauart werden im EEPROM gespeichert und erst nach einem Neustart der Uhr vollständig übernommen.
+
+    \begin{figure} [H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{Logos/WebFrontendFrontBuildType.png}
+        \caption{Front- und Bauart-Konfiguration im Web-Frontend}
+        \label{abb.WebFrontendFrontBuildType}
+    \end{figure}
 
 \section{Voraussetzungen}
 
@@ -198,6 +208,11 @@ Nach dem erfolgreichen Aufspielen startet die Uhr neu. Falls noch keine WLAN-Dat
 Mit der Software ist es möglich, die Firmware \textbf{OTA} (over the air), über den in der Uhr eingebauten Webserver zu aktualisieren. Dies ist in den meisten Fällen einfacher als das direkte Flashen.
 Ausschlaggebend für diese Vorgehensweise ist, dass die Uhr über WLAN erreichbar ist. Die Update-Schnittstelle ist dann über die Adresse
 http://<IP-Adresse der Uhr>:81/update erreichbar (Beispiel: http://192.168.4.1:81/update). Die Adresse der Uhr wird in der Grundeinstellung beim Start als Laufschrift ausgegeben.
+
+\section{Optionaler Zugriffsschutz für das Web-Frontend}
+Das Web-Frontend kann bereits in der Firmware-Konfiguration mit HTTP-Basic-Auth geschützt werden. Dazu werden in \texttt{include/config.h} im Abschnitt \say{Web interface settings} die Werte \texttt{WEB\_PROTECTED}, \texttt{WEB\_USER} und \texttt{WEB\_PASSWORD} gesetzt. Ist \texttt{WEB\_PROTECTED} auf \texttt{true} gestellt, fragt die Uhr beim Zugriff auf Web-Frontend, Websocket-Verbindung und OTA-Update-Seite nach Benutzername und Passwort.
+
+Wichtig: Das Standardpasswort \texttt{CHANGE\_THIS\_PASSWORD} darf für eine produktiv verwendete Uhr nicht unverändert bleiben. Nach einer Änderung in \texttt{config.h} muss die Firmware neu gebaut und auf die Uhr übertragen werden.
 
 \chapter{Hardware}
 
@@ -329,6 +344,27 @@ Die Einschränkungen orientieren sich an den GPIO-Hinweisen der Espressif-Dokume
 
 \chapter{Funktionen der Uhrensoftware auf dem ESP}
 
+\section{Anzeigemodi im Web-Frontend}
+Die wichtigsten Funktionen werden im Web-Frontend unter \say{Funktionen} ausgewählt. Neben der klassischen Wortuhr stehen Sekundenanzeige, Digitaluhr, Laufschrift, Regenbogen, Farbwechsel, feste Farbe und Symbol-Anzeige zur Verfügung. Je nach Modus werden darunter nur die jeweils passenden Einstellungen eingeblendet, zum Beispiel Geschwindigkeit, Helligkeit, Lauftext oder Symbolauswahl.
+
+    \begin{figure} [H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{Logos/WebFrontendFunctionsModes.png}
+        \caption{Auswahl der Anzeigemodi im Web-Frontend}
+        \label{abb.WebFrontendFunctionsModes}
+    \end{figure}
+
+Im Modus \say{Laufschrift} wird der unter \say{Lauftext} gespeicherte Text über die Matrix bewegt. Sehr kurze Texte werden automatisch anders behandelt: Nach dem Entfernen führender und nachfolgender Leerzeichen werden ein oder zwei Zeichen statisch zentriert angezeigt, sofern sie auf die gewählte Matrix passen. Ein- oder zweistellige Zahlen werden dabei wie eine kleine Digitalanzeige dargestellt.
+
+Im Modus \say{Symbol} kann eines der vordefinierten Bitmap-Symbole angezeigt werden. Zur Auswahl stehen Herz, Smiley, Note, Schneeflocke, Brief, Glocke, Stop und Standby. Die Farbe wird über die normalen Vordergrund-Farbeinstellungen bestimmt; die Geschwindigkeit beeinflusst die Wiederholung bzw. Aktualisierung des Modus.
+
+    \begin{figure} [H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{Logos/WebFrontendSymbolMode.png}
+        \caption{Symbol-Auswahl im Web-Frontend}
+        \label{abb.WebFrontendSymbolMode}
+    \end{figure}
+
 \section{Verbinden der Uhr mit dem eigenen WLAN}
 Nach dem erfolgreichen Verbinden kann die Uhr nach Eingabe der angezeigten IP-Adresse in einem Browser konfiguriert werden. Dabei kann die Uhr auch mit dem eigenen WLAN Netz verbunden werden.
 
@@ -352,6 +388,18 @@ Der Zeitserver wird im Web-Frontend unter \say{Einstellungen} im Bereich \say{Ze
         \caption{Zeitserver-Konfiguration im Web-Frontend}
         \label{abb.WebFrontendTimeServer}
     \end{figure}
+
+\section{Zeitzone und manuelle Uhrzeit}
+Die Zeitzone wird im Web-Frontend unter \say{Einstellungen} im Bereich \say{Zeitzone} als POSIX-Zeitzone gespeichert. Für Deutschland ist die Voreinstellung \path{CET-1CEST,M3.5.0,M10.5.0/3}. Die POSIX-Schreibweise enthält neben der Abweichung zur UTC auch die Regeln für Sommer- und Winterzeit; dadurch kann die Uhr die lokale Zeit korrekt aus der vom Zeitserver gelieferten UTC-Zeit berechnen.
+
+Im Bereich \say{Uhrzeit manuell einstellen} kann die Uhrzeit direkt gesetzt werden. Das ist vor allem für Tests, für den Betrieb ohne WLAN oder als schnelle Korrektur hilfreich. Wenn die Uhr später wieder einen Zeitserver erreicht, wird die Zeit erneut per NTP synchronisiert.
+
+    \begin{figure} [H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{Logos/WebFrontendTimezone.png}
+        \caption{Zeitzone und manuelle Uhrzeit im Web-Frontend}
+        \label{abb.WebFrontendTimezone}
+    \end{figure}
  
 \section{Automatische Helligkeitsregelung}
 Falls der optionale LDR an der Uhr angeschlossen wurde, ist es möglich, die Helligkeit automatisch, abhängig der Umgebungshelligkeit, regeln zu lassen. Dazu muss folgende Einstellung aktiviert werden. Durch das Feld Kalibrierung kann man die Grundhelligkeit an seine eigenen Wünsche anpassen.
@@ -369,6 +417,7 @@ Die automatische Helligkeit wird im Web-Frontend unter \say{Einstellungen} im Be
 
 \begin{table}[H]
     \centering
+    \small
     \begin{tabularx}{\linewidth}{|l|X|}
         \hline
         Problem & Mögliche Ursache und Lösung \\
@@ -377,11 +426,13 @@ Die automatische Helligkeit wird im Web-Frontend unter \say{Einstellungen} im Be
         \hline
         Web-Frontend ist nicht erreichbar & Prüfen, ob sich Gerät und Uhr im gleichen Netzwerk befinden. Die beim Start angezeigte IP-Adresse verwenden und bei OTA-Updates den Port \texttt{:81} ergänzen. \\
         \hline
+        Web-Frontend fragt nach Benutzername und Passwort & In \texttt{include/config.h} ist \texttt{WEB\_PROTECTED} aktiviert. Mit den dort gesetzten Werten \texttt{WEB\_USER} und \texttt{WEB\_PASSWORD} anmelden. \\
+        \hline
         LEDs bleiben dunkel & 5-V-Versorgung, GND-Verbindung, Datenrichtung des LED-Streifens und den eingestellten LED-Pin prüfen. Bei optionalen Tastern darf kein Boot-Strapping-Pin dauerhaft auf LOW gezogen werden. \\
         \hline
         Farben werden falsch angezeigt & Im Web-Frontend unter \say{Einstellungen} den LED-Typ bzw. die Farbreihenfolge anpassen. Unterschiedliche LED-Streifen verwenden verschiedene RGB-/RGBW-Reihenfolgen. \\
         \hline
-        Uhrzeit stimmt nicht & WLAN-Verbindung, Zeitserver und Internetzugang prüfen. Für den Offline-Betrieb muss eine RTC wie DS3231 korrekt angeschlossen sein. \\
+        Uhrzeit stimmt nicht & WLAN-Verbindung, Zeitserver, Zeitzone und Internetzugang prüfen. Für den Offline-Betrieb muss eine RTC wie DS3231 korrekt angeschlossen sein oder die Uhrzeit manuell gesetzt werden. \\
         \hline
     \end{tabularx}
     \caption{Häufige Fehler und erste Prüfschritte}

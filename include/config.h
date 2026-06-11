@@ -334,9 +334,9 @@
  * Valid values WIFI_PASSWORD [up to 64 Alphanumeric Letters]
  *
  */
-#define MANUAL_WIFI_SETTINGS true
-#define WIFI_SSID "Geheim_24Ghz"
-#define WIFI_PASSWORD "69830718001049910803"
+#define MANUAL_WIFI_SETTINGS false
+#define WIFI_SSID "WIFI_SSID"
+#define WIFI_PASSWORD "YOUR_WIFI_PASSWORD"
 
 //--------------------------------------------------------------------------
 // Captive portal settings

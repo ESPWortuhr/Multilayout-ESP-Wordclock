@@ -248,7 +248,7 @@ let TRANSLATION_EN_US = {
 		},
 		"hardware-pins": {
 			"h2": "Hardware pins",
-			"help": "Set the GPIO numbers used for the LED strip and hardware buttons. Use the GPIO number, not the label printed on the board.",
+			"help": "Set the GPIO pin for the LED strip and the hardware buttons here. Note that the GPIO number must be used, not the label printed on the board. For the ESP8266, the RX pin is the default and is also recommended.",
 			"led-pin": "LED strip",
 			"power-button": "Power button",
 			"mode-button": "Mode button",

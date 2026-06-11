@@ -71,22 +71,71 @@ async function navigate(socket) {
 		mobile: false,
 	});
 	await send(socket, "Page.navigate", { url: BASE_URL });
-	await delay(1500);
+	await delay(2000);
 	await send(socket, "Runtime.evaluate", {
 		expression: `
-			document.querySelector('a[data-navigation="settings"]').click();
 			document.documentElement.style.scrollBehavior = 'auto';
 			document.body.style.scrollBehavior = 'auto';
+		`,
+		awaitPromise: false,
+	});
+	await assertPageLoaded(socket);
+}
+
+async function navigateSection(socket, section) {
+	await send(socket, "Runtime.evaluate", {
+		expression: `
+			(() => {
+				document.querySelectorAll('.section').forEach(sec => { sec.style.display = 'none'; });
+				const target = document.querySelector(${JSON.stringify(`.section-${section}`)});
+				if (!target) throw new Error('Missing section: ${section}');
+				target.style.display = 'block';
+
+				document.querySelectorAll('.pure-menu-link').forEach(link => {
+					link.classList.remove('pure-menu-selected');
+					link.removeAttribute('aria-current');
+				});
+				const nav = document.querySelector(${JSON.stringify(`a[data-navigation="${section}"]`)});
+				if (nav) {
+					nav.classList.add('pure-menu-selected');
+					nav.setAttribute('aria-current', 'page');
+				}
+				window.scrollTo(0, 0);
+			})()
 		`,
 		awaitPromise: false,
 	});
 	await delay(400);
 }
 
+async function assertPageLoaded(socket) {
+	const result = await send(socket, "Runtime.evaluate", {
+		expression: `
+			(() => {
+				const bodyText = document.body ? document.body.innerText : '';
+				return {
+					title: document.title,
+					hasLayout: Boolean(document.querySelector('.layout')),
+					hasTranslatedText: bodyText.includes('Funktionen') || bodyText.includes('Einstellungen') || bodyText.includes('Anzeigeoptionen'),
+					isChromiumErrorPage: bodyText.includes('Die Website ist nicht erreichbar') || bodyText.includes('ERR_ADDRESS_UNREACHABLE')
+				};
+			})()
+		`,
+		awaitPromise: false,
+		returnByValue: true,
+	});
+	const value = result.result?.value;
+	if (!value?.hasLayout || value.isChromiumErrorPage || !value.hasTranslatedText) {
+		throw new Error(`Web UI did not load correctly: ${JSON.stringify(value)}`);
+	}
+}
+
 async function jumpTo(socket, selector, offset = 16) {
 	await send(socket, "Runtime.evaluate", {
 		expression: `
 			(() => {
+				document.querySelectorAll('.section-connection-lost, .section-reboot-recommended')
+					.forEach(sec => { sec.style.display = 'none'; });
 				const element = document.querySelector(${JSON.stringify(selector)});
 				if (!element) throw new Error('Missing selector: ${selector}');
 				const top = element.getBoundingClientRect().top + window.scrollY - ${offset};
@@ -127,11 +176,38 @@ async function main() {
 		const socket = await connectToPage();
 		await navigate(socket);
 
+		await navigateSection(socket, "functions");
+		await jumpTo(socket, ".section-functions", 80);
+		await screenshot(socket, "WebFrontendFunctionsModes.png");
+
+		await send(socket, "Runtime.evaluate", {
+			expression: `
+				(() => {
+					const modeSymbol = document.getElementById('mode-symbol');
+					if (modeSymbol) modeSymbol.checked = true;
+					const symbolBox = document.getElementById('symbol-box');
+					if (symbolBox) symbolBox.style.display = 'block';
+				})()
+			`,
+			awaitPromise: false,
+		});
+		await delay(250);
+		await jumpTo(socket, "#symbol-box", 120);
+		await screenshot(socket, "WebFrontendSymbolMode.png");
+
+		await navigateSection(socket, "frontoptions");
+		await jumpTo(socket, "#buildtype", 300);
+		await screenshot(socket, "WebFrontendFrontBuildType.png");
+
+		await navigateSection(socket, "settings");
 		await jumpTo(socket, "#led-pin", 150);
 		await screenshot(socket, "WebFrontendHardwarePins.png");
 
 		await jumpTo(socket, "#timeserver", 150);
 		await screenshot(socket, "WebFrontendTimeServer.png");
+
+		await jumpTo(socket, "#timezone", 150);
+		await screenshot(socket, "WebFrontendTimezone.png");
 
 		await jumpTo(socket, "#auto-bright-enabled", 150);
 		await screenshot(socket, "WebFrontendAutoBrightness.png");

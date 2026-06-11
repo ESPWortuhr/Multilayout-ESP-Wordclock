@@ -219,7 +219,7 @@ let TRANSLATION_IT = {
 		},
 		"hardware-pins": {
 			"h2": "Pin hardware",
-			"help": "Imposta i numeri GPIO usati per la striscia LED e i pulsanti hardware. Usa il numero GPIO, non l'etichetta stampata sulla scheda.",
+			"help": "Qui puoi impostare il pin GPIO per la striscia LED e i pulsanti hardware. Tieni presente che deve essere usato il numero GPIO e non l'etichetta stampata sulla scheda. Per l'ESP8266 il pin RX è quello predefinito ed è anche consigliato.",
 			"led-pin": "Striscia LED",
 			"power-button": "Pulsante power",
 			"mode-button": "Pulsante mode",

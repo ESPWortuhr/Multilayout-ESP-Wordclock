@@ -219,7 +219,7 @@ let TRANSLATION_HU = {
 		},
 		"hardware-pins": {
 			"h2": "Hardware pinek",
-			"help": "Itt állíthatók be a LED-szalaghoz és a hardver gombokhoz használt GPIO számok. A GPIO számot használd, ne a panelre nyomtatott jelölést.",
+			"help": "Itt állítható be a LED-szalag GPIO pinje és a hardver gombok. Fontos, hogy a GPIO számot kell használni, nem a panelre nyomtatott jelölést. ESP8266 esetén az RX pin az alapértelmezett, és ez is ajánlott.",
 			"led-pin": "LED-szalag",
 			"power-button": "Bekapcsoló gomb",
 			"mode-button": "Mód gomb",
