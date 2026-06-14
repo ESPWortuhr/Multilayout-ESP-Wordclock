@@ -807,11 +807,15 @@ void ClockWork::checkForValidLayoutVariant() {
 //------------------------------------------------------------------------------
 
 void ClockWork::resetMinVariantIfNotAvailable() {
-    if (G.UhrtypeDef != Ger16x8 && G.minuteVariant == MinuteVariant::InWords) {
-        G.minuteVariant = MinuteVariant::Off;
-    } else if (usedUhrType->rowsWordMatrix() != 11 &&
-               G.minuteVariant == MinuteVariant::Corners) {
+    if (usedUhrType->supportsMinuteVariant(G.minuteVariant)) {
+        return;
+    }
+
+    if (G.minuteVariant == MinuteVariant::Corners &&
+        usedUhrType->supportsMinuteVariant(MinuteVariant::LED4x)) {
         G.minuteVariant = MinuteVariant::LED4x;
+    } else {
+        G.minuteVariant = MinuteVariant::Off;
     }
 }
 
@@ -1556,6 +1560,8 @@ void ClockWork::loop(struct tm &tm) {
         config["itIsVariant"] = static_cast<uint8_t>(G.itIsVariant);
         config["secondVariant"] = static_cast<uint8_t>(G.secondVariant);
         config["minuteVariant"] = static_cast<uint8_t>(G.minuteVariant);
+        config["supportedMinuteVariants"] =
+            usedUhrType->supportedMinuteVariantMask();
         config["cityid"] = G.openWeatherMap.cityid;
         config["apikey"] = G.openWeatherMap.apikey;
         config["colortype"] = G.Colortype;
@@ -1692,6 +1698,13 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_SET_MINUTE:
+        resetMinVariantIfNotAvailable();
+        eeprom::write();
+        led.clear();
+        memset(frameArray, false, sizeof(frameArray));
+        parametersChanged = true;
+        break;
+
     case COMMAND_SET_BRIGHTNESS:
     case COMMAND_SET_AUTO_BRIGHT:
     case COMMAND_SET_WHITETYPE:

@@ -321,11 +321,11 @@ HTML = """<!doctype html>
       <div class="field">
         <label for="minuteVariant">Minuten</label>
         <select id="minuteVariant">
-          <option value="off">Aus</option>
-          <option value="led4x">LED4x</option>
-          <option value="led7x">LED7x</option>
-          <option value="corners">Ecken</option>
-          <option value="in-words">Worte</option>
+          <option value="off" data-bit="0">Aus</option>
+          <option value="led4x" data-bit="1">LED4x</option>
+          <option value="led7x" data-bit="2">LED7x</option>
+          <option value="corners" data-bit="3">Ecken</option>
+          <option value="in-words" data-bit="4">Worte</option>
         </select>
       </div>
     </aside>
@@ -382,6 +382,22 @@ HTML = """<!doctype html>
       $("clock").textContent = value;
     }
 
+    function updateMinuteOptions(mask) {
+      const select = $("minuteVariant");
+      if (!select || mask === undefined) return;
+
+      for (const option of select.options) {
+        const supported = (mask & (1 << Number(option.dataset.bit))) !== 0;
+        option.disabled = !supported;
+        option.hidden = !supported;
+      }
+
+      const selectedOption = select.selectedOptions[0];
+      if (selectedOption && selectedOption.disabled) {
+        select.value = "off";
+      }
+    }
+
     function renderMatrix(payload) {
       const matrix = $("matrix");
       matrix.textContent = "";
@@ -424,6 +440,7 @@ HTML = """<!doctype html>
       $("activeLetters").textContent = payload.active_letters || "-";
       $("words").textContent = payload.words.join(" ");
       $("warning").textContent = payload.missing.length ? `Fehlt: ${payload.missing.join(" ")}` : "";
+      updateMinuteOptions(payload.supported_minute_variants);
       renderMatrix(payload);
     }
 
@@ -517,6 +534,7 @@ class Handler(BaseHTTPRequestHandler):
                         "cols": uhrtype.cols,
                         "lang": uhrtype.lang,
                         "has_layout": bool(uhrtype.layout),
+                        "supported_minute_variants": uhrtype.supported_minute_variant_mask(),
                     }
                     for uhrtype in self.uhrtypes
                 ]
@@ -558,6 +576,7 @@ class Handler(BaseHTTPRequestHandler):
                 "words": words,
                 "missing": missing,
                 "active_letters": uhrtype.active_letters(lit),
+                "supported_minute_variants": uhrtype.supported_minute_variant_mask(),
                 "rows": cells_for_render(uhrtype, lit),
             }
         )

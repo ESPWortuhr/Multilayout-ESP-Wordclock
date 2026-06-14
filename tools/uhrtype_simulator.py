@@ -37,7 +37,6 @@ DEFAULT_CAPABILITIES = {
     "hasSecondsFrame": False,
     "hasDaytimeWords": False,
     "hasLed4x": True,
-    "hasLed7x": True,
     "hasMinuteInWords": False,
     "hasSpecialWordBeen": False,
     "hasSpecialWordHappyBirthday": False,
@@ -54,6 +53,14 @@ ROMAN_HALF_AFTER = {
 }
 
 HALF_WITHOUT_OFFSET = {"FR10X11", "RU10X11"}
+
+MINUTE_VARIANTS = {
+    "off": 0,
+    "led4x": 1,
+    "led7x": 2,
+    "corners": 3,
+    "in-words": 4,
+}
 
 
 @dataclass(frozen=True)
@@ -79,7 +86,29 @@ class Uhrtype:
     def has(self, capability: str) -> bool:
         if capability == "hasMinuteCorners":
             return self.rows == 11
+        if capability == "hasLed7x":
+            return self.capabilities.get(capability, self.has("hasLed4x"))
         return self.capabilities.get(capability, DEFAULT_CAPABILITIES[capability])
+
+    def supports_minute_variant(self, variant: str) -> bool:
+        if variant == "off":
+            return True
+        if variant == "led4x":
+            return self.has("hasLed4x")
+        if variant == "led7x":
+            return self.has("hasLed7x")
+        if variant == "corners":
+            return self.has("hasMinuteCorners")
+        if variant == "in-words":
+            return self.has("hasMinuteInWords")
+        return False
+
+    def supported_minute_variant_mask(self) -> int:
+        mask = 0
+        for variant, bit in MINUTE_VARIANTS.items():
+            if self.supports_minute_variant(variant):
+                mask |= 1 << bit
+        return mask
 
     @property
     def normalized_name(self) -> str:
@@ -271,7 +300,7 @@ def parse_uhrtype(path: Path) -> Uhrtype | None:
     cols = int(cols_match.group(1)) if cols_match else 11
     capabilities = DEFAULT_CAPABILITIES.copy()
     for cap, value in re.findall(
-        r"const\s+bool\s+(has\w+)\(\)\s*override\s*\{\s*return\s+(true|false)\s*;",
+        r"const\s+bool\s+(has\w+)\(\)\s*(?:override\s*)?\{\s*return\s+(true|false)\s*;",
         text,
     ):
         capabilities[cap] = value == "true"

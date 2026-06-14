@@ -224,16 +224,27 @@ function enableSpecific(cls, enbl) {
 	}
 }
 
-function removeSpecificOption(cls, val, bool) {
-	if (bool) {
-		let selectobject = document.getElementById(cls);
-		if (!selectobject) return;
-		for (let i = 0; i < selectobject.length; i++) {
-			if (selectobject.options[i].value === val) {
-				selectobject.remove(i);
-			}
-		}
+function updateMinuteOptions(supportedMinuteVariants) {
+	const selectobject = document.getElementById("show-minutes");
+	if (!selectobject || supportedMinuteVariants === undefined) return;
+
+	for (const option of selectobject.options) {
+		const supported = (supportedMinuteVariants & (1 << Number(option.value))) !== 0;
+		option.disabled = !supported;
+		option.hidden = !supported;
 	}
+
+	const selectedOption = selectobject.selectedOptions[0];
+	if (selectedOption && selectedOption.disabled) {
+		selectobject.value = "0";
+	}
+}
+
+function supportsMinuteDirection(supportedMinuteVariants) {
+	const led4x = 1 << 1;
+	const led7x = 1 << 2;
+	const corners = 1 << 3;
+	return (supportedMinuteVariants & (led4x | led7x | corners)) !== 0;
 }
 
 // handle click events on the swatch
@@ -367,6 +378,7 @@ function initWebsocket() {
 				document.getElementById("slider-speed").value = data.effectSpeed;
 				document.getElementById("show-seconds").value = data.secondVariant;
 				document.getElementById("show-minutes").value = data.minuteVariant;
+				updateMinuteOptions(data.supportedMinuteVariants);
 
 				document.getElementById("owm-api-key").value = data.apiKey;
 				document.getElementById("owm-city-id").value = data.cityid;
@@ -404,11 +416,7 @@ function initWebsocket() {
 
 				enableSpecific("specific-layout-7", data.hasSecondsFrame);
 				enableSpecific("specific-colortype-4", data.colortype === 5);
-
-				removeSpecificOption("show-minutes", "3", data.numOfRows !== 11);
-				removeSpecificOption("show-minutes", "4", !data.hasMinuteInWords);
-				removeSpecificOption("show-minutes", "1", data.UhrtypeDef === 13 || data.UhrtypeDef === 14);
-				removeSpecificOption("show-minutes", "2", data.UhrtypeDef === 13 || data.UhrtypeDef === 14);
+				enableSpecific("specific-minute-direction", supportsMinuteDirection(data.supportedMinuteVariants));
 
 				autoBrightEnabled = data.autoBrightEnabled;
 				const autoBrightSelect = document.getElementById("auto-bright-enabled");

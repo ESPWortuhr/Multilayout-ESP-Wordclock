@@ -238,11 +238,40 @@ public:
 
     virtual const bool hasLed4x() { return true; }
 
-    virtual const bool hasLed7x() { return true; }
+    virtual const bool hasLed7x() { return hasLed4x(); }
 
     virtual const bool hasMinuteCorners() { return rowsWordMatrix() == 11; }
 
     virtual const bool hasMinuteInWords() { return false; }
+
+    virtual const bool supportsMinuteVariant(MinuteVariant variant) {
+        switch (variant) {
+        case MinuteVariant::Off:
+            return true;
+        case MinuteVariant::LED4x:
+            return hasLed4x();
+        case MinuteVariant::LED7x:
+            return hasLed7x();
+        case MinuteVariant::Corners:
+            return hasMinuteCorners();
+        case MinuteVariant::InWords:
+            return hasMinuteInWords();
+        default:
+            return false;
+        }
+    }
+
+    virtual const uint8_t supportedMinuteVariantMask() {
+        uint8_t mask = 0;
+        for (uint8_t i = 0; i <= static_cast<uint8_t>(MinuteVariant::InWords);
+             i++) {
+            const MinuteVariant variant = static_cast<MinuteVariant>(i);
+            if (supportsMinuteVariant(variant)) {
+                mask |= 1U << i;
+            }
+        }
+        return mask;
+    }
 
     // --- Special Words ---
 

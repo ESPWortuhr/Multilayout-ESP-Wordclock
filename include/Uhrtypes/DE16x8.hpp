@@ -71,7 +71,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasMinuteInWords() { return true; }
+    virtual const bool hasLed4x() override { return false; }
+
+    //------------------------------------------------------------------------------
+
+    virtual const bool hasMinuteInWords() override { return true; }
 
     //------------------------------------------------------------------------------
 
