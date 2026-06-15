@@ -27,6 +27,7 @@
     X(Ger10x11NeroFrame, 26, _de10x11NeroFrame)                                \
     X(Ger10x11schwaebisch, 20, _de10x11schwaebisch)                            \
     X(Ger11x11, 3, _de11x11)                                                   \
+    X(Ger11x11schwaebisch, 36, _de11x11schwaebisch)                            \
     X(Ger11x11V2, 8, _de11x11V2)                                               \
     X(Ger11x11V3, 14, _de11x11V3)                                              \
     X(Ger13x13, 31, _de13x13)                                                  \

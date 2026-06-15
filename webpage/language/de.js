@@ -136,6 +136,7 @@ let TRANSLATION_DE_DE = {
 			"de-10-11-bayerisch": "🇩🇪 10 × 11 Bayerisch",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Schwäbisch",
 			"de-11-11": "🇩🇪 11 × 11",
+			"de-11-11-schwaebisch": "🇩🇪 11 × 11 Schwäbisch",
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
 			"de-11-11-v3": "🇩🇪 11 × 11 (panbachi)",
 			"de-13-13": "🇩🇪 13 × 13",
