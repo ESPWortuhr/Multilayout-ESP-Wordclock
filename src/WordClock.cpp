@@ -88,12 +88,23 @@ void deleteActiveLedStrip() {
 #include "TransitionTypes/Transition.hpp"
 #include "WiFi.hpp"
 
-#define EEPROM_SIZE 512
-_Static_assert(sizeof(G) < EEPROM_SIZE,
-               "Datenstruktur G zu gross für reservierten EEPROM Bereich");
+namespace {
+constexpr uint16_t EEPROM_SIZE = 512;
+constexpr uint16_t POWER_CYCLE_COUNT_ADDRESS = EEPROM_SIZE - 1;
+constexpr uint8_t POWER_CYCLE_RESET_LIMIT = 5;
+constexpr uint8_t CAPTIVE_PORTAL_POWER_CYCLE_COUNT = 3;
+constexpr uint8_t FACTORY_RESET_POWER_CYCLE_COUNT = 6;
 
-uint16_t powerCycleCountAddr =
-    EEPROM_SIZE - 1;          // Address in EEPROM to store power cycle count
+#ifdef ESP8266
+constexpr uint8_t MAX_HARDWARE_PIN = 16;
+#else
+constexpr uint8_t MAX_HARDWARE_PIN = 39;
+#endif
+} // namespace
+
+static_assert(sizeof(G) < EEPROM_SIZE,
+              "Configuration data is too large for reserved EEPROM storage");
+
 uint16_t powerCycleCount = 0; // Variable to store power cycle count
 
 //------------------------------------------------------------------------------
@@ -151,11 +162,11 @@ void time_is_set() {
 //------------------------------------------------------------------------------
 
 void incrementPowerCycleCount() {
-    if (powerCycleCount > 5) {
+    if (powerCycleCount > POWER_CYCLE_RESET_LIMIT) {
         powerCycleCount = 0;
     }
     powerCycleCount++;
-    EEPROM.write(powerCycleCountAddr, powerCycleCount);
+    EEPROM.write(POWER_CYCLE_COUNT_ADDRESS, powerCycleCount);
     EEPROM.commit();
 }
 
@@ -180,23 +191,41 @@ void setDefaultHardwarePins() {
 //------------------------------------------------------------------------------
 
 bool isHardwarePinInRange(uint8_t pin) {
-#ifdef ESP8266
-    return pin <= 16;
-#elif defined(ESP32)
-    return pin <= 39;
-#else
-    return pin <= 39;
-#endif
+    return pin <= MAX_HARDWARE_PIN;
+}
+
+//------------------------------------------------------------------------------
+
+bool allHardwarePinsAreInRange() {
+    const uint8_t pins[] = {
+        G.hardwarePins.led,
+        G.hardwarePins.powerButton,
+        G.hardwarePins.modeButton,
+        G.hardwarePins.speedButton,
+    };
+    const uint8_t pinCount = sizeof(pins) / sizeof(pins[0]);
+
+    for (uint8_t i = 0; i < pinCount; i++) {
+        if (!isHardwarePinInRange(pins[i])) {
+            return false;
+        }
+    }
+    return true;
 }
 
 //------------------------------------------------------------------------------
 
 bool hasDuplicateHardwarePins() {
-    const uint8_t pins[] = {G.hardwarePins.led, G.hardwarePins.powerButton,
-                            G.hardwarePins.modeButton,
-                            G.hardwarePins.speedButton};
-    for (uint8_t i = 0; i < 4; i++) {
-        for (uint8_t j = i + 1; j < 4; j++) {
+    const uint8_t pins[] = {
+        G.hardwarePins.led,
+        G.hardwarePins.powerButton,
+        G.hardwarePins.modeButton,
+        G.hardwarePins.speedButton,
+    };
+    const uint8_t pinCount = sizeof(pins) / sizeof(pins[0]);
+
+    for (uint8_t i = 0; i < pinCount; i++) {
+        for (uint8_t j = i + 1; j < pinCount; j++) {
             if (pins[i] == pins[j]) {
                 return true;
             }
@@ -208,11 +237,7 @@ bool hasDuplicateHardwarePins() {
 //------------------------------------------------------------------------------
 
 bool hardwarePinsAreValid() {
-    return isHardwarePinInRange(G.hardwarePins.led) &&
-           isHardwarePinInRange(G.hardwarePins.powerButton) &&
-           isHardwarePinInRange(G.hardwarePins.modeButton) &&
-           isHardwarePinInRange(G.hardwarePins.speedButton) &&
-           !hasDuplicateHardwarePins();
+    return allHardwarePinsAreInRange() && !hasDuplicateHardwarePins();
 }
 
 //------------------------------------------------------------------------------
@@ -299,18 +324,18 @@ void setup() {
     //-------------------------------------
 
     // Read the power cycle count from EEPROM
-    powerCycleCount = EEPROM.read(powerCycleCountAddr);
+    powerCycleCount = EEPROM.read(POWER_CYCLE_COUNT_ADDRESS);
     incrementPowerCycleCount();
     Serial.print("Power cycle count: ");
     Serial.println(powerCycleCount);
-    if (powerCycleCount == 3) {
+    if (powerCycleCount == CAPTIVE_PORTAL_POWER_CYCLE_COUNT) {
         Serial.println("Enable captive portal");
 #if CP_PROTECTED
         wifiManager.startConfigPortal(CP_SSID, CP_PASSWORD);
 #else
         wifiManager.startConfigPortal(CP_SSID);
 #endif
-    } else if (powerCycleCount == 6) {
+    } else if (powerCycleCount == FACTORY_RESET_POWER_CYCLE_COUNT) {
         G.sernr++;
         Serial.println("Reset to initial values");
     }
@@ -649,7 +674,7 @@ void setup() {
     //-------------------------------------
     delay(500);
     powerCycleCount = 0;
-    EEPROM.write(powerCycleCountAddr, powerCycleCount);
+    EEPROM.write(POWER_CYCLE_COUNT_ADDRESS, powerCycleCount);
     EEPROM.commit();
 
     //-------------------------------------
