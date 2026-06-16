@@ -12,10 +12,17 @@ set(CMAKE_CXX_COMPILER_WORKS 1)
 
 project("Worduhr-v3" C CXX)
 
-include(CMakeListsPrivate.txt)
+include(CMakeListsPrivate.txt OPTIONAL)
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeListsUser.txt)
 include(CMakeListsUser.txt)
+endif()
+
+if(NOT DEFINED SRC_LIST)
+    FILE(GLOB_RECURSE SRC_LIST
+        ${CMAKE_CURRENT_LIST_DIR}/src/*.*
+        ${CMAKE_CURRENT_LIST_DIR}/lib/*.*
+    )
 endif()
 
 add_custom_target(
