@@ -1,6 +1,14 @@
 
 /dist
 
+#####################
+# generated outputs #
+#####################
+
+CMakeListsPrivate.txt
+docs/Anleitung.aux
+docs/Anleitung.toc
+
 #########
 # macOS #
 #########
