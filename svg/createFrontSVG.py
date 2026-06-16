@@ -277,7 +277,7 @@ if __name__ == "__main__":
     # Beispiel Windows: base_directory = r'C:\Users\DeinBenutzername\Dokumente\ClockLayouts'
     # Beispiel Linux/macOS: base_directory = '/home/DeinBenutzername/Dokumente/ClockLayouts'
     # Aktuelles Verzeichnis: base_directory = '.'
-    base_directory = '/Users/davidp/Wortuhr/include/Uhrtypes' # Setze '.' wenn die .hpp-Dateien im selben Ordner wie das Skript sind
+    base_directory = '/Users/davidp/Wortuhr/include/WordClockTypes' # Setze '.' wenn die .hpp-Dateien im selben Ordner wie das Skript sind
 
     # Liste der Dateinamen der .hpp-Dateien (ohne Pfad)
     hpp_filenames_to_process = [

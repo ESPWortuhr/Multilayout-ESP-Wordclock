@@ -26,6 +26,7 @@
 #include <Wire.h>
 
 #include "WordClockState.h"
+
 #include "ClockType.gen.h"
 #include "WebPageAdapter.h"
 
@@ -54,12 +55,12 @@ const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
 
 RTC_Type RTC;
 
-#include "TransitionTypes/Transition.h"
 #include "ClockWork.h"
 #include "Frame.h"
 #include "Led.h"
 #include "Mqtt.h"
 #include "Network.h"
+#include "TransitionTypes/Transition.h"
 
 Transition *transition;
 SecondsFrame *secondsFrame;
@@ -79,13 +80,13 @@ void deleteActiveLedStrip() {
     activeLedStrip = nullptr;
 }
 
-#include "Symbols.h"
-#include "TransitionTypes/Transition.hpp"
-#include "WiFi.hpp"
 #include "ClockWork.hpp"
 #include "Led.hpp"
 #include "Mqtt.hpp"
 #include "Network.hpp"
+#include "Symbols.h"
+#include "TransitionTypes/Transition.hpp"
+#include "WiFi.hpp"
 
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) < EEPROM_SIZE,
@@ -169,30 +170,33 @@ void sendMQTTUpdate() {
 
 //------------------------------------------------------------------------------
 
-
-bool isHardwarePinInRange(uint8_t pin) {
-    constexpr uint8_t maxHardwarePin =
-#ifdef ESP8266
-        16;
-#elif defined(ESP32)
-        39;
-#else
-        39;
-#endif
-    return pin <= maxHardwarePin;
+void setDefaultHardwarePins() {
+    G.hardwarePins.led = LED_PIN;
+    G.hardwarePins.powerButton = POWER_BUTTON_PIN;
+    G.hardwarePins.modeButton = MODE_BUTTON_PIN;
+    G.hardwarePins.speedButton = SPEED_BUTTON_PIN;
 }
 
 //------------------------------------------------------------------------------
 
-bool hasDuplicateHardwarePins(const uint8_t pins[], uint8_t pinCount) {
-    if (pinCount < 2) {
-        return false;
-    }
+bool isHardwarePinInRange(uint8_t pin) {
+#ifdef ESP8266
+    return pin <= 16;
+#elif defined(ESP32)
+    return pin <= 39;
+#else
+    return pin <= 39;
+#endif
+}
 
-    const uint8_t lastComparableIndex = pinCount - 1;
+//------------------------------------------------------------------------------
 
-    for (uint8_t i = 0; i < lastComparableIndex; i++) {
-        for (uint8_t j = i + 1; j < pinCount; j++) {
+bool hasDuplicateHardwarePins() {
+    const uint8_t pins[] = {G.hardwarePins.led, G.hardwarePins.powerButton,
+                            G.hardwarePins.modeButton,
+                            G.hardwarePins.speedButton};
+    for (uint8_t i = 0; i < 4; i++) {
+        for (uint8_t j = i + 1; j < 4; j++) {
             if (pins[i] == pins[j]) {
                 return true;
             }
@@ -203,26 +207,13 @@ bool hasDuplicateHardwarePins(const uint8_t pins[], uint8_t pinCount) {
 
 //------------------------------------------------------------------------------
 
-bool allHardwarePinsAreInRange(const uint8_t pins[], uint8_t pinCount) {
-    for (uint8_t i = 0; i < pinCount; i++) {
-        if (!isHardwarePinInRange(pins[i])) {
-            return false;
-        }
-    }
-    return true;
-}
-
-//------------------------------------------------------------------------------
-
 bool hardwarePinsAreValid() {
-    constexpr uint8_t hardwarePinCount = 4;
-    const uint8_t pins[] = {G.hardwarePins.led, G.hardwarePins.powerButton,
-                            G.hardwarePins.modeButton,
-                            G.hardwarePins.speedButton};
-    return allHardwarePinsAreInRange(pins, hardwarePinCount) &&
-           !hasDuplicateHardwarePins(pins, hardwarePinCount);
+    return isHardwarePinInRange(G.hardwarePins.led) &&
+           isHardwarePinInRange(G.hardwarePins.powerButton) &&
+           isHardwarePinInRange(G.hardwarePins.modeButton) &&
+           isHardwarePinInRange(G.hardwarePins.speedButton) &&
+           !hasDuplicateHardwarePins();
 }
-
 
 //------------------------------------------------------------------------------
 

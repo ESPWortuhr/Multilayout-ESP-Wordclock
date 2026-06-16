@@ -1,0 +1,379 @@
+#pragma once
+#include "Arduino.h"
+#include "version.gen.h"
+
+#define PAYLOAD_LENGTH 30
+#define MAX_ROW_SIZE 22
+#define MAX_BIRTHDAY_COUNT 5
+
+// The Unique ID is a cross-reference for HTML/JavaScript
+
+#define CLOCK_TYPES_LIST                                                       \
+    /* BN (Bengali) */                                                         \
+    X(BN9x8, 34, _bn9x8)                                                       \
+    /* CH (Swiss) */                                                           \
+    X(Ch10x11, 18, _ch10x11)                                                   \
+    X(Ch10x11V2, 24, _ch10x11v2)                                               \
+    /* DE (German) */                                                          \
+    X(Ger08x08, 30, _de08x08)                                                  \
+    X(Ger08x08Viertel, 25, _de08x08Viertel)                                    \
+    X(Ger10x11, 1, _de10x11)                                                   \
+    X(Ger10x11Alternative, 2, _de10x11Alternative)                             \
+    X(Ger10x11AlternativeFrame, 4, _de10x11AlternativeFrame)                   \
+    X(Ger10x11bayerisch, 27, _de10x11bayerisch)                                \
+    X(Ger10x11Clock, 6, _de10x11Clock)                                         \
+    X(Ger10x11Mrrioes, 33, _de10x11Mrrioes)                                    \
+    X(Ger10x11Nero, 11, _de10x11Nero)                                          \
+    X(Ger10x11NeroFrame, 26, _de10x11NeroFrame)                                \
+    X(Ger10x11schwaebisch, 20, _de10x11schwaebisch)                            \
+    X(Ger11x11, 3, _de11x11)                                                   \
+    X(Ger11x11schwaebisch, 36, _de11x11schwaebisch)                            \
+    X(Ger11x11V2, 8, _de11x11V2)                                               \
+    X(Ger11x11V3, 14, _de11x11V3)                                              \
+    X(Ger13x13, 31, _de13x13)                                                  \
+    X(Ger16x8, 13, _de16x8)                                                    \
+    X(Ger16x18, 7, _de16x18)                                                   \
+    X(Ger22x11Weather, 5, _de22x11Weather)                                     \
+    /* EN (English) */                                                         \
+    X(Eng08x08, 29, _en08x08)                                                  \
+    X(Eng10x11, 10, _en10x11)                                                  \
+    X(Eng11x12, 32, _en11x12)                                                  \
+    /* ES (Spanish) */                                                         \
+    X(Es08x08Cuarto, 28, _es08x08Cuarto)                                       \
+    X(Es10x11, 15, _es10x11)                                                   \
+    /* FR (French) */                                                          \
+    X(Fr10x11, 21, _fr10x11)                                                   \
+    /* HU (Hungarian) */                                                       \
+    X(Hu10x10, 17, _hu10x10)                                                   \
+    /* IT (Italian) */                                                         \
+    X(It10x11, 16, _it10x11)                                                   \
+    /* NL (Dutch) */                                                           \
+    X(Nl10x11, 9, _nl10x11)                                                    \
+    /* RO (Romanian) */                                                        \
+    X(Ro10x11, 19, _ro10x11)                                                   \
+    /* RU (Russian) */                                                         \
+    X(Ru10x11, 23, _ru10x11)                                                   \
+    /* SE (Swedish) */                                                         \
+    X(Se10x11, 22, _se10x11)                                                   \
+    /* TR (Turkish) */                                                         \
+    X(Tr10x11, 35, _tr10x11)
+
+enum ClockWords : uint8_t {
+    ESIST = 0,
+    VOR = 1,
+    NACH = 2,
+    UHR = 3,
+
+    FUENF = 4,
+    ZEHN = 5,
+    VIERTEL = 6,
+    DREIVIERTEL = 22,
+    ZWANZIG = 7,
+    HALB = 8,
+    EINS = 9,
+
+    H_EIN = 10,
+    H_ZWEI = 11,
+    H_DREI = 12,
+    H_VIER = 13,
+    H_FUENF = 14,
+    H_SECHS = 15,
+    H_SIEBEN = 16,
+    H_ACHT = 17,
+    H_NEUN = 18,
+    H_ZEHN = 19,
+    H_ELF = 20,
+    H_ZWOELF = 21,
+    H_MITTERNACHT = 23
+};
+
+struct MqttData {
+    bool state;
+    char serverAdress[PAYLOAD_LENGTH];
+    char user[PAYLOAD_LENGTH];
+    char password[PAYLOAD_LENGTH];
+    char clientId[PAYLOAD_LENGTH];
+    char topic[PAYLOAD_LENGTH];
+    uint16_t port;
+};
+
+enum class WhiteType : uint8_t {
+    WarmWhite = 0,
+    NeutralWhite = 1,
+    ColdWhite = 2,
+};
+
+struct Birthday {
+    uint8_t day;
+    uint8_t month;
+};
+
+struct HardwarePins {
+    uint8_t led;
+    uint8_t powerButton;
+    uint8_t modeButton;
+    uint8_t speedButton;
+};
+
+struct OpenWeatherMapData {
+    char apikey[35];
+    char cityid[8];
+};
+
+enum class BuildTypeDef : uint8_t {
+    Normal = 0,
+    DoubleResM1 = 1,
+    DoubleRes = 2,
+    TrippleRes = 3,
+    QuadRes = 4,
+};
+
+inline uint8_t getLedsPerLetter(BuildTypeDef buildTypeDef) {
+    switch (buildTypeDef) {
+    case BuildTypeDef::DoubleRes:
+        return 2;
+    case BuildTypeDef::TrippleRes:
+        return 3;
+    case BuildTypeDef::QuadRes:
+        return 4;
+    default:
+        return 1;
+    }
+}
+
+enum class MinuteVariant : uint8_t {
+    Off = 0,
+    LED4x = 1,
+    LED7x = 2,
+    Corners = 3,
+    InWords = 4,
+};
+
+enum class SecondVariant : uint8_t {
+    Off = 0,
+    FrameDot = 1,
+    FrameSector = 2,
+    FrameSectorToggle = 3,
+};
+
+enum class WordclockChanges : uint8_t {
+    Null,
+    Parameters,
+    Minute,
+    Layout,
+    Words,
+};
+
+enum class ItIsVariant : uint8_t {
+    Permanent = 0,
+    Quarterly = 1,
+    HalfHourly = 2,
+    Hourly = 3,
+    Off = 4,
+};
+
+enum BitmapSymbol : uint8_t {
+    WLAN100,
+    FIRE_1,
+    FIRE_2,
+    FIRE_3,
+    FIRE_4,
+    FIRE_5,
+    FIRE_6,
+    HEART,
+    SMILEY,
+    NOTE,
+    SNOW,
+    MAIL,
+    BELL,
+    STOP,
+    STBY,
+    MAX_BITMAP_SYMBOLS
+};
+
+struct GLOBAL {
+    uint16_t sernr;
+    uint16_t prog;
+    uint8_t param1;
+    bool progInit;
+    uint16_t conf;
+    HsbColor color[3];
+    uint8_t effectBri;
+    uint8_t effectSpeed;
+    uint8_t client_nr;
+    SecondVariant secondVariant;
+    MinuteVariant minuteVariant;
+    ItIsVariant itIsVariant;
+    bool languageVariant[5];
+    bool layoutVariant[6];
+    char timeserver[PAYLOAD_LENGTH];
+    char hostname[PAYLOAD_LENGTH];
+    char scrollingText[PAYLOAD_LENGTH];
+
+    uint8_t h6;
+    uint8_t h8;
+    uint8_t h12;
+    uint8_t h16;
+    uint8_t h18;
+    uint8_t h20;
+    uint8_t h22;
+    uint8_t h24;
+
+    uint8_t clockTypeDef;
+    BuildTypeDef buildTypeDef;
+    uint8_t Colortype;
+    WhiteType wType;
+    BitmapSymbol bitmapSymbol;
+
+    MqttData mqtt;
+
+    OpenWeatherMapData openWeatherMap;
+
+    uint8_t autoBrightEnabled;
+    uint8_t autoBrightMin;
+    uint8_t autoBrightMax;
+    uint16_t autoBrightPeak;
+    uint8_t transitionType;
+    uint8_t transitionDuration;
+    uint8_t transitionSpeed;
+    uint8_t transitionColorize;
+    uint8_t transitionDemo;
+
+    bool bootLedBlink;
+    bool bootLedSweep;
+    bool bootShowWifi;
+    bool bootShowIP;
+
+    Birthday birthday[MAX_BIRTHDAY_COUNT];
+
+    HardwarePins hardwarePins;
+    char timezone[PAYLOAD_LENGTH];
+};
+GLOBAL G = {};
+
+// Brightness related variables
+float ledGain = DEFAULT_BRIGHTNESS;
+bool bh1750Initialized = false;
+
+uint8_t _second = 0;
+uint8_t _secondFrame = 0;
+uint8_t _minute = 0;
+uint8_t _hour = 0;
+uint8_t lastSecond = 0;
+uint8_t lastMinute = 0;
+
+uint32_t frontMatrix[MAX_ROW_SIZE] = {0};
+uint32_t lastFrontMatrix[MAX_ROW_SIZE] = {0};
+uint8_t minuteArray = 0; /* Using a byte as a per bit array */
+uint8_t lastMinuteArray = 0;
+uint16_t minutePixelArray[4] = {0};
+bool frameArray[200] = {false};
+bool parametersChanged = false;
+bool layoutChanged = false;
+bool colorChangedByWebsite = false;
+uint8_t statusAccessPoint = 0;
+
+bool externalRTC = false;
+
+enum ColorPosition : uint8_t {
+    Foreground = 0,
+    Background = 1,
+    Frame = 2,
+};
+
+enum LedColorVariants : uint8_t {
+    Brg = 0,
+    Grb = 1,
+    Rgb = 2,
+    Rbg = 3,
+    Bgr = 4,
+    Grbw = 5,
+};
+
+enum LanguageDialects : uint8_t {
+    ItIs15 = 0,
+    ItIs20 = 1,
+    ItIs40 = 2,
+    ItIs45 = 3,
+    EN_ShowAQuarter = 4,
+};
+
+enum LayoutVariants : uint8_t {
+    ReverseMinDirection = 0,
+    MirrorVertical = 1,
+    MirrorHorizontal = 2,
+    FlipHorzVert = 3,
+    ExtraLedPerRow = 4,
+    MeanderRows = 5,
+};
+
+enum fontSize : uint8_t {
+    normalSizeASCII = 0,
+    smallSizeNumbers = 1,
+};
+
+enum CommandWords : uint8_t {
+    COMMAND_IDLE = 0,
+
+    COMMAND_MODE_WORD_CLOCK = 1,
+    COMMAND_MODE_SECONDS = 2,
+    COMMAND_MODE_SCROLLINGTEXT = 3,
+    COMMAND_MODE_RAINBOWCYCLE = 4,
+    COMMAND_MODE_RAINBOW = 5,
+    COMMAND_MODE_COLOR = 6,
+    COMMAND_MODE_DIGITAL_CLOCK = 7,
+    COMMAND_MODE_SYMBOL = 8,
+    COMMAND_MODE_TRANSITION = 10,
+
+    PLACEHOLDER_MAX_MODE = 19,
+
+    COMMAND_SET_INITIAL_VALUES = 20,
+    COMMAND_SET_TIME = 30,
+
+    COMMAND_SET_BIRTHDAYS = 83,
+    COMMAND_SET_LANGUAGE_VARIANT = 84,
+    COMMAND_SET_MQTT = 85,
+    COMMAND_SET_TIME_MANUAL = 86,
+    COMMAND_SET_BUILDTYPE = 87,
+    COMMAND_SET_COLORTYPE = 88,
+    COMMAND_SET_CLOCK_TYPE = 89,
+    COMMAND_SET_WEATHER_DATA = 90,
+    COMMAND_SET_WHITETYPE = 91,
+    COMMAND_SET_HOSTNAME = 92,
+    COMMAND_SET_SETTING_SECOND = 93,
+    COMMAND_SET_MINUTE = 94,
+    COMMAND_SET_BRIGHTNESS = 95,
+    COMMAND_SET_SCROLLINGTEXT = 96,
+    COMMAND_SET_TIMESERVER = 97,
+    COMMAND_SET_WIFI_DISABLED = 98,
+    COMMAND_SET_WIFI_AND_RESTART = 99,
+    COMMAND_RESET = 100,
+    COMMAND_SET_BOOT = 101,
+    COMMAND_SET_AUTO_BRIGHT = 102,
+    COMMAND_SET_LAYOUT_VARIANT = 103,
+    COMMAND_SET_MQTT_HA_DISCOVERY = 104,
+    COMMAND_SET_SYMBOL = 105,
+    COMMAND_SET_IT_IS_VARIANT = 106,
+    COMMAND_SET_HARDWARE_PINS = 107,
+    COMMAND_SET_TIMEZONE = 108,
+
+    COMMAND_SPEED = 152,
+
+    PLACEHOLDER_MAX_SET = 199,
+
+    COMMAND_REQUEST_CONFIG_VALUES = 200,
+    COMMAND_REQUEST_COLOR_VALUES = 201,
+    COMMAND_REQUEST_WIFI_LIST = 202,
+    COMMAND_REQUEST_AUTO_BRIGHT = 203,
+    COMMAND_REQUEST_TRANSITION = 204,
+    COMMAND_REQUEST_MQTT_VALUES = 205,
+    COMMAND_REQUEST_BIRTHDAYS = 206,
+
+    PLACEHOLDER_MAX_REQUEST = 255,
+};
+
+enum ClockTypeDef : uint8_t {
+#define X(name, id, var) name = id,
+    CLOCK_TYPES_LIST
+#undef X
+};

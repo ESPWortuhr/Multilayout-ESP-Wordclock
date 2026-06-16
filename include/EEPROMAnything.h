@@ -66,7 +66,7 @@ void printConfig() {
     Serial.printf("H18       : %u\n", G.h18);
     Serial.printf("H22       : %u\n", G.h22);
     Serial.printf("H24       : %u\n", G.h24);
-    Serial.printf("Uhrtype    : %u\n", G.UhrtypeDef);
+    Serial.printf("ClockType    : %u\n", G.clockTypeDef);
 
     Serial.printf("MQTT_State    : %u\n", G.mqtt.state);
     printSafeString("MQTT_Server    : ", G.mqtt.serverAdress);
@@ -80,9 +80,9 @@ void printConfig() {
     Serial.printf("autoBrightMin    : %u\n", G.autoBrightMin);
     Serial.printf("autoBrightMax    : %u\n", G.autoBrightMax);
     Serial.printf("autoBrightPeak    : %u\n", G.autoBrightPeak);
-    Serial.printf("Uhrtype    : %u\n", G.transitionDuration);
+    Serial.printf("transitionDuration    : %u\n", G.transitionDuration);
     Serial.printf("transitionType    : %u\n", G.transitionType);
-    Serial.printf("transitionDuration    : %u\n", G.transitionSpeed);
+    Serial.printf("transitionSpeed    : %u\n", G.transitionSpeed);
     Serial.printf("transitionColorize    : %u\n", G.transitionColorize);
     Serial.printf("transitionDemo    : %u\n", G.transitionDemo);
 
