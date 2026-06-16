@@ -86,7 +86,7 @@ const CMD = {
 	SET_TIME_MANUAL: 86,
 	SET_BUILDTYPE: 87,
 	SET_COLORTYPE: 88,
-	SET_UHRTYPE: 89,
+	SET_CLOCK_TYPE: 89,
 	SET_WEATHER_DATA: 90,
 	SET_WHITETYPE: 91,
 	SET_HOSTNAME: 92,
@@ -384,7 +384,7 @@ function initWebsocket() {
 				document.getElementById("owm-city-id").value = data.cityid;
 
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
-				document.getElementById("front-layout").value = data.UhrtypeDef;
+				document.getElementById("front-layout").value = data.clockTypeDef;
 				document.getElementById("buildtype").value = data.buildtype;
 				document.getElementById("whitetype").value = data.wType;
 				document.getElementById("colortype").value = data.colortype;
@@ -409,10 +409,10 @@ function initWebsocket() {
 				enableSpecific("specific-layout-4", data.hasSecondsFrame);
 				enableSpecific("specific-layout-5", data.hasWeatherLayout);
 
-				// UhrtypeDef 10 is EN10x11, doesn't need the options of layout 1 and 3, but needs its own layout 6.
-				enableSpecific("specific-layout-6", data.UhrtypeDef === 10);
-				enableSpecific("specific-layout-3", data.UhrtypeDef !== 10);
-				enableSpecific("specific-layout-1", data.UhrtypeDef !== 10);
+				// clockTypeDef 10 is EN10x11, doesn't need the options of layout 1 and 3, but needs its own layout 6.
+				enableSpecific("specific-layout-6", data.clockTypeDef === 10);
+				enableSpecific("specific-layout-3", data.clockTypeDef !== 10);
+				enableSpecific("specific-layout-1", data.clockTypeDef !== 10);
 
 				enableSpecific("specific-layout-7", data.hasSecondsFrame);
 				enableSpecific("specific-colortype-4", data.colortype === 5);
@@ -956,7 +956,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const frontLayoutBtn = document.getElementById("front-layout");
 	if (frontLayoutBtn) {
 		frontLayoutBtn.addEventListener("change", function() {
-			sendCmd(CMD.SET_UHRTYPE, nstr(this.value));
+			sendCmd(CMD.SET_CLOCK_TYPE, nstr(this.value));
 			sendCmd(CMD.REQ_CONFIG_VALUES);
 			debugMessage(`FrontLayout${debugMessageReconfigured}`);
 		});

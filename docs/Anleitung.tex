@@ -210,9 +210,9 @@ Ausschlaggebend für diese Vorgehensweise ist, dass die Uhr über WLAN erreichba
 http://<IP-Adresse der Uhr>:81/update erreichbar (Beispiel: http://192.168.4.1:81/update). Die Adresse der Uhr wird in der Grundeinstellung beim Start als Laufschrift ausgegeben.
 
 \section{Optionaler Zugriffsschutz für das Web-Frontend}
-Das Web-Frontend kann bereits in der Firmware-Konfiguration mit HTTP-Basic-Auth geschützt werden. Dazu werden in \texttt{include/config.h} im Abschnitt \say{Web interface settings} die Werte \texttt{WEB\_PROTECTED}, \texttt{WEB\_USER} und \texttt{WEB\_PASSWORD} gesetzt. Ist \texttt{WEB\_PROTECTED} auf \texttt{true} gestellt, fragt die Uhr beim Zugriff auf Web-Frontend, Websocket-Verbindung und OTA-Update-Seite nach Benutzername und Passwort.
+Das Web-Frontend kann bereits in der Firmware-Konfiguration mit HTTP-Basic-Auth geschützt werden. Dazu werden in \texttt{include/Config.h} im Abschnitt \say{Web interface settings} die Werte \texttt{WEB\_PROTECTED}, \texttt{WEB\_USER} und \texttt{WEB\_PASSWORD} gesetzt. Ist \texttt{WEB\_PROTECTED} auf \texttt{true} gestellt, fragt die Uhr beim Zugriff auf Web-Frontend, Websocket-Verbindung und OTA-Update-Seite nach Benutzername und Passwort.
 
-Wichtig: Das Standardpasswort \texttt{CHANGE\_THIS\_PASSWORD} darf für eine produktiv verwendete Uhr nicht unverändert bleiben. Nach einer Änderung in \texttt{config.h} muss die Firmware neu gebaut und auf die Uhr übertragen werden.
+Wichtig: Das Standardpasswort \texttt{CHANGE\_THIS\_PASSWORD} darf für eine produktiv verwendete Uhr nicht unverändert bleiben. Nach einer Änderung in \texttt{Config.h} muss die Firmware neu gebaut und auf die Uhr übertragen werden.
 
 \chapter{Hardware}
 
@@ -426,7 +426,7 @@ Die automatische Helligkeit wird im Web-Frontend unter \say{Einstellungen} im Be
         \hline
         Web-Frontend ist nicht erreichbar & Prüfen, ob sich Gerät und Uhr im gleichen Netzwerk befinden. Die beim Start angezeigte IP-Adresse verwenden und bei OTA-Updates den Port \texttt{:81} ergänzen. \\
         \hline
-        Web-Frontend fragt nach Benutzername und Passwort & In \texttt{include/config.h} ist \texttt{WEB\_PROTECTED} aktiviert. Mit den dort gesetzten Werten \texttt{WEB\_USER} und \texttt{WEB\_PASSWORD} anmelden. \\
+        Web-Frontend fragt nach Benutzername und Passwort & In \texttt{include/Config.h} ist \texttt{WEB\_PROTECTED} aktiviert. Mit den dort gesetzten Werten \texttt{WEB\_USER} und \texttt{WEB\_PASSWORD} anmelden. \\
         \hline
         LEDs bleiben dunkel & 5-V-Versorgung, GND-Verbindung, Datenrichtung des LED-Streifens und den eingestellten LED-Pin prüfen. Bei optionalen Tastern darf kein Boot-Strapping-Pin dauerhaft auf LOW gezogen werden. \\
         \hline
