@@ -47,7 +47,7 @@ public:
                 returnArr[i] = numPixelsWordMatrix - (7 - (i * 2));
                 break;
 
-            case 2: // LEDs für "Corners" type minute display
+            case 2: // LEDs for "Corners" type minute display
                 returnArr[i] = numPixelsWordMatrix + i;
                 break;
 

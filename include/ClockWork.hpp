@@ -395,34 +395,31 @@ void ClockWork::rainbowSpiralCycle() {
     uint8_t rows = usedClockType->rowsWordMatrix();
     uint8_t cols = usedClockType->colsWordMatrix();
 
-    // 1. Mittelpunkt der Matrix berechnen
+    // 1. Calculate the center of the matrix.
     float centerRow = (rows - 1) / 2.0f;
     float centerCol = (cols - 1) / 2.0f;
 
-    // 2. Maximalen Abstand vom Zentrum (zu einer der Ecken) berechnen
-    // Dies brauchen wir, um den Farbverlauf sauber auf die Größe der Matrix zu
-    // skalieren
+    // 2. Calculate the maximum distance from the center to any corner.
+    // This scales the color gradient cleanly to the matrix size.
     float maxDist = sqrt(centerRow * centerRow + centerCol * centerCol);
 
     for (uint8_t row = 0; row < rows; row++) {
         for (uint8_t col = 0; col < cols; col++) {
 
-            // 3. Abstand des aktuellen Pixels zum Zentrum berechnen
+            // 3. Calculate the current pixel's distance from the center.
             float dRow = row - centerRow;
             float dCol = col - centerCol;
             float distance = sqrt(dRow * dRow + dCol * dCol);
 
-            // 4. Farbe basierend auf Abstand und Basis-Hue berechnen
-            // distance / maxDist ergibt einen Wert zwischen 0.0 und 1.0.
-            // Multipliziert mit 360 strecken wir den Regenbogen über den
-            // Radius.
+            // 4. Calculate the color based on distance and base hue.
+            // distance / maxDist returns a value between 0.0 and 1.0.
+            // Multiplying it by 360 stretches the rainbow across the radius.
             float hueOffset = (distance / maxDist) * 360.0f;
 
-            // Wir addieren den Basis-Hue (für die Bewegung) und den Offset.
+            // Add the base hue, which drives the movement, and the offset.
             uint16_t pixelHue = hue + (uint16_t)hueOffset;
 
-            // Da wir hier direkt Werte über 360 generieren können, sichern wir
-            // das ab
+            // Keep generated hue values inside the 0-359 range.
             while (pixelHue >= 360) {
                 pixelHue -= 360;
             }
@@ -434,9 +431,9 @@ void ClockWork::rainbowSpiralCycle() {
 
     led.show();
 
-    // 5. Animation weiterbewegen.
-    // hue++ bewegt die Farben nach innen.
-    // hue-- (oder hue + 359) würde die Farben nach außen wandern lassen.
+    // 5. Advance the animation.
+    // hue++ moves the colors inward.
+    // hue-- (or hue + 359) would move the colors outward.
     hue++;
     if (hue >= 360) {
         hue = 0;

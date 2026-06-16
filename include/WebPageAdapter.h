@@ -67,7 +67,7 @@ public:
             snprintf(buf, sizeof(buf),
                      "HTTP/1.1 404 Not Found\r\n"
                      "Content-Type: text/plain\r\n\r\n"
-                     "Seite %s nicht gefunden\n",
+                     "Page %s not found\n",
                      client->cUrl.c_str());
             client->tcp->write(buf);
         }

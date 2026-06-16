@@ -481,7 +481,7 @@ void setup() {
         setDefaultHardwarePins();
 
         eeprom::write();
-        Serial.println("eeprom schreiben");
+        Serial.println("EEPROM written");
     }
 
     // Initialization of COMMAND_MODE_xxx (color)
@@ -498,7 +498,7 @@ void setup() {
     //         LED frame vertical
     //         Number of rows (including frames)
     //         Number of columns (including frames)
-    // Get TODO frame width from usedUhrTyp
+    // TODO: Get frame width from usedClockType.
     transition = new Transition(usedClockType->rowsWordMatrix(),
                                 usedClockType->colsWordMatrix());
 
@@ -622,7 +622,7 @@ void setup() {
 
     //-------------------------------------
     Serial.println("--------------------------------------");
-    Serial.println("ESP Uhr");
+    Serial.println("ESP Wordclock");
     Serial.printf("Version         : %s\n", VERSION);
 
 #ifdef ESP8266
@@ -665,7 +665,7 @@ void setup() {
     //-------------------------------------
 
     Serial.println("--------------------------------------");
-    Serial.println("Ende Setup");
+    Serial.println("End Setup");
     Serial.println("--------------------------------------");
     Serial.println("");
 
