@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Uhr.h"
+#include "WordClockState.h"
 #include <Arduino.h>
 
 enum class HardwareButtonAction : uint8_t {
