@@ -1,7 +1,7 @@
 #pragma once
 
-#include "WordClockState.h"
 #include "ClockWork.h"
+#include "WordClockState.h"
 #include <ArduinoJson.h>
 
 class Mqtt {
