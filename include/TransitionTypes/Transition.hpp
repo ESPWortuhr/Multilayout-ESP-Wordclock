@@ -161,7 +161,8 @@ bool Transition::changeBrightness() {
         foregroundMinute = RgbColor(hsbColor);
         RgbfColor **matrix[3] = {act, old, work};
         for (uint8_t m = 0; m < 3; m++) {
-            for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
+            for (uint8_t row = 0; row < usedClockType->rowsWordMatrix();
+                 row++) {
                 for (uint8_t col = 0; col < usedClockType->colsWordMatrix();
                      col++) {
                     if (adjustBg) {
@@ -313,7 +314,8 @@ void Transition::colorize(RgbfColor **dest) {
     }
 
     // correct color of DOCE and CUARTO due non horizontal alignment
-    if (G.clockTypeDef == Es08x08Cuarto && (G.transitionColorize != CHARACTERS)) {
+    if (G.clockTypeDef == Es08x08Cuarto &&
+        (G.transitionColorize != CHARACTERS)) {
         // set color of D for O, C and E
         if (dest[3][6].isForeground()) {
             dest[3][7] = dest[3][6];
@@ -463,7 +465,8 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
     background.setOverlay(false);
     if (dest != NULL) {
         for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
-            for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
+            for (uint8_t col = 0; col < usedClockType->colsWordMatrix();
+                 col++) {
                 dest[row][col].setForeground(dest[row][col] == foreground);
             }
         }
@@ -951,7 +954,8 @@ void Transition::transitionColorChange() {
             lastTimeColor = now;
             float deltaHue = fmod(1.0 / (G.transitionSpeed * 20.0), 1.0);
             HsbColor hsbColor;
-            for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
+            for (uint8_t row = 0; row < usedClockType->rowsWordMatrix();
+                 row++) {
                 for (uint8_t col = 0; col < usedClockType->colsWordMatrix();
                      col++) {
                     if (work[row][col].isForeground()) {

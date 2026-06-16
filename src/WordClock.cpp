@@ -26,6 +26,7 @@
 #include <Wire.h>
 
 #include "WordClockState.h"
+
 #include "ClockType.gen.h"
 #include "WebPageAdapter.h"
 
@@ -54,12 +55,12 @@ const char TZ_Europe_Berlin[] = "CET-1CEST,M3.5.0,M10.5.0/3";
 
 RTC_Type RTC;
 
-#include "TransitionTypes/Transition.h"
 #include "ClockWork.h"
 #include "Frame.h"
 #include "Led.h"
 #include "Mqtt.h"
 #include "Network.h"
+#include "TransitionTypes/Transition.h"
 
 Transition *transition;
 SecondsFrame *secondsFrame;
@@ -79,13 +80,13 @@ void deleteActiveLedStrip() {
     activeLedStrip = nullptr;
 }
 
-#include "Symbols.h"
-#include "TransitionTypes/Transition.hpp"
-#include "WiFi.hpp"
 #include "ClockWork.hpp"
 #include "Led.hpp"
 #include "Mqtt.hpp"
 #include "Network.hpp"
+#include "Symbols.h"
+#include "TransitionTypes/Transition.hpp"
+#include "WiFi.hpp"
 
 #define EEPROM_SIZE 512
 _Static_assert(sizeof(G) < EEPROM_SIZE,

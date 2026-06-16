@@ -1,10 +1,10 @@
+#include "Font.h"
+#include "Led.h"
 #include "NeoMultiFeature.hpp"
 #include "Symbols.h"
 #include "TransitionTypes/Transition.h"
 #include "WordClockState.h"
 #include "WordClockTypes/ClockType.hpp"
-#include "Font.h"
-#include "Led.h"
 #include <Arduino.h>
 
 extern ClockType *usedClockType;
@@ -185,7 +185,8 @@ inline void Led::mirrorFrontMatrixHorizontal() {
     uint32_t tempMatrix[MAX_ROW_SIZE] = {0};
     memcpy(&tempMatrix, &frontMatrix, sizeof tempMatrix);
     for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
-        frontMatrix[row] = tempMatrix[usedClockType->rowsWordMatrix() - row - 1];
+        frontMatrix[row] =
+            tempMatrix[usedClockType->rowsWordMatrix() - row - 1];
     }
 }
 
@@ -320,7 +321,8 @@ void Led::setbySecondArray(ColorPosition colorPosition) {
 
     for (uint8_t i = 0; i < usedClockType->numPixelsFrameMatrix(); i++) {
         if (frameArray[i]) {
-            if (i < usedClockType->numPixelsFrameMatrix() - offesetSecondsFrame) {
+            if (i <
+                usedClockType->numPixelsFrameMatrix() - offesetSecondsFrame) {
                 setPixel(usedClockType->getFrameMatrixIndex(i) +
                              offesetSecondsFrame,
                          displayedColor);

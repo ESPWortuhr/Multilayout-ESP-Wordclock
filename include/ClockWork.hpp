@@ -1,11 +1,11 @@
+#include "ClockWork.h"
 #include "HardwareButtonController.hpp"
 #include "NeoMultiFeature.hpp"
+#include "OpenWeatherMap.h"
 #include "TransitionTypes/Transition.h"
 #include "WordClockState.h"
 #include "WordClockTypes/ClockType.hpp"
-#include "ClockWork.h"
 #include "math.h"
-#include "OpenWeatherMap.h"
 #include <Arduino.h>
 #include <BH1750.h>
 
@@ -772,7 +772,7 @@ void ClockWork::showMinute(uint8_t min) {
 
     /* saving corosponding minutePixelArray */
     usedClockType->getMinuteArray(minutePixelArray,
-                                determineWhichMinuteVariant());
+                                  determineWhichMinuteVariant());
     /* Reseting minute byte */
     minuteArray = 0;
     if (usedClockType->hasMinuteInWords() && min > 0) {
@@ -1023,7 +1023,8 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             if (G.clockTypeDef == Tr10x11) {
                 usedClockType->show(FrontWord::halb);
                 fullHour = true;
-            } else if (G.clockTypeDef == Eng10x11 || G.clockTypeDef == Eng08x08 ||
+            } else if (G.clockTypeDef == Eng10x11 ||
+                       G.clockTypeDef == Eng08x08 ||
                        G.clockTypeDef == It10x11 || G.clockTypeDef == Ro10x11 ||
                        G.clockTypeDef == Es10x11 ||
                        G.clockTypeDef == Es08x08Cuarto) {
@@ -1896,7 +1897,8 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_COLOR: {
         if (G.progInit) {
             clearClockByProgInit();
-            for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
+            for (uint8_t row = 0; row < usedClockType->rowsWordMatrix();
+                 row++) {
                 frontMatrix[row] = num32BitWithOnesAccordingToColumns();
             }
         }
