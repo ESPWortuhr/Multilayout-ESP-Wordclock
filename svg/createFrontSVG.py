@@ -7,11 +7,11 @@ import subprocess
 import random 
 import xml.etree.ElementTree as ET 
 
-# --- Funktion zum Parsen des Letter_grid aus der .hpp-Datei ---
+# --- Function for parsing letter_grid from the .hpp file ---
 def parse_letter_grid_from_hpp(filepath):
     """
-    Liest die angegebene .hpp-Datei und extrahiert das Buchstaben-Layout
-    aus dem Kommentarbereich.
+    Read the given .hpp file and extract the letter layout from its comment
+    block.
     """
     letter_grid = []
     in_grid_section = False
@@ -33,39 +33,39 @@ def parse_letter_grid_from_hpp(filepath):
                         letter_grid.append(grid_line)
             
     except FileNotFoundError:
-        print(f"Fehler: Die Datei '{filepath}' wurde nicht gefunden.")
+        print(f"Error: File '{filepath}' was not found.")
         return None
     except Exception as e:
-        print(f"Ein Fehler ist beim Lesen der Datei aufgetreten: {e}")
+        print(f"An error occurred while reading the file: {e}")
         return None
     
     return letter_grid
 
-# --- Funktion zum Generieren einer zufälligen, dezenten Farbe ---
+# --- Function for generating a random, subtle color ---
 def generate_random_subtle_color():
     """
-    Generiert eine zufällige Hexadezimal-Farbe, die dezent und nicht zu hell ist.
-    Die RGB-Werte liegen im Bereich 50-150, um dunklere, aber nicht schwarze Farben zu erhalten.
+    Generate a random hex color that is subtle and not too bright.
+    RGB values are kept in the 50-150 range to get darker, non-black colors.
     """
     r = random.randint(50, 150)
     g = random.randint(50, 150)
     b = random.randint(50, 150)
     
-    # Konvertiere RGB in Hex-Format
+    # Convert RGB to hex format.
     return f'#{r:02x}{g:02x}{b:02x}'
 
-# --- Funktion zum Generieren der SVG-Dateien ---
+# --- Function for generating SVG files ---
 def generate_svg_files(hpp_filepath, letter_grid):
     """
-    Generiert die SVG-Dateien (Text und Pfade) für ein gegebenes letter_grid.
+    Generate SVG files (text and paths) for a given letter_grid.
     """
-    # --- Konfiguration ---
+    # --- Configuration ---
     spacing_x = 63
     spacing_y = 69.9213
     textSize = 40
     text_id_counter = 65
 
-    # --- Ausgabedateinamen generieren ---
+    # --- Generate output filenames ---
     dir_name, base_name = os.path.split(hpp_filepath)
     file_name_without_extension, _ = os.path.splitext(base_name)
 
@@ -75,39 +75,39 @@ def generate_svg_files(hpp_filepath, letter_grid):
     svg_output_filename_paths = f'{file_name_without_extension}_paths.svg'
     svg_output_filepath_paths = os.path.join(dir_name, svg_output_filename_paths)
 
-    print(f"\nVerarbeite: {hpp_filepath}")
+    print(f"\nProcessing: {hpp_filepath}")
 
-    # Generiere eine zufällige Hintergrundfarbe für diese Datei
+    # Generate a random background color for this file.
     background_color = generate_random_subtle_color()
-    print(f"  Verwende Hintergrundfarbe: {background_color}") 
+    print(f"  Using background color: {background_color}") 
 
-    # --- SVG Dimensionen und ViewBox für Ursprung in der Mitte ---
+    # --- SVG dimensions and viewBox with origin in the center ---
     svg_width = 1133.8582
     svg_height = 1133.8583
     
-    # Die ersten beiden Werte des viewBox werden auf -Breite/2 und -Höhe/2 gesetzt
-    # Dies verschiebt den Ursprung (0,0) in die Mitte des Viewports
+    # Set the first two viewBox values to -width/2 and -height/2.
+    # This moves the origin (0,0) to the center of the viewport.
     viewBox_x_offset = -svg_width / 2
     viewBox_y_offset = -svg_height / 2
     
-    # Dies ist der neue viewBox-String
+    # This is the new viewBox string.
     viewBox_str = f"{viewBox_x_offset} {viewBox_y_offset} {svg_width} {svg_height}"
     
-    # Anzahl der Spalten und Reihen im Layout
+    # Number of columns and rows in the layout.
     num_cols = len(re.split(r'\s+', letter_grid[0].strip())) if letter_grid else 0
     num_rows = len(letter_grid) 
     
     if num_cols == 0:
-        print(f"Warnung: Keine Spalten im Letter_grid für '{hpp_filepath}' gefunden. Überspringe.")
+        print(f"Warning: No columns found in letter_grid for '{hpp_filepath}'. Skipping.")
         return
 
-    # Neue Startkoordinaten, um das gesamte Layout im zentrierten SVG zu platzieren
+    # New start coordinates for placing the full layout in the centered SVG.
     adjusted_startX = -(num_cols * spacing_x / 2) + (spacing_x / 2)
     adjusted_startY = -(num_rows * spacing_y / 2) + (spacing_y / 2)
 
-    # Öffnet die erste SVG-Datei zum Schreiben (Text als Text)
+    # Open the first SVG file for writing text as text objects.
     with open(svg_output_filepath_text, 'w', encoding='utf-8') as file_object:
-        # --- SVG-Header schreiben mit angepasstem viewBox und ohne translate im g-Tag ---
+        # --- Write SVG header with adjusted viewBox and without translate on the g tag ---
         file_object.write(f'''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -163,7 +163,7 @@ def generate_svg_files(hpp_filepath, letter_grid):
   <g id="g916">
     ''')
 
-        # --- Buchstaben-Gitter generieren ---
+        # --- Generate letter grid ---
         for row_index, row_text in enumerate(letter_grid):
             letters = re.split(r'\s+', row_text.strip()) 
             
@@ -185,25 +185,25 @@ def generate_svg_files(hpp_filepath, letter_grid):
                   y="{center_y}">{letter}</tspan></text>
 ''')
 
-        # --- SVG-Footer schreiben ---
+        # --- Write SVG footer ---
         file_object.write("""  </g>\n</svg>""")
 
-    print(f"  -> '{svg_output_filepath_text}' (Text als Textobjekte) wurde erfolgreich erstellt.")
+    print(f"  -> '{svg_output_filepath_text}' (text as text objects) was created successfully.")
 
-    # --- Konvertiere Text in Pfade mit rsvg-convert ---
-    # rsvg-convert erhält jetzt eine SVG OHNE den 'path2'-Hintergrund.
+    # --- Convert text to paths with rsvg-convert ---
+    # rsvg-convert receives an SVG without the 'path2' background.
     command = ['rsvg-convert', '-f', 'svg', '-o', svg_output_filepath_paths, svg_output_filepath_text]
 
     try:
         result = subprocess.run(command, check=True, capture_output=True, text=True, encoding='utf-8')
-        print(f"  -> '{svg_output_filepath_paths}' (Text als Pfade) wurde erfolgreich erstellt.")
+        print(f"  -> '{svg_output_filepath_paths}' (text as paths) was created successfully.")
         
-        # --- NACHBEARBEITUNG der _paths.svg für korrekte Zentrierung und KEINEN Hintergrund ---
+        # --- Post-process _paths.svg for correct centering and no background ---
         try:
             tree = ET.parse(svg_output_filepath_paths)
             root = tree.getroot()
 
-            # Registriere alle relevanten Namensräume
+            # Register all relevant namespaces.
             ET.register_namespace('', "http://www.w3.org/2000/svg")
             ET.register_namespace('sodipodi', "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd")
             ET.register_namespace('inkscape', "http://www.inkscape.org/namespaces/inkscape")
@@ -216,22 +216,22 @@ def generate_svg_files(hpp_filepath, letter_grid):
             target_element = g_element if g_element is not None else svg_element
 
             if target_element is not None:
-                # Setzen Sie den viewBox des SVG-Elements auf den gleichen wie zuvor
+                # Set the SVG element viewBox to the same value as before.
                 svg_element.set('viewBox', viewBox_str)
                 
-                # KEINE HINTERGRUNDFARBE mehr für _paths.svg
+                # Remove the background color from _paths.svg.
                 if 'style' in svg_element.attrib:
-                    del svg_element.attrib['style'] # Hintergrundstil entfernen
+                    del svg_element.attrib['style'] # Remove background style.
 
-                # Wenn wir ein <g>-Element haben, löschen wir sein transform-Attribut.
+                # Remove the transform attribute if a <g> element exists.
                 if g_element is not None and 'transform' in g_element.attrib:
                     del g_element.attrib['transform']
                 
-                # --- Alle Hintergrund-Rechtecke und path2 entfernen ---
-                # Wir suchen nach allen <rect> Elementen und entfernen sie.
-                # rsvg-convert könnte einen Standard-Hintergrund als <rect> hinzufügen.
+                # --- Remove all background rectangles and path2 ---
+                # Remove all <rect> elements.
+                # rsvg-convert could add a default background as a <rect>.
                 elements_to_remove = []
-                for child in list(target_element): # list() um Fehler bei der Iteration und Modifikation zu vermeiden
+                for child in list(target_element): # list() avoids errors while iterating and modifying.
                     if child.tag == '{http://www.w3.org/2000/svg}rect' or \
                        (child.tag == '{http://www.w3.org/2000/svg}path' and child.get('id') == 'path2'):
                         elements_to_remove.append(child)
@@ -239,67 +239,65 @@ def generate_svg_files(hpp_filepath, letter_grid):
                 for element in elements_to_remove:
                     target_element.remove(element)
 
-                # Optional: Wenn du sicher sein möchtest, dass es keinen path2 gibt,
-                # aber er war ja sowieso nicht in der temporären SVG.
-                # Wenn Inkscape doch einen neuen path2 erzeugt, würde das ihn entfernen.
+                # Optional: ensure there is no path2 even if a converter creates one.
                 # path2_element = root.find(".//*[@id='path2']") 
                 # if path2_element is not None:
-                #    path2_element.getparent().remove(path2_element) # Entferne path2 von seinem Elternteil
+                #    path2_element.getparent().remove(path2_element) # Remove path2 from its parent.
 
 
-                # Speichern Sie die modifizierte Datei
+                # Save the modified file.
                 tree.write(svg_output_filepath_paths, encoding='utf-8', xml_declaration=True)
-                print(f"  -> '{svg_output_filepath_paths}' (Pfade, ohne Hintergrund) wurde nachbearbeitet und zentriert.")
+                print(f"  -> '{svg_output_filepath_paths}' (paths, no background) was post-processed and centered.")
             else:
-                print(f"  Warnung: Weder '<g>' noch '<svg>' Element in '{svg_output_filepath_paths}' konnte für die Zentrierung verarbeitet werden.")
+                print(f"  Warning: Neither '<g>' nor '<svg>' in '{svg_output_filepath_paths}' could be processed for centering.")
 
         except Exception as e:
-            print(f"  FEHLER bei der Nachbearbeitung von '{svg_output_filepath_paths}': {e}")
-            print(f"  Bitte überprüfen Sie die generierte SVG-Datei manuell.")
+            print(f"  ERROR while post-processing '{svg_output_filepath_paths}': {e}")
+            print("  Please check the generated SVG file manually.")
 
     except FileNotFoundError:
-        print("\n  FEHLER: 'rsvg-convert' wurde nicht gefunden.")
-        print("  Bitte stelle sicher, dass 'librsvg2-bin' (Linux) oder 'librsvg' (macOS/Homebrew) installiert und im PATH verfügbar ist.")
-        print("  Auf Windows ist die Installation komplexer; siehe Anweisungen in der vorherigen Antwort.")
+        print("\n  ERROR: 'rsvg-convert' was not found.")
+        print("  Please make sure 'librsvg2-bin' (Linux) or 'librsvg' (macOS/Homebrew) is installed and available in PATH.")
+        print("  Installation on Windows is more complex; see the instructions from the previous answer.")
     except subprocess.CalledProcessError as e:
-        print(f"\n  FEHLER: 'rsvg-convert' konnte die Datei nicht konvertieren: {e.cmd}")
+        print(f"\n  ERROR: 'rsvg-convert' could not convert the file: {e.cmd}")
         print(f"  Return Code: {e.returncode}")
         if e.stdout:
             print(f"  Stdout: {e.stdout}")
         if e.stderr:
             print(f"  Stderr: {e.stderr}")
     except Exception as e:
-        print(f"\n  Ein unerwarteter Fehler ist aufgetreten: {e}")
-# --- Haupt-Logik des Skripts ---
+        print(f"\n  An unexpected error occurred: {e}")
+# --- Main script logic ---
 if __name__ == "__main__":
-    # <<<<<<< HIER ANPASSEN >>>>>>>
-    # Basisverzeichnis, in dem deine .hpp-Dateien liegen
-    # Beispiel Windows: base_directory = r'C:\Users\DeinBenutzername\Dokumente\ClockLayouts'
-    # Beispiel Linux/macOS: base_directory = '/home/DeinBenutzername/Dokumente/ClockLayouts'
-    # Aktuelles Verzeichnis: base_directory = '.'
-    base_directory = '/Users/davidp/Wortuhr/include/WordClockTypes' # Setze '.' wenn die .hpp-Dateien im selben Ordner wie das Skript sind
+    # <<<<<<< ADJUST HERE >>>>>>>
+    # Base directory containing your .hpp files.
+    # Windows example: base_directory = r'C:\Users\YourUsername\Documents\ClockLayouts'
+    # Linux/macOS example: base_directory = '/home/YourUsername/Documents/ClockLayouts'
+    # Current directory: base_directory = '.'
+    base_directory = '/Users/davidp/Wortuhr/include/WordClockTypes' # Set to '.' if the .hpp files are in the same folder as the script.
 
-    # Liste der Dateinamen der .hpp-Dateien (ohne Pfad)
+    # List of .hpp filenames without path.
     hpp_filenames_to_process = [
         'DE10x11.hpp',
     ]
-    # <<<<<<< ENDE DER ANPASSUNG >>>>>>>
+    # <<<<<<< END ADJUSTMENT >>>>>>>
 
 
     for filename in hpp_filenames_to_process:
-        # Voller Pfad zur aktuellen .hpp-Datei
+        # Full path to the current .hpp file.
         hpp_full_filepath = os.path.join(base_directory, filename)
 
         if not os.path.exists(hpp_full_filepath):
-            print(f"Überspringe: Die Datei '{hpp_full_filepath}' existiert nicht.")
-            continue # Springt zur nächsten Datei in der Liste
+            print(f"Skipping: File '{hpp_full_filepath}' does not exist.")
+            continue # Continue with the next file in the list.
 
         letter_grid = parse_letter_grid_from_hpp(hpp_full_filepath)
 
         if letter_grid is None or not letter_grid:
-            print(f"Überspringe: Das Letter_grid für '{hpp_full_filepath}' konnte nicht geparst werden oder ist leer.")
-            continue # Springt zur nächsten Datei
+            print(f"Skipping: letter_grid for '{hpp_full_filepath}' could not be parsed or is empty.")
+            continue # Continue with the next file.
 
         generate_svg_files(hpp_full_filepath, letter_grid)
 
-    print("\nAlle angegebenen Dateien wurden verarbeitet.")
+    print("\nAll requested files were processed.")
