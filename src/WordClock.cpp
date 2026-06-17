@@ -190,9 +190,7 @@ void setDefaultHardwarePins() {
 
 //------------------------------------------------------------------------------
 
-bool isHardwarePinInRange(uint8_t pin) {
-    return pin <= MAX_HARDWARE_PIN;
-}
+bool isHardwarePinInRange(uint8_t pin) { return pin <= MAX_HARDWARE_PIN; }
 
 //------------------------------------------------------------------------------
 
