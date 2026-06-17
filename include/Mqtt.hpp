@@ -22,18 +22,127 @@ PubSubClient mqttClient(client);
 // discovery raises it and callbacks should still avoid variable-length stacks.
 static constexpr unsigned int MQTT_MAX_PAYLOAD_LENGTH = 512;
 
-// Serialize into the caller-provided stack buffer and skip publishing if the
-// discovery payload would be truncated. Truncated retained discovery JSON is
-// painful to diagnose in Home Assistant.
-static bool publishJsonRetained(const String &topic, const JsonDocument &doc,
-                                char *buffer, size_t bufferSize) {
-    size_t len = serializeJson(doc, buffer, bufferSize);
-    if (len == 0 || len >= bufferSize) {
-        Serial.print("MQTT: Discovery JSON too large for topic ");
+// Home Assistant's birth message: HA publishes this when it (re)starts, the cue
+// to re-announce discovery and state.
+#define HOMEASSISTANT_STATUS_TOPIC HOMEASSISTANT_DISCOVERY_TOPIC "/status"
+
+// Stream a (potentially large) retained JSON document to the broker without a
+// full-payload buffer. PubSubClient only needs room for the header and topic,
+// so the device-based discovery bundle can exceed the configured buffer size.
+static bool publishJsonStream(const String &topic, const JsonDocument &doc) {
+    if (doc.overflowed()) {
+        Serial.print("MQTT: Discovery document overflowed for topic ");
         Serial.println(topic);
         return false;
     }
-    return mqttClient.publish(topic.c_str(), buffer, true);
+    size_t len = measureJson(doc);
+    if (!mqttClient.beginPublish(topic.c_str(), len, true)) {
+        Serial.print("MQTT: Failed to begin discovery publish on ");
+        Serial.println(topic);
+        return false;
+    }
+    serializeJson(doc, mqttClient);
+    return mqttClient.endPublish();
+}
+
+// Add a diagnostic sensor component to a device-based discovery bundle. Keys are
+// the Home Assistant short forms (p=platform, dev_cla=device_class, etc.). A
+// null argument omits its key. The component id doubles as the unique_id suffix
+// so it stays stable.
+static void addDiagSensor(JsonObject components, const String &deviceId,
+                          const char *id, const char *name,
+                          const char *deviceClass, const char *unit,
+                          const char *icon, const char *stateClass,
+                          const char *valueTemplate) {
+    JsonObject c = components.createNestedObject(id);
+    c["p"] = "sensor";
+    c["uniq_id"] = deviceId + "_" + id;
+    c["name"] = name;
+    if (deviceClass)
+        c["dev_cla"] = deviceClass;
+    if (unit)
+        c["unit_of_meas"] = unit;
+    if (icon)
+        c["ic"] = icon;
+    if (stateClass)
+        c["stat_cla"] = stateClass;
+    c["ent_cat"] = "diagnostic";
+    c["stat_t"] = String(G.mqtt.topic) + "/diagnostics";
+    c["val_tpl"] = valueTemplate;
+}
+
+// Clear a retained per-entity discovery config left behind by firmware versions
+// that published one topic per entity, so migrating to the device-based bundle
+// does not leave duplicate entities in Home Assistant.
+static void clearLegacyDiscovery(const String &platform, const String &node) {
+    mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/" + platform +
+                        "/" + node + "/config")
+                           .c_str(),
+                       "", true);
+}
+
+// Home Assistant "select" entities exchange human-readable labels, while the
+// firmware stores small integers. These tables map between the two so no Jinja
+// templates are needed in discovery. Special-event transitions (Birthday / New
+// Year, enum 97-99) are intentionally omitted: they auto-trigger by date.
+struct LabeledValue {
+    const char *label;
+    uint8_t value;
+};
+
+#define LABELED_VALUE_COUNT(table) (sizeof(table) / sizeof((table)[0]))
+
+static const LabeledValue TRANSITION_TYPES[] = {
+    {"Off", 0},        {"Roll Up", 1}, {"Roll Down", 2},  {"Shift Left", 3},
+    {"Shift Right", 4}, {"Fade", 5},   {"Laser", 6},      {"Matrix Rain", 7},
+    {"Balls", 8},      {"Fire", 9},    {"Snake", 10},     {"Random", 11}};
+
+static const LabeledValue TRANSITION_COLORIZE[] = {
+    {"Off", 0}, {"Words", 1}, {"Characters", 2}};
+
+static const LabeledValue TRANSITION_DURATION[] = {
+    {"Short", 1}, {"Medium", 2}, {"Long", 3}};
+
+// Return the label for a stored value, or fallback if the value is unknown.
+static const char *labelForValue(const LabeledValue *table, size_t count,
+                                 uint8_t value, const char *fallback) {
+    for (size_t i = 0; i < count; i++) {
+        if (table[i].value == value)
+            return table[i].label;
+    }
+    return fallback;
+}
+
+// Resolve an incoming label to its stored value. Returns false (and leaves out
+// untouched) when the label is not in the table, so callers can ignore it.
+static bool valueForLabel(const LabeledValue *table, size_t count,
+                          const char *label, uint8_t &out) {
+    for (size_t i = 0; i < count; i++) {
+        if (strcmp(table[i].label, label) == 0) {
+            out = table[i].value;
+            return true;
+        }
+    }
+    return false;
+}
+
+// Add a "select" component (options list with label<->value mapping) to a
+// device-based discovery bundle, as a config entity.
+static void addSelect(JsonObject components, const String &deviceId,
+                      const char *id, const char *name, const char *icon,
+                      const LabeledValue *table, size_t count) {
+    JsonObject c = components.createNestedObject(id);
+    c["p"] = "select";
+    c["uniq_id"] = deviceId + "_" + id;
+    c["name"] = name;
+    if (icon)
+        c["ic"] = icon;
+    c["ent_cat"] = "config";
+    c["stat_t"] = String(G.mqtt.topic) + "/" + id + "/state";
+    c["cmd_t"] = String(G.mqtt.topic) + "/" + id + "/set";
+    JsonArray options = c.createNestedArray("options");
+    for (size_t i = 0; i < count; i++)
+        options.add(table[i].label);
 }
 
 // Register the instance used by PubSubClient's static callback hook.
@@ -44,8 +153,6 @@ Mqtt::~Mqtt() {
         mqttInstance = nullptr;
     }
 }
-
-// ToDo : MQTT Notify https: // www.home-assistant.io/integrations/notify.mqtt/
 
 //------------------------------------------------------------------------------
 // Helper Functions
@@ -331,6 +438,10 @@ void Mqtt::init() {
     mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
     delay(50);
 
+    // Re-announce discovery and state when Home Assistant (re)starts.
+    mqttClient.subscribe(HOMEASSISTANT_STATUS_TOPIC);
+    delay(50);
+
     // Additional Topics
     mqttClient.subscribe(
         (std::string(G.mqtt.topic) + "/scrolltext/set").c_str());
@@ -342,9 +453,25 @@ void Mqtt::init() {
         (std::string(G.mqtt.topic) + "/auto_brightness/set").c_str());
     delay(50);
 
+    // Transition settings
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/transition_type/set").c_str());
+    delay(50);
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/transition_colorize/set").c_str());
+    delay(50);
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/transition_duration/set").c_str());
+    delay(50);
+    mqttClient.subscribe(
+        (std::string(G.mqtt.topic) + "/transition_speed/set").c_str());
+    delay(50);
+
     if (isConnected()) {
         Serial.println("MQTT Connected");
-        sendState(); // Send initial state
+        sendDiscovery(); // Re-announce entities so they self-heal after a
+                         // broker restart or purge of retained config
+        sendState();     // Send initial state
     }
 }
 
@@ -460,6 +587,28 @@ payload in bytes. Output:
 None
 */
 
+// Apply a label-based select command to a uint8_t setting, persist it, force a
+// transition re-init, and always echo the resulting state label back. Unknown
+// labels leave the setting unchanged but still echo the current state.
+static void applyTransitionSelect(const char *id, const char *msg,
+                                  const LabeledValue *table, size_t count,
+                                  uint8_t &field) {
+    uint8_t value;
+    if (valueForLabel(table, count, msg, value)) {
+        field = value;
+        G.progInit = true;
+        eeprom::write();
+    } else {
+        Serial.print("MQTT: Unknown option for ");
+        Serial.print(id);
+        Serial.print(": ");
+        Serial.println(msg);
+    }
+    mqttClient.publish(
+        (std::string(G.mqtt.topic) + "/" + id + "/state").c_str(),
+        labelForValue(table, count, field, table[0].label), true);
+}
+
 void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     // Determine message type before parsing; not every topic uses JSON.
     String topicStr = String(topic);
@@ -476,6 +625,17 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     char msg[MQTT_MAX_PAYLOAD_LENGTH];
     memcpy(msg, payload, length);
     msg[length] = '\0';
+
+    // Home Assistant's birth message: re-announce discovery and state so the
+    // device repopulates after an HA restart, even if retained config was lost.
+    if (topicStr == HOMEASSISTANT_STATUS_TOPIC) {
+        if (strcmp(msg, "online") == 0 && mqttInstance) {
+            Serial.println("MQTT: Home Assistant online, re-announcing");
+            mqttInstance->sendDiscovery();
+            mqttInstance->sendState();
+        }
+        return;
+    }
 
     // MQTT switch commands are plain ON/OFF payloads, not JSON.
     if (topicStr == baseTopic + "/auto_brightness/set") {
@@ -509,6 +669,40 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         char buffer[200];
         serializeJson(webDoc, buffer);
         webSocket.broadcastTXT(buffer, strlen(buffer));
+        return;
+    }
+
+    // Transition selects/number/switch are plain payloads, not JSON. Each
+    // applies the setting, persists it, re-inits so it takes effect, and echoes
+    // the resulting state back to Home Assistant.
+    if (topicStr == baseTopic + "/transition_type/set") {
+        applyTransitionSelect("transition_type", msg, TRANSITION_TYPES,
+                              LABELED_VALUE_COUNT(TRANSITION_TYPES),
+                              G.transitionType);
+        return;
+    }
+    if (topicStr == baseTopic + "/transition_colorize/set") {
+        applyTransitionSelect("transition_colorize", msg, TRANSITION_COLORIZE,
+                              LABELED_VALUE_COUNT(TRANSITION_COLORIZE),
+                              G.transitionColorize);
+        return;
+    }
+    if (topicStr == baseTopic + "/transition_duration/set") {
+        applyTransitionSelect("transition_duration", msg, TRANSITION_DURATION,
+                              LABELED_VALUE_COUNT(TRANSITION_DURATION),
+                              G.transitionDuration);
+        return;
+    }
+    if (topicStr == baseTopic + "/transition_speed/set") {
+        int speed = atoi(msg);
+        if (speed >= 0 && speed <= 10) {
+            G.transitionSpeed = speed;
+            G.progInit = true;
+            eeprom::write();
+        }
+        mqttClient.publish(
+            (std::string(G.mqtt.topic) + "/transition_speed/state").c_str(),
+            String(G.transitionSpeed).c_str(), true);
         return;
     }
 
@@ -635,13 +829,13 @@ void Mqtt::sendState() {
 
     // Send diagnostic values
     {
-        StaticJsonDocument<200> doc;
+        StaticJsonDocument<320> doc;
         doc["lux"] = round(clockWork.getLuxValue()); // Round lux value
         doc["led_gain"] = round(ledGain); // Convert to percent and round
-        doc["adc_value"] =
-            clockWork.getAdcValue(); // Voltage value (already rounded)
-        doc["adc_raw"] = clockWork.getAdcRawValue(); // Raw ADC value
-        char buffer[200];
+        doc["rssi"] = WiFi.RSSI();             // WiFi signal strength
+        doc["ip"] = WiFi.localIP().toString(); // Current IP address
+        doc["uptime"] = millis() / 1000;       // Seconds since boot
+        char buffer[320];
         serializeJson(doc, buffer);
         mqttClient.publish((std::string(G.mqtt.topic) + "/diagnostics").c_str(),
                            buffer, true);
@@ -672,6 +866,31 @@ void Mqtt::sendState() {
             G.autoBrightEnabled ? "ON" : "OFF", true);
     }
 
+    // Transition settings status (selects echo their labels)
+    {
+        mqttClient.publish(
+            (std::string(G.mqtt.topic) + "/transition_type/state").c_str(),
+            labelForValue(TRANSITION_TYPES,
+                          LABELED_VALUE_COUNT(TRANSITION_TYPES),
+                          G.transitionType, TRANSITION_TYPES[0].label),
+            true);
+        mqttClient.publish(
+            (std::string(G.mqtt.topic) + "/transition_colorize/state").c_str(),
+            labelForValue(TRANSITION_COLORIZE,
+                          LABELED_VALUE_COUNT(TRANSITION_COLORIZE),
+                          G.transitionColorize, TRANSITION_COLORIZE[0].label),
+            true);
+        mqttClient.publish(
+            (std::string(G.mqtt.topic) + "/transition_duration/state").c_str(),
+            labelForValue(TRANSITION_DURATION,
+                          LABELED_VALUE_COUNT(TRANSITION_DURATION),
+                          G.transitionDuration, TRANSITION_DURATION[1].label),
+            true);
+        mqttClient.publish(
+            (std::string(G.mqtt.topic) + "/transition_speed/state").c_str(),
+            String(G.transitionSpeed).c_str(), true);
+    }
+
     // Update online status
     mqttClient.publish((std::string(G.mqtt.topic) + "/availability").c_str(),
                        "online", true);
@@ -695,47 +914,75 @@ None
 */
 
 void Mqtt::sendDiscovery() {
-    // Keep the original Home Assistant unique_id stable, but use a sanitized
-    // variant in discovery topics.
+    // The MAC is the stable device identifier and the base for every entity's
+    // unique_id, so renaming the MQTT base topic never orphans the device. The
+    // colon-free variant is used in the discovery topic path.
     String unique_id = WiFi.macAddress();
     String discoveryNode = unique_id;
     discoveryNode.replace(":", "");
 
-    // Remove the pre-PR retained discovery config to avoid duplicate entities.
+    // Clear retained per-entity configs published by older firmware so the move
+    // to a single device-based bundle leaves no duplicate entities behind.
     mqttClient.publish((String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/light/" +
                         String(G.mqtt.topic) + "/light/config")
                            .c_str(),
                        "", true);
+    clearLegacyDiscovery("light", discoveryNode);
+    clearLegacyDiscovery("text", discoveryNode + "_scrolltext");
+    clearLegacyDiscovery("number", discoveryNode + "_effect_speed");
+    clearLegacyDiscovery("sensor", discoveryNode + "_lux");
+    clearLegacyDiscovery("sensor", discoveryNode + "_led_gain");
+    clearLegacyDiscovery("sensor", discoveryNode + "_adc_value");
+    clearLegacyDiscovery("sensor", discoveryNode + "_adc_raw");
+    clearLegacyDiscovery("switch", discoveryNode + "_auto_brightness");
 
-    // Main JSON light entity.
+    // Single device-based discovery bundle (Home Assistant 2024.11+). Built on
+    // the heap and streamed to the broker so the payload needs no large stack
+    // buffer. Availability, the device block, and the origin block are declared
+    // once at the root and inherited by every component. Full topics are used
+    // rather than the "~" shorthand: "~" is not one of Home Assistant's shared
+    // root options, so it is not expanded for components in a device bundle.
+    String base = String(G.mqtt.topic);
+    DynamicJsonDocument doc(8192);
+
+    doc["avty_t"] = base + "/availability";
+    doc["pl_avail"] = "online";
+    doc["pl_not_avail"] = "offline";
+
+    JsonObject device = doc.createNestedObject("dev");
+    device.createNestedArray("ids").add(unique_id);
+    JsonArray macConnection = device.createNestedArray("cns").createNestedArray();
+    macConnection.add("mac");
+    macConnection.add(unique_id);
+    device["name"] = String(G.mqtt.clientId);
+    device["sw"] = VERSION;
+    device["mdl"] = "Word Clock";
+    device["mf"] = "ESPWortuhr";
+    device["cu"] = "http://" + WiFi.localIP().toString();
+
+    JsonObject origin = doc.createNestedObject("o");
+    origin["name"] = "ESPWortuhr";
+    origin["sw"] = VERSION;
+    origin["url"] = "https://github.com/ESPWortuhr/Wortuhr";
+
+    JsonObject cmps = doc.createNestedObject("cmps");
+
+    // Light: the device's primary entity. name=null makes it inherit the device
+    // name instead of repeating it (Home Assistant has_entity_name convention).
     {
-        StaticJsonDocument<700> root;
-        mqttClient.setBufferSize(700);
-
-        // Base configuration
-        root["name"] = String(G.mqtt.clientId);
-        root["unique_id"] = unique_id;
-
-        // Topics
-        root["state_topic"] = String(G.mqtt.topic) + "/status";
-        root["command_topic"] = String(G.mqtt.topic) + "/cmd";
-        root["availability_topic"] = String(G.mqtt.topic) + "/availability";
-        root["payload_available"] = "online";
-        root["payload_not_available"] = "offline";
-
-        // Functions
-        root["brightness"] = true;
-        root["brightness_scale"] = 255;
-        JsonArray colorModes = root.createNestedArray("supported_color_modes");
-        colorModes.add("hs"); // Correct color mode
-        root["optimistic"] = false;
-
-        // Schema
-        root["schema"] = "json";
-
-        // Effects
-        root["effect"] = true;
-        JsonArray effectList = root.createNestedArray("effect_list");
+        JsonObject light = cmps.createNestedObject("light");
+        light["p"] = "light";
+        light["uniq_id"] = unique_id;
+        light["name"] = (const char *)nullptr;
+        light["schema"] = "json";
+        light["stat_t"] = base + "/status";
+        light["cmd_t"] = base + "/cmd";
+        light["brightness"] = true;
+        light["bri_scl"] = 255;
+        light.createNestedArray("sup_clrm").add("hs");
+        light["optimistic"] = false;
+        light["effect"] = true;
+        JsonArray effectList = light.createNestedArray("fx_list");
         effectList.add("Wordclock");
         effectList.add("Seconds");
         effectList.add("Digitalclock");
@@ -744,232 +991,108 @@ void Mqtt::sendDiscovery() {
         effectList.add("Rainbow");
         effectList.add("Color");
         effectList.add("Symbol");
-
-        // Device information
-        JsonObject device = root.createNestedObject("device");
-        JsonArray identifiers = device.createNestedArray("identifiers");
-        identifiers.add(G.mqtt.topic);
-        device["name"] = G.mqtt.clientId;
-        device["sw_version"] = VERSION;
-        device["model"] = "Word Clock";
-        device["manufacturer"] = "ESPWortuhr";
-        device["configuration_url"] = "http://" + WiFi.localIP().toString();
-
-        char buffer[700];
-        String discoveryTopic = String(HOMEASSISTANT_DISCOVERY_TOPIC) +
-                                "/light/" + discoveryNode + "/config";
-        publishJsonRetained(discoveryTopic, root, buffer, sizeof(buffer));
     }
 
     // Text entity for the scrolling text mode.
     {
-        StaticJsonDocument<512> root;
+        JsonObject text = cmps.createNestedObject("scrolltext");
+        text["p"] = "text";
+        text["uniq_id"] = unique_id + "_scrolltext";
+        text["name"] = "Scrolling Text";
+        text["ic"] = "mdi:text";
+        text["stat_t"] = base + "/scrolltext/state";
+        text["cmd_t"] = base + "/scrolltext/set";
+        text["val_tpl"] = "{{ value_json.scrolling_text }}";
+        text["cmd_tpl"] = "{ \"scrolling_text\": \"{{ value }}\" }";
+        text["max"] = sizeof(G.scrollingText) - 1;
+    }
 
-        root["name"] = "Scrolling Text";
-        root["unique_id"] = unique_id + "_scrolltext";
-        root["icon"] = "mdi:text";
-
-        JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers =
-            deviceCopy.createNestedArray("identifiers");
-        deviceIdentifiers.add(G.mqtt.topic);
-        deviceCopy["name"] = G.mqtt.clientId;
-        deviceCopy["sw_version"] = VERSION;
-        deviceCopy["model"] = "Word Clock";
-        deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
-
-        root["state_topic"] = std::string(G.mqtt.topic) + "/scrolltext/state";
-        root["command_topic"] = std::string(G.mqtt.topic) + "/scrolltext/set";
-        root["value_template"] = "{{ value_json.scrolling_text }}";
-        root["command_template"] = "{ \"scrolling_text\": \"{{ value }}\" }";
-        root["max"] = sizeof(G.scrollingText) - 1;
-
-        char buffer[512];
-        publishJsonRetained(String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/text/" +
-                                discoveryNode + "_scrolltext/config",
-                            root, buffer, sizeof(buffer));
+    // Notify entity: pushes a message to the marquee. It targets the JSON
+    // command topic with both the text and the Scrollingtext effect, so the
+    // clock switches to scrolling-text mode and shows the message immediately.
+    {
+        JsonObject notify = cmps.createNestedObject("message");
+        notify["p"] = "notify";
+        notify["uniq_id"] = unique_id + "_message";
+        notify["name"] = "Message";
+        notify["ic"] = "mdi:message-text";
+        notify["cmd_t"] = base + "/cmd";
+        notify["cmd_tpl"] =
+            "{\"scrolling_text\": \"{{ value }}\", \"effect\": "
+            "\"Scrollingtext\"}";
     }
 
     // Number entity for animation/effect speed.
     {
-        StaticJsonDocument<512> root;
-
-        root["name"] = "Effect Speed";
-        root["unique_id"] = unique_id + "_effect_speed";
-        root["icon"] = "mdi:speedometer";
-        root["device_class"] = "speed";
-
-        JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers =
-            deviceCopy.createNestedArray("identifiers");
-        deviceIdentifiers.add(G.mqtt.topic);
-        deviceCopy["name"] = G.mqtt.clientId;
-        deviceCopy["sw_version"] = VERSION;
-        deviceCopy["model"] = "Word Clock";
-        deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
-
-        root["state_topic"] = std::string(G.mqtt.topic) + "/effect_speed/state";
-        root["command_topic"] = std::string(G.mqtt.topic) + "/effect_speed/set";
-        root["min"] = 1;
-        root["max"] = 10;
-        root["step"] = 1;
-
-        char buffer[512];
-        publishJsonRetained(String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/number/" +
-                                discoveryNode + "_effect_speed/config",
-                            root, buffer, sizeof(buffer));
+        JsonObject number = cmps.createNestedObject("effect_speed");
+        number["p"] = "number";
+        number["uniq_id"] = unique_id + "_effect_speed";
+        number["name"] = "Effect Speed";
+        number["ic"] = "mdi:speedometer";
+        number["stat_t"] = base + "/effect_speed/state";
+        number["cmd_t"] = base + "/effect_speed/set";
+        number["min"] = 1;
+        number["max"] = 10;
+        number["step"] = 1;
     }
-
-    // Diagnostic sensors published from the shared diagnostics topic.
-    {
-        // Lux Sensor
-        StaticJsonDocument<512> root;
-        root["name"] = "Illuminance";
-        root["unique_id"] = unique_id + "_lux";
-        root["device_class"] = "illuminance";
-        root["unit_of_measurement"] = "lx";
-        root["icon"] = "mdi:white-balance-sunny";
-        root["state_class"] = "measurement";
-
-        JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers =
-            deviceCopy.createNestedArray("identifiers");
-        deviceIdentifiers.add(G.mqtt.topic);
-        deviceCopy["name"] = G.mqtt.clientId;
-        deviceCopy["sw_version"] = VERSION;
-        deviceCopy["model"] = "Word Clock";
-        deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
-
-        root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
-        root["value_template"] = "{{ value_json.lux }}";
-
-        char buffer[512];
-        publishJsonRetained(String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/sensor/" +
-                                discoveryNode + "_lux/config",
-                            root, buffer, sizeof(buffer));
-    }
-
-    {
-        // LED Gain Sensor
-        StaticJsonDocument<512> root;
-        root["name"] = "LED Gain";
-        root["unique_id"] = unique_id + "_led_gain";
-        root["device_class"] = "power_factor";
-        root["unit_of_measurement"] = "%";
-        root["icon"] = "mdi:brightness-percent";
-        root["state_class"] = "measurement";
-
-        JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers =
-            deviceCopy.createNestedArray("identifiers");
-        deviceIdentifiers.add(G.mqtt.topic);
-        deviceCopy["name"] = G.mqtt.clientId;
-        deviceCopy["sw_version"] = VERSION;
-        deviceCopy["model"] = "Word Clock";
-        deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
-
-        root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
-        root["value_template"] = "{{ value_json.led_gain }}";
-
-        char buffer[512];
-        publishJsonRetained(String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/sensor/" +
-                                discoveryNode + "_led_gain/config",
-                            root, buffer, sizeof(buffer));
-    }
-
-    {
-        // ADC Value Sensor
-        StaticJsonDocument<512> root;
-        root["name"] = "ADC Value";
-        root["unique_id"] = unique_id + "_adc_value";
-        root["device_class"] = "voltage";
-        root["unit_of_measurement"] = "V";
-        root["icon"] = "mdi:flash";
-        root["state_class"] = "measurement";
-        root["value_template"] = "{{ value_json.adc_value | round(2) }}";
-
-        JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers =
-            deviceCopy.createNestedArray("identifiers");
-        deviceIdentifiers.add(G.mqtt.topic);
-        deviceCopy["name"] = G.mqtt.clientId;
-        deviceCopy["sw_version"] = VERSION;
-        deviceCopy["model"] = "Word Clock";
-        deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
-
-        root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
-
-        char buffer[512];
-        publishJsonRetained(String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/sensor/" +
-                                discoveryNode + "_adc_value/config",
-                            root, buffer, sizeof(buffer));
-    }
-
-    {
-        // ADC Raw Value Sensor
-        StaticJsonDocument<512> root;
-        root["name"] = "ADC Raw Value";
-        root["unique_id"] = unique_id + "_adc_raw";
-        root["unit_of_measurement"] = "";
-        root["icon"] = "mdi:flash";
-        root["state_class"] = "measurement";
-
-        JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers =
-            deviceCopy.createNestedArray("identifiers");
-        deviceIdentifiers.add(G.mqtt.topic);
-        deviceCopy["name"] = G.mqtt.clientId;
-        deviceCopy["sw_version"] = VERSION;
-        deviceCopy["model"] = "Word Clock";
-        deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
-
-        root["state_topic"] = std::string(G.mqtt.topic) + "/diagnostics";
-        root["value_template"] = "{{ value_json.adc_raw | int }}";
-
-        char buffer[512];
-        publishJsonRetained(String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/sensor/" +
-                                discoveryNode + "_adc_raw/config",
-                            root, buffer, sizeof(buffer));
-    }
-
-    // Publish availability after discovery so new entities become available.
-    mqttClient.publish((std::string(G.mqtt.topic) + "/availability").c_str(),
-                       "online", true);
 
     // Switch entity for ambient-light based brightness control.
     {
-        StaticJsonDocument<512> root;
-        root["name"] = "Auto Brightness";
-        root["unique_id"] = unique_id + "_auto_brightness";
-        root["icon"] = "mdi:brightness-auto";
-        root["device_class"] = "switch";
-
-        JsonObject deviceCopy = root.createNestedObject("device");
-        JsonArray deviceIdentifiers =
-            deviceCopy.createNestedArray("identifiers");
-        deviceIdentifiers.add(G.mqtt.topic);
-        deviceCopy["name"] = G.mqtt.clientId;
-        deviceCopy["sw_version"] = VERSION;
-        deviceCopy["model"] = "Word Clock";
-        deviceCopy["manufacturer"] = "ESPWortuhr";
-        deviceCopy["configuration_url"] = "http://" + WiFi.localIP().toString();
-
-        root["state_topic"] =
-            std::string(G.mqtt.topic) + "/auto_brightness/state";
-        root["command_topic"] =
-            std::string(G.mqtt.topic) + "/auto_brightness/set";
-        root["payload_on"] = "ON";
-        root["payload_off"] = "OFF";
-
-        char buffer[512];
-        publishJsonRetained(String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/switch/" +
-                                discoveryNode + "_auto_brightness/config",
-                            root, buffer, sizeof(buffer));
+        JsonObject autoBright = cmps.createNestedObject("auto_brightness");
+        autoBright["p"] = "switch";
+        autoBright["uniq_id"] = unique_id + "_auto_brightness";
+        autoBright["name"] = "Auto Brightness";
+        autoBright["ic"] = "mdi:brightness-auto";
+        autoBright["dev_cla"] = "switch";
+        autoBright["stat_t"] = base + "/auto_brightness/state";
+        autoBright["cmd_t"] = base + "/auto_brightness/set";
+        autoBright["pl_on"] = "ON";
+        autoBright["pl_off"] = "OFF";
     }
+
+    // Transition settings.
+    addSelect(cmps, unique_id, "transition_type", "Transition Type",
+              "mdi:transition", TRANSITION_TYPES,
+              LABELED_VALUE_COUNT(TRANSITION_TYPES));
+    addSelect(cmps, unique_id, "transition_colorize", "Transition Colorize",
+              "mdi:palette", TRANSITION_COLORIZE,
+              LABELED_VALUE_COUNT(TRANSITION_COLORIZE));
+    addSelect(cmps, unique_id, "transition_duration", "Transition Duration",
+              "mdi:timer-outline", TRANSITION_DURATION,
+              LABELED_VALUE_COUNT(TRANSITION_DURATION));
+    {
+        JsonObject speed = cmps.createNestedObject("transition_speed");
+        speed["p"] = "number";
+        speed["uniq_id"] = unique_id + "_transition_speed";
+        speed["name"] = "Transition Speed";
+        speed["ic"] = "mdi:speedometer";
+        speed["ent_cat"] = "config";
+        speed["stat_t"] = base + "/transition_speed/state";
+        speed["cmd_t"] = base + "/transition_speed/set";
+        speed["min"] = 0;
+        speed["max"] = 10;
+        speed["step"] = 1;
+    }
+
+    // Diagnostic sensors, all read from the shared diagnostics topic.
+    addDiagSensor(cmps, unique_id, "lux", "Illuminance", "illuminance", "lx",
+                  "mdi:white-balance-sunny", "measurement",
+                  "{{ value_json.lux }}");
+    addDiagSensor(cmps, unique_id, "led_gain", "LED Gain", "power_factor", "%",
+                  "mdi:brightness-percent", "measurement",
+                  "{{ value_json.led_gain }}");
+    addDiagSensor(cmps, unique_id, "rssi", "WiFi Signal", "signal_strength",
+                  "dBm", nullptr, "measurement", "{{ value_json.rssi }}");
+    addDiagSensor(cmps, unique_id, "ip", "IP Address", nullptr, nullptr,
+                  "mdi:ip-network", nullptr, "{{ value_json.ip }}");
+    addDiagSensor(cmps, unique_id, "uptime", "Uptime", "duration", "s", nullptr,
+                  "total_increasing", "{{ value_json.uptime }}");
+
+    publishJsonStream(String(HOMEASSISTANT_DISCOVERY_TOPIC) + "/device/" +
+                          discoveryNode + "/config",
+                      doc);
+
+    // Make the device available now that its entities are announced.
+    mqttClient.publish((std::string(G.mqtt.topic) + "/availability").c_str(),
+                       "online", true);
 }
