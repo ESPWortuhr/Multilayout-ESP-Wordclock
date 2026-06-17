@@ -45,10 +45,10 @@ static bool publishJsonStream(const String &topic, const JsonDocument &doc) {
     return mqttClient.endPublish();
 }
 
-// Add a diagnostic sensor component to a device-based discovery bundle. Keys are
-// the Home Assistant short forms (p=platform, dev_cla=device_class, etc.). A
-// null argument omits its key. The component id doubles as the unique_id suffix
-// so it stays stable.
+// Add a diagnostic sensor component to a device-based discovery bundle. Keys
+// are the Home Assistant short forms (p=platform, dev_cla=device_class, etc.).
+// A null argument omits its key. The component id doubles as the unique_id
+// suffix so it stays stable.
 static void addDiagSensor(JsonObject components, const String &deviceId,
                           const char *id, const char *name,
                           const char *deviceClass, const char *unit,
@@ -93,9 +93,9 @@ struct LabeledValue {
 #define LABELED_VALUE_COUNT(table) (sizeof(table) / sizeof((table)[0]))
 
 static const LabeledValue TRANSITION_TYPES[] = {
-    {"Off", 0},        {"Roll Up", 1}, {"Roll Down", 2},  {"Shift Left", 3},
-    {"Shift Right", 4}, {"Fade", 5},   {"Laser", 6},      {"Matrix Rain", 7},
-    {"Balls", 8},      {"Fire", 9},    {"Snake", 10},     {"Random", 11}};
+    {"Off", 0},         {"Roll Up", 1}, {"Roll Down", 2}, {"Shift Left", 3},
+    {"Shift Right", 4}, {"Fade", 5},    {"Laser", 6},     {"Matrix Rain", 7},
+    {"Balls", 8},       {"Fire", 9},    {"Snake", 10},    {"Random", 11}};
 
 static const LabeledValue TRANSITION_COLORIZE[] = {
     {"Off", 0}, {"Words", 1}, {"Characters", 2}};
@@ -831,7 +831,7 @@ void Mqtt::sendState() {
     {
         StaticJsonDocument<320> doc;
         doc["lux"] = round(clockWork.getLuxValue()); // Round lux value
-        doc["led_gain"] = round(ledGain); // Convert to percent and round
+        doc["led_gain"] = round(ledGain);      // Convert to percent and round
         doc["rssi"] = WiFi.RSSI();             // WiFi signal strength
         doc["ip"] = WiFi.localIP().toString(); // Current IP address
         doc["uptime"] = millis() / 1000;       // Seconds since boot
@@ -951,7 +951,8 @@ void Mqtt::sendDiscovery() {
 
     JsonObject device = doc.createNestedObject("dev");
     device.createNestedArray("ids").add(unique_id);
-    JsonArray macConnection = device.createNestedArray("cns").createNestedArray();
+    JsonArray macConnection =
+        device.createNestedArray("cns").createNestedArray();
     macConnection.add("mac");
     macConnection.add(unique_id);
     device["name"] = String(G.mqtt.clientId);
@@ -1017,9 +1018,8 @@ void Mqtt::sendDiscovery() {
         notify["name"] = "Message";
         notify["ic"] = "mdi:message-text";
         notify["cmd_t"] = base + "/cmd";
-        notify["cmd_tpl"] =
-            "{\"scrolling_text\": \"{{ value }}\", \"effect\": "
-            "\"Scrollingtext\"}";
+        notify["cmd_tpl"] = "{\"scrolling_text\": \"{{ value }}\", \"effect\": "
+                            "\"Scrollingtext\"}";
     }
 
     // Number entity for animation/effect speed.
