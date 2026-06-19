@@ -111,48 +111,39 @@ uint16_t powerCycleCount = 0; // Variable to store power cycle count
 
 #if defined(ESP32)
 void time_is_set(struct timeval *tv) {
-    (void)tv;
+    const time_t utc = tv != nullptr ? tv->tv_sec : time(nullptr);
 #else
 void time_is_set() {
+    const time_t utc = time(nullptr);
 #endif
-    time_t utc = time(nullptr);
     if (externalRTC) {
         RTC.adjust(DateTime(utc));
     }
 
     struct tm tm;
     localtime_r(&utc, &tm);
-    _second = tm.tm_sec;
-    _minute = tm.tm_min;
-    _hour = tm.tm_hour;
 
-    String origin;
-    if (sntp_getreachability(0)) {
-        origin = sntp_getservername(0);
+    String origin = sntp_getservername(0);
+    if (origin.isEmpty()) {
+        const ip_addr_t *ip_addr = sntp_getserver(0);
 
-        if (origin.isEmpty()) {
-            const ip_addr_t *ip_addr = sntp_getserver(0);
-
-            if (ip_addr != nullptr) {
+        if (ip_addr != nullptr) {
 #ifdef ESP8266
-                origin = IPAddress(ip_addr->addr).toString();
+            origin = IPAddress(ip_addr->addr).toString();
 #elif defined(ESP32)
-                origin = IPAddress(ip_addr->u_addr.ip4.addr).toString();
+            origin = IPAddress(ip_addr->u_addr.ip4.addr).toString();
 #endif
-            } else {
-                origin = "Unknown IP";
-            }
+        } else {
+            origin = "SNTP";
         }
-    } else {
-        origin = "SNTP not reachable";
     }
-    Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", _hour, _minute,
-                  _second, origin.c_str());
+    Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", tm.tm_hour, tm.tm_min,
+                  tm.tm_sec, origin.c_str());
 
     // Calc second frame for seconds variants that use a frame
     uint16_t numPixels = usedClockType->numPixelsFrameMatrix();
     if (numPixels != 0) {
-        _secondFrame = (_second * numPixels) / 60;
+        _secondFrame = (tm.tm_sec * numPixels) / 60;
     }
 
     G.progInit = true;
@@ -195,16 +186,20 @@ bool isHardwarePinInRange(uint8_t pin) { return pin <= MAX_HARDWARE_PIN; }
 //------------------------------------------------------------------------------
 
 bool allHardwarePinsAreInRange() {
-    const uint8_t pins[] = {
-        G.hardwarePins.led,
+    if (!isHardwarePinInRange(G.hardwarePins.led)) {
+        return false;
+    }
+
+    const uint8_t buttonPins[] = {
         G.hardwarePins.powerButton,
         G.hardwarePins.modeButton,
         G.hardwarePins.speedButton,
     };
-    const uint8_t pinCount = sizeof(pins) / sizeof(pins[0]);
+    const uint8_t pinCount = sizeof(buttonPins) / sizeof(buttonPins[0]);
 
     for (uint8_t i = 0; i < pinCount; i++) {
-        if (!isHardwarePinInRange(pins[i])) {
+        if (buttonPins[i] != HARDWARE_PIN_DISABLED &&
+            !isHardwarePinInRange(buttonPins[i])) {
             return false;
         }
     }
@@ -224,7 +219,7 @@ bool hasDuplicateHardwarePins() {
 
     for (uint8_t i = 0; i < pinCount; i++) {
         for (uint8_t j = i + 1; j < pinCount; j++) {
-            if (pins[i] == pins[j]) {
+            if (pins[i] != HARDWARE_PIN_DISABLED && pins[i] == pins[j]) {
                 return true;
             }
         }

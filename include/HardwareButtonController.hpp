@@ -46,9 +46,14 @@ void HardwareButtonController::begin(const HardwarePins &hardwarePins) {
 
     for (uint8_t i = 0; i < ButtonCount; i++) {
         const auto button = static_cast<ButtonId>(i);
-        pinMode(pinFor(button), INPUT_PULLUP);
         buttons[i] = ButtonState{};
-        buttons[i].stableLevel = digitalRead(pinFor(button));
+        const uint8_t pin = pinFor(button);
+        if (pin == HARDWARE_PIN_DISABLED) {
+            continue;
+        }
+
+        pinMode(pin, INPUT_PULLUP);
+        buttons[i].stableLevel = digitalRead(pin);
         buttons[i].lastLevel = buttons[i].stableLevel;
     }
 }
@@ -60,8 +65,13 @@ HardwareButtonAction HardwareButtonController::loop() {
 
     for (uint8_t i = 0; i < ButtonCount; i++) {
         const auto button = static_cast<ButtonId>(i);
+        const uint8_t pin = pinFor(button);
+        if (pin == HARDWARE_PIN_DISABLED) {
+            continue;
+        }
+
         ButtonState &state = buttons[i];
-        const bool level = digitalRead(pinFor(button));
+        const bool level = digitalRead(pin);
 
         if (level != state.lastLevel) {
             state.lastLevel = level;
