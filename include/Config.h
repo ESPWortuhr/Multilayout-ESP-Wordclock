@@ -7,9 +7,10 @@
 // PIN Configuration
 //--------------------------------------------------------------------------
 #define LED_PIN 3 // Use direct pin number (ESP8266 currently unsupported)
-#define POWER_BUTTON_PIN 2
-#define MODE_BUTTON_PIN 13
-#define SPEED_BUTTON_PIN 14
+// Use GPIO 0-39, or 255 to disable an individual hardware button.
+#define POWER_BUTTON_PIN 255
+#define MODE_BUTTON_PIN 255
+#define SPEED_BUTTON_PIN 255
 
 // ESP32
 #define SDA_PIN_ESP32 21 // Use direct pin number
@@ -308,7 +309,7 @@
  *
  * Valid values [0 ... 65536]
  */
-#define SERNR 430
+#define SERNR 440
 //--------------------------------------------------------------------------
 // Toggle Serial DEBUG Output
 //--------------------------------------------------------------------------

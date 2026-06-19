@@ -108,6 +108,8 @@ struct Birthday {
     uint8_t month;
 };
 
+constexpr uint8_t HARDWARE_PIN_DISABLED = UINT8_MAX;
+
 struct HardwarePins {
     uint8_t led;
     uint8_t powerButton;

@@ -186,16 +186,20 @@ bool isHardwarePinInRange(uint8_t pin) { return pin <= MAX_HARDWARE_PIN; }
 //------------------------------------------------------------------------------
 
 bool allHardwarePinsAreInRange() {
-    const uint8_t pins[] = {
-        G.hardwarePins.led,
+    if (!isHardwarePinInRange(G.hardwarePins.led)) {
+        return false;
+    }
+
+    const uint8_t buttonPins[] = {
         G.hardwarePins.powerButton,
         G.hardwarePins.modeButton,
         G.hardwarePins.speedButton,
     };
-    const uint8_t pinCount = sizeof(pins) / sizeof(pins[0]);
+    const uint8_t pinCount = sizeof(buttonPins) / sizeof(buttonPins[0]);
 
     for (uint8_t i = 0; i < pinCount; i++) {
-        if (!isHardwarePinInRange(pins[i])) {
+        if (buttonPins[i] != HARDWARE_PIN_DISABLED &&
+            !isHardwarePinInRange(buttonPins[i])) {
             return false;
         }
     }
@@ -215,7 +219,7 @@ bool hasDuplicateHardwarePins() {
 
     for (uint8_t i = 0; i < pinCount; i++) {
         for (uint8_t j = i + 1; j < pinCount; j++) {
-            if (pins[i] == pins[j]) {
+            if (pins[i] != HARDWARE_PIN_DISABLED && pins[i] == pins[j]) {
                 return true;
             }
         }

@@ -982,7 +982,8 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 
 			const pins = pinInputs.map(input => input.value);
-			const hasDuplicate = new Set(pins).size !== pins.length;
+			const assignedPins = pins.filter(pin => pin !== "255");
+			const hasDuplicate = new Set(assignedPins).size !== assignedPins.length;
 			if (hasDuplicate) {
 				pinInputs.forEach(input => {
 					input.setCustomValidity(i18next.t("settings.hardware-pins.duplicate"));
