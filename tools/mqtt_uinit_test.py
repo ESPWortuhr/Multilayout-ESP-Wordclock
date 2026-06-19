@@ -263,56 +263,51 @@ class WordclockMqttTests(unittest.TestCase):
 
     def test_08_diagnostics_schema(self) -> None:
         diagnostics = self.probe.wait_json(f"{self.base}/diagnostics", timeout=35)
-        self.assertIn("lux", diagnostics)
-        self.assertIn("led_gain", diagnostics)
-        self.assertIn("adc_value", diagnostics)
-        self.assertIn("adc_raw", diagnostics)
+        for key in ("lux", "led_gain", "rssi", "ip", "uptime"):
+            self.assertIn(key, diagnostics)
 
-    def test_09_discovery_payloads_if_retained(self) -> None:
+    def test_09_device_discovery_bundle(self) -> None:
         if self.settings.skip_discovery:
             self.skipTest("Discovery validation disabled by --skip-discovery")
 
-        configs = [
+        bundles = [
             (topic, payload)
             for topic, payload, _retain in self.probe.seen
-            if topic.startswith(f"{self.settings.ha_prefix}/")
+            if topic.startswith(f"{self.settings.ha_prefix}/device/")
             and topic.endswith("/config")
             and payload
         ]
-        if not configs:
-            self.skipTest("No retained Home Assistant discovery configs received")
+        if not bundles:
+            self.skipTest("No retained device-based discovery bundle received")
 
-        decoded = []
-        for topic, payload in configs:
-            try:
-                doc = json.loads(payload.decode("utf-8"))
-            except json.JSONDecodeError as exc:
-                self.fail(f"Discovery config on {topic} is not valid JSON: {exc}")
-            decoded.append((topic, doc))
+        topic, payload = bundles[0]
+        try:
+            doc = json.loads(payload.decode("utf-8"))
+        except json.JSONDecodeError as exc:
+            self.fail(f"Discovery bundle on {topic} is not valid JSON: {exc}")
 
-        light = [
-            doc
-            for topic, doc in decoded
-            if f"/light/" in topic and doc.get("state_topic") == f"{self.base}/status"
-        ]
-        self.assertTrue(light, "Missing matching Home Assistant light discovery config")
+        # Availability is declared once at the root and inherited by every
+        # component. Full topics are used (no "~" shorthand in device bundles).
+        self.assertEqual(doc.get("avty_t"), f"{self.base}/availability")
 
-        light_config = light[0]
-        self.assertEqual(light_config.get("schema"), "json")
-        self.assertEqual(
-            light_config.get("availability_topic"), f"{self.base}/availability"
-        )
+        components = doc.get("cmps")
+        self.assertIsInstance(components, dict)
 
-        supported_modes = light_config.get("supported_color_modes", [])
-        legacy_color_mode = light_config.get("color_mode") is True
-        self.assertTrue(
-            "hs" in supported_modes or legacy_color_mode,
-            "Light discovery must advertise HS color support",
-        )
+        # Device-based discovery requires a platform and unique_id per component.
+        for key, component in components.items():
+            self.assertIn("p", component, f"Component {key} missing platform")
+            self.assertIn("uniq_id", component, f"Component {key} missing unique_id")
 
-        text = [doc for topic, doc in decoded if f"/text/" in topic]
-        if text:
-            self.assertLessEqual(text[0].get("max", 999), 29)
+        lights = [c for c in components.values() if c.get("p") == "light"]
+        self.assertTrue(lights, "Bundle is missing the light component")
+        light = lights[0]
+        self.assertEqual(light.get("schema"), "json")
+        self.assertEqual(light.get("stat_t"), f"{self.base}/status")
+        self.assertIn("hs", light.get("sup_clrm", []))
+
+        texts = [c for c in components.values() if c.get("p") == "text"]
+        if texts:
+            self.assertLessEqual(texts[0].get("max", 999), 29)
 
 
 def parse_args(argv: list[str]) -> Settings:
