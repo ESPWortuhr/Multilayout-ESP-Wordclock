@@ -707,8 +707,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 
 	document.querySelectorAll(".status-button").forEach(btn => {
-		btn.addEventListener("click", function(event) {
-			event.preventDefault();
+		btn.addEventListener("click", function() {
 			let value = this.value;
 			const statusEl = document.getElementById("status");
 			if (statusEl) statusEl.textContent = "Verbinden ...";
@@ -853,8 +852,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	const wifiBtn = document.getElementById("wifi-button");
 	if (wifiBtn) {
-		wifiBtn.addEventListener("click", function(event) {
-			event.preventDefault();
+		wifiBtn.addEventListener("click", function() {
 			sendCmd(CMD.SET_WIFI_AND_RESTART);
 			debugMessage(`WiFi${debugMessageReconfigured}`);
 		});
@@ -883,8 +881,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	const wlanScanBtn = document.getElementById("_wlanscan");
 	if (wlanScanBtn) {
-		wlanScanBtn.addEventListener("click", function(event) {
-			event.preventDefault();
+		wlanScanBtn.addEventListener("click", function() {
 			sendCmd(CMD.REQ_WIFI_LIST);
 			document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
 		});
@@ -892,8 +889,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	const timeServerBtn = document.getElementById("timeserver-button");
 	if (timeServerBtn) {
-		timeServerBtn.addEventListener("click", function(event) {
-			event.preventDefault();
+		timeServerBtn.addEventListener("click", function() {
 			sendCmd(CMD.SET_TIMESERVER, getPaddedString(document.getElementById("timeserver").value, DATA_TIMESERVER_TEXT_LENGTH));
 			debugMessage(`Timeserver${debugMessageReconfigured}`);
 		});
@@ -901,8 +897,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	const timezoneBtn = document.getElementById("timezone-button");
 	if (timezoneBtn) {
-		timezoneBtn.addEventListener("click", function(event) {
-			event.preventDefault();
+		timezoneBtn.addEventListener("click", function() {
 			sendCmd(CMD.SET_TIMEZONE, getPaddedString(document.getElementById("timezone").value, DATA_TIMEZONE_TEXT_LENGTH));
 			sendCmd(CMD.REQ_CONFIG_VALUES);
 			debugMessage(`Timezone${debugMessageReconfigured}`);
@@ -911,8 +906,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	const scrollTextBtn = document.getElementById("scrollingtext-button");
 	if (scrollTextBtn) {
-		scrollTextBtn.addEventListener("click", function(event) {
-			event.preventDefault();
+		scrollTextBtn.addEventListener("click", function() {
 			sendCmd(CMD.SET_SCROLLINGTEXT, getPaddedString(document.getElementById("scrollingtext").value, DATA_SCROLLINGTEXT_LENGTH));
 			debugMessage(`ScrollingText${debugMessageReconfigured}`);
 		});
