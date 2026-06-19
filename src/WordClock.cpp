@@ -137,8 +137,8 @@ void time_is_set() {
             origin = "SNTP";
         }
     }
-    Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", tm.tm_hour,
-                  tm.tm_min, tm.tm_sec, origin.c_str());
+    Serial.printf("Set new time: %02d:%02d:%02d (%s)\n", tm.tm_hour, tm.tm_min,
+                  tm.tm_sec, origin.c_str());
 
     // Calc second frame for seconds variants that use a frame
     uint16_t numPixels = usedClockType->numPixelsFrameMatrix();
