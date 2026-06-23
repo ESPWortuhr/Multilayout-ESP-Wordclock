@@ -524,10 +524,18 @@ void setup() {
     // Initialize I2C
     //-------------------------------------
 
-#ifdef ESP8266
+#if defined(ESP8266)
+
     Wire.begin(SDA_PIN_ESP8266, SCL_PIN_ESP8266);
+
 #elif defined(ESP32)
-    Wire.begin(SDA_PIN_ESP32, SCL_PIN_ESP32); // SDA, SCL
+
+#if defined(CONFIG_IDF_TARGET_ESP32C3)
+    Wire.begin(SDA_PIN_ESP32C3, SCL_PIN_ESP32C3);
+#else
+    Wire.begin(SDA_PIN_ESP32, SCL_PIN_ESP32);
+#endif
+
 #endif
 
     //-------------------------------------
