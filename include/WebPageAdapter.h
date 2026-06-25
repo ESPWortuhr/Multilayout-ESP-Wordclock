@@ -97,6 +97,9 @@ WebPageAdapter webSocket = WebPageAdapter(80);
 
 //------------------------------------------------------------------------------
 
+constexpr size_t COLOR_PAYLOAD_LENGTH = 21;
+constexpr size_t EFFECT_PAYLOAD_LENGTH = 27;
+
 uint32_t split(const uint8_t *payload, uint8_t start, uint8_t length = 3) {
     char buf[16] = {0};
     if (length > 15)
@@ -123,22 +126,43 @@ void payloadTextHandling(const uint8_t *payload, char *text,
 
 //------------------------------------------------------------------------------
 
-bool compareEffBriAndSpeedToOld(uint8_t *payload) {
+bool compareEffBriAndSpeedToOld(uint8_t *payload, size_t length) {
+    if (length < EFFECT_PAYLOAD_LENGTH) {
+        return false;
+    }
+
     return ((G.effectBri != split(payload, 21)) ||
             (G.effectSpeed != split(payload, 24)));
 }
 
 //------------------------------------------------------------------------------
 
-void parseColor(uint8_t *payload) {
-    ColorPosition position = static_cast<ColorPosition>(split(payload, 3));
-    G.color[position] = {HsbColor(split(payload, 6) / 360.f,
-                                  split(payload, 9) / 100.f,
-                                  split(payload, 12) / 100.f)};
+bool parseColor(uint8_t *payload, size_t length) {
+    if (length < COLOR_PAYLOAD_LENGTH) {
+        Serial.println("Color command ignored payload is incomplete");
+        return false;
+    }
+
+    uint32_t position = split(payload, 3);
+    uint32_t hue = split(payload, 6);
+    uint32_t saturation = split(payload, 9);
+    uint32_t value = split(payload, 12);
+    uint32_t effectBrightness = split(payload, 15);
+    uint32_t effectSpeed = split(payload, 18);
+
+    if (position > Frame || hue > 360 || saturation > 100 || value > 100 ||
+        effectBrightness > 100 || effectSpeed > 100) {
+        Serial.println("Invalid color payload ignored");
+        return false;
+    }
+
+    G.color[static_cast<ColorPosition>(position)] = {
+        HsbColor(hue / 360.f, saturation / 100.f, value / 100.f)};
     colorChangedByWebsite = true;
 
-    G.effectBri = split(payload, 15);
-    G.effectSpeed = split(payload, 18);
+    G.effectBri = effectBrightness;
+    G.effectSpeed = effectSpeed;
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -168,6 +192,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
     case WStype_TEXT: {
         Serial.printf("[%u] get Text: %s\n", length, payload);
 
+        if (length < 3) {
+            Serial.println("WebSocket command ignored - incomplete payload");
+            break;
+        }
+
         uint8_t command = split(payload, 0);
         G.param1 = 0;
 
@@ -177,7 +206,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
             parametersChanged = true;
-            parseColor(payload);
+            parseColor(payload, length);
             break;
         }
 
@@ -188,7 +217,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
 
-            parseColor(payload);
+            parseColor(payload, length);
             break;
         }
 
@@ -199,7 +228,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 G.progInit = true;
             }
 
-            parseColor(payload);
+            parseColor(payload, length);
             parametersChanged = true;
             break;
         }
@@ -208,7 +237,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_MODE_RAINBOW:
         case COMMAND_MODE_RAINBOWCYCLE: {
-            if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
+            if ((G.prog != command) ||
+                compareEffBriAndSpeedToOld(payload, length)) {
                 G.progInit = true;
             }
             break;
@@ -222,17 +252,18 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             }
 
             parametersChanged = true;
-            parseColor(payload);
+            parseColor(payload, length);
             break;
         }
             //------------------------------------------------------------------------------
         case COMMAND_MODE_SCROLLINGTEXT:
         case COMMAND_MODE_SYMBOL: {
-            if ((G.prog != command) || compareEffBriAndSpeedToOld(payload)) {
+            if ((G.prog != command) ||
+                compareEffBriAndSpeedToOld(payload, length)) {
                 G.progInit = true;
             }
 
-            parseColor(payload);
+            parseColor(payload, length);
             break;
         }
             //------------------------------------------------------------------------------
@@ -260,7 +291,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_INITIAL_VALUES: {
             Serial.println("Startwerte gespeichert");
 
-            parseColor(payload);
+            if (length > 3) {
+                parseColor(payload, length);
+            }
             break;
         }
 

@@ -437,6 +437,9 @@ function initWebsocket() {
 			case "set": {
 				hsb[0] = [data.hsb00, data.hsb01, data.hsb02];
 				hsb[1] = [data.hsb10, data.hsb11, data.hsb12];
+				if (data.hsb20 !== undefined && data.hsb21 !== undefined && data.hsb22 !== undefined) {
+					hsb[2] = [data.hsb20, data.hsb21, data.hsb22];
+				}
 				effectBri = data.effectBri;
 				effectSpeed = data.effectSpeed;
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
@@ -847,7 +850,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	const initValsBtn = document.getElementById("initial-values-button");
 	if (initValsBtn) {
-		initValsBtn.addEventListener("click", () => sendCmd(CMD.SET_INITIAL_VALUES));
+		initValsBtn.addEventListener("click", () => sendColorData(CMD.SET_INITIAL_VALUES));
 	}
 
 	const wifiBtn = document.getElementById("wifi-button");
