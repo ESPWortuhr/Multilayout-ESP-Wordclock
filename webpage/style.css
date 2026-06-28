@@ -472,6 +472,10 @@ label.pure-radio {
     outline: none;
 }
 
+.i2c-scan-result-group {
+    margin-top: 1.2rem;
+}
+
 label.pure-radio input[type="radio"] {
     margin-top: -14px;
     display: inline-block;

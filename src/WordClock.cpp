@@ -23,7 +23,6 @@
 #include <RTClib.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
-#include <Wire.h>
 
 #include "WordClockState.h"
 
@@ -57,6 +56,7 @@ RTC_Type RTC;
 
 #include "ClockWork.h"
 #include "Frame.h"
+#include "I2CBus.h"
 #include "Led.h"
 #include "Mqtt.h"
 #include "Network.h"
@@ -71,6 +71,7 @@ Network network;
 
 void setDefaultHardwarePins();
 bool hardwarePinsAreValid();
+void ensureI2CPins();
 void ensureTimezone();
 
 LedStripInterface *activeLedStrip = nullptr;
@@ -81,6 +82,7 @@ void deleteActiveLedStrip() {
 }
 
 #include "ClockWork.hpp"
+#include "I2CBus.hpp"
 #include "Led.hpp"
 #include "Mqtt.hpp"
 #include "Network.hpp"
@@ -203,7 +205,7 @@ bool allHardwarePinsAreInRange() {
             return false;
         }
     }
-    return true;
+    return i2cBus::pinsAreValid(G.i2cSdaPin, G.i2cSclPin);
 }
 
 //------------------------------------------------------------------------------
@@ -214,6 +216,8 @@ bool hasDuplicateHardwarePins() {
         G.hardwarePins.powerButton,
         G.hardwarePins.modeButton,
         G.hardwarePins.speedButton,
+        G.i2cSdaPin,
+        G.i2cSclPin,
     };
     const uint8_t pinCount = sizeof(pins) / sizeof(pins[0]);
 
@@ -278,16 +282,13 @@ void ensureHardwarePins() {
 
 //------------------------------------------------------------------------------
 
-byte findBH1750Address() {
-    Wire.beginTransmission(0x23);
-    if (Wire.endTransmission() == 0) {
-        return 0x23;
+void ensureI2CPins() {
+    if (i2cBus::pinsAreValid(G.i2cSdaPin, G.i2cSclPin)) {
+        return;
     }
-    Wire.beginTransmission(0x5C);
-    if (Wire.endTransmission() == 0) {
-        return 0x5C;
-    }
-    return 0;
+
+    Serial.println("Invalid I2C pins in EEPROM, restoring defaults");
+    i2cBus::setDefaultPins(G.i2cSdaPin, G.i2cSclPin);
 }
 
 //------------------------------------------------------------------------------
@@ -312,6 +313,7 @@ void setup() {
     EEPROM.begin(EEPROM_SIZE);
     eeprom::read();
     ensureHardwarePins();
+    ensureI2CPins();
     ensureTimezone();
 
     //-------------------------------------
@@ -472,6 +474,7 @@ void setup() {
             G.birthday[i].month = 0;
         }
         setDefaultHardwarePins();
+        i2cBus::setDefaultPins(G.i2cSdaPin, G.i2cSclPin);
 
         eeprom::write();
         Serial.println("EEPROM written");
@@ -524,19 +527,7 @@ void setup() {
     // Initialize I2C
     //-------------------------------------
 
-#if defined(ESP8266)
-
-    Wire.begin(SDA_PIN_ESP8266, SCL_PIN_ESP8266);
-
-#elif defined(ESP32)
-
-#if defined(CONFIG_IDF_TARGET_ESP32C3)
-    Wire.begin(SDA_PIN_ESP32C3, SCL_PIN_ESP32C3);
-#else
-    Wire.begin(SDA_PIN_ESP32, SCL_PIN_ESP32);
-#endif
-
-#endif
+    i2cBus::begin(G.i2cSdaPin, G.i2cSclPin);
 
     //-------------------------------------
     // Start external real-time clock
@@ -652,7 +643,8 @@ void setup() {
     //-------------------------------------
 
     // Find BH1750 and initialize if available else fallback to LDR if available
-    byte bh1750Address = findBH1750Address();
+    byte bh1750Address =
+        i2cBus::findBH1750Address(G.i2cSdaPin, G.i2cSclPin);
 
     if (bh1750Address != 0) {
         lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, bh1750Address);

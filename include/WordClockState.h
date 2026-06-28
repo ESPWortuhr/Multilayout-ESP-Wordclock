@@ -250,6 +250,8 @@ struct GLOBAL {
 
     HardwarePins hardwarePins;
     char timezone[PAYLOAD_LENGTH];
+    uint8_t i2cSdaPin;
+    uint8_t i2cSclPin;
 };
 GLOBAL G = {};
 
@@ -274,6 +276,8 @@ bool parametersChanged = false;
 bool layoutChanged = false;
 bool colorChangedByWebsite = false;
 uint8_t statusAccessPoint = 0;
+uint8_t i2cScanSdaPin = HARDWARE_PIN_DISABLED;
+uint8_t i2cScanSclPin = HARDWARE_PIN_DISABLED;
 
 bool externalRTC = false;
 
@@ -370,6 +374,7 @@ enum CommandWords : uint8_t {
     COMMAND_REQUEST_TRANSITION = 204,
     COMMAND_REQUEST_MQTT_VALUES = 205,
     COMMAND_REQUEST_BIRTHDAYS = 206,
+    COMMAND_REQUEST_I2C_SCAN = 207,
 
     PLACEHOLDER_MAX_REQUEST = 255,
 };

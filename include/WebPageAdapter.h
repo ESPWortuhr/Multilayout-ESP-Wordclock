@@ -453,6 +453,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.hardwarePins.powerButton = split(payload, 6);
             G.hardwarePins.modeButton = split(payload, 9);
             G.hardwarePins.speedButton = split(payload, 12);
+            G.i2cSdaPin = split(payload, 15);
+            G.i2cSclPin = split(payload, 18);
             break;
         }
 
@@ -584,6 +586,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_MQTT_HA_DISCOVERY:
         case COMMAND_SET_WIFI_AND_RESTART:
         case COMMAND_RESET: {
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_REQUEST_I2C_SCAN: {
+            G.client_nr = num;
+            i2cScanSdaPin = split(payload, 3);
+            i2cScanSclPin = split(payload, 6);
             break;
         }
 

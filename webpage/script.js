@@ -115,7 +115,8 @@ const CMD = {
 	REQ_AUTO_BRIGHT: 203,
 	REQ_TRANSITION: 204,
 	REQ_MQTT_VALUES: 205,
-	REQ_BIRTHDAYS: 206
+	REQ_BIRTHDAYS: 206,
+	REQ_I2C_SCAN: 207
 };
 
 /**
@@ -393,6 +394,8 @@ function initWebsocket() {
 				document.getElementById("power-button-pin").value = data.powerButtonPin;
 				document.getElementById("mode-button-pin").value = data.modeButtonPin;
 				document.getElementById("speed-button-pin").value = data.speedButtonPin;
+				document.getElementById("i2c-sda-pin").value = data.i2cSdaPin;
+				document.getElementById("i2c-scl-pin").value = data.i2cSclPin;
 
 				document.getElementById("boot-show-led-blink").checked = data.bootLedBlink;
 				document.getElementById("boot-show-led-sweep").checked = data.bootLedSweep;
@@ -432,6 +435,21 @@ function initWebsocket() {
 				document.getElementById("auto-bright-min").value = autoBrightMin;
 				document.getElementById("auto-bright-max").value = autoBrightMax;
 				document.getElementById("auto-bright-peak").value = autoBrightPeak;
+				break;
+			}
+			case "i2c-scan": {
+				const result = document.getElementById("i2c-scan-result");
+				if (!result) break;
+
+				if (data.status === "disabled") {
+					result.value = i18next.t("settings.hardware-pins.i2c-disabled");
+				} else if (data.status === "invalid") {
+					result.value = i18next.t("settings.hardware-pins.i2c-invalid");
+				} else if (data.addresses.length === 0) {
+					result.value = i18next.t("settings.hardware-pins.i2c-none");
+				} else {
+					result.value = `${i18next.t("settings.hardware-pins.i2c-found")} ${data.addresses.join(", ")}`;
+				}
 				break;
 			}
 			case "set": {
@@ -974,7 +992,9 @@ document.addEventListener("DOMContentLoaded", function() {
 				document.getElementById("led-pin"),
 				document.getElementById("power-button-pin"),
 				document.getElementById("mode-button-pin"),
-				document.getElementById("speed-button-pin")
+				document.getElementById("speed-button-pin"),
+				document.getElementById("i2c-sda-pin"),
+				document.getElementById("i2c-scl-pin")
 			];
 
 			pinInputs.forEach(input => {
@@ -985,6 +1005,14 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 
 			const pins = pinInputs.map(input => input.value);
+			const i2cPins = pins.slice(4);
+			const hasIncompleteI2cPins = i2cPins.includes("255") && !i2cPins.every(pin => pin === "255");
+			if (hasIncompleteI2cPins) {
+				pinInputs[4].setCustomValidity(i18next.t("settings.hardware-pins.i2c-pair"));
+				pinInputs[4].reportValidity();
+				return;
+			}
+
 			const assignedPins = pins.filter(pin => pin !== "255");
 			const hasDuplicate = new Set(assignedPins).size !== assignedPins.length;
 			if (hasDuplicate) {
@@ -998,6 +1026,38 @@ document.addEventListener("DOMContentLoaded", function() {
 			sendCmd(CMD.SET_HARDWARE_PINS, pins.map(nstr).join(""));
 			sendCmd(CMD.REQ_CONFIG_VALUES);
 			debugMessage(`Hardware pins${debugMessageReconfigured}`);
+		});
+	}
+
+	const i2cScanBtn = document.getElementById("i2c-scan-button");
+	if (i2cScanBtn) {
+		i2cScanBtn.addEventListener("click", function() {
+			const i2cInputs = [
+				document.getElementById("i2c-sda-pin"),
+				document.getElementById("i2c-scl-pin")
+			];
+			const result = document.getElementById("i2c-scan-result");
+
+			i2cInputs.forEach(input => {
+				input.setCustomValidity("");
+			});
+			if (i2cInputs.some(input => !input.reportValidity())) {
+				return;
+			}
+
+			const pins = i2cInputs.map(input => input.value);
+			const hasIncompleteI2cPins = pins.includes("255") && !pins.every(pin => pin === "255");
+			if (hasIncompleteI2cPins) {
+				i2cInputs[0].setCustomValidity(i18next.t("settings.hardware-pins.i2c-pair"));
+				i2cInputs[0].reportValidity();
+				return;
+			}
+
+			if (result) {
+				result.value = i18next.t("settings.hardware-pins.i2c-scanning");
+			}
+			sendCmd(CMD.REQ_I2C_SCAN, pins.map(nstr).join(""));
+			debugMessage("I2C scan requested");
 		});
 	}
 

@@ -1,5 +1,6 @@
 #include "ClockWork.h"
 #include "HardwareButtonController.hpp"
+#include "I2CBus.h"
 #include "NeoMultiFeature.hpp"
 #include "OpenWeatherMap.h"
 #include "TransitionTypes/Transition.h"
@@ -344,6 +345,41 @@ void sendJsonToClient(uint8_t client_nr, const JsonDocument &doc) {
     Serial.println(str);
 
     webSocket.sendTXT(client_nr, str, bytesWritten);
+}
+
+//------------------------------------------------------------------------------
+
+void sendI2CScanResult(uint8_t client_nr, uint8_t sdaPin, uint8_t sclPin) {
+    DynamicJsonDocument config(384);
+    config["command"] = "i2c-scan";
+    config["sdaPin"] = sdaPin;
+    config["sclPin"] = sclPin;
+
+    JsonArray addresses = config.createNestedArray("addresses");
+    i2cBus::ScanResult result =
+        i2cBus::scan(sdaPin, sclPin, G.i2cSdaPin, G.i2cSclPin);
+
+    if (result.status == i2cBus::ScanStatus::Invalid) {
+        config["status"] = "invalid";
+        sendJsonToClient(client_nr, config);
+        return;
+    }
+
+    if (result.status == i2cBus::ScanStatus::Disabled) {
+        config["status"] = "disabled";
+        sendJsonToClient(client_nr, config);
+        return;
+    }
+
+    for (uint8_t i = 0; i < result.addressCount; i++) {
+        char addressText[5] = {0};
+        snprintf(addressText, sizeof(addressText), "0x%02X",
+                 result.addresses[i]);
+        addresses.add(addressText);
+    }
+
+    config["status"] = "ok";
+    sendJsonToClient(client_nr, config);
 }
 
 //------------------------------------------------------------------------------
@@ -1575,6 +1611,8 @@ void ClockWork::loop(struct tm &tm) {
         config["powerButtonPin"] = G.hardwarePins.powerButton;
         config["modeButtonPin"] = G.hardwarePins.modeButton;
         config["speedButtonPin"] = G.hardwarePins.speedButton;
+        config["i2cSdaPin"] = G.i2cSdaPin;
+        config["i2cSclPin"] = G.i2cSclPin;
         config["autoBrightEnabled"] = G.autoBrightEnabled;
         config["isRomanLanguage"] = usedClockType->isRomanLanguage();
         config["hasDreiviertel"] = usedClockType->hasDreiviertel();
@@ -1605,6 +1643,11 @@ void ClockWork::loop(struct tm &tm) {
         }
 
         sendJsonToClient(G.client_nr, config);
+        break;
+    }
+
+    case COMMAND_REQUEST_I2C_SCAN: {
+        sendI2CScanResult(G.client_nr, i2cScanSdaPin, i2cScanSclPin);
         break;
     }
 
@@ -1745,6 +1788,7 @@ void ClockWork::loop(struct tm &tm) {
             Serial.println("Invalid hardware pin configuration, restoring "
                            "defaults");
             setDefaultHardwarePins();
+            i2cBus::setDefaultPins(G.i2cSdaPin, G.i2cSclPin);
         }
 
         Serial.printf("Hardware LED pin: GPIO%u\n", G.hardwarePins.led);
@@ -1754,8 +1798,11 @@ void ClockWork::loop(struct tm &tm) {
                       G.hardwarePins.modeButton);
         Serial.printf("Hardware speed button pin: GPIO%u\n",
                       G.hardwarePins.speedButton);
+        Serial.printf("I2C SDA pin: GPIO%u\n", G.i2cSdaPin);
+        Serial.printf("I2C SCL pin: GPIO%u\n", G.i2cSclPin);
 
         eeprom::write();
+        i2cBus::begin(G.i2cSdaPin, G.i2cSclPin);
         initHardwareButtons();
         initLedStrip(G.Colortype);
         led.clear();
