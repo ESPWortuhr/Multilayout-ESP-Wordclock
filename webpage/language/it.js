@@ -316,7 +316,7 @@ let TRANSLATION_IT = {
 		"h1": "Smart Home",
 		"mqtt": {
 			"h2": "MQTT",
-			"text": "Il software Word Clock offre la possibilità di controllo tramite l'interfaccia MQTT. Puoi integrare l'orologio nella configurazione esistente dell'assistente domestico in modo da poter controllare le funzioni rudimentali. Questa funzionalità è ancora sperimentale e viene costantemente ampliata.",
+			"text": "Il software Word Clock offre la possibilità di controllo tramite l'interfaccia MQTT. Puoi integrare l'orologio nella configurazione esistente dell'assistente domestico in modo da poter controllare le funzioni rudimentali.",
 			"activate": "Abilita MQTT",
 			"server": "Indirizzo del server",
 			"port": "Port",

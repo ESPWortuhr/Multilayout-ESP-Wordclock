@@ -316,7 +316,7 @@ let TRANSLATION_HU = {
 		"h1": "Okos Otthon",
 		"mqtt": {
 			"h2": "MQTT",
-			"text": "A Szövegóra szoftver lehetőséget ad a MQTT-illesztőfelületen történő irányításra. Itt lehet összekapcsolni a Home-Assistant-Setup-ot az Órával, hogy az alapvető funkciókat irányítani lehessen. Ez a funkció még fejlesztés alatt áll és folyamatosan bővül.",
+			"text": "A Szövegóra szoftver lehetőséget ad a MQTT-illesztőfelületen történő irányításra. Itt lehet összekapcsolni a Home-Assistant-Setup-ot az Órával, hogy az alapvető funkciókat irányítani lehessen.",
 			"activate": "MQTT aktiválása",
 			"server": "Szervercím",
 			"port": "Port",

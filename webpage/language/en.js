@@ -345,7 +345,7 @@ let TRANSLATION_EN_US = {
 		"h1": "Smart Home",
 		"mqtt": {
 			"h2": "MQTT",
-			"text": "The software of the Word Clock can be controlled using MQTT. Here you can integrate the clock via your existing Home Assistant setup in order to be able to control rudimentary functions. This function is still experimental and is constantly being expanded.",
+			"text": "The software of the Word Clock can be controlled using MQTT. Here you can integrate the clock via your existing Home Assistant setup in order to be able to control rudimentary functions.",
 			"activate": "Activate MQTT",
 			"server": "Server Address",
 			"port": "Port",

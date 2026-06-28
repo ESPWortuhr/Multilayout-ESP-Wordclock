@@ -319,7 +319,7 @@ let TRANSLATION_NL = {
 		"h1": "Smart Home",
 		"mqtt": {
 			"h2": "MQTT",
-			"text": "De software van de Woordklok kan worden aangestuurd met behulp van MQTT. Hier integreer je de klok via je bestaande Home Assistant setup om rudimentaire functies te kunnen aansturen. Deze functie is nog experimenteel en wordt voortdurend uitgebreid.",
+			"text": "De software van de Woordklok kan worden aangestuurd met behulp van MQTT. Hier integreer je de klok via je bestaande Home Assistant setup om rudimentaire functies te kunnen aansturen.",
 			"activate": "Activeer MQTT",
 			"server": "Serveradres",
 			"port": "Port",
