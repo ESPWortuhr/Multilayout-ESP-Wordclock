@@ -143,7 +143,7 @@ const MODE_CONTROL_STATE = {
 	"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false, symbol: false },
 	"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false, symbol: false },
 	"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false, symbol: false },
-	"mode-symbol": { cmd: CMD.MODE_SYMBOL, bri: false, speed: true, txt: false, symbol: true }
+	"mode-symbol": { cmd: CMD.MODE_SYMBOL, bri: false, speed: false, txt: false, symbol: true }
 };
 
 // data that gets send back to the esp
