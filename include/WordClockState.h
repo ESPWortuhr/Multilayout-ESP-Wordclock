@@ -10,53 +10,53 @@
 
 #define CLOCK_TYPES_LIST                                                       \
     /* BN (Bengali) */                                                         \
-    X(BN9x8, 34, _bn9x8)                                                       \
+    X(BN9x8, 0, _bn9x8)                                                        \
     /* CH (Swiss) */                                                           \
-    X(Ch10x11, 18, _ch10x11)                                                   \
-    X(Ch10x11V2, 24, _ch10x11v2)                                               \
-    /* DE (German) */                                                          \
-    X(Ger08x08, 30, _de08x08)                                                  \
-    X(Ger08x08Viertel, 25, _de08x08Viertel)                                    \
-    X(Ger10x11, 1, _de10x11)                                                   \
-    X(Ger10x11Alternative, 2, _de10x11Alternative)                             \
-    X(Ger10x11AlternativeFrame, 4, _de10x11AlternativeFrame)                   \
-    X(Ger10x11bayerisch, 27, _de10x11bayerisch)                                \
-    X(Ger10x11Clock, 6, _de10x11Clock)                                         \
-    X(Ger10x11Mrrioes, 33, _de10x11Mrrioes)                                    \
-    X(Ger10x11Nero, 11, _de10x11Nero)                                          \
-    X(Ger10x11NeroFrame, 26, _de10x11NeroFrame)                                \
-    X(Ger10x11schwaebisch, 20, _de10x11schwaebisch)                            \
-    X(Ger11x11, 3, _de11x11)                                                   \
-    X(Ger11x11schwaebisch, 36, _de11x11schwaebisch)                            \
-    X(Ger11x11V2, 8, _de11x11V2)                                               \
-    X(Ger11x11V3, 14, _de11x11V3)                                              \
-    X(Ger13x13, 31, _de13x13)                                                  \
-    X(Ger16x8, 13, _de16x8)                                                    \
-    X(Ger16x18, 7, _de16x18)                                                   \
-    X(Ger22x11Weather, 5, _de22x11Weather)                                     \
+    X(Ch10x11, 1, _ch10x11)                                                    \
+    X(Ch10x11V2, 2, _ch10x11v2)                                                \
     /* EN (English) */                                                         \
-    X(Eng08x08, 29, _en08x08)                                                  \
-    X(Eng10x11, 10, _en10x11)                                                  \
-    X(Eng11x12, 32, _en11x12)                                                  \
+    X(Eng08x08, 3, _en08x08)                                                   \
+    X(Eng10x11, 4, _en10x11)                                                   \
+    X(Eng11x12, 5, _en11x12)                                                   \
     /* ES (Spanish) */                                                         \
-    X(Es08x08Cuarto, 28, _es08x08Cuarto)                                       \
-    X(Es10x11, 15, _es10x11)                                                   \
+    X(Es08x08Cuarto, 6, _es08x08Cuarto)                                        \
+    X(Es10x11, 7, _es10x11)                                                    \
     /* FR (French) */                                                          \
-    X(Fr10x11, 21, _fr10x11)                                                   \
+    X(Fr10x11, 8, _fr10x11)                                                    \
+    /* DE (German) */                                                          \
+    X(Ger08x08, 9, _de08x08)                                                   \
+    X(Ger08x08Viertel, 10, _de08x08Viertel)                                    \
+    X(Ger10x11, 11, _de10x11)                                                  \
+    X(Ger10x11Alternative, 12, _de10x11Alternative)                            \
+    X(Ger10x11AlternativeFrame, 13, _de10x11AlternativeFrame)                  \
+    X(Ger10x11bayerisch, 14, _de10x11bayerisch)                                \
+    X(Ger10x11Clock, 15, _de10x11Clock)                                        \
+    X(Ger10x11Mrrioes, 16, _de10x11Mrrioes)                                    \
+    X(Ger10x11Nero, 17, _de10x11Nero)                                          \
+    X(Ger10x11NeroFrame, 18, _de10x11NeroFrame)                                \
+    X(Ger10x11schwaebisch, 19, _de10x11schwaebisch)                            \
+    X(Ger11x11, 20, _de11x11)                                                  \
+    X(Ger11x11schwaebisch, 21, _de11x11schwaebisch)                            \
+    X(Ger11x11V2, 22, _de11x11V2)                                              \
+    X(Ger11x11V3, 23, _de11x11V3)                                              \
+    X(Ger13x13, 24, _de13x13)                                                  \
+    X(Ger16x8, 25, _de16x8)                                                    \
+    X(Ger16x18, 26, _de16x18)                                                  \
+    X(Ger22x11Weather, 27, _de22x11Weather)                                    \
     /* HU (Hungarian) */                                                       \
-    X(Hu10x10, 17, _hu10x10)                                                   \
+    X(Hu10x10, 28, _hu10x10)                                                   \
     /* IT (Italian) */                                                         \
-    X(It10x11, 16, _it10x11)                                                   \
+    X(It10x11, 29, _it10x11)                                                   \
     /* NL (Dutch) */                                                           \
-    X(Nl10x11, 9, _nl10x11)                                                    \
+    X(Nl10x11, 30, _nl10x11)                                                   \
     /* RO (Romanian) */                                                        \
-    X(Ro10x11, 19, _ro10x11)                                                   \
+    X(Ro10x11, 31, _ro10x11)                                                   \
     /* RU (Russian) */                                                         \
-    X(Ru10x11, 23, _ru10x11)                                                   \
+    X(Ru10x11, 32, _ru10x11)                                                   \
     /* SE (Swedish) */                                                         \
-    X(Se10x11, 22, _se10x11)                                                   \
+    X(Se10x11, 33, _se10x11)                                                   \
     /* TR (Turkish) */                                                         \
-    X(Tr10x11, 35, _tr10x11)
+    X(Tr10x11, 34, _tr10x11)
 
 enum ClockWords : uint8_t {
     ESIST = 0,
@@ -250,6 +250,8 @@ struct GLOBAL {
 
     HardwarePins hardwarePins;
     char timezone[PAYLOAD_LENGTH];
+    uint8_t i2cSdaPin;
+    uint8_t i2cSclPin;
 };
 GLOBAL G = {};
 
@@ -274,6 +276,8 @@ bool parametersChanged = false;
 bool layoutChanged = false;
 bool colorChangedByWebsite = false;
 uint8_t statusAccessPoint = 0;
+uint8_t i2cScanSdaPin = HARDWARE_PIN_DISABLED;
+uint8_t i2cScanSclPin = HARDWARE_PIN_DISABLED;
 
 bool externalRTC = false;
 
@@ -370,6 +374,7 @@ enum CommandWords : uint8_t {
     COMMAND_REQUEST_TRANSITION = 204,
     COMMAND_REQUEST_MQTT_VALUES = 205,
     COMMAND_REQUEST_BIRTHDAYS = 206,
+    COMMAND_REQUEST_I2C_SCAN = 207,
 
     PLACEHOLDER_MAX_REQUEST = 255,
 };
@@ -378,4 +383,7 @@ enum ClockTypeDef : uint8_t {
 #define X(name, id, var) name = id,
     CLOCK_TYPES_LIST
 #undef X
+        ClockTypeDefMax,
 };
+
+inline bool isValidClockTypeDef(uint8_t type) { return type < ClockTypeDefMax; }

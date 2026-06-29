@@ -1,7 +1,9 @@
 #include "ClockWork.h"
 #include "HardwareButtonController.hpp"
+#include "I2CBus.h"
 #include "NeoMultiFeature.hpp"
 #include "OpenWeatherMap.h"
+#include "SensitiveData.h"
 #include "TransitionTypes/Transition.h"
 #include "WordClockState.h"
 #include "WordClockTypes/ClockType.hpp"
@@ -344,6 +346,41 @@ void sendJsonToClient(uint8_t client_nr, const JsonDocument &doc) {
     Serial.println(str);
 
     webSocket.sendTXT(client_nr, str, bytesWritten);
+}
+
+//------------------------------------------------------------------------------
+
+void sendI2CScanResult(uint8_t client_nr, uint8_t sdaPin, uint8_t sclPin) {
+    DynamicJsonDocument config(384);
+    config["command"] = "i2c-scan";
+    config["sdaPin"] = sdaPin;
+    config["sclPin"] = sclPin;
+
+    JsonArray addresses = config.createNestedArray("addresses");
+    i2cBus::ScanResult result =
+        i2cBus::scan(sdaPin, sclPin, G.i2cSdaPin, G.i2cSclPin);
+
+    if (result.status == i2cBus::ScanStatus::Invalid) {
+        config["status"] = "invalid";
+        sendJsonToClient(client_nr, config);
+        return;
+    }
+
+    if (result.status == i2cBus::ScanStatus::Disabled) {
+        config["status"] = "disabled";
+        sendJsonToClient(client_nr, config);
+        return;
+    }
+
+    for (uint8_t i = 0; i < result.addressCount; i++) {
+        char addressText[5] = {0};
+        snprintf(addressText, sizeof(addressText), "0x%02X",
+                 result.addresses[i]);
+        addresses.add(addressText);
+    }
+
+    config["status"] = "ok";
+    sendJsonToClient(client_nr, config);
 }
 
 //------------------------------------------------------------------------------
@@ -789,15 +826,15 @@ void ClockWork::showMinute(uint8_t min) {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::checkForValidLayoutVariant() {
+void ClockWork::checkForValidLanguageVariant() {
     if (G.clockTypeDef == Eng10x11) {
-        G.layoutVariant[ItIs15] = false;
-        G.layoutVariant[ItIs20] = true;
-        G.layoutVariant[ItIs40] = true;
+        G.languageVariant[ItIs15] = false;
+        G.languageVariant[ItIs20] = true;
+        G.languageVariant[ItIs40] = true;
     } else { // default values
-        G.layoutVariant[ItIs15] = false;
-        G.layoutVariant[ItIs20] = false;
-        G.layoutVariant[ItIs40] = false;
+        G.languageVariant[ItIs15] = false;
+        G.languageVariant[ItIs20] = false;
+        G.languageVariant[ItIs40] = false;
     }
 }
 
@@ -1512,10 +1549,12 @@ void ClockWork::loop(struct tm &tm) {
         config["MQTT_User"] = G.mqtt.user;
 
         // don't expose password:
-        char passMasked[32];
+        char passMasked[PAYLOAD_LENGTH + 1] = {0};
         strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
-        strncpy(passMasked, "******************************",
-                (strlen(passMasked) - 3));
+        size_t passLen = strlen(passMasked);
+        if (passLen > 3) {
+            memset(passMasked, '*', passLen - 3);
+        }
         config["MQTT_Pass"] = passMasked;
 
         config["MQTT_ClientId"] = G.mqtt.clientId;
@@ -1561,7 +1600,9 @@ void ClockWork::loop(struct tm &tm) {
         config["supportedMinuteVariants"] =
             usedClockType->supportedMinuteVariantMask();
         config["cityid"] = G.openWeatherMap.cityid;
-        config["apikey"] = G.openWeatherMap.apikey;
+        char apiKeyMasked[sizeof(G.openWeatherMap.apikey) + 1] = {0};
+        sensitive::maskPreservingSuffix(apiKeyMasked, G.openWeatherMap.apikey);
+        config["apiKey"] = apiKeyMasked;
         config["colortype"] = G.Colortype;
         config["buildtype"] = static_cast<uint8_t>(G.buildTypeDef);
         config["wType"] = static_cast<uint8_t>(G.wType);
@@ -1575,6 +1616,8 @@ void ClockWork::loop(struct tm &tm) {
         config["powerButtonPin"] = G.hardwarePins.powerButton;
         config["modeButtonPin"] = G.hardwarePins.modeButton;
         config["speedButtonPin"] = G.hardwarePins.speedButton;
+        config["i2cSdaPin"] = G.i2cSdaPin;
+        config["i2cSclPin"] = G.i2cSclPin;
         config["autoBrightEnabled"] = G.autoBrightEnabled;
         config["isRomanLanguage"] = usedClockType->isRomanLanguage();
         config["hasDreiviertel"] = usedClockType->hasDreiviertel();
@@ -1605,6 +1648,11 @@ void ClockWork::loop(struct tm &tm) {
         }
 
         sendJsonToClient(G.client_nr, config);
+        break;
+    }
+
+    case COMMAND_REQUEST_I2C_SCAN: {
+        sendI2CScanResult(G.client_nr, i2cScanSdaPin, i2cScanSclPin);
         break;
     }
 
@@ -1745,6 +1793,7 @@ void ClockWork::loop(struct tm &tm) {
             Serial.println("Invalid hardware pin configuration, restoring "
                            "defaults");
             setDefaultHardwarePins();
+            i2cBus::setDefaultPins(G.i2cSdaPin, G.i2cSclPin);
         }
 
         Serial.printf("Hardware LED pin: GPIO%u\n", G.hardwarePins.led);
@@ -1754,8 +1803,11 @@ void ClockWork::loop(struct tm &tm) {
                       G.hardwarePins.modeButton);
         Serial.printf("Hardware speed button pin: GPIO%u\n",
                       G.hardwarePins.speedButton);
+        Serial.printf("I2C SDA pin: GPIO%u\n", G.i2cSdaPin);
+        Serial.printf("I2C SCL pin: GPIO%u\n", G.i2cSclPin);
 
         eeprom::write();
+        i2cBus::begin(G.i2cSdaPin, G.i2cSclPin);
         initHardwareButtons();
         initLedStrip(G.Colortype);
         led.clear();
@@ -1779,6 +1831,11 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_SET_CLOCK_TYPE: {
+        if (!isValidClockTypeDef(G.clockTypeDef)) {
+            Serial.printf("Ignoring invalid ClockType: %u\n", G.clockTypeDef);
+            break;
+        }
+
         eeprom::write();
         led.clear();
         led.show();
@@ -1788,7 +1845,7 @@ void ClockWork::loop(struct tm &tm) {
         usedClockType = getPointer(G.clockTypeDef);
         resetMinVariantIfNotAvailable();
 
-        checkForValidLayoutVariant();
+        checkForValidLanguageVariant();
 
         delete secondsFrame;
         secondsFrame = nullptr;

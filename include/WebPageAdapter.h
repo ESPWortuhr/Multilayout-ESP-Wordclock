@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SensitiveData.h"
 #include "WebPageContent.h"
 #include "WebSocketsServer.h"
 #include "WordClockState.h"
@@ -300,13 +301,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_TIME: {
-            char tmp[17] = {0};
-            uint32_t tt = split(payload, 3, 16);
-            Serial.println(tt);
-            memcpy(tmp, payload + 12, 16);
-
             struct timeval tv;
-            tv.tv_sec = atoi(tmp);
+            tv.tv_sec = split(payload, 6, 16);
             tv.tv_usec = 0;
             settimeofday(&tv, nullptr);
             break;
@@ -453,6 +449,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.hardwarePins.powerButton = split(payload, 6);
             G.hardwarePins.modeButton = split(payload, 9);
             G.hardwarePins.speedButton = split(payload, 12);
+            G.i2cSdaPin = split(payload, 15);
+            G.i2cSclPin = split(payload, 18);
             break;
         }
 
@@ -505,7 +503,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_CLOCK_TYPE: {
-            G.clockTypeDef = split(payload, 3);
+            uint32_t clockTypeDef = split(payload, 3);
+            if (clockTypeDef < ClockTypeDefMax) {
+                G.clockTypeDef = static_cast<uint8_t>(clockTypeDef);
+            } else {
+                Serial.printf("Ignoring invalid ClockType: %lu\n",
+                              static_cast<unsigned long>(clockTypeDef));
+            }
             break;
         }
 
@@ -513,23 +517,41 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_WEATHER_DATA: {
             uint8_t ii = 0;
-            for (uint8_t k = 3; k < 10; k++) {
-                if (payload[k] != ' ')
+            const size_t cityEnd = (length < 10) ? length : 10;
+            for (size_t k = 3; k < cityEnd; k++) {
+                if (payload[k] != ' ' &&
+                    ii < sizeof(G.openWeatherMap.cityid) - 1) {
                     G.openWeatherMap.cityid[ii++] = payload[k];
+                }
             }
             G.openWeatherMap.cityid[ii] = '\0';
 
+            char submittedApiKey[sizeof(G.openWeatherMap.apikey)] = {0};
             uint8_t jj = 0;
-            for (uint8_t l = 11; l < 43; l++) {
-                if (payload[l] != ' ')
-                    G.openWeatherMap.apikey[jj++] = payload[l];
+            const size_t apiKeyStart = 11;
+            if (length > apiKeyStart) {
+                const size_t apiKeyEnd = (length < 43) ? length : 43;
+                for (size_t l = apiKeyStart; l < apiKeyEnd; l++) {
+                    if (payload[l] != ' ' &&
+                        jj < sizeof(submittedApiKey) - 1) {
+                        submittedApiKey[jj++] = payload[l];
+                    }
+                }
+                submittedApiKey[jj] = '\0';
+                if (!sensitive::matchesMaskedValue(submittedApiKey,
+                                                   G.openWeatherMap.apikey)) {
+                    sensitive::copyBoundedString(G.openWeatherMap.apikey,
+                                                 submittedApiKey);
+                }
             }
-            G.openWeatherMap.apikey[jj] = '\0';
             Serial.println("write EEPROM!");
             Serial.print("CityID : ");
             Serial.println(G.openWeatherMap.cityid);
             Serial.print("APIkey : ");
-            Serial.println(G.openWeatherMap.apikey);
+            char apiKeyMasked[sizeof(G.openWeatherMap.apikey) + 1] = {0};
+            sensitive::maskPreservingSuffix(apiKeyMasked,
+                                            G.openWeatherMap.apikey);
+            Serial.println(apiKeyMasked);
             break;
         }
 
@@ -584,6 +606,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_MQTT_HA_DISCOVERY:
         case COMMAND_SET_WIFI_AND_RESTART:
         case COMMAND_RESET: {
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_REQUEST_I2C_SCAN: {
+            G.client_nr = num;
+            i2cScanSdaPin = split(payload, 3);
+            i2cScanSclPin = split(payload, 6);
             break;
         }
 
