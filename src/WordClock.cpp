@@ -656,9 +656,11 @@ void setup() {
         lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, bh1750Address);
         Serial.println("BH1750 initialized");
         bh1750Initialized = true;
+        autoBrightUsingBH1750 = true;
     } else {
         Serial.println("BH1750 initialisation error, using LDR if available");
         bh1750Initialized = false;
+        autoBrightUsingBH1750 = false;
     }
 
     //-------------------------------------

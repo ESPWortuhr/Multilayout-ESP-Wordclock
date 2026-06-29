@@ -309,6 +309,7 @@ let TRANSLATION_EN_US = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Ambient light (lx)",
+			"value-source": "Sensor source",
 			"value-gain": "LED brightness (%)",
 			"help-min": "Configuration of the minimum brightness:<br/>" +
 				"Defines the minimum brightness of the LEDs in percent in absolute darkness (0 lx).<br/>" +

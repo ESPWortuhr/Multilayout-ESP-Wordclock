@@ -98,12 +98,18 @@ Die bereitgestellte Software zum Betreiben der Wortuhr hat mehrere Funktionen:
     \item Digitale Uhranzeige
     \item Laufschrift, kurzer statischer Text und Symbol-Anzeige
     \item Regenbogenfarbwechsel
+    \item Einstellbare Übergangsanimationen zwischen Anzeigewechseln
+    \item Geburtstags- und Silvester-Animationen
     \item Umgebungslicht (als Sekundenzeiger ausgeführt oder Ambientlight)
+    \item Minuten- und Sekundenanzeige im Rahmen oder in Worten
     \item Automatische Helligkeitsregelung (optional über Sensor)
     \item Offlinebetrieb (optional über entsprechende RTC)
     \item Zeitserver, Zeitzone und manuelle Uhrzeit im Web-Frontend einstellbar
+    \item Konfigurierbare Hardware- und I2C-Pins
+    \item Konfigurierbares Startverhalten
     \item Auswahl an dialektspezifischen Anzeigen
-    \item Home-Assistant-Einbindung mit Autodiscovery
+    \item MQTT- und Home-Assistant-Einbindung mit Autodiscovery
+    \item Wetterdaten über OpenWeatherMap bei passenden Frontplatten
     \item Optionaler Passwortschutz für das Web-Frontend
 \end{itemize}
 
@@ -294,6 +300,12 @@ Die Firmware kann den Datenpin des LED-Streifens und drei optionale Hardware-Tas
 
 Die Taster werden mit \texttt{INPUT\_PULLUP} betrieben. Ein Taster verbindet den GPIO daher beim Drücken mit GND. Für alle vier Hardware-Pins gilt: Jeder GPIO darf nur einmal verwendet werden. Die Firmware prüft doppelte Pins und ungültige Werte und stellt bei ungültigen EEPROM-Werten wieder die Standard-Pins her.
 
+\subsection{I2C-Pins und I2C-Scan}
+
+Im selben Bereich können auch die I2C-Pins für optionale I2C-Geräte wie BH1750-Helligkeitssensor oder DS3231-Echtzeituhr eingestellt werden. Für den ESP8266 sind die Standardwerte SDA = D2 und SCL = D1, beim klassischen ESP32 SDA = GPIO21 und SCL = GPIO22. Beim ESP32-C3 sind die I2C-Pins standardmäßig deaktiviert und müssen passend zum verwendeten Board gesetzt werden.
+
+Der Wert \texttt{255} deaktiviert einen I2C-Pin. SDA und SCL müssen immer gemeinsam gesetzt oder gemeinsam deaktiviert werden. Nach dem Speichern kann mit \say{I2C-Adressen suchen} geprüft werden, ob angeschlossene Geräte auf dem gewählten Bus antworten. Gefundene Adressen werden im Web-Frontend angezeigt; bei ungültigen oder deaktivierten Pins erscheint eine entsprechende Meldung.
+
 \subsection{Geeignete Pins je Controller}
 
 Die folgenden Empfehlungen beziehen sich auf die in diesem Projekt verwendeten Controller-Varianten. Zusätzlich muss geprüft werden, welche Pins auf dem konkreten Entwicklungsboard wirklich herausgeführt sind. Einige Hersteller drucken Board-Bezeichnungen wie \say{D1} oder \say{RX} auf; in der Web-Konfiguration wird trotzdem die GPIO-Nummer eingetragen.
@@ -365,6 +377,30 @@ Im Modus \say{Symbol} kann eines der vordefinierten Bitmap-Symbole angezeigt wer
         \label{abb.WebFrontendSymbolMode}
     \end{figure}
 
+\section{Übergänge und Animationen}
+
+Unter \say{Funktionen} kann im Bereich \say{Übergang} eingestellt werden, wie Änderungen der Wortmatrix animiert werden. Zur Auswahl stehen unter anderem Hoch- und Runterscrollen, Schieben nach links oder rechts, Überblenden, Laser, Matrix-Regen, Bälle, Feuerwerk, Schlange, Bunt und Zufällig. Zusätzlich lassen sich Dauer, Geschwindigkeit und die Einfärbung der Animation einstellen. Die Option \say{Demo} löst die gewählte Transition zu Testzwecken aus.
+
+Einige Animationen werden auch für besondere Ereignisse verwendet. An Silvester zeigt die Uhr einen Countdown und anschließend eine Feuerwerksanimation. Im Bereich \say{Geburtstage} können bis zu fünf Termine im Format \texttt{MM-DD} hinterlegt werden. An diesen Tagen erscheint alle fünf Minuten eine Feuerwerksanimation. Bei kompatiblen Frontplatten werden währenddessen die Wörter \say{Happy Birthday} statt der Uhrzeit angezeigt.
+
+\section{Anzeigeoptionen}
+
+Unter \say{Anzeigeoptionen} werden nicht nur Frontplatte und Bauart gesetzt, sondern auch die Darstellung von Sprache, Minuten, Sekunden und Startverhalten angepasst.
+
+\subsection{Sprach- und Minutenlogik}
+
+Im Bereich \say{Sprache} kann eingestellt werden, wann der Text \say{Es ist} angezeigt wird. Außerdem lassen sich sprachliche Varianten für Viertelstunden und Zwanzig-Minuten-Angaben wählen, zum Beispiel \say{viertel nach neun} oder \say{viertel zehn}. Diese Optionen hängen von der gewählten Sprache und Frontplatte ab.
+
+Die Minutenanzeige kann deaktiviert oder über zusätzliche LEDs dargestellt werden. Je nach Bauart stehen vier Minuten-LEDs, sieben Minuten-LEDs, Ecken oder die Anzeige in Worten zur Verfügung. Die Einstellung muss zur mechanischen Front und zur Verdrahtung passen.
+
+\subsection{Sekunden im Rahmen}
+
+Die Sekundenanzeige im Rahmen kann ausgeschaltet oder als Punkt, Sektor oder umlaufender Sektor dargestellt werden. Diese Funktion setzt voraus, dass die gebaute Uhr entsprechende Rahmen-LEDs besitzt. Bei Frontplatten ohne Rahmen-LEDs sollte die Anzeige deaktiviert bleiben.
+
+\subsection{Boot-Optionen}
+
+Im Bereich \say{Boot} wird festgelegt, was beim Neustart sichtbar sein soll. Die LEDs können kurz aufblitzen, einmal durchlaufen, während der Netzwerksuche ein WLAN-Symbol anzeigen und nach erfolgreicher Verbindung die IP-Adresse ausgeben. Die IP-Anzeige ist besonders hilfreich, wenn die Uhr per Browser konfiguriert oder ein OTA-Update gestartet werden soll.
+
 \section{Verbinden der Uhr mit dem eigenen WLAN}
 Nach dem erfolgreichen Verbinden kann die Uhr nach Eingabe der angezeigten IP-Adresse in einem Browser konfiguriert werden. Dabei kann die Uhr auch mit dem eigenen WLAN Netz verbunden werden.
 
@@ -412,6 +448,26 @@ Die automatische Helligkeit wird im Web-Frontend unter \say{Einstellungen} im Be
         \caption{Automatische Helligkeitsregelung im Web-Frontend}
         \label{abb.WebFrontendAutoBrightness}
     \end{figure}
+
+Im manuellen Modus kann die Helligkeit zeitabhängig gesetzt werden. Dafür stehen Zeitbereiche von 0:00 bis 23:59 Uhr zur Verfügung, die jeweils auf 100 \%, 80 \%, 60 \%, 40 \%, 20 \% oder \say{Aus} gestellt werden können. So kann die Uhr nachts automatisch dunkler leuchten, auch wenn kein Helligkeitssensor angeschlossen ist.
+
+\section{LED-Typ, Weißpunkt und Wetterdaten}
+
+Unter \say{Einstellungen} kann der verwendete LED-Typ ausgewählt werden. Für WS2812-Streifen stehen verschiedene Farbreihenfolgen wie BRG, GRB, RGB, RBG und BGR zur Verfügung. Bei SK6812-RGBW-Streifen kann zusätzlich der Typ der weißen LED als Warmweiß, Neutralweiß oder Kaltweiß gesetzt werden. Wenn Farben falsch angezeigt werden, ist dies meistens die erste Einstellung, die geprüft werden sollte.
+
+Für Wetter-Frontplatten kann im Bereich \say{Wetter} ein OpenWeatherMap-API-Schlüssel und eine City-ID hinterlegt werden. Die Uhr ruft damit Wettervorhersagen ab und kann diese auf Layouts anzeigen, die Wetterwörter bzw. Wetterbereiche unterstützen. Ohne passende Frontplatte oder ohne gültigen API-Schlüssel bleibt diese Funktion wirkungslos.
+
+\section{Smart Home und MQTT}
+
+Die Uhr kann über MQTT in ein Smart-Home-System eingebunden werden. Im Web-Frontend befindet sich dafür der Bereich \say{Smart Home}. Dort werden MQTT aktiviert sowie Serveradresse, Port, Benutzername, Passwort, Client-ID und Topic gespeichert. Die MQTT-Zugangsdaten können alternativ bereits in \texttt{include/Config.h} vorkonfiguriert werden.
+
+Über MQTT lassen sich grundlegende Funktionen wie Ein-/Ausschalten, Helligkeit, Farbe, Effekt bzw. Modus, Lauftext, automatische Helligkeit und Übergangseinstellungen steuern. Statuswerte wie aktuelle Farbe, Helligkeit, Modus, WLAN-Signal, Uptime und Sensordaten werden ebenfalls veröffentlicht.
+
+Mit \say{Sende HA Discovery} sendet die Uhr die Home-Assistant-Autodiscovery-Konfiguration. Danach erscheint sie in Home Assistant als MQTT-Gerät mit Licht-Entität und zusätzlichen Steuerelementen, ohne dass die YAML-Konfiguration manuell angelegt werden muss. Voraussetzung ist ein erreichbarer MQTT-Broker und aktivierte MQTT-Discovery in Home Assistant.
+
+\section{Neustart und Zurücksetzen}
+
+Im Bereich \say{Neu starten / Zurücksetzen} kann die Uhr direkt aus dem Web-Frontend neu gestartet werden. Außerdem können die gespeicherten Einstellungen auf Standardwerte zurückgesetzt werden. Nach Änderungen an Matrixgröße, Bauart, Hardware-Pins oder anderen systemnahen Einstellungen zeigt das Web-Frontend einen Hinweis an, wenn ein Neustart empfohlen wird.
 
 \section{Fehlersuche}
 

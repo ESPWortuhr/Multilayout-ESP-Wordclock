@@ -59,6 +59,7 @@ void ClockWork::loopAutoBrightLogic() {
         If BH1750 is not available or did not return a value, try to use LDR
         */
         luxNow = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
+        autoBrightUsingBH1750 = true;
     }
 
     else if (luxNow < 0) {
@@ -78,6 +79,7 @@ void ClockWork::loopAutoBrightLogic() {
         luxNow = (adcValue * AUTOBRIGHT_LDR_RESDARK * 10) /
                  (AUTOBRIGHT_LDR_RESBRIGHT * AUTOBRIGHT_LDR_RESDIVIDER *
                   (1024 - adcValue));
+        autoBrightUsingBH1750 = false;
     }
 
     else {
@@ -1692,6 +1694,7 @@ void ClockWork::loop(struct tm &tm) {
         }
         config["autoBrightSensor"] = (uint32_t)lux;
         config["autoBrightGain"] = (uint8_t)ledGain;
+        config["autoBrightSource"] = autoBrightUsingBH1750 ? "BH1750" : "LDR";
 
         sendJsonToClient(G.client_nr, config);
         break;

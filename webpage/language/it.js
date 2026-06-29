@@ -280,6 +280,7 @@ let TRANSLATION_IT = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Luce ambientale (lx)",
+			"value-source": "Sorgente sensore",
 			"value-gain": "Luminosità del LED (%)",
 			"help-min": "Configurazione della luminosità minima:<br/>" +
 				"Definisce la luminosità minima dei LED in percentuale in condizioni di buio assoluto (0 lx).<br/>" +

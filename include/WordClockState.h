@@ -258,6 +258,7 @@ GLOBAL G = {};
 // Brightness related variables
 float ledGain = DEFAULT_BRIGHTNESS;
 bool bh1750Initialized = false;
+bool autoBrightUsingBH1750 = false;
 
 uint8_t _second = 0;
 uint8_t _secondFrame = 0;

@@ -283,6 +283,7 @@ let TRANSLATION_NL = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Omgevingslicht (lx)",
+			"value-source": "Sensorbron",
 			"value-gain": "LED-helderheid (%)",
 			"help-min": "Configuratie van de minimale helderheid:<br/>" +
 				"Bepaalt de minimale helderheid van de LED's in procenten bij absolute duisternis (0 lx).<br/>" +
