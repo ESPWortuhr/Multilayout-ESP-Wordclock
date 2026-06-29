@@ -300,13 +300,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_TIME: {
-            char tmp[17] = {0};
-            uint32_t tt = split(payload, 3, 16);
-            Serial.println(tt);
-            memcpy(tmp, payload + 12, 16);
-
             struct timeval tv;
-            tv.tv_sec = atoi(tmp);
+            tv.tv_sec = split(payload, 6, 16);
             tv.tv_usec = 0;
             settimeofday(&tv, nullptr);
             break;
