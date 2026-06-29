@@ -13,8 +13,8 @@
 #define SPEED_BUTTON_PIN 255
 
 // ESP32: use direct pin numbers
-#define SDA_PIN_ESP32 21
-#define SCL_PIN_ESP32 22
+#define SDA_PIN_ESP32 255
+#define SCL_PIN_ESP32 255
 
 // ESP32-C3: use direct pin numbers
 #define SDA_PIN_ESP32C3 255
