@@ -54,7 +54,9 @@ bool pinsAreValid(uint8_t sdaPin, uint8_t sclPin) {
 }
 
 void begin(uint8_t sdaPin, uint8_t sclPin) {
+#ifndef ESP8266
     Wire.end();
+#endif
 
     if (!pinsAreEnabled(sdaPin, sclPin)) {
         Serial.println("I2C disabled");
