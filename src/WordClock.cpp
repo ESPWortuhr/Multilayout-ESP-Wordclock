@@ -487,6 +487,13 @@ void setup() {
     // Get Pointer for ClockType
     //-------------------------------------
 
+    if (!isValidClockTypeDef(G.clockTypeDef)) {
+        Serial.printf("Invalid ClockType %u in EEPROM, using default %u\n",
+                      G.clockTypeDef, DEFAULT_LAYOUT);
+        G.clockTypeDef = DEFAULT_LAYOUT;
+        eeprom::write();
+    }
+
     usedClockType = clockWork.getPointer(G.clockTypeDef);
 
     // Area that will be animated:

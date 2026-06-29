@@ -412,10 +412,10 @@ function initWebsocket() {
 				enableSpecific("specific-layout-4", data.hasSecondsFrame);
 				enableSpecific("specific-layout-5", data.hasWeatherLayout);
 
-				// clockTypeDef 10 is EN10x11, doesn't need the options of layout 1 and 3, but needs its own layout 6.
-				enableSpecific("specific-layout-6", data.clockTypeDef === 10);
-				enableSpecific("specific-layout-3", data.clockTypeDef !== 10);
-				enableSpecific("specific-layout-1", data.clockTypeDef !== 10);
+				// clockTypeDef 4 is EN10x11, doesn't need the options of layout 1 and 3, but needs its own layout 6.
+				enableSpecific("specific-layout-6", data.clockTypeDef === 4);
+				enableSpecific("specific-layout-3", data.clockTypeDef !== 4);
+				enableSpecific("specific-layout-1", data.clockTypeDef !== 4);
 
 				enableSpecific("specific-layout-7", data.hasSecondsFrame);
 				enableSpecific("specific-colortype-4", data.colortype === 5);

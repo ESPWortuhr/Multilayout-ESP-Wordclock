@@ -507,7 +507,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_CLOCK_TYPE: {
-            G.clockTypeDef = split(payload, 3);
+            uint32_t clockTypeDef = split(payload, 3);
+            if (clockTypeDef < ClockTypeDefMax) {
+                G.clockTypeDef = static_cast<uint8_t>(clockTypeDef);
+            } else {
+                Serial.printf("Ignoring invalid ClockType: %lu\n",
+                              static_cast<unsigned long>(clockTypeDef));
+            }
             break;
         }
 

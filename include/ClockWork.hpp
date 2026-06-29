@@ -1826,6 +1826,11 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_SET_CLOCK_TYPE: {
+        if (!isValidClockTypeDef(G.clockTypeDef)) {
+            Serial.printf("Ignoring invalid ClockType: %u\n", G.clockTypeDef);
+            break;
+        }
+
         eeprom::write();
         led.clear();
         led.show();
