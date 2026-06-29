@@ -3,6 +3,7 @@
 #include "I2CBus.h"
 #include "NeoMultiFeature.hpp"
 #include "OpenWeatherMap.h"
+#include "SensitiveData.h"
 #include "TransitionTypes/Transition.h"
 #include "WordClockState.h"
 #include "WordClockTypes/ClockType.hpp"
@@ -1599,7 +1600,9 @@ void ClockWork::loop(struct tm &tm) {
         config["supportedMinuteVariants"] =
             usedClockType->supportedMinuteVariantMask();
         config["cityid"] = G.openWeatherMap.cityid;
-        config["apikey"] = G.openWeatherMap.apikey;
+        char apiKeyMasked[sizeof(G.openWeatherMap.apikey) + 1] = {0};
+        sensitive::maskPreservingSuffix(apiKeyMasked, G.openWeatherMap.apikey);
+        config["apiKey"] = apiKeyMasked;
         config["colortype"] = G.Colortype;
         config["buildtype"] = static_cast<uint8_t>(G.buildTypeDef);
         config["wType"] = static_cast<uint8_t>(G.wType);

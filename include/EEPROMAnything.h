@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <EEPROM.h>
+#include "SensitiveData.h"
 #include <string.h>
 
 namespace eeprom {
@@ -40,6 +41,12 @@ void printMaskedPassword() {
         memset(passMasked, '*', passLen - 3);
     }
     Serial.printf("MQTT_Pass (masked): %s\n", passMasked);
+}
+
+void printMaskedOpenWeatherMapApiKey() {
+    char apiKeyMasked[sizeof(G.openWeatherMap.apikey) + 1] = {0};
+    sensitive::maskPreservingSuffix(apiKeyMasked, G.openWeatherMap.apikey);
+    Serial.printf("OWM_apikey (masked): %s\n", apiKeyMasked);
 }
 
 void printConfig() {
@@ -97,7 +104,7 @@ void printConfig() {
     Serial.printf("i2cSdaPin    : %u\n", G.i2cSdaPin);
     Serial.printf("i2cSclPin    : %u\n", G.i2cSclPin);
     Serial.printf("Colortype    : %u\n", G.Colortype);
-    printSafeString("OWM_apikey: ", G.openWeatherMap.apikey);
+    printMaskedOpenWeatherMapApiKey();
     printSafeString("OWM_city  : ", G.openWeatherMap.cityid);
 
     for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {

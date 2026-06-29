@@ -2,6 +2,7 @@
 
 #include "WebPageContent.h"
 #include "WebSocketsServer.h"
+#include "SensitiveData.h"
 #include "WordClockState.h"
 
 #define SIZE_OF_FAVICON 185
@@ -516,23 +517,41 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_WEATHER_DATA: {
             uint8_t ii = 0;
-            for (uint8_t k = 3; k < 10; k++) {
-                if (payload[k] != ' ')
+            const size_t cityEnd = (length < 10) ? length : 10;
+            for (size_t k = 3; k < cityEnd; k++) {
+                if (payload[k] != ' ' &&
+                    ii < sizeof(G.openWeatherMap.cityid) - 1) {
                     G.openWeatherMap.cityid[ii++] = payload[k];
+                }
             }
             G.openWeatherMap.cityid[ii] = '\0';
 
+            char submittedApiKey[sizeof(G.openWeatherMap.apikey)] = {0};
             uint8_t jj = 0;
-            for (uint8_t l = 11; l < 43; l++) {
-                if (payload[l] != ' ')
-                    G.openWeatherMap.apikey[jj++] = payload[l];
+            const size_t apiKeyStart = 11;
+            if (length > apiKeyStart) {
+                const size_t apiKeyEnd = (length < 43) ? length : 43;
+                for (size_t l = apiKeyStart; l < apiKeyEnd; l++) {
+                    if (payload[l] != ' ' &&
+                        jj < sizeof(submittedApiKey) - 1) {
+                        submittedApiKey[jj++] = payload[l];
+                    }
+                }
+                submittedApiKey[jj] = '\0';
+                if (!sensitive::matchesMaskedValue(submittedApiKey,
+                                                   G.openWeatherMap.apikey)) {
+                    sensitive::copyBoundedString(G.openWeatherMap.apikey,
+                                                 submittedApiKey);
+                }
             }
-            G.openWeatherMap.apikey[jj] = '\0';
             Serial.println("write EEPROM!");
             Serial.print("CityID : ");
             Serial.println(G.openWeatherMap.cityid);
             Serial.print("APIkey : ");
-            Serial.println(G.openWeatherMap.apikey);
+            char apiKeyMasked[sizeof(G.openWeatherMap.apikey) + 1] = {0};
+            sensitive::maskPreservingSuffix(apiKeyMasked,
+                                            G.openWeatherMap.apikey);
+            Serial.println(apiKeyMasked);
             break;
         }
 
