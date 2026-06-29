@@ -383,9 +383,7 @@ enum ClockTypeDef : uint8_t {
 #define X(name, id, var) name = id,
     CLOCK_TYPES_LIST
 #undef X
-    ClockTypeDefMax,
+        ClockTypeDefMax,
 };
 
-inline bool isValidClockTypeDef(uint8_t type) {
-    return type < ClockTypeDefMax;
-}
+inline bool isValidClockTypeDef(uint8_t type) { return type < ClockTypeDefMax; }
