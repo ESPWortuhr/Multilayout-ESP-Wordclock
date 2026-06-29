@@ -1024,6 +1024,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 			sendCmd(CMD.SET_HARDWARE_PINS, pins.map(nstr).join(""));
 			sendCmd(CMD.REQ_CONFIG_VALUES);
+			showRebootRecommendedBanner();
 			debugMessage(`Hardware pins${debugMessageReconfigured}`);
 		});
 	}
