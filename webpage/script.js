@@ -757,6 +757,17 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	}
 
+	const menuLinks = document.querySelectorAll(".pure-menu-link[data-navigation]");
+
+	function setActiveNavigation(navigation) {
+		menuLinks.forEach(elem => {
+			const isActive = elem.dataset.navigation === navigation;
+			elem.classList.toggle("pure-menu-selected", isActive);
+			elem.toggleAttribute("aria-current", isActive);
+			if (isActive) elem.setAttribute("aria-current", "page");
+		});
+	}
+
 	/**
 	 * A menu item has been clicked.
 	 */
@@ -765,15 +776,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			event.preventDefault();
 			let navigation = this.dataset.navigation;
 
-			// Remove classes and attributes
-			document.querySelectorAll(".pure-menu-link").forEach(elem => {
-				elem.classList.remove("pure-menu-selected");
-				elem.removeAttribute("aria-current");
-			});
-
-			// Add classes and Attributes
-			this.classList.add("pure-menu-selected");
-			this.setAttribute("aria-current", "page");
+			setActiveNavigation(navigation);
 
 			if (navigation === "functions") {
 				sendCmd(CMD.REQ_BIRTHDAYS);
@@ -800,6 +803,8 @@ document.addEventListener("DOMContentLoaded", function() {
 			if (targetSection) targetSection.style.display = "block";
 		});
 	});
+
+	setActiveNavigation("main");
 
 	/**
 	 * The clock mode has been changed.
