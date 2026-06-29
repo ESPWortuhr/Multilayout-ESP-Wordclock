@@ -1,8 +1,8 @@
 #pragma once
 
+#include "SensitiveData.h"
 #include "WebPageContent.h"
 #include "WebSocketsServer.h"
-#include "SensitiveData.h"
 #include "WordClockState.h"
 
 #define SIZE_OF_FAVICON 185

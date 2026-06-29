@@ -1,6 +1,6 @@
+#include "SensitiveData.h"
 #include <Arduino.h>
 #include <EEPROM.h>
-#include "SensitiveData.h"
 #include <string.h>
 
 namespace eeprom {
