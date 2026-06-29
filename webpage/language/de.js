@@ -309,6 +309,7 @@ let TRANSLATION_DE_DE = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Umgebungslicht (lx)",
+			"value-source": "Sensorquelle",
 			"value-gain": "LED Helligkeit (%)",
 			"help-min": "Konfiguration der minimalen Helligkeit:<br/>" +
 				"Definiert die minimale Helligkeit der LEDs in Prozent bei absoluter Dunkelheit (0 lx).<br/>" +

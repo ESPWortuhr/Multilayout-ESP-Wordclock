@@ -496,6 +496,7 @@ function initWebsocket() {
 			case "autoBright":
 				document.getElementById("auto-bright-enabled").value = data.autoBrightEnabled;
 				document.getElementById("auto-bright-sensor").value = data.autoBrightSensor;
+				document.getElementById("auto-bright-source").value = data.autoBrightSource || "";
 				document.getElementById("auto-bright-gain").value = data.autoBrightGain;
 				if (data.autoBrightMin && data.autoBrightMax && data.autoBrightPeak) {
 					autoBrightMin = data.autoBrightMin;

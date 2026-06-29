@@ -832,6 +832,8 @@ void Mqtt::sendState() {
         StaticJsonDocument<320> doc;
         doc["lux"] = round(clockWork.getLuxValue()); // Round lux value
         doc["led_gain"] = round(ledGain);      // Convert to percent and round
+        doc["auto_brightness_source"] =
+            autoBrightUsingBH1750 ? "BH1750" : "LDR";
         doc["rssi"] = WiFi.RSSI();             // WiFi signal strength
         doc["ip"] = WiFi.localIP().toString(); // Current IP address
         doc["uptime"] = millis() / 1000;       // Seconds since boot
@@ -1081,6 +1083,10 @@ void Mqtt::sendDiscovery() {
     addDiagSensor(cmps, unique_id, "led_gain", "LED Gain", "power_factor", "%",
                   "mdi:brightness-percent", "measurement",
                   "{{ value_json.led_gain }}");
+    addDiagSensor(cmps, unique_id, "auto_brightness_source",
+                  "Auto Brightness Source", nullptr, nullptr,
+                  "mdi:lightbulb-auto", nullptr,
+                  "{{ value_json.auto_brightness_source }}");
     addDiagSensor(cmps, unique_id, "rssi", "WiFi Signal", "signal_strength",
                   "dBm", nullptr, "measurement", "{{ value_json.rssi }}");
     addDiagSensor(cmps, unique_id, "ip", "IP Address", nullptr, nullptr,

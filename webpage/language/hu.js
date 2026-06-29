@@ -280,6 +280,7 @@ let TRANSLATION_HU = {
 			"twenty-to-twenty-two": "20:00 – 21:59",
 			"twenty-two-to-zero": "22:00 – 23:59",
 			"value-sensor": "Környezeti fény (lx)",
+			"value-source": "Érzékelő forrása",
 			"value-gain": "LED fényerő (%)",
 			"help-min": "A minimális fényerő beállítása:<br/>" +
 				"Meghatározza a LED-ek minimális fényerejét százalékban abszolút sötétben. (0 lx).<br/>" +
