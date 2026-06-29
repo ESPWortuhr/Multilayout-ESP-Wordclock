@@ -825,15 +825,15 @@ void ClockWork::showMinute(uint8_t min) {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::checkForValidLayoutVariant() {
+void ClockWork::checkForValidLanguageVariant() {
     if (G.clockTypeDef == Eng10x11) {
-        G.layoutVariant[ItIs15] = false;
-        G.layoutVariant[ItIs20] = true;
-        G.layoutVariant[ItIs40] = true;
+        G.languageVariant[ItIs15] = false;
+        G.languageVariant[ItIs20] = true;
+        G.languageVariant[ItIs40] = true;
     } else { // default values
-        G.layoutVariant[ItIs15] = false;
-        G.layoutVariant[ItIs20] = false;
-        G.layoutVariant[ItIs40] = false;
+        G.languageVariant[ItIs15] = false;
+        G.languageVariant[ItIs20] = false;
+        G.languageVariant[ItIs40] = false;
     }
 }
 
@@ -1840,7 +1840,7 @@ void ClockWork::loop(struct tm &tm) {
         usedClockType = getPointer(G.clockTypeDef);
         resetMinVariantIfNotAvailable();
 
-        checkForValidLayoutVariant();
+        checkForValidLanguageVariant();
 
         delete secondsFrame;
         secondsFrame = nullptr;
