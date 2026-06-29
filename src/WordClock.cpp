@@ -643,8 +643,7 @@ void setup() {
     //-------------------------------------
 
     // Find BH1750 and initialize if available else fallback to LDR if available
-    byte bh1750Address =
-        i2cBus::findBH1750Address(G.i2cSdaPin, G.i2cSclPin);
+    byte bh1750Address = i2cBus::findBH1750Address(G.i2cSdaPin, G.i2cSclPin);
 
     if (bh1750Address != 0) {
         lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, bh1750Address);

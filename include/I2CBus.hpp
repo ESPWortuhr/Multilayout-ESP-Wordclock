@@ -1,7 +1,7 @@
 #pragma once
 
-#include "I2CBus.h"
 #include "Config.h"
+#include "I2CBus.h"
 #include <Wire.h>
 
 namespace i2cBus {
