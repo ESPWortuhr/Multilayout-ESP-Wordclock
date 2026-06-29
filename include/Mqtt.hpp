@@ -831,7 +831,7 @@ void Mqtt::sendState() {
     {
         StaticJsonDocument<320> doc;
         doc["lux"] = round(clockWork.getLuxValue()); // Round lux value
-        doc["led_gain"] = round(ledGain);      // Convert to percent and round
+        doc["led_gain"] = round(ledGain); // Convert to percent and round
         doc["auto_brightness_source"] =
             autoBrightUsingBH1750 ? "BH1750" : "LDR";
         doc["rssi"] = WiFi.RSSI();             // WiFi signal strength
