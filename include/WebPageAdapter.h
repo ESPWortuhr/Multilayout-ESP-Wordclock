@@ -532,8 +532,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             if (length > apiKeyStart) {
                 const size_t apiKeyEnd = (length < 43) ? length : 43;
                 for (size_t l = apiKeyStart; l < apiKeyEnd; l++) {
-                    if (payload[l] != ' ' &&
-                        jj < sizeof(submittedApiKey) - 1) {
+                    if (payload[l] != ' ' && jj < sizeof(submittedApiKey) - 1) {
                         submittedApiKey[jj++] = payload[l];
                     }
                 }
