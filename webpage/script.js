@@ -785,7 +785,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			if (navigation === "frontoptions") {
 				sendCmd(CMD.REQ_CONFIG_VALUES);
 			}
-			if (navigation === "settings" || navigation === "frontoptions") {
+			if (navigation === "main" || navigation === "settings" || navigation === "frontoptions") {
 				sendCmd(CMD.REQ_CONFIG_VALUES);
 				sendCmd(CMD.REQ_AUTO_BRIGHT);
 				updateManualTimeInput();
