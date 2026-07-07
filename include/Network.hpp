@@ -41,6 +41,14 @@ void Network::setup(const char *hostname) {
 #endif
     // explicitly disable AP, esp defaults to STA+AP
     WiFi.enableAP(false);
+
+#if defined(ESP8266)
+    WiFi.setSleepMode(WIFI_NONE_SLEEP);
+#elif defined(ESP32)
+    WiFi.setSleep(false);
+#endif
+    WiFi.setAutoReconnect(true);
+
     Network::info();
 }
 
