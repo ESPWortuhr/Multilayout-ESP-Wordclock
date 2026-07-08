@@ -1,8 +1,13 @@
 #include "Network.h"
 
+#include "Config.h" // WIFI_VERBOSE, MANUAL_WIFI_SETTINGS, CP_* ...
 #include <WiFiManager.h>
 
+namespace {
+// The WiFiManager instance is an implementation detail of Network and is not
+// used outside this translation unit.
 WiFiManager wifiManager(Serial);
+} // namespace
 
 void Network::info() {
 #if WIFI_VERBOSE
@@ -50,6 +55,14 @@ void Network::setup(const char *hostname) {
     WiFi.setAutoReconnect(true);
 
     Network::info();
+}
+
+void Network::startConfigPortal() {
+#if CP_PROTECTED
+    wifiManager.startConfigPortal(CP_SSID, CP_PASSWORD);
+#else
+    wifiManager.startConfigPortal(CP_SSID);
+#endif
 }
 
 void Network::loop() { wifiManager.process(); }

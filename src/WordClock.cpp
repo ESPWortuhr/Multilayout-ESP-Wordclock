@@ -84,7 +84,6 @@ void deleteActiveLedStrip() {
 #include "ClockWork.hpp"
 #include "I2CBus.hpp"
 #include "Mqtt.hpp"
-#include "Network.hpp"
 #include "Symbols.h"
 #include "TransitionTypes/Transition.hpp"
 #include "WiFi.hpp"
@@ -324,11 +323,7 @@ void setup() {
     Serial.println(powerCycleCount);
     if (powerCycleCount == CAPTIVE_PORTAL_POWER_CYCLE_COUNT) {
         Serial.println("Enable captive portal");
-#if CP_PROTECTED
-        wifiManager.startConfigPortal(CP_SSID, CP_PASSWORD);
-#else
-        wifiManager.startConfigPortal(CP_SSID);
-#endif
+        network.startConfigPortal();
     } else if (powerCycleCount == FACTORY_RESET_POWER_CYCLE_COUNT) {
         G.sernr++;
         Serial.println("Reset to initial values");
