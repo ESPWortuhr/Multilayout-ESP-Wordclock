@@ -83,7 +83,6 @@ void deleteActiveLedStrip() {
 
 #include "ClockWork.hpp"
 #include "I2CBus.hpp"
-#include "Led.hpp"
 #include "Mqtt.hpp"
 #include "Network.hpp"
 #include "Symbols.h"
