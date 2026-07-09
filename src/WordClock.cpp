@@ -61,6 +61,7 @@ RTC_Type RTC;
 #include "Mqtt.h"
 #include "Network.h"
 #include "TransitionTypes/Transition.h"
+#include "WifiHelper.h"
 
 Transition *transition;
 SecondsFrame *secondsFrame;
@@ -85,7 +86,6 @@ void deleteActiveLedStrip() {
 #include "Mqtt.hpp"
 #include "Symbols.h"
 #include "TransitionTypes/Transition.hpp"
-#include "WiFi.hpp"
 
 namespace {
 constexpr uint16_t EEPROM_SIZE = 512;

@@ -1,10 +1,14 @@
-#pragma once
+#include "WifiHelper.h"
 
-#ifdef ESP8266
-#include <ESP8266WiFi.h>
-#elif defined(ESP32)
-#include <WiFi.h>
-#endif
+// ClockWork.h is not self-contained yet; include the types it relies on first
+// (matching the unity-build order) so it can be pulled into this separate TU.
+#include "WordClockState.h"
+#include "WordClockTypes/ClockType.hpp"
+
+#include "ClockWork.h"
+#include <Arduino.h>
+
+extern ClockWork clockWork;
 
 //---------------------------------------------------------
 // WLAN-Status
