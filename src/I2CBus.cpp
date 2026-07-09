@@ -1,7 +1,7 @@
-#pragma once
-
-#include "Config.h"
 #include "I2CBus.h"
+
+#include "Config.h"         // SDA_PIN_* / SCL_PIN_*
+#include "WordClockState.h" // HARDWARE_PIN_DISABLED
 #include <Wire.h>
 
 namespace i2cBus {
