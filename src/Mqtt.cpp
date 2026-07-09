@@ -1,8 +1,33 @@
-#include "Mqtt.h"
+// Prerequisites for ClockWork.h (pulled in by Mqtt.h), which is not yet
+// self-contained: include the types it relies on first, matching the unity
+// build's include order.
 #include "WordClockState.h"
+#include "WordClockTypes/ClockType.hpp"
+
+#include "Mqtt.h"
+
+#include "Led.h"
+#include "WebPageAdapter.h"
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <WiFiClient.h>
+
+#ifdef ESP8266
+#include <ESP8266WiFi.h>
+#elif defined(ESP32)
+#include <WiFi.h>
+#endif
+
+// EEPROMAnything.h defines its functions in the header (still part of the unity
+// build), so it cannot be included in a second TU without multiple definitions.
+// Mqtt only needs eeprom::write(); forward-declare it and let the linker
+// resolve to the single definition in the WordClock.cpp translation unit.
+namespace eeprom {
+void write();
+}
+
+extern Led led;
+extern WiFiClient client;
 
 #define HOMEASSISTANT_DISCOVERY_TOPIC "homeassistant"
 
@@ -10,8 +35,6 @@
 #define MAX_RETRIES_WITHIN_5_MINUTES 20
 
 #define RETRY_INTERVALL 3600000 // 1 Hour
-
-extern WiFiClient client;
 
 // Static PubSubClient callbacks need a way back to the single Mqtt instance.
 Mqtt *mqttInstance = nullptr;

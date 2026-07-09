@@ -83,7 +83,6 @@ void deleteActiveLedStrip() {
 }
 
 #include "ClockWork.hpp"
-#include "Mqtt.hpp"
 #include "Symbols.h"
 #include "TransitionTypes/Transition.hpp"
 
