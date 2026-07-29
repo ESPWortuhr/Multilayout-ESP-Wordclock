@@ -1893,7 +1893,22 @@ void ClockWork::loop(struct tm &tm) {
     switch (G.prog) {
 
     case COMMAND_MODE_SECONDS: {
-        clearClockByProgInit();
+        // 0xFF marks "nothing drawn yet" and cannot collide with a second.
+        static uint8_t lastShownSecond = 0xFF;
+
+        if (G.progInit) {
+            clearClockByProgInit();
+            lastShownSecond = 0xFF;
+        }
+
+        // This runs on every loop() iteration. Without this guard the LED
+        // strip is rewritten thousands of times per second, which starves the
+        // network stack -- the display only ever changes once per second.
+        if (lastShownSecond == _second && !parametersChanged) {
+            break;
+        }
+        lastShownSecond = _second;
+        parametersChanged = false;
 
         char d1[5];
         char d2[5];
