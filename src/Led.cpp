@@ -1,18 +1,54 @@
-#include "Font.h"
 #include "Led.h"
+
+#include "Config.h"
+#include "Font.h"
+#include "LedStripInterface.h"
 #include "NeoMultiFeature.hpp"
 #include "Symbols.h"
-#include "TransitionTypes/Transition.h"
 #include "WordClockState.h"
 #include "WordClockTypes/ClockType.hpp"
 #include <Arduino.h>
 
+// Transition.h references the global usedClockType, so it must be declared
+// before the header is pulled in.
 extern ClockType *usedClockType;
-extern Transition *transition;
 
+#include "TransitionTypes/Transition.h"
+
+extern Transition *transition;
+extern Led led;
+extern LedStripInterface *activeLedStrip;
+
+namespace {
 const uint8_t whiteAdjR[3] = {255, 255, 255};
 const uint8_t whiteAdjG[3] = {180, 215, 107};
 const uint8_t whiteAdjB[3] = {107, 177, 253};
+
+RgbwColor convertRgbToRgbw(RgbColor light, WhiteType wType) {
+    RgbwColor returnColor;
+    uint8_t wIdx = static_cast<uint8_t>(wType);
+
+    // Use fast 32-bit integer math! (255 * 255 = 65025, easily fits in
+    // uint32_t)
+    uint32_t whiteValueR = (light.R * 255) / whiteAdjR[wIdx];
+    uint32_t whiteValueG = (light.G * 255) / whiteAdjG[wIdx];
+    uint32_t whiteValueB = (light.B * 255) / whiteAdjB[wIdx];
+
+    // Find the minimum using integer comparison
+    uint32_t minValW = min(whiteValueR, min(whiteValueG, whiteValueB));
+    returnColor.W = (minValW <= 255 ? (uint8_t)minValW : 255);
+
+    // Integer math for the return channels
+    returnColor.R =
+        static_cast<uint8_t>(light.R - (minValW * whiteAdjR[wIdx]) / 255);
+    returnColor.G =
+        static_cast<uint8_t>(light.G - (minValW * whiteAdjG[wIdx]) / 255);
+    returnColor.B =
+        static_cast<uint8_t>(light.B - (minValW * whiteAdjB[wIdx]) / 255);
+
+    return returnColor;
+}
+} // namespace
 
 //------------------------------------------------------------------------------
 // Helper Functions
@@ -20,7 +56,7 @@ const uint8_t whiteAdjB[3] = {107, 177, 253};
 
 /* Based on https://graphics.stanford.edu/~seander/bithacks.html */
 
-inline uint8_t Led::reverse8BitOrder(uint8_t x) {
+uint8_t Led::reverse8BitOrder(uint8_t x) {
     x = ((x >> 1) & 0x55) | ((x << 1) & 0xAA);
     x = ((x >> 2) & 0x33) | ((x << 2) & 0xCC);
     return (x >> 4) | (x << 4);
@@ -30,7 +66,7 @@ inline uint8_t Led::reverse8BitOrder(uint8_t x) {
 
 /* Based on https://graphics.stanford.edu/~seander/bithacks.html */
 
-inline uint32_t Led::reverse32BitOrder(uint32_t x) {
+uint32_t Led::reverse32BitOrder(uint32_t x) {
     x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
     x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
     x = (((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4));
@@ -40,7 +76,7 @@ inline uint32_t Led::reverse32BitOrder(uint32_t x) {
 
 //------------------------------------------------------------------------------
 
-inline void Led::checkIfHueIsOutOfBound(uint16_t &hue) {
+void Led::checkIfHueIsOutOfBound(uint16_t &hue) {
     if (hue > 360) {
         hue = 0;
     }
@@ -77,33 +113,6 @@ void Led::applyMirroringAndReverseIfDefined() {
     if (G.layoutVariant[MirrorHorizontal]) {
         mirrorFrontMatrixHorizontal();
     }
-}
-
-//------------------------------------------------------------------------------
-
-RgbwColor convertRgbToRgbw(RgbColor light, WhiteType wType) {
-    RgbwColor returnColor;
-    uint8_t wIdx = static_cast<uint8_t>(wType);
-
-    // Use fast 32-bit integer math! (255 * 255 = 65025, easily fits in
-    // uint32_t)
-    uint32_t whiteValueR = (light.R * 255) / whiteAdjR[wIdx];
-    uint32_t whiteValueG = (light.G * 255) / whiteAdjG[wIdx];
-    uint32_t whiteValueB = (light.B * 255) / whiteAdjB[wIdx];
-
-    // Find the minimum using integer comparison
-    uint32_t minValW = min(whiteValueR, min(whiteValueG, whiteValueB));
-    returnColor.W = (minValW <= 255 ? (uint8_t)minValW : 255);
-
-    // Integer math for the return channels
-    returnColor.R =
-        static_cast<uint8_t>(light.R - (minValW * whiteAdjR[wIdx]) / 255);
-    returnColor.G =
-        static_cast<uint8_t>(light.G - (minValW * whiteAdjG[wIdx]) / 255);
-    returnColor.B =
-        static_cast<uint8_t>(light.B - (minValW * whiteAdjB[wIdx]) / 255);
-
-    return returnColor;
 }
 
 //------------------------------------------------------------------------------
@@ -165,14 +174,14 @@ HsbColor Led::getColorbyPositionWithAppliedBrightness(ColorPosition position) {
 // Manipulate Functions
 //------------------------------------------------------------------------------
 
-inline void Led::mirrorMinuteArrayVertical() {
+void Led::mirrorMinuteArrayVertical() {
     minuteArray = reverse8BitOrder(minuteArray);
     minuteArray >>= 4;
 }
 
 //------------------------------------------------------------------------------
 
-inline void Led::mirrorFrontMatrixVertical() {
+void Led::mirrorFrontMatrixVertical() {
     for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
         frontMatrix[row] = reverse32BitOrder(frontMatrix[row]);
         frontMatrix[row] >>= (32 - usedClockType->colsWordMatrix());
@@ -181,7 +190,7 @@ inline void Led::mirrorFrontMatrixVertical() {
 
 //------------------------------------------------------------------------------
 
-inline void Led::mirrorFrontMatrixHorizontal() {
+void Led::mirrorFrontMatrixHorizontal() {
     uint32_t tempMatrix[MAX_ROW_SIZE] = {0};
     memcpy(&tempMatrix, &frontMatrix, sizeof tempMatrix);
     for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
@@ -407,7 +416,7 @@ void Led::setSingle(uint8_t wait) {
 
 void Led::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                           uint8_t offsetRow, unsigned char unsigned_d1,
-                          fontSize font = normalSizeASCII) {
+                          fontSize font) {
 
     if (getCharCol(font, col, row, unsigned_d1)) {
         usedClockType->setFrontMatrixPixel(row + offsetRow, col + offsetCol);
@@ -458,7 +467,7 @@ bool Led::getState() {
 // Pixel Clear Functions
 //------------------------------------------------------------------------------
 
-inline void Led::clearPixel(uint8_t row, uint8_t col) {
+void Led::clearPixel(uint8_t row, uint8_t col) {
     const uint8_t numLEDsPerLetter = getLedsPerLetter(G.buildTypeDef);
     uint16_t ledIndex = usedClockType->getFrontMatrixIndex(row, col);
     for (int i = 0; i < numLEDsPerLetter; i++) {
@@ -468,11 +477,11 @@ inline void Led::clearPixel(uint8_t row, uint8_t col) {
 
 //------------------------------------------------------------------------------
 
-inline void Led::clearPixel(uint16_t i) { activeLedStrip->clearPixel(i); }
+void Led::clearPixel(uint16_t i) { activeLedStrip->clearPixel(i); }
 
 //------------------------------------------------------------------------------
 
-inline void Led::clearClock() {
+void Led::clearClock() {
     for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
             usedClockType->setFrontMatrixPixel(row, col, false);
@@ -483,7 +492,7 @@ inline void Led::clearClock() {
 
 //------------------------------------------------------------------------------
 
-inline void Led::clearRow(uint8_t row) {
+void Led::clearRow(uint8_t row) {
     for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
         usedClockType->setFrontMatrixPixel(row, col, false);
         clearPixel(row, col);
@@ -492,7 +501,7 @@ inline void Led::clearRow(uint8_t row) {
 
 //------------------------------------------------------------------------------
 
-inline void Led::clearMinArray() {
+void Led::clearMinArray() {
     for (uint16_t i = minutePixelArray[0]; i <= minutePixelArray[3]; i++) {
         clearPixel(i);
     }
@@ -501,7 +510,7 @@ inline void Led::clearMinArray() {
 
 //------------------------------------------------------------------------------
 
-inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
+void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
     for (uint8_t i = 0; i < offsetRow; i++) {
         clearRow(i);
     }
@@ -516,7 +525,7 @@ inline void Led::clearFrontExeptofFontspace(uint8_t offsetRow) {
 
 //------------------------------------------------------------------------------
 
-inline void Led::clearFrame() {
+void Led::clearFrame() {
     for (uint16_t i = 0; i < usedClockType->numPixelsFrameMatrix(); i++) {
         clearPixel(usedClockType->getFrameMatrixIndex(i));
     }
@@ -524,7 +533,7 @@ inline void Led::clearFrame() {
 
 //------------------------------------------------------------------------------
 
-inline void Led::clear() {
+void Led::clear() {
     clearClock();
     clearFrame();
     clearMinArray();

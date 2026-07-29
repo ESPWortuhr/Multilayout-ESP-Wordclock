@@ -1,5 +1,3 @@
-#pragma once
-
 #include "HardwareButtonController.h"
 
 static constexpr uint32_t HARDWARE_BUTTON_DEBOUNCE_MS = 40;

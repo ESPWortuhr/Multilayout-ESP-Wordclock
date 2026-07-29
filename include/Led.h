@@ -1,5 +1,6 @@
 #pragma once
 
+#include "WordClockState.h"
 #include <NeoPixelBus.h>
 
 class Led {
@@ -7,8 +8,8 @@ private:
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
-    inline uint8_t reverse8BitOrder(uint8_t x);
-    inline uint32_t reverse32BitOrder(uint32_t x);
+    uint8_t reverse8BitOrder(uint8_t x);
+    uint32_t reverse32BitOrder(uint32_t x);
     void applyMirroringAndReverseIfDefined();
     fontSize determineFontSize();
     void setupDigitalClock(fontSize &usedFontSize, uint8_t &offsetLetterH0,
@@ -26,7 +27,7 @@ public:
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
-    inline void checkIfHueIsOutOfBound(uint16_t &hue);
+    void checkIfHueIsOutOfBound(uint16_t &hue);
     void resetFrontMatrixBuffer();
     bool getCharCol(fontSize font, uint8_t col, uint8_t row,
                     unsigned char unsigned_d1);
@@ -34,9 +35,9 @@ public:
     //------------------------------------------------------------------------------
     // Manipulate Functions
     //------------------------------------------------------------------------------
-    inline void mirrorMinuteArrayVertical();
-    inline void mirrorFrontMatrixVertical();
-    inline void mirrorFrontMatrixHorizontal();
+    void mirrorMinuteArrayVertical();
+    void mirrorFrontMatrixVertical();
+    void mirrorFrontMatrixHorizontal();
 
     //------------------------------------------------------------------------------
     // Brightness Functions
@@ -73,14 +74,14 @@ public:
     //------------------------------------------------------------------------------
     // Pixel Clear Functions
     //------------------------------------------------------------------------------
-    inline void clearPixel(uint16_t i);
-    inline void clearPixel(uint8_t row, uint8_t col);
-    inline void clearClock();
-    inline void clearRow(uint8_t row);
-    inline void clearMinArray();
-    inline void clearFrontExeptofFontspace(uint8_t offsetRow);
-    inline void clearFrame();
-    inline void clear();
+    void clearPixel(uint16_t i);
+    void clearPixel(uint8_t row, uint8_t col);
+    void clearClock();
+    void clearRow(uint8_t row);
+    void clearMinArray();
+    void clearFrontExeptofFontspace(uint8_t offsetRow);
+    void clearFrame();
+    void clear();
 
     //------------------------------------------------------------------------------
     // Show Functions

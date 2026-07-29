@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Arduino.h> // String
+
 class Network {
 public:
     Network(/* args */) = default;
@@ -15,5 +17,6 @@ public:
     void changeHostname(const char *hostname);
 
     void setup(const char *hostname);
+    void startConfigPortal();
     void loop();
 };

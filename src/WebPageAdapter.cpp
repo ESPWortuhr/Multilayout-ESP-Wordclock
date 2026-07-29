@@ -1,0 +1,596 @@
+#include "WebPageAdapter.h"
+
+#include "WordClock.h" // sendMQTTUpdate()
+#include <Arduino.h>
+
+const char favicon[] PROGMEM = {
+    0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D,
+    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
+    0x04, 0x03, 0x00, 0x00, 0x00, 0xED, 0xDD, 0xE2, 0x52, 0x00, 0x00, 0x00,
+    0x21, 0x50, 0x4C, 0x54, 0x45, 0x1B, 0x1B, 0x1B, 0x1A, 0x1A, 0x1A, 0x1A,
+    0x1A, 0x1A, 0x1C, 0x1C, 0x1C, 0x1A, 0x1A, 0x1A, 0x18, 0x18, 0x18, 0x1A,
+    0x1A, 0x1A, 0xFF, 0xEB, 0x3B, 0x96, 0xDE, 0x42, 0xFF, 0x40, 0x81, 0x34,
+    0x9A, 0xFF, 0x93, 0xA0, 0x21, 0x41, 0x00, 0x00, 0x00, 0x06, 0x74, 0x52,
+    0x4E, 0x53, 0x4B, 0xE4, 0xE3, 0x4A, 0xE2, 0x49, 0x0C, 0xE2, 0x12, 0xBB,
+    0x00, 0x00, 0x00, 0x41, 0x49, 0x44, 0x41, 0x54, 0x08, 0xD7, 0x63, 0x60,
+    0x4C, 0x03, 0x03, 0x65, 0x06, 0xB5, 0xF2, 0x72, 0x10, 0x23, 0x85, 0x21,
+    0x0D, 0xC2, 0x48, 0x63, 0x48, 0x83, 0x02, 0x10, 0x23, 0xA3, 0xA3, 0xA3,
+    0xA3, 0x0D, 0x85, 0x01, 0x93, 0x9A, 0x39, 0x73, 0x26, 0x1A, 0x23, 0x0D,
+    0x53, 0x7B, 0xD6, 0xAA, 0x55, 0xAB, 0x96, 0xA1, 0x30, 0x20, 0x52, 0x6A,
+    0x10, 0x3A, 0x85, 0xC1, 0x08, 0xC2, 0x70, 0x05, 0x00, 0xFC, 0xF5, 0x36,
+    0x26, 0x21, 0xD5, 0x10, 0xB0, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E,
+    0x44, 0xAE, 0x42, 0x60, 0x82};
+
+WebPageAdapter webSocket = WebPageAdapter(80);
+
+//------------------------------------------------------------------------------
+
+namespace {
+
+constexpr size_t COLOR_PAYLOAD_LENGTH = 21;
+constexpr size_t EFFECT_PAYLOAD_LENGTH = 27;
+
+uint32_t split(const uint8_t *payload, uint8_t start, uint8_t length = 3) {
+    char buf[16] = {0};
+    if (length > 15)
+        length = 15;
+
+    memcpy(buf, payload + start, length);
+    return strtoul(buf, nullptr, 10);
+}
+
+//------------------------------------------------------------------------------
+
+void payloadTextHandling(const uint8_t *payload, char *text,
+                         uint8_t start = 3) {
+    uint8_t len = PAYLOAD_LENGTH - 1;
+    memcpy(text, payload + start, len);
+    text[len] = '\0';
+    for (int8_t i = len - 1; i >= 0; i--) {
+        if (isSpace(text[i]))
+            text[i] = '\0';
+        else
+            break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+bool compareEffBriAndSpeedToOld(uint8_t *payload, size_t length) {
+    if (length < EFFECT_PAYLOAD_LENGTH) {
+        return false;
+    }
+
+    return ((G.effectBri != split(payload, 21)) ||
+            (G.effectSpeed != split(payload, 24)));
+}
+
+//------------------------------------------------------------------------------
+
+bool parseColor(uint8_t *payload, size_t length) {
+    if (length < COLOR_PAYLOAD_LENGTH) {
+        Serial.println("Color command ignored payload is incomplete");
+        return false;
+    }
+
+    uint32_t position = split(payload, 3);
+    uint32_t hue = split(payload, 6);
+    uint32_t saturation = split(payload, 9);
+    uint32_t value = split(payload, 12);
+    uint32_t effectBrightness = split(payload, 15);
+    uint32_t effectSpeed = split(payload, 18);
+
+    if (position > Frame || hue > 360 || saturation > 100 || value > 100 ||
+        effectBrightness > 100 || effectSpeed > 100) {
+        Serial.println("Invalid color payload ignored");
+        return false;
+    }
+
+    G.color[static_cast<ColorPosition>(position)] = {
+        HsbColor(hue / 360.f, saturation / 100.f, value / 100.f)};
+    colorChangedByWebsite = true;
+
+    G.effectBri = effectBrightness;
+    G.effectSpeed = effectSpeed;
+    return true;
+}
+
+} // namespace
+
+//------------------------------------------------------------------------------
+
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
+                    size_t length) {
+    // Disable Accesspoint Mode Disable Timer on Web Event
+    if (statusAccessPoint > 0) {
+        statusAccessPoint = 0;
+    }
+
+    payload = (payload == NULL) ? (uint8_t *)"" : payload;
+    Serial.printf("Client-Nr.: [%u]  WStype: %u payload: %s\n", num, type,
+                  payload);
+
+    switch (type) {
+    case WStype_DISCONNECTED: {
+        Serial.printf("[%u] Disconnected!\n", num);
+        break;
+    }
+    case WStype_CONNECTED: {
+        IPAddress ip = webSocket.remoteIP(num);
+        Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0],
+                      ip[1], ip[2], ip[3], payload);
+        break;
+    }
+    case WStype_TEXT: {
+        Serial.printf("[%u] get Text: %s\n", length, payload);
+
+        if (length < 3) {
+            Serial.println("WebSocket command ignored - incomplete payload");
+            break;
+        }
+
+        uint8_t command = split(payload, 0);
+        G.param1 = 0;
+
+        switch (command) {
+        case COMMAND_MODE_WORD_CLOCK: {
+            if (G.prog != COMMAND_IDLE && G.prog != COMMAND_MODE_WORD_CLOCK) {
+                G.progInit = true;
+            }
+            parametersChanged = true;
+            parseColor(payload, length);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_MODE_SECONDS: {
+            if (G.prog != command) {
+                G.progInit = true;
+            }
+
+            parseColor(payload, length);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_MODE_DIGITAL_CLOCK: {
+            if (G.prog != command) {
+                G.progInit = true;
+            }
+
+            parseColor(payload, length);
+            parametersChanged = true;
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_MODE_RAINBOW:
+        case COMMAND_MODE_RAINBOWCYCLE: {
+            if ((G.prog != command) ||
+                compareEffBriAndSpeedToOld(payload, length)) {
+                G.progInit = true;
+            }
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_MODE_COLOR: {
+            if (G.prog != command) {
+                G.progInit = true;
+            }
+
+            parametersChanged = true;
+            parseColor(payload, length);
+            break;
+        }
+            //------------------------------------------------------------------------------
+        case COMMAND_MODE_SCROLLINGTEXT:
+        case COMMAND_MODE_SYMBOL: {
+            if ((G.prog != command) ||
+                compareEffBriAndSpeedToOld(payload, length)) {
+                G.progInit = true;
+            }
+
+            parseColor(payload, length);
+            break;
+        }
+            //------------------------------------------------------------------------------
+
+        case COMMAND_MODE_TRANSITION: {
+            G.progInit = true;
+
+            G.transitionType = split(payload, 3);
+            G.transitionDuration = split(payload, 6);
+            G.transitionSpeed = split(payload, 9);
+            G.transitionColorize = split(payload, 12);
+            G.transitionDemo = split(payload, 15);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SPEED: {
+            G.effectSpeed = split(payload, 3);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_INITIAL_VALUES: {
+            Serial.println("Startwerte gespeichert");
+
+            if (length > 3) {
+                parseColor(payload, length);
+            }
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_TIME: {
+            struct timeval tv;
+            tv.tv_sec = split(payload, 6, 16);
+            tv.tv_usec = 0;
+            settimeofday(&tv, nullptr);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_HOSTNAME: {
+            payloadTextHandling(payload, G.hostname);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_SETTING_SECOND: {
+            G.progInit = true;
+
+            G.secondVariant = static_cast<SecondVariant>(split(payload, 3));
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_MINUTE: {
+            G.minuteVariant = static_cast<MinuteVariant>(split(payload, 3));
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_AUTO_BRIGHT: {
+            G.autoBrightEnabled = split(payload, 3);
+            G.autoBrightMin = split(payload, 6);
+            G.autoBrightMax = split(payload, 9);
+            G.autoBrightPeak = split(payload, 12, 4);
+            G.param1 = 1;
+            if (G.autoBrightMin < 0)
+                G.autoBrightMin = 0;
+            if (G.autoBrightMin > 100)
+                G.autoBrightMin = 100;
+            if (G.autoBrightMax < 10)
+                G.autoBrightMax = 10;
+            if (G.autoBrightMax > 100)
+                G.autoBrightMax = 100;
+            if (G.autoBrightPeak < 10)
+                G.autoBrightPeak = 10;
+            if (G.autoBrightPeak > 1500)
+                G.autoBrightPeak = 1500;
+
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_IT_IS_VARIANT: {
+            G.itIsVariant = static_cast<ItIsVariant>(split(payload, 3));
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_LANGUAGE_VARIANT: {
+            G.languageVariant[ItIs15] = split(payload, 3);
+            G.languageVariant[ItIs20] = split(payload, 6);
+            G.languageVariant[ItIs40] = split(payload, 9);
+            G.languageVariant[ItIs45] = split(payload, 12);
+            G.languageVariant[EN_ShowAQuarter] = split(payload, 15);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_LAYOUT_VARIANT: {
+            G.layoutVariant[ReverseMinDirection] = split(payload, 3);
+            G.layoutVariant[MirrorVertical] = split(payload, 6);
+            G.layoutVariant[MirrorHorizontal] = split(payload, 9);
+            G.layoutVariant[FlipHorzVert] = split(payload, 12);
+            G.layoutVariant[ExtraLedPerRow] = split(payload, 15);
+            G.layoutVariant[MeanderRows] = split(payload, 18);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_MQTT: {
+            uint8_t newState = split(payload, 3);
+
+            if (newState && !G.mqtt.state) {
+                G.progInit = true;
+            }
+
+            G.mqtt.state = newState;
+            G.mqtt.port = split(payload, 6, 5);
+            uint8_t index_start = 11;
+            payloadTextHandling(payload, G.mqtt.serverAdress, index_start);
+            index_start += PAYLOAD_LENGTH;
+            payloadTextHandling(payload, G.mqtt.user, index_start);
+
+            // check if submitted password has changed compared to masked
+            // password
+            index_start += PAYLOAD_LENGTH;
+            char passMasked[32] = {0};
+            strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
+            size_t passLen = strlen(passMasked);
+            if (passLen > 3) {
+                strncpy(passMasked, "******************************",
+                        passLen - 3);
+            }
+
+            char passSumitted[32];
+            payloadTextHandling(payload, passSumitted, index_start);
+            if (strcmp(passMasked, passSumitted) != 0) {
+                payloadTextHandling(payload, G.mqtt.password, index_start);
+            }
+
+            index_start += PAYLOAD_LENGTH;
+            payloadTextHandling(payload, G.mqtt.clientId, index_start);
+            index_start += PAYLOAD_LENGTH;
+            payloadTextHandling(payload, G.mqtt.topic, index_start);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_TIME_MANUAL: {
+            time_t old = time(nullptr);
+            struct tm tm;
+            localtime_r(&old, &tm);
+            tm.tm_hour = split(payload, 3);
+            tm.tm_min = split(payload, 6);
+            tm.tm_sec = 0;
+            struct timeval tv;
+            tv.tv_sec = mktime(&tm);
+            tv.tv_usec = 0;
+            Serial.println("Time manually set");
+            settimeofday(&tv, nullptr);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_HARDWARE_PINS: {
+            G.hardwarePins.led = split(payload, 3);
+            G.hardwarePins.powerButton = split(payload, 6);
+            G.hardwarePins.modeButton = split(payload, 9);
+            G.hardwarePins.speedButton = split(payload, 12);
+            G.i2cSdaPin = split(payload, 15);
+            G.i2cSclPin = split(payload, 18);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_BIRTHDAYS: {
+
+            for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
+                G.birthday[i].month = split(payload, 3 + i * 5, 2);
+                G.birthday[i].day = split(payload, 6 + i * 5, 2);
+            }
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_SYMBOL: {
+            G.bitmapSymbol = static_cast<BitmapSymbol>(split(payload, 3));
+            if (G.bitmapSymbol >= BitmapSymbol::MAX_BITMAP_SYMBOLS) {
+                G.bitmapSymbol = BitmapSymbol::HEART;
+            }
+            G.progInit = true;
+            break;
+        }
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_COLORTYPE: {
+            G.progInit = true;
+
+            G.param1 = split(payload, 3);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_BUILDTYPE: {
+            G.progInit = true;
+
+            G.param1 = split(payload, 3);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_WHITETYPE: {
+            G.wType = static_cast<WhiteType>(split(payload, 3));
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_CLOCK_TYPE: {
+            uint32_t clockTypeDef = split(payload, 3);
+            if (clockTypeDef < ClockTypeDefMax) {
+                G.clockTypeDef = static_cast<uint8_t>(clockTypeDef);
+            } else {
+                Serial.printf("Ignoring invalid ClockType: %lu\n",
+                              static_cast<unsigned long>(clockTypeDef));
+            }
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_WEATHER_DATA: {
+            uint8_t ii = 0;
+            const size_t cityEnd = (length < 10) ? length : 10;
+            for (size_t k = 3; k < cityEnd; k++) {
+                if (payload[k] != ' ' &&
+                    ii < sizeof(G.openWeatherMap.cityid) - 1) {
+                    G.openWeatherMap.cityid[ii++] = payload[k];
+                }
+            }
+            G.openWeatherMap.cityid[ii] = '\0';
+
+            char submittedApiKey[sizeof(G.openWeatherMap.apikey)] = {0};
+            uint8_t jj = 0;
+            const size_t apiKeyStart = 11;
+            if (length > apiKeyStart) {
+                const size_t apiKeyEnd = (length < 43) ? length : 43;
+                for (size_t l = apiKeyStart; l < apiKeyEnd; l++) {
+                    if (payload[l] != ' ' && jj < sizeof(submittedApiKey) - 1) {
+                        submittedApiKey[jj++] = payload[l];
+                    }
+                }
+                submittedApiKey[jj] = '\0';
+                if (!sensitive::matchesMaskedValue(submittedApiKey,
+                                                   G.openWeatherMap.apikey)) {
+                    sensitive::copyBoundedString(G.openWeatherMap.apikey,
+                                                 submittedApiKey);
+                }
+            }
+            Serial.println("write EEPROM!");
+            Serial.print("CityID : ");
+            Serial.println(G.openWeatherMap.cityid);
+            Serial.print("APIkey : ");
+            char apiKeyMasked[sizeof(G.openWeatherMap.apikey) + 1] = {0};
+            sensitive::maskPreservingSuffix(apiKeyMasked,
+                                            G.openWeatherMap.apikey);
+            Serial.println(apiKeyMasked);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_BRIGHTNESS: {
+            G.h6 = split(payload, 3);
+            G.h8 = split(payload, 6);
+            G.h12 = split(payload, 9);
+            G.h16 = split(payload, 12);
+            G.h18 = split(payload, 15);
+            G.h20 = split(payload, 18);
+            G.h22 = split(payload, 21);
+            G.h24 = split(payload, 24);
+            G.effectBri = split(payload, 27);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_SCROLLINGTEXT: {
+            payloadTextHandling(payload, G.scrollingText);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_TIMESERVER: {
+            payloadTextHandling(payload, G.timeserver);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_TIMEZONE: {
+            payloadTextHandling(payload, G.timezone);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_BOOT: {
+            G.bootLedBlink = split(payload, 3);
+            G.bootLedSweep = split(payload, 6);
+            G.bootShowWifi = split(payload, 9);
+            G.bootShowIP = split(payload, 12);
+            break;
+        }
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_WIFI_DISABLED:
+        case COMMAND_SET_MQTT_HA_DISCOVERY:
+        case COMMAND_SET_WIFI_AND_RESTART:
+        case COMMAND_RESET: {
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_REQUEST_I2C_SCAN: {
+            G.client_nr = num;
+            i2cScanSdaPin = split(payload, 3);
+            i2cScanSclPin = split(payload, 6);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_REQUEST_BIRTHDAYS:
+        case COMMAND_REQUEST_MQTT_VALUES:
+        case COMMAND_REQUEST_CONFIG_VALUES:
+        case COMMAND_REQUEST_COLOR_VALUES:
+        case COMMAND_REQUEST_WIFI_LIST:
+        case COMMAND_REQUEST_TRANSITION: {
+            G.client_nr = num;
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_REQUEST_AUTO_BRIGHT: {
+            // G.param1 = split(payload, 3);
+            G.client_nr = num;
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        default:
+            break;
+        }
+
+        if (command < PLACEHOLDER_MAX_MODE) {
+            G.prog = command;
+        } else if (command < PLACEHOLDER_MAX_SET) {
+            G.conf = command;
+        } else if (command < PLACEHOLDER_MAX_REQUEST) {
+            G.conf = command;
+        }
+
+        break;
+    }
+    case WStype_BIN: {
+        Serial.printf("[%u] get binary length: %u\n", num, length);
+        break;
+    }
+    default:
+        break;
+    }
+
+    sendMQTTUpdate();
+}

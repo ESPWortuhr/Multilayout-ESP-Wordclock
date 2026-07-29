@@ -1,6 +1,7 @@
 #pragma once
 #include "Arduino.h"
 #include "version.gen.h"
+#include <NeoPixelBus.h> // HsbColor
 
 #define PAYLOAD_LENGTH 30
 #define MAX_ROW_SIZE 22
@@ -253,34 +254,34 @@ struct GLOBAL {
     uint8_t i2cSdaPin;
     uint8_t i2cSclPin;
 };
-GLOBAL G = {};
+extern GLOBAL G;
 
 // Brightness related variables
-float ledGain = DEFAULT_BRIGHTNESS;
-bool bh1750Initialized = false;
-bool autoBrightUsingBH1750 = false;
+extern float ledGain;
+extern bool bh1750Initialized;
+extern bool autoBrightUsingBH1750;
 
-uint8_t _second = 0;
-uint8_t _secondFrame = 0;
-uint8_t _minute = 0;
-uint8_t _hour = 0;
-uint8_t lastSecond = 0;
-uint8_t lastMinute = 0;
+extern uint8_t _second;
+extern uint8_t _secondFrame;
+extern uint8_t _minute;
+extern uint8_t _hour;
+extern uint8_t lastSecond;
+extern uint8_t lastMinute;
 
-uint32_t frontMatrix[MAX_ROW_SIZE] = {0};
-uint32_t lastFrontMatrix[MAX_ROW_SIZE] = {0};
-uint8_t minuteArray = 0; /* Using a byte as a per bit array */
-uint8_t lastMinuteArray = 0;
-uint16_t minutePixelArray[4] = {0};
-bool frameArray[200] = {false};
-bool parametersChanged = false;
-bool layoutChanged = false;
-bool colorChangedByWebsite = false;
-uint8_t statusAccessPoint = 0;
-uint8_t i2cScanSdaPin = HARDWARE_PIN_DISABLED;
-uint8_t i2cScanSclPin = HARDWARE_PIN_DISABLED;
+extern uint32_t frontMatrix[MAX_ROW_SIZE];
+extern uint32_t lastFrontMatrix[MAX_ROW_SIZE];
+extern uint8_t minuteArray; /* Using a byte as a per bit array */
+extern uint8_t lastMinuteArray;
+extern uint16_t minutePixelArray[4];
+extern bool frameArray[200];
+extern bool parametersChanged;
+extern bool layoutChanged;
+extern bool colorChangedByWebsite;
+extern uint8_t statusAccessPoint;
+extern uint8_t i2cScanSdaPin;
+extern uint8_t i2cScanSclPin;
 
-bool externalRTC = false;
+extern bool externalRTC;
 
 enum ColorPosition : uint8_t {
     Foreground = 0,
