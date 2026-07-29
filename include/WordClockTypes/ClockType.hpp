@@ -171,6 +171,14 @@ public:
 
     virtual void setFrontMatrixPixel(const int row, const int col,
                                      bool state = true) {
+        // Guard against out of range indices: a negative column would shift by
+        // a negative amount (undefined behaviour) and a row beyond the matrix
+        // would write past frontMatrix[].
+        if (row < 0 || row >= static_cast<int>(rowsWordMatrix()) || col < 0 ||
+            col >= static_cast<int>(colsWordMatrix())) {
+            return;
+        }
+
         if (state) {
             frontMatrix[row] |= 1UL << col;
         } else {

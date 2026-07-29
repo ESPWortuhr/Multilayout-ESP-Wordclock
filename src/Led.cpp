@@ -648,34 +648,44 @@ void Led::setupDigitalClock(fontSize &usedFontSize, uint8_t &offsetLetterH0,
 void Led::toggleDigitalClockSecond(const fontSize &usedFontSize,
                                    const uint8_t &offsetRow1,
                                    const uint8_t &offsetMin0) {
-    if (_second % 2) {
-        if (usedFontSize == normalSizeASCII) {
-            usedClockType->setFrontMatrixPixel(offsetRow1 + 2, offsetMin0 - 3);
-            usedClockType->setFrontMatrixPixel(offsetRow1 + 4, offsetMin0 - 3);
-        } else {
-            usedClockType->setFrontMatrixPixel(offsetRow1 + 1, offsetMin0 - 2);
-            usedClockType->setFrontMatrixPixel(offsetRow1 + 3, offsetMin0 - 2);
-        }
+    if (!(_second % 2)) {
+        return;
     }
+
+    // The separator sits in the gap left of the minutes block. On narrow
+    // layouts (e.g. 8 columns) there is no such gap, so the column would
+    // become negative -- skip the separator instead of drawing out of bounds.
+    const int8_t distanceToMinutes = (usedFontSize == normalSizeASCII) ? 3 : 2;
+    const int column = static_cast<int>(offsetMin0) - distanceToMinutes;
+    if (column < 0) {
+        return;
+    }
+
+    const int8_t upperRowOffset = (usedFontSize == normalSizeASCII) ? 2 : 1;
+    const int8_t lowerRowOffset = (usedFontSize == normalSizeASCII) ? 4 : 3;
+    usedClockType->setFrontMatrixPixel(offsetRow1 + upperRowOffset, column);
+    usedClockType->setFrontMatrixPixel(offsetRow1 + lowerRowOffset, column);
 }
 
 //------------------------------------------------------------------------------
 
 void Led::showDigitalClock(const char min1, const char min0, const char h1,
-                           const char h0, bool parametersChanged) {
+                           const char h0) {
 
-    static uint8_t offsetLetterH0, offsetLetterH1, offsetLetterMin0,
-        offsetLetterMin1, offsetRow0, offsetRow1;
+    uint8_t offsetLetterH0, offsetLetterH1, offsetLetterMin0, offsetLetterMin1,
+        offsetRow0, offsetRow1;
 
     resetFrontMatrixBuffer();
 
     fontSize usedFontSize = determineFontSize();
 
-    if (parametersChanged) {
-        setupDigitalClock(usedFontSize, offsetLetterH0, offsetLetterH1,
-                          offsetLetterMin0, offsetLetterMin1, offsetRow0,
-                          offsetRow1);
-    }
+    // The offsets only depend on the layout and the font size, so recomputing
+    // them on every call is cheap. Caching them in static variables used to
+    // leave them at zero (or at values of a previously selected layout)
+    // whenever the first call came in without parametersChanged being set.
+    setupDigitalClock(usedFontSize, offsetLetterH0, offsetLetterH1,
+                      offsetLetterMin0, offsetLetterMin1, offsetRow0,
+                      offsetRow1);
 
     toggleDigitalClockSecond(usedFontSize, offsetRow1, offsetLetterMin0);
 

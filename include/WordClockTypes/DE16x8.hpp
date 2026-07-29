@@ -25,14 +25,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void setFrontMatrixPixel(const int row, const int col,
-                                     bool state = true) {
-        if (state) {
-            frontMatrix[row] |= 1UL << col;
-        } else {
-            frontMatrix[row] &= ~(1UL << col);
-        }
-    }
+    // setFrontMatrixPixel() is inherited from ClockType: this layout used to
+    // carry a byte-identical copy, which would bypass the base class bounds
+    // check.
 
     //------------------------------------------------------------------------------
 

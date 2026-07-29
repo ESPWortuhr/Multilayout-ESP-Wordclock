@@ -1501,7 +1501,7 @@ void ClockWork::loop(struct tm &tm) {
         if (G.prog == COMMAND_MODE_DIGITAL_CLOCK) {
             led.clear();
             led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
-                                 _hour / 10, parametersChanged);
+                                 _hour / 10);
         }
 
         lastSecond = _second;
@@ -1909,7 +1909,7 @@ void ClockWork::loop(struct tm &tm) {
         }
         if (parametersChanged) {
             led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
-                                 _hour / 10, parametersChanged);
+                                 _hour / 10);
             parametersChanged = false;
         }
         break;
