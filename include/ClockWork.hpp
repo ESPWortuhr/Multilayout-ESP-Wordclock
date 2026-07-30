@@ -320,13 +320,28 @@ uint32_t ClockWork::num32BitWithOnesAccordingToColumns() {
 //------------------------------------------------------------------------------
 
 void sendJsonToClient(uint8_t client_nr, const JsonDocument &doc) {
-    char str[1024];
-    size_t bytesWritten = serializeJson(doc, str);
+    if (doc.overflowed()) {
+        Serial.println("[ERROR] sendJsonToClient(): document capacity too "
+                       "small, keys are missing");
+    }
+
+    const size_t payloadLength = measureJson(doc);
+
+    String payload;
+    payload.reserve(payloadLength + 1);
+    serializeJson(doc, payload);
+
+    if (payload.length() != payloadLength) {
+        Serial.printf("[ERROR] sendJsonToClient(): out of memory for %u "
+                      "bytes, payload dropped\n",
+                      payloadLength + 1);
+        return;
+    }
 
     Serial.print("Sending Payload:");
-    Serial.println(str);
+    Serial.println(payload);
 
-    webSocket.sendTXT(client_nr, str, bytesWritten);
+    webSocket.sendTXT(client_nr, payload);
 }
 
 //------------------------------------------------------------------------------
