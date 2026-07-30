@@ -84,7 +84,6 @@
 		"grunt-contrib-copy": "^1.0.0",
 		"grunt-contrib-cssmin": "^5.0.0",
 		"grunt-contrib-htmlmin": "^3.0.0",
-		"grunt-contrib-jshint": "^3.2.0",
 		"grunt-eslint": "^24.3.0",
 		"grunt-htmllint": "^0.3.0",
 		"grunt-replace": "^2.0.2",
@@ -93,6 +92,10 @@
 		"grunt-version": "^3.0.2",
 		"stylelint-config-standard": "^39.0.1",
 		"terser": "^5.49.0"
+	},
+	"comment_overrides": "Transitive build dependencies whose direct parents still pin a vulnerable version. Drop an entry once the parent package ships the fix itself. Note: brace-expansion cannot be forced to the fixed 5.0.8+ line here -- it exports a named expand() there, while the minimatch 3.x/5.x versions in this tree call the module itself.",
+	"overrides": {
+		"adm-zip": "^0.6.0"
 	},
 	"dependencies": {
 		"@jaames/iro": "^5.5.2",
