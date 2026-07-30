@@ -1550,12 +1550,8 @@ void ClockWork::loop(struct tm &tm) {
         config["MQTT_User"] = G.mqtt.user;
 
         // don't expose password:
-        char passMasked[PAYLOAD_LENGTH + 1] = {0};
-        strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
-        size_t passLen = strlen(passMasked);
-        if (passLen > 3) {
-            memset(passMasked, '*', passLen - 3);
-        }
+        char passMasked[sizeof(G.mqtt.password) + 1] = {0};
+        sensitive::maskPreservingSuffix(passMasked, G.mqtt.password);
         config["MQTT_Pass"] = passMasked;
 
         config["MQTT_ClientId"] = G.mqtt.clientId;
