@@ -98,7 +98,7 @@ jobs:
         run: |
           mkdir -p dist
           version=$(node -p "require('./package.json').version")
-          name="wortuhr-${version}-${{ matrix.environment }}-${GITHUB_SHA::7}"
+          name="${{ matrix.environment }}_V${version}_${GITHUB_SHA::7}"
           build_dir=".pio/build/${{ matrix.environment }}"
           cp "${build_dir}/firmware.bin" "dist/${name}.bin"
           # .elf keeps the symbols needed to decode a crash backtrace.
