@@ -126,27 +126,7 @@ void ClockWork::initHardwareButtons() {
 //------------------------------------------------------------------------------
 
 void ClockWork::toggleHardwareButtonPower() {
-    bool isOn = false;
-    for (uint8_t i = 0; i < 3; i++) {
-        if (G.color[i].B > 0.0f) {
-            isOn = true;
-            break;
-        }
-    }
-
-    if (isOn) {
-        for (uint8_t i = 0; i < 3; i++) {
-            restoredButtonColors[i] = G.color[i];
-            G.color[i].B = 0.0f;
-        }
-        hasRestoredButtonColors = true;
-    } else {
-        for (uint8_t i = 0; i < 3; i++) {
-            G.color[i] = hasRestoredButtonColors
-                             ? restoredButtonColors[i]
-                             : HsbColor(G.color[i].H, G.color[i].S, 1.0f);
-        }
-    }
+    led.setState(!led.getState());
 
     requestHardwareButtonDisplayRefresh();
 }

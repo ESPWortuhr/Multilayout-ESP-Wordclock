@@ -212,27 +212,26 @@ void Led::shiftColumnToRight() {
 //------------------------------------------------------------------------------
 
 void Led::setState(const bool newState) {
-    static bool firstRun = true;
-    static uint8_t oldBrightness[3];
+    static float storedBrightness[3];
+    static bool hasStoredBrightness = false;
 
-    if (firstRun) {
-        for (uint8_t i = 0; i < 3; i++) {
-            oldBrightness[i] = G.color[i].B * 100;
-        }
-        firstRun = false;
+    if (newState == getState()) {
+        return;
     }
 
     if (newState) {
         for (uint8_t i = 0; i < 3; i++) {
-            G.color[i].B = oldBrightness[i] / 100.f;
+            G.color[i].B = hasStoredBrightness ? storedBrightness[i] : 1.f;
         }
     } else {
         for (uint8_t i = 0; i < 3; i++) {
-            led.clear();
-            led.show();
-            oldBrightness[i] = G.color[i].B * 100;
-            G.color[i].B = 0;
+            storedBrightness[i] = G.color[i].B;
+            G.color[i].B = 0.f;
         }
+        hasStoredBrightness = true;
+
+        clear();
+        show();
     }
 
     parametersChanged = true;
