@@ -187,6 +187,10 @@ public:
     }
 
     virtual bool getFrontMatrixPixel(const uint8_t row, const uint8_t col) {
+        if (row >= rowsWordMatrix() || col >= colsWordMatrix()) {
+            return false;
+        }
+
         return (frontMatrix[row] >> (colsWordMatrix() - 1 - col)) & 1U;
     }
 
@@ -322,12 +326,7 @@ public:
             }
         }
 
-        if (returnValue > numPixelsWordMatrix) {
-            Serial.println(
-                "[ERROR] getFrontMatrixIndex() returnValue out of Bounds");
-        }
-
-        return returnValue;
+        return checkedFrontMatrixIndex(returnValue, numPixelsWordMatrix);
     };
 
     virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) {
@@ -358,4 +357,19 @@ public:
             }
         }
     };
+
+protected:
+    uint16_t checkedFrontMatrixIndex(const uint16_t index,
+                                     const uint16_t numPixels) {
+        static bool alreadyReported = false;
+
+        if (index >= numPixels && !alreadyReported) {
+            alreadyReported = true;
+            Serial.printf("[ERROR] getFrontMatrixIndex(): index %u exceeds "
+                          "%u pixels\n",
+                          index, numPixels);
+        }
+
+        return index;
+    }
 };

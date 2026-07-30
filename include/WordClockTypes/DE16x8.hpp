@@ -47,12 +47,7 @@ public:
         }
         uint16_t returnValue = col + (row * newColsWordMatrix);
 
-        if (returnValue > numPixelsWordMatrix) {
-            Serial.println(
-                "[ERROR] getFrontMatrixIndex() returnValue out of Bounds");
-        }
-
-        return returnValue;
+        return checkedFrontMatrixIndex(returnValue, numPixelsWordMatrix);
     };
 
     //------------------------------------------------------------------------------
