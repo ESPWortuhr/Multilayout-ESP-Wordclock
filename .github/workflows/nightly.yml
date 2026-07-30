@@ -81,16 +81,19 @@ jobs:
           pip install --upgrade platformio
 
       - name: Build ${{ matrix.environment }}
-        run: pio run -e ${{ matrix.environment }}
+        run: |
+          set -o pipefail
+          pio run -e ${{ matrix.environment }} 2>&1 | tee build.log
 
+      # Read the size from the build log. Do not call `pio run -t size` here:
+      # that target rebuilds the .elf only and drops the firmware.bin again.
       - name: Report flash and RAM usage
         if: always()
         run: |
           {
             echo "### ${{ matrix.environment }}"
             echo '```'
-            pio run -e ${{ matrix.environment }} -t size 2>&1 \
-              | sed -n '/^RAM:/,/^Flash:/p'
+            grep -E '^(RAM|Flash):' build.log || echo "no size information"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
