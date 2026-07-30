@@ -24,7 +24,7 @@ class De11x11V2_t : public De11x11_t {
 public:
     //------------------------------------------------------------------------------
 
-    virtual const bool hasTwenty() override { return false; }
+    virtual bool hasTwenty() override { return false; }
 
     //------------------------------------------------------------------------------
 

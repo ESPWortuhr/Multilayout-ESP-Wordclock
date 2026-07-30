@@ -28,11 +28,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasDreiviertel() override { return true; }
+    virtual bool hasDreiviertel() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasSpecialWordHappyBirthday() { return true; }
+    virtual bool hasSpecialWordHappyBirthday() override { return true; }
 
     //------------------------------------------------------------------------------
 

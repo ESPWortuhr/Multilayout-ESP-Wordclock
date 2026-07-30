@@ -31,8 +31,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getFrontMatrixIndex(uint8_t row,
-                                               uint8_t col) override {
+    virtual uint16_t getFrontMatrixIndex(uint8_t row, uint8_t col) override {
 
         row *= 2;
         uint8_t newColsWordMatrix = colsWordMatrix();
@@ -58,23 +57,23 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t rowsWordMatrix() override { return 8; };
+    virtual uint8_t rowsWordMatrix() override { return 8; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t colsWordMatrix() override { return 16; };
+    virtual uint8_t colsWordMatrix() override { return 16; };
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasLed4x() override { return false; }
+    virtual bool hasLed4x() override { return false; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasMinuteInWords() override { return true; }
+    virtual bool hasMinuteInWords() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
+    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
         for (uint8_t i = 0; i < 4; i++) {
             returnArr[i] = 256 + i;
         }

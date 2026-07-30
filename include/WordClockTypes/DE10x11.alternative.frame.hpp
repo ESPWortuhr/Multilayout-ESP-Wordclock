@@ -22,22 +22,21 @@
 
 class De10x11AlternativeFrame_t : public De10x11Alternative_t {
 public:
-    virtual inline const uint8_t numPixelsFrameMatrix() { return 48; }
+    virtual inline uint8_t numPixelsFrameMatrix() override { return 48; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasSecondsFrame() override { return true; }
+    virtual bool hasSecondsFrame() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const uint16_t getFrameMatrixIndex(uint16_t index) override {
+    virtual uint16_t getFrameMatrixIndex(uint16_t index) override {
         return 114 + index;
     };
 
     //------------------------------------------------------------------------------
 
-    virtual const void getMinuteArray(uint16_t *returnArr,
-                                      uint8_t col) override {
+    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
         for (uint8_t i = 0; i < 4; i++) {
             returnArr[i] = 110 + i;
         }

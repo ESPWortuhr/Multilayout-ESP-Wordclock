@@ -28,7 +28,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasDreiviertel() override { return true; }
+    virtual bool hasDreiviertel() override { return true; }
 
     //------------------------------------------------------------------------------
 

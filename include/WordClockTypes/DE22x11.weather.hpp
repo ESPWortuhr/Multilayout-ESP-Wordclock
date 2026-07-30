@@ -43,7 +43,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
+    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
         for (uint8_t i = 0; i < 4; i++) {
             switch (col) {
             case 0:
@@ -66,11 +66,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t rowsWordMatrix() override { return 22; };
+    virtual uint8_t rowsWordMatrix() override { return 22; };
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasWeatherLayout() override { return true; }
+    virtual bool hasWeatherLayout() override { return true; }
 
     //------------------------------------------------------------------------------
 

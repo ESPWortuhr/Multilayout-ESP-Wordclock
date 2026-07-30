@@ -27,15 +27,15 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasTwenty() override { return true; }
+    virtual bool hasTwenty() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasTwentyfive() override { return true; }
+    virtual bool hasTwentyfive() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasMitternacht() override { return true; }
+    virtual bool hasMitternacht() override { return true; }
 
     //------------------------------------------------------------------------------
 

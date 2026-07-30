@@ -34,31 +34,31 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasMitternacht() override { return true; }
+    virtual bool hasMitternacht() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t rowsWordMatrix() override { return 16; };
+    virtual uint8_t rowsWordMatrix() override { return 16; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t colsWordMatrix() override { return 18; };
+    virtual uint8_t colsWordMatrix() override { return 18; };
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasDreiviertel() override { return true; }
+    virtual bool hasDreiviertel() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool has24HourLayout() override { return true; }
+    virtual bool has24HourLayout() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool has60MinuteLayout() override { return true; }
+    virtual bool has60MinuteLayout() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasDaytimeWords() override { return true; }
+    virtual bool hasDaytimeWords() override { return true; }
 
     //------------------------------------------------------------------------------
 

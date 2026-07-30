@@ -27,7 +27,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasSpecialWordBeen() override { return true; }
+    virtual bool hasSpecialWordBeen() override { return true; }
 
     //------------------------------------------------------------------------------
 

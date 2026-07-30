@@ -26,19 +26,19 @@ public:
         return LanguageAbbreviation::HU;
     };
 
-    virtual const uint8_t rowsWordMatrix() override { return 10; };
+    virtual uint8_t rowsWordMatrix() override { return 10; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t colsWordMatrix() override { return 10; };
+    virtual uint8_t colsWordMatrix() override { return 10; };
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasDreiviertel() override { return true; }
+    virtual bool hasDreiviertel() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasTwenty() override { return false; }
+    virtual bool hasTwenty() override { return false; }
 
     //------------------------------------------------------------------------------
 

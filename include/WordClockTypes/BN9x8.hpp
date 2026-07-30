@@ -25,39 +25,39 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t rowsWordMatrix() override { return 8; };
+    virtual uint8_t rowsWordMatrix() override { return 8; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t colsWordMatrix() override { return 9; };
+    virtual uint8_t colsWordMatrix() override { return 9; };
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasTwenty() override { return true; }
+    virtual bool hasTwenty() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasTwentyfive() override { return true; }
+    virtual bool hasTwentyfive() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasThirtyfive() override { return true; }
+    virtual bool hasThirtyfive() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasForty() override { return true; }
+    virtual bool hasForty() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasDreiviertel() override { return true; }
+    virtual bool hasDreiviertel() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasFifty() override { return true; }
+    virtual bool hasFifty() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasFiftyFive() override { return true; }
+    virtual bool hasFiftyFive() override { return true; }
 
     //------------------------------------------------------------------------------
 

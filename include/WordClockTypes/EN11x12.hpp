@@ -28,23 +28,23 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t rowsWordMatrix() override { return 11; };
+    virtual uint8_t rowsWordMatrix() override { return 11; };
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t colsWordMatrix() override { return 12; };
+    virtual uint8_t colsWordMatrix() override { return 12; };
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasTwenty() override { return true; }
+    virtual bool hasTwenty() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasTwentyfive() override { return true; }
+    virtual bool hasTwentyfive() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasMinuteInWords() { return true; }
+    virtual bool hasMinuteInWords() override { return true; }
 
     //------------------------------------------------------------------------------
 

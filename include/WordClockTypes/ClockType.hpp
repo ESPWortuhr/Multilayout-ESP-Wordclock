@@ -194,65 +194,65 @@ public:
 
     virtual LanguageAbbreviation usedLang() = 0;
 
-    virtual inline const uint8_t numPixelsFrameMatrix() { return 0; }
+    virtual inline uint8_t numPixelsFrameMatrix() { return 0; }
 
-    virtual inline const uint8_t rowsWordMatrix() { return 10; }
+    virtual inline uint8_t rowsWordMatrix() { return 10; }
 
-    virtual inline const uint8_t colsWordMatrix() { return 11; }
+    virtual inline uint8_t colsWordMatrix() { return 11; }
 
-    virtual const uint16_t getFrameMatrixIndex(uint16_t index) { return 0; }
+    virtual uint16_t getFrameMatrixIndex(uint16_t index) { return 0; }
 
     // --- Language & General Properties ---
 
-    virtual const bool isRomanLanguage() { return false; }
+    virtual bool isRomanLanguage() { return false; }
 
     // --- Time-Specific Words ---
 
-    virtual const bool hasAQuarter() { return false; }
+    virtual bool hasAQuarter() { return false; }
 
-    virtual const bool hasDreiviertel() { return false; }
+    virtual bool hasDreiviertel() { return false; }
 
-    virtual const bool hasQuarterTen() { return true; }
+    virtual bool hasQuarterTen() { return true; }
 
-    virtual const bool hasTwenty() { return true; }
+    virtual bool hasTwenty() { return true; }
 
-    virtual const bool hasTwentyfive() { return false; }
+    virtual bool hasTwentyfive() { return false; }
 
-    virtual const bool hasThirtyfive() { return false; }
+    virtual bool hasThirtyfive() { return false; }
 
-    virtual const bool hasForty() { return false; }
+    virtual bool hasForty() { return false; }
 
-    virtual const bool hasFifty() { return false; }
+    virtual bool hasFifty() { return false; }
 
-    virtual const bool hasFiftyFive() { return false; }
+    virtual bool hasFiftyFive() { return false; }
 
-    virtual const bool hasMitternacht() { return false; }
+    virtual bool hasMitternacht() { return false; }
 
     // --- Layout & Mode Capabilities ---
 
-    virtual const bool has24HourLayout() { return false; }
+    virtual bool has24HourLayout() { return false; }
 
-    virtual const bool has60MinuteLayout() { return false; }
+    virtual bool has60MinuteLayout() { return false; }
 
-    virtual const bool hasOnlyQuarterLayout() { return false; }
+    virtual bool hasOnlyQuarterLayout() { return false; }
 
-    virtual const bool hasWeatherLayout() { return false; }
+    virtual bool hasWeatherLayout() { return false; }
 
-    virtual const bool hasSecondsFrame() { return false; }
+    virtual bool hasSecondsFrame() { return false; }
 
-    virtual const bool hasDaytimeWords() { return false; }
+    virtual bool hasDaytimeWords() { return false; }
 
     // --- Minute Display Capabilities ---
 
-    virtual const bool hasLed4x() { return true; }
+    virtual bool hasLed4x() { return true; }
 
-    virtual const bool hasLed7x() { return hasLed4x(); }
+    virtual bool hasLed7x() { return hasLed4x(); }
 
-    virtual const bool hasMinuteCorners() { return rowsWordMatrix() == 11; }
+    virtual bool hasMinuteCorners() { return rowsWordMatrix() == 11; }
 
-    virtual const bool hasMinuteInWords() { return false; }
+    virtual bool hasMinuteInWords() { return false; }
 
-    virtual const bool supportsMinuteVariant(MinuteVariant variant) {
+    virtual bool supportsMinuteVariant(MinuteVariant variant) {
         switch (variant) {
         case MinuteVariant::Off:
             return true;
@@ -269,7 +269,7 @@ public:
         }
     }
 
-    virtual const uint8_t supportedMinuteVariantMask() {
+    virtual uint8_t supportedMinuteVariantMask() {
         uint8_t mask = 0;
         for (uint8_t i = 0; i <= static_cast<uint8_t>(MinuteVariant::InWords);
              i++) {
@@ -283,13 +283,13 @@ public:
 
     // --- Special Words ---
 
-    virtual const bool hasSpecialWordBeen() { return false; }
+    virtual bool hasSpecialWordBeen() { return false; }
 
-    virtual const bool hasSpecialWordHappyBirthday() { return false; }
+    virtual bool hasSpecialWordHappyBirthday() { return false; }
 
     // --- General ---
 
-    virtual const uint16_t getFrontMatrixIndex(uint8_t row, uint8_t col) {
+    virtual uint16_t getFrontMatrixIndex(uint8_t row, uint8_t col) {
 
         uint16_t returnValue;
         uint8_t newColsWordMatrix = colsWordMatrix();
@@ -330,7 +330,7 @@ public:
         return returnValue;
     };
 
-    virtual const void getMinuteArray(uint16_t *returnArr, uint8_t col) {
+    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) {
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 
         if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
