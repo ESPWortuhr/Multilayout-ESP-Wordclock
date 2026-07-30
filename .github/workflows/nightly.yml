@@ -6,20 +6,40 @@ on:
     - cron: "30 2 * * *"
   workflow_dispatch:
 
+# Read-only token; nothing here pushes back to the repository.
+permissions:
+  contents: read
+
+# A manual run supersedes a still-running nightly of the same branch.
+concurrency:
+  group: nightly-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Skip the nightly run if nothing was pushed in the last 24 hours.
+  # Uses the API instead of a checkout, so no repository clone is needed.
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Do not burn Action minutes on the nightly schedule in forks.
+    if: github.event_name == 'workflow_dispatch' || !github.event.repository.fork
     outputs:
       has_changes: ${{ steps.check.outputs.has_changes }}
     steps:
-      - uses: actions/checkout@v7
       - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] \
-             || [ -n "$(git log --since='24 hours ago' --format=%H)" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          pushed=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}" \
+                     --jq .commit.committer.date)
+          if [ "$(date -d "$pushed" +%s)" -gt "$(date -d '24 hours ago' +%s)" ]; then
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
+            echo "No commit within the last 24 hours (HEAD: $pushed) -- skipping."
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -27,6 +47,7 @@ jobs:
     needs: check
     if: needs.check.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -62,14 +83,29 @@ jobs:
       - name: Build ${{ matrix.environment }}
         run: pio run -e ${{ matrix.environment }}
 
+      - name: Report flash and RAM usage
+        if: always()
+        run: |
+          {
+            echo "### ${{ matrix.environment }}"
+            echo '```'
+            pio run -e ${{ matrix.environment }} -t size 2>&1 \
+              | sed -n '/^RAM:/,/^Flash:/p'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Collect firmware
         run: |
           mkdir -p dist
-          VERSION=$(node -p "require('./package.json').version")
-          NAME="wortuhr-${VERSION}-${{ matrix.environment }}-${GITHUB_SHA::7}"
-          cp .pio/build/${{ matrix.environment }}/firmware.bin "dist/${NAME}.bin"
-          [ -f .pio/build/${{ matrix.environment }}/firmware.elf ] \
-            && cp .pio/build/${{ matrix.environment }}/firmware.elf "dist/${NAME}.elf"
+          version=$(node -p "require('./package.json').version")
+          name="wortuhr-${version}-${{ matrix.environment }}-${GITHUB_SHA::7}"
+          build_dir=".pio/build/${{ matrix.environment }}"
+          cp "${build_dir}/firmware.bin" "dist/${name}.bin"
+          # .elf keeps the symbols needed to decode a crash backtrace.
+          if [ -f "${build_dir}/firmware.elf" ]; then
+            cp "${build_dir}/firmware.elf" "dist/${name}.elf"
+          fi
+          (cd dist && sha256sum -- * > ../checksums.txt && mv ../checksums.txt "${name}.sha256")
           ls -l dist
 
       - uses: actions/upload-artifact@v7
