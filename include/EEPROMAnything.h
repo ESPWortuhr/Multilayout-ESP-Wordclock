@@ -33,13 +33,8 @@ void printSafeString(const char *label, const char (&source)[sourceSize]) {
 }
 
 void printMaskedPassword() {
-    char passMasked[PAYLOAD_LENGTH + 1] = {0};
-    copyBoundedString(passMasked, G.mqtt.password);
-
-    size_t passLen = strlen(passMasked);
-    if (passLen > 3) {
-        memset(passMasked, '*', passLen - 3);
-    }
+    char passMasked[sizeof(G.mqtt.password) + 1] = {0};
+    sensitive::maskPreservingSuffix(passMasked, G.mqtt.password);
     Serial.printf("MQTT_Pass (masked): %s\n", passMasked);
 }
 

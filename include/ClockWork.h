@@ -9,8 +9,6 @@ private:
     uint32_t previousMillis = 0;
     uint32_t lux = 0;
     HardwareButtonController hardwareButtonController;
-    HsbColor restoredButtonColors[3];
-    bool hasRestoredButtonColors = false;
 
 private:
     //------------------------------------------------------------------------------

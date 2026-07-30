@@ -292,15 +292,19 @@ def parse_clock_type(path: Path) -> ClockType | None:
         return None
 
     class_stem = class_match.group(1)
-    rows_match = re.search(r"rowsWordMatrix\(\)\s*override\s*\{\s*return\s+(\d+)\s*;", text)
-    cols_match = re.search(r"colsWordMatrix\(\)\s*override\s*\{\s*return\s+(\d+)\s*;", text)
+    rows_match = re.search(
+        r"rowsWordMatrix\(\)\s*(?:override\s*)?\{\s*return\s+(\d+)\s*;", text
+    )
+    cols_match = re.search(
+        r"colsWordMatrix\(\)\s*(?:override\s*)?\{\s*return\s+(\d+)\s*;", text
+    )
     lang_match = re.search(r"LanguageAbbreviation::([A-Z]+)", text)
 
     rows = int(rows_match.group(1)) if rows_match else 10
     cols = int(cols_match.group(1)) if cols_match else 11
     capabilities = DEFAULT_CAPABILITIES.copy()
     for cap, value in re.findall(
-        r"const\s+bool\s+(has\w+)\(\)\s*(?:override\s*)?\{\s*return\s+(true|false)\s*;",
+        r"(?:const\s+)?bool\s+(has\w+)\(\)\s*(?:override\s*)?\{\s*return\s+(true|false)\s*;",
         text,
     ):
         capabilities[cap] = value == "true"

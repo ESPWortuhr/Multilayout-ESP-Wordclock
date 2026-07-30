@@ -22,8 +22,7 @@
 
 class De11x11V3_t : public De11x11_t {
 public:
-    virtual const void getMinuteArray(uint16_t *returnArr,
-                                      uint8_t col) override {
+    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
 
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 
@@ -34,11 +33,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasLed4x() override { return false; }
+    virtual bool hasLed4x() override { return false; }
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasMinuteInWords() override { return true; }
+    virtual bool hasMinuteInWords() override { return true; }
 
     //------------------------------------------------------------------------------
 

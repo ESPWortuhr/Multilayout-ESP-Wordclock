@@ -22,9 +22,8 @@ void maskPreservingSuffix(char (&dest)[destSize],
     copyBoundedString(dest, source);
 
     const size_t valueLen = strlen(dest);
-    if (valueLen > visibleSuffix) {
-        memset(dest, '*', valueLen - visibleSuffix);
-    }
+    const size_t visibleLen = (valueLen > visibleSuffix) ? visibleSuffix : 0;
+    memset(dest, '*', valueLen - visibleLen);
 }
 
 template <size_t sourceSize>

@@ -126,27 +126,7 @@ void ClockWork::initHardwareButtons() {
 //------------------------------------------------------------------------------
 
 void ClockWork::toggleHardwareButtonPower() {
-    bool isOn = false;
-    for (uint8_t i = 0; i < 3; i++) {
-        if (G.color[i].B > 0.0f) {
-            isOn = true;
-            break;
-        }
-    }
-
-    if (isOn) {
-        for (uint8_t i = 0; i < 3; i++) {
-            restoredButtonColors[i] = G.color[i];
-            G.color[i].B = 0.0f;
-        }
-        hasRestoredButtonColors = true;
-    } else {
-        for (uint8_t i = 0; i < 3; i++) {
-            G.color[i] = hasRestoredButtonColors
-                             ? restoredButtonColors[i]
-                             : HsbColor(G.color[i].H, G.color[i].S, 1.0f);
-        }
-    }
+    led.setState(!led.getState());
 
     requestHardwareButtonDisplayRefresh();
 }
@@ -340,13 +320,28 @@ uint32_t ClockWork::num32BitWithOnesAccordingToColumns() {
 //------------------------------------------------------------------------------
 
 void sendJsonToClient(uint8_t client_nr, const JsonDocument &doc) {
-    char str[1024];
-    size_t bytesWritten = serializeJson(doc, str);
+    if (doc.overflowed()) {
+        Serial.println("[ERROR] sendJsonToClient(): document capacity too "
+                       "small, keys are missing");
+    }
+
+    const size_t payloadLength = measureJson(doc);
+
+    String payload;
+    payload.reserve(payloadLength + 1);
+    serializeJson(doc, payload);
+
+    if (payload.length() != payloadLength) {
+        Serial.printf("[ERROR] sendJsonToClient(): out of memory for %u "
+                      "bytes, payload dropped\n",
+                      payloadLength + 1);
+        return;
+    }
 
     Serial.print("Sending Payload:");
-    Serial.println(str);
+    Serial.println(payload);
 
-    webSocket.sendTXT(client_nr, str, bytesWritten);
+    webSocket.sendTXT(client_nr, payload);
 }
 
 //------------------------------------------------------------------------------
@@ -1550,12 +1545,8 @@ void ClockWork::loop(struct tm &tm) {
         config["MQTT_User"] = G.mqtt.user;
 
         // don't expose password:
-        char passMasked[PAYLOAD_LENGTH + 1] = {0};
-        strncpy(passMasked, G.mqtt.password, PAYLOAD_LENGTH);
-        size_t passLen = strlen(passMasked);
-        if (passLen > 3) {
-            memset(passMasked, '*', passLen - 3);
-        }
+        char passMasked[sizeof(G.mqtt.password) + 1] = {0};
+        sensitive::maskPreservingSuffix(passMasked, G.mqtt.password);
         config["MQTT_Pass"] = passMasked;
 
         config["MQTT_ClientId"] = G.mqtt.clientId;

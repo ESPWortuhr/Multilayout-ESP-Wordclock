@@ -28,8 +28,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const void getMinuteArray(uint16_t *returnArr,
-                                      uint8_t col) override {
+    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
 
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 
@@ -59,11 +58,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const uint8_t rowsWordMatrix() override { return 11; };
+    virtual uint8_t rowsWordMatrix() override { return 11; };
 
     //------------------------------------------------------------------------------
 
-    virtual const bool hasDreiviertel() override { return true; }
+    virtual bool hasDreiviertel() override { return true; }
 
     //------------------------------------------------------------------------------
 
