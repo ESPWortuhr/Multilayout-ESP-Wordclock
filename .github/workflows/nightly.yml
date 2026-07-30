@@ -1,0 +1,80 @@
+name: Nightly Firmware
+
+on:
+  schedule:
+    # 02:30 UTC every day
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  # Skip the nightly run if nothing was pushed in the last 24 hours.
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.check.outputs.has_changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] \
+             || [ -n "$(git log --since='24 hours ago' --format=%H)" ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: check
+    if: needs.check.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [ESP8266, ESP32, ESP32C3]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio/.cache
+            ~/.platformio/packages
+            ~/.platformio/platforms
+          key: pio-${{ runner.os }}-${{ matrix.environment }}-${{ hashFiles('platformio.ini') }}
+          restore-keys: pio-${{ runner.os }}-${{ matrix.environment }}-
+
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade platformio
+
+      - name: Build ${{ matrix.environment }}
+        run: pio run -e ${{ matrix.environment }}
+
+      - name: Collect firmware
+        run: |
+          mkdir -p dist
+          VERSION=$(node -p "require('./package.json').version")
+          NAME="wortuhr-${VERSION}-${{ matrix.environment }}-${GITHUB_SHA::7}"
+          cp .pio/build/${{ matrix.environment }}/firmware.bin "dist/${NAME}.bin"
+          [ -f .pio/build/${{ matrix.environment }}/firmware.elf ] \
+            && cp .pio/build/${{ matrix.environment }}/firmware.elf "dist/${NAME}.elf"
+          ls -l dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware-${{ matrix.environment }}
+          path: dist/*
+          retention-days: 14
