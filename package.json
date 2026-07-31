@@ -95,7 +95,8 @@
 	},
 	"comment_overrides": "Transitive build dependencies whose direct parents still pin a vulnerable version. Drop an entry once the parent package ships the fix itself. Note: brace-expansion cannot be forced to the fixed 5.0.8+ line here -- it exports a named expand() there, while the minimatch 3.x/5.x versions in this tree call the module itself.",
 	"overrides": {
-		"adm-zip": "^0.6.0"
+		"adm-zip": "^0.6.0",
+		"@tootallnate/once": "^2.0.1"
 	},
 	"dependencies": {
 		"@jaames/iro": "^5.5.2",
