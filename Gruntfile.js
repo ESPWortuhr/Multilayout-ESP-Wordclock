@@ -96,6 +96,45 @@ module.exports = function(grunt) {
 		},
 
 		replace: {
+			// The <option> list of the front layout select is generated from
+			// CLOCK_TYPES_LIST in include/WordClockState.h, so that a new clock
+			// type only has to be registered in that single place.
+			frontlayout: {
+				options: {
+					patterns: [{
+						match: /<!-- FRONTLAYOUTPLACEHOLDER -->/,
+						replacement: function() {
+							const fs = require("fs");
+							// Join the macro line continuations first, otherwise an
+							// entry wrapped by clang-format would be missed.
+							const header = fs.readFileSync("include/WordClockState.h", "utf8").replace(/\\\s*\n\s*/g, " ");
+							const config = fs.readFileSync("include/Config.h", "utf8");
+
+							const defaultLayout = (config.match(/^#define\s+DEFAULT_LAYOUT\s+(\w+)/m) || [])[1];
+							const entry = /X\(\s*(\w+)\s*,\s*(\d+)\s*,\s*\w+\s*,\s*"([\w-]+)"\s*\)/g;
+
+							let options = [];
+							let match;
+							while ((match = entry.exec(header)) !== null) {
+								const [, name, id, key] = match;
+								const selected = name === defaultLayout ? " selected" : "";
+								options.push("<option value=\"" + id + "\" data-i18next=\"view.front." + key + "\"" + selected + "></option>");
+							}
+
+							if (options.length === 0) {
+								throw new Error("No clock types found in include/WordClockState.h");
+							}
+							grunt.log.writeln("Generated " + options.length + " front layout options");
+							return options.join("\n");
+						}
+					}]
+				},
+				files: [{
+					expand: true,
+					overwrite: true,
+					src: "<%= settings.tempDirectory %>/index.html"
+				}]
+			},
 			pioenv: {
 				options: {
 					patterns: [{
@@ -228,6 +267,7 @@ module.exports = function(grunt) {
 		"copy:index",
 		"copy:icons",
 		"version:index",
+		"replace:frontlayout",
 		"replace:pioenv",
 		"assets_inline",
 		"htmlmin",
