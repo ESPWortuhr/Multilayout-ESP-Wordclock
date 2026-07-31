@@ -253,7 +253,7 @@ void ClockWork::loopHardwareButtons() {
 
 ClockType *ClockWork::getPointer(uint8_t type) {
     switch (type) {
-#define X(name, id, var)                                                       \
+#define X(name, id, var, i18n)                                                 \
     case name:                                                                 \
         return &var;
         CLOCK_TYPES_LIST
