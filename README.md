@@ -1,8 +1,6 @@
 ![GitHub release (with filter)](https://img.shields.io/github/v/release/ESPWortuhr/Multilayout-ESP-Wordclock)
 ![GitHub all releases](https://img.shields.io/github/downloads/ESPWortuhr/Multilayout-ESP-Wordclock/total)
 ![Platform](https://img.shields.io/badge/platform-ESP8266%20%7C%20ESP32%20%7C%20ESP32--C3-blue)
-![GitHub last commit](https://img.shields.io/github/last-commit/ESPWortuhr/Multilayout-ESP-Wordclock)
-![GitHub issues](https://img.shields.io/github/issues/ESPWortuhr/Multilayout-ESP-Wordclock)
 ![GitHub stars](https://img.shields.io/github/stars/ESPWortuhr/Multilayout-ESP-Wordclock)
 ![GitHub contributors](https://img.shields.io/github/contributors/ESPWortuhr/Multilayout-ESP-Wordclock)
 ![License](https://img.shields.io/github/license/ESPWortuhr/Multilayout-ESP-Wordclock)
