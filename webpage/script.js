@@ -106,6 +106,7 @@ const CMD = {
 	SET_IT_IS_VARIANT: 106,
 	SET_HARDWARE_PINS: 107,
 	SET_TIMEZONE: 108,
+	EDIT_SYMBOL: 109,
 	SPEED: 152,
 
 	// Requests
@@ -116,7 +117,8 @@ const CMD = {
 	REQ_TRANSITION: 204,
 	REQ_MQTT_VALUES: 205,
 	REQ_BIRTHDAYS: 206,
-	REQ_I2C_SCAN: 207
+	REQ_I2C_SCAN: 207,
+	REQ_SYMBOLS: 208
 };
 
 /**
@@ -144,7 +146,7 @@ const MODE_CONTROL_STATE = {
 	"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false, symbol: false },
 	"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false, symbol: false },
 	"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false, symbol: false },
-	"mode-symbol": { cmd: CMD.MODE_SYMBOL, bri: false, speed: false, txt: false, symbol: true }
+	"mode-symbol": { cmd: CMD.MODE_SYMBOL, bri: true, speed: false, txt: false, symbol: true }
 };
 
 // data that gets send back to the esp
@@ -434,6 +436,25 @@ function initWebsocket() {
 				document.getElementById("auto-bright-min").value = autoBrightMin;
 				document.getElementById("auto-bright-max").value = autoBrightMax;
 				document.getElementById("auto-bright-peak").value = autoBrightPeak;
+				sendCmd(CMD.REQ_SYMBOLS);
+				break;
+			}
+			case "symbols": {
+				currentLayoutRows = data.rows;
+				currentLayoutCols = data.cols;
+				setCustomSymbols(data.customSymbols || [], data.activeSymbol, []);
+				const editorVisible = !document.getElementById("symbol-editor").hidden;
+				if (symbolEditorOpenRequested || (editorVisible && symbolEditorName === data.activeSymbol)) {
+					showSymbolEditor(data.activeSymbol, data.rows, data.cols,
+						bitmapToLeds(data.activeBitmap || [], data.rows, data.cols));
+					symbolEditorOpenRequested = false;
+				}
+				break;
+			}
+			case "symbolPreview": {
+				loadedSymbolPreviews = loadedSymbolPreviews.filter(preview => preview.name !== data.name);
+				loadedSymbolPreviews.push({ name: data.name, bitmap: data.bitmap || [] });
+				renderSymbolCardPreview(data.name, data.bitmap || [], data.cols);
 				break;
 			}
 			case "i2c-scan": {
@@ -460,7 +481,7 @@ function initWebsocket() {
 				effectBri = data.effectBri;
 				effectSpeed = data.effectSpeed;
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
-				setSelectedSymbol(data.bitmapSymbol);
+				setSelectedSymbol(data.activeSymbol || data.bitmapSymbol);
 
 				if (modeColorForm) {
 					modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
@@ -573,6 +594,117 @@ function setSliders() {
 function setSelectedSymbol(symbolValue) {
 	const symbolEl = document.querySelector(`input[name='symbol-choice'][value='${symbolValue}']`);
 	if (symbolEl) symbolEl.checked = true;
+}
+
+const BUILTIN_SYMBOLS = ["WiFi", "Fire1", "Fire2", "Fire3", "Fire4", "Fire5", "Fire6", "Heart", "Smiley", "Note", "Snowflake", "Mail", "Bell", "Stop", "Standby"];
+let symbolEditorName = "";
+let symbolEditorRows = 0;
+let symbolEditorCols = 0;
+let symbolEditorOpenRequested = false;
+let currentLayoutRows = 0;
+let currentLayoutCols = 0;
+let loadedCustomSymbols = [];
+let loadedSymbolPreviews = [];
+
+function setCustomSymbols(names = [], activeSymbol = "", previews = []) {
+	const form = document.getElementById("symbol-form");
+	if (!form) return;
+	loadedCustomSymbols = [...names];
+	loadedSymbolPreviews = previews;
+	const previewByName = new Map(previews.map(preview => [preview.name, preview]));
+	form.replaceChildren();
+	[...BUILTIN_SYMBOLS, ...names].forEach(name => {
+		const label = document.createElement("label");
+		label.className = "radio-select symbol-select";
+		label.title = name;
+		const input = document.createElement("input");
+		input.type = "radio";
+		input.name = "symbol-choice";
+		input.value = name;
+		input.setAttribute("aria-label", name);
+		const preview = document.createElement("span");
+		preview.className = "symbol-card-preview";
+		preview.dataset.symbol = name;
+		const text = document.createElement("span");
+		text.textContent = name;
+		label.append(input, preview, text);
+		form.appendChild(label);
+	});
+	previewByName.forEach((preview, name) => renderSymbolCardPreview(name,
+		preview.bitmap || [], currentLayoutCols));
+	setSelectedSymbol(activeSymbol);
+}
+
+function renderSymbolCardPreview(name, bitmap, cols) {
+	const input = [...document.querySelectorAll("input[name='symbol-choice']")].find(candidate => candidate.value === name);
+	const preview = input ? input.closest("label").querySelector(".symbol-card-preview") : null;
+	if (!preview) return;
+	preview.style.setProperty("--preview-cols", cols || 11);
+	preview.replaceChildren();
+	for (let row = 0; row < bitmap.length; row++) {
+		for (let col = 0; col < cols; col++) {
+			const pixel = document.createElement("i");
+			if (((bitmap[row] || 0) & (2 ** col)) !== 0) {
+				pixel.className = "active";
+			}
+			preview.appendChild(pixel);
+		}
+	}
+}
+
+function showSymbolEditor(name, rows, cols, leds = []) {
+	const editor = document.getElementById("symbol-editor");
+	const matrix = document.getElementById("symbol-matrix");
+	if (!editor || !matrix || !name || !rows || !cols) return;
+	symbolEditorName = name;
+	symbolEditorRows = rows;
+	symbolEditorCols = cols;
+	document.getElementById("symbol-editor-title").textContent = `${name} (${cols} × ${rows})`;
+	matrix.style.setProperty("--symbol-cols", cols);
+	matrix.replaceChildren();
+	const active = new Set(leds);
+	for (let index = 0; index < rows * cols; index++) {
+		const pixel = document.createElement("button");
+		pixel.type = "button";
+		pixel.className = "symbol-pixel";
+		pixel.dataset.index = index;
+		pixel.setAttribute("aria-label", `LED ${index}`);
+		pixel.setAttribute("aria-pressed", active.has(index) ? "true" : "false");
+		pixel.addEventListener("click", () => pixel.setAttribute("aria-pressed", pixel.getAttribute("aria-pressed") === "true" ? "false" : "true"));
+		matrix.appendChild(pixel);
+	}
+	document.getElementById("symbol-reset").textContent = BUILTIN_SYMBOLS.includes(name) ? "Auf Standard zurücksetzen" : "Symbol löschen";
+	editor.hidden = false;
+}
+
+function selectedSymbolLeds() {
+	return [...document.querySelectorAll("#symbol-matrix .symbol-pixel[aria-pressed='true']")].map(pixel => Number(pixel.dataset.index));
+}
+
+function bitmapToLeds(bitmap, rows, cols) {
+	const leds = [];
+	for (let row = 0; row < rows; row++) {
+		for (let col = 0; col < cols; col++) {
+			if (((bitmap[row] || 0) & (2 ** col)) !== 0) leds.push(row * cols + col);
+		}
+	}
+	return leds;
+}
+
+function sendSymbolEdit(reset = false) {
+	if (!symbolEditorName) return;
+	const deletingCustom = reset && !BUILTIN_SYMBOLS.includes(symbolEditorName);
+	const payload = { name: symbolEditorName, leds: reset ? [] : selectedSymbolLeds() };
+	if (reset) payload.reset = true;
+	symbolEditorOpenRequested = !deletingCustom;
+	sendCmd(CMD.EDIT_SYMBOL, JSON.stringify(payload));
+	if (deletingCustom) {
+		const selectedCard = document.querySelector(`input[name='symbol-choice'][value='${symbolEditorName}']`);
+		if (selectedCard) selectedCard.closest("label").remove();
+		document.getElementById("symbol-editor").hidden = true;
+		symbolEditorName = "";
+	}
+	window.setTimeout(() => sendCmd(CMD.REQ_SYMBOLS), 150);
 }
 
 function getSelectedModeControlState() {
@@ -781,6 +913,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 			if (navigation === "functions") {
 				sendCmd(CMD.REQ_BIRTHDAYS);
+				sendCmd(CMD.REQ_SYMBOLS);
 				setElementsForFunctionsMenu();
 			}
 			if (navigation === "smart-home") {
@@ -1067,13 +1200,43 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	}
 
-	document.querySelectorAll('input[name="symbol-choice"]').forEach(el => {
-		el.addEventListener("change", function(event) {
-			let selectedSymbol = event.target.value;
-			sendCmd(CMD.SET_SYMBOL, nstr(selectedSymbol));
+	const symbolForm = document.getElementById("symbol-form");
+	if (symbolForm) {
+		symbolForm.addEventListener("change", function(event) {
+			if (event.target.name !== "symbol-choice") return;
+			const selectedSymbol = event.target.value;
+			symbolEditorOpenRequested = true;
+			sendCmd(CMD.SET_SYMBOL, `:${selectedSymbol}`);
+			window.setTimeout(() => sendCmd(CMD.REQ_SYMBOLS), 100);
 			debugMessage(`Symbol${debugMessageReconfigured}`);
 		});
-	});
+	}
+
+	const symbolNew = document.getElementById("symbol-new");
+	if (symbolNew) {
+		symbolNew.addEventListener("click", function() {
+			const name = window.prompt("Name des neuen Symbols (Buchstaben, Zahlen, - oder _):");
+			if (name === null) return;
+			if (!/^[A-Za-z0-9_-]{1,24}$/.test(name) || [...BUILTIN_SYMBOLS, ...loadedCustomSymbols].some(existing => existing.toLowerCase() === name.toLowerCase())) {
+				window.alert("Bitte einen gültigen, noch nicht für ein Built-in verwendeten Namen eingeben.");
+				return;
+			}
+			showSymbolEditor(name, currentLayoutRows, currentLayoutCols, []);
+			setCustomSymbols([...loadedCustomSymbols, name], name,
+				[...loadedSymbolPreviews, { name, bitmap: Array(currentLayoutRows).fill(0) }]);
+		});
+	}
+
+	const symbolSave = document.getElementById("symbol-save");
+	if (symbolSave) symbolSave.addEventListener("click", () => sendSymbolEdit(false));
+	const symbolClear = document.getElementById("symbol-clear");
+	if (symbolClear) {
+		symbolClear.addEventListener("click", () => {
+			document.querySelectorAll("#symbol-matrix .symbol-pixel").forEach(pixel => pixel.setAttribute("aria-pressed", "false"));
+		});
+	}
+	const symbolReset = document.getElementById("symbol-reset");
+	if (symbolReset) symbolReset.addEventListener("click", () => sendSymbolEdit(true));
 
 	const hostNameBtn = document.getElementById("hostname-button");
 	if (hostNameBtn) {

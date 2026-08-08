@@ -402,6 +402,56 @@ Commands are sent as a JSON string to the topic `<TOPIC>/cmd`. You can combine s
 }
 ```
 
+#### Named and custom symbols
+
+Select an existing symbol by name:
+
+```json
+{"state":"ON","effect":"Symbol","symbol":"Heart"}
+```
+
+Adding `leds` creates a custom symbol or updates the custom symbol with the same
+name. Values are **zero-based logical matrix positions in row-major order**
+(`position = row * columns + column`), not physical LED-strip indices. The
+symbol is stored for the currently configured logical matrix dimensions and can
+be displayed on layouts with the same dimensions.
+
+```json
+{"state":"ON","effect":"Symbol","symbol":"MySymbol","leds":[1,2,3,10,11,12]}
+```
+
+Display a stored custom symbol again by omitting `leds`:
+
+```json
+{"state":"ON","effect":"Symbol","symbol":"MySymbol"}
+```
+
+A non-empty `leds` array overwrites an existing custom symbol. An empty array
+deletes it from LittleFS; built-in symbols can neither be overwritten nor
+deleted:
+
+```json
+{"state":"ON","effect":"Symbol","symbol":"MySymbol","leds":[]}
+```
+
+Up to 8 custom symbols are stored. Names may contain up to 24 letters, digits,
+hyphens or underscores. Unknown names without `leds` and invalid positions are
+ignored. Custom symbols use the current foreground colour and the existing
+transitions. A command containing `state: "OFF"` deliberately ignores all
+remaining fields in that MQTT message, for example:
+
+```json
+{"state":"OFF","brightness":180,"effect":"Symbol","symbol":"MySymbol"}
+```
+
+The firmware publishes a small retained overview to
+`<TOPIC>/capabilities/state` and separate descriptions with ready-to-use
+examples to `<TOPIC>/capabilities/effects/<effect>/state`. The symbol topic
+contains every built-in and currently stored custom symbol. It is updated at
+startup, after an MQTT reconnect, and whenever a custom symbol is created,
+changed, or deleted. The optional `speed` field in `/cmd` accepts values from 1
+through 10.
+
 ---
 
 ### 4. Receiving status (status payload)
