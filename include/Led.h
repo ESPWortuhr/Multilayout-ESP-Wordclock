@@ -59,6 +59,7 @@ public:
     void setbyMinuteArray(ColorPosition position = Foreground);
     void setbySecondArray(ColorPosition position = Foreground);
     void setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color);
+    void setLogicalSymbol(HsbColor color);
     void setSingle(uint8_t wait);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                          uint8_t offsetRow, unsigned char unsigned_d1,

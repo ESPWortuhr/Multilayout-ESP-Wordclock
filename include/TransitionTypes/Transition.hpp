@@ -1199,7 +1199,8 @@ void Transition::init() { saveMatrix(); }
 void Transition::loop(struct tm &tm) {
     static bool specialEvent;
 
-    if (G.prog == COMMAND_IDLE || G.prog == COMMAND_MODE_WORD_CLOCK) {
+    if (G.prog == COMMAND_IDLE || G.prog == COMMAND_MODE_WORD_CLOCK ||
+        G.prog == COMMAND_MODE_SYMBOL) {
         specialEvent = isSpecialEvent(transitionType, tm, hasMinuteChanged());
 
         if (!specialEvent) {

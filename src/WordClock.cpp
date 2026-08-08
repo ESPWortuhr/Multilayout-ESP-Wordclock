@@ -27,6 +27,7 @@
 #include "WordClockState.h"
 
 #include "ClockType.gen.h"
+#include "CustomSymbols.h"
 #include "WebPageAdapter.h"
 
 #include "EEPROMAnything.h"
@@ -308,6 +309,8 @@ void setup() {
 
     EEPROM.begin(EEPROM_SIZE);
     eeprom::read();
+    customSymbols.begin();
+    customSymbols.select(CustomSymbols::builtinName(G.bitmapSymbol));
     ensureHardwarePins();
     ensureI2CPins();
     ensureTimezone();

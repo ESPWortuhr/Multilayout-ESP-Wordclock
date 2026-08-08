@@ -7,6 +7,7 @@
 #include "Mqtt.h"
 
 #include "Led.h"
+#include "CustomSymbols.h"
 #include "WebPageAdapter.h"
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
@@ -28,6 +29,7 @@ void write();
 
 extern Led led;
 extern WiFiClient client;
+extern ClockType *usedClockType;
 
 #define HOMEASSISTANT_DISCOVERY_TOPIC "homeassistant"
 
@@ -43,7 +45,12 @@ PubSubClient mqttClient(client);
 
 // Keep inbound payloads bounded; PubSubClient's default buffer is smaller, but
 // discovery raises it and callbacks should still avoid variable-length stacks.
-static constexpr unsigned int MQTT_MAX_PAYLOAD_LENGTH = 512;
+// A complete 22x18 logical bitmap fits as an index array while remaining
+// bounded on ESP8266. PubSubClient is configured to the same limit in init().
+static constexpr unsigned int MQTT_MAX_PAYLOAD_LENGTH = 2048;
+static constexpr size_t MQTT_JSON_CAPACITY =
+    JSON_OBJECT_SIZE(8) + JSON_ARRAY_SIZE(MAX_ROW_SIZE * 18) + 256;
+static constexpr size_t MQTT_PLAIN_PAYLOAD_LENGTH = 32;
 
 // Home Assistant's birth message: HA publishes this when it (re)starts, the cue
 // to re-announce discovery and state.
@@ -66,6 +73,32 @@ static bool publishJsonStream(const String &topic, const JsonDocument &doc) {
     }
     serializeJson(doc, mqttClient);
     return mqttClient.endPublish();
+}
+
+static bool publishCapabilityJson(const String &topic,
+                                  const JsonDocument &doc) {
+    static constexpr size_t MAX_CAPABILITY_PAYLOAD_LENGTH = 1200;
+    if (doc.overflowed()) {
+        Serial.println("MQTT: Capability document overflowed");
+        return false;
+    }
+    const size_t length = measureJson(doc);
+    if (length > MAX_CAPABILITY_PAYLOAD_LENGTH) {
+        Serial.println("MQTT: Capability payload exceeds safe limit");
+        return false;
+    }
+    String payload;
+    if (!payload.reserve(length + 1)) {
+        Serial.println("MQTT: Failed to allocate capability payload");
+        return false;
+    }
+    serializeJson(doc, payload);
+    const bool published =
+        mqttClient.publish(topic.c_str(), payload.c_str(), true);
+    if (!published)
+        Serial.println("MQTT: Failed to publish capability topic");
+    delay(5);
+    return published;
 }
 
 // Add a diagnostic sensor component to a device-based discovery bundle. Keys
@@ -270,6 +303,54 @@ void Mqtt::processEffect(const JsonDocument &doc) {
     }
 }
 
+bool Mqtt::processSymbol(const JsonDocument &doc) {
+    if (!doc.containsKey("symbol")) {
+        return true;
+    }
+    if (!doc["symbol"].is<const char *>()) {
+        Serial.println("MQTT: Symbol name must be a string");
+        return false;
+    }
+
+    const char *name = doc["symbol"].as<const char *>();
+    if (doc.containsKey("leds")) {
+        if (!doc["leds"].is<JsonArrayConst>()) {
+            Serial.println("MQTT: 'leds' must be an array of logical indices");
+            return false;
+        }
+        JsonArrayConst leds = doc["leds"].as<JsonArrayConst>();
+        if (leds.size() == 0) {
+            BitmapSymbol builtin;
+            const bool isBuiltin = CustomSymbols::findBuiltin(name, builtin);
+            if (!customSymbols.remove(name))
+                return false;
+            customSymbols.select(isBuiltin ? name : "Heart");
+            if (mqttInstance)
+                mqttInstance->sendSymbolCapabilities();
+        } else if (!usedClockType) {
+            Serial.println("MQTT: Matrix layout is not initialized");
+            return false;
+        } else {
+            if (!customSymbols.upsert(name, leds,
+                                      usedClockType->rowsWordMatrix(),
+                                      usedClockType->colsWordMatrix()))
+                return false;
+            if (mqttInstance)
+                mqttInstance->sendSymbolCapabilities();
+        }
+    } else if (!customSymbols.select(name)) {
+        Serial.print("MQTT: Unknown symbol without LED data: ");
+        Serial.println(name);
+        return false;
+    }
+
+    // upsert() activates a custom entry; select() activates an existing entry.
+    G.prog = COMMAND_MODE_SYMBOL;
+    G.progInit = true;
+    parametersChanged = true;
+    return true;
+}
+
 //------------------------------------------------------------------------------
 
 /* Description:
@@ -291,6 +372,8 @@ void Mqtt::processScrollingText(const JsonDocument &doc) {
     if (doc.containsKey("scrolling_text")) {
         strlcpy(G.scrollingText, doc["scrolling_text"] | "",
                 sizeof(G.scrollingText));
+        if (G.prog == COMMAND_MODE_SCROLLINGTEXT)
+            G.progInit = true;
 
         // Send update to web interface
         StaticJsonDocument<200> webDoc;
@@ -380,6 +463,11 @@ void Mqtt::processBrightness(const JsonDocument &doc) {
         // Set brightness directly
         G.color[Foreground] =
             HsbColor(G.color[Foreground].H, G.color[Foreground].S, brightness);
+        if (G.prog == COMMAND_MODE_SCROLLINGTEXT ||
+            G.prog == COMMAND_MODE_RAINBOWCYCLE ||
+            G.prog == COMMAND_MODE_RAINBOW ||
+            G.prog == COMMAND_MODE_SYMBOL)
+            G.effectBri = round(brightness * 100.0f);
         Serial.print("MQTT: Setting manual brightness: ");
         Serial.println(brightness);
 
@@ -388,6 +476,29 @@ void Mqtt::processBrightness(const JsonDocument &doc) {
         if (mqttInstance)
             mqttInstance->sendState();
     }
+}
+
+void Mqtt::processSpeed(const JsonDocument &doc) {
+    if (!doc.containsKey("speed"))
+        return;
+    if (!doc["speed"].is<int>()) {
+        Serial.println("MQTT: Speed must be an integer from 1 to 10");
+        return;
+    }
+    const int speed = doc["speed"].as<int>();
+    if (speed < 1 || speed > 10) {
+        Serial.println("MQTT: Speed outside range 1 to 10");
+        return;
+    }
+    if (G.effectSpeed != speed) {
+        G.effectSpeed = speed;
+        G.progInit = true;
+        parametersChanged = true;
+        eeprom::write();
+    }
+    mqttClient.publish(
+        (std::string(G.mqtt.topic) + "/effect_speed/state").c_str(),
+        String(G.effectSpeed).c_str(), true);
 }
 
 //------------------------------------------------------------------------------
@@ -434,6 +545,8 @@ None
 */
 
 void Mqtt::init() {
+    if (!mqttClient.setBufferSize(MQTT_MAX_PAYLOAD_LENGTH))
+        Serial.println("MQTT: Failed to allocate command buffer");
     mqttClient.setServer(G.mqtt.serverAdress, G.mqtt.port);
     mqttClient.setCallback(callback);
 
@@ -495,6 +608,7 @@ void Mqtt::init() {
         sendDiscovery(); // Re-announce entities so they self-heal after a
                          // broker restart or purge of retained config
         sendState();     // Send initial state
+        sendCapabilities();
     }
 }
 
@@ -637,31 +751,35 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     String topicStr = String(topic);
     String baseTopic = String(G.mqtt.topic);
 
-    // Copy into a fixed buffer so hostile or malformed MQTT payloads cannot
-    // allocate arbitrarily large stack frames.
+    // Keep hostile or malformed MQTT payloads bounded. JSON is parsed directly
+    // from PubSubClient's buffer so a complete bitmap does not also consume a
+    // large ESP8266 stack buffer.
     if (length >= MQTT_MAX_PAYLOAD_LENGTH) {
         Serial.print("MQTT: Ignoring oversized payload on topic ");
         Serial.println(topicStr);
         return;
     }
 
-    char msg[MQTT_MAX_PAYLOAD_LENGTH];
-    memcpy(msg, payload, length);
-    msg[length] = '\0';
-
     // Home Assistant's birth message: re-announce discovery and state so the
     // device repopulates after an HA restart, even if retained config was lost.
     if (topicStr == HOMEASSISTANT_STATUS_TOPIC) {
-        if (strcmp(msg, "online") == 0 && mqttInstance) {
+        if (length == strlen("online") && !memcmp(payload, "online", length) &&
+            mqttInstance) {
             Serial.println("MQTT: Home Assistant online, re-announcing");
             mqttInstance->sendDiscovery();
             mqttInstance->sendState();
+            mqttInstance->sendCapabilities();
         }
         return;
     }
 
     // MQTT switch commands are plain ON/OFF payloads, not JSON.
     if (topicStr == baseTopic + "/auto_brightness/set") {
+        if (length >= MQTT_PLAIN_PAYLOAD_LENGTH)
+            return;
+        char msg[MQTT_PLAIN_PAYLOAD_LENGTH];
+        memcpy(msg, payload, length);
+        msg[length] = '\0';
         bool autoBrightnessChanged = false;
         if (strcmp(msg, "ON") == 0) {
             G.autoBrightEnabled = 1;
@@ -698,26 +816,37 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     // Transition selects/number/switch are plain payloads, not JSON. Each
     // applies the setting, persists it, re-inits so it takes effect, and echoes
     // the resulting state back to Home Assistant.
+    const bool isTransitionCommand =
+        topicStr == baseTopic + "/transition_type/set" ||
+        topicStr == baseTopic + "/transition_colorize/set" ||
+        topicStr == baseTopic + "/transition_duration/set" ||
+        topicStr == baseTopic + "/transition_speed/set";
+    char plainPayload[MQTT_PLAIN_PAYLOAD_LENGTH] = {0};
+    if (isTransitionCommand) {
+        if (length >= sizeof(plainPayload))
+            return;
+        memcpy(plainPayload, payload, length);
+    }
     if (topicStr == baseTopic + "/transition_type/set") {
-        applyTransitionSelect("transition_type", msg, TRANSITION_TYPES,
+        applyTransitionSelect("transition_type", plainPayload, TRANSITION_TYPES,
                               LABELED_VALUE_COUNT(TRANSITION_TYPES),
                               G.transitionType);
         return;
     }
     if (topicStr == baseTopic + "/transition_colorize/set") {
-        applyTransitionSelect("transition_colorize", msg, TRANSITION_COLORIZE,
-                              LABELED_VALUE_COUNT(TRANSITION_COLORIZE),
-                              G.transitionColorize);
+        applyTransitionSelect(
+            "transition_colorize", plainPayload, TRANSITION_COLORIZE,
+            LABELED_VALUE_COUNT(TRANSITION_COLORIZE), G.transitionColorize);
         return;
     }
     if (topicStr == baseTopic + "/transition_duration/set") {
-        applyTransitionSelect("transition_duration", msg, TRANSITION_DURATION,
-                              LABELED_VALUE_COUNT(TRANSITION_DURATION),
-                              G.transitionDuration);
+        applyTransitionSelect(
+            "transition_duration", plainPayload, TRANSITION_DURATION,
+            LABELED_VALUE_COUNT(TRANSITION_DURATION), G.transitionDuration);
         return;
     }
     if (topicStr == baseTopic + "/transition_speed/set") {
-        int speed = atoi(msg);
+        int speed = atoi(plainPayload);
         if (speed >= 0 && speed <= 10) {
             G.transitionSpeed = speed;
             G.progInit = true;
@@ -730,8 +859,14 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     }
 
     // Remaining command topics use JSON payloads.
-    StaticJsonDocument<512> doc;
-    DeserializationError error = deserializeJson(doc, msg);
+    DynamicJsonDocument doc(MQTT_JSON_CAPACITY);
+    // PubSubClient owns and reuses payload. Treating it as mutable enables
+    // ArduinoJson's zero-copy mode, after which an intermediate status publish
+    // can overwrite strings that have not been processed yet. Parsing from a
+    // const buffer copies strings into the document and keeps combined commands
+    // such as state + effect + symbol intact.
+    DeserializationError error = deserializeJson(
+        doc, static_cast<const byte *>(payload), length);
     if (error) {
         Serial.print(F("deserializeJson() failed: "));
         Serial.println(error.c_str());
@@ -740,15 +875,30 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
 
     // Process remaining messages
     if (topicStr == baseTopic + "/cmd") {
+        // OFF is terminal for this exact command: acknowledge it immediately
+        // and deliberately ignore every sibling field.
+        if (doc["state"].is<const char *>() &&
+            !strcmp(doc["state"].as<const char *>(), "OFF")) {
+            processState(doc);
+            return;
+        }
         processState(doc);
+        if (!processSymbol(doc))
+            return;
         processEffect(doc);
         processScrollingText(doc);
         processColor(doc);
         processBrightness(doc);
+        processSpeed(doc);
     } else if (topicStr == baseTopic + "/scrolltext/set") {
         processScrollingText(doc);
     } else if (topicStr == baseTopic + "/effect_speed/set") {
         // Process direct string value
+        if (length >= MQTT_PLAIN_PAYLOAD_LENGTH)
+            return;
+        char msg[MQTT_PLAIN_PAYLOAD_LENGTH];
+        memcpy(msg, payload, length);
+        msg[length] = '\0';
         int speed = atoi(msg);
         if (speed >= 1 && speed <= 10) {
             G.effectSpeed = speed;
@@ -799,15 +949,23 @@ None
 void Mqtt::sendState() {
     // Main status
     {
-        StaticJsonDocument<200> doc;
+        StaticJsonDocument<256> doc;
         doc["state"] = (led.getState()) ? "ON" : "OFF";
 
         // Calculate actual brightness value
+        const bool usesEffectBrightness =
+            G.prog == COMMAND_MODE_SCROLLINGTEXT ||
+            G.prog == COMMAND_MODE_RAINBOWCYCLE ||
+            G.prog == COMMAND_MODE_RAINBOW ||
+            G.prog == COMMAND_MODE_SYMBOL;
+        const float configuredBrightness =
+            usesEffectBrightness ? G.effectBri / 100.0f
+                                 : G.color[Foreground].B;
         float actualBrightness;
         if (G.autoBrightEnabled) {
-            actualBrightness = (ledGain / 100.0f) * G.color[Foreground].B;
+            actualBrightness = (ledGain / 100.0f) * configuredBrightness;
         } else {
-            actualBrightness = G.color[Foreground].B;
+            actualBrightness = configuredBrightness;
         }
         doc["brightness"] = round(actualBrightness * 255);
         doc["color_mode"] = "hs";
@@ -841,10 +999,11 @@ void Mqtt::sendState() {
             break;
         case COMMAND_MODE_SYMBOL:
             doc["effect"] = "Symbol";
+            doc["symbol"] = customSymbols.activeName();
             break;
         }
 
-        char buffer[200];
+        char buffer[256];
         serializeJson(doc, buffer);
         mqttClient.publish((std::string(G.mqtt.topic) + "/status").c_str(),
                            buffer, true);
@@ -919,6 +1078,101 @@ void Mqtt::sendState() {
     // Update online status
     mqttClient.publish((std::string(G.mqtt.topic) + "/availability").c_str(),
                        "online", true);
+}
+
+//------------------------------------------------------------------------------
+
+void Mqtt::sendCapabilities() {
+    const String base = String(G.mqtt.topic) + "/capabilities";
+    StaticJsonDocument<768> root;
+    root["command_topic"] = String(G.mqtt.topic) + "/cmd";
+    JsonArray effects = root.createNestedArray("effects");
+    const char *const effectNames[] = {
+        "Wordclock", "Seconds",       "Digitalclock", "Color",
+        "Rainbow",   "Rainbowcycle", "Scrollingtext", "Symbol"};
+    for (const char *effect : effectNames)
+        effects.add(effect);
+    root["brightness"] = "0..255";
+    root["color_h"] = "0..360";
+    root["color_s"] = "0..100";
+    root["speed"] = "1..10";
+    JsonObject offExample = root.createNestedObject("off_example");
+    offExample["state"] = "OFF";
+    root["off_semantics"] = "all sibling fields are ignored";
+    publishCapabilityJson(base + "/state", root);
+
+    auto publishExample = [&base](const char *effect, uint16_t hue,
+                                  uint8_t saturation, bool includeSpeed) {
+        StaticJsonDocument<384> doc;
+        JsonObject example = doc.createNestedObject("example");
+        example["state"] = "ON";
+        example["effect"] = effect;
+        example["brightness"] = 128;
+        if (includeSpeed)
+            example["speed"] = 5;
+        JsonObject color = example.createNestedObject("color");
+        color["h"] = hue;
+        color["s"] = saturation;
+        publishCapabilityJson(base + "/effects/" + effect + "/state", doc);
+    };
+    publishExample("Wordclock", 235, 80, false);
+    publishExample("Seconds", 0, 100, false);
+    publishExample("Digitalclock", 120, 100, false);
+    publishExample("Color", 240, 100, false);
+    publishExample("Rainbow", 0, 100, true);
+    publishExample("Rainbowcycle", 0, 100, true);
+
+    StaticJsonDocument<512> scrolling;
+    scrolling["scrolling_text"] = "required string";
+    JsonObject scrollingExample = scrolling.createNestedObject("example");
+    scrollingExample["state"] = "ON";
+    scrollingExample["effect"] = "Scrollingtext";
+    scrollingExample["scrolling_text"] = "Hello World!";
+    scrollingExample["brightness"] = 128;
+    scrollingExample["speed"] = 5;
+    JsonObject scrollingColor = scrollingExample.createNestedObject("color");
+    scrollingColor["h"] = 120;
+    scrollingColor["s"] = 100;
+    publishCapabilityJson(base + "/effects/Scrollingtext/state", scrolling);
+
+    sendSymbolCapabilities();
+}
+
+void Mqtt::sendSymbolCapabilities() {
+    const String topic = String(G.mqtt.topic) +
+                         "/capabilities/effects/Symbol/state";
+    DynamicJsonDocument doc(2048);
+    doc["symbol"] = "required string";
+    doc["leds"] =
+        "omit=select, non-empty=create/update, empty=delete custom/reset built-in";
+    JsonArray builtins = doc.createNestedArray("builtin_symbols");
+    for (uint8_t i = 0; i < BitmapSymbol::MAX_BITMAP_SYMBOLS; ++i)
+        builtins.add(CustomSymbols::builtinName(static_cast<BitmapSymbol>(i)));
+    JsonArray custom = doc.createNestedArray("custom_symbols");
+    for (uint8_t i = 0; i < customSymbols.customCount(); ++i)
+        custom.add(customSymbols.customName(i));
+
+    JsonObject example = doc.createNestedObject("example");
+    example["state"] = "ON";
+    example["effect"] = "Symbol";
+    example["symbol"] = "Heart";
+    example["brightness"] = 128;
+
+    JsonObject create = doc.createNestedObject("create_or_update_example");
+    create["state"] = "ON";
+    create["effect"] = "Symbol";
+    create["symbol"] = "MySymbol";
+    JsonArray leds = create.createNestedArray("leds");
+    const uint8_t ledExamples[] = {1, 2, 3, 10, 11, 12};
+    for (uint8_t ledIndex : ledExamples)
+        leds.add(ledIndex);
+
+    JsonObject remove = doc.createNestedObject("delete_example");
+    remove["state"] = "ON";
+    remove["effect"] = "Symbol";
+    remove["symbol"] = "MySymbol";
+    remove.createNestedArray("leds");
+    publishCapabilityJson(topic, doc);
 }
 
 //------------------------------------------------------------------------------

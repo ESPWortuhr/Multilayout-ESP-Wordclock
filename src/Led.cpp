@@ -383,6 +383,16 @@ void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color) {
     show();
 }
 
+void Led::setLogicalSymbol(HsbColor color) {
+    setbyFrontMatrix(color);
+    setbyFrontMatrix(Background, false);
+    if (transition->isOverwrittenByTransition(WordclockChanges::Words,
+                                              _minute) &&
+        G.transitionType == NO_TRANSITION) {
+        show();
+    }
+}
+
 //------------------------------------------------------------------------------
 
 void Led::setSingle(uint8_t wait) {
