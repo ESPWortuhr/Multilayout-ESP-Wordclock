@@ -71,6 +71,13 @@ ClockWork clockWork;
 Mqtt mqtt(clockWork);
 Network network;
 
+// WebSocket callbacks must not drive PubSubClient directly. In particular,
+// symbol editor requests can send several WebSocket frames and touch
+// LittleFS before returning. Publishing the complete MQTT state from inside
+// that callback can leave the MQTT connection unable to process subsequent
+// commands. Coalesce web-triggered updates and publish them from loop().
+bool mqttStateUpdatePending = false;
+
 void setDefaultHardwarePins();
 bool hardwarePinsAreValid();
 void ensureI2CPins();
@@ -163,10 +170,7 @@ void incrementPowerCycleCount() {
 //------------------------------------------------------------------------------
 
 void sendMQTTUpdate() {
-    // send status update via MQTT
-    if ((G.mqtt.state) && (WiFi.status() == WL_CONNECTED)) {
-        mqtt.sendState();
-    }
+    mqttStateUpdatePending = true;
 }
 
 //------------------------------------------------------------------------------
@@ -728,6 +732,10 @@ void loop() {
     //------------------------------------------------
     if (G.mqtt.state && WiFi.status() == WL_CONNECTED) {
         mqtt.loop();
+        if (mqttStateUpdatePending && mqtt.isConnected()) {
+            mqttStateUpdatePending = false;
+            mqtt.sendState();
+        }
     }
 
     //------------------------------------------------
