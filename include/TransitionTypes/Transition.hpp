@@ -402,6 +402,36 @@ void Transition::saveMatrix() {
     static bool firstRun = true;
     copyMatrix(old, act);
     analyzeColors(act, STRIPE, foreground, background);
+
+    // The logical front matrix is the authoritative foreground mask for a
+    // newly rendered target.  Inferring foreground from the less frequent of
+    // the two strip colors works for words, but fails for dense symbols (the
+    // heart, for example, has more lit than unlit pixels).  Apart from making
+    // such symbols negative, the inverted flags can also confuse transitions
+    // such as Snake or Fire when RANDOM happens to select them.
+    bool foregroundFound = false;
+    bool backgroundFound = false;
+    for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
+        for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
+            const bool isForeground =
+                usedClockType->getFrontMatrixPixel(row, col);
+            act[row][col].setForeground(isForeground);
+            act[row][col].setOverlay(false);
+
+            if (isForeground && !foregroundFound) {
+                foreground = act[row][col];
+                foregroundFound = true;
+            } else if (!isForeground && !backgroundFound) {
+                background = act[row][col];
+                backgroundFound = true;
+            }
+        }
+    }
+    foreground.setForeground(true);
+    foreground.setOverlay(false);
+    background.setForeground(false);
+    background.setOverlay(false);
+
     foregroundMinute = foreground;
     if (isColorization()) {
         colorize(act);
@@ -1138,6 +1168,20 @@ void Transition::initTransitionStart() {
 }
 
 //------------------------------------------------------------------------------
+
+void Transition::syncStaticTarget() {
+    // Mode targets such as symbols are displayed immediately.  Keep all three
+    // transition buffers in sync so a later return to the word clock starts
+    // from the actually visible image instead of resuming an old animation.
+    phase = 0;
+    matrixChanged = false;
+    saveMatrix();
+    copyMatrix(old, act);
+    copyMatrix(work, act);
+    lastMinute = _minute;
+}
+
+//------------------------------------------------------------------------------
 // TODO: This function is used in two different functions:
 // 1) Transition::isOverwrittenByTransition
 // 2) Transition::loop
@@ -1199,8 +1243,7 @@ void Transition::init() { saveMatrix(); }
 void Transition::loop(struct tm &tm) {
     static bool specialEvent;
 
-    if (G.prog == COMMAND_IDLE || G.prog == COMMAND_MODE_WORD_CLOCK ||
-        G.prog == COMMAND_MODE_SYMBOL) {
+    if (G.prog == COMMAND_IDLE || G.prog == COMMAND_MODE_WORD_CLOCK) {
         specialEvent = isSpecialEvent(transitionType, tm, hasMinuteChanged());
 
         if (!specialEvent) {

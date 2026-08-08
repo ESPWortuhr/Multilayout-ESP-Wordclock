@@ -9,6 +9,7 @@
 #include "Led.h"
 #include "CustomSymbols.h"
 #include "WebPageAdapter.h"
+#include "WordClock.h"
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <WiFiClient.h>
@@ -241,8 +242,8 @@ void Mqtt::processState(const JsonDocument &doc) {
             led.setState(false);
             stateChanged = true;
         }
-        if (stateChanged && mqttInstance)
-            mqttInstance->sendState();
+        if (stateChanged)
+            sendMQTTUpdate();
     }
 }
 
@@ -297,8 +298,7 @@ void Mqtt::processEffect(const JsonDocument &doc) {
         if (effectChanged) {
             G.progInit = true;
             parametersChanged = true;
-            if (mqttInstance)
-                mqttInstance->sendState();
+            sendMQTTUpdate();
         }
     }
 }
@@ -424,9 +424,7 @@ void Mqtt::processColor(const JsonDocument &doc) {
         serializeJson(webDoc, buffer);
         webSocket.broadcastTXT(buffer, strlen(buffer));
 
-        if (mqttInstance) {
-            mqttInstance->sendState();
-        }
+        sendMQTTUpdate();
     }
 }
 
@@ -473,8 +471,7 @@ void Mqtt::processBrightness(const JsonDocument &doc) {
 
         parametersChanged = true;
 
-        if (mqttInstance)
-            mqttInstance->sendState();
+        sendMQTTUpdate();
     }
 }
 

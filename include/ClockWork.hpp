@@ -2037,8 +2037,20 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_MODE_WORD_CLOCK: {
+        const bool enteringWordClock = G.progInit;
         clearClockByProgInit();
         calcClockface();
+
+        // Transitions describe changes of time while the word clock is
+        // already visible.  Entering it from another display mode is a mode
+        // switch and must therefore render the current time immediately.
+        if (enteringWordClock) {
+            lastMinuteArray = minuteArray;
+            memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
+            led.setImmediate();
+            G.prog = COMMAND_IDLE;
+            break;
+        }
 
         switch (changesInClockface()) {
         case WordclockChanges::Minute:
