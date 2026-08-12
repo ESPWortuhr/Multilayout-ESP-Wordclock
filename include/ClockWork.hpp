@@ -1849,6 +1849,10 @@ void ClockWork::loop(struct tm &tm) {
             G.progInit = true;
         }
 
+        transition->resize(usedClockType->rowsWordMatrix(),
+                           usedClockType->colsWordMatrix());
+        transition->init();
+
         parametersChanged = true;
         break;
     }
