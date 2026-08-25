@@ -138,6 +138,7 @@ let TRANSLATION_NL = {
 			"tr-10-11": "🇹🇷 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
 			"ch-10-11-v2": "🇨🇭 10 x 11 Versie 2",
+			"ch-10-11-zh": "🇨🇭 10 x 11 Züridütsch",
 			"invert-min-dir": "Draai minuutrichting om",
 			"mirror-vertically": "Spiegel Woordklok verticaal",
 			"mirror-horizontally": "Spiegel Woordklok horizontaal",

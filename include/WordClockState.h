@@ -15,6 +15,7 @@
     /* CH (Swiss) */                                                           \
     X(Ch10x11, 1, _ch10x11, "ch-10-11")                                        \
     X(Ch10x11V2, 2, _ch10x11v2, "ch-10-11-v2")                                 \
+    X(Ch10x11ZH, 35, _ch10x11zh, "ch-10-11-zh")                                \
     /* EN (English) */                                                         \
     X(Eng08x08, 3, _en08x08, "en-08-08")                                       \
     X(Eng10x11, 4, _en10x11, "en-10-11")                                       \

@@ -154,6 +154,10 @@
 // #define DEFAULT_LAYOUT  Ch10x11V2
 // 10 rows, 11 LED's per row + 4 LED's for minutes, with modified
 // layout for the Swiss German language with "Gsi" option
+//
+// #define DEFAULT_LAYOUT  Ch10x11ZH
+// 10 rows, 11 LED's per row + 4 LED's for minutes, with a layout for the
+// Zurich dialect of Swiss German (Zueriduetsch)
 
 /**********************/
 /*      Romanian      */
