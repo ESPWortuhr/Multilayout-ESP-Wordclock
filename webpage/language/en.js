@@ -161,6 +161,7 @@ let TRANSLATION_EN_US = {
 			"bn-9-8": "🇧🇩 9 × 8",
 			"tr-10-11": "🇹🇷 10 × 11",
 			"ch-10-11-v2": "🇨🇭 10 x 11 Version 2",
+			"ch-10-11-zh": "🇨🇭 10 x 11 Zurich German",
 			"invert-min-dir": "Invert Minute Counting Direction",
 			"mirror-vertically": "Mirror Word Clock Vertically",
 			"mirror-horizontally": "Mirror Word Clock Horizontally",

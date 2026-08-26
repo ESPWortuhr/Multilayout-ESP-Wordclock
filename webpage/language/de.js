@@ -159,6 +159,7 @@ let TRANSLATION_DE_DE = {
 			"se-10-11": "🇸🇪 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
 			"ch-10-11-v2": "🇨🇭 10 x 11 Version 2",
+			"ch-10-11-zh": "🇨🇭 10 x 11 Züridütsch",
 			"bn-9-8": "🇧🇩 9 × 8",
 			"tr-10-11": "🇹🇷 10 × 11",
 			"invert-min-dir": "Minutenzählrichtung invertieren",

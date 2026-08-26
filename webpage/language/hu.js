@@ -135,6 +135,7 @@ let TRANSLATION_HU = {
 			"bn-9-8": "🇧🇩 9 × 8",
 			"tr-10-11": "🇹🇷 10 × 11",
 			"ch-10-11-v2": "🇨🇭 10 x 11 verzió 2",
+			"ch-10-11-zh": "🇨🇭 10 x 11 Züridütsch",
 			"invert-min-dir": "Percszámláló-irány megfordítása",
 			"mirror-vertically": "Szövegóra függőleges tükrözése",
 			"mirror-horizontally": "Szövegóra vízszintes tükrözése",
