@@ -23,9 +23,9 @@ struct RgbfColor : RgbColor {
     RgbfColor(uint8_t r, uint8_t g, uint8_t b) : RgbColor(r, g, b) {
         Flags = F_NULL;
     }
-    RgbfColor(RgbColor rgb, uint32_t f) : RgbColor(rgb) { Flags = f; }
-    RgbfColor(HsbColor hsb, uint32_t f) : RgbColor(hsb) { Flags = f; }
-    RgbfColor(uint8_t h, uint32_t f) : RgbColor(h) { Flags = f; }
+    RgbfColor(RgbColor rgb, uint8_t f) : RgbColor(rgb) { Flags = f; }
+    RgbfColor(HsbColor hsb, uint8_t f) : RgbColor(hsb) { Flags = f; }
+    RgbfColor(uint8_t h, uint8_t f) : RgbColor(h) { Flags = f; }
 
     void changeRgb(RgbColor color) {
         R = color.R;
@@ -58,15 +58,15 @@ struct RgbfColor : RgbColor {
     uint8_t getFlags() { return Flags; }
 
 protected:
-    uint32_t Flags;
+    uint8_t Flags;
 };
 struct RgbaColor : RgbfColor {
     RgbaColor() : RgbfColor() { Alpha = 255; };
     RgbaColor(RgbColor rgb) : RgbfColor(rgb) { Alpha = 255; }
     RgbaColor(uint8_t h) : RgbfColor(h) { Alpha = 255; }
-    RgbaColor(RgbColor rgb, uint32_t f) : RgbfColor(rgb, f) { Alpha = 255; }
-    RgbaColor(HsbColor hsb, uint32_t f) : RgbfColor(hsb, f) { Alpha = 255; }
-    RgbaColor(uint8_t h, uint32_t f) : RgbfColor(h, f) { Alpha = 255; }
+    RgbaColor(RgbColor rgb, uint8_t f) : RgbfColor(rgb, f) { Alpha = 255; }
+    RgbaColor(HsbColor hsb, uint8_t f) : RgbfColor(hsb, f) { Alpha = 255; }
+    RgbaColor(uint8_t h, uint8_t f) : RgbfColor(h, f) { Alpha = 255; }
     // ---------------------
     RgbaColor(RgbColor rgb, float a) : RgbfColor(rgb) {
         Alpha = (uint8_t)(a * 255);
@@ -80,6 +80,10 @@ struct RgbaColor : RgbfColor {
 protected:
     uint8_t Alpha;
 };
+
+static_assert(sizeof(RgbfColor) == 4, "RgbfColor must stay 4 bytes");
+static_assert(sizeof(RgbaColor) == 5, "RgbaColor must stay 5 bytes");
+
 // ###############################################################################
 
 enum Transition_t {
@@ -140,17 +144,23 @@ protected:
     uint8_t lastTransitionDuration;
     uint8_t lastTransitionColorize;
 
-    uint8_t maxRows, maxCols;
-    uint16_t sizeofColumn;
-    RgbfColor **old;
-    RgbfColor **act;
-    RgbfColor **work;
-    Rain *rain;
-    Snake *snake;
-    Ball *balls;
-    Firework *firework;
+    uint8_t maxRows = 0, maxCols = 0;
+    uint16_t sizeofColumn = 0;
+    RgbfColor **old = nullptr;
+    RgbfColor **act = nullptr;
+    RgbfColor **work = nullptr;
+    Rain *rain = nullptr;
+    Snake *snake = nullptr;
+    Ball *balls = nullptr;
+    Firework *firework = nullptr;
 
 protected:
+    //------------------------------------------------------------------------------
+    // Buffer Management
+    //------------------------------------------------------------------------------
+    void allocate(uint8_t rows, uint8_t cols);
+    void release();
+
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
@@ -193,6 +203,11 @@ protected:
 public:
     Transition(uint8_t bottomRightRow, uint8_t bottomRightCol);
     ~Transition();
+
+    //------------------------------------------------------------------------------
+    // Adapt the buffers to a new front matrix geometry (clock type change).
+    //------------------------------------------------------------------------------
+    void resize(uint8_t rows, uint8_t cols);
 
     //------------------------------------------------------------------------------
     // Loop Helper Functions
@@ -544,8 +559,7 @@ public:
             uint16_t pixels = 0;
             for (int32_t layer = 0; layer <= maxLayer; layer++) {
                 if (bitmapSymbol[layer] != static_cast<BitmapSymbol>(0)) {
-                    if (usedClockType->colsWordMatrix() < 11 ||
-                        usedClockType->rowsWordMatrix() < 10) {
+                    if (maxCols < 11 || maxRows < 10) {
                         pixels = transition->reverse(
                             pgm_read_word(
                                 &(symbol_8x8[bitmapSymbol[layer]][row])),

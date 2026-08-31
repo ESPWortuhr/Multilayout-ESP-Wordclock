@@ -10,6 +10,7 @@ private:
     uint8_t numFramePixels;
     uint16_t frameIntervall;
     uint8_t lastSecondFrame;
+    uint8_t lastSyncedSecond;
     uint16_t countMillisFrameIntervall;
     uint16_t countMillisSpeed;
     uint16_t previousMillis;
@@ -22,6 +23,7 @@ private:
     bool checkIfFrameInit() const;
     bool checkIftoRunFrameLogic() const;
     uint16_t calcCurrentSecondFrameVariable();
+    void resyncToDisplayedTime();
     void handleFrameSectorToggle();
     void handleFrameSector();
     void toggleFrameSectorUpToCurrent();
@@ -48,6 +50,8 @@ SecondsFrame::SecondsFrame(const uint8_t num) {
     numFramePixels = num;
     frameIntervall = 60000 / numFramePixels;
     lastSecondFrame = numFramePixels;
+    // 0xFF cannot collide with a second, so the first loop() resyncs.
+    lastSyncedSecond = 0xFF;
     countMillisFrameIntervall = 0;
     countMillisSpeed = 0;
     previousMillis = 0;
@@ -89,6 +93,35 @@ uint16_t SecondsFrame::calcCurrentSecondFrameVariable() {
 
 //------------------------------------------------------------------------------
 
+void SecondsFrame::resyncToDisplayedTime() {
+    if (_second == lastSyncedSecond) {
+        return;
+    }
+    lastSyncedSecond = _second;
+
+    const int16_t expected =
+        static_cast<int16_t>(calcCurrentSecondFrameVariable());
+    int16_t deviation = static_cast<int16_t>(_secondFrame) - expected;
+
+    if (deviation > numFramePixels / 2) {
+        deviation -= numFramePixels;
+    } else if (deviation < -numFramePixels / 2) {
+        deviation += numFramePixels;
+    }
+
+    if (deviation >= -1 && deviation <= 1) {
+        return;
+    }
+
+    _secondFrame = expected;
+    lastSecondFrame = _secondFrame;
+    countMillisFrameIntervall = 0;
+    setInitFrameSector();
+    updateLedsIfClockworkMode();
+}
+
+//------------------------------------------------------------------------------
+
 void SecondsFrame::handleFrameSectorToggle() {
     if (_minute % 2 == 1) {
         memset(frameArray, true, sizeof(frameArray));
@@ -119,6 +152,11 @@ void SecondsFrame::setInitFrameSector() {
         break;
     case SecondVariant::FrameSector:
         handleFrameSector();
+        break;
+    case SecondVariant::FrameDot:
+        frameArray[_secondFrame] = true;
+        break;
+    case SecondVariant::Off:
         break;
     default:
         Serial.println("[ERROR] Frame.h - Invalid second variant");
@@ -182,11 +220,14 @@ void SecondsFrame::updateLedsIfClockworkMode() {
 //------------------------------------------------------------------------------
 
 void SecondsFrame::frameLogic() {
-    countMillisFrameIntervall = 0;
+    countMillisFrameIntervall -= frameIntervall;
     _secondFrame++;
 
     if (isFullMinute()) {
         handleFullMinute();
+        lastSecondFrame = _secondFrame;
+        updateLedsIfClockworkMode();
+        return;
     }
 
     if (lastSecondFrame != _secondFrame) {
@@ -212,6 +253,8 @@ void SecondsFrame::loop() {
         initFrame();
         G.progInit = false;
     }
+
+    resyncToDisplayedTime();
 
     if (checkIftoRunFrameLogic()) {
         frameLogic();
