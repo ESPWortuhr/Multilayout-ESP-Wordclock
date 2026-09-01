@@ -43,8 +43,8 @@ private:
     bool getStaticScrollingTextInfo(const char *buf, StaticScrollingText &info);
     void displayStaticScrollingText(const char *buf,
                                     const StaticScrollingText &info);
-    void scrollingText(const char *buf);
-    void displaySymbols(BitmapSymbol bitmapSymbolnum);
+    void scrollingText(const char *buf, bool restart = false);
+    void displaySymbols(bool force);
     void countdownToMidnight();
 
     //------------------------------------------------------------------------------

@@ -383,6 +383,28 @@ void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color) {
     show();
 }
 
+void Led::setLogicalSymbol(HsbColor color) {
+    setbyFrontMatrix(color);
+    setbyFrontMatrix(Background, false);
+    show();
+    transition->syncStaticTarget();
+}
+
+void Led::setImmediate() {
+    setbyFrontMatrix(Foreground);
+    setbyFrontMatrix(Background, false);
+
+    if (G.minuteVariant != MinuteVariant::Off) {
+        setbyMinuteArray(Foreground);
+    }
+    if (G.secondVariant != SecondVariant::Off) {
+        setbySecondArray(Frame);
+    }
+
+    show();
+    transition->syncStaticTarget();
+}
+
 //------------------------------------------------------------------------------
 
 void Led::setSingle(uint8_t wait) {
