@@ -13,15 +13,9 @@
 void Transition::allocate(uint8_t rows, uint8_t cols) {
     maxRows = rows;
     maxCols = cols;
-    sizeofColumn = cols * sizeof(RgbfColor);
-    old = new RgbfColor *[rows];
-    act = new RgbfColor *[rows];
-    work = new RgbfColor *[rows];
-    for (uint8_t row = 0; row < rows; row++) {
-        old[row] = new RgbfColor[cols];
-        act[row] = new RgbfColor[cols];
-        work[row] = new RgbfColor[cols];
-    }
+    old.resize(rows, cols);
+    act.resize(rows, cols);
+    work.resize(rows, cols);
     rain = new Rain[cols];
     balls = new Ball[cols];
     for (uint8_t col = 0; col < cols; col++) {
@@ -35,29 +29,20 @@ void Transition::allocate(uint8_t rows, uint8_t cols) {
 //------------------------------------------------------------------------------
 
 void Transition::release() {
-    for (uint8_t row = 0; row < maxRows; row++) {
-        delete[] old[row];
-        delete[] act[row];
-        delete[] work[row];
-    }
-    delete[] old;
-    delete[] act;
-    delete[] work;
+    old.release();
+    act.release();
+    work.release();
     delete[] rain;
     delete[] balls;
     delete snake;
     delete firework;
 
-    old = nullptr;
-    act = nullptr;
-    work = nullptr;
     rain = nullptr;
     balls = nullptr;
     snake = nullptr;
     firework = nullptr;
     maxRows = 0;
     maxCols = 0;
-    sizeofColumn = 0;
 }
 
 //------------------------------------------------------------------------------
@@ -190,7 +175,7 @@ bool Transition::isColorization() {
 bool Transition::changeBrightness() {
     RgbfColor newForeground, newBackground;
     // determine only foreground and background from LED stripe
-    analyzeColors(NULL, STRIPE, newForeground, newBackground);
+    analyzeColors(nullptr, nullptr, newForeground, newBackground);
     bool adjustFg = newForeground != foreground,
          adjustBg = newBackground != background;
 
@@ -200,23 +185,23 @@ bool Transition::changeBrightness() {
         hsbColor = HsbColor(foregroundMinute);
         hsbColor.B = brightness;
         foregroundMinute = RgbColor(hsbColor);
-        RgbfColor **matrix[3] = {act, old, work};
+        ColorMatrix *matrix[3] = {&act, &old, &work};
         for (uint8_t m = 0; m < 3; m++) {
             for (uint8_t row = 0; row < maxRows; row++) {
                 for (uint8_t col = 0; col < maxCols; col++) {
                     if (adjustBg) {
-                        if (!matrix[m][row][col].isForeground()) {
-                            matrix[m][row][col] = newBackground;
+                        if (!(*matrix[m])[row][col].isForeground()) {
+                            (*matrix[m])[row][col] = newBackground;
                         }
                     }
                     if (adjustFg) {
-                        if (matrix[m][row][col].isForeground()) {
+                        if ((*matrix[m])[row][col].isForeground()) {
                             if (isColorization()) {
-                                hsbColor = HsbColor(matrix[m][row][col]);
+                                hsbColor = HsbColor((*matrix[m])[row][col]);
                                 hsbColor.B = brightness;
-                                matrix[m][row][col].changeRgb(hsbColor);
+                                (*matrix[m])[row][col].changeRgb(hsbColor);
                             } else {
-                                matrix[m][row][col].changeRgb(newForeground);
+                                (*matrix[m])[row][col].changeRgb(newForeground);
                             }
                         }
                     }
@@ -282,7 +267,7 @@ float Transition::pseudoRandomHue(bool init) {
 //------------------------------------------------------------------------------
 // colorize foreground
 
-void Transition::colorize(RgbfColor **dest) {
+void Transition::colorize(ColorMatrix &dest) {
     HsbColor hsbColor = HsbColor(foreground);
     hsbColor.H = pseudoRandomHue();
     foregroundMinute = isColorization() ? RgbColor(hsbColor) : foreground;
@@ -339,7 +324,7 @@ void Transition::colorize(RgbfColor **dest) {
 void Transition::saveMatrix() {
     static bool firstRun = true;
     copyMatrix(old, act);
-    analyzeColors(act, STRIPE, foreground, background);
+    analyzeColors(&act, nullptr, foreground, background);
     foregroundMinute = foreground;
     if (isColorization()) {
         colorize(act);
@@ -355,22 +340,22 @@ void Transition::saveMatrix() {
 // copy (internal matrix or from LED stripe) and determine foreground and
 // background color
 
-void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
+void Transition::analyzeColors(ColorMatrix *dest, ColorMatrix *source,
                                RgbfColor &foreground, RgbfColor &background) {
     RgbfColor color, color1(0), color2(0);
     uint32_t colorCounter1 = 0, colorCounter2 = 0;
     const uint8_t numLEDsPerLetter = getLedsPerLetter(G.buildTypeDef);
     for (uint8_t row = 0; row < maxRows; row++) {
         for (uint8_t col = 0; col < maxCols; col++) {
-            if (source == STRIPE) {
+            if (source == nullptr) {
                 color = RgbfColor(
                     led.getPixel(usedClockType->getFrontMatrixIndex(row, col) *
                                  numLEDsPerLetter));
             } else {
-                color = source[row][col];
+                color = (*source)[row][col];
             }
-            if (dest != NULL) {
-                dest[row][col] = color;
+            if (dest != nullptr) {
+                (*dest)[row][col] = color;
             }
             if (color == color1) {
                 colorCounter1++;
@@ -401,10 +386,11 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
     foreground.setOverlay(false);
     background.setForeground(false);
     background.setOverlay(false);
-    if (dest != NULL) {
+    if (dest != nullptr) {
         for (uint8_t row = 0; row < maxRows; row++) {
             for (uint8_t col = 0; col < maxCols; col++) {
-                dest[row][col].setForeground(dest[row][col] == foreground);
+                (*dest)[row][col].setForeground((*dest)[row][col] ==
+                                                foreground);
             }
         }
     }
@@ -413,7 +399,7 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
 //------------------------------------------------------------------------------
 // Overwrite the LEDs with internal matrix
 
-void Transition::copy2Stripe(RgbfColor **source) {
+void Transition::copy2Stripe(const ColorMatrix &source) {
     for (uint8_t row = 0; row < maxRows; row++) {
         for (uint8_t col = 0; col < maxCols; col++) {
             led.setPixel(
@@ -426,15 +412,13 @@ void Transition::copy2Stripe(RgbfColor **source) {
 
 //------------------------------------------------------------------------------
 
-void Transition::copyMatrix(RgbfColor **dest, RgbfColor **source) {
-    for (uint8_t row = 0; row < maxRows; row++) {
-        memcpy(dest[row], source[row], sizeofColumn);
-    }
+void Transition::copyMatrix(ColorMatrix &dest, const ColorMatrix &source) {
+    dest.copyFrom(source);
 }
 
 //------------------------------------------------------------------------------
 
-void Transition::copyMatrixFlags(RgbfColor **dest, RgbfColor **source) {
+void Transition::copyMatrixFlags(ColorMatrix &dest, const ColorMatrix &source) {
     for (uint8_t row = 0; row < maxRows; row++) {
         for (uint8_t col = 0; col < maxCols; col++) {
             dest[row][col].setFlags(source[row][col].getFlags());
@@ -444,7 +428,7 @@ void Transition::copyMatrixFlags(RgbfColor **dest, RgbfColor **source) {
 
 //------------------------------------------------------------------------------
 
-void Transition::fillMatrix(RgbfColor **matrix, RgbfColor color) {
+void Transition::fillMatrix(ColorMatrix &matrix, RgbfColor color) {
     for (uint8_t row = 0; row < maxRows; row++) {
         for (uint8_t col = 0; col < maxCols; col++) {
             matrix[row][col] = color;
@@ -699,7 +683,7 @@ uint16_t Transition::transitionFire() {
             led.clear();
             usedClockType->show(FrontWord::happy_birthday);
             led.setbyFrontMatrix(hsbColor);
-            analyzeColors(work, STRIPE, foreground, background);
+            analyzeColors(&work, nullptr, foreground, background);
 
             copyMatrix(act, work);
         } else {

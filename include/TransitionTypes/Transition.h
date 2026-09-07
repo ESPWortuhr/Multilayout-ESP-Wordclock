@@ -4,85 +4,7 @@
 #include "Symbols.h"
 #include <queue>
 
-// ###############################################################################
-// compare operators are derived from RgbColor which compare R, G, B only
-// one hot coding for F_xxx
-
-#define F_NULL 0
-#define F_FOREGROUND 1
-#define F_OVERLAY 2
-struct RgbfColor : RgbColor {
-    RgbfColor() : RgbColor() {
-        R = 0;
-        G = 0;
-        B = 0;
-        Flags = F_NULL;
-    };
-    RgbfColor(RgbColor rgb) : RgbColor(rgb) { Flags = F_NULL; }
-    RgbfColor(uint8_t h) : RgbColor(h) { Flags = F_NULL; }
-    RgbfColor(uint8_t r, uint8_t g, uint8_t b) : RgbColor(r, g, b) {
-        Flags = F_NULL;
-    }
-    RgbfColor(RgbColor rgb, uint8_t f) : RgbColor(rgb) { Flags = f; }
-    RgbfColor(HsbColor hsb, uint8_t f) : RgbColor(hsb) { Flags = f; }
-    RgbfColor(uint8_t h, uint8_t f) : RgbColor(h) { Flags = f; }
-
-    void changeRgb(RgbColor color) {
-        R = color.R;
-        G = color.G;
-        B = color.B;
-    }
-    void changeRgb(HsbColor hsb) {
-        RgbColor color = RgbColor(hsb);
-        R = color.R;
-        G = color.G;
-        B = color.B;
-    }
-    void setForeground(bool flag = true) {
-        if (flag) {
-            Flags |= F_FOREGROUND;
-        } else {
-            Flags &= ~F_FOREGROUND;
-        }
-    }
-    bool isForeground() { return (Flags & F_FOREGROUND) > 0; }
-    void setOverlay(bool flag = true) {
-        if (flag) {
-            Flags |= F_OVERLAY;
-        } else {
-            Flags &= ~F_OVERLAY;
-        }
-    }
-    bool isOverlay() { return (Flags & F_OVERLAY) > 0; }
-    void setFlags(uint8_t flags) { Flags = flags; }
-    uint8_t getFlags() { return Flags; }
-
-protected:
-    uint8_t Flags;
-};
-struct RgbaColor : RgbfColor {
-    RgbaColor() : RgbfColor() { Alpha = 255; };
-    RgbaColor(RgbColor rgb) : RgbfColor(rgb) { Alpha = 255; }
-    RgbaColor(uint8_t h) : RgbfColor(h) { Alpha = 255; }
-    RgbaColor(RgbColor rgb, uint8_t f) : RgbfColor(rgb, f) { Alpha = 255; }
-    RgbaColor(HsbColor hsb, uint8_t f) : RgbfColor(hsb, f) { Alpha = 255; }
-    RgbaColor(uint8_t h, uint8_t f) : RgbfColor(h, f) { Alpha = 255; }
-    // ---------------------
-    RgbaColor(RgbColor rgb, float a) : RgbfColor(rgb) {
-        Alpha = (uint8_t)(a * 255);
-    }
-    RgbaColor(uint8_t h, float a) : RgbfColor(h) { Alpha = (uint8_t)(a * 255); }
-    RgbaColor(uint8_t r, uint8_t g, uint8_t b, float a) : RgbfColor(r, g, b) {
-        Alpha = (uint8_t)(a * 255);
-    }
-    float getAlpha() { return Alpha / 255.0; }
-
-protected:
-    uint8_t Alpha;
-};
-
-static_assert(sizeof(RgbfColor) == 4, "RgbfColor must stay 4 bytes");
-static_assert(sizeof(RgbaColor) == 5, "RgbaColor must stay 5 bytes");
+#include "Render/ColorMatrix.h"
 
 // ###############################################################################
 
@@ -145,10 +67,9 @@ protected:
     uint8_t lastTransitionColorize;
 
     uint8_t maxRows = 0, maxCols = 0;
-    uint16_t sizeofColumn = 0;
-    RgbfColor **old = nullptr;
-    RgbfColor **act = nullptr;
-    RgbfColor **work = nullptr;
+    ColorMatrix old;
+    ColorMatrix act;
+    ColorMatrix work;
     Rain *rain = nullptr;
     Snake *snake = nullptr;
     Ball *balls = nullptr;
@@ -175,14 +96,14 @@ protected:
     bool changeBrightness();
     float pseudoRandomHue();
     float pseudoRandomHue(bool init);
-    void colorize(RgbfColor **dest);
+    void colorize(ColorMatrix &dest);
     void saveMatrix();
-    void analyzeColors(RgbfColor **dest, RgbfColor **source,
-                       RgbfColor &foreground, RgbfColor &background);
-    void copy2Stripe(RgbfColor **source);
-    void copyMatrix(RgbfColor **dest, RgbfColor **source);
-    void copyMatrixFlags(RgbfColor **dest, RgbfColor **source);
-    void fillMatrix(RgbfColor **matrix, RgbfColor color);
+    void analyzeColors(ColorMatrix *dest, ColorMatrix *source, RgbfColor &foreground,
+                       RgbfColor &background);
+    void copy2Stripe(const ColorMatrix &source);
+    void copyMatrix(ColorMatrix &dest, const ColorMatrix &source);
+    void copyMatrixFlags(ColorMatrix &dest, const ColorMatrix &source);
+    void fillMatrix(ColorMatrix &matrix, RgbfColor color);
     uint16_t calcDelay(uint16_t phasen);
     bool changesInTransitionTypeDurationOrDemo();
 
@@ -410,17 +331,17 @@ protected:
     bool goRight;
     int32_t index;
     std::queue<Coord> snake;
-    RgbfColor **work;
-    RgbfColor **old;
-    RgbfColor **act;
+    ColorMatrix *work;
+    ColorMatrix *old;
+    ColorMatrix *act;
     RgbfColor snakeColor;
     Transition *transition;
 
 public:
     void begin(Transition *transition) {
-        this->old = transition->old;
-        this->act = transition->act;
-        this->work = transition->work;
+        this->old = &transition->old;
+        this->act = &transition->act;
+        this->work = &transition->work;
         this->transition = transition;
         HsbColor hsbColor = HsbColor(transition->foreground);
         hsbColor.H = fmodf(hsbColor.H + 0.5, 1.0);
@@ -428,8 +349,8 @@ public:
         goRight = true;
         head = {false, 0, -1};
         index = 0;
-        getMotions(old, false, 0, 1);
-        getMotions(act, true, maxRows - 1, -1);
+        getMotions(*old, false, 0, 1);
+        getMotions(*act, true, maxRows - 1, -1);
         motions[index] = {false, -1, 0, 0}; // move out on left side
         motions[index + 1] = {false, -2, 0,
                               (int8_t)(maxCols - 1)}; // last on right side
@@ -444,18 +365,19 @@ public:
             (!moving && snake.size())) {
             tail = snake.front();
             snake.pop();
-            work[tail.row][tail.col] =
-                tail.useAct ? act[tail.row][tail.col] : transition->background;
+            (*work)[tail.row][tail.col] =
+                tail.useAct ? (*act)[tail.row][tail.col]
+                            : transition->background;
         }
         if (moving) {
             snake.push(head);
-            work[head.row][head.col] = snakeColor;
+            (*work)[head.row][head.col] = snakeColor;
         }
         return snake.size();
     }
 
 protected:
-    void getMotions(RgbfColor **matrix, bool useAct, int8_t row, int8_t delta) {
+    void getMotions(ColorMatrix &matrix, bool useAct, int8_t row, int8_t delta) {
         // order in motions: old -> down, act -> up
         int8_t left, right, rowCounter = maxRows;
         while (rowCounter-- > 0) {
