@@ -5,6 +5,8 @@
 
 #define PAYLOAD_LENGTH 30
 #define MAX_ROW_SIZE 22
+// Widest front matrix currently supported (Ger16x18).
+#define MAX_COL_SIZE 18
 #define MAX_BIRTHDAY_COUNT 5
 
 // The Unique ID is a cross-reference for HTML/JavaScript
@@ -272,6 +274,20 @@ extern uint8_t lastMinute;
 
 extern uint32_t frontMatrix[MAX_ROW_SIZE];
 extern uint32_t lastFrontMatrix[MAX_ROW_SIZE];
+
+/*
+ * Which word lit each cell, as a FrontWord cast to uint8_t. Filled by
+ * ClockType::setFrontMatrixPixel() while a word is being drawn, so consumers
+ * (colorization) know word boundaries instead of having to guess them from
+ * runs of lit cells - which fails for words that are not laid out
+ * horizontally.
+ *
+ * Indexed in display coordinates, i.e. the same [row][col] that
+ * getFrontMatrixPixel() uses, NOT the bit position that setFrontMatrixPixel()
+ * takes.
+ */
+constexpr uint8_t WORD_ID_NONE = 0; // == FrontWord::error
+extern uint8_t frontWordId[MAX_ROW_SIZE][MAX_COL_SIZE];
 extern uint8_t minuteArray; /* Using a byte as a per bit array */
 extern uint8_t lastMinuteArray;
 extern uint16_t minutePixelArray[4];

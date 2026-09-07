@@ -200,7 +200,6 @@ function initConfigValues() {
 	transitionDemo = false;
 }
 
-/* eslint-disable no-console */
 function debugMessage(debugMessage, someObject) {
 	if (debug === true) {
 

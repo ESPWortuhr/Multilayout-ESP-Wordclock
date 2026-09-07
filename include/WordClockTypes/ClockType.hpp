@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string.h> // memset (resetWordIds)
+
 enum class LanguageAbbreviation {
     DE,
     EN,
@@ -174,8 +176,9 @@ public:
         // Guard against out of range indices: a negative column would shift by
         // a negative amount (undefined behaviour) and a row beyond the matrix
         // would write past frontMatrix[].
+        const uint8_t cols = colsWordMatrix();
         if (row < 0 || row >= static_cast<int>(rowsWordMatrix()) || col < 0 ||
-            col >= static_cast<int>(colsWordMatrix())) {
+            col >= static_cast<int>(cols)) {
             return;
         }
 
@@ -183,6 +186,13 @@ public:
             frontMatrix[row] |= 1UL << col;
         } else {
             frontMatrix[row] &= ~(1UL << col);
+        }
+
+        // Record the word this cell belongs to. col is a bit position, while
+        // frontWordId is indexed like getFrontMatrixPixel() - hence the flip.
+        if (cols <= MAX_COL_SIZE) {
+            frontWordId[row][cols - 1 - col] =
+                state ? currentWordId : WORD_ID_NONE;
         }
     }
 
@@ -194,7 +204,28 @@ public:
         return (frontMatrix[row] >> (colsWordMatrix() - 1 - col)) & 1U;
     }
 
-    virtual void show(FrontWord word) = 0;
+    /*
+     * Public entry point for drawing a word. Not virtual: it records which
+     * word is being drawn so setFrontMatrixPixel() can tag every cell it
+     * touches, then delegates to the layout's drawWord().
+     *
+     * The previous id is saved and restored rather than cleared, because
+     * layouts call show() recursively (e.g. Ger13x13 composes "zwei und" from
+     * show(min_2) followed by more drawing of its own).
+     */
+    void show(FrontWord word) {
+        const uint8_t previousWordId = currentWordId;
+        currentWordId = static_cast<uint8_t>(word);
+        drawWord(word);
+        currentWordId = previousWordId;
+    }
+
+    /* Clear the word tags; call whenever frontMatrix itself is reset. */
+    static void resetWordIds() {
+        memset(frontWordId, WORD_ID_NONE, sizeof(frontWordId));
+    }
+
+    virtual void drawWord(FrontWord word) = 0;
 
     virtual LanguageAbbreviation usedLang() = 0;
 
@@ -359,6 +390,10 @@ public:
     };
 
 protected:
+    /* FrontWord currently being drawn by show(); tags cells in
+     * setFrontMatrixPixel(). */
+    uint8_t currentWordId = WORD_ID_NONE;
+
     uint16_t checkedFrontMatrixIndex(const uint16_t index,
                                      const uint16_t numPixels) {
         static bool alreadyReported = false;

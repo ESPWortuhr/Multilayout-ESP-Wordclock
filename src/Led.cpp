@@ -121,6 +121,7 @@ void Led::resetFrontMatrixBuffer() {
     for (uint8_t i = 0; i < usedClockType->rowsWordMatrix(); i++) {
         frontMatrix[i] = 0;
     }
+    ClockType::resetWordIds();
 }
 
 //------------------------------------------------------------------------------
@@ -182,20 +183,39 @@ void Led::mirrorMinuteArrayVertical() {
 //------------------------------------------------------------------------------
 
 void Led::mirrorFrontMatrixVertical() {
+    const uint8_t cols = usedClockType->colsWordMatrix();
     for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
         frontMatrix[row] = reverse32BitOrder(frontMatrix[row]);
-        frontMatrix[row] >>= (32 - usedClockType->colsWordMatrix());
+        frontMatrix[row] >>= (32 - cols);
+
+        // Keep the word tags aligned with the cells they describe.
+        if (cols <= MAX_COL_SIZE) {
+            for (uint8_t col = 0; col < cols / 2; col++) {
+                const uint8_t tmp = frontWordId[row][col];
+                frontWordId[row][col] = frontWordId[row][cols - 1 - col];
+                frontWordId[row][cols - 1 - col] = tmp;
+            }
+        }
     }
 }
 
 //------------------------------------------------------------------------------
 
 void Led::mirrorFrontMatrixHorizontal() {
+    const uint8_t rows = usedClockType->rowsWordMatrix();
     uint32_t tempMatrix[MAX_ROW_SIZE] = {0};
     memcpy(&tempMatrix, &frontMatrix, sizeof tempMatrix);
-    for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
-        frontMatrix[row] =
-            tempMatrix[usedClockType->rowsWordMatrix() - row - 1];
+    for (uint8_t row = 0; row < rows; row++) {
+        frontMatrix[row] = tempMatrix[rows - row - 1];
+    }
+
+    // Keep the word tags aligned with the cells they describe.
+    for (uint8_t row = 0; row < rows / 2; row++) {
+        for (uint8_t col = 0; col < MAX_COL_SIZE; col++) {
+            const uint8_t tmp = frontWordId[row][col];
+            frontWordId[row][col] = frontWordId[rows - 1 - row][col];
+            frontWordId[rows - 1 - row][col] = tmp;
+        }
     }
 }
 

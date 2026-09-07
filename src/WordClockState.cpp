@@ -22,6 +22,7 @@ uint8_t lastMinute = 0;
 
 uint32_t frontMatrix[MAX_ROW_SIZE] = {0};
 uint32_t lastFrontMatrix[MAX_ROW_SIZE] = {0};
+uint8_t frontWordId[MAX_ROW_SIZE][MAX_COL_SIZE] = {{WORD_ID_NONE}};
 uint8_t minuteArray = 0; /* Using a byte as a per bit array */
 uint8_t lastMinuteArray = 0;
 uint16_t minutePixelArray[4] = {0};

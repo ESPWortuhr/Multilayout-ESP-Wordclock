@@ -5,6 +5,11 @@
 #define STRIPE NULL
 #define MAX_RANDOM 10
 
+// Distinct words that can share one clock face. Generous: setClock() shows at
+// most a handful, the weather layout is the widest user. Beyond this limit
+// colouring stays correct, later words just get a fresh hue each time.
+#define MAX_COLORIZED_WORDS 16
+
 void Transition::allocate(uint8_t rows, uint8_t cols) {
     maxRows = rows;
     maxCols = cols;
@@ -278,154 +283,53 @@ float Transition::pseudoRandomHue(bool init) {
 // colorize foreground
 
 void Transition::colorize(RgbfColor **dest) {
-    bool changeColor = true;
     HsbColor hsbColor = HsbColor(foreground);
     hsbColor.H = pseudoRandomHue();
     foregroundMinute = isColorization() ? RgbColor(hsbColor) : foreground;
-    hsbColor.H = pseudoRandomHue();
+
+    /*
+    One hue per word. The word a cell belongs to comes from frontWordId, which
+    ClockType fills while drawing, so cells of the same word share a colour even
+    when the word is not laid out horizontally - ZWEI spanning two rows or EINS
+    running down a column. Deriving word boundaries from runs of lit cells used
+    to need a hard coded patch-up per layout here.
+    */
+    struct WordHue {
+        uint8_t wordId;
+        float hue;
+    };
+    WordHue wordHues[MAX_COLORIZED_WORDS];
+    uint8_t wordHueCount = 0;
+
     for (uint8_t row = 0; row < maxRows; row++) {
         for (uint8_t col = 0; col < maxCols; col++) {
-            if (dest[row][col].isForeground()) {
-                if ((G.transitionColorize == CHARACTERS) || changeColor) {
-                    changeColor = false;
-                    hsbColor.H = pseudoRandomHue();
-                }
-                dest[row][col].changeRgb(isColorization() ? hsbColor
-                                                          : foreground);
-            } else {
-                changeColor = true;
+            if (!dest[row][col].isForeground()) {
+                continue;
             }
-        }
-    }
 
-    // correct color of NACH and ZWEI due non horizontal alignment
-    if (G.clockTypeDef == Ger08x08 && (G.transitionColorize != CHARACTERS)) {
-        // set color of VOR (if FÜNFZEHN is colored it's the same)
-        if (dest[1][0].isForeground()) {
-            hsbColor.H = pseudoRandomHue();
-            dest[1][0].changeRgb(isColorization() ? hsbColor : foreground);
-            dest[1][1] = dest[1][0];
-            dest[1][2] = dest[1][0];
-        }
-        // set color of EINS
-        if (dest[1][7].isForeground()) {
-            dest[1][7] = dest[2][7];
-            dest[3][7] = dest[2][7];
-            dest[4][7] = dest[2][7];
-        }
-        // set color of ZWEI
-        if (dest[7][0].isForeground()) {
-            dest[6][0] = dest[7][0];
-            dest[6][1] = dest[7][0];
-            dest[7][1] = dest[7][0];
-        }
-        // set color of DREI
-        if (dest[2][4].isForeground()) {
-            hsbColor.H = pseudoRandomHue();
-            dest[2][4].changeRgb(isColorization() ? hsbColor : foreground);
-            dest[2][5] = dest[2][4];
-            dest[2][6] = dest[2][4];
-            dest[2][7] = dest[2][4];
-        }
-    }
+            if (G.transitionColorize == CHARACTERS) {
+                hsbColor.H = pseudoRandomHue();
+            } else {
+                const uint8_t wordId = frontWordId[row][col];
+                float hue = -1.f;
+                for (uint8_t i = 0; i < wordHueCount; i++) {
+                    if (wordHues[i].wordId == wordId) {
+                        hue = wordHues[i].hue;
+                        break;
+                    }
+                }
+                if (hue < 0.f) {
+                    hue = pseudoRandomHue();
+                    if (wordHueCount < MAX_COLORIZED_WORDS) {
+                        wordHues[wordHueCount].wordId = wordId;
+                        wordHues[wordHueCount].hue = hue;
+                        wordHueCount++;
+                    }
+                }
+                hsbColor.H = hue;
+            }
 
-    // correct color of NACH and ZWEI due non horizontal alignment
-    if (G.clockTypeDef == Ger08x08Viertel &&
-        (G.transitionColorize != CHARACTERS)) {
-        // set color of A for N, C and H (A has no other word before, compared
-        // to N (VIERTEL) and C (NEUN))
-        if (dest[1][7].isForeground()) {
-            dest[0][7] = dest[1][7];
-            dest[2][7] = dest[1][7];
-            dest[3][7] = dest[1][7];
-        }
-        // set color of Z, W for E and I if E and I are active (Z and W is also
-        // used for ZWÖLF)
-        if (dest[5][0].isForeground() && dest[5][1].isForeground()) {
-            dest[5][0] = dest[4][0];
-            dest[5][1] = dest[4][1];
-        }
-    }
-
-    // correct color of DOCE and CUARTO due non horizontal alignment
-    if (G.clockTypeDef == Es08x08Cuarto &&
-        (G.transitionColorize != CHARACTERS)) {
-        // set color of D for O, C and E
-        if (dest[3][6].isForeground()) {
-            dest[3][7] = dest[3][6];
-            dest[4][6] = dest[3][6];
-            dest[4][7] = dest[3][6];
-        }
-        // set color of R for C, U, A, T and O
-        if (dest[7][5].isForeground()) {
-            dest[6][5] = dest[7][5];
-            dest[6][6] = dest[7][5];
-            dest[6][7] = dest[7][5];
-            dest[7][6] = dest[7][5];
-            dest[7][7] = dest[7][5];
-        }
-    }
-
-    // correct color of a lot words due crazy alignment
-    if (G.clockTypeDef == Eng08x08 && (G.transitionColorize != CHARACTERS)) {
-        // set color of TWENTY
-        if (dest[2][1].isForeground()) {
-            dest[0][1] = dest[0][0];
-            dest[1][0] = dest[0][0];
-            dest[1][1] = dest[0][0];
-            dest[2][0] = dest[0][0];
-            dest[2][1] = dest[0][0];
-        }
-        // set color of TEN (minute)
-        else if (dest[0][0].isForeground()) {
-            dest[1][0] = dest[0][0];
-            dest[1][1] = dest[0][0];
-        }
-        // set color of FIVE (minute)
-        if (dest[1][2].isForeground()) {
-            dest[0][2] = dest[1][2];
-            dest[0][3] = dest[1][2];
-            dest[1][3] = dest[1][2];
-        }
-        // set color of FIFTEEN
-        if (dest[0][4].isForeground()) {
-            dest[0][2] = dest[0][4];
-            dest[0][3] = dest[0][4];
-            dest[0][5] = dest[0][4];
-            dest[1][3] = dest[0][4];
-            dest[1][4] = dest[0][4];
-            dest[1][5] = dest[0][4];
-        }
-        // set color of HALF
-        if (dest[0][6].isForeground()) {
-            dest[0][7] = dest[0][6];
-            dest[1][6] = dest[0][6];
-            dest[1][7] = dest[0][6];
-        }
-        // set color of TEN (hour)
-        if (dest[2][7].isForeground()) {
-            dest[3][7] = dest[2][7];
-            dest[4][7] = dest[2][7];
-        }
-        // set color of ELEVEN
-        if (dest[3][6].isForeground()) {
-            dest[3][5] = dest[3][6];
-            dest[3][7] = dest[3][6];
-            dest[4][5] = dest[3][6];
-            dest[4][6] = dest[3][6];
-            dest[4][7] = dest[3][6];
-        }
-        // set color of FIVE (hour)
-        if (dest[4][0].isForeground() && dest[5][1].isForeground()) {
-            dest[5][1] = dest[4][0];
-            dest[6][2] = dest[4][0];
-            dest[7][3] = dest[4][0];
-        }
-        // set color of NINE
-        if (dest[4][4].isForeground() && dest[5][4].isForeground()) {
-            dest[5][4] = dest[4][4];
-            dest[6][4] = dest[4][4];
-            dest[7][4] = dest[4][4];
+            dest[row][col].changeRgb(isColorization() ? hsbColor : foreground);
         }
     }
 }
