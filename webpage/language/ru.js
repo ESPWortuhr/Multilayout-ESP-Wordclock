@@ -36,7 +36,9 @@ let TRANSLATION_RU = {
 		"color": {
 			"foreground": "Передний план",
 			"background": "Фон",
-			"frame": "Рама"
+			"frame": "Рама",
+			"gradient": "Цвет градиента",
+			"per_word": "По словам"
 		},
 		"mode": {
 			"h2": "Режим",
@@ -63,8 +65,8 @@ let TRANSLATION_RU = {
 			"color": {
 				"label": "Анимация в цветах",
 				"off": "Bыключен",
-				"words": "Красочные слова",
-				"letters": "Красочные буквы"
+				"gradient": "Градиент",
+				"random": "Случайные цвета"
 			},
 			"speed": {
 				"label": "Скорость"

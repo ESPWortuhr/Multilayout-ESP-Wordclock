@@ -80,8 +80,8 @@ bool parseColor(uint8_t *payload, size_t length) {
     uint32_t effectBrightness = split(payload, 15);
     uint32_t effectSpeed = split(payload, 18);
 
-    if (position > Frame || hue > 360 || saturation > 100 || value > 100 ||
-        effectBrightness > 100 || effectSpeed > 100) {
+    if (position > GradientEnd || hue > 360 || saturation > 100 ||
+        value > 100 || effectBrightness > 100 || effectSpeed > 100) {
         Serial.println("Invalid color payload ignored");
         return false;
     }
@@ -208,6 +208,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.transitionSpeed = split(payload, 9);
             G.transitionColorize = split(payload, 12);
             G.transitionDemo = split(payload, 15);
+            G.colorizePerWord = split(payload, 18);
             break;
         }
 

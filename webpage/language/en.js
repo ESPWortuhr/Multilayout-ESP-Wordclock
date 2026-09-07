@@ -36,7 +36,9 @@ let TRANSLATION_EN_US = {
 		"color": {
 			"foreground": "Foreground",
 			"background": "Background",
-			"frame": "Frame"
+			"frame": "Frame",
+			"gradient": "Gradient color",
+			"per_word": "Per word"
 		},
 		"mode": {
 			"h2": "Mode",
@@ -99,8 +101,8 @@ let TRANSLATION_EN_US = {
 			"color": {
 				"label": "Color transition",
 				"off": "Off",
-				"words": "Colored Words",
-				"letters": "Colored Letters"
+				"gradient": "Gradient",
+				"random": "Random colours"
 			},
 			"speed": {
 				"label": "Speed"

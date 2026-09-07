@@ -36,7 +36,9 @@ let TRANSLATION_NL = {
 		"color": {
 			"foreground": "Voorgrond",
 			"background": "Achtergrond",
-			"frame": "Frame"
+			"frame": "Frame",
+			"gradient": "Verloopkleur",
+			"per_word": "Per woord"
 		},
 		"mode": {
 			"h2": "Modus",
@@ -76,8 +78,8 @@ let TRANSLATION_NL = {
 			"color": {
 				"label": "Kleurovergang",
 				"off": "Uit",
-				"words": "Gekleurde woorden",
-				"letters": "Gekleurde letters"
+				"gradient": "Kleurverloop",
+				"random": "Willekeurige kleuren"
 			},
 			"speed": {
 				"label": "Snelheid"

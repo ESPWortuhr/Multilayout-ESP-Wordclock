@@ -1651,7 +1651,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_COLOR_VALUES: {
         DynamicJsonDocument config(768);
         config["command"] = "set";
-        for (uint8_t i = 0; i < 3; i++) {
+        for (uint8_t i = 0; i < ColorPositionCount; i++) {
             char string2Send[7];
             sprintf(string2Send, "hsb%d%d", i, 0);
             config[string2Send] = static_cast<uint16_t>(G.color[i].H * 360);
@@ -1698,6 +1698,7 @@ void ClockWork::loop(struct tm &tm) {
         config["transitionSpeed"] = G.transitionSpeed;
         config["transitionDemo"] = G.transitionDemo;
         config["transitionColorize"] = G.transitionColorize;
+        config["colorizePerWord"] = G.colorizePerWord;
 
         sendJsonToClient(G.client_nr, config);
         break;

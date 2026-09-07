@@ -64,3 +64,8 @@ grunt_build = env.Command(
 env.Depends(grunt_build, npm_ci)
 env.Depends(grunt_build, package_json)
 env.Depends(grunt_build, env.Glob("webpage/*"))
+# Subdirectories too: a glob on "webpage/*" only tracks the directory node, so
+# editing an existing icon or language file would not trigger a rebuild -- only
+# adding or removing one changes the directory's timestamp.
+env.Depends(grunt_build, env.Glob("webpage/icons/*"))
+env.Depends(grunt_build, env.Glob("webpage/language/*"))

@@ -448,7 +448,9 @@ void Led::set(WordclockChanges changed) {
     setbyFrontMatrix(Foreground);
     setbyFrontMatrix(Background, false);
 
-    if (G.transitionType == NO_TRANSITION) {
+    // When the transition stage owns the output (a transition is running, or
+    // colouring is on) it draws minutes, frame and the strip itself.
+    if (!transition->ownsDisplay()) {
         if (G.minuteVariant != MinuteVariant::Off) {
             setbyMinuteArray(Foreground);
         }
@@ -459,7 +461,7 @@ void Led::set(WordclockChanges changed) {
     }
 
     if (transition->isOverwrittenByTransition(changed, _minute)) {
-        if (G.transitionType == NO_TRANSITION) {
+        if (!transition->ownsDisplay()) {
             show();
         }
     }

@@ -5,6 +5,7 @@
 #include <queue>
 
 #include "Render/ColorMatrix.h"
+#include "Render/Colorizers.h"
 
 // ###############################################################################
 
@@ -28,8 +29,6 @@ enum Transition_t {
     NEWYEAR_COUNTDOWN = 98,
     NEWYEAR_FIRE = 99
 };
-
-enum Colorize { OFF = 0, WORDS = 1, CHARACTERS = 2 };
 
 class Snake;
 class Firework;
@@ -66,6 +65,7 @@ protected:
     uint8_t lastTransitionDuration;
     uint8_t lastTransitionColorize;
 
+    HueSequence hueSequence;
     uint8_t maxRows = 0, maxCols = 0;
     ColorMatrix old;
     ColorMatrix act;
@@ -94,8 +94,6 @@ protected:
     Transition_t getTransitionType(bool trigger);
     bool isColorization();
     bool changeBrightness();
-    float pseudoRandomHue();
-    float pseudoRandomHue(bool init);
     void colorize(ColorMatrix &dest);
     void saveMatrix();
     void displayColors(RgbfColor &foreground, RgbfColor &background);
@@ -138,6 +136,9 @@ public:
     void initTransitionStart();
     bool hasMinuteChanged();
     bool isOverwrittenByTransition(WordclockChanges flag, uint8_t minute);
+
+    /* True when this stage, not Led::set(), pushes the pixels to the strip. */
+    bool ownsDisplay();
 
     //------------------------------------------------------------------------------
     // Loop Functions
@@ -366,9 +367,9 @@ public:
             (!moving && snake.size())) {
             tail = snake.front();
             snake.pop();
-            (*work)[tail.row][tail.col] =
-                tail.useAct ? (*act)[tail.row][tail.col]
-                            : transition->background;
+            (*work)[tail.row][tail.col] = tail.useAct
+                                              ? (*act)[tail.row][tail.col]
+                                              : transition->background;
         }
         if (moving) {
             snake.push(head);
@@ -378,7 +379,8 @@ public:
     }
 
 protected:
-    void getMotions(ColorMatrix &matrix, bool useAct, int8_t row, int8_t delta) {
+    void getMotions(ColorMatrix &matrix, bool useAct, int8_t row,
+                    int8_t delta) {
         // order in motions: old -> down, act -> up
         int8_t left, right, rowCounter = maxRows;
         while (rowCounter-- > 0) {

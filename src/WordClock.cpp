@@ -340,10 +340,14 @@ void setup() {
         G.param1 = 0;
         G.progInit = true;
         G.conf = COMMAND_IDLE;
-        for (uint8_t i = 0; i < 3; i++) {
+        for (uint8_t i = 0; i < ColorPositionCount; i++) {
             G.color[i] = {0, 0, 0};
         }
         G.color[Foreground] = HsbColor(DEFAULT_HUE / 360.f, 1.f, 0.5f);
+        // Second gradient colour: a third of the colour circle further on, so
+        // the default gradient is visible without configuring anything.
+        G.color[GradientEnd] =
+            HsbColor(fmodf(DEFAULT_HUE / 360.f + 0.33f, 1.f), 1.f, 0.5f);
         G.effectBri = 2;
         G.effectSpeed = 5;
         G.client_nr = 0;
@@ -459,6 +463,7 @@ void setup() {
         G.transitionDuration = 2;
         G.transitionSpeed = 30;
         G.transitionColorize = 0;
+        G.colorizePerWord = false;
         G.transitionDemo = false;
 
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {

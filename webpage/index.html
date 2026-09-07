@@ -183,6 +183,16 @@
                                 <span data-i18next="functions.color.frame"></span>
                             </label>
                             </div>
+                            <label for="colorwheel-gradient" class="radio-select">
+                                <input id="colorwheel-gradient" type="radio" name="colorwheel" value="color">
+                                <img src="./icons/color_gradient.svg" class="icon" alt="icon" aria-hidden="true">
+                                <span data-i18next="functions.color.gradient"></span>
+                            </label>
+                            <label for="transition-per-word" class="radio-select">
+                                <input id="transition-per-word" type="checkbox">
+                                <img src="./icons/color_per_word.svg" class="icon" alt="icon" aria-hidden="true">
+                                <span data-i18next="functions.color.per_word"></span>
+                            </label>
                     </form>
                     <div id="color-picker" class="color-picker"></div>
                     <div class="swatch-grid" id="swatch-grid">
@@ -455,8 +465,8 @@
                             <label for="transition-colorize" data-i18next="functions.transition.color.label"></label>
                             <select id="transition-colorize" size="1">
                                 <option value="0" data-i18next="functions.transition.color.off"></option>
-                                <option value="1" data-i18next="functions.transition.color.words"></option>
-                                <option value="2" data-i18next="functions.transition.color.letters"></option>
+                                <option value="1" data-i18next="functions.transition.color.gradient"></option>
+                                <option value="2" data-i18next="functions.transition.color.random"></option>
                             </select>
                         </div>
                         <div class="pure-control-group">

@@ -86,6 +86,7 @@ void printConfig() {
     Serial.printf("transitionType    : %u\n", G.transitionType);
     Serial.printf("transitionSpeed    : %u\n", G.transitionSpeed);
     Serial.printf("transitionColorize    : %u\n", G.transitionColorize);
+    Serial.printf("colorizePerWord    : %u\n", G.colorizePerWord);
     Serial.printf("transitionDemo    : %u\n", G.transitionDemo);
 
     Serial.printf("bootLedBlink    : %u\n", G.bootLedBlink);

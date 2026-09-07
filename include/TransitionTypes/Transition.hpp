@@ -4,11 +4,6 @@
 
 #define MAX_RANDOM 10
 
-// Distinct words that can share one clock face. Generous: setClock() shows at
-// most a handful, the weather layout is the widest user. Beyond this limit
-// colouring stays correct, later words just get a fresh hue each time.
-#define MAX_COLORIZED_WORDS 16
-
 void Transition::allocate(uint8_t rows, uint8_t cols) {
     maxRows = rows;
     maxCols = cols;
@@ -165,8 +160,18 @@ Transition_t Transition::getTransitionType(bool trigger) {
 }
 
 //------------------------------------------------------------------------------
-bool Transition::isColorization() {
-    return (transitionType != NO_TRANSITION && G.transitionColorize);
+bool Transition::isColorization() { return G.transitionColorize != OFF; }
+
+//------------------------------------------------------------------------------
+
+/*
+Whether the transition stage owns the LED output. With colouring switched on it
+does so even without a transition, because the colours only exist in the matrix
+- Led::set() alone would paint the plain foreground colour.
+*/
+
+bool Transition::ownsDisplay() {
+    return transitionType != NO_TRANSITION || isColorization();
 }
 
 //------------------------------------------------------------------------------
@@ -216,105 +221,30 @@ bool Transition::changeBrightness() {
 // returns hue values with a difference of at least 0.1 (360 * 0,1 = 36 degree)
 // avoiding neighbors with very similar colors
 
-float Transition::pseudoRandomHue() {
-    static bool first = true;
-    if (first) {
-        first = false;
-        return pseudoRandomHue(true);
-    }
-    return pseudoRandomHue(false);
-}
-
-//------------------------------------------------------------------------------
-
-float Transition::pseudoRandomHue(bool init) {
-    static uint16_t lastColors[MAX_RANDOM];
-    static uint16_t lastColor = 1000;
-    static uint8_t inUse = 1;
-    uint16_t hue;
-    uint32_t i, tries;
-
-    if (init || (inUse == (MAX_RANDOM - 1))) {
-        inUse = 1;
-        lastColors[0] = lastColor;
-        for (i = 1; i < MAX_RANDOM; i++) {
-            lastColors[i] = 9999;
-        }
-    }
-    hue = 1000 + random(1000); // 1000 ... 2000
-    tries = i = 0;
-    do {
-        if (lastColors[i] == 9999) { // empty array element
-            inUse = i;
-            lastColor = lastColors[i] = hue;
-            return (static_cast<float>(hue - 1000)) / 1000.0; // 0.0 ... 1.0
-        }
-        if (((hue > (lastColors[i] - 100)) && (hue < (lastColors[i] + 100)))) {
-            // hue matches an existing color, try new hue
-            hue = 1000 + random(1000);
-            tries++;
-            i = 0;
-        } else {
-            // check next array element
-            i++;
-        }
-    } while ((i < MAX_RANDOM) && (tries < 20));
-    return pseudoRandomHue(true);
-}
-
-//------------------------------------------------------------------------------
-// colorize foreground
+/*
+Colouring is delegated to an IColorizer. This function only assembles the
+context and picks the minute colour; the per cell work lives in
+include/Render/Colorizers.h.
+*/
 
 void Transition::colorize(ColorMatrix &dest) {
-    HsbColor hsbColor = HsbColor(foreground);
-    hsbColor.H = pseudoRandomHue();
-    foregroundMinute = isColorization() ? RgbColor(hsbColor) : foreground;
+    ColorContext context;
+    context.foreground = HsbColor(foreground);
+    context.background = HsbColor(background);
+    context.gradientEnd =
+        led.getColorbyPositionWithAppliedBrightness(GradientEnd);
+    context.mode = isColorization() ? G.transitionColorize : OFF;
+    context.perWord = G.colorizePerWord;
 
-    /*
-    One hue per word. The word a cell belongs to comes from frontWordId, which
-    ClockType fills while drawing, so cells of the same word share a colour even
-    when the word is not laid out horizontally - ZWEI spanning two rows or EINS
-    running down a column. Deriving word boundaries from runs of lit cells used
-    to need a hard coded patch-up per layout here.
-    */
-    struct WordHue {
-        uint8_t wordId;
-        float hue;
-    };
-    WordHue wordHues[MAX_COLORIZED_WORDS];
-    uint8_t wordHueCount = 0;
-
-    for (uint8_t row = 0; row < maxRows; row++) {
-        for (uint8_t col = 0; col < maxCols; col++) {
-            if (!dest[row][col].isForeground()) {
-                continue;
-            }
-
-            if (G.transitionColorize == CHARACTERS) {
-                hsbColor.H = pseudoRandomHue();
-            } else {
-                const uint8_t wordId = frontWordId[row][col];
-                float hue = -1.f;
-                for (uint8_t i = 0; i < wordHueCount; i++) {
-                    if (wordHues[i].wordId == wordId) {
-                        hue = wordHues[i].hue;
-                        break;
-                    }
-                }
-                if (hue < 0.f) {
-                    hue = pseudoRandomHue();
-                    if (wordHueCount < MAX_COLORIZED_WORDS) {
-                        wordHues[wordHueCount].wordId = wordId;
-                        wordHues[wordHueCount].hue = hue;
-                        wordHueCount++;
-                    }
-                }
-                hsbColor.H = hue;
-            }
-
-            dest[row][col].changeRgb(isColorization() ? hsbColor : foreground);
-        }
+    // The minute LEDs are not part of the matrix, so they get their own hue
+    // from the same sequence.
+    HsbColor minuteColor = context.foreground;
+    if (context.mode != OFF) {
+        minuteColor.H = hueSequence.next();
     }
+    foregroundMinute = RgbColor(minuteColor);
+
+    colorizerFor(context.mode)->apply(dest, context, hueSequence);
 }
 
 //------------------------------------------------------------------------------
@@ -653,7 +583,7 @@ uint16_t Transition::transitionFire() {
             */
             fillMatrix(work, background);
             HsbColor hsbColor = HsbColor(foreground);
-            hsbColor.H = pseudoRandomHue();
+            hsbColor.H = hueSequence.next();
 
             led.clear();
             usedClockType->show(FrontWord::happy_birthday);
@@ -795,8 +725,8 @@ uint16_t Transition::transitionCountdown(struct tm &tm) {
         fillMatrix(work, background);
         HsbColor hsbColor_1 = HsbColor(foreground);
         HsbColor hsbColor_2 = HsbColor(foreground);
-        hsbColor_1.H = pseudoRandomHue();
-        hsbColor_2.H = pseudoRandomHue();
+        hsbColor_1.H = hueSequence.next();
+        hsbColor_2.H = hueSequence.next();
         char seconds[8];
         // start 23:59:00     60 - 0
         snprintf(seconds, sizeof(seconds), "%d", countDown);
@@ -1052,7 +982,7 @@ bool Transition::hasMinuteChanged() {
 
 bool Transition::isOverwrittenByTransition(WordclockChanges changesInWordMatrix,
                                            uint8_t minute) {
-    if (transitionType == NO_TRANSITION) {
+    if (!ownsDisplay()) {
         if (changesInWordMatrix != WordclockChanges::Parameters &&
             hasMinuteChanged()) {
             // Needed in Case the Transition is switched off
@@ -1109,6 +1039,8 @@ void Transition::loop(struct tm &tm) {
                 getTransitionType(matrixChanged); // hasMinuteChanged()
         }
 
+        bool needsRedraw = false;
+
         if (matrixChanged) {
             matrixChanged = false;
             if (isColorization() && (G.transitionSpeed > 0)) {
@@ -1116,14 +1048,31 @@ void Transition::loop(struct tm &tm) {
             }
             saveMatrix();
             copyMatrix(work, act);
+            needsRedraw = true;
         }
 
         if (transitionType == NO_TRANSITION) {
             if (changesInTransitionTypeDurationOrDemo()) {
                 lastTransitionType = transitionType;
                 copyMatrix(work, act);
+                needsRedraw = true;
+            }
+            if (G.transitionColorize != lastTransitionColorize) {
+                lastTransitionColorize = G.transitionColorize;
                 colorize(work);
+                needsRedraw = true;
+            }
+            // Without a transition nothing else pushes the coloured matrix to
+            // the strip, so this stage does it - but only when something
+            // actually changed, never on every loop iteration.
+            if (needsRedraw && ownsDisplay()) {
                 copy2Stripe(work);
+                if (G.minuteVariant != MinuteVariant::Off) {
+                    led.setbyMinuteArray(Foreground);
+                }
+                if (G.secondVariant != SecondVariant::Off) {
+                    led.setbySecondArray(Frame);
+                }
                 led.show();
             }
         } else {

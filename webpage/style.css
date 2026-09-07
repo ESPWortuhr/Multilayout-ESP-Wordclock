@@ -332,15 +332,29 @@ a:visited:hover {
     }
 }
 
+/* Flex statt Grid: eine unvollstaendige letzte Reihe zentriert sich damit von
+   selbst, egal ob drei, vier oder fuenf Kacheln sichtbar sind. Der Rahmen-Knopf
+   wird je nach Layout ein- und ausgeblendet. */
 .mode-color-form {
-    display: inline-grid;
+    --tile-width: 7.5em;
+
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: .5em;
     margin-bottom: 1em;
-    grid-template-columns: 1fr 1fr;
+
+    /* Feste Breite fuer drei Kacheln statt nur max-width: die Shrink-to-fit-
+       Breite eines inline-flex richtet sich nach dem Inhalt der Kacheln, nicht
+       nach ihrer Flex-Basis. min() laesst sie auf schmalen Schirmen schrumpfen. */
+    width: min(100%, calc(var(--tile-width) * 3 + 1em));
 }
 
-.mode-color-form:has(.specific-layout-7:not([style*="display: none"])) {
-    grid-template-columns: 1fr 1fr 1fr;
+.mode-color-form .radio-select {
+    /* border-box, damit --tile-width die Aussenbreite ist und die max-width
+       oben tatsaechlich drei Kacheln fasst. */
+    box-sizing: border-box;
+    flex: 0 1 var(--tile-width);
 }
 
 .mode-color-form .specific-layout-7:not([style*="display: none"]) {
@@ -370,7 +384,8 @@ a:visited:hover {
     transform: translateY(-1px);
 }
 
-.radio-select input[type='radio'] {
+.radio-select input[type='radio'],
+.radio-select input[type='checkbox'] {
     position: fixed;
     opacity: 0;
     pointer-events: none;
@@ -386,12 +401,14 @@ a:visited:hover {
     margin: auto;
 }
 
-.radio-select:has(input[type='radio']:focus-visible) {
+.radio-select:has(input[type='radio']:focus-visible),
+.radio-select:has(input[type='checkbox']:focus-visible) {
     outline: 3px solid rgb(20 118 189 / 32%);
     outline-offset: 2px;
 }
 
-.radio-select:has(input[type='radio']:checked) {
+.radio-select:has(input[type='radio']:checked),
+.radio-select:has(input[type='checkbox']:checked) {
     border-color: rgb(20 118 189 / 62%);
     background: linear-gradient(180deg, rgb(32 133 203 / 96%), rgb(16 106 176 / 96%));
     box-shadow: inset 0 0 0 1px rgb(255 255 255 / 55%), 0 10px 24px rgb(20 118 189 / 24%);
@@ -399,7 +416,9 @@ a:visited:hover {
 }
 
 .radio-select:has(input[type='radio']:checked) svg,
-.radio-select:has(input[type='radio']:checked) .icon {
+.radio-select:has(input[type='radio']:checked) .icon,
+.radio-select:has(input[type='checkbox']:checked) svg,
+.radio-select:has(input[type='checkbox']:checked) .icon {
     filter: brightness(0) invert(1);
 }
 

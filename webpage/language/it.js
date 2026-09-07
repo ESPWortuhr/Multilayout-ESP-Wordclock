@@ -36,7 +36,9 @@ let TRANSLATION_IT = {
 		"color": {
 			"foreground": "Primo",
 			"background": "Sfondo",
-			"frame": "Telaio"
+			"frame": "Telaio",
+			"gradient": "Colore gradiente",
+			"per_word": "Per parola"
 		},
 		"mode": {
 			"h2": "Modalità",
@@ -76,8 +78,8 @@ let TRANSLATION_IT = {
 			"color": {
 				"label": "Transizione a colori",
 				"off": "Spegni",
-				"words": "Parole colorate",
-				"letters": "Lettere colorate"
+				"gradient": "Gradiente",
+				"random": "Colori casuali"
 			},
 			"speed": {
 				"label": "Velocità"

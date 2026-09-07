@@ -198,13 +198,21 @@ enum BitmapSymbol : uint8_t {
     MAX_BITMAP_SYMBOLS
 };
 
+enum ColorPosition : uint8_t {
+    Foreground = 0,
+    Background = 1,
+    Frame = 2,
+    GradientEnd = 3,
+    ColorPositionCount = 4,
+};
+
 struct GLOBAL {
     uint16_t sernr;
     uint16_t prog;
     uint8_t param1;
     bool progInit;
     uint16_t conf;
-    HsbColor color[3];
+    HsbColor color[ColorPositionCount];
     uint8_t effectBri;
     uint8_t effectSpeed;
     uint8_t client_nr;
@@ -244,6 +252,7 @@ struct GLOBAL {
     uint8_t transitionDuration;
     uint8_t transitionSpeed;
     uint8_t transitionColorize;
+    bool colorizePerWord;
     uint8_t transitionDemo;
 
     bool bootLedBlink;
@@ -300,12 +309,6 @@ extern uint8_t i2cScanSdaPin;
 extern uint8_t i2cScanSclPin;
 
 extern bool externalRTC;
-
-enum ColorPosition : uint8_t {
-    Foreground = 0,
-    Background = 1,
-    Frame = 2,
-};
 
 enum LedColorVariants : uint8_t {
     Brg = 0,

@@ -44,7 +44,8 @@ let command = 1;
 let hsb = [
 	[0, 100, 50],
 	[120, 100, 50],
-	[240, 100, 50]
+	[240, 100, 50],
+	[40, 100, 50]
 ];
 let colorPosition = 0;
 let effectBri = 2;
@@ -63,6 +64,7 @@ let transitionType = 0;
 let transitionDuration = 1;
 let transitionSpeed = 30;
 let transitionColorize = 1;
+let colorizePerWord = false;
 let transitionDemo = false;
 
 const CMD = {
@@ -180,7 +182,8 @@ function initConfigValues() {
 	hsb = [
 		[0, 100, 50],
 		[120, 100, 50],
-		[240, 100, 50]
+		[240, 100, 50],
+		[40, 100, 50]
 	];
 	effectBri = 2;
 	effectSpeed = 10;
@@ -197,6 +200,7 @@ function initConfigValues() {
 	transitionDuration = 1;
 	transitionSpeed = 30;
 	transitionColorize = 1;
+	colorizePerWord = false;
 	transitionDemo = false;
 }
 
@@ -488,6 +492,7 @@ function initWebsocket() {
 				transitionDuration = data.transitionDuration;
 				transitionSpeed = data.transitionSpeed;
 				transitionColorize = data.transitionColorize;
+				colorizePerWord = data.colorizePerWord;
 				transitionDemo = data.transitionDemo;
 				setElementsForFunctionsMenu();
 				break;
@@ -617,6 +622,9 @@ function setElementsForFunctionsMenu() {
 	const transitionColorizeEl = document.getElementById("transition-colorize");
 	if (transitionColorizeEl) transitionColorizeEl.value = transitionColorize;
 
+	const colorizePerWordEl = document.getElementById("transition-per-word");
+	if (colorizePerWordEl) colorizePerWordEl.checked = colorizePerWord;
+
 	const transitionDemoEl = document.getElementById("transition-demo");
 	if (transitionDemoEl) transitionDemoEl.checked = transitionDemo;
 }
@@ -714,7 +722,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.querySelectorAll("input[name='colorwheel']").forEach(input => {
 		input.addEventListener("change", function(event) {
 			let id = event.target.id;
-			if (id === "colorwheel-frame") {
+			if (id === "colorwheel-gradient") {
+				colorPosition = 3;
+			} else if (id === "colorwheel-frame") {
 				colorPosition = 2;
 			} else if (id === "colorwheel-background") {
 				colorPosition = 1;
@@ -863,8 +873,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			transitionSpeed = document.getElementById("transition-speed").value;
 			transitionColorize = document.getElementById("transition-colorize").value;
 			transitionDemo = document.getElementById("transition-demo").checked;
+			colorizePerWord = document.getElementById("transition-per-word").checked;
 
-			sendCmd(CMD.MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionColorize) + nstr(transitionDemo ? 1 : 0));
+			sendCmd(CMD.MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionColorize) + nstr(transitionDemo ? 1 : 0) + nstr(colorizePerWord ? 1 : 0));
 			debugMessage(`Transition${debugMessageReconfigured}`);
 			setElementsForFunctionsMenu();
 		});

@@ -36,7 +36,9 @@ let TRANSLATION_HU = {
 		"color": {
 			"foreground": "Új ismeretek",
 			"background": "Háttér",
-			"frame": "Keret"
+			"frame": "Keret",
+			"gradient": "Átmenet színe",
+			"per_word": "Szavanként"
 		},
 		"mode": {
 			"h2": "Mód",
@@ -76,8 +78,8 @@ let TRANSLATION_HU = {
 			"color": {
 				"label": "Színátmenet",
 				"off": "Ki",
-				"words": "Színes szavak",
-				"letters": "Színes betűk"
+				"gradient": "Színátmenet",
+				"random": "Véletlen színek"
 			},
 			"speed": {
 				"label": "Sebesség"

@@ -36,7 +36,9 @@ let TRANSLATION_DE_DE = {
 		"color": {
 			"foreground": "Vordergrund",
 			"background": "Hintergrund",
-			"frame": "Rahmen"
+			"frame": "Rahmen",
+			"gradient": "Verlaufsfarbe",
+			"per_word": "Wortweise"
 		},
 		"mode": {
 			"h2": "Modus",
@@ -99,8 +101,8 @@ let TRANSLATION_DE_DE = {
 			"color": {
 				"label": "Farbübergang",
 				"off": "Aus",
-				"words": "Bunte Wörter",
-				"letters": "Bunte Buchstaben"
+				"gradient": "Farbverlauf",
+				"random": "Zufallsfarben"
 			},
 			"speed": {
 				"label": "Geschwindigkeit"

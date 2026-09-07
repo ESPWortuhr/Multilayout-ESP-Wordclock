@@ -60,7 +60,8 @@ public:
         return static_cast<uint16_t>(m_rows) * m_cols;
     }
 
-    /* Copy content from a frame of identical geometry; a mismatch is ignored. */
+    /* Copy content from a frame of identical geometry; a mismatch is ignored.
+     */
     void copyFrom(const ColorMatrix &source) {
         if (source.m_rows != m_rows || source.m_cols != m_cols) {
             return;

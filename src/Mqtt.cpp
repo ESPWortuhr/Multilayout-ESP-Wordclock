@@ -121,7 +121,7 @@ static const LabeledValue TRANSITION_TYPES[] = {
     {"Balls", 8},       {"Fire", 9},    {"Snake", 10},    {"Random", 11}};
 
 static const LabeledValue TRANSITION_COLORIZE[] = {
-    {"Off", 0}, {"Words", 1}, {"Characters", 2}};
+    {"Off", 0}, {"Gradient", 1}, {"Random", 2}};
 
 static const LabeledValue TRANSITION_DURATION[] = {
     {"Short", 1}, {"Medium", 2}, {"Long", 3}};

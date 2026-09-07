@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg"
+	 x="0px" y="0px" viewBox="0 0 32 32"
+	 style="enable-background:new 0 0 32 32;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#5C5C5C;}
+</style>
+<!-- Stepped ramp running top to bottom, matching the gradient itself. Steps
+     rather than a smooth fill, which at 32px would look like just another grey
+     square next to the background and frame icons. -->
+<g>
+	<rect x="4" y="4"  width="24" height="4" fill="#4B4B4B"/>
+	<rect x="4" y="8"  width="24" height="4" fill="#6E6F6F"/>
+	<rect x="4" y="12" width="24" height="4" fill="#909191"/>
+	<rect x="4" y="16" width="24" height="4" fill="#AFB0B0"/>
+	<rect x="4" y="20" width="24" height="4" fill="#CBCCCC"/>
+	<rect x="4" y="24" width="24" height="4" fill="#E9EAEA"/>
+</g>
+<path class="st0" d="M27,2H5C3.4,2,2,3.4,2,5v22c0,1.6,1.4,3,3,3h22c1.6,0,3-1.4,3-3V5C30,3.4,28.6,2,27,2z M28,27c0,0.6-0.4,1-1,1
+	H5c-0.6,0-1-0.4-1-1V5c0-0.6,0.4-1,1-1h22c0.6,0,1,0.4,1,1V27z"/>
+</svg>
