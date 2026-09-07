@@ -98,8 +98,9 @@ protected:
     float pseudoRandomHue(bool init);
     void colorize(ColorMatrix &dest);
     void saveMatrix();
-    void analyzeColors(ColorMatrix *dest, ColorMatrix *source, RgbfColor &foreground,
-                       RgbfColor &background);
+    void displayColors(RgbfColor &foreground, RgbfColor &background);
+    void buildFromFrontMatrix(ColorMatrix &dest, RgbfColor foreground,
+                              RgbfColor background);
     void copy2Stripe(const ColorMatrix &source);
     void copyMatrix(ColorMatrix &dest, const ColorMatrix &source);
     void copyMatrixFlags(ColorMatrix &dest, const ColorMatrix &source);

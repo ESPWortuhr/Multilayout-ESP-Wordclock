@@ -2,7 +2,6 @@
 #include "WordClockState.h"
 #include <Arduino.h>
 
-#define STRIPE NULL
 #define MAX_RANDOM 10
 
 // Distinct words that can share one clock face. Generous: setClock() shows at
@@ -174,8 +173,7 @@ bool Transition::isColorization() {
 
 bool Transition::changeBrightness() {
     RgbfColor newForeground, newBackground;
-    // determine only foreground and background from LED stripe
-    analyzeColors(nullptr, nullptr, newForeground, newBackground);
+    displayColors(newForeground, newBackground);
     bool adjustFg = newForeground != foreground,
          adjustBg = newBackground != background;
 
@@ -324,7 +322,8 @@ void Transition::colorize(ColorMatrix &dest) {
 void Transition::saveMatrix() {
     static bool firstRun = true;
     copyMatrix(old, act);
-    analyzeColors(&act, nullptr, foreground, background);
+    displayColors(foreground, background);
+    buildFromFrontMatrix(act, foreground, background);
     foregroundMinute = foreground;
     if (isColorization()) {
         colorize(act);
@@ -340,58 +339,34 @@ void Transition::saveMatrix() {
 // copy (internal matrix or from LED stripe) and determine foreground and
 // background color
 
-void Transition::analyzeColors(ColorMatrix *dest, ColorMatrix *source,
-                               RgbfColor &foreground, RgbfColor &background) {
-    RgbfColor color, color1(0), color2(0);
-    uint32_t colorCounter1 = 0, colorCounter2 = 0;
-    const uint8_t numLEDsPerLetter = getLedsPerLetter(G.buildTypeDef);
+/*
+The two colours Led paints the clock face with. Previously these were
+recovered by reading every pixel back from the LED strip and deciding by
+majority vote which of the two colours had been the foreground.
+*/
+
+void Transition::displayColors(RgbfColor &foreground, RgbfColor &background) {
+    foreground = RgbfColor(
+        led.getColorbyPositionWithAppliedBrightness(Foreground), F_FOREGROUND);
+    background = RgbfColor(
+        led.getColorbyPositionWithAppliedBrightness(Background), F_NULL);
+}
+
+//------------------------------------------------------------------------------
+
+/*
+Build a matrix from the current clock face: which cells are lit comes from the
+front matrix, the colours are passed in. The per cell foreground flag falls out
+of the assignment, so no second pass is needed to tag the cells.
+*/
+
+void Transition::buildFromFrontMatrix(ColorMatrix &dest, RgbfColor foreground,
+                                      RgbfColor background) {
     for (uint8_t row = 0; row < maxRows; row++) {
         for (uint8_t col = 0; col < maxCols; col++) {
-            if (source == nullptr) {
-                color = RgbfColor(
-                    led.getPixel(usedClockType->getFrontMatrixIndex(row, col) *
-                                 numLEDsPerLetter));
-            } else {
-                color = (*source)[row][col];
-            }
-            if (dest != nullptr) {
-                (*dest)[row][col] = color;
-            }
-            if (color == color1) {
-                colorCounter1++;
-            } else {
-                if (color == color2) {
-                    colorCounter2++;
-                } else {
-                    // no color assigned yet
-                    if (colorCounter1 > 0) {
-                        color2 = color;
-                        colorCounter2 = 1;
-                    } else {
-                        color1 = color;
-                        colorCounter1 = 1;
-                    }
-                }
-            }
-        }
-    }
-    if (colorCounter1 > colorCounter2) { // Majority vote ?!
-        background = color1;
-        foreground = color2;
-    } else {
-        background = color2;
-        foreground = color1;
-    }
-    foreground.setForeground(true);
-    foreground.setOverlay(false);
-    background.setForeground(false);
-    background.setOverlay(false);
-    if (dest != nullptr) {
-        for (uint8_t row = 0; row < maxRows; row++) {
-            for (uint8_t col = 0; col < maxCols; col++) {
-                (*dest)[row][col].setForeground((*dest)[row][col] ==
-                                                foreground);
-            }
+            dest[row][col] = usedClockType->getFrontMatrixPixel(row, col)
+                                 ? foreground
+                                 : background;
         }
     }
 }
@@ -683,7 +658,11 @@ uint16_t Transition::transitionFire() {
             led.clear();
             usedClockType->show(FrontWord::happy_birthday);
             led.setbyFrontMatrix(hsbColor);
-            analyzeColors(&work, nullptr, foreground, background);
+            // HAPPY BIRTHDAY in a random hue on black, which is what
+            // setbyFrontMatrix() just painted.
+            foreground = RgbfColor(hsbColor, F_FOREGROUND);
+            background = RgbfColor(0, F_NULL);
+            buildFromFrontMatrix(work, foreground, background);
 
             copyMatrix(act, work);
         } else {

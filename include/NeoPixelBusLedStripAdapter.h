@@ -29,10 +29,6 @@ public:
         strip->SetPixelColor(index, RgbColor(color.R, color.G, color.B));
     }
 
-    RgbColor getPixel(uint16_t index) override {
-        return strip->GetPixelColor(index);
-    }
-
     void clearPixel(uint16_t index) override { strip->SetPixelColor(index, 0); }
 
     void show() override { strip->Show(); }
@@ -64,10 +60,6 @@ public:
 
     void setRgbwPixel(uint16_t index, RgbwColor color) override {
         strip->SetPixelColor(index, color);
-    }
-
-    RgbColor getPixel(uint16_t index) override {
-        return RgbColor(strip->GetPixelColor(index));
     }
 
     void clearPixel(uint16_t index) override { strip->SetPixelColor(index, 0); }

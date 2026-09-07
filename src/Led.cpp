@@ -469,10 +469,6 @@ void Led::set(WordclockChanges changed) {
 // Pixel get Functions
 //------------------------------------------------------------------------------
 
-RgbColor Led::getPixel(uint16_t i) { return activeLedStrip->getPixel(i); }
-
-//------------------------------------------------------------------------------
-
 bool Led::getState() {
     for (uint8_t i = 0; i < 3; i++) {
         if (G.color[i].B > 0) {
