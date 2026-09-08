@@ -182,7 +182,7 @@ void RenderPipeline::present(const ColorMatrix &matrix,
 
     if (withMinutesAndFrame) {
         if (G.minuteVariant != MinuteVariant::Off) {
-            led.setbyMinuteArray(Foreground);
+            led.setbyMinuteArray(colorStage.minutePosition());
         }
         if (G.secondVariant != SecondVariant::Off) {
             led.setbySecondArray(Frame);

@@ -3,11 +3,13 @@
 #include "Render/ColorContext.h"
 #include "Render/ColorMatrix.h"
 #include "Render/HueSequence.h"
+#include "WordClockState.h"
 
 class ColorStage {
 public:
     bool isColorizing() const;
     bool modeChanged();
+    ColorPosition minutePosition() const;
     void displayColors(RgbfColor &foreground, RgbfColor &background) const;
     void render(ColorMatrix &dest, RgbfColor foreground, RgbfColor background);
     void build(ColorMatrix &dest, RgbfColor foreground,

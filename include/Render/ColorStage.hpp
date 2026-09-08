@@ -9,6 +9,12 @@ bool ColorStage::isColorizing() const { return G.colorize != MONOCHROME; }
 
 //------------------------------------------------------------------------------
 
+ColorPosition ColorStage::minutePosition() const {
+    return (G.colorize == POLYCHROME) ? GradientEnd : Foreground;
+}
+
+//------------------------------------------------------------------------------
+
 bool ColorStage::modeChanged() {
     if (m_lastMode == G.colorize) {
         return false;

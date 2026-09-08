@@ -12,6 +12,7 @@
 // Led itself addresses the front through the global usedClockType.
 extern ClockType *usedClockType;
 
+#include "Render/ColorStage.h"
 #include "Render/RenderPipeline.h"
 
 extern Led led;
@@ -467,7 +468,7 @@ void Led::set(WordclockChanges changed) {
 
     if (action.drawMinutesAndFrame) {
         if (G.minuteVariant != MinuteVariant::Off) {
-            setbyMinuteArray(Foreground);
+            setbyMinuteArray(colorStage.minutePosition());
         }
 
         if (G.secondVariant != SecondVariant::Off) {
