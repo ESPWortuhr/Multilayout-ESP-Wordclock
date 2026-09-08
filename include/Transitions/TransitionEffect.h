@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Render/ColorMatrix.h"
-#include "Render/TransitionType.h"
+#include "Transitions/TransitionType.h"
 #include <time.h>
 
 /*

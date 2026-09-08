@@ -41,7 +41,13 @@ public:
     /* True when this cell is covered by the shell; `color` is then its colour.
      */
     bool getPixel(uint8_t row, uint8_t col, RgbColor &color) const {
-        if ((row >= 10) || (row >= m_rows) || (col >= 11) || (col >= m_cols)) {
+        // Fronts smaller than the 11x10 symbols use the 8x8 table, which has
+        // only 8 rows: a 9x8 or 16x8 front must not read past it.
+        const bool small = (m_cols < 11) || (m_rows < 10);
+        const uint8_t symbolRows = small ? 8 : 10;
+        const uint8_t symbolCols = small ? SYMBOL_8X8_COLS : SYMBOL_11X10_COLS;
+        if ((row >= symbolRows) || (row >= m_rows) || (col >= symbolCols) ||
+            (col >= m_cols)) {
             return false;
         }
 
@@ -51,7 +57,7 @@ public:
             }
 
             uint16_t pixels;
-            if (m_cols < 11 || m_rows < 10) {
+            if (small) {
                 pixels = reverseBits(
                     pgm_read_word(&(symbol_8x8[m_symbols[layer]][row])),
                     m_mirrored, SYMBOL_8X8_COLS);

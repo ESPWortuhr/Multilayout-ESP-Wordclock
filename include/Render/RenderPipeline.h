@@ -3,7 +3,7 @@
 #include "Render/ColorMatrix.h"
 #include "Render/DisplayPolicy.h"
 #include "Render/SpecialEvents.h"
-#include "Render/TransitionType.h"
+#include "Transitions/TransitionType.h"
 
 class Transition;
 
@@ -61,6 +61,7 @@ private:
     bool m_matrixChanged = false;
     bool m_redrawPending = false;
     bool m_startPending = false;
+    bool m_allocationFailed = false;
 
     uint8_t m_lastMinute = 100;
     Transition_t m_lastType = NO_TRANSITION;

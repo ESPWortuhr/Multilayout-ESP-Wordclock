@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Render/TransitionType.h"
+#include "Transitions/TransitionType.h"
 
 /* Transition types a date, not the user, switches on. */
 inline bool isSpecialEventTransition(Transition_t type) {

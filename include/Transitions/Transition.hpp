@@ -1,4 +1,4 @@
-#include "Transition.h"
+#include "Transitions/Transition.h"
 #include "WordClockState.h"
 #include <Arduino.h>
 
@@ -82,6 +82,11 @@ void Transition::seed(const ColorMatrix &face, RgbfColor foreground,
 A new clock face has been coloured. What was on screen becomes the source of the
 blend - with the hue drift running that is 'work', not 'act', otherwise the
 animation would jump back to the colours the face was built with.
+
+start() has already run when an animation is due, so 'work' is only replaced
+while idle: the effects that begin from what is on the strip (balls, matrix
+rain, firework, snake) read it in their first step and must find the previous
+face there, not the new one.
 */
 
 void Transition::advanceTo(const ColorMatrix &face, RgbfColor foreground,
@@ -91,7 +96,9 @@ void Transition::advanceTo(const ColorMatrix &face, RgbfColor foreground,
     }
     copyMatrix(old, act);
     copyMatrix(act, face);
-    copyMatrix(work, face);
+    if (isIdle()) {
+        copyMatrix(work, face);
+    }
     this->foreground = foreground;
     this->background = background;
 }

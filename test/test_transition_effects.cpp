@@ -6,7 +6,12 @@
  * the wall. Neither is visible in a build log.
  */
 
-#include "Render/TransitionEffects.h"
+#include "Transitions/Effects/BallsEffect.h"
+#include "Transitions/Effects/FadeEffect.h"
+#include "Transitions/Effects/LaserEffect.h"
+#include "Transitions/Effects/MatrixRainEffect.h"
+#include "Transitions/Effects/ScrollEffect.h"
+#include "Transitions/Effects/SnakeEffect.h"
 #include "support/check.h"
 
 namespace {

@@ -88,7 +88,7 @@ void deleteActiveLedStrip() {
 #include "ClockWork.hpp"
 #include "Render/ColorStage.hpp"
 #include "Symbols.h"
-#include "TransitionTypes/Transition.hpp"
+#include "Transitions/Transition.hpp"
 
 #include "Render/RenderPipeline.hpp"
 

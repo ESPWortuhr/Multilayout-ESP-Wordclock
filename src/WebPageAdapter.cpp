@@ -1,8 +1,8 @@
 #include "WebPageAdapter.h"
 
-#include "Render/ColorContext.h"   // Colorize
-#include "Render/TransitionType.h" // isValidTransitionType()
-#include "WordClock.h"             // sendMQTTUpdate()
+#include "Render/ColorContext.h"        // Colorize
+#include "Transitions/TransitionType.h" // isValidTransitionType()
+#include "WordClock.h"                  // sendMQTTUpdate()
 #include <Arduino.h>
 
 const char favicon[] PROGMEM = {

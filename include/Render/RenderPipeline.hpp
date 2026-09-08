@@ -1,5 +1,5 @@
 #include "Render/RenderPipeline.h"
-#include "TransitionTypes/Transition.h"
+#include "Transitions/Transition.h"
 #include "WordClockState.h"
 #include <Arduino.h>
 
@@ -132,13 +132,21 @@ bool RenderPipeline::ensureTransition() {
         return false;
     }
 
+    if (m_allocationFailed && !m_matrixChanged) {
+        // Out of heap last time: try again once per clock face change, not on
+        // every loop pass, so a low heap is not churned further.
+        return false;
+    }
+
     Transition *created = new Transition(m_rows, m_cols);
     if ((created == nullptr) || !created->valid()) {
         // Out of heap: keep showing the clock face without an animation
         // rather than writing into buffers that were never allocated.
         delete created;
+        m_allocationFailed = true;
         return false;
     }
+    m_allocationFailed = false;
 
     // Start from what is on the strip right now, so the first change animates
     // out of the current face instead of out of an empty buffer.

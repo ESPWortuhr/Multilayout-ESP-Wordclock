@@ -3,7 +3,7 @@
 #include "NeoMultiFeature.hpp"
 #include "OpenWeatherMap.h"
 #include "SensitiveData.h"
-#include "TransitionTypes/Transition.h"
+#include "Transitions/Transition.h"
 #include "WordClockState.h"
 #include "WordClockTypes/ClockType.hpp"
 #include "math.h"

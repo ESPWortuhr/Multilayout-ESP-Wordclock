@@ -376,7 +376,6 @@ function initWebsocket() {
 				break;
 
 			case "config": {
-				colorize = data.colorize;
 				document.getElementById("ssid").value = data.ssid;
 				document.getElementById("timeserver").value = data.timeserver;
 				const timezone = document.getElementById("timezone");
@@ -516,6 +515,7 @@ function initWebsocket() {
 				transitionDuration = data.transitionDuration;
 				transitionSpeed = data.transitionSpeed;
 				transitionDemo = data.transitionDemo;
+				colorize = data.colorize;
 				setElementsForFunctionsMenu();
 				break;
 

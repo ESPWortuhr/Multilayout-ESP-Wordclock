@@ -9,8 +9,7 @@
 #include "WordClockTypes/ClockType.hpp"
 #include <Arduino.h>
 
-// RenderPipeline.h references the global usedClockType, so it must be declared
-// before the header is pulled in.
+// Led itself addresses the front through the global usedClockType.
 extern ClockType *usedClockType;
 
 #include "Render/RenderPipeline.h"
