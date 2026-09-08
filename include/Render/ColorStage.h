@@ -18,7 +18,6 @@ public:
                   RgbfColor background);
     bool applyColorChange(ColorMatrix *const *matrices, uint8_t count,
                           RgbfColor &foreground, RgbfColor &background) const;
-    bool driftHues(ColorMatrix &matrix);
     float nextHue() { return m_hues.next(); }
 
 private:

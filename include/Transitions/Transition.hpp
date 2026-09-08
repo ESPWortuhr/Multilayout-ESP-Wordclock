@@ -79,9 +79,8 @@ void Transition::seed(const ColorMatrix &face, RgbfColor foreground,
 //------------------------------------------------------------------------------
 
 /*
-A new clock face has been coloured. What was on screen becomes the source of the
-blend - with the hue drift running that is 'work', not 'act', otherwise the
-animation would jump back to the colours the face was built with.
+A new clock face has been coloured. What was on screen - 'act' - becomes the
+source of the blend.
 
 start() has already run when an animation is due, so 'work' is only replaced
 while idle: the effects that begin from what is on the strip (balls, matrix
@@ -91,9 +90,6 @@ face there, not the new one.
 
 void Transition::advanceTo(const ColorMatrix &face, RgbfColor foreground,
                            RgbfColor background) {
-    if (colorStage.isColorizing() && (G.transitionSpeed > 0)) {
-        copyMatrix(act, work);
-    }
     copyMatrix(old, act);
     copyMatrix(act, face);
     if (isIdle()) {

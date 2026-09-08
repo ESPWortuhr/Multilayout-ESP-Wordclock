@@ -123,32 +123,3 @@ bool ColorStage::applyColorChange(ColorMatrix *const *matrices, uint8_t count,
     background = newBackground;
     return true;
 }
-
-//------------------------------------------------------------------------------
-
-bool ColorStage::driftHues(ColorMatrix &matrix) {
-    static uint32_t lastDrift = 0;
-    static const uint32_t driftInterval = 50;
-
-    if (!isColorizing() || (G.transitionSpeed == 0)) {
-        return false;
-    }
-
-    const uint32_t now = millis();
-    if (now < (lastDrift + driftInterval)) {
-        return false;
-    }
-    lastDrift = now;
-
-    const float deltaHue = fmodf(1.f / (G.transitionSpeed * 20.f), 1.f);
-    for (uint8_t row = 0; row < matrix.rows(); row++) {
-        for (uint8_t col = 0; col < matrix.cols(); col++) {
-            if (matrix[row][col].isForeground()) {
-                HsbColor hsbColor = HsbColor(matrix[row][col]);
-                hsbColor.H = fmodf(hsbColor.H + deltaHue, 1.f);
-                matrix[row][col].changeRgb(hsbColor);
-            }
-        }
-    }
-    return true;
-}

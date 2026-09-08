@@ -330,17 +330,10 @@ void RenderPipeline::plainStep() {
         present(m_face, true);
     }
 
-    if (!colorStage.isColorizing()) {
-        // Keep the buffer while a transition is configured but could not be
-        // allocated, so a low heap is not churned further.
-        if (!animates()) {
-            releaseFace();
-        }
-        return;
-    }
-
-    if (!redraw && colorStage.driftHues(m_face)) {
-        present(m_face, true);
+    // Keep the buffer while a transition is configured but could not be
+    // allocated, so a low heap is not churned further.
+    if (!animates()) {
+        releaseFace();
     }
 }
 
@@ -365,6 +358,5 @@ void RenderPipeline::transitionStep(struct tm &tm) {
     }
 
     m_transition->step(tm, m_type);
-    colorStage.driftHues(m_transition->output());
     present(m_transition->output(), !m_events.running());
 }
