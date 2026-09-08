@@ -1,6 +1,5 @@
 let TRANSLATION_HU = {
 	"title": "Szövegóra",
-
 	"menu": {
 		"aria-show-menu": "Menü mutatása",
 		"aria-hide-menu": "Menü elrejtése",
@@ -15,30 +14,32 @@ let TRANSLATION_HU = {
 			"ru": "🇷🇺 Orosz"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Kapcsolódás",
 		"text": "A kapcsolódás a Szövegórához megszakadt."
 	},
-
 	"reboot-recommended": {
 		"button": "Újraindítás",
 		"text": "Az újraindítás ajánlott a módosított beállítás alkalmazásához."
 	},
-
 	"colors": {
 		"h1": "Színek",
 		"with-background": "Háttérszínnel"
 	},
-
 	"functions": {
 		"h1": "Funkciók",
 		"color": {
 			"foreground": "Új ismeretek",
 			"background": "Háttér",
 			"frame": "Keret",
-			"gradient": "Átmenet színe",
-			"per_word": "Szavanként"
+			"primary": "Elsődleges szín",
+			"secondary": "Másodlagos szín",
+			"mode": {
+				"label": "Színmód",
+				"monochrome": "Monokróm",
+				"polychrome": "Polikróm",
+				"word_random": "Szavanként véletlen"
+			}
 		},
 		"mode": {
 			"h2": "Mód",
@@ -66,7 +67,6 @@ let TRANSLATION_HU = {
 				"balls": "Labdák",
 				"firework": "Tűzijáték",
 				"snake": "Kígyó",
-				"colored": "Színes",
 				"random": "Véletlen"
 			},
 			"duration": {
@@ -75,12 +75,7 @@ let TRANSLATION_HU = {
 				"medium": "Közepes",
 				"long": "Hosszú"
 			},
-			"color": {
-				"label": "Színátmenet",
-				"off": "Ki",
-				"gradient": "Színátmenet",
-				"random": "Véletlen színek"
-			},
+
 			"speed": {
 				"label": "Sebesség"
 			},

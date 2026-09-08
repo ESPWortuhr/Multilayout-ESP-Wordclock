@@ -1,6 +1,5 @@
 let TRANSLATION_EN_US = {
 	"title": "Wordclock",
-
 	"menu": {
 		"aria-show-menu": "Show Menu",
 		"aria-hide-menu": "Hide Menu",
@@ -15,30 +14,32 @@ let TRANSLATION_EN_US = {
 			"ru": "🇷🇺 Russian"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Connect",
 		"text": "The connection to the Word Clock has been lost."
 	},
-
 	"reboot-recommended": {
 		"button": "Restart",
 		"text": "A restart is recommended to apply the changed setting."
 	},
-
 	"colors": {
 		"h1": "Colors",
 		"with-background": "With Background Color"
 	},
-
 	"functions": {
 		"h1": "Functions",
 		"color": {
 			"foreground": "Foreground",
 			"background": "Background",
 			"frame": "Frame",
-			"gradient": "Gradient color",
-			"per_word": "Per word"
+			"primary": "Primary color",
+			"secondary": "Secondary color",
+			"mode": {
+				"label": "Color mode",
+				"monochrome": "Monochrome",
+				"polychrome": "Polychrome",
+				"word_random": "Random per word"
+			}
 		},
 		"mode": {
 			"h2": "Mode",
@@ -89,7 +90,6 @@ let TRANSLATION_EN_US = {
 				"balls": "Balls",
 				"firework": "Firework",
 				"snake": "Snake",
-				"colored": "Colored",
 				"random": "Random"
 			},
 			"duration": {
@@ -98,12 +98,7 @@ let TRANSLATION_EN_US = {
 				"medium": "Medium",
 				"long": "Long"
 			},
-			"color": {
-				"label": "Color transition",
-				"off": "Off",
-				"gradient": "Gradient",
-				"random": "Random colours"
-			},
+
 			"speed": {
 				"label": "Speed"
 			},

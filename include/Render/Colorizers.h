@@ -91,17 +91,10 @@ public:
 
 //------------------------------------------------------------------------------
 
-/*
- * Blend from gradient colour no. 1 (the foreground) to no. 2 from the top row
- * of the front to the bottom one. The hue takes the shorter way around the
- * colour circle, so two neighbouring hues do not sweep through the whole
- * spectrum.
- */
 class GradientColorizer : public IColorizer {
 public:
     void apply(ColorMatrix &matrix, const ColorContext &context,
                HueSequence &) override {
-        WordValues words;
         const uint16_t span =
             (matrix.rows() > 1) ? static_cast<uint16_t>(matrix.rows() - 1) : 1;
 
@@ -111,16 +104,7 @@ public:
                     continue;
                 }
 
-                float position = static_cast<float>(row) / span;
-                if (context.perWord) {
-                    const uint8_t wordId = wordIdAt(row, col);
-                    float stored;
-                    if (words.find(wordId, stored)) {
-                        position = stored;
-                    } else {
-                        words.add(wordId, position);
-                    }
-                }
+                const float position = static_cast<float>(row) / span;
 
                 matrix[row][col].changeRgb(
                     blend(context.foreground, context.gradientEnd, position));
@@ -146,7 +130,6 @@ private:
 
 //------------------------------------------------------------------------------
 
-/* Pseudo random hues, either one per word or one per letter. */
 class RandomColorizer : public IColorizer {
 public:
     void apply(ColorMatrix &matrix, const ColorContext &context,
@@ -160,15 +143,11 @@ public:
                     continue;
                 }
 
+                const uint8_t wordId = wordIdAt(row, col);
                 float hue;
-                if (context.perWord) {
-                    const uint8_t wordId = wordIdAt(row, col);
-                    if (!words.find(wordId, hue)) {
-                        hue = hues.next();
-                        words.add(wordId, hue);
-                    }
-                } else {
+                if (!words.find(wordId, hue)) {
                     hue = hues.next();
+                    words.add(wordId, hue);
                 }
 
                 color.H = hue;
@@ -190,11 +169,11 @@ inline IColorizer *colorizerFor(uint8_t mode) {
     static RandomColorizer random;
 
     switch (mode) {
-    case GRADIENT:
+    case POLYCHROME:
         return &gradient;
-    case RANDOM_HUES:
+    case WORD_RANDOM:
         return &random;
-    case OFF:
+    case MONOCHROME:
     default:
         return &solid;
     }

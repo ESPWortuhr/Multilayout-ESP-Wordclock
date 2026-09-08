@@ -1,6 +1,8 @@
 #include "WebPageAdapter.h"
 
-#include "WordClock.h" // sendMQTTUpdate()
+#include "Render/ColorContext.h"   // Colorize
+#include "Render/TransitionType.h" // isValidTransitionType()
+#include "WordClock.h"             // sendMQTTUpdate()
 #include <Arduino.h>
 
 const char favicon[] PROGMEM = {
@@ -203,12 +205,26 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_MODE_TRANSITION: {
             G.progInit = true;
 
-            G.transitionType = split(payload, 3);
+            const uint32_t transitionType = split(payload, 3);
+            if (isValidTransitionType(transitionType)) {
+                G.transitionType = transitionType;
+            } else {
+                Serial.printf("Ignoring invalid transition type: %lu\n",
+                              static_cast<unsigned long>(transitionType));
+            }
             G.transitionDuration = split(payload, 6);
             G.transitionSpeed = split(payload, 9);
-            G.transitionColorize = split(payload, 12);
-            G.transitionDemo = split(payload, 15);
-            G.colorizePerWord = split(payload, 18);
+            G.transitionDemo = split(payload, 12);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_COLORIZE: {
+            const uint32_t mode = split(payload, 3);
+            if (mode <= WORD_RANDOM) {
+                G.colorize = static_cast<uint8_t>(mode);
+            }
             break;
         }
 

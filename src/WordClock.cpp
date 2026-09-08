@@ -60,12 +60,14 @@ RTC_Type RTC;
 #include "Led.h"
 #include "Mqtt.h"
 #include "Network.h"
-#include "TransitionTypes/Transition.h"
+#include "Render/ColorStage.h"
+#include "Render/RenderPipeline.h"
 #include "WifiHelper.h"
 
-Transition *transition;
 SecondsFrame *secondsFrame;
 Led led;
+ColorStage colorStage;
+RenderPipeline renderPipeline;
 ClockWork clockWork;
 Mqtt mqtt(clockWork);
 Network network;
@@ -74,6 +76,7 @@ void setDefaultHardwarePins();
 bool hardwarePinsAreValid();
 void ensureI2CPins();
 void ensureTimezone();
+void ensureTransitionType();
 
 LedStripInterface *activeLedStrip = nullptr;
 
@@ -83,8 +86,11 @@ void deleteActiveLedStrip() {
 }
 
 #include "ClockWork.hpp"
+#include "Render/ColorStage.hpp"
 #include "Symbols.h"
 #include "TransitionTypes/Transition.hpp"
+
+#include "Render/RenderPipeline.hpp"
 
 namespace {
 constexpr uint16_t EEPROM_SIZE = 512;
@@ -288,6 +294,26 @@ void ensureI2CPins() {
 }
 
 //------------------------------------------------------------------------------
+
+/*
+COLORED (12) was removed as a transition type: colouring is a mode of its own
+now and no longer needs a transition. A configuration written by an older build
+can still hold it, so a stored value is checked once at boot rather than in
+every frame.
+*/
+
+void ensureTransitionType() {
+    if (isValidTransitionType(G.transitionType)) {
+        return;
+    }
+
+    Serial.printf(
+        "Invalid transition type %u in EEPROM, disabling transition\n",
+        G.transitionType);
+    G.transitionType = NO_TRANSITION;
+}
+
+//------------------------------------------------------------------------------
 // Start setup()
 //------------------------------------------------------------------------------
 
@@ -311,6 +337,7 @@ void setup() {
     ensureHardwarePins();
     ensureI2CPins();
     ensureTimezone();
+    ensureTransitionType();
 
     //-------------------------------------
 
@@ -462,8 +489,7 @@ void setup() {
         G.transitionType = 0; // Transition::NO_TRANSITION;
         G.transitionDuration = 2;
         G.transitionSpeed = 30;
-        G.transitionColorize = 0;
-        G.colorizePerWord = false;
+        G.colorize = 0;
         G.transitionDemo = false;
 
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
@@ -499,8 +525,8 @@ void setup() {
     //         Number of rows (including frames)
     //         Number of columns (including frames)
     // TODO: Get frame width from usedClockType.
-    transition = new Transition(usedClockType->rowsWordMatrix(),
-                                usedClockType->colsWordMatrix());
+    renderPipeline.resize(usedClockType->rowsWordMatrix(),
+                          usedClockType->colsWordMatrix());
 
     if (usedClockType->numPixelsFrameMatrix() != 0) {
         secondsFrame = new SecondsFrame(usedClockType->numPixelsFrameMatrix());
@@ -683,9 +709,9 @@ void setup() {
     }
 
     //-------------------------------------
-    // Transition Init
+    // Render Pipeline Init
     //-------------------------------------
-    transition->init();
+    renderPipeline.init();
 
     //-------------------------------------
     // Setup Done
@@ -740,12 +766,12 @@ void loop() {
     }
 
     //------------------------------------------------
-    // Transition
+    // Render Pipeline
     //------------------------------------------------
-    transition->loop(tm); // must be called periodically
+    renderPipeline.loop(tm); // must be called periodically
 
     // make the time run faster in the demo mode of the transition
-    transition->demoMode(_hour, _minute, _second);
+    renderPipeline.demoMode(_hour, _minute, _second);
 
     //------------------------------------------------
     // Clockwork

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Render/ColorMatrix.h"
 #include "WordClockState.h"
 #include <NeoPixelBus.h>
 
@@ -58,6 +59,7 @@ public:
     void setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse = true);
     void setbyMinuteArray(ColorPosition position = Foreground);
     void setbySecondArray(ColorPosition position = Foreground);
+    void setbyColorMatrix(const ColorMatrix &matrix);
     void setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color);
     void setSingle(uint8_t wait);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,

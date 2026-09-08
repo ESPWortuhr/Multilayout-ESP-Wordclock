@@ -1,6 +1,5 @@
 let TRANSLATION_DE_DE = {
 	"title": "Wortuhr",
-
 	"menu": {
 		"aria-show-menu": "Menü anzeigen",
 		"aria-hide-menu": "Menü ausblenden",
@@ -15,30 +14,32 @@ let TRANSLATION_DE_DE = {
 			"ru": "🇷🇺 Russisch"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Verbinden",
 		"text": "Die Verbindung zur Wortuhr wurde unterbrochen."
 	},
-
 	"reboot-recommended": {
 		"button": "Neu starten",
 		"text": "Ein Neustart wird empfohlen, um die geänderte Einstellung zu übernehmen."
 	},
-
 	"colors": {
 		"h1": "Farben",
 		"with-background": "Mit Hintergrundfarbe"
 	},
-
 	"functions": {
 		"h1": "Funktionen",
 		"color": {
 			"foreground": "Vordergrund",
 			"background": "Hintergrund",
 			"frame": "Rahmen",
-			"gradient": "Verlaufsfarbe",
-			"per_word": "Wortweise"
+			"primary": "Primärfarbe",
+			"secondary": "Sekundärfarbe",
+			"mode": {
+				"label": "Farbmodus",
+				"monochrome": "Monochrom",
+				"polychrome": "Polychrom",
+				"word_random": "Wortweise zufällig"
+			}
 		},
 		"mode": {
 			"h2": "Modus",
@@ -89,7 +90,6 @@ let TRANSLATION_DE_DE = {
 				"balls": "Bälle",
 				"firework": "Feuerwerk",
 				"snake": "Schlange",
-				"colored": "Bunt",
 				"random": "Zufällig"
 			},
 			"duration": {
@@ -98,12 +98,7 @@ let TRANSLATION_DE_DE = {
 				"medium": "mittel",
 				"long": "lang"
 			},
-			"color": {
-				"label": "Farbübergang",
-				"off": "Aus",
-				"gradient": "Farbverlauf",
-				"random": "Zufallsfarben"
-			},
+
 			"speed": {
 				"label": "Geschwindigkeit"
 			},

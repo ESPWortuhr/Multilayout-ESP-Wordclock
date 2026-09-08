@@ -10,14 +10,7 @@ void Transition::allocate(uint8_t rows, uint8_t cols) {
     old.resize(rows, cols);
     act.resize(rows, cols);
     work.resize(rows, cols);
-    rain = new Rain[cols];
-    balls = new Ball[cols];
-    for (uint8_t col = 0; col < cols; col++) {
-        rain[col] = Rain(rows, cols);
-        balls[col] = Ball(rows);
-    }
-    snake = new Snake(rows, cols);
-    firework = new Firework(rows, cols);
+    resizeEffects(rows, cols);
 }
 
 //------------------------------------------------------------------------------
@@ -26,28 +19,24 @@ void Transition::release() {
     old.release();
     act.release();
     work.release();
-    delete[] rain;
-    delete[] balls;
-    delete snake;
-    delete firework;
-
-    rain = nullptr;
-    balls = nullptr;
-    snake = nullptr;
-    firework = nullptr;
     maxRows = 0;
     maxCols = 0;
 }
 
 //------------------------------------------------------------------------------
 
-Transition::Transition(uint8_t rows, uint8_t cols) {
-    allocate(rows, cols);
-    transitionType = (Transition_t)G.transitionType;
-    lastTransitionType = (Transition_t)G.transitionType;
-    lastTransitionDemo = G.transitionDemo;
-    lastTransitionDuration = G.transitionDuration;
-    lastTransitionColorize = G.transitionColorize;
+Transition::Transition(uint8_t rows, uint8_t cols) { allocate(rows, cols); }
+
+//------------------------------------------------------------------------------
+
+/*
+The buffers are the whole point of this object; without them every effect would
+write past an allocation that was never made.
+*/
+
+bool Transition::valid() const {
+    return (old.rows() == maxRows) && (act.rows() == maxRows) &&
+           (work.rows() == maxRows) && (maxRows > 0);
 }
 
 //------------------------------------------------------------------------------
@@ -68,251 +57,63 @@ void Transition::resize(uint8_t rows, uint8_t cols) {
 
     // Drop a running animation: its phase counter refers to the old geometry.
     phase = 0;
-    matrixChanged = false;
 }
-
-//------------------------------------------------------------------------------
-
-bool isBirthday(struct tm &tm) {
-    // tm_mday=1..31, tm.tm_mon=0=Jan..11=Dec, tm_year=0=1900..n=1900+n
-
-    for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
-        if ((G.birthday[i].month == tm.tm_mon + 1) &&
-            (G.birthday[i].day == tm.tm_mday)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-//------------------------------------------------------------------------------
-
-bool isNewYear(struct tm &tm) {
-    return (tm.tm_mon == 11) && (tm.tm_mday == 31) && (tm.tm_hour == 23) &&
-           (tm.tm_min == 59);
-}
-
-//------------------------------------------------------------------------------
-
-bool isSpecialEventTransition(Transition_t &type) {
-    return (type == NEWYEAR_COUNTDOWN) || (type == NEWYEAR_FIRE) ||
-           (type == BIRTHDAY);
-}
-
-//------------------------------------------------------------------------------
-// Make special events at silvester and birthday
-//------------------------------------------------------------------------------
-// On Silvester, make a countdwon for the last minute of the year, then make a
-// fireworks animation. On birthdays, a fireworks animation appears every 5
-// minutes. Compatible clock types will display the words “Happy Birthday”
-// instead of the time during the animation. Birthdays before 1900 are not
-// animated.
-
-bool Transition::isSpecialEvent(Transition_t &type, struct tm &tm,
-                                bool trigger) {
-    static uint8_t minutesAfterMidnight;
-
-    if (trigger) {
-        if (!isSpecialEventTransition(type)) {
-            // Start only new special events when no SE is pending Conditions to
-            // start a special events
-            if (isNewYear(tm)) {
-                minutesAfterMidnight = 0;
-                type = NEWYEAR_COUNTDOWN;
-            } else if (isBirthday(tm) && (tm.tm_min % 5 == 2)) {
-                // Make animation 2 minutes after each clock change
-                type = BIRTHDAY;
-            }
-        } else {
-            // State machine for animation sequences
-            if (type == NEWYEAR_COUNTDOWN) {
-                type = NEWYEAR_FIRE;
-                // after one minute countdown, switch to fireworks
-            } else if (type == NEWYEAR_FIRE) {
-                minutesAfterMidnight++;
-                if (minutesAfterMidnight >= 10) {
-                    type = getTransitionType(true);
-                    // go back to standard transition
-                }
-            } else if (type == BIRTHDAY) {
-                type = getTransitionType(true);
-                // after one minute go back to standard transition
-            }
-        }
-    }
-
-    return isSpecialEventTransition(type);
-}
-
-//------------------------------------------------------------------------------
-// Get configured transition type: Random or Fix type
-
-Transition_t Transition::getTransitionType(bool trigger) {
-    if (G.transitionType == RANDOM) {
-        if (trigger) {
-            return (Transition_t)random(transitionTypeFirst,
-                                        transitionTypeLast + 1);
-        } else {
-            return transitionType;
-        }
-    }
-    return (Transition_t)G.transitionType;
-}
-
-//------------------------------------------------------------------------------
-bool Transition::isColorization() { return G.transitionColorize != OFF; }
 
 //------------------------------------------------------------------------------
 
 /*
-Whether the transition stage owns the LED output. With colouring switched on it
-does so even without a transition, because the colours only exist in the matrix
-- Led::set() alone would paint the plain foreground colour.
+Take over what is currently on the strip. All three buffers hold the same face,
+so nothing is animated until the next advanceTo().
 */
 
-bool Transition::ownsDisplay() {
-    return transitionType != NO_TRANSITION || isColorization();
+void Transition::seed(const ColorMatrix &face, RgbfColor foreground,
+                      RgbfColor background) {
+    this->foreground = foreground;
+    this->background = background;
+    copyMatrix(act, face);
+    copyMatrix(old, face);
+    copyMatrix(work, face);
+    phase = 0;
 }
 
 //------------------------------------------------------------------------------
-
-bool Transition::changeBrightness() {
-    RgbfColor newForeground, newBackground;
-    displayColors(newForeground, newBackground);
-    bool adjustFg = newForeground != foreground,
-         adjustBg = newBackground != background;
-
-    if (adjustFg || adjustBg) {
-        HsbColor hsbColor;
-        float brightness = HsbColor(newForeground).B;
-        hsbColor = HsbColor(foregroundMinute);
-        hsbColor.B = brightness;
-        foregroundMinute = RgbColor(hsbColor);
-        ColorMatrix *matrix[3] = {&act, &old, &work};
-        for (uint8_t m = 0; m < 3; m++) {
-            for (uint8_t row = 0; row < maxRows; row++) {
-                for (uint8_t col = 0; col < maxCols; col++) {
-                    if (adjustBg) {
-                        if (!(*matrix[m])[row][col].isForeground()) {
-                            (*matrix[m])[row][col] = newBackground;
-                        }
-                    }
-                    if (adjustFg) {
-                        if ((*matrix[m])[row][col].isForeground()) {
-                            if (isColorization()) {
-                                hsbColor = HsbColor((*matrix[m])[row][col]);
-                                hsbColor.B = brightness;
-                                (*matrix[m])[row][col].changeRgb(hsbColor);
-                            } else {
-                                (*matrix[m])[row][col].changeRgb(newForeground);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        background = newBackground;
-        foreground = newForeground;
-    }
-    return (adjustFg || adjustBg);
-}
-
-//------------------------------------------------------------------------------
-// returns hue values with a difference of at least 0.1 (360 * 0,1 = 36 degree)
-// avoiding neighbors with very similar colors
 
 /*
-Colouring is delegated to an IColorizer. This function only assembles the
-context and picks the minute colour; the per cell work lives in
-include/Render/Colorizers.h.
+A new clock face has been coloured. What was on screen becomes the source of the
+blend - with the hue drift running that is 'work', not 'act', otherwise the
+animation would jump back to the colours the face was built with.
 */
 
-void Transition::colorize(ColorMatrix &dest) {
-    ColorContext context;
-    context.foreground = HsbColor(foreground);
-    context.background = HsbColor(background);
-    context.gradientEnd =
-        led.getColorbyPositionWithAppliedBrightness(GradientEnd);
-    context.mode = isColorization() ? G.transitionColorize : OFF;
-    context.perWord = G.colorizePerWord;
-
-    // The minute LEDs are not part of the matrix, so they get their own hue
-    // from the same sequence.
-    HsbColor minuteColor = context.foreground;
-    if (context.mode != OFF) {
-        minuteColor.H = hueSequence.next();
+void Transition::advanceTo(const ColorMatrix &face, RgbfColor foreground,
+                           RgbfColor background) {
+    if (colorStage.isColorizing() && (G.transitionSpeed > 0)) {
+        copyMatrix(act, work);
     }
-    foregroundMinute = RgbColor(minuteColor);
-
-    colorizerFor(context.mode)->apply(dest, context, hueSequence);
-}
-
-//------------------------------------------------------------------------------
-
-void Transition::saveMatrix() {
-    static bool firstRun = true;
     copyMatrix(old, act);
-    displayColors(foreground, background);
-    buildFromFrontMatrix(act, foreground, background);
-    foregroundMinute = foreground;
-    if (isColorization()) {
-        colorize(act);
-    }
-    if (firstRun) {
-        firstRun = false;
-        copyMatrix(work, act);
-    }
-    return;
-}
-
-//------------------------------------------------------------------------------
-// copy (internal matrix or from LED stripe) and determine foreground and
-// background color
-
-/*
-The two colours Led paints the clock face with. Previously these were
-recovered by reading every pixel back from the LED strip and deciding by
-majority vote which of the two colours had been the foreground.
-*/
-
-void Transition::displayColors(RgbfColor &foreground, RgbfColor &background) {
-    foreground = RgbfColor(
-        led.getColorbyPositionWithAppliedBrightness(Foreground), F_FOREGROUND);
-    background = RgbfColor(
-        led.getColorbyPositionWithAppliedBrightness(Background), F_NULL);
+    copyMatrix(act, face);
+    copyMatrix(work, face);
+    this->foreground = foreground;
+    this->background = background;
 }
 
 //------------------------------------------------------------------------------
 
-/*
-Build a matrix from the current clock face: which cells are lit comes from the
-front matrix, the colours are passed in. The per cell foreground flag falls out
-of the assignment, so no second pass is needed to tag the cells.
-*/
-
-void Transition::buildFromFrontMatrix(ColorMatrix &dest, RgbfColor foreground,
-                                      RgbfColor background) {
-    for (uint8_t row = 0; row < maxRows; row++) {
-        for (uint8_t col = 0; col < maxCols; col++) {
-            dest[row][col] = usedClockType->getFrontMatrixPixel(row, col)
-                                 ? foreground
-                                 : background;
-        }
-    }
+void Transition::start() {
+    nextActionTime = 0;
+    phase = 1;
 }
 
 //------------------------------------------------------------------------------
-// Overwrite the LEDs with internal matrix
 
-void Transition::copy2Stripe(const ColorMatrix &source) {
-    for (uint8_t row = 0; row < maxRows; row++) {
-        for (uint8_t col = 0; col < maxCols; col++) {
-            led.setPixel(
-                row, col,
-                HsbColor{RgbColor(source[row][col].R, source[row][col].G,
-                                  source[row][col].B)});
-        }
-    }
+void Transition::recolor(RgbfColor foreground, RgbfColor background) {
+    colorStage.colorize(isIdle() ? work : act, foreground, background);
+}
+
+//------------------------------------------------------------------------------
+
+bool Transition::refreshColors() {
+    ColorMatrix *const matrices[3] = {&act, &old, &work};
+    return colorStage.applyColorChange(matrices, 3, foreground, background);
 }
 
 //------------------------------------------------------------------------------
@@ -323,834 +124,81 @@ void Transition::copyMatrix(ColorMatrix &dest, const ColorMatrix &source) {
 
 //------------------------------------------------------------------------------
 
-void Transition::copyMatrixFlags(ColorMatrix &dest, const ColorMatrix &source) {
-    for (uint8_t row = 0; row < maxRows; row++) {
-        for (uint8_t col = 0; col < maxCols; col++) {
-            dest[row][col].setFlags(source[row][col].getFlags());
-        }
+void Transition::resizeEffects(uint8_t rows, uint8_t cols) {
+    ITransitionEffect *effects[] = {
+        &fadeEffect,       &rollUpEffect,   &rollDownEffect, &shiftLeftEffect,
+        &shiftRightEffect, &laserEffect,    &ballsEffect,    &matrixRainEffect,
+        &snakeEffect,      &fireworkEffect, &countdownEffect};
+
+    for (ITransitionEffect *effect : effects) {
+        effect->resize(rows, cols);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Transition::fillMatrix(ColorMatrix &matrix, RgbfColor color) {
-    for (uint8_t row = 0; row < maxRows; row++) {
-        for (uint8_t col = 0; col < maxCols; col++) {
-            matrix[row][col] = color;
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-bool Transition::changesInTransitionTypeDurationOrDemo() {
-    return (transitionType != lastTransitionType) ||
-           (G.transitionDuration != lastTransitionDuration) ||
-           (G.transitionDemo != lastTransitionDemo);
-}
-
-//------------------------------------------------------------------------------
-
-uint16_t Transition::reverse(uint16_t num, bool mirrored,
-                             uint8_t grafic_cols = 11) {
-    // reverse left bits
-    if (mirrored) {
-        uint16_t res = 0;
-        for (uint8_t i = 0; i < grafic_cols; i++) {
-            if (num & (1 << i)) {
-                res |= (1 << (grafic_cols - 1)) >> i;
-            }
-        }
-        num = res;
-    }
-    return num;
-}
-
-//------------------------------------------------------------------------------
-// slow == 1 -> 5s
-// mid  == 2 -> 3.5s
-// fast == 3 -> 2s
-
-uint16_t Transition::calcDelay(uint16_t frames) {
-    uint32_t pause;
-    if (frames == 0) { // avoid div 0
-        frames = 10;
-    }
-    switch (G.transitionDuration) {
-    case 1:
-        pause = 2000 / frames;
-        break; // 2 seconds
-    case 3:
-        pause = 5000 / frames;
-        break; // 5 seconds
+ITransitionEffect *Transition::effectFor(Transition_t type) {
+    switch (type) {
+    case ROLL_UP:
+        return &rollUpEffect;
+    case ROLL_DOWN:
+        return &rollDownEffect;
+    case SHIFT_LEFT:
+        return &shiftLeftEffect;
+    case SHIFT_RIGHT:
+        return &shiftRightEffect;
+    case FADE:
+        return &fadeEffect;
+    case LASER:
+        return &laserEffect;
+    case BALLS:
+        return &ballsEffect;
+    case MATRIX_RAIN:
+        return &matrixRainEffect;
+    case SNAKE:
+        return &snakeEffect;
+    case FIRE:
+    case NEWYEAR_FIRE:
+    case BIRTHDAY:
+        return &fireworkEffect;
+    case NEWYEAR_COUNTDOWN:
+        return &countdownEffect;
     default:
-        pause = 3500 / frames;
-        break; // 3.5 seconds
-    }
-    if (pause == 0) {
-        pause = 1;
-    }
-    return pause;
-}
-
-//------------------------------------------------------------------------------
-
-void Transition::setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
-                                 unsigned char unsigned_d1, HsbColor color,
-                                 fontSize font = normalSizeASCII) {
-    if (led.getCharCol(font, col, row, unsigned_d1)) {
-        work[row + 1][col + offsetCol].changeRgb(color);
-    }
-}
-
-//------------------------------------------------------------------------------
-// Transitions
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-// the new matrix slides in from above       | below
-//                      row                  |               row
-// phase | 9876543210   old  act   wechsel   | 9876543210   old  act   wechsel
-//       | unten oben                        | unten oben
-//   1   | aaaaaaaaan   0-8  9     0         | naaaaaaaaa   1-9  0     9
-//   2   | aaaaaaaann   0-7  8-9   1         | nnaaaaaaaa   2-9  0-1   8
-//   3   | aaaaaaannn   0-6  7-9   2         | nnnaaaaaaa   3-9  0-2   7
-//   4   | aaaaaannnn   0-5  6-9   3         | nnnnaaaaaa   4-9  0-3   6
-//   5   | aaaaannnnn   0-4  5-9   4         | nnnnnaaaaa   5-9  0-4   5
-//   6   | aaaannnnnn   0-3  4-9   5         | nnnnnnaaaa   6-9  0-5   4
-//   7   | aaannnnnnn   0-4  3-9   6         | nnnnnnnaaa   7-9  0-6   3
-//   8   | aannnnnnnn   0-1  2-9   7         | nnnnnnnnaa   8-9  0-7   2
-//   9   | annnnnnnnn   0    1-9   8         | nnnnnnnnna   9    0-8   1
-//  10   | nnnnnnnnnn        0-9   9         | nnnnnnnnnn        0-9   0
-
-uint16_t Transition::transitionScrollDown(bool dirDown) {
-    uint32_t wechsel, rowAlt, rowNeu;
-    bool copyFromNeu;
-
-    if (phase == 1) {
-        transitionDelay = calcDelay(maxRows) / 4;
-    }
-    if (dirDown) {
-        wechsel = phase;
-        rowAlt = 0;
-        rowNeu = maxRows - phase;
-    } else {
-        wechsel = maxRows - phase;
-        rowAlt = phase;
-        rowNeu = 0;
-    }
-    for (uint8_t row = 0; row < maxRows; row++) {
-        copyFromNeu = (row >= wechsel) ^ dirDown;
-        for (uint8_t col = 0; col < maxCols; col++) {
-            if (copyFromNeu) {
-                work[row][col] = act[rowNeu][col];
-            } else {
-                work[row][col] = old[rowAlt][col];
-            }
-        }
-        if (copyFromNeu) {
-            rowNeu++;
-        } else {
-            rowAlt++;
-        }
-    }
-    if (phase >= maxRows) {
-        return 0;
-    }
-    return phase + 1;
-}
-
-//------------------------------------------------------------------------------
-// the new matrix slides in from the right / in from the left
-//                       col
-// phase | 01234567890   old  act   Wechsel  01234567890   old  act   Wechsel
-//   1   | aaaaaaaaaan   1-10 0      0       naaaaaaaaaa   0-9  10    10
-//   2   | aaaaaaaaann   2-10 0-1    1       nnaaaaaaaaa   0-8  9-10   9
-//   3   | aaaaaaaannn   3-10 0-2    2       nnnaaaaaaaa   0-7  8-10   8
-//
-//  10   | annnnnnnnnn   10   0-9    9       nnnnnnnnnna   0    1-10   1
-//  11   | nnnnnnnnnnn        0-10  10       nnnnnnnnnnn        0-10   0
-
-uint16_t Transition::transitionScrollRight(bool dirRight) {
-    uint32_t wechsel, colAlt, colNeu;
-    bool copyFromNeu;
-
-    if (phase == 1) {
-        transitionDelay = calcDelay(maxCols) / 4;
-    }
-    if (dirRight) {
-        wechsel = phase;
-        colAlt = 0;
-        colNeu = maxCols - phase;
-    } else {
-        wechsel = maxCols - phase;
-        colAlt = phase;
-        colNeu = 0;
-    }
-    for (uint8_t col = 0; col < maxCols; col++) {
-        copyFromNeu = (col >= wechsel) ^ dirRight;
-        for (uint8_t row = 0; row < maxRows; row++) {
-            if (copyFromNeu) {
-                work[row][col] = act[row][colNeu];
-            } else {
-                work[row][col] = old[row][colAlt];
-            }
-        }
-        if (copyFromNeu) {
-            colNeu++;
-        } else {
-            colAlt++;
-        }
-    }
-    if (phase >= maxCols) {
-        return 0;
-    }
-    return phase + 1;
-}
-
-//------------------------------------------------------------------------------
-// In each column, one ball falls from the highest letter.
-
-uint16_t Transition::transitionBalls() {
-    static uint32_t starttime;
-    static uint32_t numBalls;
-    uint32_t oldR, row, col, ballsDown;
-    uint32_t timeDelta, now;
-
-    if (phase == 1) {
-        transitionDelay = 50; // 20 Frames per second
-        numBalls = 0;
-        for (col = 0; (col < maxCols) && (numBalls < maxCols); col++) {
-            for (row = 0; (row < maxRows) && (numBalls < maxRows); row++) {
-                if (work[row][col].isForeground()) {
-                    balls[numBalls].begin(row, col, work[row][col], background,
-                                          100 * numBalls);
-                    numBalls++;
-                    break;
-                }
-            }
-        }
-        starttime = millis();
-    }
-
-    now = millis();
-    timeDelta = now - starttime;
-    starttime = now;
-    ballsDown = 0;
-    for (uint8_t i = 0; i < numBalls; i++) {
-        oldR = balls[i].row;
-        ballsDown += balls[i].move(timeDelta);
-        row = balls[i].row; // row, col new coordinates
-        col = balls[i].col;
-        if (row > oldR) { // down
-            for (; row > oldR; oldR++) {
-                work[oldR][col] = background;
-            }
-        } else { // up
-            for (; row < oldR; oldR--) {
-                work[oldR][col] = background;
-            }
-        }
-        work[row][col] = balls[i].color;
-    }
-    if (ballsDown >= numBalls) {
-        copyMatrix(work, act);
-        return 0;
-    }
-    return phase + 1;
-}
-
-//------------------------------------------------------------------------------
-
-uint16_t Transition::transitionFire() {
-    static const uint8_t blendingFrames = 20;
-    static bool sparkle, mirrored = false;
-    static uint32_t subPhase;
-
-    if (phase == 1) {
-        // FIRE_1 .. 6 + 4 = 10
-        transitionDelay = calcDelay(blendingFrames * 10) / 2;
-        sparkle = false;
-        subPhase = 1;
-        firework->prepare(0, _white, FIRE_1, mirrored);
-        if (transitionType == BIRTHDAY &&
-            usedClockType->hasSpecialWordHappyBirthday()) {
-            /*
-            On birthdays, a fireworks animation appears every 5 minutes.
-            Compatible clock types will display the words “Happy Birthday”
-            instead of the time during the animation. Birthdays before 1900 are
-            not animated.
-            */
-            fillMatrix(work, background);
-            HsbColor hsbColor = HsbColor(foreground);
-            hsbColor.H = hueSequence.next();
-
-            led.clear();
-            usedClockType->show(FrontWord::happy_birthday);
-            led.setbyFrontMatrix(hsbColor);
-            // HAPPY BIRTHDAY in a random hue on black, which is what
-            // setbyFrontMatrix() just painted.
-            foreground = RgbfColor(hsbColor, F_FOREGROUND);
-            background = RgbfColor(0, F_NULL);
-            buildFromFrontMatrix(work, foreground, background);
-
-            copyMatrix(act, work);
-        } else {
-            // use current colors to be blended to act
-            copyMatrix(old, work);
-            copyMatrixFlags(work, act);
-        }
-        phase++;
-    }
-
-    bool lastSubPhase = subPhase == blendingFrames;
-    if (subPhase > blendingFrames) {
-        subPhase = 1;
-        switch (phase) {
-        case FIRE_4:
-            firework->prepare(0, _red, FIRE_4, mirrored);
-            break;
-        case FIRE_5:
-            firework->prepare(0, _red, FIRE_5, mirrored);
-            break;
-        case FIRE_6:
-            firework->prepare(0, _red, FIRE_6, mirrored);
-            break;
-        case (FIRE_6 + 1):
-            firework->prepare(0, _blue, FIRE_6, mirrored);
-            firework->prepare(1, _green, FIRE_4, mirrored);
-            firework->prepare(2, _yellow, FIRE_5, mirrored);
-            break;
-        case (FIRE_6 + 2):
-            transitionDelay *= 2;
-            sparkle = true;
-            break;
-        case (FIRE_6 + 3):
-            break;
-        case (FIRE_6 + 4):
-            mirrored = !mirrored;
-            copyMatrix(old, act); // old contains artefacts
-            if ((transitionType == NEWYEAR_FIRE) ||
-                (transitionType == BIRTHDAY)) {
-                // While NEWYEAR_FIRE or BIRTHDAY repeat transition any 500ms
-                // (will be stopped by changing transitionType)
-                transitionDelay = 500;
-                return 1; // restart transition
-            }
-            return 0; // end transition
-            break;
-        default:
-            firework->prepare(0, _white, static_cast<BitmapSymbol>(phase),
-                              mirrored);
-        }
-        phase++;
-    }
-
-    RgbColor overlayColor;
-    float progress = static_cast<float>(subPhase) / blendingFrames;
-    if (progress > 1.0) {
-        progress = 1.0;
-    }
-    float fading =
-        static_cast<float>((phase - FIRE_1) * blendingFrames + subPhase) /
-        (blendingFrames * (FIRE_6 - FIRE_1 + 2));
-    if (fading > 1.0) {
-        fading = 1.0;
-    }
-    bool overlay;
-
-    for (uint8_t col = 0; col < maxCols; col++) {
-        for (uint8_t row = 0; row < maxRows; row++) {
-            overlay = firework->getPixel(row, col, overlayColor);
-            if (sparkle) {
-                if (work[row][col].isOverlay()) {
-                    // overlayed in previous run
-                    work[row][col] = old[row][col]; // restore color
-                    work[row][col].setOverlay(false);
-                } else {
-                    if (overlay && (random(10) == 0) && (!lastSubPhase)) {
-                        old[row][col] = work[row][col]; // save color
-                        work[row][col].changeRgb(_white);
-                        work[row][col].setOverlay();
-                    }
-                }
-            } else {
-                // blend old -> act
-                RgbColor color =
-                    color.LinearBlend(old[row][col], act[row][col], fading);
-                if (overlay && !lastSubPhase) {
-                    // blend in overlay
-                    overlayColor =
-                        overlayColor.LinearBlend(color, overlayColor, progress);
-                    work[row][col].changeRgb(overlayColor);
-                    work[row][col].setOverlay();
-                } else {
-                    if (work[row][col].isOverlay()) {
-                        // blend out overlay
-                        color =
-                            color.LinearBlend(overlayColor, color, progress);
-                        work[row][col].changeRgb(color);
-                        if (lastSubPhase) {
-                            work[row][col].setOverlay(false);
-                        }
-                    } else {
-                        // set mix of old and act
-                        work[row][col].changeRgb(color);
-                    }
-                }
-            }
-        }
-    }
-    subPhase++;
-    return phase;
-}
-
-//------------------------------------------------------------------------------
-
-uint16_t Transition::transitionCountdown(struct tm &tm) {
-    static int8_t lastSecond = 0, countDown = 59;
-    uint8_t _second = tm.tm_sec; // 0 - 59
-    if (_second != lastSecond) {
-        if (phase == 1) { // Initialize at start of animation
-            transitionDelay = 50;
-            lastSecond = 0;
-            countDown = 59;
-        }
-        if (countDown < 0) { // Countdown finished?
-            lastSecond = 0;
-            countDown = 59;
-            return 0;
-        }
-        lastSecond = _second;
-        fillMatrix(work, background);
-        HsbColor hsbColor_1 = HsbColor(foreground);
-        HsbColor hsbColor_2 = HsbColor(foreground);
-        hsbColor_1.H = hueSequence.next();
-        hsbColor_2.H = hueSequence.next();
-        char seconds[8];
-        // start 23:59:00     60 - 0
-        snprintf(seconds, sizeof(seconds), "%d", countDown);
-        // determine font size according layout
-        // fontSize usedFontSize = determineFontSize(); // not applicable due to
-        // linkage to digital clock
-        fontSize usedFontSize = normalSizeASCII;
-        // convert second to acii
-        unsigned char unsigned_s0 = static_cast<unsigned char>(seconds[0]);
-        unsigned char unsigned_s1 = static_cast<unsigned char>(seconds[1]);
-        if (maxCols < (pgm_read_byte(&(fontWidth[usedFontSize])) * 2 + 1) ||
-            maxRows < pgm_read_byte(&(fontHeight[usedFontSize]))) {
-            usedFontSize = smallSizeNumbers;
-            // convert char to int due to differt definition in Font.h
-            unsigned_s0 -= 48;
-            unsigned_s1 -= 48;
-        }
-        // for (uint8_t i = 0; i < 5; i++) {
-        for (uint8_t row = 0; row < 8; row++) {     // row
-            for (uint8_t col = 0; col < 5; col++) { // column
-                if (countDown >= 10) {
-                    // 1. Number without Offset
-                    setPixelForChar(col, row, 0, unsigned_s0, hsbColor_1,
-                                    usedFontSize);
-                    // 2. Number with Offset
-                    setPixelForChar(col, row, 6, unsigned_s1, hsbColor_2,
-                                    usedFontSize);
-                } else {
-                    setPixelForChar(col, row, 3, unsigned_s0, hsbColor_1,
-                                    usedFontSize);
-                }
-            }
-        }
-        countDown--;
-        phase++;
-    }
-    return phase;
-}
-
-//------------------------------------------------------------------------------
-
-void Transition::transitionColorChange() {
-    static uint32_t lastTimeColor = 0;
-    static uint32_t pauseZeitColor = 50;
-
-    if (isColorization() && (G.transitionSpeed > 0)) {
-        uint32_t now = millis();
-        if (now >= (lastTimeColor + pauseZeitColor)) {
-            lastTimeColor = now;
-            float deltaHue = fmod(1.0 / (G.transitionSpeed * 20.0), 1.0);
-            HsbColor hsbColor;
-            for (uint8_t row = 0; row < maxRows; row++) {
-                for (uint8_t col = 0; col < maxCols; col++) {
-                    if (work[row][col].isForeground()) {
-                        hsbColor = HsbColor(work[row][col]);
-                        hsbColor.H = fmod(hsbColor.H + deltaHue, 1.0);
-                        work[row][col].changeRgb(hsbColor);
-                    }
-                }
-            }
-            hsbColor = HsbColor(foregroundMinute);
-            hsbColor.H = fmod(hsbColor.H + deltaHue, 1.0);
-            foregroundMinute = RgbColor(hsbColor);
-        }
+        // NO_TRANSITION and RANDOM animate nothing themselves.
+        return nullptr;
     }
 }
 
 //------------------------------------------------------------------------------
 
-uint16_t Transition::transitionLaser() {
-    static uint8_t row = 0, col = 0;
-    static bool loeschPhase = true;
-    static RgbfColor strahl(255);
-
-    if (phase == 1) {
-        transitionDelay = calcDelay(maxRows * maxCols * 2);
-        row = 0;
-        col = 0;
-        copyMatrix(work, old);
-        loeschPhase = true;
-    }
-
-    if (loeschPhase) {
-        work[row][col] = background;
-    } else {
-        work[row][col] = act[row][col];
-    }
-
-    if (++col >= maxCols) {
-        col = 0;
-        row++;
-    }
-    if (row < maxRows) {
-        work[row][col] = strahl;
-    } else {
-        row = 0;
-        if (loeschPhase == false) {
-            return 0;
-        }
-        loeschPhase = false;
-    }
-    return phase + 1;
+uint16_t Transition::runEffect(ITransitionEffect &effect, struct tm &tm,
+                               Transition_t type) {
+    TransitionContext context{
+        old,  act, work,  foreground,      background,
+        type, &tm, phase, transitionDelay, G.transitionDuration};
+    const uint16_t next = effect.step(context);
+    transitionDelay = context.delayMs;
+    return next;
 }
 
 //------------------------------------------------------------------------------
 
-uint16_t Transition::transitionFade() {
-    uint16_t frames = 100;
-    RgbColor color;
+/*
+One animation step, if the previous one has been on screen long enough. The
+effect decides its own pace and reports the next phase, 0 meaning done.
+*/
 
-    if (phase == 1) {
-        transitionDelay = calcDelay(frames);
-        // copyMatrix(old, work);
-    }
-    float progress = static_cast<float>(phase) / static_cast<float>(frames);
+void Transition::step(struct tm &tm, Transition_t type) {
+    transitionType = type;
 
-    for (uint8_t col = 0; col < maxCols; col++) {
-        for (uint8_t row = 0; row < maxRows; row++) {
-            color = color.LinearBlend(old[row][col], act[row][col], progress);
-            work[row][col].changeRgb(color);
-        }
-    }
-    if (phase >= frames) {
-        copyMatrix(work, act); // take all color.Foreground's from act
-        return 0;
-    }
-    return phase + 1;
-}
-
-//------------------------------------------------------------------------------
-
-uint16_t Transition::transitionMatrixRain() {
-    uint16_t frames = 100;
-    int8_t row, col;
-    RgbfColor fadeColor;
-    RgbaColor rainColor;
-
-    if (phase == 1) {
-        transitionDelay = calcDelay(frames);
-        copyMatrix(old, work); // work is still the previous transition array
-        uint8_t stop;
-        uint8_t brightness = foreground.CalculateBrightness();
-        for (col = 0; col < maxCols; col++) {
-            stop = maxRows - 1;
-            for (row = maxRows - 1; row >= 0; row--) {
-                if (work[row][col].isForeground()) {
-                    stop = row;
-                    break;
-                }
-            }
-            rain[col].begin(frames, stop, brightness);
-        }
-    }
-    float progress = static_cast<float>(phase) / static_cast<float>(frames);
-    for (col = 0; col < maxCols; col++) {
-        for (row = 0; row < maxRows; row++) {
-            fadeColor =
-                fadeColor.LinearBlend(old[row][col], act[row][col], progress);
-            rainColor = rain[col].get(row);
-            rainColor = rainColor.LinearBlend(fadeColor, rainColor,
-                                              rainColor.getAlpha());
-            work[row][col].changeRgb(rainColor);
-        }
-    }
-    if (phase >= frames) {
-        copyMatrix(work, act); // take all color.Foreground's from act
-        return 0;
-    }
-    return phase + 1;
-}
-
-//------------------------------------------------------------------------------
-
-uint16_t Transition::transitionSnake() {
-    uint16_t food = 40;
-
-    if (phase == 1) {
-        transitionDelay = calcDelay(food);
-        snake->begin(this);
-    }
-
-    if (!snake->drawSnake()) {
-        return 0;
-    }
-    return phase + 1;
-}
-
-//------------------------------------------------------------------------------
-// Loop Helper Functions
-//------------------------------------------------------------------------------
-
-void Transition::demoMode(uint8_t &_hour, uint8_t &_minute, uint8_t _second) {
-    static uint8_t test_second = _second;
-    static uint8_t test_minute = _minute;
-    static uint8_t test_hour = _hour;
-    if (G.transitionDemo) {
-        // increment every second
-        // by checking isIdle transitions are completely done
-        if (isIdle() && ((_second % 2) == 0) && (test_second != _second)) {
-            // select increment by clock type
-            if (usedClockType != nullptr) {
-                if (usedClockType->hasOnlyQuarterLayout()) {
-                    test_minute += 15;
-                } else if (usedClockType->has60MinuteLayout()) {
-                    test_minute += 1;
-                } else {
-                    test_minute += 5;
-                }
-            }
-            // add one hour every 60 minutes
-            if (test_minute >= 60) {
-                test_minute %= 60;
-                test_hour = (test_hour + 1) % 24;
-            }
-            // log demo time
-            Serial.printf("Demo time: %02d:%02d\n", test_hour, test_minute);
-        }
-        // set to time variables
-        _hour = test_hour;
-        _minute = test_minute;
-        test_second = _second;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Transition::initTransitionStart() {
-    nextActionTime = 0;
-    phase = 1;
-}
-
-//------------------------------------------------------------------------------
-// TODO: This function is used in two different functions:
-// 1) Transition::isOverwrittenByTransition
-// 2) Transition::loop
-// It looks like that it is intended that function 1 and 2 both can reset the
-// "MinuteChanged" status, so that only the first function calling the
-// Transition::hasMinuteChanged is executed!?
-// Are there better implementations which are more obvious?
-
-bool Transition::hasMinuteChanged() {
-    if (lastMinute != _minute) {
-        lastMinute = _minute;
-        return true;
-    }
-    return false;
-}
-
-//------------------------------------------------------------------------------
-// 'WordclockChanges::Parameters', e.g. color modifications -> Apply w/o Trans
-// 'WordclockChanges::Minute', e.g. minute iterations -> Apply w/o Transition
-// 'WordclockChanges::Words', e.g. word changes -> Apply with Transition
-
-bool Transition::isOverwrittenByTransition(WordclockChanges changesInWordMatrix,
-                                           uint8_t minute) {
-    if (!ownsDisplay()) {
-        if (changesInWordMatrix != WordclockChanges::Parameters &&
-            hasMinuteChanged()) {
-            // Needed in Case the Transition is switched off
-            matrixChanged = true;
-        }
-    } else {
-        if (changesInWordMatrix != WordclockChanges::Parameters) {
-            if (changesInWordMatrix == WordclockChanges::Words ||
-                changesInWordMatrix == WordclockChanges::Layout) {
-                initTransitionStart();
-            }
-            lastMinute = minute;
-            if (changesInWordMatrix != WordclockChanges::Minute) {
-                matrixChanged = true;
-            }
-            return false;
-        } else {
-            if (changeBrightness()) {
-                copy2Stripe(work);
-            }
-            return isIdle();
-        }
-    }
-    return true;
-}
-
-//------------------------------------------------------------------------------
-
-void Transition::init() { saveMatrix(); }
-
-//------------------------------------------------------------------------------
-// Loop Functions
-//------------------------------------------------------------------------------
-
-void Transition::loop(struct tm &tm) {
-    static bool specialEvent;
-
-    if (maxRows != usedClockType->rowsWordMatrix() ||
-        maxCols != usedClockType->colsWordMatrix()) {
-
-        static bool alreadyReported = false;
-        if (!alreadyReported) {
-            alreadyReported = true;
-            Serial.println(F("[ERROR] Transition: buffer geometry mismatch"));
-        }
+    const uint32_t now = millis();
+    if (isIdle() || (now < nextActionTime)) {
         return;
     }
+    nextActionTime = now + transitionDelay;
 
-    if (G.prog == COMMAND_IDLE || G.prog == COMMAND_MODE_WORD_CLOCK) {
-        specialEvent = isSpecialEvent(transitionType, tm, hasMinuteChanged());
-
-        if (!specialEvent) {
-            transitionType =
-                getTransitionType(matrixChanged); // hasMinuteChanged()
-        }
-
-        bool needsRedraw = false;
-
-        if (matrixChanged) {
-            matrixChanged = false;
-            if (isColorization() && (G.transitionSpeed > 0)) {
-                copyMatrix(act, work);
-            }
-            saveMatrix();
-            copyMatrix(work, act);
-            needsRedraw = true;
-        }
-
-        if (transitionType == NO_TRANSITION) {
-            if (changesInTransitionTypeDurationOrDemo()) {
-                lastTransitionType = transitionType;
-                copyMatrix(work, act);
-                needsRedraw = true;
-            }
-            if (G.transitionColorize != lastTransitionColorize) {
-                lastTransitionColorize = G.transitionColorize;
-                colorize(work);
-                needsRedraw = true;
-            }
-            // Without a transition nothing else pushes the coloured matrix to
-            // the strip, so this stage does it - but only when something
-            // actually changed, never on every loop iteration.
-            if (needsRedraw && ownsDisplay()) {
-                copy2Stripe(work);
-                if (G.minuteVariant != MinuteVariant::Off) {
-                    led.setbyMinuteArray(Foreground);
-                }
-                if (G.secondVariant != SecondVariant::Off) {
-                    led.setbySecondArray(Frame);
-                }
-                led.show();
-            }
-        } else {
-            if (changesInTransitionTypeDurationOrDemo()) {
-                lastTransitionType = transitionType;
-                lastTransitionDemo = G.transitionDemo;
-                lastTransitionDuration = G.transitionDuration;
-                phase = 1;
-            }
-            if (G.transitionColorize != lastTransitionColorize) {
-                lastTransitionColorize = G.transitionColorize;
-                colorize(isIdle() ? work : act);
-            }
-
-            uint32_t now = millis();
-            if ((!isIdle()) && (now >= nextActionTime)) {
-                nextActionTime = now + transitionDelay;
-                // Serial.printf("Transition: type %d phase %d\n",
-                // transitionType,phase);
-                switch (transitionType) {
-                case ROLL_UP:
-                    phase = transitionScrollDown(false);
-                    break;
-                case ROLL_DOWN:
-                    phase = transitionScrollDown(true);
-                    break;
-                case SHIFT_LEFT:
-                    phase = transitionScrollRight(false);
-                    break;
-                case SHIFT_RIGHT:
-                    phase = transitionScrollRight(true);
-                    break;
-                case FADE:
-                    phase = transitionFade();
-                    break;
-                case LASER:
-                    phase = transitionLaser();
-                    break;
-                case MATRIX_RAIN:
-                    phase = transitionMatrixRain();
-                    break;
-                case BALLS:
-                    phase = transitionBalls();
-                    break;
-                case BIRTHDAY:
-                case NEWYEAR_FIRE:
-                case FIRE:
-                    phase = transitionFire();
-                    break;
-                case SNAKE:
-                    phase = transitionSnake();
-                    break;
-                case COLORED:
-                    copyMatrix(work, act);
-                    phase = 0;
-                    break;
-                case NEWYEAR_COUNTDOWN:
-                    phase = transitionCountdown(tm);
-                    break;
-                case RANDOM:
-                case NO_TRANSITION:
-                    break;
-                }
-            }
-            transitionColorChange();
-            copy2Stripe(work);
-            if (!specialEvent) {
-
-                if (G.minuteVariant != MinuteVariant::Off) {
-                    led.setbyMinuteArray(Foreground);
-                }
-
-                if (G.secondVariant != SecondVariant::Off) {
-                    led.setbySecondArray(Frame);
-                    // Workaround: setbySecondArray not in 'work'
-                }
-            }
-            led.show();
-        }
+    ITransitionEffect *effect = effectFor(type);
+    if (effect != nullptr) {
+        phase = runEffect(*effect, tm, type);
     }
 }

@@ -1,6 +1,5 @@
 let TRANSLATION_RU = {
 	"title": "Словесные часы by Ragman",
-
 	"menu": {
 		"aria-show-menu": "Покажи мне меню",
 		"aria-hide-menu": "Скрыть меню",
@@ -15,30 +14,32 @@ let TRANSLATION_RU = {
 			"ru": "🇷🇺 Pусский"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Соединять",
 		"text": "Потерялась связь с часами."
 	},
-
 	"reboot-recommended": {
 		"button": "Перезапуск",
 		"text": "Рекомендуется перезапустить часы, чтобы применить измененную настройку."
 	},
-
 	"colors": {
 		"h1": "Цвета",
 		"with-background": "С цветом фона"
 	},
-
 	"functions": {
 		"h1": "Характеристики",
 		"color": {
 			"foreground": "Передний план",
 			"background": "Фон",
 			"frame": "Рама",
-			"gradient": "Цвет градиента",
-			"per_word": "По словам"
+			"primary": "Основной цвет",
+			"secondary": "Дополнительный цвет",
+			"mode": {
+				"label": "Режим цвета",
+				"monochrome": "Монохром",
+				"polychrome": "Полихром",
+				"word_random": "Случайно по словам"
+			}
 		},
 		"mode": {
 			"h2": "Режим",
@@ -62,12 +63,7 @@ let TRANSLATION_RU = {
 				"medium": "половина",
 				"long": "длинный"
 			},
-			"color": {
-				"label": "Анимация в цветах",
-				"off": "Bыключен",
-				"gradient": "Градиент",
-				"random": "Случайные цвета"
-			},
+
 			"speed": {
 				"label": "Скорость"
 			},

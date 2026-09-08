@@ -707,7 +707,7 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     if (topicStr == baseTopic + "/transition_colorize/set") {
         applyTransitionSelect("transition_colorize", msg, TRANSITION_COLORIZE,
                               LABELED_VALUE_COUNT(TRANSITION_COLORIZE),
-                              G.transitionColorize);
+                              G.colorize);
         return;
     }
     if (topicStr == baseTopic + "/transition_duration/set") {
@@ -902,8 +902,8 @@ void Mqtt::sendState() {
         mqttClient.publish(
             (std::string(G.mqtt.topic) + "/transition_colorize/state").c_str(),
             labelForValue(TRANSITION_COLORIZE,
-                          LABELED_VALUE_COUNT(TRANSITION_COLORIZE),
-                          G.transitionColorize, TRANSITION_COLORIZE[0].label),
+                          LABELED_VALUE_COUNT(TRANSITION_COLORIZE), G.colorize,
+                          TRANSITION_COLORIZE[0].label),
             true);
         mqttClient.publish(
             (std::string(G.mqtt.topic) + "/transition_duration/state").c_str(),

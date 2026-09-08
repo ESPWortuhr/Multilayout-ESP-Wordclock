@@ -38,6 +38,9 @@ public:
             return;
         }
         m_cells = new RgbfColor[static_cast<uint16_t>(rows) * cols];
+        if (m_cells == nullptr) {
+            return;
+        }
         m_rows = rows;
         m_cols = cols;
     }

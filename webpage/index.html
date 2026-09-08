@@ -165,11 +165,24 @@
                 </header>
 
                 <div class="box box-color">
+                    <div class="pure-control-group colorize-mode">
+                        <label for="colorize-mode" data-i18next="functions.color.mode.label"></label>
+                        <select id="colorize-mode" size="1">
+                            <option value="0" data-i18next="functions.color.mode.monochrome"></option>
+                            <option value="1" data-i18next="functions.color.mode.polychrome"></option>
+                            <option value="2" data-i18next="functions.color.mode.word_random"></option>
+                        </select>
+                    </div>
                     <form name="prog" class="mode-color-form" id="mode-color-form">
                             <label for="colorwheel-foreground" class="radio-select">
                                 <input id="colorwheel-foreground" type="radio" name="colorwheel" value="color" checked>
                                 <img src="./icons/mode-wordclock.svg" class="icon" alt="icon" aria-hidden="true">
                                 <span data-i18next="functions.color.foreground"></span>
+                            </label>
+                            <label for="colorwheel-gradient" class="radio-select">
+                                <input id="colorwheel-gradient" type="radio" name="colorwheel" value="color">
+                                <img src="./icons/color_gradient.svg" class="icon" alt="icon" aria-hidden="true">
+                                <span data-i18next="functions.color.secondary"></span>
                             </label>
                             <label for="colorwheel-background" class="radio-select">
                                 <input id="colorwheel-background" type="radio" name="colorwheel" value="color">
@@ -183,16 +196,6 @@
                                 <span data-i18next="functions.color.frame"></span>
                             </label>
                             </div>
-                            <label for="colorwheel-gradient" class="radio-select">
-                                <input id="colorwheel-gradient" type="radio" name="colorwheel" value="color">
-                                <img src="./icons/color_gradient.svg" class="icon" alt="icon" aria-hidden="true">
-                                <span data-i18next="functions.color.gradient"></span>
-                            </label>
-                            <label for="transition-per-word" class="radio-select">
-                                <input id="transition-per-word" type="checkbox">
-                                <img src="./icons/color_per_word.svg" class="icon" alt="icon" aria-hidden="true">
-                                <span data-i18next="functions.color.per_word"></span>
-                            </label>
                     </form>
                     <div id="color-picker" class="color-picker"></div>
                     <div class="swatch-grid" id="swatch-grid">
@@ -449,7 +452,6 @@
                                 <option value="8" data-i18next="functions.transition.type.balls"></option>
                                 <option value="9" data-i18next="functions.transition.type.firework"></option>
                                 <option value="10" data-i18next="functions.transition.type.snake"></option>
-                                <option value="12" data-i18next="functions.transition.type.colored"></option>
                                 <option value="11" data-i18next="functions.transition.type.random"></option>
                             </select>
                         </div>
@@ -459,14 +461,6 @@
                                 <option value="1" data-i18next="functions.transition.duration.short"></option>
                                 <option value="2" data-i18next="functions.transition.duration.medium"></option>
                                 <option value="3" data-i18next="functions.transition.duration.long"></option>
-                            </select>
-                        </div>
-                        <div class="pure-control-group">
-                            <label for="transition-colorize" data-i18next="functions.transition.color.label"></label>
-                            <select id="transition-colorize" size="1">
-                                <option value="0" data-i18next="functions.transition.color.off"></option>
-                                <option value="1" data-i18next="functions.transition.color.gradient"></option>
-                                <option value="2" data-i18next="functions.transition.color.random"></option>
                             </select>
                         </div>
                         <div class="pure-control-group">

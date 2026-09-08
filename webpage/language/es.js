@@ -1,6 +1,5 @@
 let TRANSLATION_ES = {
 	"title": "Reloj de Palabras",
-
 	"menu": {
 		"aria-show-menu": "Muestrame el menu",
 		"aria-hide-menu": "Ocultar el menú",
@@ -15,30 +14,32 @@ let TRANSLATION_ES = {
 			"ru": "🇷🇺 Ruso"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Conectar",
 		"text": "Se perdió la conexión con el reloj."
 	},
-
 	"reboot-recommended": {
 		"button": "Reiniciar",
 		"text": "Se recomienda reiniciar para aplicar la configuración modificada."
 	},
-
 	"colors": {
 		"h1": "Colores",
 		"with-background": "Con color de fondo"
 	},
-
 	"functions": {
 		"h1": "Características",
 		"color": {
 			"foreground": "Primer",
 			"background": "Fondo",
 			"frame": "Marco",
-			"gradient": "Color degradado",
-			"per_word": "Por palabra"
+			"primary": "Color primario",
+			"secondary": "Color secundario",
+			"mode": {
+				"label": "Modo de color",
+				"monochrome": "Monocromo",
+				"polychrome": "Policromo",
+				"word_random": "Aleatorio por palabra"
+			}
 		},
 		"mode": {
 			"h2": "Modo",
@@ -66,7 +67,6 @@ let TRANSLATION_ES = {
 				"balls": "Bolas",
 				"fireworks": "Fuegos artificiales",
 				"snake": "Serpiente",
-				"colored": "Colorido",
 				"random": "Al azar"
 			},
 			"duration": {
@@ -75,12 +75,7 @@ let TRANSLATION_ES = {
 				"medium": "medio",
 				"long": "largo"
 			},
-			"color": {
-				"label": "Transición en Colores",
-				"off": "Apagado",
-				"gradient": "Degradado",
-				"random": "Colores aleatorios"
-			},
+
 			"speed": {
 				"label": "Velocidad"
 			},

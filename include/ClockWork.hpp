@@ -158,9 +158,8 @@ void ClockWork::nextHardwareButtonMode() {
 
 void ClockWork::nextHardwareButtonTransition() {
     static const uint8_t transitions[] = {
-        NO_TRANSITION, ROLL_UP, ROLL_DOWN,   SHIFT_LEFT, SHIFT_RIGHT,
-        FADE,          LASER,   MATRIX_RAIN, BALLS,      FIRE,
-        SNAKE,         COLORED, RANDOM};
+        NO_TRANSITION, ROLL_UP,     ROLL_DOWN, SHIFT_LEFT, SHIFT_RIGHT, FADE,
+        LASER,         MATRIX_RAIN, BALLS,     FIRE,       SNAKE,       RANDOM};
 
     uint8_t nextTransition = transitions[0];
     for (uint8_t i = 0; i < sizeof(transitions) / sizeof(transitions[0]); i++) {
@@ -1461,7 +1460,7 @@ void ClockWork::loop(struct tm &tm) {
     loopHardwareButtons();
 
     // Faster runtime for demo
-    transition->demoMode(_hour, _minute, _second);
+    renderPipeline.demoMode(_hour, _minute, _second);
 
     //------------------------------------------------
     // Seconds and LDR Routine
@@ -1697,8 +1696,7 @@ void ClockWork::loop(struct tm &tm) {
         config["transitionDuration"] = G.transitionDuration;
         config["transitionSpeed"] = G.transitionSpeed;
         config["transitionDemo"] = G.transitionDemo;
-        config["transitionColorize"] = G.transitionColorize;
-        config["colorizePerWord"] = G.colorizePerWord;
+        config["colorize"] = G.colorize;
 
         sendJsonToClient(G.client_nr, config);
         break;
@@ -1757,6 +1755,7 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
+    case COMMAND_SET_COLORIZE:
     case COMMAND_SET_LANGUAGE_VARIANT:
     case COMMAND_SET_SETTING_SECOND: {
         eeprom::write();
@@ -1850,9 +1849,8 @@ void ClockWork::loop(struct tm &tm) {
             G.progInit = true;
         }
 
-        transition->resize(usedClockType->rowsWordMatrix(),
-                           usedClockType->colsWordMatrix());
-        transition->init();
+        renderPipeline.resize(usedClockType->rowsWordMatrix(),
+                              usedClockType->colsWordMatrix());
 
         parametersChanged = true;
         break;

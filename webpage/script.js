@@ -63,8 +63,7 @@ let autoBrightPeak = 750;
 let transitionType = 0;
 let transitionDuration = 1;
 let transitionSpeed = 30;
-let transitionColorize = 1;
-let colorizePerWord = false;
+let colorize = 1;
 let transitionDemo = false;
 
 const CMD = {
@@ -108,6 +107,7 @@ const CMD = {
 	SET_IT_IS_VARIANT: 106,
 	SET_HARDWARE_PINS: 107,
 	SET_TIMEZONE: 108,
+	SET_COLORIZE: 109,
 	SPEED: 152,
 
 	// Requests
@@ -199,8 +199,7 @@ function initConfigValues() {
 	transitionType = 0;
 	transitionDuration = 1;
 	transitionSpeed = 30;
-	transitionColorize = 1;
-	colorizePerWord = false;
+	colorize = 1;
 	transitionDemo = false;
 }
 
@@ -220,7 +219,31 @@ function debugMessage(debugMessage, someObject) {
 	}
 }
 
-/// only shows elements of class `cls` if `enbl` is true.
+function applyColorizeMode() {
+	const mode = Number(colorize);
+	const showForeground = mode !== 2;
+	const showSecondary = mode === 1;
+
+	const foreground = document.querySelector("label[for='colorwheel-foreground']");
+	if (foreground) foreground.style.display = showForeground ? "" : "none";
+
+	const secondary = document.querySelector("label[for='colorwheel-gradient']");
+	if (secondary) secondary.style.display = showSecondary ? "" : "none";
+
+	const foregroundLabel = document.querySelector("label[for='colorwheel-foreground'] span");
+	if (foregroundLabel) {
+		foregroundLabel.innerHTML = i18next.t(showSecondary ? "functions.color.primary" : "functions.color.foreground");
+	}
+
+	// The wheel must not keep editing a swatch that just disappeared.
+	if ((colorPosition === 0 && !showForeground) || (colorPosition === 3 && !showSecondary)) {
+		colorPosition = 1;
+		const background = document.getElementById("colorwheel-background");
+		if (background) background.checked = true;
+		setColors();
+	}
+}
+
 function enableSpecific(cls, enbl) {
 	let items = document.getElementsByClassName(cls);
 	for (const item of items) {
@@ -353,6 +376,7 @@ function initWebsocket() {
 				break;
 
 			case "config": {
+				colorize = data.colorize;
 				document.getElementById("ssid").value = data.ssid;
 				document.getElementById("timeserver").value = data.timeserver;
 				const timezone = document.getElementById("timezone");
@@ -491,8 +515,6 @@ function initWebsocket() {
 				transitionType = data.transitionType;
 				transitionDuration = data.transitionDuration;
 				transitionSpeed = data.transitionSpeed;
-				transitionColorize = data.transitionColorize;
-				colorizePerWord = data.colorizePerWord;
 				transitionDemo = data.transitionDemo;
 				setElementsForFunctionsMenu();
 				break;
@@ -619,11 +641,9 @@ function setElementsForFunctionsMenu() {
 	const transitionSpeedEl = document.getElementById("transition-speed");
 	if (transitionSpeedEl) transitionSpeedEl.value = transitionSpeed;
 
-	const transitionColorizeEl = document.getElementById("transition-colorize");
-	if (transitionColorizeEl) transitionColorizeEl.value = transitionColorize;
-
-	const colorizePerWordEl = document.getElementById("transition-per-word");
-	if (colorizePerWordEl) colorizePerWordEl.checked = colorizePerWord;
+	const colorizeModeEl = document.getElementById("colorize-mode");
+	if (colorizeModeEl) colorizeModeEl.value = colorize;
+	applyColorizeMode();
 
 	const transitionDemoEl = document.getElementById("transition-demo");
 	if (transitionDemoEl) transitionDemoEl.checked = transitionDemo;
@@ -866,16 +886,24 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	}
 
+	document.querySelectorAll("[id^='colorize-']").forEach(el => {
+		el.addEventListener("change", function() {
+			colorize = document.getElementById("colorize-mode").value;
+
+			applyColorizeMode();
+			sendCmd(CMD.SET_COLORIZE, nstr(colorize));
+			debugMessage(`Colorize${debugMessageReconfigured}`);
+		});
+	});
+
 	document.querySelectorAll("[id*='transition']").forEach(el => {
 		el.addEventListener("change", function(event) {
 			transitionType = document.getElementById("transition-types").value;
 			transitionDuration = document.getElementById("transition-duration").value;
 			transitionSpeed = document.getElementById("transition-speed").value;
-			transitionColorize = document.getElementById("transition-colorize").value;
 			transitionDemo = document.getElementById("transition-demo").checked;
-			colorizePerWord = document.getElementById("transition-per-word").checked;
 
-			sendCmd(CMD.MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionColorize) + nstr(transitionDemo ? 1 : 0) + nstr(colorizePerWord ? 1 : 0));
+			sendCmd(CMD.MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionDemo ? 1 : 0));
 			debugMessage(`Transition${debugMessageReconfigured}`);
 			setElementsForFunctionsMenu();
 		});

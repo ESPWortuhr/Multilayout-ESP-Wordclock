@@ -9,14 +9,14 @@
 #include "WordClockTypes/ClockType.hpp"
 #include <Arduino.h>
 
-// Transition.h references the global usedClockType, so it must be declared
+// RenderPipeline.h references the global usedClockType, so it must be declared
 // before the header is pulled in.
 extern ClockType *usedClockType;
 
-#include "TransitionTypes/Transition.h"
+#include "Render/RenderPipeline.h"
 
-extern Transition *transition;
 extern Led led;
+extern RenderPipeline renderPipeline;
 extern LedStripInterface *activeLedStrip;
 
 namespace {
@@ -324,6 +324,17 @@ void Led::setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse) {
 
 //------------------------------------------------------------------------------
 
+void Led::setbyColorMatrix(const ColorMatrix &matrix) {
+    for (uint8_t row = 0; row < matrix.rows(); row++) {
+        for (uint8_t col = 0; col < matrix.cols(); col++) {
+            const RgbfColor &cell = matrix[row][col];
+            setPixel(row, col, HsbColor{RgbColor(cell.R, cell.G, cell.B)});
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Led::setbyMinuteArray(ColorPosition colorPosition) {
     HsbColor displayedColor =
         getColorbyPositionWithAppliedBrightness(colorPosition);
@@ -448,9 +459,14 @@ void Led::set(WordclockChanges changed) {
     setbyFrontMatrix(Foreground);
     setbyFrontMatrix(Background, false);
 
-    // When the transition stage owns the output (a transition is running, or
-    // colouring is on) it draws minutes, frame and the strip itself.
-    if (!transition->ownsDisplay()) {
+    const bool owns = renderPipeline.ownsDisplay();
+    // hasMinuteChanged() consumes the "minute changed" edge, which
+    // RenderPipeline::loop() also reads - so only ask when the answer is used.
+    const bool minuteChanged = owns ? false : renderPipeline.hasMinuteChanged();
+    const DisplayAction action = decideDisplayAction(
+        changed, owns, renderPipeline.animates(), minuteChanged);
+
+    if (action.drawMinutesAndFrame) {
         if (G.minuteVariant != MinuteVariant::Off) {
             setbyMinuteArray(Foreground);
         }
@@ -460,10 +476,10 @@ void Led::set(WordclockChanges changed) {
         }
     }
 
-    if (transition->isOverwrittenByTransition(changed, _minute)) {
-        if (!transition->ownsDisplay()) {
-            show();
-        }
+    renderPipeline.applyDisplayAction(action, _minute);
+
+    if (action.showFromLed) {
+        show();
     }
 }
 

@@ -251,8 +251,7 @@ struct GLOBAL {
     uint8_t transitionType;
     uint8_t transitionDuration;
     uint8_t transitionSpeed;
-    uint8_t transitionColorize;
-    bool colorizePerWord;
+    uint8_t colorize;
     uint8_t transitionDemo;
 
     bool bootLedBlink;
@@ -385,6 +384,7 @@ enum CommandWords : uint8_t {
     COMMAND_SET_IT_IS_VARIANT = 106,
     COMMAND_SET_HARDWARE_PINS = 107,
     COMMAND_SET_TIMEZONE = 108,
+    COMMAND_SET_COLORIZE = 109,
 
     COMMAND_SPEED = 152,
 

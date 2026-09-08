@@ -332,33 +332,42 @@ a:visited:hover {
     }
 }
 
-/* Flex statt Grid: eine unvollstaendige letzte Reihe zentriert sich damit von
-   selbst, egal ob drei, vier oder fuenf Kacheln sichtbar sind. Der Rahmen-Knopf
-   wird je nach Layout ein- und ausgeblendet. */
 .mode-color-form {
-    --tile-width: 7.5em;
+    --tile-width: 8.4em;
 
     display: inline-flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: .5em;
     margin-bottom: 1em;
-
-    /* Feste Breite fuer drei Kacheln statt nur max-width: die Shrink-to-fit-
-       Breite eines inline-flex richtet sich nach dem Inhalt der Kacheln, nicht
-       nach ihrer Flex-Basis. min() laesst sie auf schmalen Schirmen schrumpfen. */
     width: min(100%, calc(var(--tile-width) * 3 + 1em));
 }
 
+.mode-color-form .radio-select span {
+    hyphens: none;
+}
+
 .mode-color-form .radio-select {
-    /* border-box, damit --tile-width die Aussenbreite ist und die max-width
-       oben tatsaechlich drei Kacheln fasst. */
     box-sizing: border-box;
     flex: 0 1 var(--tile-width);
 }
 
 .mode-color-form .specific-layout-7:not([style*="display: none"]) {
     display: contents !important;
+}
+
+.box-color .colorize-mode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6em;
+    margin: 0 auto 1em;
+    width: min(100%, calc(8.4em * 3 + 1em));
+}
+
+.box-color .colorize-mode select {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .radio-select {

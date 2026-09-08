@@ -1,6 +1,5 @@
 let TRANSLATION_NL = {
 	"title": "Woordklok",
-
 	"menu": {
 		"aria-show-menu": "Menu tonen",
 		"aria-hide-menu": "Menu verbergen",
@@ -15,30 +14,32 @@ let TRANSLATION_NL = {
 			"ru": "🇷🇺 Russisch"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Verbinden",
 		"text": "De verbinding met de Woordklok is verbroken."
 	},
-
 	"reboot-recommended": {
 		"button": "Herstart",
 		"text": "Een herstart wordt aanbevolen om de gewijzigde instelling toe te passen."
 	},
-
 	"colors": {
 		"h1": "Kleuren",
 		"with-background": "Met achtergrondkleur"
 	},
-
 	"functions": {
 		"h1": "Functies",
 		"color": {
 			"foreground": "Voorgrond",
 			"background": "Achtergrond",
 			"frame": "Frame",
-			"gradient": "Verloopkleur",
-			"per_word": "Per woord"
+			"primary": "Primaire kleur",
+			"secondary": "Secundaire kleur",
+			"mode": {
+				"label": "Kleurmodus",
+				"monochrome": "Monochroom",
+				"polychrome": "Polychroom",
+				"word_random": "Willekeurig per woord"
+			}
 		},
 		"mode": {
 			"h2": "Modus",
@@ -66,7 +67,6 @@ let TRANSLATION_NL = {
 				"balls": "Ballen",
 				"firework": "Vuurwerk",
 				"snake": "Slang",
-				"colored": "Kleurrijk",
 				"random": "Willekeurig"
 			},
 			"duration": {
@@ -75,12 +75,7 @@ let TRANSLATION_NL = {
 				"medium": "Middel",
 				"long": "Lang"
 			},
-			"color": {
-				"label": "Kleurovergang",
-				"off": "Uit",
-				"gradient": "Kleurverloop",
-				"random": "Willekeurige kleuren"
-			},
+
 			"speed": {
 				"label": "Snelheid"
 			},
