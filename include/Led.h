@@ -11,7 +11,6 @@ private:
     //------------------------------------------------------------------------------
     uint8_t reverse8BitOrder(uint8_t x);
     uint32_t reverse32BitOrder(uint32_t x);
-    void applyMirroringAndReverseIfDefined();
     fontSize determineFontSize();
     void setupDigitalClock(fontSize &usedFontSize, uint8_t &offsetLetterH0,
                            uint8_t &offsetLetterH1, uint8_t &offsetLetterMin0,
@@ -40,6 +39,7 @@ public:
     void mirrorMinuteArrayVertical();
     void mirrorFrontMatrixVertical();
     void mirrorFrontMatrixHorizontal();
+    void applyMirroringAndReverseIfDefined();
 
     //------------------------------------------------------------------------------
     // Brightness Functions

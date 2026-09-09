@@ -55,9 +55,7 @@ private:
 
             led.clear();
             usedClockType->show(FrontWord::happy_birthday);
-            led.setbyFrontMatrix(hsbColor);
-            // HAPPY BIRTHDAY in a random hue on black, which is what
-            // setbyFrontMatrix() just painted.
+            led.applyMirroringAndReverseIfDefined();
             colorStage.build(context.out, RgbfColor(hsbColor, F_FOREGROUND),
                              RgbfColor(0, F_NULL));
 
