@@ -15,6 +15,10 @@ public:
     void resize(uint8_t rows, uint8_t cols) override {
         delete[] m_balls;
         m_balls = (cols > 0) ? new Ball[cols] : nullptr;
+        if (m_balls == nullptr) {
+            m_columns = 0;
+            return;
+        }
         m_columns = cols;
         for (uint8_t col = 0; col < cols; col++) {
             m_balls[col] = Ball(rows);

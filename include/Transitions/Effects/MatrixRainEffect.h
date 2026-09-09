@@ -14,6 +14,9 @@ public:
     void resize(uint8_t rows, uint8_t cols) override {
         delete[] m_rain;
         m_rain = (cols > 0) ? new Rain[cols] : nullptr;
+        if (m_rain == nullptr) {
+            return;
+        }
         for (uint8_t col = 0; col < cols; col++) {
             m_rain[col] = Rain(rows, cols);
         }
