@@ -18,8 +18,24 @@ inline unsigned long millis() {
     return fakeClock;
 }
 
-inline long random(long high) { return high > 0 ? (high / 2) : 0; }
-inline long random(long low, long) { return low; }
+/*
+ * Deterministic but actually varying. A constant would be simpler, but code
+ * that draws until it finds a value it likes - HueSequence keeps a minimum
+ * distance to the hues it handed out recently - never terminates against one.
+ */
+inline unsigned long randomBits() {
+    static unsigned long state = 0x2545F491;
+    state = state * 1103515245UL + 12345UL;
+    return (state >> 16) & 0x7FFF;
+}
+
+inline long random(long high) {
+    return high > 0 ? static_cast<long>(randomBits() % high) : 0;
+}
+inline long random(long low, long high) {
+    return high > low ? low + static_cast<long>(randomBits() % (high - low))
+                      : low;
+}
 
 struct SerialStub {
     template <typename... Args> void printf(const char *, Args...) {}

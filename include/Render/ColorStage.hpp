@@ -64,6 +64,9 @@ void ColorStage::build(ColorMatrix &dest, RgbfColor foreground,
 void ColorStage::colorize(ColorMatrix &dest, RgbfColor foreground,
                           RgbfColor background) {
     const ColorContext context = contextFor(foreground, background);
+    // What the ramp on the strip was built from. applyColorChange() has
+    // nothing else to compare an edit of the secondary colour against.
+    m_gradientEnd = RgbfColor(context.gradientEnd, F_NULL);
     colorizerFor(context.mode)->apply(dest, context, m_hues);
 }
 
@@ -79,33 +82,73 @@ void ColorStage::render(ColorMatrix &dest, RgbfColor foreground,
 
 //------------------------------------------------------------------------------
 
+/*
+ * A colour edit while a transition is configured: the strip is fed from the
+ * transition buffers, so rebuilding the clock face would not reach it. All
+ * three buffers are patched in place instead - the animation keeps its phase
+ * and is not restarted.
+ *
+ * What "patched" means differs per colour mode, and getting it wrong is
+ * invisible in a build log:
+ *
+ *   - the gradient is derived from the two configured colours, so it has to be
+ *     rebuilt outright; rescaling the old hues would keep showing the previous
+ *     ramp,
+ *   - the random word hues are derived from nothing and must survive - the LDR
+ *     drives this path all day, and re-rolling them there would leave the face
+ *     flickering through random colours.
+ */
+
 bool ColorStage::applyColorChange(ColorMatrix *const *matrices, uint8_t count,
                                   RgbfColor &foreground,
-                                  RgbfColor &background) const {
+                                  RgbfColor &background) {
     RgbfColor newForeground, newBackground;
     displayColors(newForeground, newBackground);
+    const RgbfColor newGradientEnd(
+        led.getColorbyPositionWithAppliedBrightness(GradientEnd), F_NULL);
 
     const bool adjustForeground = newForeground != foreground;
     const bool adjustBackground = newBackground != background;
-    if (!adjustForeground && !adjustBackground) {
+    // Only the gradient reads the secondary colour, and editing it moves
+    // neither foreground nor background - without this the edit would sit
+    // unnoticed until the next minute rebuilt the face.
+    const bool adjustGradient =
+        (G.colorize == POLYCHROME) && (newGradientEnd != m_gradientEnd);
+    m_gradientEnd = newGradientEnd;
+
+    if (!adjustForeground && !adjustBackground && !adjustGradient) {
         return false;
     }
 
     const float brightness = HsbColor(newForeground).B;
-    const bool keepHues = isColorizing();
+    const bool keepHues = (G.colorize == WORD_RANDOM);
 
     for (uint8_t m = 0; m < count; m++) {
         ColorMatrix &matrix = *matrices[m];
+
+        if (adjustBackground) {
+            for (uint8_t row = 0; row < matrix.rows(); row++) {
+                for (uint8_t col = 0; col < matrix.cols(); col++) {
+                    if (!matrix[row][col].isForeground()) {
+                        matrix[row][col] = newBackground;
+                    }
+                }
+            }
+        }
+
+        if (!adjustForeground && !adjustGradient) {
+            continue;
+        }
+
+        if (G.colorize == POLYCHROME) {
+            colorize(matrix, newForeground, newBackground);
+            continue;
+        }
+
         for (uint8_t row = 0; row < matrix.rows(); row++) {
             for (uint8_t col = 0; col < matrix.cols(); col++) {
                 RgbfColor &cell = matrix[row][col];
                 if (!cell.isForeground()) {
-                    if (adjustBackground) {
-                        cell = newBackground;
-                    }
-                    continue;
-                }
-                if (!adjustForeground) {
                     continue;
                 }
                 if (keepHues) {
