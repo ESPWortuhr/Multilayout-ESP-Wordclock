@@ -232,7 +232,7 @@ void Led::shiftColumnToRight() {
 //------------------------------------------------------------------------------
 
 void Led::setState(const bool newState) {
-    static float storedBrightness[3];
+    static float storedBrightness[ColorPositionCount];
     static bool hasStoredBrightness = false;
 
     if (newState == getState()) {
@@ -240,11 +240,11 @@ void Led::setState(const bool newState) {
     }
 
     if (newState) {
-        for (uint8_t i = 0; i < 3; i++) {
+        for (uint8_t i = 0; i < ColorPositionCount; i++) {
             G.color[i].B = hasStoredBrightness ? storedBrightness[i] : 1.f;
         }
     } else {
-        for (uint8_t i = 0; i < 3; i++) {
+        for (uint8_t i = 0; i < ColorPositionCount; i++) {
             storedBrightness[i] = G.color[i].B;
             G.color[i].B = 0.f;
         }
@@ -533,7 +533,7 @@ void Led::set(WordclockChanges changed) {
 //------------------------------------------------------------------------------
 
 bool Led::getState() {
-    for (uint8_t i = 0; i < 3; i++) {
+    for (uint8_t i = 0; i < ColorPositionCount; i++) {
         if (G.color[i].B > 0) {
             return true;
         }
