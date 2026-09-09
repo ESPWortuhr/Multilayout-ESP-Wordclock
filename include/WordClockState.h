@@ -406,9 +406,14 @@ enum CommandWords : uint8_t {
  * Handling COMMAND_MODE_WORD_CLOCK leaves G.prog on COMMAND_IDLE, so idle is
  * the steady state of the word clock rather than "nothing running". Everything
  * that is only meaningful for the clock face has to ask for both.
+ *
+ * COMMAND_MODE_TRANSITION only carries new transition settings and falls
+ * straight through to COMMAND_MODE_WORD_CLOCK in the clock work; the front
+ * matrix keeps holding a clock face throughout, so it counts as well.
  */
 inline bool isWordClockMode(uint8_t prog) {
-    return (prog == COMMAND_IDLE) || (prog == COMMAND_MODE_WORD_CLOCK);
+    return (prog == COMMAND_IDLE) || (prog == COMMAND_MODE_WORD_CLOCK) ||
+           (prog == COMMAND_MODE_TRANSITION);
 }
 
 enum ClockTypeDef : uint8_t {
