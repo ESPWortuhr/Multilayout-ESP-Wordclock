@@ -1873,10 +1873,16 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_SET_SECONDS_FRAME: {
-        eeprom::write();
+        // led.clear() must run while G.secondsFrameLedCount still holds the
+        // OLD count, so a shrink clears the LEDs that are about to fall out
+        // of range - clearFrame() loops on the CURRENT count, and updating
+        // G.secondsFrameLedCount first would leave those LEDs stuck on.
         led.clear();
         led.show();
         delay(10);
+
+        G.secondsFrameLedCount = G.param1;
+        eeprom::write();
         Serial.printf("Seconds frame LED count: %u\n", G.secondsFrameLedCount);
 
         reallocateSecondsFrame();

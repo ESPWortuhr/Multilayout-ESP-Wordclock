@@ -282,8 +282,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_SECONDS_FRAME: {
+            // Staged in G.param1 rather than written straight into
+            // G.secondsFrameLedCount: the ClockWork handler needs the OLD
+            // count still in place when it clears the frame, so that
+            // shrinking the count doesn't leave the now out-of-range LEDs
+            // permanently lit.
             const uint32_t ledCount = split(payload, 3);
-            G.secondsFrameLedCount = static_cast<uint8_t>(
+            G.param1 = static_cast<uint8_t>(
                 min(ledCount, static_cast<uint32_t>(MAX_SECONDS_FRAME_LED_COUNT)));
             break;
         }
