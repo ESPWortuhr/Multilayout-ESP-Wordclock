@@ -20,7 +20,7 @@ public:
 
     bool ownsDisplay() const;
     bool animates() const;
-    bool hasMinuteChanged();
+    bool hasMinuteChanged() const;
     void applyDisplayAction(const DisplayAction &action, uint8_t minute);
 
     //--------------------------------------------------------------------------
@@ -67,6 +67,7 @@ private:
     bool m_allocationFailed = false;
 
     uint8_t m_lastMinute = 100;
+    bool m_minuteChanged = false;
     Transition_t m_lastType = NO_TRANSITION;
     uint8_t m_lastDemo = 0;
     uint8_t m_lastDuration = 0;

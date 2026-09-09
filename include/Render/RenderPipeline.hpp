@@ -99,11 +99,14 @@ Transition_t RenderPipeline::configuredType() {
 //------------------------------------------------------------------------------
 
 void RenderPipeline::scheduleType(struct tm &tm) {
+    m_minuteChanged = (m_lastMinute != _minute);
+    m_lastMinute = _minute;
+
     SpecialEventInput input;
     input.newYear = isNewYear(tm);
     input.birthday = isBirthday(tm);
     input.minute = tm.tm_min;
-    input.minuteChanged = hasMinuteChanged();
+    input.minuteChanged = m_minuteChanged;
 
     const Transition_t event = m_events.update(input);
     m_type = (event != NO_TRANSITION) ? event : configuredType();
@@ -196,13 +199,7 @@ void RenderPipeline::present(const ColorMatrix &matrix, bool withMinutes,
 // Loop helpers
 //------------------------------------------------------------------------------
 
-bool RenderPipeline::hasMinuteChanged() {
-    if (m_lastMinute != _minute) {
-        m_lastMinute = _minute;
-        return true;
-    }
-    return false;
-}
+bool RenderPipeline::hasMinuteChanged() const { return m_minuteChanged; }
 
 //------------------------------------------------------------------------------
 

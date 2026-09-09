@@ -507,8 +507,6 @@ void Led::set(WordclockChanges changed) {
     setbyFrontMatrix(Background, false);
 
     const bool owns = renderPipeline.ownsDisplay();
-    // hasMinuteChanged() consumes the "minute changed" edge, which
-    // RenderPipeline::loop() also reads - so only ask when the answer is used.
     const bool minuteChanged = owns ? false : renderPipeline.hasMinuteChanged();
     const DisplayAction action = decideDisplayAction(
         changed, owns, renderPipeline.animates(), minuteChanged);
