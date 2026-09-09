@@ -644,7 +644,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         }
 
         if (command < PLACEHOLDER_MAX_MODE) {
-            G.prog = command;
+            if (isValidModeCommand(command)) {
+                G.prog = command;
+            } else {
+                Serial.printf("Ignoring unknown mode command: %u\n", command);
+            }
         } else if (command < PLACEHOLDER_MAX_SET) {
             G.conf = command;
         } else if (command < PLACEHOLDER_MAX_REQUEST) {

@@ -450,6 +450,25 @@ inline bool isWordClockMode(uint8_t prog) {
            (prog == COMMAND_MODE_TRANSITION);
 }
 
+inline bool isValidModeCommand(uint16_t command) {
+    switch (command) {
+    case COMMAND_IDLE:
+    case COMMAND_MODE_WORD_CLOCK:
+    case COMMAND_MODE_SECONDS:
+    case COMMAND_MODE_SCROLLINGTEXT:
+    case COMMAND_MODE_RAINBOWCYCLE:
+    case COMMAND_MODE_RAINBOW:
+    case COMMAND_MODE_COLOR:
+    case COMMAND_MODE_DIGITAL_CLOCK:
+    case COMMAND_MODE_SYMBOL:
+    case COMMAND_MODE_FIRE:
+    case COMMAND_MODE_TRANSITION:
+        return true;
+    default:
+        return false;
+    }
+}
+
 enum ClockTypeDef : uint8_t {
 #define X(name, id, var, i18n) name = id,
     CLOCK_TYPES_LIST

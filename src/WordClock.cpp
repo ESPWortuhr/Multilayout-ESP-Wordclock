@@ -541,6 +541,13 @@ void setup() {
     // Get Pointer for ClockType
     //-------------------------------------
 
+    if (!isValidModeCommand(G.prog)) {
+        Serial.printf("Invalid Programm %u in EEPROM, using word clock\n",
+                      G.prog);
+        G.prog = COMMAND_MODE_WORD_CLOCK;
+        eeprom::write();
+    }
+
     if (!isValidClockTypeDef(G.clockTypeDef)) {
         Serial.printf("Invalid ClockType %u in EEPROM, using default %u\n",
                       G.clockTypeDef, DEFAULT_LAYOUT);
