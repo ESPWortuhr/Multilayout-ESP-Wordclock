@@ -278,7 +278,6 @@ struct GLOBAL {
     uint16_t autoBrightPeak;
     uint8_t transitionType;
     uint8_t transitionDuration;
-    uint8_t transitionSpeed;
     uint8_t colorize;
     uint8_t transitionDemo;
 

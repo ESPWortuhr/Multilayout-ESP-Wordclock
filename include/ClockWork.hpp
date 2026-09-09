@@ -1786,7 +1786,6 @@ void ClockWork::loop(struct tm &tm) {
         config["command"] = "transition";
         config["transitionType"] = G.transitionType;
         config["transitionDuration"] = G.transitionDuration;
-        config["transitionSpeed"] = G.transitionSpeed;
         config["transitionDemo"] = G.transitionDemo;
         config["colorize"] = G.colorize;
 

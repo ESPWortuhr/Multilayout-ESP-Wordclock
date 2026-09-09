@@ -76,10 +76,6 @@ let TRANSLATION_IT = {
 				"medium": "metà",
 				"long": "lungo"
 			},
-
-			"speed": {
-				"label": "Velocità"
-			},
 			"demo": {
 				"label": "Demo"
 			}

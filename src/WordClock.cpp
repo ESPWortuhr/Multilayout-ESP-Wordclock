@@ -519,7 +519,6 @@ void setup() {
         G.autoBrightPeak = 750;
         G.transitionType = 0; // Transition::NO_TRANSITION;
         G.transitionDuration = 2;
-        G.transitionSpeed = 30;
         G.colorize = 0;
         G.transitionDemo = false;
 

@@ -224,8 +224,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                               static_cast<unsigned long>(transitionType));
             }
             G.transitionDuration = split(payload, length, 6);
-            G.transitionSpeed = split(payload, length, 9);
-            G.transitionDemo = split(payload, length, 12);
+            G.transitionDemo = split(payload, length, 9);
             break;
         }
 

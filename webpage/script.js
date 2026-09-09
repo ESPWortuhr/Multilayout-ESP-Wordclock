@@ -64,7 +64,6 @@ let autoBrightMax = 80;
 let autoBrightPeak = 750;
 let transitionType = 0;
 let transitionDuration = 1;
-let transitionSpeed = 30;
 let colorize = 1;
 let transitionDemo = false;
 
@@ -207,7 +206,6 @@ function initConfigValues() {
 	autoBrightPeak = 750;
 	transitionType = 0;
 	transitionDuration = 1;
-	transitionSpeed = 30;
 	colorize = 1;
 	transitionDemo = false;
 }
@@ -528,7 +526,6 @@ function initWebsocket() {
 			case "transition":
 				transitionType = data.transitionType;
 				transitionDuration = data.transitionDuration;
-				transitionSpeed = data.transitionSpeed;
 				transitionDemo = data.transitionDemo;
 				colorize = data.colorize;
 				setElementsForFunctionsMenu();
@@ -658,12 +655,6 @@ function setElementsForFunctionsMenu() {
 
 	const transitionDurationEl = document.getElementById("transition-duration");
 	if (transitionDurationEl) transitionDurationEl.value = transitionDuration;
-
-	const transitionSpeedValue = document.getElementById("transition-speed-value");
-	if (transitionSpeedValue) transitionSpeedValue.textContent = transitionSpeed;
-
-	const transitionSpeedEl = document.getElementById("transition-speed");
-	if (transitionSpeedEl) transitionSpeedEl.value = transitionSpeed;
 
 	const colorizeModeEl = document.getElementById("colorize-mode");
 	if (colorizeModeEl) colorizeModeEl.value = colorize;
@@ -917,15 +908,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	});
 
-	const transSpeedEl = document.getElementById("transition-speed");
-	if (transSpeedEl) {
-		transSpeedEl.addEventListener("input", function(event) {
-			transitionSpeed = event.target.value;
-			const tsv = document.getElementById("transition-speed-value");
-			if (tsv) tsv.textContent = transitionSpeed;
-		});
-	}
-
 	document.querySelectorAll("[id^='colorize-']").forEach(el => {
 		el.addEventListener("change", function() {
 			colorize = document.getElementById("colorize-mode").value;
@@ -940,10 +922,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		el.addEventListener("change", function(event) {
 			transitionType = document.getElementById("transition-types").value;
 			transitionDuration = document.getElementById("transition-duration").value;
-			transitionSpeed = document.getElementById("transition-speed").value;
 			transitionDemo = document.getElementById("transition-demo").checked;
 
-			sendCmd(CMD.MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionDemo ? 1 : 0));
+			sendCmd(CMD.MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionDemo ? 1 : 0));
 			debugMessage(`Transition${debugMessageReconfigured}`);
 			setElementsForFunctionsMenu();
 		});

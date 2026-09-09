@@ -99,10 +99,6 @@ let TRANSLATION_EN_US = {
 				"medium": "Medium",
 				"long": "Long"
 			},
-
-			"speed": {
-				"label": "Speed"
-			},
 			"demo": {
 				"label": "Demo"
 			}

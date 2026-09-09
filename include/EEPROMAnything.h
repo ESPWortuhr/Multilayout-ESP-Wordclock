@@ -84,7 +84,6 @@ void printConfig() {
     Serial.printf("autoBrightPeak    : %u\n", G.autoBrightPeak);
     Serial.printf("transitionDuration    : %u\n", G.transitionDuration);
     Serial.printf("transitionType    : %u\n", G.transitionType);
-    Serial.printf("transitionSpeed    : %u\n", G.transitionSpeed);
     Serial.printf("colorize    : %u\n", G.colorize);
     Serial.printf("transitionDemo    : %u\n", G.transitionDemo);
 

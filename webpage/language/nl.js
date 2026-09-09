@@ -76,10 +76,6 @@ let TRANSLATION_NL = {
 				"medium": "Middel",
 				"long": "Lang"
 			},
-
-			"speed": {
-				"label": "Snelheid"
-			},
 			"demo": {
 				"label": "Voorbeeld"
 			}

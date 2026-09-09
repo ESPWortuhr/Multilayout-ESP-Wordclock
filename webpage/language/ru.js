@@ -64,10 +64,6 @@ let TRANSLATION_RU = {
 				"medium": "половина",
 				"long": "длинный"
 			},
-
-			"speed": {
-				"label": "Скорость"
-			},
 			"demo": {
 				"label": "Демо"
 			}

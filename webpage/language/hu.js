@@ -76,10 +76,6 @@ let TRANSLATION_HU = {
 				"medium": "Közepes",
 				"long": "Hosszú"
 			},
-
-			"speed": {
-				"label": "Sebesség"
-			},
 			"demo": {
 				"label": "Bemutató"
 			}

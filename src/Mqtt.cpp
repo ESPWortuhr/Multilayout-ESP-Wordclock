@@ -489,9 +489,6 @@ void Mqtt::init() {
     mqttClient.subscribe(
         (std::string(G.mqtt.topic) + "/transition_duration/set").c_str());
     delay(50);
-    mqttClient.subscribe(
-        (std::string(G.mqtt.topic) + "/transition_speed/set").c_str());
-    delay(50);
 
     if (isConnected()) {
         Serial.println("MQTT Connected");
@@ -719,19 +716,6 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
                               G.transitionDuration);
         return;
     }
-    if (topicStr == baseTopic + "/transition_speed/set") {
-        int speed = atoi(msg);
-        if (speed >= 0 && speed <= 10) {
-            G.transitionSpeed = speed;
-            G.progInit = true;
-            eeprom::write();
-        }
-        mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/transition_speed/state").c_str(),
-            String(G.transitionSpeed).c_str(), true);
-        return;
-    }
-
     // Remaining command topics use JSON payloads.
     StaticJsonDocument<512> doc;
     DeserializationError error = deserializeJson(doc, msg);
@@ -917,9 +901,6 @@ void Mqtt::sendState() {
                           LABELED_VALUE_COUNT(TRANSITION_DURATION),
                           G.transitionDuration, TRANSITION_DURATION[1].label),
             true);
-        mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/transition_speed/state").c_str(),
-            String(G.transitionSpeed).c_str(), true);
     }
 
     // Update online status
@@ -1092,19 +1073,6 @@ void Mqtt::sendDiscovery() {
     addSelect(cmps, unique_id, "transition_duration", "Transition Duration",
               "mdi:timer-outline", TRANSITION_DURATION,
               LABELED_VALUE_COUNT(TRANSITION_DURATION));
-    {
-        JsonObject speed = cmps.createNestedObject("transition_speed");
-        speed["p"] = "number";
-        speed["uniq_id"] = unique_id + "_transition_speed";
-        speed["name"] = "Transition Speed";
-        speed["ic"] = "mdi:speedometer";
-        speed["ent_cat"] = "config";
-        speed["stat_t"] = base + "/transition_speed/state";
-        speed["cmd_t"] = base + "/transition_speed/set";
-        speed["min"] = 0;
-        speed["max"] = 10;
-        speed["step"] = 1;
-    }
 
     // Diagnostic sensors, all read from the shared diagnostics topic.
     addDiagSensor(cmps, unique_id, "lux", "Illuminance", "illuminance", "lx",

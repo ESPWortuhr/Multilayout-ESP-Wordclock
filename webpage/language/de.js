@@ -99,10 +99,6 @@ let TRANSLATION_DE_DE = {
 				"medium": "mittel",
 				"long": "lang"
 			},
-
-			"speed": {
-				"label": "Geschwindigkeit"
-			},
 			"demo": {
 				"label": "Demo"
 			}
