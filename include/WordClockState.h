@@ -17,48 +17,48 @@
     /* CH (Swiss) */                                                           \
     X(Ch10x11, 1, _ch10x11, "ch-10-11")                                        \
     X(Ch10x11V2, 2, _ch10x11v2, "ch-10-11-v2")                                 \
-    X(Ch10x11ZH, 35, _ch10x11zh, "ch-10-11-zh")                                \
+    X(Ch10x11ZH, 3, _ch10x11zh, "ch-10-11-zh")                                 \
     /* EN (English) */                                                         \
-    X(Eng08x08, 3, _en08x08, "en-08-08")                                       \
-    X(Eng10x11, 4, _en10x11, "en-10-11")                                       \
-    X(Eng11x12, 5, _en11x12, "en-11-12")                                       \
+    X(Eng08x08, 4, _en08x08, "en-08-08")                                       \
+    X(Eng10x11, 5, _en10x11, "en-10-11")                                       \
+    X(Eng11x12, 6, _en11x12, "en-11-12")                                       \
     /* ES (Spanish) */                                                         \
-    X(Es08x08Cuarto, 6, _es08x08Cuarto, "es-08-08-cuarto")                     \
-    X(Es10x11, 7, _es10x11, "es-10-11")                                        \
+    X(Es08x08Cuarto, 7, _es08x08Cuarto, "es-08-08-cuarto")                     \
+    X(Es10x11, 8, _es10x11, "es-10-11")                                        \
     /* FR (French) */                                                          \
-    X(Fr10x11, 8, _fr10x11, "fr-10-11")                                        \
+    X(Fr10x11, 9, _fr10x11, "fr-10-11")                                        \
     /* DE (German) */                                                          \
-    X(Ger08x08, 9, _de08x08, "de-08-08")                                       \
-    X(Ger08x08Viertel, 10, _de08x08Viertel, "de-08-08-viertel")                \
-    X(Ger10x11, 11, _de10x11, "de-10-11")                                      \
-    X(Ger10x11Alternative, 12, _de10x11Alternative, "de-10-11-alt")            \
+    X(Ger08x08, 10, _de08x08, "de-08-08")                                      \
+    X(Ger08x08Viertel, 11, _de08x08Viertel, "de-08-08-viertel")                \
+    X(Ger10x11, 12, _de10x11, "de-10-11")                                      \
+    X(Ger10x11Alternative, 13, _de10x11Alternative, "de-10-11-alt")            \
     X(Ger10x11bayerisch, 14, _de10x11bayerisch, "de-10-11-bayerisch")          \
     X(Ger10x11Clock, 15, _de10x11Clock, "de-10-11-clock")                      \
     X(Ger10x11Mrrioes, 16, _de10x11Mrrioes, "de-10-11-mrrioes")                \
     X(Ger10x11Nero, 17, _de10x11Nero, "de-10-11-nero")                         \
-    X(Ger10x11schwaebisch, 19, _de10x11schwaebisch, "de-10-11-schwaebisch")    \
-    X(Ger11x11, 20, _de11x11, "de-11-11")                                      \
-    X(Ger11x11schwaebisch, 21, _de11x11schwaebisch, "de-11-11-schwaebisch")    \
-    X(Ger11x11V2, 22, _de11x11V2, "de-11-11-v2")                               \
-    X(Ger11x11V3, 23, _de11x11V3, "de-11-11-v3")                               \
-    X(Ger13x13, 24, _de13x13, "de-13-13")                                      \
-    X(Ger16x8, 25, _de16x8, "de-16-8")                                         \
-    X(Ger16x18, 26, _de16x18, "de-16-18")                                      \
-    X(Ger22x11Weather, 27, _de22x11Weather, "de-22-11-weather")                \
+    X(Ger10x11schwaebisch, 18, _de10x11schwaebisch, "de-10-11-schwaebisch")    \
+    X(Ger11x11, 19, _de11x11, "de-11-11")                                      \
+    X(Ger11x11schwaebisch, 20, _de11x11schwaebisch, "de-11-11-schwaebisch")    \
+    X(Ger11x11V2, 21, _de11x11V2, "de-11-11-v2")                               \
+    X(Ger11x11V3, 22, _de11x11V3, "de-11-11-v3")                               \
+    X(Ger13x13, 23, _de13x13, "de-13-13")                                      \
+    X(Ger16x8, 24, _de16x8, "de-16-8")                                         \
+    X(Ger16x18, 25, _de16x18, "de-16-18")                                      \
+    X(Ger22x11Weather, 26, _de22x11Weather, "de-22-11-weather")                \
     /* HU (Hungarian) */                                                       \
-    X(Hu10x10, 28, _hu10x10, "hu-10-10")                                       \
+    X(Hu10x10, 27, _hu10x10, "hu-10-10")                                       \
     /* IT (Italian) */                                                         \
-    X(It10x11, 29, _it10x11, "it-10-11")                                       \
+    X(It10x11, 28, _it10x11, "it-10-11")                                       \
     /* NL (Dutch) */                                                           \
-    X(Nl10x11, 30, _nl10x11, "nl-10-11")                                       \
+    X(Nl10x11, 29, _nl10x11, "nl-10-11")                                       \
     /* RO (Romanian) */                                                        \
-    X(Ro10x11, 31, _ro10x11, "ro-10-11")                                       \
+    X(Ro10x11, 30, _ro10x11, "ro-10-11")                                       \
     /* RU (Russian) */                                                         \
-    X(Ru10x11, 32, _ru10x11, "ru-10-11")                                       \
+    X(Ru10x11, 31, _ru10x11, "ru-10-11")                                       \
     /* SE (Swedish) */                                                         \
-    X(Se10x11, 33, _se10x11, "se-10-11")                                       \
+    X(Se10x11, 32, _se10x11, "se-10-11")                                       \
     /* TR (Turkish) */                                                         \
-    X(Tr10x11, 34, _tr10x11, "tr-10-11")
+    X(Tr10x11, 33, _tr10x11, "tr-10-11")
 
 enum ClockWords : uint8_t {
     ESIST = 0,
