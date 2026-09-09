@@ -32,6 +32,20 @@ namespace {
 constexpr size_t COLOR_PAYLOAD_LENGTH = 21;
 constexpr size_t EFFECT_PAYLOAD_LENGTH = 27;
 constexpr size_t FIRE_PAYLOAD_LENGTH = 12;
+constexpr size_t BRIGHTNESS_PAYLOAD_LENGTH = 30;
+constexpr size_t COMMAND_PAYLOAD_LENGTH = 3;
+
+bool requirePayloadLength(size_t length, size_t required, const char *command) {
+    if (length >= required) {
+        return true;
+    }
+
+    Serial.print(command);
+    Serial.println(" command ignored - incomplete payload");
+    return false;
+}
+
+//------------------------------------------------------------------------------
 
 uint32_t split(const uint8_t *payload, size_t payloadLength, uint8_t start,
                uint8_t length = 3) {
@@ -79,8 +93,7 @@ bool compareEffBriAndSpeedToOld(uint8_t *payload, size_t length) {
 //------------------------------------------------------------------------------
 
 bool parseColor(uint8_t *payload, size_t length) {
-    if (length < COLOR_PAYLOAD_LENGTH) {
-        Serial.println("Color command ignored payload is incomplete");
+    if (!requirePayloadLength(length, COLOR_PAYLOAD_LENGTH, "Color")) {
         return false;
     }
 
@@ -104,6 +117,35 @@ bool parseColor(uint8_t *payload, size_t length) {
 
     G.effectBri = effectBrightness;
     G.effectSpeed = effectSpeed;
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+bool parseBrightness(const uint8_t *payload, size_t length) {
+    if (!requirePayloadLength(length, BRIGHTNESS_PAYLOAD_LENGTH,
+                              "Brightness")) {
+        return false;
+    }
+
+    uint32_t brightness[9];
+    for (uint8_t i = 0; i < 9; i++) {
+        brightness[i] = split(payload, length, 3 + i * 3);
+        if (brightness[i] > 100) {
+            Serial.println("Invalid brightness payload ignored");
+            return false;
+        }
+    }
+
+    G.h6 = brightness[0];
+    G.h8 = brightness[1];
+    G.h12 = brightness[2];
+    G.h16 = brightness[3];
+    G.h18 = brightness[4];
+    G.h20 = brightness[5];
+    G.h22 = brightness[6];
+    G.h24 = brightness[7];
+    G.effectBri = brightness[8];
     return true;
 }
 
@@ -136,8 +178,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
     case WStype_TEXT: {
         Serial.printf("[%u] get Text: %s\n", length, payload);
 
-        if (length < 3) {
-            Serial.println("WebSocket command ignored - incomplete payload");
+        if (!requirePayloadLength(length, COMMAND_PAYLOAD_LENGTH,
+                                  "WebSocket")) {
             break;
         }
 
@@ -311,8 +353,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_FIRE: {
-            if (length < FIRE_PAYLOAD_LENGTH) {
-                Serial.println("Fire command ignored payload is incomplete");
+            if (!requirePayloadLength(length, FIRE_PAYLOAD_LENGTH, "Fire")) {
                 break;
             }
 
@@ -556,15 +597,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_BRIGHTNESS: {
-            G.h6 = split(payload, length, 3);
-            G.h8 = split(payload, length, 6);
-            G.h12 = split(payload, length, 9);
-            G.h16 = split(payload, length, 12);
-            G.h18 = split(payload, length, 15);
-            G.h20 = split(payload, length, 18);
-            G.h22 = split(payload, length, 21);
-            G.h24 = split(payload, length, 24);
-            G.effectBri = split(payload, length, 27);
+            parseBrightness(payload, length);
             break;
         }
 
