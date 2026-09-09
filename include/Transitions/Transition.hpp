@@ -115,6 +115,9 @@ void Transition::recolor(RgbfColor foreground, RgbfColor background) {
 //------------------------------------------------------------------------------
 
 bool Transition::refreshColors() {
+    if (transitionType == BIRTHDAY) {
+        return false;
+    }
     ColorMatrix *const matrices[3] = {&act, &old, &work};
     return colorStage.applyColorChange(matrices, 3, foreground, background);
 }
