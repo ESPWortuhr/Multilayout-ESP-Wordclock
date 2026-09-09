@@ -169,6 +169,7 @@ let TRANSLATION_DE_DE = {
 			"extra-led-per-row": "Extra LED pro Reihe hinzufügen",
 			"meander-rows": "Reihen in Mäander angeordnet",
 			"buildtype": "Bauart",
+			"level-shifter-led": "Vorgeschaltete LED als Level-Shifter verwenden",
 			"normal": "Jede LED entspricht einem Buchstaben",
 			"doubleResM1": "Jede zweite LED entspricht einem Buchstaben",
 			"doubleRes": "Je zwei LEDs pro Buchstabe",

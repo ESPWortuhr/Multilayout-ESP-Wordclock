@@ -228,6 +228,8 @@
  */
 #define DEFAULT_LEDTYPE Grb
 #define WHITE_LEDTYPE WhiteType::NeutralWhite
+// Reserve the first physical LED as a dark signal repeater when enabled.
+#define DEFAULT_LEVEL_SHIFTER_LED false
 #define DEFAULT_HUE 120
 #define DEFAULT_BRIGHTNESS 100
 

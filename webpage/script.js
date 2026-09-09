@@ -106,6 +106,7 @@ const CMD = {
 	SET_IT_IS_VARIANT: 106,
 	SET_HARDWARE_PINS: 107,
 	SET_TIMEZONE: 108,
+	SET_LEVEL_SHIFTER_LED: 109,
 	SPEED: 152,
 
 	// Requests
@@ -387,6 +388,7 @@ function initWebsocket() {
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
 				document.getElementById("front-layout").value = data.clockTypeDef;
 				document.getElementById("buildtype").value = data.buildtype;
+				document.getElementById("level-shifter-led").checked = data.levelShifterLed;
 				document.getElementById("whitetype").value = data.wType;
 				document.getElementById("colortype").value = data.colortype;
 				setSelectedSymbol(data.bitmapSymbol);
@@ -1216,6 +1218,11 @@ document.addEventListener("DOMContentLoaded", function() {
 			showRebootRecommendedBanner();
 			debugMessage(`buildtype${debugMessageReconfigured}`);
 		});
+	});
+
+	document.getElementById("level-shifter-led").addEventListener("change", function(event) {
+		sendCmd(CMD.SET_LEVEL_SHIFTER_LED, nstr(event.target.checked ? 1 : 0));
+		debugMessage(`levelShifterLed${debugMessageReconfigured}`);
 	});
 
 	document.querySelectorAll("[id*='whitetype']").forEach(el => {

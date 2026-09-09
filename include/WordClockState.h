@@ -255,6 +255,8 @@ struct GLOBAL {
     char timezone[PAYLOAD_LENGTH];
     uint8_t i2cSdaPin;
     uint8_t i2cSclPin;
+    uint8_t levelShifterLed;
+    uint16_t levelShifterLedMarker;
 };
 extern GLOBAL G;
 
@@ -366,6 +368,7 @@ enum CommandWords : uint8_t {
     COMMAND_SET_IT_IS_VARIANT = 106,
     COMMAND_SET_HARDWARE_PINS = 107,
     COMMAND_SET_TIMEZONE = 108,
+    COMMAND_SET_LEVEL_SHIFTER_LED = 109,
 
     COMMAND_SPEED = 152,
 

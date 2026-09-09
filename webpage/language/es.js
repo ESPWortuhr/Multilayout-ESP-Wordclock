@@ -143,6 +143,7 @@ let TRANSLATION_ES = {
 			"mirror-vertically": "Voltear el reloj verticalmente",
 			"mirror-horizontally": "Voltear el reloj horizontalmente",
 			"buildtype": "Tipo de Diseño",
+			"level-shifter-led": "Usar el LED inicial como adaptador de nivel",
 			"normal": "Cada LED corresponde a una letra",
 			"doubleResM1": "Cada segundo LED corresponde a una letra",
 			"doubleRes": "Dos LED por letra",

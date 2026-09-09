@@ -140,6 +140,7 @@ let TRANSLATION_HU = {
 			"mirror-vertically": "Szövegóra függőleges tükrözése",
 			"mirror-horizontally": "Szövegóra vízszintes tükrözése",
 			"buildtype": "Felépítés",
+			"level-shifter-led": "Első LED használata szintillesztőként",
 			"normal": "Minden LED egy betűnek felel meg",
 			"doubleResM1": "Minden második LED egy betűnek felel meg",
 			"doubleRes": "Két LED betűnként",

@@ -48,6 +48,10 @@ RgbwColor convertRgbToRgbw(RgbColor light, WhiteType wType) {
 
     return returnColor;
 }
+
+uint16_t physicalLedIndex(uint16_t logicalLedIndex) {
+    return logicalLedIndex + (G.levelShifterLed ? 1 : 0);
+}
 } // namespace
 
 //------------------------------------------------------------------------------
@@ -240,6 +244,7 @@ void Led::setState(const bool newState) {
 //------------------------------------------------------------------------------
 
 void Led::setPixel(uint16_t ledIndex, HsbColor color) {
+    ledIndex = physicalLedIndex(ledIndex);
     if (G.Colortype == Grbw) {
         activeLedStrip->setRgbwPixel(
             ledIndex, convertRgbToRgbw(RgbColor(color), G.wType));
@@ -449,7 +454,9 @@ void Led::set(WordclockChanges changed) {
 // Pixel get Functions
 //------------------------------------------------------------------------------
 
-RgbColor Led::getPixel(uint16_t i) { return activeLedStrip->getPixel(i); }
+RgbColor Led::getPixel(uint16_t i) {
+    return activeLedStrip->getPixel(physicalLedIndex(i));
+}
 
 //------------------------------------------------------------------------------
 
@@ -476,7 +483,9 @@ void Led::clearPixel(uint8_t row, uint8_t col) {
 
 //------------------------------------------------------------------------------
 
-void Led::clearPixel(uint16_t i) { activeLedStrip->clearPixel(i); }
+void Led::clearPixel(uint16_t i) {
+    activeLedStrip->clearPixel(physicalLedIndex(i));
+}
 
 //------------------------------------------------------------------------------
 
@@ -731,4 +740,9 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
 
 //------------------------------------------------------------------------------
 
-void Led::show() { activeLedStrip->show(); }
+void Led::show() {
+    if (G.levelShifterLed) {
+        activeLedStrip->clearPixel(0);
+    }
+    activeLedStrip->show();
+}

@@ -169,6 +169,7 @@ let TRANSLATION_EN_US = {
 			"flip-horz-vert": "Flip Horizontally and Vertically Layout",
 			"meander-rows": "Rows placed in meanders",
 			"buildtype": "Buildtype",
+			"level-shifter-led": "Use leading LED as level shifter",
 			"normal": "Each LED corresponds to one letter",
 			"doubleResM1": "Every second LED corresponds to one letter",
 			"doubleRes": "Two LEDs per letter",
