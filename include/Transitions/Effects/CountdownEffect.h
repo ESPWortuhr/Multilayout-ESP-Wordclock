@@ -56,25 +56,40 @@ private:
         unsigned char digit0 = static_cast<unsigned char>(seconds[0]);
         unsigned char digit1 = static_cast<unsigned char>(seconds[1]);
 
-        if (context.out.cols() <
-                (pgm_read_byte(&(fontWidth[usedFontSize])) * 2 + 1) ||
-            context.out.rows() < pgm_read_byte(&(fontHeight[usedFontSize]))) {
+        uint8_t usedFontWidth = pgm_read_byte(&(fontWidth[usedFontSize]));
+        uint8_t usedFontHeight = pgm_read_byte(&(fontHeight[usedFontSize]));
+        if (context.out.cols() < (usedFontWidth * 2 + 1) ||
+            context.out.rows() < usedFontHeight) {
             usedFontSize = smallSizeNumbers;
+            usedFontWidth = pgm_read_byte(&(fontWidth[usedFontSize]));
+            usedFontHeight = pgm_read_byte(&(fontHeight[usedFontSize]));
             // convert char to int due to different definition in Font.h
             digit0 -= 48;
             digit1 -= 48;
         }
 
-        for (uint8_t row = 0; row < 8; row++) {
-            for (uint8_t col = 0; col < 5; col++) {
-                if (m_countDown >= 10) {
-                    setPixelForChar(context, col, row, 0, digit0, color1,
-                                    usedFontSize);
-                    setPixelForChar(context, col, row, 6, digit1, color2,
-                                    usedFontSize);
+        const bool isSingleDigit = m_countDown < 10;
+        const uint8_t usedWidth =
+            isSingleDigit ? usedFontWidth : usedFontWidth * 2 + 1;
+        const uint8_t offsetRow =
+            context.out.rows() > usedFontHeight
+                ? (context.out.rows() - usedFontHeight) / 2
+                : 0;
+        const uint8_t offsetLetter0 = context.out.cols() > usedWidth
+                                          ? (context.out.cols() - usedWidth) / 2
+                                          : 0;
+        const uint8_t offsetLetter1 = offsetLetter0 + usedFontWidth + 1;
+
+        for (uint8_t row = 0; row < usedFontHeight; row++) {
+            for (uint8_t col = 0; col < usedFontWidth; col++) {
+                if (isSingleDigit) {
+                    setPixelForChar(context, col, row, offsetLetter0, offsetRow,
+                                    digit0, color1, usedFontSize);
                 } else {
-                    setPixelForChar(context, col, row, 3, digit0, color1,
-                                    usedFontSize);
+                    setPixelForChar(context, col, row, offsetLetter0, offsetRow,
+                                    digit0, color1, usedFontSize);
+                    setPixelForChar(context, col, row, offsetLetter1, offsetRow,
+                                    digit1, color2, usedFontSize);
                 }
             }
         }
@@ -82,15 +97,14 @@ private:
 
     static void setPixelForChar(TransitionContext &context, uint8_t col,
                                 uint8_t row, uint8_t offsetCol,
-                                unsigned char character, HsbColor color,
-                                fontSize font) {
+                                uint8_t offsetRow, unsigned char character,
+                                HsbColor color, fontSize font) {
         if (!led.getCharCol(font, col, row, character)) {
             return;
         }
-        // One row down: the digits are not meant to touch the top edge.
-        if ((row + 1 < context.out.rows()) &&
+        if ((row + offsetRow < context.out.rows()) &&
             (col + offsetCol < context.out.cols())) {
-            context.out[row + 1][col + offsetCol].changeRgb(color);
+            context.out[row + offsetRow][col + offsetCol].changeRgb(color);
         }
     }
 
