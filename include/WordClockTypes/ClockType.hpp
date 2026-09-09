@@ -391,6 +391,15 @@ protected:
 
     static constexpr uint8_t MINUTE_LED_COUNT = 4;
 
+    /*
+     * Physical LED count consumed by the word matrix on the strip - i.e. the
+     * raw index where the next section (minutes, then the seconds frame)
+     * begins. getFrontMatrixIndex() returns a *logical* cell index which
+     * Led::setPixel(row, col, ...) fans out to getLedsPerLetter() physical
+     * LEDs per cell; the minute and frame LEDs are addressed as raw physical
+     * indices directly (no fan-out), so this needs the physical count, not
+     * the logical cell count.
+     */
     uint16_t numPixelsWordMatrixAdjusted() {
         uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
 
@@ -405,7 +414,7 @@ protected:
             }
         }
 
-        return numPixelsWordMatrix;
+        return numPixelsWordMatrix * getLedsPerLetter(G.buildTypeDef);
     }
 
     uint16_t checkedFrontMatrixIndex(const uint16_t index,
