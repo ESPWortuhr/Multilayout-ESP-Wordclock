@@ -379,6 +379,7 @@ void setup() {
         G.effectSpeed = 5;
         G.client_nr = 0;
         G.secondVariant = SecondVariant::Off;
+        G.secondsFrameLedCount = 0;
         G.bitmapSymbol = BitmapSymbol::HEART;
 // C++23 #elifdef doesn't work yet
 #ifdef MINUTE_Off

@@ -23,8 +23,7 @@
 class De11x11V3_t : public De11x11_t {
 public:
     virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
-
-        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
+        const uint16_t numPixelsWordMatrix = numPixelsWordMatrixAdjusted();
 
         for (uint8_t i = 0; i < 4; i++) {
             returnArr[i] = numPixelsWordMatrix + i;

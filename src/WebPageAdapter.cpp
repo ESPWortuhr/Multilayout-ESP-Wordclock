@@ -281,6 +281,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             //------------------------------------------------------------------------------
 
+        case COMMAND_SET_SECONDS_FRAME: {
+            const uint32_t ledCount = split(payload, 3);
+            G.secondsFrameLedCount = static_cast<uint8_t>(
+                min(ledCount, static_cast<uint32_t>(MAX_SECONDS_FRAME_LED_COUNT)));
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
         case COMMAND_SET_AUTO_BRIGHT: {
             G.autoBrightEnabled = split(payload, 3);
             G.autoBrightMin = split(payload, 6);
@@ -445,7 +454,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_CLOCK_TYPE: {
             uint32_t clockTypeDef = split(payload, 3);
-            if (clockTypeDef < ClockTypeDefMax) {
+            if (clockTypeDef <= UINT8_MAX &&
+                isValidClockTypeDef(static_cast<uint8_t>(clockTypeDef))) {
                 G.clockTypeDef = static_cast<uint8_t>(clockTypeDef);
             } else {
                 Serial.printf("Ignoring invalid ClockType: %lu\n",

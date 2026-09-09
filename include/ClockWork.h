@@ -24,6 +24,7 @@ private:
     void nextHardwareButtonHue();
     void requestHardwareButtonDisplayRefresh();
     uint32_t num32BitWithOnesAccordingToColumns();
+    void reallocateSecondsFrame();
 
     //------------------------------------------------------------------------------
     // Front Effect Functions

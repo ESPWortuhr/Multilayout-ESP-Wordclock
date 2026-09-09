@@ -229,13 +229,19 @@ public:
 
     virtual LanguageAbbreviation usedLang() = 0;
 
-    virtual inline uint8_t numPixelsFrameMatrix() { return 0; }
+    virtual bool supportsSecondsFrame() { return true; }
+
+    virtual inline uint8_t numPixelsFrameMatrix() {
+        return supportsSecondsFrame() ? G.secondsFrameLedCount : 0;
+    }
 
     virtual inline uint8_t rowsWordMatrix() { return 10; }
 
     virtual inline uint8_t colsWordMatrix() { return 11; }
 
-    virtual uint16_t getFrameMatrixIndex(uint16_t index) { return 0; }
+    virtual uint16_t getFrameMatrixIndex(uint16_t index) {
+        return numPixelsWordMatrixAdjusted() + MINUTE_LED_COUNT + index;
+    }
 
     // --- Language & General Properties ---
 
@@ -273,7 +279,9 @@ public:
 
     virtual bool hasWeatherLayout() { return false; }
 
-    virtual bool hasSecondsFrame() { return false; }
+    virtual bool hasSecondsFrame() {
+        return supportsSecondsFrame() && G.secondsFrameLedCount > 0;
+    }
 
     virtual bool hasDaytimeWords() { return false; }
 
@@ -361,18 +369,7 @@ public:
     };
 
     virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) {
-        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
-
-        if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
-            numPixelsWordMatrix = rowsWordMatrix() * (colsWordMatrix() * 2 - 1);
-        }
-        if (G.layoutVariant[ExtraLedPerRow]) {
-            if (G.layoutVariant[FlipHorzVert] == false) {
-                numPixelsWordMatrix += rowsWordMatrix() - 1;
-            } else {
-                numPixelsWordMatrix += colsWordMatrix() - 1;
-            }
-        }
+        const uint16_t numPixelsWordMatrix = numPixelsWordMatrixAdjusted();
 
         for (uint8_t i = 0; i < 4; i++) {
             switch (col) {
@@ -390,9 +387,26 @@ public:
     };
 
 protected:
-    /* FrontWord currently being drawn by show(); tags cells in
-     * setFrontMatrixPixel(). */
     uint8_t currentWordId = WORD_ID_NONE;
+
+    static constexpr uint8_t MINUTE_LED_COUNT = 4;
+
+    uint16_t numPixelsWordMatrixAdjusted() {
+        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
+
+        if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
+            numPixelsWordMatrix = rowsWordMatrix() * (colsWordMatrix() * 2 - 1);
+        }
+        if (G.layoutVariant[ExtraLedPerRow]) {
+            if (G.layoutVariant[FlipHorzVert] == false) {
+                numPixelsWordMatrix += rowsWordMatrix() - 1;
+            } else {
+                numPixelsWordMatrix += colsWordMatrix() - 1;
+            }
+        }
+
+        return numPixelsWordMatrix;
+    }
 
     uint16_t checkedFrontMatrixIndex(const uint16_t index,
                                      const uint16_t numPixels) {

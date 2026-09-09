@@ -108,6 +108,7 @@ const CMD = {
 	SET_HARDWARE_PINS: 107,
 	SET_TIMEZONE: 108,
 	SET_COLORIZE: 109,
+	SET_SECONDS_FRAME: 110,
 	SPEED: 152,
 
 	// Requests
@@ -412,6 +413,7 @@ function initWebsocket() {
 
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
 				document.getElementById("front-layout").value = data.clockTypeDef;
+				document.getElementById("seconds-frame-led-count").value = data.secondsFrameLedCount;
 				document.getElementById("buildtype").value = data.buildtype;
 				document.getElementById("whitetype").value = data.wType;
 				document.getElementById("colortype").value = data.colortype;
@@ -1017,6 +1019,18 @@ document.addEventListener("DOMContentLoaded", function() {
 			sendCmd(CMD.SET_CLOCK_TYPE, nstr(this.value));
 			sendCmd(CMD.REQ_CONFIG_VALUES);
 			debugMessage(`FrontLayout${debugMessageReconfigured}`);
+		});
+	}
+
+	const secondsFrameLedCountInput = document.getElementById("seconds-frame-led-count");
+	if (secondsFrameLedCountInput) {
+		secondsFrameLedCountInput.addEventListener("change", function() {
+			if (!this.reportValidity()) {
+				return;
+			}
+			sendCmd(CMD.SET_SECONDS_FRAME, nstr(this.value));
+			sendCmd(CMD.REQ_CONFIG_VALUES);
+			debugMessage(`SecondsFrameLedCount${debugMessageReconfigured}`);
 		});
 	}
 

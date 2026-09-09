@@ -264,6 +264,18 @@ ClockType *ClockWork::getPointer(uint8_t type) {
 
 //------------------------------------------------------------------------------
 
+void ClockWork::reallocateSecondsFrame() {
+    delete secondsFrame;
+    secondsFrame = nullptr;
+
+    if (usedClockType->numPixelsFrameMatrix() != 0) {
+        secondsFrame = new SecondsFrame(usedClockType->numPixelsFrameMatrix());
+        G.progInit = true;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
     const uint16_t ledCount = MAX_LED_COUNT * getLedsPerLetter(G.buildTypeDef);
@@ -1625,6 +1637,7 @@ void ClockWork::loop(struct tm &tm) {
         config["hasTwenty"] = usedClockType->hasTwenty();
         config["hasWeatherLayout"] = usedClockType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedClockType->hasSecondsFrame();
+        config["secondsFrameLedCount"] = G.secondsFrameLedCount;
         config["hasMinuteInWords"] = usedClockType->hasMinuteInWords();
         config["hasSpecialWordHappyBirthday"] =
             usedClockType->hasSpecialWordHappyBirthday();
@@ -1850,17 +1863,23 @@ void ClockWork::loop(struct tm &tm) {
 
         checkForValidLanguageVariant();
 
-        delete secondsFrame;
-        secondsFrame = nullptr;
-
-        if (usedClockType->numPixelsFrameMatrix() != 0) {
-            secondsFrame =
-                new SecondsFrame(usedClockType->numPixelsFrameMatrix());
-            G.progInit = true;
-        }
+        reallocateSecondsFrame();
 
         renderPipeline.resize(usedClockType->rowsWordMatrix(),
                               usedClockType->colsWordMatrix());
+
+        parametersChanged = true;
+        break;
+    }
+
+    case COMMAND_SET_SECONDS_FRAME: {
+        eeprom::write();
+        led.clear();
+        led.show();
+        delay(10);
+        Serial.printf("Seconds frame LED count: %u\n", G.secondsFrameLedCount);
+
+        reallocateSecondsFrame();
 
         parametersChanged = true;
         break;

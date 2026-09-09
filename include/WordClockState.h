@@ -32,13 +32,10 @@
     X(Ger08x08Viertel, 10, _de08x08Viertel, "de-08-08-viertel")                \
     X(Ger10x11, 11, _de10x11, "de-10-11")                                      \
     X(Ger10x11Alternative, 12, _de10x11Alternative, "de-10-11-alt")            \
-    X(Ger10x11AlternativeFrame, 13, _de10x11AlternativeFrame,                  \
-      "de-10-11-alt-frame")                                                    \
     X(Ger10x11bayerisch, 14, _de10x11bayerisch, "de-10-11-bayerisch")          \
     X(Ger10x11Clock, 15, _de10x11Clock, "de-10-11-clock")                      \
     X(Ger10x11Mrrioes, 16, _de10x11Mrrioes, "de-10-11-mrrioes")                \
     X(Ger10x11Nero, 17, _de10x11Nero, "de-10-11-nero")                         \
-    X(Ger10x11NeroFrame, 18, _de10x11NeroFrame, "de-10-11-nero-frame")         \
     X(Ger10x11schwaebisch, 19, _de10x11schwaebisch, "de-10-11-schwaebisch")    \
     X(Ger11x11, 20, _de11x11, "de-11-11")                                      \
     X(Ger11x11schwaebisch, 21, _de11x11schwaebisch, "de-11-11-schwaebisch")    \
@@ -217,6 +214,7 @@ struct GLOBAL {
     uint8_t effectSpeed;
     uint8_t client_nr;
     SecondVariant secondVariant;
+    uint8_t secondsFrameLedCount;
     MinuteVariant minuteVariant;
     ItIsVariant itIsVariant;
     bool languageVariant[5];
@@ -299,7 +297,8 @@ extern uint8_t frontWordId[MAX_ROW_SIZE][MAX_COL_SIZE];
 extern uint8_t minuteArray; /* Using a byte as a per bit array */
 extern uint8_t lastMinuteArray;
 extern uint16_t minutePixelArray[4];
-extern bool frameArray[200];
+constexpr uint8_t MAX_SECONDS_FRAME_LED_COUNT = 200;
+extern bool frameArray[MAX_SECONDS_FRAME_LED_COUNT];
 extern bool parametersChanged;
 extern bool layoutChanged;
 extern bool colorChangedByWebsite;
@@ -385,6 +384,7 @@ enum CommandWords : uint8_t {
     COMMAND_SET_HARDWARE_PINS = 107,
     COMMAND_SET_TIMEZONE = 108,
     COMMAND_SET_COLORIZE = 109,
+    COMMAND_SET_SECONDS_FRAME = 110,
 
     COMMAND_SPEED = 152,
 
@@ -418,4 +418,13 @@ enum ClockTypeDef : uint8_t {
         ClockTypeDefMax,
 };
 
-inline bool isValidClockTypeDef(uint8_t type) { return type < ClockTypeDefMax; }
+inline bool isValidClockTypeDef(uint8_t type) {
+    switch (type) {
+#define X(name, id, var, i18n) case id:
+        CLOCK_TYPES_LIST
+#undef X
+        return true;
+    default:
+        return false;
+    }
+}

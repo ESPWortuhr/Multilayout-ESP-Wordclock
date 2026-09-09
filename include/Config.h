@@ -38,11 +38,6 @@
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with modified
 // layout for extra words in the matrix from the Github user @dbambus
 //
-// #define DEFAULT_LAYOUT Ger10x11AlternativeFrame
-// 10 rows, each 11 LED's per row + 4 LED's (minutes)+ 48 LED's (seconds) in a
-// Frame around with modified layout for extra words in the matrix from the
-// Github user @dbambus
-//
 // #define DEFAULT_LAYOUT Ger10x11Clock
 // 10 rows, each 11 LED's per row + 4 LED's for minutes, with the layout
 // from the original manufacturer
@@ -66,10 +61,6 @@
 //
 // #define DEFAULT_LAYOUT Ger11x11V3
 // 11 rows, each 11 LED's per row. Layout for panbachi/wordclock plate design
-//
-// #define DEFAULT_LAYOUT Ger11x11Frame
-// Same Layout as Ger11x11, but with additional LED's to illuminate the frame
-// from the side
 //
 // #define DEFAULT_LAYOUT Ger13x13
 // 13 rows, 13 LEDs per row
