@@ -17,6 +17,22 @@ struct DisplayAction {
     bool refreshBrightness = false;
 };
 
+/*
+ * The front matrix is one buffer shared by every mode - the wifi symbol drawn
+ * at boot, the digits, a bitmap symbol, the scrolling text all live in it. The
+ * pipeline reads it as a clock face and colours and animates it, so it has to
+ * stay out until the clock work has actually put a clock face there.
+ *
+ * Two ways that goes wrong without this: at boot the pipeline runs before the
+ * clock work has calculated anything, and on a switch back to the word clock
+ * G.prog changes a full loop pass before the face is recalculated.
+ */
+inline bool pipelineMayRender(uint8_t prog, bool faceCalculated) {
+    return faceCalculated && isWordClockMode(prog);
+}
+
+//------------------------------------------------------------------------------
+
 inline DisplayAction decideDisplayAction(WordclockChanges change,
                                          bool transitionOwnsDisplay,
                                          bool transitionAnimates,

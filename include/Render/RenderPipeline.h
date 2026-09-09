@@ -58,6 +58,9 @@ private:
     Transition_t m_type = NO_TRANSITION;
     Transition_t m_randomPick = ROLL_UP;
 
+    // The clock work has put a clock face into the front matrix. Until then
+    // the buffer holds whatever the boot sequence or another mode left there.
+    bool m_faceCalculated = false;
     bool m_matrixChanged = false;
     bool m_redrawPending = false;
     bool m_startPending = false;

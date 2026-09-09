@@ -7,9 +7,13 @@
 
 class ColorStage {
 public:
+    /* The colour mode in effect, which is not always the configured one. */
+    uint8_t mode() const;
     bool isColorizing() const;
     bool modeChanged();
     ColorPosition minutePosition() const;
+    /* True while the foreground is a ramp between two colours, not one. */
+    bool foregroundIsGradient() const;
     void displayColors(RgbfColor &foreground, RgbfColor &background) const;
     void render(ColorMatrix &dest, RgbfColor foreground, RgbfColor background);
     void build(ColorMatrix &dest, RgbfColor foreground,

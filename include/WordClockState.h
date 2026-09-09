@@ -402,6 +402,15 @@ enum CommandWords : uint8_t {
     PLACEHOLDER_MAX_REQUEST = 255,
 };
 
+/*
+ * Handling COMMAND_MODE_WORD_CLOCK leaves G.prog on COMMAND_IDLE, so idle is
+ * the steady state of the word clock rather than "nothing running". Everything
+ * that is only meaningful for the clock face has to ask for both.
+ */
+inline bool isWordClockMode(uint8_t prog) {
+    return (prog == COMMAND_IDLE) || (prog == COMMAND_MODE_WORD_CLOCK);
+}
+
 enum ClockTypeDef : uint8_t {
 #define X(name, id, var, i18n) name = id,
     CLOCK_TYPES_LIST

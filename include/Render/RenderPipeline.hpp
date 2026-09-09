@@ -76,7 +76,9 @@ bool RenderPipeline::animates() const {
 //------------------------------------------------------------------------------
 
 bool RenderPipeline::ownsDisplay() const {
-    return animates() || colorStage.isColorizing();
+    // Before the first face there is nothing to own: Led::set() has to push it
+    // itself, which is also what opens the gate below.
+    return m_faceCalculated && (animates() || colorStage.isColorizing());
 }
 
 //------------------------------------------------------------------------------
@@ -208,6 +210,10 @@ bool RenderPipeline::hasMinuteChanged() {
 
 void RenderPipeline::applyDisplayAction(const DisplayAction &action,
                                         uint8_t minute) {
+    // Led::set() only ever runs for the word clock, so reaching here means the
+    // front matrix holds a calculated clock face.
+    m_faceCalculated = true;
+
     if (action.rebuildMatrix) {
         m_matrixChanged = true;
     }
@@ -280,7 +286,14 @@ void RenderPipeline::demoMode(uint8_t &_hour, uint8_t &_minute,
 //------------------------------------------------------------------------------
 
 void RenderPipeline::loop(struct tm &tm) {
-    if ((G.prog != COMMAND_IDLE) && (G.prog != COMMAND_MODE_WORD_CLOCK)) {
+    if (!isWordClockMode(G.prog)) {
+        // Another mode owns the front matrix now; what it draws there is not a
+        // clock face, and it will not be one again until the clock work says
+        // so.
+        m_faceCalculated = false;
+        return;
+    }
+    if (!pipelineMayRender(G.prog, m_faceCalculated)) {
         return;
     }
 

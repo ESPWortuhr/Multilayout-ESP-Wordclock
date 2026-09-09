@@ -304,6 +304,106 @@ void backgroundIsUpdatedInEveryMode() {
     }
 }
 
+/*
+ * The clock face is coloured by GradientColorizer, every other mode paints
+ * through Led::setbyFrontMatrix() and calls gradientColorAt() directly. They
+ * have to land on the same colour per row, or switching from the word clock to
+ * the digital clock would shift the ramp.
+ *
+ * The face carries its primary as an RgbfColor and so quantises it to 8 bits
+ * before blending, which the Led path does not - hence the round trip here
+ * rather than the raw configured colour.
+ */
+void bothPathsShareOneRamp() {
+    G.colorize = POLYCHROME;
+    setColor(Foreground, .1f, .4f, .9f);
+    setColor(GradientEnd, .8f, .9f, .3f);
+    setColor(Background, 0, 0, 0);
+
+    ColorMatrix face;
+    renderFresh(face);
+
+    const HsbColor from(RgbfColor(led.colors[Foreground], F_FOREGROUND));
+    const HsbColor to = led.colors[GradientEnd];
+
+    for (uint8_t row = 0; row < ROWS; row++) {
+        const RgbfColor direct(gradientColorAt(from, to, row, ROWS), F_NULL);
+        if (!sameRgb(face[row][0], direct)) {
+            snprintf(message, sizeof message,
+                     "row %u: the face has %u,%u,%u, the direct ramp gives "
+                     "%u,%u,%u",
+                     row, face[row][0].R, face[row][0].G, face[row][0].B,
+                     direct.R, direct.G, direct.B);
+            check(false, message);
+            return;
+        }
+    }
+    check(true, "the face and the direct ramp agree row by row");
+}
+
+/*
+ * Primary at the top, secondary at the bottom - what the two swatches promise.
+ * Compared as RGB: a float lerp does not land exactly on its far end, and what
+ * reaches the strip is the 8 bit conversion anyway.
+ */
+void theRampEndsOnTheConfiguredColors() {
+    const HsbColor from(.1f, .4f, .9f);
+    const HsbColor to(.8f, .9f, .3f);
+
+    check(RgbColor(gradientColorAt(from, to, 0, ROWS)) == RgbColor(from),
+          "the top row is the primary colour");
+    check(RgbColor(gradientColorAt(from, to, ROWS - 1, ROWS)) == RgbColor(to),
+          "the bottom row is the secondary colour");
+
+    // A single row has no span to ramp over, and dividing by it would be worse
+    // than showing the primary.
+    check(RgbColor(gradientColorAt(from, to, 0, 1)) == RgbColor(from),
+          "a one row matrix shows the primary colour");
+}
+
+/*
+ * Random word hues are keyed on the word id under each cell, and only the word
+ * clock fills that in. A symbol or the digits would put every lit pixel in one
+ * bucket, so the whole display would take a single random colour and pick a new
+ * one on every redraw.
+ */
+void randomWordsAreExclusiveToTheWordClock() {
+    G.colorize = WORD_RANDOM;
+
+    G.prog = COMMAND_IDLE;
+    check(colorStage.mode() == WORD_RANDOM,
+          "the idle word clock keeps its random word hues");
+    G.prog = COMMAND_MODE_WORD_CLOCK;
+    check(colorStage.mode() == WORD_RANDOM,
+          "so does the word clock being recalculated");
+
+    const uint8_t OTHER_MODES[] = {
+        COMMAND_MODE_SECONDS,      COMMAND_MODE_SCROLLINGTEXT,
+        COMMAND_MODE_RAINBOWCYCLE, COMMAND_MODE_RAINBOW,
+        COMMAND_MODE_COLOR,        COMMAND_MODE_DIGITAL_CLOCK,
+        COMMAND_MODE_SYMBOL};
+
+    for (uint8_t prog : OTHER_MODES) {
+        G.prog = prog;
+        snprintf(message, sizeof message,
+                 "mode %u falls back to the plain foreground", prog);
+        check(colorStage.mode() == MONOCHROME, message);
+        check(!colorStage.isColorizing(), message);
+    }
+
+    // The gradient is built from two configured colours and needs no words, so
+    // it stays available in every mode.
+    G.colorize = POLYCHROME;
+    for (uint8_t prog : OTHER_MODES) {
+        G.prog = prog;
+        snprintf(message, sizeof message, "mode %u still ramps", prog);
+        check(colorStage.foregroundIsGradient(), message);
+    }
+
+    G.prog = COMMAND_IDLE;
+    G.colorize = MONOCHROME;
+}
+
 } // namespace
 
 int main() {
@@ -319,6 +419,9 @@ int main() {
     randomKeepsItsHues();
     everyBufferIsUpdated();
     backgroundIsUpdatedInEveryMode();
+    bothPathsShareOneRamp();
+    theRampEndsOnTheConfiguredColors();
+    randomWordsAreExclusiveToTheWordClock();
 
     return report("colour change");
 }

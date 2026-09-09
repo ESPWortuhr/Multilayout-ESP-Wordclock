@@ -116,6 +116,33 @@ void colouringWithoutATransitionStartsNoAnimation() {
 
 } // namespace
 
+/*
+ * The bug: at boot the wifi symbol sits in the front matrix, and the pipeline
+ * runs a full loop pass before the clock work calculates anything. It coloured
+ * that symbol and animated the first transition out of it.
+ */
+void thePipelineWaitsForACalculatedFace() {
+    check(!pipelineMayRender(COMMAND_IDLE, false),
+          "nothing is rendered before the first clock face");
+    check(pipelineMayRender(COMMAND_IDLE, true),
+          "the idle word clock renders once it has a face");
+    check(pipelineMayRender(COMMAND_MODE_WORD_CLOCK, true),
+          "so does the word clock being recalculated");
+
+    // Every other mode paints the front matrix itself, and none of what it
+    // paints is a clock face to colour or animate.
+    const uint8_t OTHER_MODES[] = {
+        COMMAND_MODE_SECONDS,      COMMAND_MODE_SCROLLINGTEXT,
+        COMMAND_MODE_RAINBOWCYCLE, COMMAND_MODE_RAINBOW,
+        COMMAND_MODE_COLOR,        COMMAND_MODE_DIGITAL_CLOCK,
+        COMMAND_MODE_SYMBOL};
+
+    for (uint8_t prog : OTHER_MODES) {
+        check(!pipelineMayRender(prog, true),
+              "another mode owns the front matrix and is left alone");
+    }
+}
+
 int main() {
     everyChangeHasExactlyOnePusher();
     colouringWithoutATransitionStartsNoAnimation();
@@ -124,5 +151,7 @@ int main() {
     ledTakesOverWhenNobodyOwnsTheDisplay();
     wordChangesStartAnimations();
     matrixIsRebuiltOnlyOnARealMinuteEdge();
+    thePipelineWaitsForACalculatedFace();
+
     return report("display policy");
 }

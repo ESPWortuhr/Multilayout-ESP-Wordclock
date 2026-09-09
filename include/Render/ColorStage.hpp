@@ -5,21 +5,42 @@
 
 //------------------------------------------------------------------------------
 
-bool ColorStage::isColorizing() const { return G.colorize != MONOCHROME; }
-
-//------------------------------------------------------------------------------
-
-ColorPosition ColorStage::minutePosition() const {
-    return (G.colorize == POLYCHROME) ? GradientEnd : Foreground;
+/*
+ * Random word hues need words to key on, and only the word clock has them. In
+ * the digits, a bitmap symbol or the scrolling text every lit pixel carries the
+ * same word id, so the whole display would take one random colour and change it
+ * on every redraw. Outside the word clock the mode falls back to the plain
+ * foreground; the gradient has no such problem and stays available everywhere.
+ */
+uint8_t ColorStage::mode() const {
+    if ((G.colorize == WORD_RANDOM) && !isWordClockMode(G.prog)) {
+        return MONOCHROME;
+    }
+    return G.colorize;
 }
 
 //------------------------------------------------------------------------------
 
+bool ColorStage::isColorizing() const { return mode() != MONOCHROME; }
+
+//------------------------------------------------------------------------------
+
+ColorPosition ColorStage::minutePosition() const {
+    return (mode() == POLYCHROME) ? GradientEnd : Foreground;
+}
+
+//------------------------------------------------------------------------------
+
+bool ColorStage::foregroundIsGradient() const { return mode() == POLYCHROME; }
+
+//------------------------------------------------------------------------------
+
 bool ColorStage::modeChanged() {
-    if (m_lastMode == G.colorize) {
+    const uint8_t current = mode();
+    if (m_lastMode == current) {
         return false;
     }
-    m_lastMode = G.colorize;
+    m_lastMode = current;
     return true;
 }
 
@@ -42,7 +63,7 @@ ColorContext ColorStage::contextFor(RgbfColor foreground,
     context.background = HsbColor(background);
     context.gradientEnd =
         led.getColorbyPositionWithAppliedBrightness(GradientEnd);
-    context.mode = G.colorize;
+    context.mode = mode();
     return context;
 }
 
@@ -113,7 +134,7 @@ bool ColorStage::applyColorChange(ColorMatrix *const *matrices, uint8_t count,
     // neither foreground nor background - without this the edit would sit
     // unnoticed until the next minute rebuilt the face.
     const bool adjustGradient =
-        (G.colorize == POLYCHROME) && (newGradientEnd != m_gradientEnd);
+        (mode() == POLYCHROME) && (newGradientEnd != m_gradientEnd);
     m_gradientEnd = newGradientEnd;
 
     if (!adjustForeground && !adjustBackground && !adjustGradient) {
@@ -121,7 +142,7 @@ bool ColorStage::applyColorChange(ColorMatrix *const *matrices, uint8_t count,
     }
 
     const float brightness = HsbColor(newForeground).B;
-    const bool keepHues = (G.colorize == WORD_RANDOM);
+    const bool keepHues = (mode() == WORD_RANDOM);
 
     for (uint8_t m = 0; m < count; m++) {
         ColorMatrix &matrix = *matrices[m];
@@ -140,7 +161,7 @@ bool ColorStage::applyColorChange(ColorMatrix *const *matrices, uint8_t count,
             continue;
         }
 
-        if (G.colorize == POLYCHROME) {
+        if (mode() == POLYCHROME) {
             colorize(matrix, newForeground, newBackground);
             continue;
         }
