@@ -554,9 +554,6 @@
                                 <!-- FRONTLAYOUTPLACEHOLDER -->
                             </select>
                             </div>
-                            <div class="pure-control-group">
-                                <label for="seconds-frame-led-count" data-i18next="view.front.seconds-frame-led-count"></label><input id="seconds-frame-led-count" type="number" min="0" max="200" step="1" required>
-                            </div>
                             <div class="pure-control-group specific-minute-direction">
                                 <label for="layvar-0" data-i18next="view.front.invert-min-dir"></label>
                                 <label class="switch">
@@ -681,9 +678,12 @@
                 </div>
 
                 <!-- Specific UHR169 Start-->
-                <div class="box specific-layout-4">
+                <div class="box specific-supports-frame">
                     <h2 data-i18next="view.seconds.h2"></h2>
                     <form class="pure-form pure-form-aligned">
+                        <div class="pure-control-group">
+                            <label for="seconds-frame-led-count" data-i18next="view.seconds.led-count"></label><input id="seconds-frame-led-count" type="number" min="0" max="200" step="1" required>
+                        </div>
                         <div class="pure-control-group">
                             <label for="show-seconds" data-i18next="view.seconds.in-border"></label><select name="show-seconds" id="show-seconds" size="1">
                                 <option value="0" selected data-i18next="view.seconds.off"></option>

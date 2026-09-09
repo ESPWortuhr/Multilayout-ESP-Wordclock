@@ -123,7 +123,6 @@ let TRANSLATION_EN_US = {
 			"h2": "Front",
 			"text": "Changes to the matrix size are only applied when the clock is restarted.",
 			"variant": "Choice of Clock Variant",
-			"seconds-frame-led-count": "Number of LED's in the seconds frame (0 = disabled)",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternative",
 			"de-10-11-clock": "🇩🇪 10 × 11 Clock",
@@ -206,6 +205,7 @@ let TRANSLATION_EN_US = {
 		},
 		"seconds": {
 			"h2": "Seconds",
+			"led-count": "Number of LED's in the seconds frame (0 = disabled)",
 			"in-border": "Seconds in the Border",
 			"off": "Off",
 			"point": "Dot",

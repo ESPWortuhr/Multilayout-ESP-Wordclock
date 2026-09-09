@@ -123,7 +123,6 @@ let TRANSLATION_DE_DE = {
 			"h2": "Front",
 			"text": "Änderungen der Matrixgröße werden erst mit einem Neustart der Uhr übernommen.",
 			"variant": "Wahl der Uhrvariante",
-			"seconds-frame-led-count": "Anzahl LED's im Sekundenrahmen (0 = deaktiviert)",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternativ",
 			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
@@ -206,6 +205,7 @@ let TRANSLATION_DE_DE = {
 		},
 		"seconds": {
 			"h2": "Sekunden",
+			"led-count": "Anzahl LED's im Sekundenrahmen (0 = deaktiviert)",
 			"in-border": "Sekundenanzeige im Rahmen",
 			"off": "Aus",
 			"point": "Punkt",

@@ -100,7 +100,6 @@ let TRANSLATION_IT = {
 			"h2": "Front",
 			"text": "Le modifiche alle dimensioni dell'array hanno effetto solo quando l'orologio viene reimpostato.",
 			"variant": "Scelta della variante dell'orologio",
-			"seconds-frame-led-count": "Numero di LED nella cornice dei secondi (0 = disattivato)",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternativ",
 			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
@@ -177,6 +176,7 @@ let TRANSLATION_IT = {
 		},
 		"seconds": {
 			"h2": "Segundos",
+			"led-count": "Numero di LED nella cornice dei secondi (0 = disattivato)",
 			"in-border": "Los segundos se muestran en el marco.",
 			"off": "Spegni",
 			"point": "Punto",

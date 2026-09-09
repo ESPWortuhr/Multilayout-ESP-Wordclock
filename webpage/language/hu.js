@@ -100,7 +100,6 @@ let TRANSLATION_HU = {
 			"h2": "Elölnézet",
 			"text": "A mátrixméret változtatása az óra újraindításakor lép életbe.",
 			"variant": "Óraváltozatok kiválasztása",
-			"seconds-frame-led-count": "LED-ek száma a másodperc-keretben (0 = kikapcsolva)",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternatív",
 			"de-10-11-clock": "🇩🇪 10 × 11 óra",
@@ -177,6 +176,7 @@ let TRANSLATION_HU = {
 		},
 		"seconds": {
 			"h2": "Másodpercek",
+			"led-count": "LED-ek száma a másodperc-keretben (0 = kikapcsolva)",
 			"in-border": "Másodperc mutatása keretben",
 			"off": "Ki",
 			"point": "Pont",

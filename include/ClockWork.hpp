@@ -1637,6 +1637,7 @@ void ClockWork::loop(struct tm &tm) {
         config["hasTwenty"] = usedClockType->hasTwenty();
         config["hasWeatherLayout"] = usedClockType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedClockType->hasSecondsFrame();
+        config["supportsSecondsFrame"] = usedClockType->supportsSecondsFrame();
         config["secondsFrameLedCount"] = G.secondsFrameLedCount;
         config["hasMinuteInWords"] = usedClockType->hasMinuteInWords();
         config["hasSpecialWordHappyBirthday"] =

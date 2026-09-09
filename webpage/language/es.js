@@ -100,7 +100,6 @@ let TRANSLATION_ES = {
 			"h2": "Front",
 			"text": "Los cambios en el tamaño de la matriz solo se aplican cuando se reinicia el reloj.",
 			"variant": "Elección de variante de reloj",
-			"seconds-frame-led-count": "Número de LED's en el marco de segundos (0 = desactivado)",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternativ",
 			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
@@ -177,6 +176,7 @@ let TRANSLATION_ES = {
 		},
 		"seconds": {
 			"h2": "Segundos",
+			"led-count": "Número de LED's en el marco de segundos (0 = desactivado)",
 			"in-border": "Los segundos se muestran en el marco.",
 			"off": "Apagado",
 			"point": "Punto",

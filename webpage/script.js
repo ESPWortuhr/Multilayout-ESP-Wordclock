@@ -437,7 +437,7 @@ function initWebsocket() {
 				enableSpecific("specific-layout-0", !data.isRomanLanguage);
 				enableSpecific("specific-layout-2", data.hasDreiviertel);
 				enableSpecific("specific-layout-3", data.hasTwenty && data.clockTypeDef !== 4);
-				enableSpecific("specific-layout-4", data.hasSecondsFrame);
+				enableSpecific("specific-supports-frame", data.supportsSecondsFrame);
 				enableSpecific("specific-layout-5", data.hasWeatherLayout);
 
 				// clockTypeDef 4 is EN10x11, doesn't need the options of layout 1 and 3, but needs its own layout 6.

@@ -100,7 +100,6 @@ let TRANSLATION_NL = {
 			"h2": "Weergave",
 			"text": "Verandering van formaat is alleen zichtbaar na herstart.",
 			"variant": "Klok variant",
-			"seconds-frame-led-count": "Aantal LED's in het secondenkader (0 = uitgeschakeld)",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternatief",
 			"de-10-11-clock": "🇩🇪 10 × 11 Clock",
@@ -180,6 +179,7 @@ let TRANSLATION_NL = {
 		},
 		"seconds": {
 			"h2": "Seconden",
+			"led-count": "Aantal LED's in het secondenkader (0 = uitgeschakeld)",
 			"in-border": "Seconden in de rand",
 			"off": "Uit",
 			"point": "Punt",
