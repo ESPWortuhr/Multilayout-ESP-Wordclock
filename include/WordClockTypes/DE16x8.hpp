@@ -67,9 +67,10 @@ public:
     /*
      * This layout doubles up every pixel index (see getFrontMatrixIndex()
      * above) and hardcodes its minute LEDs at 256+i, so the generic
-     * "word matrix + 4 minute LEDs" offset that ClockType::getFrameMatrixIndex()
-     * assumes does not apply here. Without knowing this board's real wiring,
-     * keep the seconds frame off rather than light up the wrong pixels.
+     * "word matrix + 4 minute LEDs" offset that
+     * ClockType::getFrameMatrixIndex() assumes does not apply here. Without
+     * knowing this board's real wiring, keep the seconds frame off rather than
+     * light up the wrong pixels.
      */
     virtual bool supportsSecondsFrame() override { return false; }
 

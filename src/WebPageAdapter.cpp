@@ -300,8 +300,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             // shrinking the count doesn't leave the now out-of-range LEDs
             // permanently lit.
             const uint32_t ledCount = split(payload, length, 3);
-            G.param1 = static_cast<uint8_t>(
-                min(ledCount, static_cast<uint32_t>(MAX_SECONDS_FRAME_LED_COUNT)));
+            G.param1 = static_cast<uint8_t>(min(
+                ledCount, static_cast<uint32_t>(MAX_SECONDS_FRAME_LED_COUNT)));
             break;
         }
 
