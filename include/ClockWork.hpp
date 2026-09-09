@@ -54,14 +54,11 @@ void ClockWork::loopAutoBrightLogic() {
     float luxNow = -1.0;
 
     if (bh1750Initialized && lightMeter.measurementReady()) {
-        /*
-        If BH1750 is not available or did not return a value, try to use LDR
-        */
         luxNow = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
         autoBrightUsingBH1750 = true;
     }
 
-    else if (luxNow < 0) {
+    if (luxNow < 0) {
         /*
         The lux value is considerably misrepresented upwards at ADC values above
         980. As 980 with an LDR5528 corresponds to approx. 1500 lux, but usually
@@ -75,19 +72,10 @@ void ClockWork::loopAutoBrightLogic() {
             adcValue = 980;
         }
 
-        luxNow = (adcValue * AUTOBRIGHT_LDR_RESDARK * 10) /
+        luxNow = (adcValue * AUTOBRIGHT_LDR_RESDARK * 10.0f) /
                  (AUTOBRIGHT_LDR_RESBRIGHT * AUTOBRIGHT_LDR_RESDIVIDER *
-                  (1024 - adcValue));
+                  (1024.0f - adcValue));
         autoBrightUsingBH1750 = false;
-    }
-
-    else {
-        /*
-        If luxNow is still negative, no data could be retrieved from BH1750 or
-        LDR. We return to preserve the previous ledGain (potentially default).
-        Otherwise we may end up in a blinking light.
-        */
-        return;
     }
 
     /*
