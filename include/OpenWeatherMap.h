@@ -825,6 +825,8 @@ public:
         if (WiFi.status() == WL_CONNECTED && checkWeatherCounter()) {
             pullWeatherData();
         }
-        weatherCounter--;
+        if (weatherCounter > 0) {
+            weatherCounter--;
+        }
     }
 };
