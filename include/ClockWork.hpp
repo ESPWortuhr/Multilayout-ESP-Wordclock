@@ -621,8 +621,18 @@ void ClockWork::displaySymbols(BitmapSymbol symbolNum) {
         symbolNum = BitmapSymbol::HEART;
     }
 
+    // This mode has its own brightness, so both ends of the ramp are dimmed to
+    // it rather than read through the display brightness.
     HsbColor color = G.color[Foreground];
     color.B = G.effectBri / 100.f;
+
+    if (colorStage.foregroundIsGradient()) {
+        HsbColor gradientEnd = G.color[GradientEnd];
+        gradientEnd.B = color.B;
+        led.setBitmapSymbol(symbolNum, color, gradientEnd);
+        return;
+    }
+
     led.setBitmapSymbol(symbolNum, color);
 }
 

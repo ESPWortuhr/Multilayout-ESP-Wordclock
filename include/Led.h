@@ -20,6 +20,7 @@ private:
     void toggleDigitalClockSecond(const fontSize &usedFontSize,
                                   const uint8_t &offsetRow1,
                                   const uint8_t &offsetMin0);
+    void drawBitmapSymbol(BitmapSymbol symbolNum);
 
 public:
     Led(/* args */) = default;
@@ -57,10 +58,13 @@ public:
     void setbyFrontMatrix(ColorPosition position = Foreground,
                           bool applyMirrorAndReverse = true);
     void setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse = true);
+    void setbyFrontMatrixGradient(HsbColor from, HsbColor to,
+                                  bool applyMirrorAndReverse = true);
     void setbyMinuteArray(ColorPosition position = Foreground);
     void setbySecondArray(ColorPosition position = Foreground);
     void setbyColorMatrix(const ColorMatrix &matrix);
     void setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color);
+    void setBitmapSymbol(BitmapSymbol symbolNum, HsbColor from, HsbColor to);
     void setSingle(uint8_t wait);
     void setPixelForChar(uint8_t col, uint8_t row, uint8_t offsetCol,
                          uint8_t offsetRow, unsigned char unsigned_d1,

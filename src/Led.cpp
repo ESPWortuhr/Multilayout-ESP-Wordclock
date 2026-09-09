@@ -280,15 +280,35 @@ void Led::setPixel(uint8_t row, uint8_t col, HsbColor color) {
 
 //------------------------------------------------------------------------------
 
+/*
+ * Every mode except the two rainbows paints its lit pixels here - the seconds,
+ * the digital clock, the scrolling text, the plain colour - so this is where
+ * they pick up the gradient. The word clock reaches the strip through the
+ * render pipeline instead and is coloured there.
+ *
+ * Only the foreground ramps: the background is one colour by definition, and
+ * inverting the ramp behind the letters would be noise, not a gradient.
+ */
+
 void Led::setbyFrontMatrix(ColorPosition colorPosition,
                            bool applyMirrorAndReverse) {
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
     }
-    HsbColor displayedColor =
+    const HsbColor displayedColor =
         getColorbyPositionWithAppliedBrightness(colorPosition);
+    const bool ramp =
+        (colorPosition == Foreground) && colorStage.foregroundIsGradient();
+    const HsbColor rampEnd =
+        ramp ? getColorbyPositionWithAppliedBrightness(GradientEnd)
+             : displayedColor;
 
-    for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
+    const uint8_t rows = usedClockType->rowsWordMatrix();
+    for (uint8_t row = 0; row < rows; row++) {
+        const HsbColor rowColor =
+            ramp ? gradientColorAt(displayedColor, rampEnd, row, rows)
+                 : displayedColor;
+
         for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
             bool boolSetPixel = usedClockType->getFrontMatrixPixel(row, col);
             if (colorPosition == Background) {
@@ -296,7 +316,7 @@ void Led::setbyFrontMatrix(ColorPosition colorPosition,
             }
 
             if (boolSetPixel) {
-                setPixel(row, col, displayedColor);
+                setPixel(row, col, rowColor);
             } else if (colorPosition != Background) {
                 clearPixel(row, col);
             }
@@ -307,16 +327,32 @@ void Led::setbyFrontMatrix(ColorPosition colorPosition,
 //------------------------------------------------------------------------------
 
 void Led::setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse) {
+    setbyFrontMatrixGradient(color, color, applyMirrorAndReverse);
+}
+
+//------------------------------------------------------------------------------
+
+/*
+ * Callers that bring their own colours rather than reading them from the
+ * configuration - the symbol mode dims to effectBri, the firework picks a hue
+ * per rocket. Passing the same colour twice paints it flat.
+ */
+
+void Led::setbyFrontMatrixGradient(HsbColor from, HsbColor to,
+                                   bool applyMirrorAndReverse) {
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
     }
+    const bool ramp = (from.H != to.H) || (from.S != to.S) || (from.B != to.B);
 
-    for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
+    const uint8_t rows = usedClockType->rowsWordMatrix();
+    for (uint8_t row = 0; row < rows; row++) {
+        const HsbColor rowColor =
+            ramp ? gradientColorAt(from, to, row, rows) : from;
+
         for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
-            bool boolSetPixel = usedClockType->getFrontMatrixPixel(row, col);
-
-            if (boolSetPixel) {
-                setPixel(row, col, color);
+            if (usedClockType->getFrontMatrixPixel(row, col)) {
+                setPixel(row, col, rowColor);
             }
         }
     }
@@ -377,7 +413,7 @@ void Led::setbySecondArray(ColorPosition colorPosition) {
 
 //------------------------------------------------------------------------------
 
-void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color) {
+void Led::drawBitmapSymbol(BitmapSymbol symbolNum) {
     resetFrontMatrixBuffer();
     if (usedClockType->colsWordMatrix() < 11 ||
         usedClockType->rowsWordMatrix() < 10) {
@@ -409,8 +445,19 @@ void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color) {
             }
         }
     }
+}
 
-    setbyFrontMatrix(color);
+//------------------------------------------------------------------------------
+
+void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color) {
+    setBitmapSymbol(symbolNum, color, color);
+}
+
+//------------------------------------------------------------------------------
+
+void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor from, HsbColor to) {
+    drawBitmapSymbol(symbolNum);
+    setbyFrontMatrixGradient(from, to);
     show();
 }
 

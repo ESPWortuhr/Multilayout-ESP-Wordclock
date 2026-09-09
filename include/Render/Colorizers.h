@@ -95,36 +95,16 @@ class GradientColorizer : public IColorizer {
 public:
     void apply(ColorMatrix &matrix, const ColorContext &context,
                HueSequence &) override {
-        const uint16_t span =
-            (matrix.rows() > 1) ? static_cast<uint16_t>(matrix.rows() - 1) : 1;
-
         for (uint8_t row = 0; row < matrix.rows(); row++) {
+            const HsbColor rowColor = gradientColorAt(
+                context.foreground, context.gradientEnd, row, matrix.rows());
+
             for (uint8_t col = 0; col < matrix.cols(); col++) {
-                if (!matrix[row][col].isForeground()) {
-                    continue;
+                if (matrix[row][col].isForeground()) {
+                    matrix[row][col].changeRgb(rowColor);
                 }
-
-                const float position = static_cast<float>(row) / span;
-
-                matrix[row][col].changeRgb(
-                    blend(context.foreground, context.gradientEnd, position));
             }
         }
-    }
-
-private:
-    static HsbColor blend(const HsbColor &from, const HsbColor &to, float t) {
-        float deltaHue = to.H - from.H;
-        if (deltaHue > 0.5f) {
-            deltaHue -= 1.f;
-        } else if (deltaHue < -0.5f) {
-            deltaHue += 1.f;
-        }
-        HsbColor result;
-        result.H = fmodf(from.H + deltaHue * t + 1.f, 1.f);
-        result.S = from.S + (to.S - from.S) * t;
-        result.B = from.B + (to.B - from.B) * t;
-        return result;
     }
 };
 
