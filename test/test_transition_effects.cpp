@@ -160,8 +160,7 @@ void everyEffectTerminates() {
         {&rollDown, "RollDown", true},
         {&shiftLeft, "ShiftLeft", true},
         {&shiftRight, "ShiftRight", true},
-        // The laser leaves its beam behind on the last cell.
-        {&laser, "Laser", false},
+        {&laser, "Laser", true},
         {&balls, "Balls", true},
         {&matrixRain, "MatrixRain", true},
         // The snake restores the target face behind its tail, but the cells it
