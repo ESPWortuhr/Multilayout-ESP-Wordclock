@@ -77,6 +77,7 @@ bool hardwarePinsAreValid();
 void ensureI2CPins();
 void ensureTimezone();
 void ensureTransitionType();
+void ensureFireSettings();
 
 LedStripInterface *activeLedStrip = nullptr;
 
@@ -314,6 +315,18 @@ void ensureTransitionType() {
 }
 
 //------------------------------------------------------------------------------
+
+void ensureFireSettings() {
+    if (fireSettingsAreValid(G.fireCooling, G.fireSparking)) {
+        return;
+    }
+
+    Serial.println("Invalid fire settings in EEPROM, restoring defaults");
+    G.fireCooling = FIRE_COOLING_DEFAULT;
+    G.fireSparking = FIRE_SPARKING_DEFAULT;
+}
+
+//------------------------------------------------------------------------------
 // Start setup()
 //------------------------------------------------------------------------------
 
@@ -338,6 +351,7 @@ void setup() {
     ensureI2CPins();
     ensureTimezone();
     ensureTransitionType();
+    ensureFireSettings();
 
     //-------------------------------------
 
@@ -377,6 +391,8 @@ void setup() {
             HsbColor(fmodf(DEFAULT_HUE / 360.f + 0.33f, 1.f), 1.f, 0.5f);
         G.effectBri = 2;
         G.effectSpeed = 5;
+        G.fireCooling = FIRE_COOLING_DEFAULT;
+        G.fireSparking = FIRE_SPARKING_DEFAULT;
         G.client_nr = 0;
         G.secondVariant = SecondVariant::Off;
         G.secondsFrameLedCount = 0;

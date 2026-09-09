@@ -50,6 +50,7 @@ let TRANSLATION_HU = {
 			"scrollingtext": "Futó felirat",
 			"rainbow": "Szivárvány",
 			"color-change": "Szín megváltoztatása",
+			"fire": "Tűz",
 			"symbol": "Szimbólum"
 		},
 		"transition": {
@@ -89,6 +90,8 @@ let TRANSLATION_HU = {
 			"scrollingtext": "Futó felirat",
 			"save": "Mentés",
 			"speed": "Sebesség",
+			"fire-cooling": "Hűlés ",
+			"fire-sparking": "Szikrázás ",
 			"leds": "LED-ek száma",
 			"position": "Pozíció"
 		}

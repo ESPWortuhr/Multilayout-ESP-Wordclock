@@ -50,6 +50,7 @@ let TRANSLATION_RU = {
 			"scrollingtext": "Бегущий текст",
 			"rainbow": "Радуга",
 			"color-change": "Изменение цвета",
+			"fire": "Огонь",
 			"symbol": "Символ"
 		},
 		"animation": {
@@ -77,6 +78,8 @@ let TRANSLATION_RU = {
 			"scrollingtext": "Бегущий текст",
 			"save": "сохранять",
 			"speed": "Скорость ",
+			"fire-cooling": "Охлаждение ",
+			"fire-sparking": "Искры ",
 			"leds": "Количество светодиодов ",
 			"position": "Позиция "
 		}

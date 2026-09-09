@@ -50,6 +50,7 @@ let TRANSLATION_ES = {
 			"scrollingtext": "Texto en Ejecución",
 			"rainbow": "Arcoíris",
 			"color-change": "Cambio de color",
+			"fire": "Fuego",
 			"symbol": "Símbolo"
 		},
 		"transition": {
@@ -89,6 +90,8 @@ let TRANSLATION_ES = {
 			"scrollingtext": "Texto en Ejecución",
 			"save": "Ahorrar",
 			"speed": "Velocidad ",
+			"fire-cooling": "Enfriamiento ",
+			"fire-sparking": "Chispas ",
 			"leds": "Número de LEDs ",
 			"position": "Posición "
 		}

@@ -253,6 +253,9 @@ void Mqtt::processEffect(const JsonDocument &doc) {
         } else if (!strcmp("Rainbow", effect)) {
             G.prog = COMMAND_MODE_RAINBOW;
             effectChanged = true;
+        } else if (!strcmp("Fire", effect)) {
+            G.prog = COMMAND_MODE_FIRE;
+            effectChanged = true;
         } else if (!strcmp("Color", effect)) {
             G.prog = COMMAND_MODE_COLOR;
             effectChanged = true;
@@ -836,6 +839,9 @@ void Mqtt::sendState() {
         case COMMAND_MODE_RAINBOW:
             doc["effect"] = "Rainbow";
             break;
+        case COMMAND_MODE_FIRE:
+            doc["effect"] = "Fire";
+            break;
         case COMMAND_MODE_COLOR:
             doc["effect"] = "Color";
             break;
@@ -1015,6 +1021,7 @@ void Mqtt::sendDiscovery() {
         effectList.add("Scrollingtext");
         effectList.add("Rainbowcycle");
         effectList.add("Rainbow");
+        effectList.add("Fire");
         effectList.add("Color");
         effectList.add("Symbol");
     }

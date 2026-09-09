@@ -50,6 +50,7 @@ let TRANSLATION_NL = {
 			"scrollingtext": "Tekst",
 			"rainbow": "Regenboog",
 			"color-change": "Kleurverandering",
+			"fire": "Vuur",
 			"symbol": "Symbool"
 		},
 		"transition": {
@@ -89,6 +90,8 @@ let TRANSLATION_NL = {
 			"scrollingtext": "Tekst",
 			"save": "Opslaan",
 			"speed": "Snelheid ",
+			"fire-cooling": "Afkoeling ",
+			"fire-sparking": "Vonken ",
 			"leds": "Aantal LED's ",
 			"position": "Positie "
 		}

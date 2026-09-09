@@ -50,6 +50,7 @@ let TRANSLATION_DE_DE = {
 			"scrollingtext": "Laufschrift",
 			"rainbow": "Regenbogen",
 			"color-change": "Farbwechsel",
+			"fire": "Feuer",
 			"symbol": "Symbol"
 		},
 		"birthdays": {
@@ -112,6 +113,8 @@ let TRANSLATION_DE_DE = {
 			"scrollingtext": "Lauftext",
 			"save": "Speichern",
 			"speed": "Geschwindigkeit ",
+			"fire-cooling": "Abkühlung ",
+			"fire-sparking": "Funkenflug ",
 			"leds": "Anzahl LEDs ",
 			"position": "Position "
 		}

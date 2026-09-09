@@ -41,6 +41,7 @@ private:
     void rainbow();
     void rainbowCycle();
     void rainbowSpiralCycle();
+    void fire();
     bool getStaticScrollingTextInfo(const char *buf, StaticScrollingText &info);
     void displayStaticScrollingText(const char *buf,
                                     const StaticScrollingText &info);

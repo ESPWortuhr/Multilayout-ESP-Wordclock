@@ -110,6 +110,18 @@ struct Birthday {
     uint8_t month;
 };
 
+constexpr uint8_t FIRE_COOLING_MIN = 20;
+constexpr uint8_t FIRE_COOLING_MAX = 120;
+constexpr uint8_t FIRE_COOLING_DEFAULT = 65;
+constexpr uint8_t FIRE_SPARKING_MIN = 40;
+constexpr uint8_t FIRE_SPARKING_MAX = 220;
+constexpr uint8_t FIRE_SPARKING_DEFAULT = 120;
+
+inline bool fireSettingsAreValid(uint8_t cooling, uint8_t sparking) {
+    return (cooling >= FIRE_COOLING_MIN) && (cooling <= FIRE_COOLING_MAX) &&
+           (sparking >= FIRE_SPARKING_MIN) && (sparking <= FIRE_SPARKING_MAX);
+}
+
 constexpr uint8_t HARDWARE_PIN_DISABLED = UINT8_MAX;
 
 struct HardwarePins {
@@ -263,6 +275,8 @@ struct GLOBAL {
     char timezone[PAYLOAD_LENGTH];
     uint8_t i2cSdaPin;
     uint8_t i2cSclPin;
+    uint8_t fireCooling;
+    uint8_t fireSparking;
 };
 extern GLOBAL G;
 
@@ -350,6 +364,7 @@ enum CommandWords : uint8_t {
     COMMAND_MODE_COLOR = 6,
     COMMAND_MODE_DIGITAL_CLOCK = 7,
     COMMAND_MODE_SYMBOL = 8,
+    COMMAND_MODE_FIRE = 9,
     COMMAND_MODE_TRANSITION = 10,
 
     PLACEHOLDER_MAX_MODE = 19,
@@ -385,6 +400,7 @@ enum CommandWords : uint8_t {
     COMMAND_SET_TIMEZONE = 108,
     COMMAND_SET_COLORIZE = 109,
     COMMAND_SET_SECONDS_FRAME = 110,
+    COMMAND_SET_FIRE = 111,
 
     COMMAND_SPEED = 152,
 

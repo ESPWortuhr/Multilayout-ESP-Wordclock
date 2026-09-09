@@ -50,6 +50,7 @@ let TRANSLATION_EN_US = {
 			"scrollingtext": "Scrollingtext",
 			"rainbow": "Rainbow",
 			"color-change": "Color Change",
+			"fire": "Fire",
 			"symbol": "Symbol"
 		},
 		"birthdays": {
@@ -112,6 +113,8 @@ let TRANSLATION_EN_US = {
 			"scrollingtext": "Scrolling text",
 			"save": "Save",
 			"speed": "Speed ",
+			"fire-cooling": "Cooling ",
+			"fire-sparking": "Sparking ",
 			"leds": "Number of LEDs ",
 			"position": "Position "
 		}

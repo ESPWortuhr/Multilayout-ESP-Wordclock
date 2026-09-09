@@ -50,6 +50,8 @@ let hsb = [
 let colorPosition = 0;
 let effectBri = 2;
 let effectSpeed = 10;
+let fireCooling = 65;
+let fireSparking = 120;
 let langVar = [0, 0, 0, 0, 0];
 let layVar = [0, 0, 0, 0, 0, 0];
 let itIsVar = 0;
@@ -76,6 +78,7 @@ const CMD = {
 	MODE_COLOR: 6,
 	MODE_DIGITAL_CLOCK: 7,
 	MODE_SYMBOL: 8,
+	MODE_FIRE: 9,
 	MODE_TRANSITION: 10,
 
 	// Settings
@@ -109,6 +112,7 @@ const CMD = {
 	SET_TIMEZONE: 108,
 	SET_COLORIZE: 109,
 	SET_SECONDS_FRAME: 110,
+	SET_FIRE: 111,
 	SPEED: 152,
 
 	// Requests
@@ -137,17 +141,19 @@ MODE_TO_INPUT_ID.set(CMD.MODE_RAINBOW, "mode-change"); // Color change
 MODE_TO_INPUT_ID.set(CMD.MODE_COLOR, "mode-color");
 MODE_TO_INPUT_ID.set(CMD.MODE_DIGITAL_CLOCK, "mode-digital-clock");
 MODE_TO_INPUT_ID.set(CMD.MODE_SYMBOL, "mode-symbol");
+MODE_TO_INPUT_ID.set(CMD.MODE_FIRE, "mode-fire");
 MODE_TO_INPUT_ID.set(CMD.MODE_TRANSITION, "mode-wordclock");
 
 const MODE_CONTROL_STATE = {
-	"mode-wordclock": { cmd: CMD.MODE_WORD_CLOCK, bri: false, speed: false, txt: false, symbol: false },
-	"mode-seconds": { cmd: CMD.MODE_SECONDS, bri: false, speed: false, txt: false, symbol: false },
-	"mode-scrollingtext": { cmd: CMD.MODE_SCROLLINGTEXT, bri: false, speed: true, txt: true, symbol: false },
-	"mode-rainbow": { cmd: CMD.MODE_RAINBOWCYCLE, bri: true, speed: true, txt: false, symbol: false },
-	"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false, symbol: false },
-	"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false, symbol: false },
-	"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false, symbol: false },
-	"mode-symbol": { cmd: CMD.MODE_SYMBOL, bri: true, speed: false, txt: false, symbol: true }
+	"mode-wordclock": { cmd: CMD.MODE_WORD_CLOCK, bri: false, speed: false, txt: false, symbol: false, fire: false },
+	"mode-seconds": { cmd: CMD.MODE_SECONDS, bri: false, speed: false, txt: false, symbol: false, fire: false },
+	"mode-scrollingtext": { cmd: CMD.MODE_SCROLLINGTEXT, bri: false, speed: true, txt: true, symbol: false, fire: false },
+	"mode-rainbow": { cmd: CMD.MODE_RAINBOWCYCLE, bri: true, speed: true, txt: false, symbol: false, fire: false },
+	"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false, symbol: false, fire: false },
+	"mode-fire": { cmd: CMD.MODE_FIRE, bri: true, speed: true, txt: false, symbol: false, fire: true },
+	"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false, symbol: false, fire: false },
+	"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false, symbol: false, fire: false },
+	"mode-symbol": { cmd: CMD.MODE_SYMBOL, bri: true, speed: false, txt: false, symbol: true, fire: false }
 };
 
 // data that gets send back to the esp
@@ -188,6 +194,8 @@ function initConfigValues() {
 	];
 	effectBri = 2;
 	effectSpeed = 10;
+	fireCooling = 65;
+	fireSparking = 120;
 	langVar = [0, 0, 0, 0, 0];
 	layVar = [0, 0, 0, 0, 0, 0];
 	itIsVar = 0;
@@ -404,6 +412,11 @@ function initWebsocket() {
 				document.getElementById("it-is-variant").value = data.itIsVariant;
 				document.getElementById("slider-brightness").value = data.effectBri;
 				document.getElementById("slider-speed").value = data.effectSpeed;
+				fireCooling = data.fireCooling;
+				fireSparking = data.fireSparking;
+				document.getElementById("slider-fire-cooling").value = fireCooling;
+				document.getElementById("slider-fire-sparking").value = fireSparking;
+				setSliders();
 				document.getElementById("show-seconds").value = data.secondVariant;
 				document.getElementById("show-minutes").value = data.minuteVariant;
 				updateMinuteOptions(data.supportedMinuteVariants);
@@ -596,6 +609,14 @@ function setSliders() {
 	if (briValue) briValue.textContent = effectBri;
 	const speedValue = document.getElementById("slider-speed-value");
 	if (speedValue) speedValue.textContent = effectSpeed;
+	const coolingValue = document.getElementById("slider-fire-cooling-value");
+	if (coolingValue) coolingValue.textContent = fireCooling;
+	const sparkingValue = document.getElementById("slider-fire-sparking-value");
+	if (sparkingValue) sparkingValue.textContent = fireSparking;
+}
+
+function sendFireData(persist) {
+	sendCmd(CMD.SET_FIRE, nstr(fireCooling) + nstr(fireSparking) + nstr(persist ? 1 : 0));
 }
 
 function setSelectedSymbol(symbolValue) {
@@ -611,7 +632,8 @@ function getSelectedModeControlState() {
 function setModeSpecificControls(selected) {
 	document.querySelectorAll(".brightness").forEach(el => { el.style.display = selected.bri ? "block" : "none"; });
 	document.querySelectorAll(".speed").forEach(el => { el.style.display = selected.speed ? "block" : "none"; });
-	document.querySelectorAll(".functions-settings").forEach(el => { el.style.display = (selected.bri || selected.speed) ? "block" : "none"; });
+	document.querySelectorAll(".fire").forEach(el => { el.style.display = selected.fire ? "block" : "none"; });
+	document.querySelectorAll(".functions-settings").forEach(el => { el.style.display = (selected.bri || selected.speed || selected.fire) ? "block" : "none"; });
 	document.querySelectorAll(".text").forEach(el => { el.style.display = selected.txt ? "block" : "none"; });
 	document.querySelectorAll(".symbol").forEach(el => { el.style.display = selected.symbol ? "block" : "none"; });
 }
@@ -871,11 +893,27 @@ document.addEventListener("DOMContentLoaded", function() {
 				effectSpeed = event.target.value;
 				sendCmd(CMD.SPEED, nstr(effectSpeed));
 			}
+			if (id === "slider-fire-cooling" || id === "slider-fire-sparking") {
+				fireCooling = document.getElementById("slider-fire-cooling").value;
+				fireSparking = document.getElementById("slider-fire-sparking").value;
+				sendFireData(false);
+			}
 			setSliders();
 
 			sliderTimeout = setTimeout(function() {
 				sliderTimeout = null;
 			}, 20);
+		});
+	});
+
+	["slider-fire-cooling", "slider-fire-sparking"].forEach(id => {
+		const slider = document.getElementById(id);
+		if (!slider) return;
+		slider.addEventListener("change", function() {
+			fireCooling = document.getElementById("slider-fire-cooling").value;
+			fireSparking = document.getElementById("slider-fire-sparking").value;
+			setSliders();
+			sendFireData(true);
 		});
 	});
 

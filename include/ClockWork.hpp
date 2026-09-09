@@ -137,8 +137,9 @@ void ClockWork::nextHardwareButtonMode() {
     static const uint8_t modes[] = {
         COMMAND_MODE_WORD_CLOCK,    COMMAND_MODE_SECONDS,
         COMMAND_MODE_SCROLLINGTEXT, COMMAND_MODE_RAINBOWCYCLE,
-        COMMAND_MODE_RAINBOW,       COMMAND_MODE_COLOR,
-        COMMAND_MODE_DIGITAL_CLOCK, COMMAND_MODE_SYMBOL};
+        COMMAND_MODE_RAINBOW,       COMMAND_MODE_FIRE,
+        COMMAND_MODE_COLOR,         COMMAND_MODE_DIGITAL_CLOCK,
+        COMMAND_MODE_SYMBOL};
 
     uint8_t nextMode = modes[0];
     for (uint8_t i = 0; i < sizeof(modes) / sizeof(modes[0]); i++) {
@@ -482,6 +483,83 @@ void ClockWork::rainbowSpiralCycle() {
     if (hue >= 360) {
         hue = 0;
     }
+}
+
+//------------------------------------------------------------------------------
+
+namespace {
+
+// Fire2012 by Mark Kriegsman, July 2012 - one simulation per matrix column.
+constexpr uint8_t FIRE_SPARK_ROWS = 3;
+
+uint8_t coolCell(uint8_t heat, uint8_t amount) {
+    return (heat > amount) ? (heat - amount) : 0;
+}
+
+uint8_t igniteCell(uint8_t heat, uint8_t amount) {
+    uint16_t sum = static_cast<uint16_t>(heat) + amount;
+    return (sum > 255) ? 255 : static_cast<uint8_t>(sum);
+}
+
+HsbColor heatColor(uint8_t heat, float brightness) {
+    constexpr float yellow = 60.f / 360.f;
+
+    if (heat < 85) {
+        return HsbColor(0.f, 1.f, brightness * heat / 85.f);
+    }
+    if (heat < 170) {
+        return HsbColor(yellow * (heat - 85) / 85.f, 1.f, brightness);
+    }
+    return HsbColor(yellow, 1.f - (heat - 170) / 85.f, brightness);
+}
+
+} // namespace
+
+void ClockWork::fire() {
+    static uint8_t heat[MAX_ROW_SIZE][MAX_COL_SIZE];
+    static uint8_t heatRows = 0;
+    static uint8_t heatCols = 0;
+
+    const uint8_t rows = usedClockType->rowsWordMatrix();
+    const uint8_t cols = usedClockType->colsWordMatrix();
+
+    if (rows == 0 || cols == 0) {
+        return;
+    }
+
+    if (rows != heatRows || cols != heatCols) {
+        memset(heat, 0, sizeof(heat));
+        heatRows = rows;
+        heatCols = cols;
+    }
+
+    const uint8_t cooling =
+        static_cast<uint8_t>((G.fireCooling * 10u) / rows) + 2u;
+    const uint8_t sparkRows = (rows < FIRE_SPARK_ROWS) ? rows : FIRE_SPARK_ROWS;
+    const float brightness = G.effectBri / 100.f;
+
+    for (uint8_t col = 0; col < cols; col++) {
+        for (uint8_t cell = 0; cell < rows; cell++) {
+            heat[cell][col] = coolCell(heat[cell][col], random(cooling));
+        }
+
+        for (uint8_t cell = rows - 1; cell >= 2; cell--) {
+            uint16_t below = heat[cell - 1][col] + 2u * heat[cell - 2][col];
+            heat[cell][col] = static_cast<uint8_t>(below / 3u);
+        }
+
+        if (random(256) < G.fireSparking) {
+            const uint8_t cell = static_cast<uint8_t>(random(sparkRows));
+            heat[cell][col] = igniteCell(heat[cell][col], random(160, 256));
+        }
+
+        for (uint8_t cell = 0; cell < rows; cell++) {
+            led.setPixel(static_cast<uint8_t>(rows - 1 - cell), col,
+                         heatColor(heat[cell][col], brightness));
+        }
+    }
+
+    led.show();
 }
 
 //------------------------------------------------------------------------------
@@ -1643,6 +1721,8 @@ void ClockWork::loop(struct tm &tm) {
         config["hasSpecialWordHappyBirthday"] =
             usedClockType->hasSpecialWordHappyBirthday();
         config["numOfRows"] = usedClockType->rowsWordMatrix();
+        config["fireCooling"] = G.fireCooling;
+        config["fireSparking"] = G.fireSparking;
 
         sendJsonToClient(G.client_nr, config);
         break;
@@ -1892,6 +1972,15 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
+    case COMMAND_SET_FIRE: {
+        if (G.param1) {
+            eeprom::write();
+            Serial.printf("Fire: cooling %u, sparking %u\n", G.fireCooling,
+                          G.fireSparking);
+        }
+        break;
+    }
+
     case COMMAND_SET_HOSTNAME: {
         Serial.print("Hostname: ");
         Serial.println(G.hostname);
@@ -1963,6 +2052,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_SCROLLINGTEXT:
     case COMMAND_MODE_RAINBOWCYCLE:
     case COMMAND_MODE_RAINBOW:
+    case COMMAND_MODE_FIRE:
     case COMMAND_MODE_SYMBOL: {
         if (G.progInit) {
             countMillisSpeed = (11u - G.effectSpeed) * 30u;
@@ -1981,6 +2071,10 @@ void ClockWork::loop(struct tm &tm) {
             }
             case COMMAND_MODE_RAINBOW: {
                 rainbow();
+                break;
+            }
+            case COMMAND_MODE_FIRE: {
+                fire();
                 break;
             }
             case COMMAND_MODE_SYMBOL: {

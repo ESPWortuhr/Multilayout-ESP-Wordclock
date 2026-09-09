@@ -325,8 +325,11 @@ a:visited:hover {
     gap: .5em;
 }
 
+.mode-form {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 @media (width >= 41em) {
-    .mode-form,
     .symbol-form {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
@@ -956,6 +959,7 @@ input:checked + .slider::before {
 
 .brightness,
 .speed,
+.fire,
 .functions-settings,
 .leds,
 .position,

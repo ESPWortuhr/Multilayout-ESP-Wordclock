@@ -31,6 +31,7 @@ namespace {
 
 constexpr size_t COLOR_PAYLOAD_LENGTH = 21;
 constexpr size_t EFFECT_PAYLOAD_LENGTH = 27;
+constexpr size_t FIRE_PAYLOAD_LENGTH = 12;
 
 uint32_t split(const uint8_t *payload, uint8_t start, uint8_t length = 3) {
     char buf[16] = {0};
@@ -170,7 +171,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_RAINBOW:
-        case COMMAND_MODE_RAINBOWCYCLE: {
+        case COMMAND_MODE_RAINBOWCYCLE:
+        case COMMAND_MODE_FIRE: {
             if ((G.prog != command) ||
                 compareEffBriAndSpeedToOld(payload, length)) {
                 G.progInit = true;
@@ -290,6 +292,31 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             const uint32_t ledCount = split(payload, 3);
             G.param1 = static_cast<uint8_t>(
                 min(ledCount, static_cast<uint32_t>(MAX_SECONDS_FRAME_LED_COUNT)));
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_FIRE: {
+            if (length < FIRE_PAYLOAD_LENGTH) {
+                Serial.println("Fire command ignored payload is incomplete");
+                break;
+            }
+
+            const uint32_t cooling = split(payload, 3);
+            const uint32_t sparking = split(payload, 6);
+
+            if (cooling < FIRE_COOLING_MIN || cooling > FIRE_COOLING_MAX ||
+                sparking < FIRE_SPARKING_MIN || sparking > FIRE_SPARKING_MAX) {
+                Serial.printf("Ignoring invalid fire settings: %lu %lu\n",
+                              static_cast<unsigned long>(cooling),
+                              static_cast<unsigned long>(sparking));
+                break;
+            }
+
+            G.fireCooling = static_cast<uint8_t>(cooling);
+            G.fireSparking = static_cast<uint8_t>(sparking);
+            G.param1 = split(payload, 9) ? 1 : 0;
             break;
         }
 
