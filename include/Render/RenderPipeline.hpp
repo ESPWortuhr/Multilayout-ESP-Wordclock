@@ -42,6 +42,10 @@ void RenderPipeline::resize(uint8_t rows, uint8_t cols) {
     }
     if (m_transition != nullptr) {
         m_transition->resize(rows, cols);
+        if (!m_transition->valid()) {
+            releaseTransition();
+            m_allocationFailed = true;
+        }
     }
     init();
 }
