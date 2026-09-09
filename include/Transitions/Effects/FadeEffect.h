@@ -14,13 +14,11 @@ public:
         }
 
         const float progress = static_cast<float>(context.phase) / frames;
-        RgbColor color;
 
         for (uint8_t col = 0; col < context.out.cols(); col++) {
             for (uint8_t row = 0; row < context.out.rows(); row++) {
-                color = color.LinearBlend(context.from[row][col],
-                                          context.to[row][col], progress);
-                context.out[row][col].changeRgb(color);
+                context.out[row][col].changeRgb(linearBlendCell(
+                    context.from[row][col], context.to[row][col], progress));
             }
         }
 

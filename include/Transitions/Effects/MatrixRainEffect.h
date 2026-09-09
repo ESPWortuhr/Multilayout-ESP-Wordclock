@@ -52,12 +52,11 @@ public:
         }
 
         const float progress = static_cast<float>(context.phase) / frames;
-        RgbfColor fadeColor;
         RgbaColor rainColor;
 
         for (uint8_t col = 0; col < cols; col++) {
             for (uint8_t row = 0; row < rows; row++) {
-                fadeColor = fadeColor.LinearBlend(
+                const RgbColor fadeColor = linearBlendCell(
                     context.from[row][col], context.to[row][col], progress);
                 rainColor = m_rain[col].get(row);
                 rainColor = rainColor.LinearBlend(fadeColor, rainColor,

@@ -87,3 +87,9 @@ inline uint16_t transitionDelayForFrames(uint16_t frames,
 
     return (pause == 0) ? 1 : static_cast<uint16_t>(pause);
 }
+
+inline RgbColor linearBlendCell(const RgbfColor &from, const RgbfColor &to,
+                                float progress) {
+    RgbColor blend;
+    return blend.LinearBlend(from, to, progress);
+}

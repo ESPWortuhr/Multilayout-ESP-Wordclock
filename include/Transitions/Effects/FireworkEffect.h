@@ -141,7 +141,7 @@ private:
                 }
 
                 // blend from -> to
-                RgbColor color = color.LinearBlend(
+                RgbColor color = linearBlendCell(
                     context.from[row][col], context.to[row][col], fading);
 
                 if (overlay && !lastSubPhase) {
