@@ -33,20 +33,28 @@ constexpr size_t COLOR_PAYLOAD_LENGTH = 21;
 constexpr size_t EFFECT_PAYLOAD_LENGTH = 27;
 constexpr size_t FIRE_PAYLOAD_LENGTH = 12;
 
-uint32_t split(const uint8_t *payload, uint8_t start, uint8_t length = 3) {
-    char buf[16] = {0};
+uint32_t split(const uint8_t *payload, size_t payloadLength, uint8_t start,
+               uint8_t length = 3) {
     if (length > 15)
         length = 15;
+    if (static_cast<size_t>(start) + length > payloadLength)
+        return 0;
 
+    char buf[16] = {0};
     memcpy(buf, payload + start, length);
     return strtoul(buf, nullptr, 10);
 }
 
 //------------------------------------------------------------------------------
 
-void payloadTextHandling(const uint8_t *payload, char *text,
-                         uint8_t start = 3) {
+void payloadTextHandling(const uint8_t *payload, size_t payloadLength,
+                         char *text, uint8_t start = 3) {
     uint8_t len = PAYLOAD_LENGTH - 1;
+    if (static_cast<size_t>(start) + len > payloadLength) {
+        text[0] = '\0';
+        return;
+    }
+
     memcpy(text, payload + start, len);
     text[len] = '\0';
     for (int8_t i = len - 1; i >= 0; i--) {
@@ -64,8 +72,8 @@ bool compareEffBriAndSpeedToOld(uint8_t *payload, size_t length) {
         return false;
     }
 
-    return ((G.effectBri != split(payload, 21)) ||
-            (G.effectSpeed != split(payload, 24)));
+    return ((G.effectBri != split(payload, length, 21)) ||
+            (G.effectSpeed != split(payload, length, 24)));
 }
 
 //------------------------------------------------------------------------------
@@ -76,12 +84,12 @@ bool parseColor(uint8_t *payload, size_t length) {
         return false;
     }
 
-    uint32_t position = split(payload, 3);
-    uint32_t hue = split(payload, 6);
-    uint32_t saturation = split(payload, 9);
-    uint32_t value = split(payload, 12);
-    uint32_t effectBrightness = split(payload, 15);
-    uint32_t effectSpeed = split(payload, 18);
+    uint32_t position = split(payload, length, 3);
+    uint32_t hue = split(payload, length, 6);
+    uint32_t saturation = split(payload, length, 9);
+    uint32_t value = split(payload, length, 12);
+    uint32_t effectBrightness = split(payload, length, 15);
+    uint32_t effectSpeed = split(payload, length, 18);
 
     if (position > GradientEnd || hue > 360 || saturation > 100 ||
         value > 100 || effectBrightness > 100 || effectSpeed > 100) {
@@ -132,7 +140,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             break;
         }
 
-        uint8_t command = split(payload, 0);
+        uint8_t command = split(payload, length, 0);
         G.param1 = 0;
 
         switch (command) {
@@ -207,23 +215,23 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_MODE_TRANSITION: {
             G.progInit = true;
 
-            const uint32_t transitionType = split(payload, 3);
+            const uint32_t transitionType = split(payload, length, 3);
             if (isValidTransitionType(transitionType)) {
                 G.transitionType = transitionType;
             } else {
                 Serial.printf("Ignoring invalid transition type: %lu\n",
                               static_cast<unsigned long>(transitionType));
             }
-            G.transitionDuration = split(payload, 6);
-            G.transitionSpeed = split(payload, 9);
-            G.transitionDemo = split(payload, 12);
+            G.transitionDuration = split(payload, length, 6);
+            G.transitionSpeed = split(payload, length, 9);
+            G.transitionDemo = split(payload, length, 12);
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_COLORIZE: {
-            const uint32_t mode = split(payload, 3);
+            const uint32_t mode = split(payload, length, 3);
             if (mode <= WORD_RANDOM) {
                 G.colorize = static_cast<uint8_t>(mode);
             }
@@ -233,7 +241,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SPEED: {
-            G.effectSpeed = split(payload, 3);
+            G.effectSpeed = split(payload, length, 3);
             break;
         }
 
@@ -252,7 +260,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_TIME: {
             struct timeval tv;
-            tv.tv_sec = split(payload, 6, 16);
+            tv.tv_sec = split(payload, length, 6, 16);
             tv.tv_usec = 0;
             settimeofday(&tv, nullptr);
             break;
@@ -261,7 +269,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_HOSTNAME: {
-            payloadTextHandling(payload, G.hostname);
+            payloadTextHandling(payload, length, G.hostname);
             break;
         }
 
@@ -270,14 +278,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_SETTING_SECOND: {
             G.progInit = true;
 
-            G.secondVariant = static_cast<SecondVariant>(split(payload, 3));
+            G.secondVariant =
+                static_cast<SecondVariant>(split(payload, length, 3));
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_MINUTE: {
-            G.minuteVariant = static_cast<MinuteVariant>(split(payload, 3));
+            G.minuteVariant =
+                static_cast<MinuteVariant>(split(payload, length, 3));
             break;
         }
 
@@ -289,7 +299,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             // count still in place when it clears the frame, so that
             // shrinking the count doesn't leave the now out-of-range LEDs
             // permanently lit.
-            const uint32_t ledCount = split(payload, 3);
+            const uint32_t ledCount = split(payload, length, 3);
             G.param1 = static_cast<uint8_t>(
                 min(ledCount, static_cast<uint32_t>(MAX_SECONDS_FRAME_LED_COUNT)));
             break;
@@ -303,8 +313,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                 break;
             }
 
-            const uint32_t cooling = split(payload, 3);
-            const uint32_t sparking = split(payload, 6);
+            const uint32_t cooling = split(payload, length, 3);
+            const uint32_t sparking = split(payload, length, 6);
 
             if (cooling < FIRE_COOLING_MIN || cooling > FIRE_COOLING_MAX ||
                 sparking < FIRE_SPARKING_MIN || sparking > FIRE_SPARKING_MAX) {
@@ -316,17 +326,17 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             G.fireCooling = static_cast<uint8_t>(cooling);
             G.fireSparking = static_cast<uint8_t>(sparking);
-            G.param1 = split(payload, 9) ? 1 : 0;
+            G.param1 = split(payload, length, 9) ? 1 : 0;
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_AUTO_BRIGHT: {
-            G.autoBrightEnabled = split(payload, 3);
-            G.autoBrightMin = split(payload, 6);
-            G.autoBrightMax = split(payload, 9);
-            G.autoBrightPeak = split(payload, 12, 4);
+            G.autoBrightEnabled = split(payload, length, 3);
+            G.autoBrightMin = split(payload, length, 6);
+            G.autoBrightMax = split(payload, length, 9);
+            G.autoBrightPeak = split(payload, length, 12, 4);
             G.param1 = 1;
             if (G.autoBrightMin < 0)
                 G.autoBrightMin = 0;
@@ -347,63 +357,65 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_IT_IS_VARIANT: {
-            G.itIsVariant = static_cast<ItIsVariant>(split(payload, 3));
+            G.itIsVariant = static_cast<ItIsVariant>(split(payload, length, 3));
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_LANGUAGE_VARIANT: {
-            G.languageVariant[ItIs15] = split(payload, 3);
-            G.languageVariant[ItIs20] = split(payload, 6);
-            G.languageVariant[ItIs40] = split(payload, 9);
-            G.languageVariant[ItIs45] = split(payload, 12);
-            G.languageVariant[EN_ShowAQuarter] = split(payload, 15);
+            G.languageVariant[ItIs15] = split(payload, length, 3);
+            G.languageVariant[ItIs20] = split(payload, length, 6);
+            G.languageVariant[ItIs40] = split(payload, length, 9);
+            G.languageVariant[ItIs45] = split(payload, length, 12);
+            G.languageVariant[EN_ShowAQuarter] = split(payload, length, 15);
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_LAYOUT_VARIANT: {
-            G.layoutVariant[ReverseMinDirection] = split(payload, 3);
-            G.layoutVariant[MirrorVertical] = split(payload, 6);
-            G.layoutVariant[MirrorHorizontal] = split(payload, 9);
-            G.layoutVariant[FlipHorzVert] = split(payload, 12);
-            G.layoutVariant[ExtraLedPerRow] = split(payload, 15);
-            G.layoutVariant[MeanderRows] = split(payload, 18);
+            G.layoutVariant[ReverseMinDirection] = split(payload, length, 3);
+            G.layoutVariant[MirrorVertical] = split(payload, length, 6);
+            G.layoutVariant[MirrorHorizontal] = split(payload, length, 9);
+            G.layoutVariant[FlipHorzVert] = split(payload, length, 12);
+            G.layoutVariant[ExtraLedPerRow] = split(payload, length, 15);
+            G.layoutVariant[MeanderRows] = split(payload, length, 18);
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_MQTT: {
-            uint8_t newState = split(payload, 3);
+            uint8_t newState = split(payload, length, 3);
 
             if (newState && !G.mqtt.state) {
                 G.progInit = true;
             }
 
             G.mqtt.state = newState;
-            G.mqtt.port = split(payload, 6, 5);
+            G.mqtt.port = split(payload, length, 6, 5);
             uint8_t index_start = 11;
-            payloadTextHandling(payload, G.mqtt.serverAdress, index_start);
+            payloadTextHandling(payload, length, G.mqtt.serverAdress,
+                                index_start);
             index_start += PAYLOAD_LENGTH;
-            payloadTextHandling(payload, G.mqtt.user, index_start);
+            payloadTextHandling(payload, length, G.mqtt.user, index_start);
 
             // check if submitted password has changed compared to masked
             // password
             index_start += PAYLOAD_LENGTH;
             char passSubmitted[sizeof(G.mqtt.password)] = {0};
-            payloadTextHandling(payload, passSubmitted, index_start);
+            payloadTextHandling(payload, length, passSubmitted, index_start);
             if (!sensitive::matchesMaskedValue(passSubmitted,
                                                G.mqtt.password)) {
-                payloadTextHandling(payload, G.mqtt.password, index_start);
+                payloadTextHandling(payload, length, G.mqtt.password,
+                                    index_start);
             }
 
             index_start += PAYLOAD_LENGTH;
-            payloadTextHandling(payload, G.mqtt.clientId, index_start);
+            payloadTextHandling(payload, length, G.mqtt.clientId, index_start);
             index_start += PAYLOAD_LENGTH;
-            payloadTextHandling(payload, G.mqtt.topic, index_start);
+            payloadTextHandling(payload, length, G.mqtt.topic, index_start);
             break;
         }
 
@@ -413,8 +425,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             time_t old = time(nullptr);
             struct tm tm;
             localtime_r(&old, &tm);
-            tm.tm_hour = split(payload, 3);
-            tm.tm_min = split(payload, 6);
+            tm.tm_hour = split(payload, length, 3);
+            tm.tm_min = split(payload, length, 6);
             tm.tm_sec = 0;
             struct timeval tv;
             tv.tv_sec = mktime(&tm);
@@ -427,12 +439,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_HARDWARE_PINS: {
-            G.hardwarePins.led = split(payload, 3);
-            G.hardwarePins.powerButton = split(payload, 6);
-            G.hardwarePins.modeButton = split(payload, 9);
-            G.hardwarePins.speedButton = split(payload, 12);
-            G.i2cSdaPin = split(payload, 15);
-            G.i2cSclPin = split(payload, 18);
+            G.hardwarePins.led = split(payload, length, 3);
+            G.hardwarePins.powerButton = split(payload, length, 6);
+            G.hardwarePins.modeButton = split(payload, length, 9);
+            G.hardwarePins.speedButton = split(payload, length, 12);
+            G.i2cSdaPin = split(payload, length, 15);
+            G.i2cSclPin = split(payload, length, 18);
             break;
         }
 
@@ -441,8 +453,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_BIRTHDAYS: {
 
             for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
-                G.birthday[i].month = split(payload, 3 + i * 5, 2);
-                G.birthday[i].day = split(payload, 6 + i * 5, 2);
+                G.birthday[i].month = split(payload, length, 3 + i * 5, 2);
+                G.birthday[i].day = split(payload, length, 6 + i * 5, 2);
             }
             break;
         }
@@ -450,7 +462,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_SYMBOL: {
-            G.bitmapSymbol = static_cast<BitmapSymbol>(split(payload, 3));
+            G.bitmapSymbol =
+                static_cast<BitmapSymbol>(split(payload, length, 3));
             if (G.bitmapSymbol >= BitmapSymbol::MAX_BITMAP_SYMBOLS) {
                 G.bitmapSymbol = BitmapSymbol::HEART;
             }
@@ -462,7 +475,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_COLORTYPE: {
             G.progInit = true;
 
-            G.param1 = split(payload, 3);
+            G.param1 = split(payload, length, 3);
             break;
         }
 
@@ -471,21 +484,21 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_BUILDTYPE: {
             G.progInit = true;
 
-            G.param1 = split(payload, 3);
+            G.param1 = split(payload, length, 3);
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_WHITETYPE: {
-            G.wType = static_cast<WhiteType>(split(payload, 3));
+            G.wType = static_cast<WhiteType>(split(payload, length, 3));
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_CLOCK_TYPE: {
-            uint32_t clockTypeDef = split(payload, 3);
+            uint32_t clockTypeDef = split(payload, length, 3);
             if (clockTypeDef <= UINT8_MAX &&
                 isValidClockTypeDef(static_cast<uint8_t>(clockTypeDef))) {
                 G.clockTypeDef = static_cast<uint8_t>(clockTypeDef);
@@ -540,46 +553,46 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_BRIGHTNESS: {
-            G.h6 = split(payload, 3);
-            G.h8 = split(payload, 6);
-            G.h12 = split(payload, 9);
-            G.h16 = split(payload, 12);
-            G.h18 = split(payload, 15);
-            G.h20 = split(payload, 18);
-            G.h22 = split(payload, 21);
-            G.h24 = split(payload, 24);
-            G.effectBri = split(payload, 27);
+            G.h6 = split(payload, length, 3);
+            G.h8 = split(payload, length, 6);
+            G.h12 = split(payload, length, 9);
+            G.h16 = split(payload, length, 12);
+            G.h18 = split(payload, length, 15);
+            G.h20 = split(payload, length, 18);
+            G.h22 = split(payload, length, 21);
+            G.h24 = split(payload, length, 24);
+            G.effectBri = split(payload, length, 27);
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_SCROLLINGTEXT: {
-            payloadTextHandling(payload, G.scrollingText);
+            payloadTextHandling(payload, length, G.scrollingText);
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_TIMESERVER: {
-            payloadTextHandling(payload, G.timeserver);
+            payloadTextHandling(payload, length, G.timeserver);
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_TIMEZONE: {
-            payloadTextHandling(payload, G.timezone);
+            payloadTextHandling(payload, length, G.timezone);
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_BOOT: {
-            G.bootLedBlink = split(payload, 3);
-            G.bootLedSweep = split(payload, 6);
-            G.bootShowWifi = split(payload, 9);
-            G.bootShowIP = split(payload, 12);
+            G.bootLedBlink = split(payload, length, 3);
+            G.bootLedSweep = split(payload, length, 6);
+            G.bootShowWifi = split(payload, length, 9);
+            G.bootShowIP = split(payload, length, 12);
             break;
         }
             //------------------------------------------------------------------------------
@@ -595,8 +608,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_REQUEST_I2C_SCAN: {
             G.client_nr = num;
-            i2cScanSdaPin = split(payload, 3);
-            i2cScanSclPin = split(payload, 6);
+            i2cScanSdaPin = split(payload, length, 3);
+            i2cScanSclPin = split(payload, length, 6);
             break;
         }
 
@@ -615,7 +628,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_REQUEST_AUTO_BRIGHT: {
-            // G.param1 = split(payload, 3);
+            // G.param1 = split(payload, length, 3);
             G.client_nr = num;
             break;
         }
