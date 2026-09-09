@@ -10,8 +10,6 @@
 #include <Arduino.h>
 #include <BH1750.h>
 
-#define MAX_LED_COUNT 300
-
 BH1750 lightMeter;
 OpenWMap weather;
 
@@ -267,7 +265,7 @@ void ClockWork::reallocateSecondsFrame() {
 
 void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
-    const uint16_t ledCount = MAX_LED_COUNT * getLedsPerLetter(G.buildTypeDef);
+    const uint16_t ledCount = usedClockType->numPixelsOnStrip();
 
     if (activeLedPin != G.hardwarePins.led || activeLedColorType != num ||
         activeLedCount != ledCount) {
@@ -1607,6 +1605,8 @@ void ClockWork::loop(struct tm &tm) {
         sendMQTTUpdate();
     }
 
+    const bool configCommandPending = G.conf != COMMAND_IDLE;
+
     switch (G.conf) {
 
     case COMMAND_RESET: {
@@ -1992,6 +1992,10 @@ void ClockWork::loop(struct tm &tm) {
 
     default:
         break;
+    }
+
+    if (configCommandPending) {
+        initLedStrip(G.Colortype);
     }
 
     G.conf = COMMAND_IDLE;

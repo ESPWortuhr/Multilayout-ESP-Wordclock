@@ -249,6 +249,41 @@ public:
         return numPixelsWordMatrixAdjusted() + numPixelsMinuteMatrix() + index;
     }
 
+    uint16_t numPixelsOnStrip() {
+        const uint8_t ledsPerLetter = getLedsPerLetter(G.buildTypeDef);
+        uint16_t pixelCount = 0;
+
+        for (uint8_t row = 0; row < rowsWordMatrix(); row++) {
+            for (uint8_t col = 0; col < colsWordMatrix(); col++) {
+                const uint16_t behindLetter =
+                    (getFrontMatrixIndex(row, col) + 1) * ledsPerLetter;
+                if (behindLetter > pixelCount) {
+                    pixelCount = behindLetter;
+                }
+            }
+        }
+
+        for (uint8_t variant = 0; variant < 3; variant++) {
+            uint16_t minutePixels[MINUTE_LED_COUNT] = {0};
+            getMinuteArray(minutePixels, variant);
+            for (uint8_t i = 0; i < MINUTE_LED_COUNT; i++) {
+                if (minutePixels[i] + 1 > pixelCount) {
+                    pixelCount = minutePixels[i] + 1;
+                }
+            }
+        }
+
+        if (numPixelsFrameMatrix() > 0) {
+            const uint16_t behindFrame =
+                getFrameMatrixIndex(numPixelsFrameMatrix() - 1) + 1;
+            if (behindFrame > pixelCount) {
+                pixelCount = behindFrame;
+            }
+        }
+
+        return pixelCount;
+    }
+
     // --- Language & General Properties ---
 
     virtual bool isRomanLanguage() { return false; }
@@ -366,8 +401,8 @@ public:
             returnValue =
                 row + rowsWordMatrix() * (newColsWordMatrix - 1 - col);
             if (G.layoutVariant[ExtraLedPerRow]) {
-                returnValue += colsWordMatrix() - 1 - col;
-                numPixelsWordMatrix += colsWordMatrix() - 1;
+                returnValue += newColsWordMatrix - 1 - col;
+                numPixelsWordMatrix += newColsWordMatrix - 1;
             }
         }
 
@@ -415,6 +450,8 @@ protected:
         if (G.layoutVariant[ExtraLedPerRow]) {
             if (G.layoutVariant[FlipHorzVert] == false) {
                 numPixelsWordMatrix += rowsWordMatrix() - 1;
+            } else if (G.buildTypeDef == BuildTypeDef::DoubleResM1) {
+                numPixelsWordMatrix += colsWordMatrix() * 2 - 2;
             } else {
                 numPixelsWordMatrix += colsWordMatrix() - 1;
             }
