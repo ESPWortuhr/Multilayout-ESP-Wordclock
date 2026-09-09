@@ -42,7 +42,7 @@ private:
     void releaseFace();
 
     void renderFace();
-    void present(const ColorMatrix &matrix, bool withMinutesAndFrame);
+    void present(const ColorMatrix &matrix, bool withMinutes, bool withFrame);
 
     void plainStep();
     void transitionStep(struct tm &tm);

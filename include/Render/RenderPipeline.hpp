@@ -178,17 +178,15 @@ void RenderPipeline::renderFace() {
 
 //------------------------------------------------------------------------------
 
-void RenderPipeline::present(const ColorMatrix &matrix,
-                             bool withMinutesAndFrame) {
+void RenderPipeline::present(const ColorMatrix &matrix, bool withMinutes,
+                             bool withFrame) {
     led.setbyColorMatrix(matrix);
 
-    if (withMinutesAndFrame) {
-        if (G.minuteVariant != MinuteVariant::Off) {
-            led.setbyMinuteArray(colorStage.minutePosition());
-        }
-        if (G.secondVariant != SecondVariant::Off) {
-            led.setbySecondArray(Frame);
-        }
+    if (withMinutes && G.minuteVariant != MinuteVariant::Off) {
+        led.setbyMinuteArray(colorStage.minutePosition());
+    }
+    if (withFrame && G.secondVariant != SecondVariant::Off) {
+        led.setbySecondArray(Frame);
     }
 
     led.show();
@@ -340,7 +338,7 @@ void RenderPipeline::plainStep() {
 
     if (redraw) {
         renderFace();
-        present(m_face, true);
+        present(m_face, true, true);
     }
 
     // Keep the buffer while a transition is configured but could not be
@@ -371,5 +369,5 @@ void RenderPipeline::transitionStep(struct tm &tm) {
     }
 
     m_transition->step(tm, m_type);
-    present(m_transition->output(), !m_events.running());
+    present(m_transition->output(), !m_events.running(), true);
 }
