@@ -233,10 +233,17 @@ void RenderPipeline::applyDisplayAction(const DisplayAction &action,
     }
 
     if (action.refreshBrightness) {
-        // Only a running animation has to be rescaled in place - the plain
-        // face is rebuilt from scratch on the next pass anyway.
-        if ((m_transition != nullptr) && m_transition->refreshColors()) {
-            led.setbyColorMatrix(m_transition->output());
+        if (m_transition != nullptr) {
+            if (m_transition->refreshColors()) {
+                led.setbyColorMatrix(m_transition->output());
+            }
+        } else if (m_face.rows() != 0) {
+            ColorMatrix *matrices[1] = {&m_face};
+            if (colorStage.applyColorChange(matrices, 1, m_foreground,
+                                            m_background)) {
+                led.setbyColorMatrix(m_face);
+            }
+            m_redrawPending = false;
         }
     } else {
         m_lastMinute = minute;
