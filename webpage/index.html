@@ -386,40 +386,52 @@
 
                 <div class="box symbol" id="symbol-box">
                     <h2 data-i18next="functions.mode.symbol"></h2>
-                    <form name="symbols" class="symbol-form">
+                    <form name="symbols" class="symbol-form" id="symbol-form">
                         <label for="symbol-choice-heart" class="radio-select symbol-select" title="Heart">
-                            <input id="symbol-choice-heart" type="radio" name="symbol-choice" value="7" checked>
+                            <input id="symbol-choice-heart" type="radio" name="symbol-choice" value="Heart" checked>
                             <svg aria-hidden="true"><use href="#symbol-heart"/></svg>
                         </label>
                         <label for="symbol-choice-smiley" class="radio-select symbol-select" title="Smiley">
-                            <input id="symbol-choice-smiley" type="radio" name="symbol-choice" value="8">
+                            <input id="symbol-choice-smiley" type="radio" name="symbol-choice" value="Smiley">
                             <svg aria-hidden="true"><use href="#symbol-smiley"/></svg>
                         </label>
                         <label for="symbol-choice-note" class="radio-select symbol-select" title="Note">
-                            <input id="symbol-choice-note" type="radio" name="symbol-choice" value="9">
+                            <input id="symbol-choice-note" type="radio" name="symbol-choice" value="Note">
                             <svg aria-hidden="true"><use href="#symbol-note"/></svg>
                         </label>
                         <label for="symbol-choice-snow" class="radio-select symbol-select" title="Snow">
-                            <input id="symbol-choice-snow" type="radio" name="symbol-choice" value="10">
+                            <input id="symbol-choice-snow" type="radio" name="symbol-choice" value="Snowflake">
                             <svg aria-hidden="true"><use href="#symbol-snow"/></svg>
                         </label>
                         <label for="symbol-choice-mail" class="radio-select symbol-select" title="Mail">
-                            <input id="symbol-choice-mail" type="radio" name="symbol-choice" value="11">
+                            <input id="symbol-choice-mail" type="radio" name="symbol-choice" value="Mail">
                             <svg aria-hidden="true"><use href="#symbol-mail"/></svg>
                         </label>
                         <label for="symbol-choice-bell" class="radio-select symbol-select" title="Bell">
-                            <input id="symbol-choice-bell" type="radio" name="symbol-choice" value="12">
+                            <input id="symbol-choice-bell" type="radio" name="symbol-choice" value="Bell">
                             <svg aria-hidden="true"><use href="#symbol-bell"/></svg>
                         </label>
                         <label for="symbol-choice-stop" class="radio-select symbol-select" title="Stop">
-                            <input id="symbol-choice-stop" type="radio" name="symbol-choice" value="13">
+                            <input id="symbol-choice-stop" type="radio" name="symbol-choice" value="Stop">
                             <svg aria-hidden="true"><use href="#symbol-stop"/></svg>
                         </label>
                         <label for="symbol-choice-stby" class="radio-select symbol-select" title="Standby">
-                            <input id="symbol-choice-stby" type="radio" name="symbol-choice" value="14">
+                            <input id="symbol-choice-stby" type="radio" name="symbol-choice" value="Standby">
                             <svg aria-hidden="true"><use href="#symbol-stby"/></svg>
                         </label>
                     </form>
+                    <div class="symbol-editor-actions">
+                        <button type="button" class="pure-button pure-button-primary" id="symbol-new">Neues Symbol</button>
+                    </div>
+                    <section id="symbol-editor" class="symbol-editor" hidden>
+                        <h3 id="symbol-editor-title"></h3>
+                        <div id="symbol-matrix" class="symbol-matrix" role="grid" aria-label="Symbolmatrix"></div>
+                        <div class="symbol-editor-actions">
+                            <button type="button" class="pure-button pure-button-primary" id="symbol-save">Speichern</button>
+                            <button type="button" class="pure-button" id="symbol-clear">Leeren</button>
+                            <button type="button" class="pure-button" id="symbol-reset">Auf Standard zurücksetzen</button>
+                        </div>
+                    </section>
                 </div>
 
                 <div class="box" id="transition-box">

@@ -44,6 +44,9 @@ public:
                 "Server: arduino-WebSocket-Server\r\n"
                 "Content-Type: text/html\r\n"
                 "Content-Encoding: gzip\r\n" // <--- CRITICAL FOR GZIP
+                "Cache-Control: no-store, no-cache, must-revalidate\r\n"
+                "Pragma: no-cache\r\n"
+                "Expires: 0\r\n"
                 //--                    "Content-Length: 32\r\n"
                 "Connection: close\r\n"
                 //--                    "Sec-WebSocket-Version: 13\r\n"

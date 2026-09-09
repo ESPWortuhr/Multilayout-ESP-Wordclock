@@ -1,6 +1,8 @@
 #include "WebPageAdapter.h"
 
 #include "WordClock.h" // sendMQTTUpdate()
+#include "CustomSymbols.h"
+#include "WordClockTypes/ClockType.hpp"
 #include <Arduino.h>
 
 const char favicon[] PROGMEM = {
@@ -22,6 +24,7 @@ const char favicon[] PROGMEM = {
     0x44, 0xAE, 0x42, 0x60, 0x82};
 
 WebPageAdapter webSocket = WebPageAdapter(80);
+extern ClockType *usedClockType;
 
 //------------------------------------------------------------------------------
 
@@ -165,8 +168,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             break;
         }
 
-            //------------------------------------------------------------------------------
-
         case COMMAND_MODE_RAINBOW:
         case COMMAND_MODE_RAINBOWCYCLE: {
             if ((G.prog != command) ||
@@ -190,10 +191,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
         case COMMAND_MODE_SCROLLINGTEXT:
         case COMMAND_MODE_SYMBOL: {
-            if ((G.prog != command) ||
+            if (command == COMMAND_MODE_SYMBOL || (G.prog != command) ||
                 compareEffBriAndSpeedToOld(payload, length)) {
                 G.progInit = true;
             }
+
+            if (command == COMMAND_MODE_SYMBOL)
+                parametersChanged = true;
+
 
             parseColor(payload, length);
             break;
@@ -392,11 +397,59 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_SYMBOL: {
-            G.bitmapSymbol = static_cast<BitmapSymbol>(split(payload, 3));
-            if (G.bitmapSymbol >= BitmapSymbol::MAX_BITMAP_SYMBOLS) {
-                G.bitmapSymbol = BitmapSymbol::HEART;
+            bool selected = false;
+            if (length >= 6 && isDigit(payload[3]) && isDigit(payload[4]) &&
+                isDigit(payload[5])) {
+                G.bitmapSymbol = static_cast<BitmapSymbol>(split(payload, 3));
+                if (G.bitmapSymbol >= BitmapSymbol::MAX_BITMAP_SYMBOLS)
+                    G.bitmapSymbol = BitmapSymbol::HEART;
+                selected = customSymbols.select(
+                    CustomSymbols::builtinName(G.bitmapSymbol));
+            } else if (length > 4 && payload[3] == ':' &&
+                       length <= 4 + CustomSymbols::MAX_NAME_LENGTH) {
+                char name[CustomSymbols::MAX_NAME_LENGTH + 1] = {0};
+                memcpy(name, payload + 4, length - 4);
+                selected = customSymbols.select(name);
             }
-            G.progInit = true;
+            if (selected) {
+                G.prog = COMMAND_MODE_SYMBOL;
+                G.progInit = true;
+                parametersChanged = true;
+            } else {
+                Serial.println("Web: Unknown symbol ignored");
+            }
+            break;
+        }
+
+        case COMMAND_EDIT_SYMBOL: {
+            DynamicJsonDocument doc(3072);
+            const DeserializationError error =
+                deserializeJson(doc, payload + 3, length - 3);
+            if (error || !doc["name"].is<const char *>() ||
+                !doc["leds"].is<JsonArrayConst>() || !usedClockType) {
+                Serial.println("Web: Invalid symbol editor payload");
+                break;
+            }
+            const char *name = doc["name"].as<const char *>();
+            JsonArrayConst leds = doc["leds"].as<JsonArrayConst>();
+            BitmapSymbol builtin;
+            const bool isBuiltin = CustomSymbols::findBuiltin(name, builtin);
+            const bool success = leds.size() == 0 &&
+                                         (doc["reset"] | false)
+                                     ? customSymbols.remove(name)
+                                     : customSymbols.upsert(
+                                           name, leds,
+                                           usedClockType->rowsWordMatrix(),
+                                           usedClockType->colsWordMatrix());
+            if (success) {
+                customSymbols.select(name);
+                G.prog = COMMAND_MODE_SYMBOL;
+                G.progInit = true;
+                parametersChanged = true;
+            } else {
+                Serial.printf("Web: Could not %s symbol '%s'\n",
+                              isBuiltin ? "update" : "save", name);
+            }
             break;
         }
             //------------------------------------------------------------------------------
@@ -544,6 +597,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_REQUEST_BIRTHDAYS:
+        case COMMAND_REQUEST_SYMBOLS:
         case COMMAND_REQUEST_MQTT_VALUES:
         case COMMAND_REQUEST_CONFIG_VALUES:
         case COMMAND_REQUEST_COLOR_VALUES:
