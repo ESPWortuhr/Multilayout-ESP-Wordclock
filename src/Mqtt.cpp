@@ -804,34 +804,35 @@ void Mqtt::sendState() {
         color["h"] = round(G.color[Foreground].H * 360); // Hue 0-360
         color["s"] = round(G.color[Foreground].S * 100); // Saturation 0-100
 
-        switch (G.prog) {
-        case COMMAND_MODE_WORD_CLOCK:
+        if (isWordClockMode(G.prog)) {
             doc["effect"] = "Wordclock";
-            break;
-        case COMMAND_MODE_SECONDS:
-            doc["effect"] = "Seconds";
-            break;
-        case COMMAND_MODE_DIGITAL_CLOCK:
-            doc["effect"] = "Digitalclock";
-            break;
-        case COMMAND_MODE_SCROLLINGTEXT:
-            doc["effect"] = "Scrollingtext";
-            break;
-        case COMMAND_MODE_RAINBOWCYCLE:
-            doc["effect"] = "Rainbowcycle";
-            break;
-        case COMMAND_MODE_RAINBOW:
-            doc["effect"] = "Rainbow";
-            break;
-        case COMMAND_MODE_FIRE:
-            doc["effect"] = "Fire";
-            break;
-        case COMMAND_MODE_COLOR:
-            doc["effect"] = "Color";
-            break;
-        case COMMAND_MODE_SYMBOL:
-            doc["effect"] = "Symbol";
-            break;
+        } else {
+            switch (G.prog) {
+            case COMMAND_MODE_SECONDS:
+                doc["effect"] = "Seconds";
+                break;
+            case COMMAND_MODE_DIGITAL_CLOCK:
+                doc["effect"] = "Digitalclock";
+                break;
+            case COMMAND_MODE_SCROLLINGTEXT:
+                doc["effect"] = "Scrollingtext";
+                break;
+            case COMMAND_MODE_RAINBOWCYCLE:
+                doc["effect"] = "Rainbowcycle";
+                break;
+            case COMMAND_MODE_RAINBOW:
+                doc["effect"] = "Rainbow";
+                break;
+            case COMMAND_MODE_FIRE:
+                doc["effect"] = "Fire";
+                break;
+            case COMMAND_MODE_COLOR:
+                doc["effect"] = "Color";
+                break;
+            case COMMAND_MODE_SYMBOL:
+                doc["effect"] = "Symbol";
+                break;
+            }
         }
 
         char buffer[200];
