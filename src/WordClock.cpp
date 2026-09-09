@@ -615,7 +615,7 @@ void setup() {
     // Start external real-time clock
     //-------------------------------------
 
-    if (RTC.begin() == true) {
+    if (i2cBus::pinsAreEnabled(G.i2cSdaPin, G.i2cSclPin) && RTC.begin()) {
         Serial.println("External real-time clock found");
         struct timeval tv;
         tv.tv_sec = RTC.now().unixtime();
