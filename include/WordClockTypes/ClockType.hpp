@@ -291,7 +291,7 @@ public:
 
     virtual bool hasLed7x() { return hasLed4x(); }
 
-    virtual bool hasMinuteCorners() { return rowsWordMatrix() == 11; }
+    virtual bool hasMinuteCorners() { return false; }
 
     virtual bool hasMinuteInWords() { return false; }
 

@@ -535,6 +535,7 @@ void setup() {
     }
 
     usedClockType = clockWork.getPointer(G.clockTypeDef);
+    clockWork.resetMinVariantIfNotAvailable();
 
     // Area that will be animated:
     //         LED frame horizontal

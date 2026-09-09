@@ -57,7 +57,6 @@ private:
     bool checkIfClockHasMinuteInWordsAndItIsSet();
     void showMinute(uint8_t min);
     void checkForValidLanguageVariant();
-    void resetMinVariantIfNotAvailable();
     FrontWord getFrontWordForNum(uint8_t min);
     bool checkTwentyUsage();
     bool hasTwentyAndCheckForUsage();
@@ -105,6 +104,7 @@ public:
     // Minute Functions
     //------------------------------------------------------------------------------
     uint8_t determineWhichMinuteVariant();
+    void resetMinVariantIfNotAvailable();
 
     //------------------------------------------------------------------------------
     // Boot Functions
