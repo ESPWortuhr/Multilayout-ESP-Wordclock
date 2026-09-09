@@ -355,23 +355,32 @@ void RenderPipeline::plainStep() {
 //------------------------------------------------------------------------------
 
 void RenderPipeline::transitionStep(struct tm &tm) {
+    bool changed = m_redrawPending;
+    m_redrawPending = false;
+
     if (transitionSettingsChanged() || m_startPending) {
         m_startPending = false;
         m_transition->start();
+        changed = true;
     }
 
     if (m_matrixChanged) {
         m_matrixChanged = false;
         renderFace();
         m_transition->advanceTo(m_face, m_foreground, m_background);
+        changed = true;
     }
-    // A transition pushes the strip on every pass anyway.
-    m_redrawPending = false;
 
     if (colorStage.modeChanged()) {
         m_transition->recolor(m_foreground, m_background);
+        changed = true;
     }
 
-    m_transition->step(tm, m_type);
-    present(m_transition->output(), !m_events.running(), true);
+    if (m_transition->step(tm, m_type)) {
+        changed = true;
+    }
+
+    if (changed) {
+        present(m_transition->output(), !m_events.running(), true);
+    }
 }

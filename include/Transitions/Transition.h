@@ -109,7 +109,7 @@ public:
     void recolor(RgbfColor foreground, RgbfColor background);
 
     /* Advance one step, if the current one has been on screen long enough. */
-    void step(struct tm &tm, Transition_t type);
+    bool step(struct tm &tm, Transition_t type);
 
     /* What is to be shown right now. */
     ColorMatrix &output() { return work; }

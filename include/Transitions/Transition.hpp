@@ -194,17 +194,19 @@ One animation step, if the previous one has been on screen long enough. The
 effect decides its own pace and reports the next phase, 0 meaning done.
 */
 
-void Transition::step(struct tm &tm, Transition_t type) {
+bool Transition::step(struct tm &tm, Transition_t type) {
     transitionType = type;
 
     const uint32_t now = millis();
     if (isIdle() || (now < nextActionTime)) {
-        return;
+        return false;
     }
     nextActionTime = now + transitionDelay;
 
     ITransitionEffect *effect = effectFor(type);
-    if (effect != nullptr) {
-        phase = runEffect(*effect, tm, type);
+    if (effect == nullptr) {
+        return false;
     }
+    phase = runEffect(*effect, tm, type);
+    return true;
 }
