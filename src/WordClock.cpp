@@ -78,6 +78,7 @@ void ensureI2CPins();
 void ensureTimezone();
 void ensureTransitionType();
 void ensureFireSettings();
+void ensureEffectSpeed();
 
 LedStripInterface *activeLedStrip = nullptr;
 
@@ -316,6 +317,18 @@ void ensureTransitionType() {
 
 //------------------------------------------------------------------------------
 
+void ensureEffectSpeed() {
+    if (effectSpeedIsValid(G.effectSpeed)) {
+        return;
+    }
+
+    Serial.printf("Invalid effect speed %u in EEPROM, restoring default\n",
+                  G.effectSpeed);
+    G.effectSpeed = EFFECT_SPEED_DEFAULT;
+}
+
+//------------------------------------------------------------------------------
+
 void ensureFireSettings() {
     if (fireSettingsAreValid(G.fireCooling, G.fireSparking)) {
         return;
@@ -352,6 +365,7 @@ void setup() {
     ensureTimezone();
     ensureTransitionType();
     ensureFireSettings();
+    ensureEffectSpeed();
 
     //-------------------------------------
 
@@ -390,7 +404,7 @@ void setup() {
         G.color[GradientEnd] =
             HsbColor(fmodf(DEFAULT_HUE / 360.f + 0.33f, 1.f), 1.f, 0.5f);
         G.effectBri = 2;
-        G.effectSpeed = 5;
+        G.effectSpeed = EFFECT_SPEED_DEFAULT;
         G.fireCooling = FIRE_COOLING_DEFAULT;
         G.fireSparking = FIRE_SPARKING_DEFAULT;
         G.client_nr = 0;

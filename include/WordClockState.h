@@ -122,6 +122,24 @@ inline bool fireSettingsAreValid(uint8_t cooling, uint8_t sparking) {
            (sparking >= FIRE_SPARKING_MIN) && (sparking <= FIRE_SPARKING_MAX);
 }
 
+constexpr uint8_t EFFECT_SPEED_MIN = 1;
+constexpr uint8_t EFFECT_SPEED_MAX = 10;
+constexpr uint8_t EFFECT_SPEED_DEFAULT = 5;
+
+inline bool effectSpeedIsValid(uint32_t speed) {
+    return (speed >= EFFECT_SPEED_MIN) && (speed <= EFFECT_SPEED_MAX);
+}
+
+inline uint16_t effectSpeedIntervalMillis(uint8_t speed) {
+    uint8_t clamped = speed;
+    if (clamped < EFFECT_SPEED_MIN) {
+        clamped = EFFECT_SPEED_MIN;
+    } else if (clamped > EFFECT_SPEED_MAX) {
+        clamped = EFFECT_SPEED_MAX;
+    }
+    return static_cast<uint16_t>((EFFECT_SPEED_MAX + 1u - clamped) * 30u);
+}
+
 constexpr uint8_t HARDWARE_PIN_DISABLED = UINT8_MAX;
 
 struct HardwarePins {

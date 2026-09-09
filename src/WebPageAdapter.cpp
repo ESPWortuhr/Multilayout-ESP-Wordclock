@@ -92,7 +92,8 @@ bool parseColor(uint8_t *payload, size_t length) {
     uint32_t effectSpeed = split(payload, length, 18);
 
     if (position > GradientEnd || hue > 360 || saturation > 100 ||
-        value > 100 || effectBrightness > 100 || effectSpeed > 100) {
+        value > 100 || effectBrightness > 100 ||
+        !effectSpeedIsValid(effectSpeed)) {
         Serial.println("Invalid color payload ignored");
         return false;
     }
@@ -241,7 +242,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SPEED: {
-            G.effectSpeed = split(payload, length, 3);
+            const uint32_t speed = split(payload, length, 3);
+            if (effectSpeedIsValid(speed)) {
+                G.effectSpeed = static_cast<uint8_t>(speed);
+            }
             break;
         }
 

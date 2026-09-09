@@ -2054,12 +2054,14 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_MODE_RAINBOW:
     case COMMAND_MODE_FIRE:
     case COMMAND_MODE_SYMBOL: {
+        const uint16_t effectInterval =
+            effectSpeedIntervalMillis(G.effectSpeed);
         if (G.progInit) {
-            countMillisSpeed = (11u - G.effectSpeed) * 30u;
+            countMillisSpeed = effectInterval;
             clearClockByProgInit();
         }
 
-        if (countMillisSpeed >= (11u - G.effectSpeed) * 30u) {
+        if (countMillisSpeed >= effectInterval) {
             switch (G.prog) {
             case COMMAND_MODE_SCROLLINGTEXT: {
                 scrollingText(G.scrollingText);

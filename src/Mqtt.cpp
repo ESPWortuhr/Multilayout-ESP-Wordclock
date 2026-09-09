@@ -753,7 +753,7 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     } else if (topicStr == baseTopic + "/effect_speed/set") {
         // Process direct string value
         int speed = atoi(msg);
-        if (speed >= 1 && speed <= 10) {
+        if (speed >= EFFECT_SPEED_MIN && speed <= EFFECT_SPEED_MAX) {
             G.effectSpeed = speed;
 
             // Effect speed is a user setting, so persist accepted values.
