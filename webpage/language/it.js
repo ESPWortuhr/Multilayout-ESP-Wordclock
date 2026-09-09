@@ -143,6 +143,7 @@ let TRANSLATION_IT = {
 			"mirror-vertically": "Capovolgi l'orologio verticalmente",
 			"mirror-horizontally": "Capovolgi l'orologio orizzontalmente",
 			"buildtype": "Tipo di progetto",
+			"level-shifter-led": "Usa il primo LED come convertitore di livello",
 			"normal": "Ogni LED corrisponde ad una lettera",
 			"doubleResM1": "Ogni secondo LED corrisponde a una lettera",
 			"doubleRes": "Due LED per lettera",

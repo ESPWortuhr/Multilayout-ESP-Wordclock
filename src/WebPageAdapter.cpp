@@ -130,6 +130,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         }
 
         uint8_t command = split(payload, 0);
+
+        if (command == COMMAND_SET_LEVEL_SHIFTER_LED &&
+            (length != 6 || payload[3] != '0' || payload[4] != '0' ||
+             (payload[5] != '0' && payload[5] != '1'))) {
+            Serial.println("Invalid level shifter LED command ignored");
+            break;
+        }
+
         G.param1 = 0;
 
         switch (command) {
@@ -414,6 +422,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.progInit = true;
 
             G.param1 = split(payload, 3);
+            break;
+        }
+
+            //------------------------------------------------------------------------------
+
+        case COMMAND_SET_LEVEL_SHIFTER_LED: {
+            G.param1 = split(payload, 3) != 0;
             break;
         }
 

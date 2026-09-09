@@ -74,6 +74,7 @@ void setDefaultHardwarePins();
 bool hardwarePinsAreValid();
 void ensureI2CPins();
 void ensureTimezone();
+void ensureLevelShifterLed();
 
 LedStripInterface *activeLedStrip = nullptr;
 
@@ -92,6 +93,7 @@ constexpr uint16_t POWER_CYCLE_COUNT_ADDRESS = EEPROM_SIZE - 1;
 constexpr uint8_t POWER_CYCLE_RESET_LIMIT = 5;
 constexpr uint8_t CAPTIVE_PORTAL_POWER_CYCLE_COUNT = 3;
 constexpr uint8_t FACTORY_RESET_POWER_CYCLE_COUNT = 6;
+constexpr uint16_t LEVEL_SHIFTER_LED_MARKER = 0x4C53;
 
 #ifdef ESP8266
 constexpr uint8_t MAX_HARDWARE_PIN = 16;
@@ -288,6 +290,20 @@ void ensureI2CPins() {
 }
 
 //------------------------------------------------------------------------------
+
+void ensureLevelShifterLed() {
+    if (G.levelShifterLedMarker == LEVEL_SHIFTER_LED_MARKER &&
+        G.levelShifterLed <= 1) {
+        return;
+    }
+
+    Serial.println("Initializing level shifter LED setting");
+    G.levelShifterLed = DEFAULT_LEVEL_SHIFTER_LED;
+    G.levelShifterLedMarker = LEVEL_SHIFTER_LED_MARKER;
+    eeprom::write();
+}
+
+//------------------------------------------------------------------------------
 // Start setup()
 //------------------------------------------------------------------------------
 
@@ -311,6 +327,7 @@ void setup() {
     ensureHardwarePins();
     ensureI2CPins();
     ensureTimezone();
+    ensureLevelShifterLed();
 
     //-------------------------------------
 
@@ -445,6 +462,8 @@ void setup() {
         G.buildTypeDef = DEFAULT_BUILDTYPE;
         G.Colortype = DEFAULT_LEDTYPE;
         G.wType = WHITE_LEDTYPE;
+        G.levelShifterLed = DEFAULT_LEVEL_SHIFTER_LED;
+        G.levelShifterLedMarker = LEVEL_SHIFTER_LED_MARKER;
 
         G.bootLedBlink = false;
         G.bootLedSweep = BOOT_LEDSWEEP;

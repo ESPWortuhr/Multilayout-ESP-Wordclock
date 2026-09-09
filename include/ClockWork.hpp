@@ -267,7 +267,9 @@ ClockType *ClockWork::getPointer(uint8_t type) {
 
 void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
-    const uint16_t ledCount = MAX_LED_COUNT * getLedsPerLetter(G.buildTypeDef);
+    const uint16_t ledCount =
+        MAX_LED_COUNT * getLedsPerLetter(G.buildTypeDef) +
+        (G.levelShifterLed ? 1 : 0);
 
     if (activeLedPin != G.hardwarePins.led || activeLedColorType != num ||
         activeLedCount != ledCount) {
@@ -1597,6 +1599,7 @@ void ClockWork::loop(struct tm &tm) {
         config["apiKey"] = apiKeyMasked;
         config["colortype"] = G.Colortype;
         config["buildtype"] = static_cast<uint8_t>(G.buildTypeDef);
+        config["levelShifterLed"] = G.levelShifterLed;
         config["wType"] = static_cast<uint8_t>(G.wType);
         config["clockTypeDef"] = G.clockTypeDef;
         config["bitmapSymbol"] = static_cast<uint8_t>(G.bitmapSymbol);
@@ -1732,6 +1735,19 @@ void ClockWork::loop(struct tm &tm) {
         G.buildTypeDef = static_cast<BuildTypeDef>(G.param1);
         eeprom::write();
         led.clear();
+        parametersChanged = true;
+        break;
+    }
+
+    case COMMAND_SET_LEVEL_SHIFTER_LED: {
+        led.clear();
+        led.show();
+
+        G.levelShifterLed = G.param1 != 0;
+        initLedStrip(G.Colortype);
+        eeprom::write();
+        led.clear();
+        led.show();
         parametersChanged = true;
         break;
     }

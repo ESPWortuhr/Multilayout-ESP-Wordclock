@@ -143,6 +143,7 @@ let TRANSLATION_NL = {
 			"mirror-vertically": "Spiegel Woordklok verticaal",
 			"mirror-horizontally": "Spiegel Woordklok horizontaal",
 			"buildtype": "bouwtype",
+			"level-shifter-led": "Voorste led als levelshifter gebruiken",
 			"normal": "Elke LED komt overeen met een letter",
 			"doubleResM1": "Elke tweede LED komt overeen met een letter",
 			"doubleRes": "Twee LED's per letter",

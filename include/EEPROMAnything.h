@@ -98,6 +98,7 @@ void printConfig() {
     Serial.printf("speedButtonPin    : %u\n", G.hardwarePins.speedButton);
     Serial.printf("i2cSdaPin    : %u\n", G.i2cSdaPin);
     Serial.printf("i2cSclPin    : %u\n", G.i2cSclPin);
+    Serial.printf("levelShifterLed    : %u\n", G.levelShifterLed);
     Serial.printf("Colortype    : %u\n", G.Colortype);
     printMaskedOpenWeatherMapApiKey();
     printSafeString("OWM_city  : ", G.openWeatherMap.cityid);
