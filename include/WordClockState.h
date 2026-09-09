@@ -105,6 +105,10 @@ enum class WhiteType : uint8_t {
     ColdWhite = 2,
 };
 
+inline bool whiteTypeIsValid(uint32_t type) {
+    return type <= static_cast<uint32_t>(WhiteType::ColdWhite);
+}
+
 struct Birthday {
     uint8_t day;
     uint8_t month;

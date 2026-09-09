@@ -79,6 +79,7 @@ void ensureTimezone();
 void ensureTransitionType();
 void ensureFireSettings();
 void ensureEffectSpeed();
+void ensureWhiteType();
 
 LedStripInterface *activeLedStrip = nullptr;
 
@@ -340,6 +341,18 @@ void ensureFireSettings() {
 }
 
 //------------------------------------------------------------------------------
+
+void ensureWhiteType() {
+    if (whiteTypeIsValid(static_cast<uint32_t>(G.wType))) {
+        return;
+    }
+
+    Serial.printf("Invalid white type %u in EEPROM, restoring default\n",
+                  static_cast<unsigned>(G.wType));
+    G.wType = WHITE_LEDTYPE;
+}
+
+//------------------------------------------------------------------------------
 // Start setup()
 //------------------------------------------------------------------------------
 
@@ -366,6 +379,7 @@ void setup() {
     ensureTransitionType();
     ensureFireSettings();
     ensureEffectSpeed();
+    ensureWhiteType();
 
     //-------------------------------------
 

@@ -535,7 +535,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_WHITETYPE: {
-            G.wType = static_cast<WhiteType>(split(payload, length, 3));
+            const uint32_t whiteType = split(payload, length, 3);
+            if (whiteTypeIsValid(whiteType)) {
+                G.wType = static_cast<WhiteType>(whiteType);
+            } else {
+                Serial.printf("Ignoring invalid white type: %lu\n",
+                              static_cast<unsigned long>(whiteType));
+            }
             break;
         }
 
