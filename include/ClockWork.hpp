@@ -1958,11 +1958,7 @@ void ClockWork::loop(struct tm &tm) {
         lastShownSecond = _second;
         parametersChanged = false;
 
-        char d1[5];
-        char d2[5];
-        sprintf(d1, "%d", static_cast<uint8_t>(_second / 10));
-        sprintf(d2, "%d", static_cast<uint8_t>(_second % 10));
-        led.showNumbers(d1[0], d2[0]);
+        led.showNumbers('0' + _second / 10, '0' + _second % 10);
         break;
     }
 
