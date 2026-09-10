@@ -117,7 +117,6 @@ const CMD = {
 	// Requests
 	REQ_CONFIG_VALUES: 200,
 	REQ_COLOR_VALUES: 201,
-	REQ_WIFI_LIST: 202,
 	REQ_AUTO_BRIGHT: 203,
 	REQ_TRANSITION: 204,
 	REQ_MQTT_VALUES: 205,
@@ -518,10 +517,6 @@ function initWebsocket() {
 				setElementsForFunctionsMenu();
 				break;
 			}
-			case "wlan":
-				document.getElementById("wlanlist").innerHTML = data.list;
-				break;
-
 			case "transition":
 				transitionType = data.transitionType;
 				transitionDuration = data.transitionDuration;
@@ -962,14 +957,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			enableSpecific("specific-layout-brightness-auto", autoBrightDisplay);
 		});
 	});
-
-	const wlanScanBtn = document.getElementById("_wlanscan");
-	if (wlanScanBtn) {
-		wlanScanBtn.addEventListener("click", function() {
-			sendCmd(CMD.REQ_WIFI_LIST);
-			document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
-		});
-	}
 
 	const timeServerBtn = document.getElementById("timeserver-button");
 	if (timeServerBtn) {
