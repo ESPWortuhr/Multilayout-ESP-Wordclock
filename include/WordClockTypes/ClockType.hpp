@@ -263,7 +263,7 @@ public:
             }
         }
 
-        for (uint8_t variant = 0; variant < 3; variant++) {
+        for (uint8_t variant = 0; variant < 2; variant++) {
             uint16_t minutePixels[MINUTE_LED_COUNT] = {0};
             getMinuteArray(minutePixels, variant);
             for (uint8_t i = 0; i < MINUTE_LED_COUNT; i++) {
@@ -332,7 +332,7 @@ public:
 
     virtual bool hasLed7x() { return hasLed4x(); }
 
-    virtual bool hasMinuteCorners() { return false; }
+    virtual bool hasMinuteLeds() { return true; }
 
     virtual bool hasMinuteInWords() { return false; }
 
@@ -344,8 +344,6 @@ public:
             return hasLed4x();
         case MinuteVariant::LED7x:
             return hasLed7x();
-        case MinuteVariant::Corners:
-            return hasMinuteCorners();
         case MinuteVariant::InWords:
             return hasMinuteInWords();
         default:

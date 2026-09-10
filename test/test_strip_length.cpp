@@ -46,7 +46,7 @@ const BuildTypeDef BUILD_TYPES[] = {
 
 const MinuteVariant MINUTE_VARIANTS[] = {
     MinuteVariant::Off, MinuteVariant::LED4x, MinuteVariant::LED7x,
-    MinuteVariant::Corners, MinuteVariant::InWords};
+    MinuteVariant::InWords};
 
 const uint8_t FRAME_COUNTS[] = {0, 1, 60, MAX_SECONDS_FRAME_LED_COUNT};
 
@@ -68,7 +68,7 @@ uint16_t countOutOfRange(ClockType *layout) {
         }
     }
 
-    for (uint8_t variant = 0; variant < 3; variant++) {
+    for (uint8_t variant = 0; variant < 2; variant++) {
         uint16_t minutePixels[4] = {0};
         layout->getMinuteArray(minutePixels, variant);
         for (uint8_t i = 0; i < 4; i++) {

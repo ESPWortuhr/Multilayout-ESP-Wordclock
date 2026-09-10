@@ -79,6 +79,7 @@ void ensureTimezone();
 void ensureTransitionType();
 void ensureFireSettings();
 void ensureEffectSpeed();
+void ensureMinuteVariant();
 void ensureWhiteType();
 
 LedStripInterface *activeLedStrip = nullptr;
@@ -342,6 +343,20 @@ void ensureFireSettings() {
 
 //------------------------------------------------------------------------------
 
+void ensureMinuteVariant() {
+    constexpr uint8_t LEGACY_MINUTE_VARIANT_IN_WORDS = 4;
+
+    if (static_cast<uint8_t>(G.minuteVariant) !=
+        LEGACY_MINUTE_VARIANT_IN_WORDS) {
+        return;
+    }
+
+    Serial.println("Moving minute variant InWords from 4 to 3");
+    G.minuteVariant = MinuteVariant::InWords;
+}
+
+//------------------------------------------------------------------------------
+
 void ensureWhiteType() {
     if (whiteTypeIsValid(static_cast<uint32_t>(G.wType))) {
         return;
@@ -379,6 +394,7 @@ void setup() {
     ensureTransitionType();
     ensureFireSettings();
     ensureEffectSpeed();
+    ensureMinuteVariant();
     ensureWhiteType();
 
     //-------------------------------------

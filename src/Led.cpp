@@ -372,6 +372,10 @@ void Led::setbyColorMatrix(const ColorMatrix &matrix) {
 //------------------------------------------------------------------------------
 
 void Led::setbyMinuteArray(ColorPosition colorPosition) {
+    if (!usedClockType->hasMinuteLeds()) {
+        return;
+    }
+
     HsbColor displayedColor =
         getColorbyPositionWithAppliedBrightness(colorPosition);
 
@@ -580,8 +584,10 @@ void Led::clearRow(uint8_t row) {
 //------------------------------------------------------------------------------
 
 void Led::clearMinArray() {
-    for (uint16_t i = minutePixelArray[0]; i <= minutePixelArray[3]; i++) {
-        clearPixel(i);
+    if (usedClockType->hasMinuteLeds()) {
+        for (uint16_t i = minutePixelArray[0]; i <= minutePixelArray[3]; i++) {
+            clearPixel(i);
+        }
     }
     minuteArray = 0;
 }

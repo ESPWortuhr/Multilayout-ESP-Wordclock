@@ -199,7 +199,6 @@ let TRANSLATION_EN_US = {
 			"off": "Off",
 			"normal-4-leds": "Normal (4 LEDs)",
 			"normal-7-leds": "Normal (7 LEDs)",
-			"edges": "Edges",
 			"in-words": "In Words"
 		},
 		"seconds": {

@@ -173,7 +173,6 @@ let TRANSLATION_NL = {
 			"off": "Uit",
 			"normal-4-leds": "Normaal (4 LEDs)",
 			"normal-7-leds": "Normaal (7 LEDs)",
-			"edges": "Hoeken",
 			"in-words": "In woorden"
 		},
 		"seconds": {

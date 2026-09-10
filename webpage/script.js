@@ -277,8 +277,7 @@ function updateMinuteOptions(supportedMinuteVariants) {
 function supportsMinuteDirection(supportedMinuteVariants) {
 	const led4x = 1 << 1;
 	const led7x = 1 << 2;
-	const corners = 1 << 3;
-	return (supportedMinuteVariants & (led4x | led7x | corners)) !== 0;
+	return (supportedMinuteVariants & (led4x | led7x)) !== 0;
 }
 
 // handle click events on the swatch

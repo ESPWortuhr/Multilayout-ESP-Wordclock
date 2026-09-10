@@ -158,7 +158,6 @@ let TRANSLATION_RU = {
 			"off": "Bыключен",
 			"normal-4-leds": "Нормальный (4 LEDs)",
 			"normal-7-leds": "Нормальный (7 LEDs)",
-			"edges": "Углы",
 			"in-words": "В словах"
 		},
 		"seconds": {

@@ -183,8 +183,7 @@ enum class MinuteVariant : uint8_t {
     Off = 0,
     LED4x = 1,
     LED7x = 2,
-    Corners = 3,
-    InWords = 4,
+    InWords = 3,
 };
 
 enum class SecondVariant : uint8_t {

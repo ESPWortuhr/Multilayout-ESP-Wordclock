@@ -22,13 +22,11 @@
 
 class De11x11V3_t : public De11x11_t {
 public:
-    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
-        const uint16_t numPixelsWordMatrix = numPixelsWordMatrixAdjusted();
+    virtual uint8_t numPixelsMinuteMatrix() override { return 0; }
 
-        for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = numPixelsWordMatrix + i;
-        }
-    };
+    //------------------------------------------------------------------------------
+
+    virtual bool hasMinuteLeds() override { return false; }
 
     //------------------------------------------------------------------------------
 

@@ -170,7 +170,6 @@ let TRANSLATION_HU = {
 			"off": "Ki",
 			"normal-4-leds": "Normál (4 LED)",
 			"normal-7-leds": "Normál (7 LED)",
-			"edges": "Szegélyek",
 			"in-words": "Szavakkal"
 		},
 		"seconds": {

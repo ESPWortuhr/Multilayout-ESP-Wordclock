@@ -814,9 +814,6 @@ uint8_t ClockWork::determineWhichMinuteVariant() {
     case MinuteVariant::LED7x:
         return 1;
         break;
-    case MinuteVariant::Corners:
-        return 2;
-        break;
     case MinuteVariant::InWords:
         return 0;
         break;
@@ -926,12 +923,7 @@ void ClockWork::resetMinVariantIfNotAvailable() {
         return;
     }
 
-    if (G.minuteVariant == MinuteVariant::Corners &&
-        usedClockType->supportsMinuteVariant(MinuteVariant::LED4x)) {
-        G.minuteVariant = MinuteVariant::LED4x;
-    } else {
-        G.minuteVariant = MinuteVariant::Off;
-    }
+    G.minuteVariant = MinuteVariant::Off;
 }
 
 //------------------------------------------------------------------------------
