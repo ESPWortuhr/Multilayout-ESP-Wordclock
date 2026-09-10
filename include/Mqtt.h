@@ -8,7 +8,8 @@ class Mqtt {
 private:
     ClockWork &clockWork;
     void reInit();
-    static void callback(char *topic, byte *payload, unsigned int length);
+    static void callback(char *receivedTopic, byte *payload,
+                         unsigned int length);
     static void processState(const JsonDocument &doc);
     static void processEffect(const JsonDocument &doc);
     static void processScrollingText(const JsonDocument &doc);
