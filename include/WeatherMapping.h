@@ -14,7 +14,8 @@ Weather condition code (wetterid):
 3xx Drizzle
 5xx Rain
 6xx Snow
-7xx Clouds (Warning)
+7xx Atmosphere: 701 mist, 721 haze and 741 fog show as clouds,
+    smoke, dust, sand, ash, squalls and tornado as a warning
 800 Clear
 80x Clouds
 --------------------------------------------------*/
@@ -40,7 +41,7 @@ inline int8_t temperatureStep(double celsius) {
 inline uint16_t conditionGroup(uint16_t id) {
     if (id == 800) {
         return 800;
-    } else if (id > 800 && id < 900) {
+    } else if ((id > 800 && id < 900) || id == 701 || id == 721 || id == 741) {
         return 801;
     } else if (id >= 200 && id < 800) {
         return id / 100 * 100;
