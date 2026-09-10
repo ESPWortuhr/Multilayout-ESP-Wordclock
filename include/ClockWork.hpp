@@ -12,7 +12,6 @@
 #include <BH1750.h>
 
 BH1750 lightMeter;
-OpenWMap weather;
 
 uint8_t activeLedPin = UINT8_MAX;
 uint8_t activeLedColorType = UINT8_MAX;
