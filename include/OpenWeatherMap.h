@@ -82,20 +82,16 @@ private:
     //------------------------------------------------------------------------------
 
     void determineWid(uint16_t srcId, uint16_t &destId) {
-        uint8_t countId = 0;
         if (srcId == 800) {
             destId = 800;
+        } else if (srcId > 800 && srcId < 900) {
+            destId = 801;
+        } else if (srcId >= 200 && srcId < 800) {
+            destId = srcId / 100 * 100;
         } else {
-            for (uint8_t i = 0; i < 9; i++) {
-                if (srcId < 100) {
-                    if (countId < 2) {
-                        Serial.println("[ERROR] determineWid() Out of bounds");
-                    }
-                    destId = countId * 100;
-                }
-                srcId -= 100;
-                countId++;
-            }
+            Serial.printf("[ERROR] determineWid() unknown weather id %u\n",
+                          srcId);
+            destId = 0;
         }
     }
 
