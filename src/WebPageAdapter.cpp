@@ -65,7 +65,6 @@ void payloadTextHandling(const uint8_t *payload, size_t payloadLength,
                          char *text, uint8_t start = 3) {
     uint8_t len = PAYLOAD_LENGTH - 1;
     if (static_cast<size_t>(start) + len > payloadLength) {
-        text[0] = '\0';
         return;
     }
 
