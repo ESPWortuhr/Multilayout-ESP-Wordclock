@@ -1,7 +1,5 @@
 #pragma once
 
-// #define WEATHER_VERBOSE
-
 #include "ClockType.hpp"
 
 /*
@@ -76,158 +74,92 @@ public:
             setFrontMatrixWord(0, 9, 10);
             // Ist
             setFrontMatrixWord(0, 5, 7);
-#if WEATHER_VERBOSE
-            Serial.println("");
-            Serial.print("Es ist ");
-#endif
             break;
 
         case FrontWord::viertel:
             setFrontMatrixWord(2, 0, 6);
-#if WEATHER_VERBOSE
-            Serial.print("viertel ");
-#endif
             break;
 
         case FrontWord::min_5:
             setFrontMatrixWord(0, 0, 3);
-#if WEATHER_VERBOSE
-            Serial.print("Fünf ");
-#endif
             break;
 
         case FrontWord::min_10:
             setFrontMatrixWord(1, 7, 10);
-#if WEATHER_VERBOSE
-            Serial.print("zehn ");
-#endif
             break;
 
         case FrontWord::min_20:
             setFrontMatrixWord(1, 0, 6);
-#if WEATHER_VERBOSE
-            Serial.print("zwanzig ");
-#endif
             break;
 
         case FrontWord::halb:
             setFrontMatrixWord(4, 7, 10);
-#if WEATHER_VERBOSE
-            Serial.print("halb ");
-#endif
             break;
 
         case FrontWord::eins:
             setFrontMatrixWord(5, 5, 8);
-#if WEATHER_VERBOSE
-            Serial.print("Eins ");
-#endif
             break;
 
         case FrontWord::nach:
         case FrontWord::v_nach:
             setFrontMatrixWord(3, 5, 8);
-#if WEATHER_VERBOSE
-            Serial.print("nach ");
-#endif
             break;
 
         case FrontWord::vor:
         case FrontWord::v_vor:
             setFrontMatrixWord(3, 2, 4);
-#if WEATHER_VERBOSE
-            Serial.print("vor ");
-#endif
+            break;
 
         case FrontWord::uhr:
             setFrontMatrixWord(9, 1, 3);
-#if WEATHER_VERBOSE
-            Serial.println("Uhr ");
-#endif
             break;
 
         case FrontWord::hour_1:
             setFrontMatrixWord(5, 6, 8);
-#if WEATHER_VERBOSE
-            Serial.println("Eins ");
-#endif
             break;
 
         case FrontWord::hour_2:
             setFrontMatrixWord(5, 7, 10);
-#if WEATHER_VERBOSE
-            Serial.println("Zwei ");
-#endif
             break;
 
         case FrontWord::hour_3:
             setFrontMatrixWord(6, 6, 9);
-#if WEATHER_VERBOSE
-            Serial.println("Drei ");
-#endif
             break;
 
         case FrontWord::hour_4:
             setFrontMatrixWord(7, 0, 3);
-#if WEATHER_VERBOSE
-            Serial.println("Vier ");
-#endif
             break;
 
         case FrontWord::hour_5:
             setFrontMatrixWord(6, 0, 3);
-#if WEATHER_VERBOSE
-            Serial.println("Fünf ");
-#endif
             break;
 
         case FrontWord::hour_6:
             setFrontMatrixWord(9, 5, 9);
-#if WEATHER_VERBOSE
-            Serial.println("Sechs ");
-#endif
             break;
 
         case FrontWord::hour_7:
             setFrontMatrixWord(5, 0, 5);
-#if WEATHER_VERBOSE
-            Serial.println("Sieben ");
-#endif
             break;
 
         case FrontWord::hour_8:
             setFrontMatrixWord(8, 6, 9);
-#if WEATHER_VERBOSE
-            Serial.println("Acht ");
-#endif
             break;
 
         case FrontWord::hour_9:
             setFrontMatrixWord(7, 4, 7);
-#if WEATHER_VERBOSE
-            Serial.println("Neun ");
-#endif
             break;
 
         case FrontWord::hour_10:
             setFrontMatrixWord(8, 2, 5);
-#if WEATHER_VERBOSE
-            Serial.println("Zehn ");
-#endif
             break;
 
         case FrontWord::hour_11:
             setFrontMatrixWord(7, 8, 10);
-#if WEATHER_VERBOSE
-            Serial.println("Elf ");
-#endif
             break;
 
         case FrontWord::hour_12:
             setFrontMatrixWord(4, 1, 5);
-#if WEATHER_VERBOSE
-            Serial.println("Zwölf ");
-#endif
             break;
 
             //------------------------------------------------------------------------------
@@ -236,149 +168,86 @@ public:
 
         case FrontWord::w_morgen:
             setFrontMatrixWord(11, 5, 10);
-#if WEATHER_VERBOSE
-            Serial.print("Morgen ");
-#endif
             break;
 
         case FrontWord::w_frueh:
             setFrontMatrixWord(11, 0, 3);
-#if WEATHER_VERBOSE
-            Serial.print("Früh ");
-#endif
             break;
 
         case FrontWord::w_abend:
             setFrontMatrixWord(12, 6, 10);
-#if WEATHER_VERBOSE
-            Serial.print("Abend ");
-#endif
             break;
 
         case FrontWord::w_mittag:
             setFrontMatrixWord(12, 0, 5);
-#if WEATHER_VERBOSE
-            Serial.print("Mittag ");
-#endif
             break;
 
         case FrontWord::w_nacht:
             setFrontMatrixWord(13, 6, 10);
-#if WEATHER_VERBOSE
-            Serial.print("Nacht ");
-#endif
             break;
 
         case FrontWord::w_schnee:
             setFrontMatrixWord(13, 0, 5);
-#if WEATHER_VERBOSE
-            Serial.print("Schnee ");
-#endif
             break;
 
         case FrontWord::w_klar:
             setFrontMatrixWord(14, 7, 10);
-#if WEATHER_VERBOSE
-            Serial.print("klar ");
-#endif
             break;
 
         case FrontWord::w_warnung:
             setFrontMatrixWord(14, 0, 6);
-#if WEATHER_VERBOSE
-            Serial.print("Warnung ");
-#endif
             break;
 
         case FrontWord::w_regen:
             setFrontMatrixWord(15, 6, 10);
-#if WEATHER_VERBOSE
-            Serial.print("Regen ");
-#endif
             break;
 
         case FrontWord::w_wolken:
             setFrontMatrixWord(15, 0, 5);
-#if WEATHER_VERBOSE
-            Serial.print("Wolken ");
-#endif
             break;
 
         case FrontWord::w_gewitter:
             setFrontMatrixWord(16, 2, 9);
-#if WEATHER_VERBOSE
-            Serial.print("Gewitter ");
-#endif
             break;
 
         case FrontWord::w_unter:
             setFrontMatrixWord(17, 6, 10);
-#if WEATHER_VERBOSE
-            Serial.print("unter ");
-#endif
             break;
 
         case FrontWord::w_ueber:
             setFrontMatrixWord(17, 1, 4);
-#if WEATHER_VERBOSE
-            Serial.print("über ");
-#endif
             break;
 
         case FrontWord::w_minus:
             setFrontMatrixWord(18, 5, 9);
-#if WEATHER_VERBOSE
-            Serial.print("minus ");
-#endif
             break;
 
         case FrontWord::w_null:
             setFrontMatrixWord(18, 0, 3);
-#if WEATHER_VERBOSE
-            Serial.print("Null ");
-#endif
             break;
 
         case FrontWord::w_fuenf:
             setFrontMatrixWord(19, 7, 10);
-#if WEATHER_VERBOSE
-            Serial.print("Fünf ");
-#endif
             break;
 
         case FrontWord::w_zehn:
             setFrontMatrixWord(19, 3, 6);
-#if WEATHER_VERBOSE
-            Serial.print("Zehn ");
-#endif
             break;
 
         case FrontWord::w_und:
             setFrontMatrixWord(19, 0, 2);
-#if WEATHER_VERBOSE
-            Serial.print("und ");
-#endif
             break;
 
         case FrontWord::w_zwanzig:
             setFrontMatrixWord(20, 2, 8);
-#if WEATHER_VERBOSE
-            Serial.print("Zwanzig ");
-#endif
             break;
 
         case FrontWord::w_dreissig:
             setFrontMatrixWord(21, 4, 10);
-#if WEATHER_VERBOSE
-            Serial.print("Dreißig ");
-#endif
             break;
 
         case FrontWord::w_grad:
             setFrontMatrixWord(21, 1, 2);
-#if WEATHER_VERBOSE
-            Serial.println("°C ");
-#endif
             break;
 
         default:
