@@ -292,11 +292,7 @@ public:
 
     // --- Time-Specific Words ---
 
-    virtual bool hasAQuarter() { return false; }
-
     virtual bool hasDreiviertel() { return false; }
-
-    virtual bool hasQuarterTen() { return true; }
 
     virtual bool hasTwenty() { return true; }
 

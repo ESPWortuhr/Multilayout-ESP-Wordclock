@@ -20,9 +20,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 CLOCK_TYPES_DIR = REPO_ROOT / "include" / "WordClockTypes"
 
 DEFAULT_CAPABILITIES = {
-    "hasAQuarter": False,
     "hasDreiviertel": False,
-    "hasQuarterTen": True,
     "hasTwenty": True,
     "hasTwentyfive": False,
     "hasThirtyfive": False,
