@@ -3,6 +3,7 @@
 #include "SensitiveData.h"
 #include "WordClockState.h"
 #include <Arduino.h>
+#include <WiFiClient.h>
 #include <cmath>
 
 /*--------------------------------------------------
@@ -30,6 +31,14 @@ private:
     char resource[100];
     char response[3500];     // fixed size buffer
     uint16_t weatherCounter; // counter fuer Wetterdaten abrufen
+    WiFiClient weatherClient;
+    enum class RequestState : uint8_t { Idle, SkippingHeader, ReadingBody };
+    RequestState requestState = RequestState::Idle;
+    uint32_t requestStartMillis = 0;
+    uint8_t headerEndMatched = 0;
+    size_t responseLength = 0;
+    static constexpr int32_t connectTimeoutMs = 2000;
+    static constexpr uint32_t responseTimeoutMs = 10000;
     int8_t wTemp6;
     int8_t wTemp12;
     int8_t wTemp18;
@@ -135,12 +144,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    void pullWeatherData() {
-
-        // connect to server
-        bool ok = client.connect(server, 80);
-        bool beginFound = false;
-
+    void startWeatherRequest() {
         Serial.println("");
         Serial.println("--------------------------------------");
         Serial.println("Connecting to Openweathermap.org");
@@ -156,161 +160,207 @@ private:
         Serial.print("Calling URL: ");
         Serial.println(maskedResource);
 
-        if (ok == 1) {
+#ifdef ESP8266
+        weatherClient.setTimeout(connectTimeoutMs);
+        const bool ok = weatherClient.connect(server, 80);
+#else
+        const bool ok = weatherClient.connect(server, 80, connectTimeoutMs);
+#endif
+        if (!ok) {
+            Serial.println("Connection to Openweathermap.org failed");
+            return;
+        }
 
-            // Send request to resource
-            client.print("GET ");
-            client.print(resource);
-            client.println(" HTTP/1.1");
-            client.print("Host: ");
-            client.println(server);
-            client.println("Connection: close");
-            client.println();
+        weatherClient.print("GET ");
+        weatherClient.print(resource);
+        weatherClient.println(" HTTP/1.1");
+        weatherClient.print("Host: ");
+        weatherClient.println(server);
+        weatherClient.println("Connection: close");
+        weatherClient.println();
 
-            delay(100);
+        memset(response, 0, sizeof(response));
+        responseLength = 0;
+        headerEndMatched = 0;
+        requestStartMillis = millis();
+        requestState = RequestState::SkippingHeader;
+    }
 
-            // Reading stream and remove headers
-            client.setTimeout(10000);
+    //------------------------------------------------------------------------------
 
-            if (!client.find("\r\n\r\n")) {
-                Serial.println("Timeout while waiting for response header");
-                client.stop();
-                return;
+    void finishWeatherRequest() {
+        weatherClient.stop();
+        requestState = RequestState::Idle;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void pollWeatherResponse() {
+        while (weatherClient.available() > 0) {
+            const int c = weatherClient.read();
+            if (c < 0) {
+                break;
+            }
+            if (requestState == RequestState::SkippingHeader) {
+                if (c == "\r\n\r\n"[headerEndMatched]) {
+                    headerEndMatched++;
+                } else {
+                    headerEndMatched = (c == '\r') ? 1 : 0;
+                }
+                if (headerEndMatched == 4) {
+                    requestState = RequestState::ReadingBody;
+                }
+            } else if (responseLength < sizeof(response) - 1) {
+                response[responseLength++] = static_cast<char>(c);
+            }
+        }
+
+        if (requestState == RequestState::ReadingBody &&
+            (!weatherClient.connected() ||
+             responseLength >= sizeof(response) - 1)) {
+            finishWeatherRequest();
+            processWeatherResponse();
+        } else if (!weatherClient.connected()) {
+            Serial.println("Connection closed before response header ended");
+            finishWeatherRequest();
+        } else if (millis() - requestStartMillis > responseTimeoutMs) {
+            Serial.println("Timeout while waiting for weather response");
+            finishWeatherRequest();
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    void processWeatherResponse() {
+        bool beginFound = false;
+
+        Serial.println("Antwort: ");
+        Serial.println(response);
+
+        int eol = sizeof(response);
+        Serial.print("Length = ");
+        Serial.println(eol);
+
+        // process JSON
+        DynamicJsonDocument doc(6144);
+
+        // But.....make sure the stream header is valid
+        // Sometime OWM includes invalid data after the header
+        // Parsing fails if this data is not removed
+
+        if (int(response[0]) != 123) {
+            Serial.println("Wrong start char detected");
+            uint32_t i = 0;
+            while (!beginFound && i < sizeof(response)) {
+                if (int(response[i]) == 123) { // check for the "{"
+                    beginFound = true;
+                    Serial.println("{ found at ");
+                    Serial.println(i);
+                }
+                i++;
             }
 
-            memset(response, 0, sizeof(response));
-            client.readBytes(response, sizeof(response) - 1);
-
-            Serial.println("Antwort: ");
-            Serial.println(response);
+            if (!beginFound) {
+                Serial.println("No JSON object found in response");
+                return;
+            }
 
             int eol = sizeof(response);
-            Serial.print("Length = ");
+            Serial.println("Length = ");
             Serial.println(eol);
 
-            // process JSON
-            DynamicJsonDocument doc(6144);
-
-            // But.....make sure the stream header is valid
-            // Sometime OWM includes invalid data after the header
-            // Parsing fails if this data is not removed
-
-            if (int(response[0]) != 123) {
-                Serial.println("Wrong start char detected");
-                uint32_t i = 0;
-                while (!beginFound && i < sizeof(response)) {
-                    if (int(response[i]) == 123) { // check for the "{"
-                        beginFound = true;
-                        Serial.println("{ found at ");
-                        Serial.println(i);
-                    }
-                    i++;
-                }
-
-                if (!beginFound) {
-                    Serial.println("No JSON object found in response");
-                    client.stop();
-                    return;
-                }
-
-                int eol = sizeof(response);
-                Serial.println("Length = ");
-                Serial.println(eol);
-
-                // restructure by shifting the correct data
-                Serial.println("restructure");
-                for (uint32_t c = 0; c < (eol - i); c++) {
-                    response[c] = response[((c + i) - 1)];
-                    Serial.println(response[c]);
-                }
-
-                Serial.println("Done...!");
+            // restructure by shifting the correct data
+            Serial.println("restructure");
+            for (uint32_t c = 0; c < (eol - i); c++) {
+                response[c] = response[((c + i) - 1)];
+                Serial.println(response[c]);
             }
 
-            auto error = deserializeJson(doc, response);
-            if (error) {
-                Serial.print(F("deserializeJson() failed with code "));
-                Serial.println(error.c_str());
-                return;
-            } else {
-                Serial.println("JSON parsing worked!");
-            }
-
-            // Fill Variable with json information
-            const char *location = doc["city"]["name"];
-            const char *wetter_6 = doc["list"][1]["weather"][0]["description"];
-            const int wetterid_6 = doc["list"][1]["weather"][0]["id"];
-            double temp_6 = doc["list"][1]["main"]["temp"];
-            const char *wetter_12 = doc["list"][3]["weather"][0]["description"];
-            const int wetterid_12 = doc["list"][3]["weather"][0]["id"];
-            double temp_12 = doc["list"][3]["main"]["temp"];
-            const char *wetter_18 = doc["list"][5]["weather"][0]["description"];
-            const int wetterid_18 = doc["list"][5]["weather"][0]["id"];
-            double temp_18 = doc["list"][5]["main"]["temp"];
-            const char *wetter_24 = doc["list"][7]["weather"][0]["description"];
-            const int wetterid_24 = doc["list"][7]["weather"][0]["id"];
-            double temp_24 = doc["list"][7]["main"]["temp"];
-
-            Serial.print("*** ");
-            Serial.print(location);
-            Serial.println(" ***");
-            Serial.println("----------");
-            Serial.println("+6h");
-            Serial.print("Type: ");
-            Serial.println(wetter_6);
-            Serial.print("Wetter ID: ");
-            Serial.println(wetterid_6);
-            Serial.print("Temp: ");
-            Serial.print(temp_6);
-            Serial.println("°C");
-            Serial.println("----------");
-            Serial.println("+12h");
-            Serial.print("Type: ");
-            Serial.println(wetter_12);
-            Serial.print("Wetter ID: ");
-            Serial.println(wetterid_12);
-            Serial.print("Temp: ");
-            Serial.print(temp_12);
-            Serial.println("°C");
-            Serial.println("----------");
-            Serial.println("+18h");
-            Serial.print("Type: ");
-            Serial.println(wetter_18);
-            Serial.print("Wetter ID: ");
-            Serial.println(wetterid_18);
-            Serial.print("Temp: ");
-            Serial.print(temp_18);
-            Serial.println("°C");
-            Serial.println("----------");
-            Serial.println("+24h");
-            Serial.print("Type: ");
-            Serial.println(wetter_24);
-            Serial.print("Wetter ID: ");
-            Serial.println(wetterid_24);
-            Serial.print("Temp: ");
-            Serial.print(temp_24);
-            Serial.println("°C");
-            Serial.println("Hour");
-            Serial.println(_hour);
-            Serial.println("----------");
-
-            determineWTemp(temp_6, wTemp6);
-            determineWid(wetterid_6, wWeather6);
-
-            determineWTemp(temp_12, wTemp12);
-            determineWid(wetterid_12, wWeather12);
-
-            determineWTemp(temp_18, wTemp18);
-            determineWid(wetterid_18, wWeather18);
-
-            determineWTemp(temp_24, wTemp24);
-            determineWid(wetterid_24, wWeather24);
-
-            determineDaytime(_hour);
-
-            printDeterminedData();
+            Serial.println("Done...!");
         }
-        client.stop(); // disconnect from server
+
+        auto error = deserializeJson(doc, response);
+        if (error) {
+            Serial.print(F("deserializeJson() failed with code "));
+            Serial.println(error.c_str());
+            return;
+        } else {
+            Serial.println("JSON parsing worked!");
+        }
+
+        // Fill Variable with json information
+        const char *location = doc["city"]["name"];
+        const char *wetter_6 = doc["list"][1]["weather"][0]["description"];
+        const int wetterid_6 = doc["list"][1]["weather"][0]["id"];
+        double temp_6 = doc["list"][1]["main"]["temp"];
+        const char *wetter_12 = doc["list"][3]["weather"][0]["description"];
+        const int wetterid_12 = doc["list"][3]["weather"][0]["id"];
+        double temp_12 = doc["list"][3]["main"]["temp"];
+        const char *wetter_18 = doc["list"][5]["weather"][0]["description"];
+        const int wetterid_18 = doc["list"][5]["weather"][0]["id"];
+        double temp_18 = doc["list"][5]["main"]["temp"];
+        const char *wetter_24 = doc["list"][7]["weather"][0]["description"];
+        const int wetterid_24 = doc["list"][7]["weather"][0]["id"];
+        double temp_24 = doc["list"][7]["main"]["temp"];
+
+        Serial.print("*** ");
+        Serial.print(location);
+        Serial.println(" ***");
+        Serial.println("----------");
+        Serial.println("+6h");
+        Serial.print("Type: ");
+        Serial.println(wetter_6);
+        Serial.print("Wetter ID: ");
+        Serial.println(wetterid_6);
+        Serial.print("Temp: ");
+        Serial.print(temp_6);
+        Serial.println("°C");
+        Serial.println("----------");
+        Serial.println("+12h");
+        Serial.print("Type: ");
+        Serial.println(wetter_12);
+        Serial.print("Wetter ID: ");
+        Serial.println(wetterid_12);
+        Serial.print("Temp: ");
+        Serial.print(temp_12);
+        Serial.println("°C");
+        Serial.println("----------");
+        Serial.println("+18h");
+        Serial.print("Type: ");
+        Serial.println(wetter_18);
+        Serial.print("Wetter ID: ");
+        Serial.println(wetterid_18);
+        Serial.print("Temp: ");
+        Serial.print(temp_18);
+        Serial.println("°C");
+        Serial.println("----------");
+        Serial.println("+24h");
+        Serial.print("Type: ");
+        Serial.println(wetter_24);
+        Serial.print("Wetter ID: ");
+        Serial.println(wetterid_24);
+        Serial.print("Temp: ");
+        Serial.print(temp_24);
+        Serial.println("°C");
+        Serial.println("Hour");
+        Serial.println(_hour);
+        Serial.println("----------");
+
+        determineWTemp(temp_6, wTemp6);
+        determineWid(wetterid_6, wWeather6);
+
+        determineWTemp(temp_12, wTemp12);
+        determineWid(wetterid_12, wWeather12);
+
+        determineWTemp(temp_18, wTemp18);
+        determineWid(wetterid_18, wWeather18);
+
+        determineWTemp(temp_24, wTemp24);
+        determineWid(wetterid_24, wWeather24);
+
+        determineDaytime(_hour);
+
+        printDeterminedData();
     }
 
     //------------------------------------------------------------------------------
@@ -839,8 +889,10 @@ public:
             Serial.println(wHour);
         }
 
-        if (WiFi.status() == WL_CONNECTED && checkWeatherCounter()) {
-            pullWeatherData();
+        if (requestState != RequestState::Idle) {
+            pollWeatherResponse();
+        } else if (WiFi.status() == WL_CONNECTED && checkWeatherCounter()) {
+            startWeatherRequest();
         }
         if (weatherCounter > 0) {
             weatherCounter--;
