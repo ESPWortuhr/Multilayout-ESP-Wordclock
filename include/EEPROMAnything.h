@@ -16,19 +16,10 @@ namespace eeprom {
 
 namespace detail {
 
-template <size_t destSize, size_t sourceSize>
-void copyBoundedString(char (&dest)[destSize],
-                       const char (&source)[sourceSize]) {
-    static_assert(destSize > 0, "destination buffer must not be empty");
-    size_t copyLen = min(destSize - 1, sourceSize);
-    memcpy(dest, source, copyLen);
-    dest[copyLen] = '\0';
-}
-
 template <size_t sourceSize>
 void printSafeString(const char *label, const char (&source)[sourceSize]) {
     char buffer[sourceSize + 1] = {0};
-    copyBoundedString(buffer, source);
+    sensitive::copyBoundedString(buffer, source);
     Serial.printf("%s%s\n", label, buffer);
 }
 
