@@ -1479,12 +1479,6 @@ void ClockWork::loop(struct tm &tm) {
             G.prog = COMMAND_MODE_WORD_CLOCK;
         }
 
-        if (G.prog == COMMAND_MODE_DIGITAL_CLOCK) {
-            led.clear();
-            led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
-                                 _hour / 10);
-        }
-
         lastSecond = _second;
     }
 
@@ -1928,14 +1922,22 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_MODE_DIGITAL_CLOCK: {
+        static uint8_t lastShownSecond = 0xFF;
+
         if (G.progInit) {
             clearClockByProgInit();
+            lastShownSecond = 0xFF;
         }
-        if (parametersChanged) {
-            led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
-                                 _hour / 10);
-            parametersChanged = false;
+
+        if (lastShownSecond == _second && !parametersChanged) {
+            break;
         }
+        lastShownSecond = _second;
+        parametersChanged = false;
+
+        led.clear();
+        led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
+                             _hour / 10);
         break;
     }
 
