@@ -70,7 +70,8 @@ uint16_t countOutOfRange(ClockType *layout) {
         }
     }
 
-    for (uint8_t variant = 0; variant < 2; variant++) {
+    for (uint8_t variant = 0; layout->hasMinuteLeds() && variant < 2;
+         variant++) {
         uint16_t minutePixels[4] = {0};
         layout->getMinuteArray(minutePixels, variant);
         for (uint8_t i = 0; i < 4; i++) {

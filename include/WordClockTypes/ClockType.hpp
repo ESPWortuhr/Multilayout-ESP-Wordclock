@@ -239,6 +239,10 @@ public:
     virtual inline uint8_t colsWordMatrix() { return 11; }
 
     virtual uint8_t numPixelsMinuteMatrix() {
+        if (!hasMinuteLeds()) {
+            return 0;
+        }
+
         return G.minuteLedCount == MINUTE_LEDS_WIRED_7 ? MINUTE_LEDS_WIRED_7
                                                        : MINUTE_LED_COUNT;
     }
@@ -261,7 +265,7 @@ public:
             }
         }
 
-        for (uint8_t variant = 0; variant < 2; variant++) {
+        for (uint8_t variant = 0; hasMinuteLeds() && variant < 2; variant++) {
             uint16_t minutePixels[MINUTE_LED_COUNT] = {0};
             getMinuteArray(minutePixels, variant);
             for (uint8_t i = 0; i < MINUTE_LED_COUNT; i++) {
@@ -330,7 +334,7 @@ public:
 
     virtual bool hasLed7x() { return hasLed4x(); }
 
-    virtual bool hasMinuteLeds() { return true; }
+    virtual bool hasMinuteLeds() { return hasLed4x() || hasLed7x(); }
 
     virtual bool hasMinuteInWords() { return false; }
 

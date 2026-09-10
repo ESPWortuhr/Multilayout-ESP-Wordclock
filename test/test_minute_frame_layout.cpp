@@ -219,6 +219,31 @@ void offKeepsTheFrameBehindSevenWiredLeds() {
     }
 }
 
+void layoutsWithoutLedVariantsHaveNoMinuteLeds() {
+    for (uint8_t wiring : WIRINGS) {
+        for (size_t i = 0; i < LAYOUT_COUNT; i++) {
+            ClockType *layout = LAYOUTS[i];
+
+            setUp(wiring, MinuteVariant::Off);
+            const bool offersLedVariant =
+                layout->supportsMinuteVariant(MinuteVariant::LED4x) ||
+                layout->supportsMinuteVariant(MinuteVariant::LED7x);
+
+            snprintf(message, sizeof(message),
+                     "%s/%u wired: minute LEDs exactly when LED4x or LED7x "
+                     "is offered",
+                     LAYOUT_NAMES[i], wiring);
+            check(layout->hasMinuteLeds() == offersLedVariant, message);
+
+            snprintf(message, sizeof(message),
+                     "%s/%u wired: no LEDs reserved without minute LEDs (%u)",
+                     LAYOUT_NAMES[i], wiring, layout->numPixelsMinuteMatrix());
+            check(offersLedVariant || layout->numPixelsMinuteMatrix() == 0,
+                  message);
+        }
+    }
+}
+
 /* A frame that starts inside the word matrix would repaint letters. */
 void frameStartsBehindTheWordMatrix() {
     for (uint8_t wiring : WIRINGS) {
@@ -249,6 +274,7 @@ int main() {
     minuteLedsAndFrameDoNotOverlap();
     stripGeometryIgnoresTheMinuteVariant();
     offKeepsTheFrameBehindSevenWiredLeds();
+    layoutsWithoutLedVariantsHaveNoMinuteLeds();
     frameStartsBehindTheWordMatrix();
     return report("minute_frame_layout");
 }

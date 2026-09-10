@@ -22,14 +22,6 @@
 
 class De11x11V3_t : public De11x11_t {
 public:
-    virtual uint8_t numPixelsMinuteMatrix() override { return 0; }
-
-    //------------------------------------------------------------------------------
-
-    virtual bool hasMinuteLeds() override { return false; }
-
-    //------------------------------------------------------------------------------
-
     virtual bool hasLed4x() override { return false; }
 
     //------------------------------------------------------------------------------
