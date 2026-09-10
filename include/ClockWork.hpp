@@ -1472,9 +1472,7 @@ void ClockWork::loop(struct tm &tm) {
         //--------------------------------------------
         // Auto Brightness Logic
         //--------------------------------------------
-        if (G.autoBrightEnabled == 1) {
-            loopAutoBrightLogic();
-        }
+        loopAutoBrightLogic();
 
         if (G.prog == COMMAND_IDLE && G.conf == COMMAND_IDLE) {
             led.clear();
