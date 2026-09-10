@@ -1,5 +1,6 @@
 #pragma once
 
+#include <initializer_list>
 #include <string.h> // memset (resetWordIds)
 
 enum class LanguageAbbreviation {
@@ -265,12 +266,15 @@ public:
             }
         }
 
-        for (uint8_t variant = 0; hasMinuteLeds() && variant < 2; variant++) {
-            uint16_t minutePixels[MINUTE_LED_COUNT] = {0};
-            getMinuteArray(minutePixels, variant);
-            for (uint8_t i = 0; i < MINUTE_LED_COUNT; i++) {
-                if (minutePixels[i] + 1 > pixelCount) {
-                    pixelCount = minutePixels[i] + 1;
+        if (hasMinuteLeds()) {
+            for (MinuteVariant variant :
+                 {MinuteVariant::LED4x, MinuteVariant::LED7x}) {
+                uint16_t minutePixels[MINUTE_LED_COUNT] = {0};
+                getMinuteArray(minutePixels, variant);
+                for (uint8_t i = 0; i < MINUTE_LED_COUNT; i++) {
+                    if (minutePixels[i] + 1 > pixelCount) {
+                        pixelCount = minutePixels[i] + 1;
+                    }
                 }
             }
         }
@@ -405,21 +409,12 @@ public:
         return checkedFrontMatrixIndex(returnValue, numPixelsWordMatrix);
     };
 
-    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) {
+    virtual void getMinuteArray(uint16_t *returnArr, MinuteVariant variant) {
         const uint16_t numPixelsWordMatrix = numPixelsWordMatrixAdjusted();
+        const uint8_t spacing = variant == MinuteVariant::LED7x ? 2 : 1;
 
         for (uint8_t i = 0; i < 4; i++) {
-            switch (col) {
-            case 0: // LEDs for "LED4x" minute display
-                returnArr[i] = numPixelsWordMatrix + i;
-                break;
-            case 1: // LEDs for "LED7x" minute display
-                returnArr[i] = numPixelsWordMatrix + i * 2;
-                break;
-
-            default:
-                break;
-            }
+            returnArr[i] = numPixelsWordMatrix + i * spacing;
         }
     };
 

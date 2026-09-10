@@ -750,29 +750,6 @@ void ClockWork::initBootLed() {
 // Minute Functions
 //------------------------------------------------------------------------------
 
-uint8_t ClockWork::determineWhichMinuteVariant() {
-    switch (G.minuteVariant) {
-    case MinuteVariant::Off:
-        return 0;
-        break;
-    case MinuteVariant::LED4x:
-        return 0;
-        break;
-    case MinuteVariant::LED7x:
-        return 1;
-        break;
-    case MinuteVariant::InWords:
-        return 0;
-        break;
-    default:
-        Serial.println("[ERROR] G.minuteVariant undefined");
-        return 0;
-        break;
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void ClockWork::showSpecialWordBeen(const uint8_t min) {
     if (usedClockType->hasSpecialWordBeen()) {
         if (min == 0) {
@@ -830,8 +807,7 @@ void ClockWork::showMinute(uint8_t min) {
     min %= 5;
 
     /* saving corosponding minutePixelArray */
-    usedClockType->getMinuteArray(minutePixelArray,
-                                  determineWhichMinuteVariant());
+    usedClockType->getMinuteArray(minutePixelArray, G.minuteVariant);
     /* Reseting minute byte */
     minuteArray = 0;
     if (usedClockType->hasMinuteInWords() && min > 0) {

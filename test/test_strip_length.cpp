@@ -70,13 +70,15 @@ uint16_t countOutOfRange(ClockType *layout) {
         }
     }
 
-    for (uint8_t variant = 0; layout->hasMinuteLeds() && variant < 2;
-         variant++) {
-        uint16_t minutePixels[4] = {0};
-        layout->getMinuteArray(minutePixels, variant);
-        for (uint8_t i = 0; i < 4; i++) {
-            if (minutePixels[i] >= pixelCount) {
-                outOfRange++;
+    if (layout->hasMinuteLeds()) {
+        for (MinuteVariant variant :
+             {MinuteVariant::LED4x, MinuteVariant::LED7x}) {
+            uint16_t minutePixels[4] = {0};
+            layout->getMinuteArray(minutePixels, variant);
+            for (uint8_t i = 0; i < 4; i++) {
+                if (minutePixels[i] >= pixelCount) {
+                    outOfRange++;
+                }
             }
         }
     }

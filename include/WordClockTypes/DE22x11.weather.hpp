@@ -43,7 +43,8 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
+    virtual void getMinuteArray(uint16_t *returnArr,
+                                MinuteVariant variant) override {
         for (uint8_t i = 0; i < 4; i++) {
             returnArr[i] = 113 + i;
         }

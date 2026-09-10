@@ -60,16 +60,6 @@ const char *variantName(MinuteVariant variant) {
     return "?";
 }
 
-/* Mirrors ClockWork::determineWhichMinuteVariant(). */
-uint8_t minuteArrayColumn(MinuteVariant variant) {
-    switch (variant) {
-    case MinuteVariant::LED7x:
-        return 1;
-    default:
-        return 0;
-    }
-}
-
 MinuteVariant ledVariantFor(uint8_t wiring) {
     return wiring == MINUTE_LEDS_WIRED_7 ? MinuteVariant::LED7x
                                          : MinuteVariant::LED4x;
@@ -128,7 +118,7 @@ void minuteLedsAndFrameDoNotOverlap() {
                 }
 
                 uint16_t minutePixel[4] = {0};
-                layout->getMinuteArray(minutePixel, minuteArrayColumn(variant));
+                layout->getMinuteArray(minutePixel, variant);
 
                 snprintf(message, sizeof(message),
                          "%s/%s/%u wired: minute LEDs run in strip order",
@@ -207,8 +197,7 @@ void offKeepsTheFrameBehindSevenWiredLeds() {
         }
 
         uint16_t minutePixel[4] = {0};
-        layout->getMinuteArray(minutePixel,
-                               minuteArrayColumn(MinuteVariant::LED7x));
+        layout->getMinuteArray(minutePixel, MinuteVariant::LED7x);
 
         snprintf(message, sizeof(message),
                  "%s: minutes off after LED7x - frame (pixel %u) stays "
