@@ -461,5 +461,5 @@
  * Valid values OWM_CITY_ID [OpenWeatherMap city ID, up to 8 digits, as string]
  * Valid values OWM_API_KEY [up to 34 characters as string]
  */
-#define OWM_CITY_ID "YOUR_CITY"
-#define OWM_API_KEY "YOUR_API_KEY"
+// #define OWM_CITY_ID "YOUR_CITY"
+// #define OWM_API_KEY "YOUR_API_KEY"
