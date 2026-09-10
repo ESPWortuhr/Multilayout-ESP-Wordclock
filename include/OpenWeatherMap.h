@@ -30,6 +30,7 @@ private:
     uint8_t daytime = 0;
     uint8_t shownSlot = 0;
     bool forecastValid = false;
+    uint32_t forecastMillis = 0;
 };
 
 extern OpenWMap weather;

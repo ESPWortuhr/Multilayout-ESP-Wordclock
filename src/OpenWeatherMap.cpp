@@ -25,6 +25,8 @@ constexpr int32_t connectTimeoutMs = 2000;
 constexpr uint32_t responseTimeoutMs = 10000;
 constexpr uint32_t bodyTimeoutMs = 1000;
 constexpr uint32_t requestIntervalMs = 10UL * 60UL * 1000UL;
+constexpr uint32_t forecastMaxAgeMs =
+    3 * requestIntervalMs + requestIntervalMs / 2;
 
 template <size_t N> void buildResource(char (&dest)[N], const char *apikey) {
     snprintf(dest, N, "/data/2.5/forecast?id=%s&units=metric&APPID=%s&cnt=%u",
@@ -50,6 +52,11 @@ void OpenWMap::calcWeatherClockface() {
 //------------------------------------------------------------------------------
 
 void OpenWMap::loop() {
+    if (forecastValid && millis() - forecastMillis > forecastMaxAgeMs) {
+        forecastValid = false;
+        Serial.println("Weather forecast is outdated, hiding it");
+    }
+
     if (_second % 10 == 0) {
         shownSlot = (shownSlot + 1) % forecast::slots;
         led.clear();
@@ -223,6 +230,7 @@ void OpenWMap::processWeatherResponse() {
 
     daytime = forecast::daytimeFor(_hour);
     forecastValid = true;
+    forecastMillis = millis();
 
 #if WEATHER_VERBOSE
     Serial.println("Hour");
