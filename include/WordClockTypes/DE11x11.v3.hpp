@@ -136,9 +136,6 @@ public:
             setFrontMatrixWord(4, 1, 5);
             break;
 
-        case FrontWord::funk:
-            break;
-
         case FrontWord::m_num1:
             setFrontMatrixWord(10, 8, 8);
             break;
