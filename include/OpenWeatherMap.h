@@ -151,7 +151,7 @@ private:
 
         weatherClient.print("GET ");
         weatherClient.print(resource);
-        weatherClient.println(" HTTP/1.1");
+        weatherClient.println(" HTTP/1.0");
         weatherClient.print("Host: ");
         weatherClient.println(server);
         weatherClient.println("Connection: close");
