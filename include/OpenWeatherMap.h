@@ -187,13 +187,19 @@ private:
             if (int(response[0]) != 123) {
                 Serial.println("Wrong start char detected");
                 uint32_t i = 0;
-                while (!beginFound) {
+                while (!beginFound && i < sizeof(response)) {
                     if (int(response[i]) == 123) { // check for the "{"
                         beginFound = true;
                         Serial.println("{ found at ");
                         Serial.println(i);
                     }
                     i++;
+                }
+
+                if (!beginFound) {
+                    Serial.println("No JSON object found in response");
+                    client.stop();
+                    return;
                 }
 
                 int eol = sizeof(response);
