@@ -326,12 +326,6 @@ void Led::setbyFrontMatrix(ColorPosition colorPosition,
 
 //------------------------------------------------------------------------------
 
-void Led::setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse) {
-    setbyFrontMatrixGradient(color, color, applyMirrorAndReverse);
-}
-
-//------------------------------------------------------------------------------
-
 /*
  * Callers that bring their own colours rather than reading them from the
  * configuration - the symbol mode dims to effectBri, the firework picks a hue

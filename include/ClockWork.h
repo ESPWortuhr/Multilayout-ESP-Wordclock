@@ -40,7 +40,6 @@ private:
 
     void rainbow();
     void rainbowCycle();
-    void rainbowSpiralCycle();
     void fire();
     bool getStaticScrollingTextInfo(const char *buf, StaticScrollingText &info);
     void displayStaticScrollingText(const char *buf,
@@ -93,12 +92,6 @@ public:
     void initLedStrip(uint8_t num);
     void initHardwareButtons();
     uint32_t getLuxValue() const { return lux; }
-    float getAdcValue() const {
-        uint16_t adcRaw = analogRead(A0);
-        float voltage = (adcRaw * 3.3f) / 1023.0f;
-        return round(voltage * 100.0f) / 100.0f;
-    }
-    uint16_t getAdcRawValue() const { return analogRead(A0); }
 
     //------------------------------------------------------------------------------
     // Minute Functions

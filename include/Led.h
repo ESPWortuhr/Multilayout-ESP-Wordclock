@@ -57,7 +57,6 @@ public:
     void setPixel(uint8_t row, uint8_t col, HsbColor color);
     void setbyFrontMatrix(ColorPosition position = Foreground,
                           bool applyMirrorAndReverse = true);
-    void setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse = true);
     void setbyFrontMatrixGradient(HsbColor from, HsbColor to,
                                   bool applyMirrorAndReverse = true);
     void setbyMinuteArray(ColorPosition position = Foreground);
