@@ -29,17 +29,15 @@ private:
         "&units=metric&APPID=";       // Openweather API URL part 2
     const char *resource3 = "&cnt=8"; // Openweather API forecast time
     char resource[100];
-    char response[5120];     // fixed size buffer
     uint16_t weatherCounter; // counter fuer Wetterdaten abrufen
     WiFiClient weatherClient;
-    enum class RequestState : uint8_t { Idle, SkippingHeader, ReadingBody };
+    enum class RequestState : uint8_t { Idle, SkippingHeader };
     RequestState requestState = RequestState::Idle;
     uint32_t requestStartMillis = 0;
     uint8_t headerEndMatched = 0;
-    size_t responseLength = 0;
-    bool responseOverflow = false;
     static constexpr int32_t connectTimeoutMs = 2000;
     static constexpr uint32_t responseTimeoutMs = 10000;
+    static constexpr uint32_t bodyTimeoutMs = 1000;
     static constexpr uint8_t forecastSlots = 4;
     int8_t wTemp[forecastSlots];
     uint16_t wWeather[forecastSlots];
@@ -157,9 +155,6 @@ private:
         weatherClient.println("Connection: close");
         weatherClient.println();
 
-        memset(response, 0, sizeof(response));
-        responseLength = 0;
-        responseOverflow = false;
         headerEndMatched = 0;
         requestStartMillis = millis();
         requestState = RequestState::SkippingHeader;
@@ -180,33 +175,19 @@ private:
             if (c < 0) {
                 break;
             }
-            if (requestState == RequestState::SkippingHeader) {
-                if (c == "\r\n\r\n"[headerEndMatched]) {
-                    headerEndMatched++;
-                } else {
-                    headerEndMatched = (c == '\r') ? 1 : 0;
-                }
-                if (headerEndMatched == 4) {
-                    requestState = RequestState::ReadingBody;
-                }
-            } else if (responseLength < sizeof(response) - 1) {
-                response[responseLength++] = static_cast<char>(c);
+            if (c == "\r\n\r\n"[headerEndMatched]) {
+                headerEndMatched++;
             } else {
-                responseOverflow = true;
+                headerEndMatched = (c == '\r') ? 1 : 0;
+            }
+            if (headerEndMatched == 4) {
+                processWeatherResponse();
+                finishWeatherRequest();
+                return;
             }
         }
 
-        if (requestState == RequestState::ReadingBody &&
-            !weatherClient.connected()) {
-            finishWeatherRequest();
-            if (responseOverflow) {
-                Serial.printf(
-                    "Weather response exceeds %u bytes, ignoring it\n",
-                    static_cast<unsigned>(sizeof(response) - 1));
-            } else {
-                processWeatherResponse();
-            }
-        } else if (!weatherClient.connected()) {
+        if (!weatherClient.connected()) {
             Serial.println("Connection closed before response header ended");
             finishWeatherRequest();
         } else if (millis() - requestStartMillis > responseTimeoutMs) {
@@ -218,102 +199,80 @@ private:
     //------------------------------------------------------------------------------
 
     void processWeatherResponse() {
-        bool beginFound = false;
-
-        Serial.println("Antwort: ");
-        Serial.println(response);
-
-        int eol = sizeof(response);
-        Serial.print("Length = ");
-        Serial.println(eol);
-
-        // process JSON
-        DynamicJsonDocument doc(3072);
-
-        // But.....make sure the stream header is valid
-        // Sometime OWM includes invalid data after the header
-        // Parsing fails if this data is not removed
-
-        if (int(response[0]) != 123) {
-            Serial.println("Wrong start char detected");
-            uint32_t i = 0;
-            while (!beginFound && i < sizeof(response)) {
-                if (int(response[i]) == 123) { // check for the "{"
-                    beginFound = true;
-                    Serial.println("{ found at ");
-                    Serial.println(i);
-                }
-                i++;
-            }
-
-            if (!beginFound) {
-                Serial.println("No JSON object found in response");
-                return;
-            }
-
-            int eol = sizeof(response);
-            Serial.println("Length = ");
-            Serial.println(eol);
-
-            // restructure by shifting the correct data
-            Serial.println("restructure");
-            for (uint32_t c = 0; c < (eol - i); c++) {
-                response[c] = response[((c + i) - 1)];
-                Serial.println(response[c]);
-            }
-
-            Serial.println("Done...!");
-        }
-
         StaticJsonDocument<512> filter;
-        filter["city"]["name"] = true;
+        filter["cod"] = true;
+        filter["message"] = true;
         filter["list"][0]["main"]["temp"] = true;
         filter["list"][0]["weather"][0]["id"] = true;
+#if WEATHER_VERBOSE
+        filter["city"]["name"] = true;
         filter["list"][0]["weather"][0]["description"] = true;
+        const uint32_t parseStartMillis = millis();
+#endif
 
-        auto error = deserializeJson(doc, response,
+        DynamicJsonDocument doc(3072);
+        weatherClient.setTimeout(bodyTimeoutMs);
+        auto error = deserializeJson(doc, weatherClient,
                                      DeserializationOption::Filter(filter));
         if (error) {
             Serial.print(F("deserializeJson() failed with code "));
             Serial.println(error.c_str());
             return;
-        } else {
-            Serial.println("JSON parsing worked!");
         }
 
-        // Fill Variable with json information
-        const char *location = doc["city"]["name"];
+#if WEATHER_VERBOSE
+        Serial.printf("Weather body parsed in %lu ms: ",
+                      static_cast<unsigned long>(millis() - parseStartMillis));
+        serializeJson(doc, Serial);
+        Serial.println();
+#endif
+
+        if (doc["cod"].as<int>() != 200 ||
+            doc["list"].size() < 2 * forecastSlots) {
+            Serial.print("OpenWeatherMap error ");
+            serializeJson(doc["cod"], Serial);
+            Serial.print(": ");
+            serializeJson(doc["message"], Serial);
+            Serial.println();
+            return;
+        }
+
+#if WEATHER_VERBOSE
         Serial.print("*** ");
-        Serial.print(location);
+        Serial.print(doc["city"]["name"].as<const char *>());
         Serial.println(" ***");
+#endif
 
         for (uint8_t slot = 0; slot < forecastSlots; slot++) {
             JsonVariant forecast = doc["list"][2 * slot + 1];
-            const char *description = forecast["weather"][0]["description"];
             const int weatherId = forecast["weather"][0]["id"];
             const double temp = forecast["main"]["temp"];
 
+#if WEATHER_VERBOSE
             Serial.println("----------");
             Serial.printf("+%dh\n", 6 * (slot + 1));
             Serial.print("Type: ");
-            Serial.println(description);
+            Serial.println(
+                forecast["weather"][0]["description"].as<const char *>());
             Serial.print("Wetter ID: ");
             Serial.println(weatherId);
             Serial.print("Temp: ");
             Serial.print(temp);
             Serial.println("°C");
+#endif
 
             determineWTemp(temp, wTemp[slot]);
             determineWid(weatherId, wWeather[slot]);
         }
 
+        determineDaytime(_hour);
+
+#if WEATHER_VERBOSE
         Serial.println("Hour");
         Serial.println(_hour);
         Serial.println("----------");
-
-        determineDaytime(_hour);
-
         printDeterminedData();
+#endif
     }
 
     //------------------------------------------------------------------------------
