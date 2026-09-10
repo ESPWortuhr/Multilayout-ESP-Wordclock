@@ -1966,7 +1966,7 @@ void ClockWork::loop(struct tm &tm) {
         Serial.print("Hostname: ");
         Serial.println(G.hostname);
         eeprom::write();
-        network.reboot();
+        network.changeHostname(G.hostname);
         break;
     }
 
