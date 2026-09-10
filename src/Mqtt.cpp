@@ -275,6 +275,34 @@ void Mqtt::processEffect(const JsonDocument &doc) {
 
 //------------------------------------------------------------------------------
 
+const char *Mqtt::getEffectName() {
+    if (isWordClockMode(G.prog)) {
+        return "Wordclock";
+    }
+    switch (G.prog) {
+    case COMMAND_MODE_SECONDS:
+        return "Seconds";
+    case COMMAND_MODE_DIGITAL_CLOCK:
+        return "Digitalclock";
+    case COMMAND_MODE_SCROLLINGTEXT:
+        return "Scrollingtext";
+    case COMMAND_MODE_RAINBOWCYCLE:
+        return "Rainbowcycle";
+    case COMMAND_MODE_RAINBOW:
+        return "Rainbow";
+    case COMMAND_MODE_FIRE:
+        return "Fire";
+    case COMMAND_MODE_COLOR:
+        return "Color";
+    case COMMAND_MODE_SYMBOL:
+        return "Symbol";
+    default:
+        return nullptr;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 /* Description:
 
 This function processes the "scrolling_text" key. The text is always copied with
@@ -804,35 +832,9 @@ void Mqtt::sendState() {
         color["h"] = round(G.color[Foreground].H * 360); // Hue 0-360
         color["s"] = round(G.color[Foreground].S * 100); // Saturation 0-100
 
-        if (isWordClockMode(G.prog)) {
-            doc["effect"] = "Wordclock";
-        } else {
-            switch (G.prog) {
-            case COMMAND_MODE_SECONDS:
-                doc["effect"] = "Seconds";
-                break;
-            case COMMAND_MODE_DIGITAL_CLOCK:
-                doc["effect"] = "Digitalclock";
-                break;
-            case COMMAND_MODE_SCROLLINGTEXT:
-                doc["effect"] = "Scrollingtext";
-                break;
-            case COMMAND_MODE_RAINBOWCYCLE:
-                doc["effect"] = "Rainbowcycle";
-                break;
-            case COMMAND_MODE_RAINBOW:
-                doc["effect"] = "Rainbow";
-                break;
-            case COMMAND_MODE_FIRE:
-                doc["effect"] = "Fire";
-                break;
-            case COMMAND_MODE_COLOR:
-                doc["effect"] = "Color";
-                break;
-            case COMMAND_MODE_SYMBOL:
-                doc["effect"] = "Symbol";
-                break;
-            }
+        const char *effect = getEffectName();
+        if (effect) {
+            doc["effect"] = effect;
         }
 
         char buffer[200];
