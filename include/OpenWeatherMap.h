@@ -21,45 +21,27 @@ Weather condition code (wetterid):
 
 class OpenWMap {
 private:
-    const char *server =
-        "api.openweathermap.org"; // Openweather server's address
-    const char *resource1 =
-        "/data/2.5/forecast?id="; // Openweather API URL part 1
-    const char *resource2 =
-        "&units=metric&APPID=";       // Openweather API URL part 2
-    const char *resource3 = "&cnt=8"; // Openweather API forecast time
-    char resource[100];
-    uint16_t weatherCounter; // counter fuer Wetterdaten abrufen
+    static constexpr const char *server = "api.openweathermap.org";
     WiFiClient weatherClient;
     enum class RequestState : uint8_t { Idle, SkippingHeader };
     RequestState requestState = RequestState::Idle;
     uint32_t requestStartMillis = 0;
+    uint32_t lastRequestMillis = 0;
+    bool requestedOnce = false;
     uint8_t headerEndMatched = 0;
     static constexpr int32_t connectTimeoutMs = 2000;
     static constexpr uint32_t responseTimeoutMs = 10000;
     static constexpr uint32_t bodyTimeoutMs = 1000;
+    static constexpr uint32_t requestIntervalMs = 10UL * 60UL * 1000UL;
     static constexpr uint8_t forecastSlots = 4;
-    int8_t wTemp[forecastSlots];
-    uint16_t wWeather[forecastSlots];
-    uint16_t wHour;
-    uint16_t wWeatherSwitch;
+    int8_t wTemp[forecastSlots] = {};
+    uint16_t wWeather[forecastSlots] = {};
+    uint8_t daytime = 0;
+    uint8_t shownSlot = 0;
+    bool forecastValid = false;
 
 private:
-    void determineDaytime(uint8_t hour) {
-        uint8_t countId = 0;
-        hour += 24; // Offset by 24 hours
-        hour -= 3;  // Offset to get corrospondance
-        hour %= 24; // Offset for nighttime
-
-        for (uint8_t i = 0; i < 4; i++) {
-            if (hour < 6 /* Timeframe for each Daytime*/) {
-                wHour = countId + 1;
-                break;
-            }
-            hour -= 6;
-            countId++;
-        }
-    }
+    void determineDaytime(uint8_t hour) { daytime = ((hour + 21) % 24) / 6; }
 
     //------------------------------------------------------------------------------
 
@@ -102,20 +84,19 @@ private:
             Serial.printf("wWeather%d - %u\n", hours, wWeather[slot]);
             Serial.println("--------- ");
         }
-        Serial.print("wHour - ");
-        Serial.println(wHour);
+        Serial.print("daytime - ");
+        Serial.println(daytime);
         Serial.println("--------- ");
     }
 
     //------------------------------------------------------------------------------
 
-    void buildResource(char (&dest)[sizeof(resource)], const char *apikey) {
-        memset(dest, 0, sizeof(dest));
-        strncat(dest, resource1, 22);
-        strncat(dest, G.openWeatherMap.cityid, 8);
-        strncat(dest, resource2, 20);
-        strncat(dest, apikey, 35);
-        strncat(dest, resource3, 6);
+    template <size_t N>
+    void buildResource(char (&dest)[N], const char *apikey) {
+        snprintf(dest, N,
+                 "/data/2.5/forecast?id=%s&units=metric&APPID=%s&cnt=%u",
+                 G.openWeatherMap.cityid, apikey,
+                 static_cast<unsigned>(2 * forecastSlots));
     }
 
     //------------------------------------------------------------------------------
@@ -126,6 +107,7 @@ private:
         Serial.println("Connecting to Openweathermap.org");
         Serial.println("--------------------------------------");
 
+        char resource[100];
         buildResource(resource, G.openWeatherMap.apikey);
 
         char apiKeyMasked[sizeof(G.openWeatherMap.apikey) + 1] = {0};
@@ -266,6 +248,7 @@ private:
         }
 
         determineDaytime(_hour);
+        forecastValid = true;
 
 #if WEATHER_VERBOSE
         Serial.println("Hour");
@@ -277,12 +260,9 @@ private:
 
     //------------------------------------------------------------------------------
 
-    bool checkWeatherCounter() {
-        if (weatherCounter == 0) {
-            weatherCounter = 600;
-            return true;
-        }
-        return false;
+    bool requestDue() const {
+        return !requestedOnce ||
+               millis() - lastRequestMillis >= requestIntervalMs;
     }
 
     //------------------------------------------------------------------------------
@@ -355,18 +335,12 @@ private:
     }
 
 public:
-    OpenWMap(/* args */) = default;
-    ~OpenWMap() = default;
-
-    //------------------------------------------------------------------------------
-
     void calcWeatherClockface() {
-        if (wWeatherSwitch < 1 || wWeatherSwitch > forecastSlots) {
+        if (!forecastValid) {
             return;
         }
-        const uint8_t slot = wWeatherSwitch - 1;
 
-        static const FrontWord daytime[7][2] = {
+        static const FrontWord daytimeWords[7][2] = {
             {FrontWord::w_mittag},
             {FrontWord::w_abend},
             {FrontWord::w_nacht},
@@ -375,32 +349,25 @@ public:
             {FrontWord::w_morgen, FrontWord::w_abend},
             {FrontWord::w_morgen, FrontWord::w_nacht},
         };
-        if (wHour >= 1 && wHour <= 4) {
-            showWords(daytime[slot + wHour - 1]);
-        }
-
-        showTemperature(wTemp[slot]);
-        showCondition(wWeather[slot]);
+        showWords(daytimeWords[shownSlot + daytime]);
+        showTemperature(wTemp[shownSlot]);
+        showCondition(wWeather[shownSlot]);
     }
 
     //------------------------------------------------------------------------------
 
     void loop() {
         if (_second % 10 == 0) {
-            wWeatherSwitch++;
+            shownSlot = (shownSlot + 1) % forecastSlots;
             led.clear();
-            if (wWeatherSwitch > 4) {
-                wWeatherSwitch = 1;
-            }
         }
 
         if (requestState != RequestState::Idle) {
             pollWeatherResponse();
-        } else if (WiFi.status() == WL_CONNECTED && checkWeatherCounter()) {
+        } else if (WiFi.status() == WL_CONNECTED && requestDue()) {
+            requestedOnce = true;
+            lastRequestMillis = millis();
             startWeatherRequest();
-        }
-        if (weatherCounter > 0) {
-            weatherCounter--;
         }
     }
 };
