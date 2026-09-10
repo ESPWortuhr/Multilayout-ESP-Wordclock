@@ -109,6 +109,13 @@ inline bool whiteTypeIsValid(uint32_t type) {
     return type <= static_cast<uint32_t>(WhiteType::ColdWhite);
 }
 
+constexpr uint8_t MINUTE_LEDS_WIRED_4 = 4;
+constexpr uint8_t MINUTE_LEDS_WIRED_7 = 7;
+
+inline bool minuteLedCountIsValid(uint32_t count) {
+    return count == MINUTE_LEDS_WIRED_4 || count == MINUTE_LEDS_WIRED_7;
+}
+
 struct Birthday {
     uint8_t day;
     uint8_t month;
@@ -185,6 +192,17 @@ enum class MinuteVariant : uint8_t {
     LED7x = 2,
     InWords = 3,
 };
+
+inline uint8_t minuteLedCountFor(MinuteVariant variant, uint8_t current) {
+    switch (variant) {
+    case MinuteVariant::LED4x:
+        return MINUTE_LEDS_WIRED_4;
+    case MinuteVariant::LED7x:
+        return MINUTE_LEDS_WIRED_7;
+    default:
+        return current;
+    }
+}
 
 enum class SecondVariant : uint8_t {
     Off = 0,
@@ -297,6 +315,7 @@ struct GLOBAL {
     uint8_t i2cSclPin;
     uint8_t fireCooling;
     uint8_t fireSparking;
+    uint8_t minuteLedCount;
 };
 extern GLOBAL G;
 

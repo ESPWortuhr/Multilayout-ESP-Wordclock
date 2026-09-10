@@ -1819,9 +1819,10 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_SET_MINUTE:
-        resetMinVariantIfNotAvailable();
-        eeprom::write();
         led.clear();
+        resetMinVariantIfNotAvailable();
+        G.minuteLedCount = minuteLedCountFor(G.minuteVariant, G.minuteLedCount);
+        eeprom::write();
         memset(frameArray, false, sizeof(frameArray));
         parametersChanged = true;
         break;
@@ -1920,6 +1921,7 @@ void ClockWork::loop(struct tm &tm) {
 
         usedClockType = getPointer(G.clockTypeDef);
         resetMinVariantIfNotAvailable();
+        G.minuteLedCount = minuteLedCountFor(G.minuteVariant, G.minuteLedCount);
 
         checkForValidLanguageVariant();
 

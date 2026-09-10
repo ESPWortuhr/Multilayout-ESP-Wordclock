@@ -240,9 +240,8 @@ public:
     virtual inline uint8_t colsWordMatrix() { return 11; }
 
     virtual uint8_t numPixelsMinuteMatrix() {
-        return G.minuteVariant == MinuteVariant::LED7x
-                   ? MINUTE_LED_COUNT * 2 - 1
-                   : MINUTE_LED_COUNT;
+        return G.minuteLedCount == MINUTE_LEDS_WIRED_7 ? MINUTE_LEDS_WIRED_7
+                                                       : MINUTE_LED_COUNT;
     }
 
     virtual uint16_t getFrameMatrixIndex(uint16_t index) {

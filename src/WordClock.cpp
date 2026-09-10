@@ -81,6 +81,7 @@ void ensureFireSettings();
 void ensureEffectSpeed();
 void ensureMinuteVariant();
 void ensureWhiteType();
+void ensureMinuteLedCount();
 
 LedStripInterface *activeLedStrip = nullptr;
 
@@ -368,6 +369,19 @@ void ensureWhiteType() {
 }
 
 //------------------------------------------------------------------------------
+
+void ensureMinuteLedCount() {
+    if (minuteLedCountIsValid(G.minuteLedCount)) {
+        return;
+    }
+
+    G.minuteLedCount = minuteLedCountFor(G.minuteVariant, MINUTE_LEDS_WIRED_4);
+    Serial.printf("Invalid minute LED count in EEPROM, deriving %u from the "
+                  "minute variant\n",
+                  G.minuteLedCount);
+}
+
+//------------------------------------------------------------------------------
 // Start setup()
 //------------------------------------------------------------------------------
 
@@ -396,6 +410,7 @@ void setup() {
     ensureEffectSpeed();
     ensureMinuteVariant();
     ensureWhiteType();
+    ensureMinuteLedCount();
 
     //-------------------------------------
 
@@ -451,6 +466,8 @@ void setup() {
 #ifdef MINUTE_LED7x
         G.minuteVariant = MinuteVariant::LED7x;
 #endif
+        G.minuteLedCount =
+            minuteLedCountFor(G.minuteVariant, MINUTE_LEDS_WIRED_4);
         G.itIsVariant = ItIsVariant::Permanent;
         strcpy(G.openWeatherMap.cityid, "");
         strcpy(G.openWeatherMap.apikey, "");
@@ -586,6 +603,7 @@ void setup() {
 
     usedClockType = clockWork.getPointer(G.clockTypeDef);
     clockWork.resetMinVariantIfNotAvailable();
+    G.minuteLedCount = minuteLedCountFor(G.minuteVariant, G.minuteLedCount);
 
     // Area that will be animated:
     //         LED frame horizontal

@@ -50,6 +50,8 @@ const MinuteVariant MINUTE_VARIANTS[] = {
 
 const uint8_t FRAME_COUNTS[] = {0, 1, 60, MAX_SECONDS_FRAME_LED_COUNT};
 
+const uint8_t MINUTE_WIRINGS[] = {MINUTE_LEDS_WIRED_4, MINUTE_LEDS_WIRED_7};
+
 char message[160];
 
 uint16_t countOutOfRange(ClockType *layout) {
@@ -91,22 +93,25 @@ void checkLayout(ClockType *layout, const char *name) {
     uint16_t outOfRange = 0;
     uint16_t largestStrip = 0;
 
-    for (BuildTypeDef buildType : BUILD_TYPES) {
-        for (uint8_t variantBits = 0; variantBits < 8; variantBits++) {
-            for (MinuteVariant minuteVariant : MINUTE_VARIANTS) {
-                for (uint8_t frameCount : FRAME_COUNTS) {
-                    G.buildTypeDef = buildType;
-                    G.layoutVariant[FlipHorzVert] = variantBits & 1;
-                    G.layoutVariant[ExtraLedPerRow] = variantBits & 2;
-                    G.layoutVariant[MeanderRows] = variantBits & 4;
-                    G.minuteVariant = minuteVariant;
-                    G.secondsFrameLedCount = frameCount;
+    for (uint8_t wiring : MINUTE_WIRINGS) {
+        G.minuteLedCount = wiring;
+        for (BuildTypeDef buildType : BUILD_TYPES) {
+            for (uint8_t variantBits = 0; variantBits < 8; variantBits++) {
+                for (MinuteVariant minuteVariant : MINUTE_VARIANTS) {
+                    for (uint8_t frameCount : FRAME_COUNTS) {
+                        G.buildTypeDef = buildType;
+                        G.layoutVariant[FlipHorzVert] = variantBits & 1;
+                        G.layoutVariant[ExtraLedPerRow] = variantBits & 2;
+                        G.layoutVariant[MeanderRows] = variantBits & 4;
+                        G.minuteVariant = minuteVariant;
+                        G.secondsFrameLedCount = frameCount;
 
-                    outOfRange += countOutOfRange(layout);
+                        outOfRange += countOutOfRange(layout);
 
-                    const uint16_t pixelCount = layout->numPixelsOnStrip();
-                    if (pixelCount > largestStrip) {
-                        largestStrip = pixelCount;
+                        const uint16_t pixelCount = layout->numPixelsOnStrip();
+                        if (pixelCount > largestStrip) {
+                            largestStrip = pixelCount;
+                        }
                     }
                 }
             }
