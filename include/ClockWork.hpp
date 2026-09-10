@@ -1,4 +1,5 @@
 #include "ClockWork.h"
+#include "Font.h"
 #include "I2CBus.h"
 #include "NeoMultiFeature.hpp"
 #include "OpenWeatherMap.h"

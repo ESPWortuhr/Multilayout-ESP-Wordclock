@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Font.h"
+#include "Led.h"
 #include "Render/ColorStage.h"
 #include "Transitions/TransitionEffect.h"
 #include <Arduino.h>
@@ -50,46 +50,33 @@ private:
         char seconds[8];
         snprintf(seconds, sizeof(seconds), "%d", m_countDown);
 
-        // fontSize usedFontSize = determineFontSize(); // not applicable due to
-        // linkage to digital clock
-        fontSize usedFontSize = normalSizeASCII;
-        unsigned char digit0 = static_cast<unsigned char>(seconds[0]);
-        unsigned char digit1 = static_cast<unsigned char>(seconds[1]);
-
-        uint8_t usedFontWidth = pgm_read_byte(&(fontWidth[usedFontSize]));
-        uint8_t usedFontHeight = pgm_read_byte(&(fontHeight[usedFontSize]));
-        if (context.out.cols() < (usedFontWidth * 2 + 1) ||
-            context.out.rows() < usedFontHeight) {
-            usedFontSize = smallSizeNumbers;
-            usedFontWidth = pgm_read_byte(&(fontWidth[usedFontSize]));
-            usedFontHeight = pgm_read_byte(&(fontHeight[usedFontSize]));
-            // convert char to int due to different definition in Font.h
-            digit0 -= 48;
-            digit1 -= 48;
-        }
+        const Led::NumberFont numberFont =
+            Led::numberFontFor(context.out.cols(), context.out.rows());
+        const unsigned char digit0 = numberFont.glyph(seconds[0]);
+        const unsigned char digit1 = numberFont.glyph(seconds[1]);
 
         const bool isSingleDigit = m_countDown < 10;
         const uint8_t usedWidth =
-            isSingleDigit ? usedFontWidth : usedFontWidth * 2 + 1;
+            isSingleDigit ? numberFont.width : numberFont.width * 2 + 1;
         const uint8_t offsetRow =
-            context.out.rows() > usedFontHeight
-                ? (context.out.rows() - usedFontHeight) / 2
+            context.out.rows() > numberFont.height
+                ? (context.out.rows() - numberFont.height) / 2
                 : 0;
         const uint8_t offsetLetter0 = context.out.cols() > usedWidth
                                           ? (context.out.cols() - usedWidth) / 2
                                           : 0;
-        const uint8_t offsetLetter1 = offsetLetter0 + usedFontWidth + 1;
+        const uint8_t offsetLetter1 = offsetLetter0 + numberFont.width + 1;
 
-        for (uint8_t row = 0; row < usedFontHeight; row++) {
-            for (uint8_t col = 0; col < usedFontWidth; col++) {
+        for (uint8_t row = 0; row < numberFont.height; row++) {
+            for (uint8_t col = 0; col < numberFont.width; col++) {
                 if (isSingleDigit) {
                     setPixelForChar(context, col, row, offsetLetter0, offsetRow,
-                                    digit0, color1, usedFontSize);
+                                    digit0, color1, numberFont.font);
                 } else {
                     setPixelForChar(context, col, row, offsetLetter0, offsetRow,
-                                    digit0, color1, usedFontSize);
+                                    digit0, color1, numberFont.font);
                     setPixelForChar(context, col, row, offsetLetter1, offsetRow,
-                                    digit1, color2, usedFontSize);
+                                    digit1, color2, numberFont.font);
                 }
             }
         }

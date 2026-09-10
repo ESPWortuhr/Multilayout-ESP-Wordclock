@@ -76,6 +76,21 @@ uint32_t Led::reverse32BitOrder(uint32_t x) {
 
 //------------------------------------------------------------------------------
 
+Led::NumberFont Led::numberFontFor(uint8_t cols, uint8_t rows) {
+    NumberFont numberFont;
+    numberFont.font = normalSizeASCII;
+    numberFont.width = pgm_read_byte(&(fontWidth[numberFont.font]));
+    numberFont.height = pgm_read_byte(&(fontHeight[numberFont.font]));
+    if (cols < numberFont.width * 2 + 1 || rows < numberFont.height) {
+        numberFont.font = smallSizeNumbers;
+        numberFont.width = pgm_read_byte(&(fontWidth[numberFont.font]));
+        numberFont.height = pgm_read_byte(&(fontHeight[numberFont.font]));
+    }
+    return numberFont;
+}
+
+//------------------------------------------------------------------------------
+
 void Led::checkIfHueIsOutOfBound(uint16_t &hue) {
     if (hue > 360) {
         hue = 0;
@@ -624,52 +639,39 @@ void Led::clear() {
 void Led::showNumbers(const char d1, const char d2) {
     clearClock();
 
-    // determine font size according layout
-    // fontSize usedFontSize = determineFontSize(); // not applicable due to
-    // linkage to digital clock
-    fontSize usedFontSize = normalSizeASCII;
-    // convert second to acii
-    unsigned char unsigned_d1 = static_cast<unsigned char>(d1);
-    unsigned char unsigned_d2 = static_cast<unsigned char>(d2);
-    uint8_t usedFontWidth = pgm_read_byte(&(fontWidth[usedFontSize]));
-    uint8_t usedFontHeight = pgm_read_byte(&(fontHeight[usedFontSize]));
-    if (usedClockType->colsWordMatrix() < (usedFontWidth * 2 + 1) ||
-        usedClockType->rowsWordMatrix() < usedFontHeight) {
-        usedFontSize = smallSizeNumbers;
-        usedFontWidth = pgm_read_byte(&(fontWidth[usedFontSize]));
-        usedFontHeight = pgm_read_byte(&(fontHeight[usedFontSize]));
-        // convert char to int due to differt definition in Font.h
-        unsigned_d1 -= 48;
-        unsigned_d2 -= 48;
-    }
+    const NumberFont numberFont = numberFontFor(
+        usedClockType->colsWordMatrix(), usedClockType->rowsWordMatrix());
+    const unsigned char unsigned_d1 = numberFont.glyph(d1);
+    const unsigned char unsigned_d2 = numberFont.glyph(d2);
 
-    uint8_t offsetRow = (usedClockType->rowsWordMatrix() - usedFontHeight) / 2;
+    uint8_t offsetRow =
+        (usedClockType->rowsWordMatrix() - numberFont.height) / 2;
     bool isSingleDigit = (d1 == ' ' || d1 == '0');
     uint8_t offsetLetter0, offsetLetter1, offsetCenter;
 
     if (isSingleDigit) {
-        offsetCenter = (usedClockType->colsWordMatrix() - usedFontWidth) / 2;
+        offsetCenter = (usedClockType->colsWordMatrix() - numberFont.width) / 2;
     } else {
-        offsetLetter0 = usedClockType->colsWordMatrix() / 2 - usedFontWidth;
+        offsetLetter0 = usedClockType->colsWordMatrix() / 2 - numberFont.width;
         offsetLetter1 = usedClockType->colsWordMatrix() / 2 + 1;
 
         if (usedClockType->has24HourLayout()) {
             offsetLetter0 = 3;
-            offsetLetter1 = usedFontWidth + 4;
+            offsetLetter1 = numberFont.width + 4;
         }
     }
 
-    for (uint8_t col = 0; col < usedFontWidth; col++) {
-        for (uint8_t row = 0; row < usedFontHeight; row++) {
+    for (uint8_t col = 0; col < numberFont.width; col++) {
+        for (uint8_t row = 0; row < numberFont.height; row++) {
 
             if (isSingleDigit) {
                 setPixelForChar(col, row, offsetCenter, offsetRow, unsigned_d2,
-                                usedFontSize);
+                                numberFont.font);
             } else {
                 setPixelForChar(col, row, offsetLetter0, offsetRow, unsigned_d1,
-                                usedFontSize);
+                                numberFont.font);
                 setPixelForChar(col, row, offsetLetter1, offsetRow, unsigned_d2,
-                                usedFontSize);
+                                numberFont.font);
             }
         }
     }

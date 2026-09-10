@@ -25,9 +25,23 @@ public:
     Led(/* args */) = default;
     ~Led() = default;
 
+    struct NumberFont {
+        fontSize font;
+        uint8_t width;
+        uint8_t height;
+
+        unsigned char glyph(char digit) const {
+            const unsigned char character = static_cast<unsigned char>(digit);
+            return font == smallSizeNumbers
+                       ? static_cast<unsigned char>(character - '0')
+                       : character;
+        }
+    };
+
     //------------------------------------------------------------------------------
     // Helper Functions
     //------------------------------------------------------------------------------
+    static NumberFont numberFontFor(uint8_t cols, uint8_t rows);
     void checkIfHueIsOutOfBound(uint16_t &hue);
     void resetFrontMatrixBuffer();
     bool getCharCol(fontSize font, uint8_t col, uint8_t row,
