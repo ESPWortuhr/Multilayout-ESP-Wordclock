@@ -795,11 +795,6 @@ void setup() {
     }
 
     //-------------------------------------
-    // Render Pipeline Init
-    //-------------------------------------
-    renderPipeline.init();
-
-    //-------------------------------------
     // Setup Done
     //-------------------------------------
     parametersChanged = true;
@@ -855,9 +850,6 @@ void loop() {
     // Render Pipeline
     //------------------------------------------------
     renderPipeline.loop(tm); // must be called periodically
-
-    // make the time run faster in the demo mode of the transition
-    renderPipeline.demoMode(_hour, _minute, _second);
 
     //------------------------------------------------
     // Clockwork
