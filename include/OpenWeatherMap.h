@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SensitiveData.h"
 #include "WordClockState.h"
 #include <Arduino.h>
 #include <cmath>
@@ -123,6 +124,17 @@ private:
 
     //------------------------------------------------------------------------------
 
+    void buildResource(char (&dest)[sizeof(resource)], const char *apikey) {
+        memset(dest, 0, sizeof(dest));
+        strncat(dest, resource1, 22);
+        strncat(dest, G.openWeatherMap.cityid, 7);
+        strncat(dest, resource2, 20);
+        strncat(dest, apikey, 35);
+        strncat(dest, resource3, 6);
+    }
+
+    //------------------------------------------------------------------------------
+
     void pullWeatherData() {
 
         // connect to server
@@ -134,16 +146,15 @@ private:
         Serial.println("Connecting to Openweathermap.org");
         Serial.println("--------------------------------------");
 
-        // create calling URL
-        memset(resource, 0, sizeof(resource));
-        strncat(resource, resource1, 22);
-        strncat(resource, G.openWeatherMap.cityid, 7);
-        strncat(resource, resource2, 20);
-        strncat(resource, G.openWeatherMap.apikey, 35);
-        strncat(resource, resource3, 6);
+        buildResource(resource, G.openWeatherMap.apikey);
+
+        char apiKeyMasked[sizeof(G.openWeatherMap.apikey) + 1] = {0};
+        sensitive::maskPreservingSuffix(apiKeyMasked, G.openWeatherMap.apikey);
+        char maskedResource[sizeof(resource)];
+        buildResource(maskedResource, apiKeyMasked);
 
         Serial.print("Calling URL: ");
-        Serial.println(resource);
+        Serial.println(maskedResource);
 
         if (ok == 1) {
 
