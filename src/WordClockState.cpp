@@ -28,9 +28,7 @@ uint8_t lastMinuteArray = 0;
 uint16_t minutePixelArray[4] = {0};
 bool frameArray[MAX_SECONDS_FRAME_LED_COUNT] = {false};
 bool parametersChanged = false;
-bool layoutChanged = false;
 bool colorChangedByWebsite = false;
-uint8_t statusAccessPoint = 0;
 uint8_t i2cScanSdaPin = HARDWARE_PIN_DISABLED;
 uint8_t i2cScanSclPin = HARDWARE_PIN_DISABLED;
 

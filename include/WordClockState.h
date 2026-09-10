@@ -215,7 +215,6 @@ enum class WordclockChanges : uint8_t {
     Null,
     Parameters,
     Minute,
-    Layout,
     Words,
 };
 
@@ -353,9 +352,7 @@ extern uint16_t minutePixelArray[4];
 constexpr uint8_t MAX_SECONDS_FRAME_LED_COUNT = 200;
 extern bool frameArray[MAX_SECONDS_FRAME_LED_COUNT];
 extern bool parametersChanged;
-extern bool layoutChanged;
 extern bool colorChangedByWebsite;
-extern uint8_t statusAccessPoint;
 extern uint8_t i2cScanSdaPin;
 extern uint8_t i2cScanSclPin;
 

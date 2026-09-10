@@ -1347,9 +1347,6 @@ WordclockChanges ClockWork::changesInClockface() {
     if (parametersChanged) {
         parametersChanged = false;
         return WordclockChanges::Parameters;
-    } else if (layoutChanged) {
-        layoutChanged = false;
-        return WordclockChanges::Layout;
     } else if (lastMinuteArray != minuteArray) {
         return WordclockChanges::Minute;
     }
@@ -2064,9 +2061,6 @@ void ClockWork::loop(struct tm &tm) {
             lastMinuteArray = minuteArray;
             memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
             led.set(WordclockChanges::Words);
-            break;
-        case WordclockChanges::Layout:
-            led.set(WordclockChanges::Layout);
             break;
         case WordclockChanges::Parameters:
             led.set(WordclockChanges::Parameters);

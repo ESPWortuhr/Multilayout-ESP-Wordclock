@@ -15,8 +15,7 @@ namespace {
 
 const WordclockChanges ALL_CHANGES[] = {
     WordclockChanges::Null, WordclockChanges::Parameters,
-    WordclockChanges::Minute, WordclockChanges::Layout,
-    WordclockChanges::Words};
+    WordclockChanges::Minute, WordclockChanges::Words};
 
 /* The invariant the three bugs violated. */
 void everyChangeHasExactlyOnePusher() {
@@ -79,9 +78,6 @@ void wordChangesStartAnimations() {
     check(decideDisplayAction(WordclockChanges::Words, true, true, false)
               .startTransition,
           "changed words start a transition");
-    check(decideDisplayAction(WordclockChanges::Layout, true, true, false)
-              .startTransition,
-          "a layout change starts a transition");
     check(decideDisplayAction(WordclockChanges::Words, true, true, false)
               .rebuildMatrix,
           "changed words rebuild the matrices");

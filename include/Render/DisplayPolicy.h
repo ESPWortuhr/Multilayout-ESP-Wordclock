@@ -55,8 +55,7 @@ inline DisplayAction decideDisplayAction(WordclockChanges change,
     }
 
     action.startTransition =
-        transitionAnimates && (change == WordclockChanges::Words ||
-                               change == WordclockChanges::Layout);
+        transitionAnimates && change == WordclockChanges::Words;
 
     action.rebuildMatrix = (change != WordclockChanges::Minute);
     return action;

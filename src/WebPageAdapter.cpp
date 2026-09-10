@@ -155,11 +155,6 @@ bool parseBrightness(const uint8_t *payload, size_t length) {
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                     size_t length) {
-    // Disable Accesspoint Mode Disable Timer on Web Event
-    if (statusAccessPoint > 0) {
-        statusAccessPoint = 0;
-    }
-
     payload = (payload == NULL) ? (uint8_t *)"" : payload;
     Serial.printf("Client-Nr.: [%u]  WStype: %u payload: %s\n", num, type,
                   payload);
