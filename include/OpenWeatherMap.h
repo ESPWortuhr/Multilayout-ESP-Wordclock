@@ -392,10 +392,6 @@ public:
             if (wWeatherSwitch > 4) {
                 wWeatherSwitch = 1;
             }
-            Serial.print("wWeatherSwitch: ");
-            Serial.println(wWeatherSwitch);
-            Serial.print("wHour: ");
-            Serial.println(wHour);
         }
 
         if (requestState != RequestState::Idle) {
