@@ -1789,7 +1789,6 @@ void ClockWork::loop(struct tm &tm) {
         eeprom::write();
         i2cBus::begin(G.i2cSdaPin, G.i2cSclPin);
         initHardwareButtons();
-        initLedStrip(G.Colortype);
         led.clear();
         parametersChanged = true;
         break;
@@ -1799,11 +1798,8 @@ void ClockWork::loop(struct tm &tm) {
         // G.param1 sets new Colortype
         Serial.printf("LED Colortype: %u\n", G.param1);
 
-        // the G.Colortype must be called at the same time as initLedStrip,
-        // otherwise it is referenced via a null-pointer.
         G.Colortype = G.param1;
         eeprom::write();
-        initLedStrip(G.Colortype);
 
         clearClockByProgInit();
         parametersChanged = true;
