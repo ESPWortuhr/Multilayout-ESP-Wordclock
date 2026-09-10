@@ -161,10 +161,10 @@ private:
             // Reading stream and remove headers
             client.setTimeout(10000);
 
-            bool ok_header = client.find("\r\n\r\n");
-
-            while (!ok_header) {
-                // wait
+            if (!client.find("\r\n\r\n")) {
+                Serial.println("Timeout while waiting for response header");
+                client.stop();
+                return;
             }
 
             memset(response, 0, sizeof(response));
