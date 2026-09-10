@@ -60,6 +60,8 @@ private:
     bool checkTwentyUsage();
     bool hasTwentyAndCheckForUsage();
     bool hasDreiviertelAndCheckForUsage();
+    void showQuarterPast(uint8_t &offsetHour);
+    void showQuarterTo(uint8_t &offsetHour);
     void setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour);
 
     //------------------------------------------------------------------------------

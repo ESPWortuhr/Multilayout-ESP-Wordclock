@@ -891,6 +891,36 @@ bool ClockWork::hasDreiviertelAndCheckForUsage() {
 
 //------------------------------------------------------------------------------
 
+void ClockWork::showQuarterPast(uint8_t &offsetHour) {
+    if (G.languageVariant[ItIs15]) {
+        usedClockType->show(FrontWord::viertel);
+        offsetHour = 1;
+    } else {
+        if (G.languageVariant[EN_ShowAQuarter]) {
+            usedClockType->show(FrontWord::a_quarter);
+        }
+        usedClockType->show(FrontWord::viertel);
+        usedClockType->show(FrontWord::v_nach);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::showQuarterTo(uint8_t &offsetHour) {
+    if (hasDreiviertelAndCheckForUsage()) {
+        usedClockType->show(FrontWord::dreiviertel);
+    } else {
+        if (G.languageVariant[EN_ShowAQuarter]) {
+            usedClockType->show(FrontWord::a_quarter);
+        }
+        usedClockType->show(FrontWord::viertel);
+        usedClockType->show(FrontWord::v_vor);
+    }
+    offsetHour = 1;
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     if (usedClockType->has60MinuteLayout()) {
         usedClockType->show(FrontWord::uhr);
@@ -910,17 +940,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     } else if (usedClockType->hasOnlyQuarterLayout()) {
 
         if (8 <= min && min <= 22) {
-            if (G.languageVariant[ItIs15]) {
-                usedClockType->show(FrontWord::viertel);
-                offsetHour = 1;
-            } else {
-                // A Quarter past
-                if (G.languageVariant[EN_ShowAQuarter]) {
-                    usedClockType->show(FrontWord::a_quarter);
-                }
-                usedClockType->show(FrontWord::viertel);
-                usedClockType->show(FrontWord::v_nach);
-            }
+            showQuarterPast(offsetHour);
         } else if (23 <= min && min <= 37) { // half
             if (G.clockTypeDef == Eng10x11 || G.clockTypeDef == It10x11 ||
                 G.clockTypeDef == Es10x11 || G.clockTypeDef == Ro10x11) {
@@ -935,17 +955,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
                 }
             }
         } else if (38 <= min && min <= 52) { // quarter to
-            if (hasDreiviertelAndCheckForUsage()) {
-                usedClockType->show(FrontWord::dreiviertel);
-            } else {
-                // A Quarter to
-                if (G.languageVariant[EN_ShowAQuarter]) {
-                    usedClockType->show(FrontWord::a_quarter);
-                }
-                usedClockType->show(FrontWord::viertel);
-                usedClockType->show(FrontWord::v_vor);
-            }
-            offsetHour = 1;
+            showQuarterTo(offsetHour);
         } else if (53 <= min && min <= 59) { // almost full hour
             offsetHour = 1;
         }
@@ -986,17 +996,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             usedClockType->show(FrontWord::nach);
             break;
         case 15: // quarter past
-            if (G.languageVariant[ItIs15]) {
-                usedClockType->show(FrontWord::viertel);
-                offsetHour = 1;
-            } else {
-                // A Quarter past
-                if (G.languageVariant[EN_ShowAQuarter]) {
-                    usedClockType->show(FrontWord::a_quarter);
-                }
-                usedClockType->show(FrontWord::viertel);
-                usedClockType->show(FrontWord::v_nach);
-            }
+            showQuarterPast(offsetHour);
             break;
         case 16:
         case 17:
@@ -1131,18 +1131,8 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             if (G.clockTypeDef == Tr10x11) {
                 usedClockType->show(FrontWord::min_45);
                 usedClockType->show(FrontWord::nach);
-            } else if (hasDreiviertelAndCheckForUsage()) {
-                usedClockType->show(FrontWord::dreiviertel);
             } else {
-                // A Quarter to
-                if (G.languageVariant[EN_ShowAQuarter]) {
-                    usedClockType->show(FrontWord::a_quarter);
-                }
-                usedClockType->show(FrontWord::viertel);
-                usedClockType->show(FrontWord::v_vor);
-            }
-            if (G.clockTypeDef != Tr10x11) {
-                offsetHour = 1;
+                showQuarterTo(offsetHour);
             }
             break;
         case 46:
