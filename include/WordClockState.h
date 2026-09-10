@@ -133,7 +133,7 @@ struct HardwarePins {
 
 struct OpenWeatherMapData {
     char apikey[35];
-    char cityid[8];
+    char cityid[9];
 };
 
 enum class BuildTypeDef : uint8_t {

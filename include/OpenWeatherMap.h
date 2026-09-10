@@ -49,7 +49,7 @@ private:
         hour %= 24; // Offset for nighttime
 
         for (uint8_t i = 0; i < 4; i++) {
-            if (hour <= 6 /* Timeframe for each Daytime*/) {
+            if (hour < 6 /* Timeframe for each Daytime*/) {
                 wHour = countId + 1;
                 break;
             }
@@ -127,7 +127,7 @@ private:
     void buildResource(char (&dest)[sizeof(resource)], const char *apikey) {
         memset(dest, 0, sizeof(dest));
         strncat(dest, resource1, 22);
-        strncat(dest, G.openWeatherMap.cityid, 7);
+        strncat(dest, G.openWeatherMap.cityid, 8);
         strncat(dest, resource2, 20);
         strncat(dest, apikey, 35);
         strncat(dest, resource3, 6);

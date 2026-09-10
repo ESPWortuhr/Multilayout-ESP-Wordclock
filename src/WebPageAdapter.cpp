@@ -558,20 +558,21 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_WEATHER_DATA: {
             uint8_t ii = 0;
-            const size_t cityEnd = (length < 10) ? length : 10;
-            for (size_t k = 3; k < cityEnd; k++) {
-                if (payload[k] != ' ' &&
-                    ii < sizeof(G.openWeatherMap.cityid) - 1) {
-                    G.openWeatherMap.cityid[ii++] = payload[k];
+            size_t cityEnd = 3;
+            while (cityEnd < length && payload[cityEnd] != ' ') {
+                if (ii < sizeof(G.openWeatherMap.cityid) - 1) {
+                    G.openWeatherMap.cityid[ii++] = payload[cityEnd];
                 }
+                cityEnd++;
             }
             G.openWeatherMap.cityid[ii] = '\0';
 
             char submittedApiKey[sizeof(G.openWeatherMap.apikey)] = {0};
             uint8_t jj = 0;
-            const size_t apiKeyStart = 11;
+            const size_t apiKeyStart = cityEnd + 1;
             if (length > apiKeyStart) {
-                const size_t apiKeyEnd = (length < 43) ? length : 43;
+                const size_t apiKeyEnd =
+                    (length < apiKeyStart + 32) ? length : apiKeyStart + 32;
                 for (size_t l = apiKeyStart; l < apiKeyEnd; l++) {
                     if (payload[l] != ' ' && jj < sizeof(submittedApiKey) - 1) {
                         submittedApiKey[jj++] = payload[l];
