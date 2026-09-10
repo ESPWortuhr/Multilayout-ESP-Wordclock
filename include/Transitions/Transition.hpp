@@ -2,8 +2,6 @@
 #include "WordClockState.h"
 #include <Arduino.h>
 
-#define MAX_RANDOM 10
-
 void Transition::allocate(uint8_t rows, uint8_t cols) {
     maxRows = rows;
     maxCols = cols;

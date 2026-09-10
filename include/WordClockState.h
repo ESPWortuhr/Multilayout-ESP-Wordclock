@@ -60,35 +60,6 @@
     /* TR (Turkish) */                                                         \
     X(Tr10x11, 33, _tr10x11, "tr-10-11")
 
-enum ClockWords : uint8_t {
-    ESIST = 0,
-    VOR = 1,
-    NACH = 2,
-    UHR = 3,
-
-    FUENF = 4,
-    ZEHN = 5,
-    VIERTEL = 6,
-    DREIVIERTEL = 22,
-    ZWANZIG = 7,
-    HALB = 8,
-    EINS = 9,
-
-    H_EIN = 10,
-    H_ZWEI = 11,
-    H_DREI = 12,
-    H_VIER = 13,
-    H_FUENF = 14,
-    H_SECHS = 15,
-    H_SIEBEN = 16,
-    H_ACHT = 17,
-    H_NEUN = 18,
-    H_ZEHN = 19,
-    H_ELF = 20,
-    H_ZWOELF = 21,
-    H_MITTERNACHT = 23
-};
-
 struct MqttData {
     bool state;
     char serverAdress[PAYLOAD_LENGTH];
@@ -490,7 +461,6 @@ enum ClockTypeDef : uint8_t {
 #define X(name, id, var, i18n) name = id,
     CLOCK_TYPES_LIST
 #undef X
-        ClockTypeDefMax,
 };
 
 inline bool isValidClockTypeDef(uint8_t type) {
