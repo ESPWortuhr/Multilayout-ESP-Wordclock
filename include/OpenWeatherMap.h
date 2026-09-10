@@ -168,7 +168,7 @@ private:
             }
 
             memset(response, 0, sizeof(response));
-            client.readBytes(response, 3500);
+            client.readBytes(response, sizeof(response) - 1);
 
             Serial.println("Antwort: ");
             Serial.println(response);
