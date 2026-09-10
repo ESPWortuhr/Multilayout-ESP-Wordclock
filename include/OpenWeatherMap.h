@@ -60,8 +60,8 @@ private:
     //------------------------------------------------------------------------------
 
     void determineWTemp(const double srctemp, int8_t &destTemp) {
-        if (srctemp >= 35) {
-            destTemp = 35;
+        if (srctemp >= 30) {
+            destTemp = 30;
         } else if (srctemp >= 0 && srctemp <= 5) {
             destTemp = 1;
         } else if (srctemp < 0 && srctemp >= -5) {
