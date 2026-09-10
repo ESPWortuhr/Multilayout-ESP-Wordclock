@@ -44,10 +44,6 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual bool hasMinuteInWords() override { return true; }
-
-    //------------------------------------------------------------------------------
-
     void drawWord(FrontWord word) override {
         switch (word) {
 
