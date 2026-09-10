@@ -82,6 +82,7 @@ void ensureEffectSpeed();
 void ensureMinuteVariant();
 void ensureWhiteType();
 void ensureMinuteLedCount();
+void ensureWeatherData();
 
 LedStripInterface *activeLedStrip = nullptr;
 
@@ -382,6 +383,29 @@ void ensureMinuteLedCount() {
 }
 
 //------------------------------------------------------------------------------
+
+void ensureWeatherData() {
+#ifdef OWM_CITY_ID
+    static_assert(sizeof(OWM_CITY_ID) <= sizeof(G.openWeatherMap.cityid),
+                  "OWM_CITY_ID is too long");
+    if (G.openWeatherMap.cityid[0] == '\0') {
+        strlcpy(G.openWeatherMap.cityid, OWM_CITY_ID,
+                sizeof(G.openWeatherMap.cityid));
+        Serial.println("No OpenWeatherMap city ID in EEPROM, using Config.h");
+    }
+#endif
+#ifdef OWM_API_KEY
+    static_assert(sizeof(OWM_API_KEY) <= sizeof(G.openWeatherMap.apikey),
+                  "OWM_API_KEY is too long");
+    if (G.openWeatherMap.apikey[0] == '\0') {
+        strlcpy(G.openWeatherMap.apikey, OWM_API_KEY,
+                sizeof(G.openWeatherMap.apikey));
+        Serial.println("No OpenWeatherMap API key in EEPROM, using Config.h");
+    }
+#endif
+}
+
+//------------------------------------------------------------------------------
 // Start setup()
 //------------------------------------------------------------------------------
 
@@ -579,6 +603,8 @@ void setup() {
         eeprom::write();
         Serial.println("EEPROM written");
     }
+
+    ensureWeatherData();
 
     // Initialization of COMMAND_MODE_xxx (color)
     G.progInit = true;

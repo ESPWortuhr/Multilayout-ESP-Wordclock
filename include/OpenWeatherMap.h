@@ -29,7 +29,7 @@ private:
         "&units=metric&APPID=";       // Openweather API URL part 2
     const char *resource3 = "&cnt=8"; // Openweather API forecast time
     char resource[100];
-    char response[3500];     // fixed size buffer
+    char response[5120];     // fixed size buffer
     uint16_t weatherCounter; // counter fuer Wetterdaten abrufen
     WiFiClient weatherClient;
     enum class RequestState : uint8_t { Idle, SkippingHeader, ReadingBody };
@@ -37,16 +37,12 @@ private:
     uint32_t requestStartMillis = 0;
     uint8_t headerEndMatched = 0;
     size_t responseLength = 0;
+    bool responseOverflow = false;
     static constexpr int32_t connectTimeoutMs = 2000;
     static constexpr uint32_t responseTimeoutMs = 10000;
-    int8_t wTemp6;
-    int8_t wTemp12;
-    int8_t wTemp18;
-    int8_t wTemp24;
-    uint16_t wWeather6;
-    uint16_t wWeather12;
-    uint16_t wWeather18;
-    uint16_t wWeather24;
+    static constexpr uint8_t forecastSlots = 4;
+    int8_t wTemp[forecastSlots];
+    uint16_t wWeather[forecastSlots];
     uint16_t wHour;
     uint16_t wWeatherSwitch;
 
@@ -106,26 +102,12 @@ private:
     //------------------------------------------------------------------------------
 
     void printDeterminedData() {
-        Serial.print("Temp_6 - ");
-        Serial.println(wTemp6);
-        Serial.print("wWeather6 - ");
-        Serial.println(wWeather6);
-        Serial.println("--------- ");
-        Serial.print("Temp_12 - ");
-        Serial.println(wTemp12);
-        Serial.print("wWeather12 - ");
-        Serial.println(wWeather12);
-        Serial.println("--------- ");
-        Serial.print("Temp_18 - ");
-        Serial.println(wTemp18);
-        Serial.print("wWeather18 - ");
-        Serial.println(wWeather18);
-        Serial.println("--------- ");
-        Serial.print("Temp_24 - ");
-        Serial.println(wTemp24);
-        Serial.print("wWeather24 - ");
-        Serial.println(wWeather24);
-        Serial.println("--------- ");
+        for (uint8_t slot = 0; slot < forecastSlots; slot++) {
+            const int hours = 6 * (slot + 1);
+            Serial.printf("Temp_%d - %d\n", hours, wTemp[slot]);
+            Serial.printf("wWeather%d - %u\n", hours, wWeather[slot]);
+            Serial.println("--------- ");
+        }
         Serial.print("wHour - ");
         Serial.println(wHour);
         Serial.println("--------- ");
@@ -181,6 +163,7 @@ private:
 
         memset(response, 0, sizeof(response));
         responseLength = 0;
+        responseOverflow = false;
         headerEndMatched = 0;
         requestStartMillis = millis();
         requestState = RequestState::SkippingHeader;
@@ -212,14 +195,21 @@ private:
                 }
             } else if (responseLength < sizeof(response) - 1) {
                 response[responseLength++] = static_cast<char>(c);
+            } else {
+                responseOverflow = true;
             }
         }
 
         if (requestState == RequestState::ReadingBody &&
-            (!weatherClient.connected() ||
-             responseLength >= sizeof(response) - 1)) {
+            !weatherClient.connected()) {
             finishWeatherRequest();
-            processWeatherResponse();
+            if (responseOverflow) {
+                Serial.printf(
+                    "Weather response exceeds %u bytes, ignoring it\n",
+                    static_cast<unsigned>(sizeof(response) - 1));
+            } else {
+                processWeatherResponse();
+            }
         } else if (!weatherClient.connected()) {
             Serial.println("Connection closed before response header ended");
             finishWeatherRequest();
@@ -242,7 +232,7 @@ private:
         Serial.println(eol);
 
         // process JSON
-        DynamicJsonDocument doc(6144);
+        DynamicJsonDocument doc(3072);
 
         // But.....make sure the stream header is valid
         // Sometime OWM includes invalid data after the header
@@ -279,7 +269,14 @@ private:
             Serial.println("Done...!");
         }
 
-        auto error = deserializeJson(doc, response);
+        StaticJsonDocument<512> filter;
+        filter["city"]["name"] = true;
+        filter["list"][0]["main"]["temp"] = true;
+        filter["list"][0]["weather"][0]["id"] = true;
+        filter["list"][0]["weather"][0]["description"] = true;
+
+        auto error = deserializeJson(doc, response,
+                                     DeserializationOption::Filter(filter));
         if (error) {
             Serial.print(F("deserializeJson() failed with code "));
             Serial.println(error.c_str());
@@ -290,73 +287,33 @@ private:
 
         // Fill Variable with json information
         const char *location = doc["city"]["name"];
-        const char *wetter_6 = doc["list"][1]["weather"][0]["description"];
-        const int wetterid_6 = doc["list"][1]["weather"][0]["id"];
-        double temp_6 = doc["list"][1]["main"]["temp"];
-        const char *wetter_12 = doc["list"][3]["weather"][0]["description"];
-        const int wetterid_12 = doc["list"][3]["weather"][0]["id"];
-        double temp_12 = doc["list"][3]["main"]["temp"];
-        const char *wetter_18 = doc["list"][5]["weather"][0]["description"];
-        const int wetterid_18 = doc["list"][5]["weather"][0]["id"];
-        double temp_18 = doc["list"][5]["main"]["temp"];
-        const char *wetter_24 = doc["list"][7]["weather"][0]["description"];
-        const int wetterid_24 = doc["list"][7]["weather"][0]["id"];
-        double temp_24 = doc["list"][7]["main"]["temp"];
-
         Serial.print("*** ");
         Serial.print(location);
         Serial.println(" ***");
-        Serial.println("----------");
-        Serial.println("+6h");
-        Serial.print("Type: ");
-        Serial.println(wetter_6);
-        Serial.print("Wetter ID: ");
-        Serial.println(wetterid_6);
-        Serial.print("Temp: ");
-        Serial.print(temp_6);
-        Serial.println("°C");
-        Serial.println("----------");
-        Serial.println("+12h");
-        Serial.print("Type: ");
-        Serial.println(wetter_12);
-        Serial.print("Wetter ID: ");
-        Serial.println(wetterid_12);
-        Serial.print("Temp: ");
-        Serial.print(temp_12);
-        Serial.println("°C");
-        Serial.println("----------");
-        Serial.println("+18h");
-        Serial.print("Type: ");
-        Serial.println(wetter_18);
-        Serial.print("Wetter ID: ");
-        Serial.println(wetterid_18);
-        Serial.print("Temp: ");
-        Serial.print(temp_18);
-        Serial.println("°C");
-        Serial.println("----------");
-        Serial.println("+24h");
-        Serial.print("Type: ");
-        Serial.println(wetter_24);
-        Serial.print("Wetter ID: ");
-        Serial.println(wetterid_24);
-        Serial.print("Temp: ");
-        Serial.print(temp_24);
-        Serial.println("°C");
+
+        for (uint8_t slot = 0; slot < forecastSlots; slot++) {
+            JsonVariant forecast = doc["list"][2 * slot + 1];
+            const char *description = forecast["weather"][0]["description"];
+            const int weatherId = forecast["weather"][0]["id"];
+            const double temp = forecast["main"]["temp"];
+
+            Serial.println("----------");
+            Serial.printf("+%dh\n", 6 * (slot + 1));
+            Serial.print("Type: ");
+            Serial.println(description);
+            Serial.print("Wetter ID: ");
+            Serial.println(weatherId);
+            Serial.print("Temp: ");
+            Serial.print(temp);
+            Serial.println("°C");
+
+            determineWTemp(temp, wTemp[slot]);
+            determineWid(weatherId, wWeather[slot]);
+        }
+
         Serial.println("Hour");
         Serial.println(_hour);
         Serial.println("----------");
-
-        determineWTemp(temp_6, wTemp6);
-        determineWid(wetterid_6, wWeather6);
-
-        determineWTemp(temp_12, wTemp12);
-        determineWid(wetterid_12, wWeather12);
-
-        determineWTemp(temp_18, wTemp18);
-        determineWid(wetterid_18, wWeather18);
-
-        determineWTemp(temp_24, wTemp24);
-        determineWid(wetterid_24, wWeather24);
 
         determineDaytime(_hour);
 
@@ -373,6 +330,75 @@ private:
         return false;
     }
 
+    //------------------------------------------------------------------------------
+
+    template <size_t N> void showWords(const FrontWord (&words)[N]) {
+        for (FrontWord word : words) {
+            if (word != FrontWord{}) {
+                usedClockType->show(word);
+            }
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    void showTemperature(int8_t temp) {
+        struct Degrees {
+            uint8_t value;
+            FrontWord words[3];
+        };
+        static const Degrees degrees[] = {
+            {1, {FrontWord::w_null}},
+            {5, {FrontWord::w_fuenf}},
+            {10, {FrontWord::w_zehn}},
+            {15, {FrontWord::w_fuenf, FrontWord::w_zehn}},
+            {20, {FrontWord::w_zwanzig}},
+            {25, {FrontWord::w_fuenf, FrontWord::w_und, FrontWord::w_zwanzig}},
+            {30, {FrontWord::w_dreissig}},
+        };
+
+        for (const Degrees &entry : degrees) {
+            if (entry.value != abs(temp)) {
+                continue;
+            }
+            if (temp > 0) {
+                usedClockType->show(FrontWord::w_ueber);
+            } else {
+                usedClockType->show(FrontWord::w_unter);
+                usedClockType->show(FrontWord::w_minus);
+            }
+            showWords(entry.words);
+            usedClockType->show(FrontWord::w_grad);
+            return;
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    void showCondition(uint16_t condition) {
+        switch (condition) {
+        case 200:
+            usedClockType->show(FrontWord::w_gewitter);
+            break;
+        case 300:
+        case 500:
+            usedClockType->show(FrontWord::w_regen);
+            break;
+        case 600:
+            usedClockType->show(FrontWord::w_schnee);
+            break;
+        case 700:
+            usedClockType->show(FrontWord::w_warnung);
+            break;
+        case 800:
+            usedClockType->show(FrontWord::w_klar);
+            break;
+        case 801:
+            usedClockType->show(FrontWord::w_wolken);
+            break;
+        }
+    }
+
 public:
     OpenWMap(/* args */) = default;
     ~OpenWMap() = default;
@@ -380,498 +406,26 @@ public:
     //------------------------------------------------------------------------------
 
     void calcWeatherClockface() {
-
-        switch (wWeatherSwitch) {
-            // +6h
-        case 1: {
-            switch (wHour) {
-            case 1:
-                usedClockType->show(FrontWord::w_mittag);
-                break;
-            case 2:
-                usedClockType->show(FrontWord::w_abend);
-                break;
-            case 3:
-                usedClockType->show(FrontWord::w_nacht);
-                break;
-            case 4: {
-                usedClockType->show(FrontWord::w_morgen);
-                usedClockType->show(FrontWord::w_frueh);
-            } break;
-            }
-            switch (wTemp6) {
-            case 30: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_dreissig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 25: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_und);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 20: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 15: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 10: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 5: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 1: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_null);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -1: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_null);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -5: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -10: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -15: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -20: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -25: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_und);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            }
-            switch (wWeather6) {
-            case 200:
-                usedClockType->show(FrontWord::w_gewitter);
-                break;
-            case 300:
-                usedClockType->show(FrontWord::w_regen);
-                break;
-            case 500:
-                usedClockType->show(FrontWord::w_regen);
-                break;
-            case 600:
-                usedClockType->show(FrontWord::w_schnee);
-                break;
-            case 700:
-                usedClockType->show(FrontWord::w_warnung);
-                break;
-            case 800:
-                usedClockType->show(FrontWord::w_klar);
-                break;
-            case 801:
-                usedClockType->show(FrontWord::w_wolken);
-                break;
-            }
-        } break;
-            // +12h
-        case 2: {
-            switch (wHour) {
-            case 1:
-                usedClockType->show(FrontWord::w_abend);
-                break;
-            case 2:
-                usedClockType->show(FrontWord::w_nacht);
-                break;
-            case 3: {
-                usedClockType->show(FrontWord::w_morgen);
-                usedClockType->show(FrontWord::w_frueh);
-            } break;
-            case 4: {
-                usedClockType->show(FrontWord::w_morgen);
-                usedClockType->show(FrontWord::w_mittag);
-            } break;
-            }
-            switch (wTemp12) {
-            case 30: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_dreissig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 25: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_und);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 20: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 15: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 10: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 5: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 1: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_null);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -1: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_null);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -5: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -10: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -15: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -20: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -25: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_und);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            }
-            switch (wWeather12) {
-            case 200:
-                usedClockType->show(FrontWord::w_gewitter);
-                break;
-            case 300:
-                usedClockType->show(FrontWord::w_regen);
-                break;
-            case 500:
-                usedClockType->show(FrontWord::w_regen);
-                break;
-            case 600:
-                usedClockType->show(FrontWord::w_schnee);
-                break;
-            case 700:
-                usedClockType->show(FrontWord::w_warnung);
-                break;
-            case 800:
-                usedClockType->show(FrontWord::w_klar);
-                break;
-            case 801:
-                usedClockType->show(FrontWord::w_wolken);
-                break;
-            }
-
-        } break;
-            // +18h
-        case 3: {
-            switch (wHour) {
-            case 1:
-                usedClockType->show(FrontWord::w_nacht);
-                break;
-            case 2: {
-                usedClockType->show(FrontWord::w_morgen);
-                usedClockType->show(FrontWord::w_frueh);
-            } break;
-            case 3: {
-                usedClockType->show(FrontWord::w_morgen);
-                usedClockType->show(FrontWord::w_mittag);
-            } break;
-            case 4: {
-                usedClockType->show(FrontWord::w_morgen);
-                usedClockType->show(FrontWord::w_abend);
-            } break;
-            }
-            switch (wTemp18) {
-            case 30: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_dreissig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 25: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_und);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 20: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 15: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 10: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 5: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 1: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_null);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -1: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_null);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -5: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -10: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -15: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -20: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -25: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_und);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            }
-            switch (wWeather18) {
-            case 200:
-                usedClockType->show(FrontWord::w_gewitter);
-                break;
-            case 300:
-                usedClockType->show(FrontWord::w_regen);
-                break;
-            case 500:
-                usedClockType->show(FrontWord::w_regen);
-                break;
-            case 600:
-                usedClockType->show(FrontWord::w_schnee);
-                break;
-            case 700:
-                usedClockType->show(FrontWord::w_warnung);
-                break;
-            case 800:
-                usedClockType->show(FrontWord::w_klar);
-                break;
-            case 801:
-                usedClockType->show(FrontWord::w_wolken);
-                break;
-            }
-
-        } break;
-            // +24h
-        case 4: {
-            switch (wHour) {
-            case 1: {
-                usedClockType->show(FrontWord::w_morgen);
-                usedClockType->show(FrontWord::w_frueh);
-            } break;
-            case 2: {
-                usedClockType->show(FrontWord::w_morgen);
-                usedClockType->show(FrontWord::w_mittag);
-            } break;
-            case 3: {
-                usedClockType->show(FrontWord::w_morgen);
-                usedClockType->show(FrontWord::w_abend);
-            } break;
-            case 4: {
-                usedClockType->show(FrontWord::w_morgen);
-                usedClockType->show(FrontWord::w_nacht);
-            } break;
-            }
-            switch (wTemp24) {
-            case 30: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_dreissig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 25: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_und);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 20: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 15: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 10: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 5: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case 1: {
-                usedClockType->show(FrontWord::w_ueber);
-                usedClockType->show(FrontWord::w_null);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -1: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_null);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -5: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -10: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -15: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_zehn);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -20: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            case -25: {
-                usedClockType->show(FrontWord::w_unter);
-                usedClockType->show(FrontWord::w_minus);
-                usedClockType->show(FrontWord::w_fuenf);
-                usedClockType->show(FrontWord::w_und);
-                usedClockType->show(FrontWord::w_zwanzig);
-                usedClockType->show(FrontWord::w_grad);
-            } break;
-            }
-            switch (wWeather24) {
-            case 200:
-                usedClockType->show(FrontWord::w_gewitter);
-                break;
-            case 300:
-                usedClockType->show(FrontWord::w_regen);
-                break;
-            case 500:
-                usedClockType->show(FrontWord::w_regen);
-                break;
-            case 600:
-                usedClockType->show(FrontWord::w_schnee);
-                break;
-            case 700:
-                usedClockType->show(FrontWord::w_warnung);
-                break;
-            case 800:
-                usedClockType->show(FrontWord::w_klar);
-                break;
-            case 801:
-                usedClockType->show(FrontWord::w_wolken);
-                break;
-            }
-
-        } break;
+        if (wWeatherSwitch < 1 || wWeatherSwitch > forecastSlots) {
+            return;
         }
+        const uint8_t slot = wWeatherSwitch - 1;
+
+        static const FrontWord daytime[7][2] = {
+            {FrontWord::w_mittag},
+            {FrontWord::w_abend},
+            {FrontWord::w_nacht},
+            {FrontWord::w_morgen, FrontWord::w_frueh},
+            {FrontWord::w_morgen, FrontWord::w_mittag},
+            {FrontWord::w_morgen, FrontWord::w_abend},
+            {FrontWord::w_morgen, FrontWord::w_nacht},
+        };
+        if (wHour >= 1 && wHour <= 4) {
+            showWords(daytime[slot + wHour - 1]);
+        }
+
+        showTemperature(wTemp[slot]);
+        showCondition(wWeather[slot]);
     }
 
     //------------------------------------------------------------------------------

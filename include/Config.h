@@ -448,3 +448,18 @@
 // #define MQTT_USER "user"
 // #define MQTT_PASSWORD "password"
 // #define MQTT_TOPIC "Wordclock"
+
+//--------------------------------------------------------------------------
+// Manual OpenWeatherMap Settings
+//--------------------------------------------------------------------------
+/*
+ * Preconfigure the weather forecast of the Ger22x11Weather layout. The values
+ * are used whenever the clock has no city ID or API key stored, so they also
+ * reach a clock that is already set up. Values entered in the web interface
+ * take precedence. Keep your API key out of commits.
+ *
+ * Valid values OWM_CITY_ID [OpenWeatherMap city ID, up to 8 digits, as string]
+ * Valid values OWM_API_KEY [up to 34 characters as string]
+ */
+#define OWM_CITY_ID "YOUR_CITY"
+#define OWM_API_KEY "YOUR_API_KEY"
