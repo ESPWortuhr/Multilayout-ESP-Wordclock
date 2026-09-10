@@ -1500,7 +1500,8 @@ void ClockWork::loop(struct tm &tm) {
         sendMQTTUpdate();
     }
 
-    const bool configCommandPending = G.conf != COMMAND_IDLE;
+    const bool setCommandPending =
+        G.conf != COMMAND_IDLE && G.conf < PLACEHOLDER_MAX_SET;
 
     switch (G.conf) {
 
@@ -1887,7 +1888,7 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
-    if (configCommandPending) {
+    if (setCommandPending) {
         initLedStrip(G.Colortype);
     }
 
