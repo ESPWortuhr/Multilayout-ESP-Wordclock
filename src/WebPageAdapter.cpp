@@ -662,15 +662,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_REQUEST_MQTT_VALUES:
         case COMMAND_REQUEST_CONFIG_VALUES:
         case COMMAND_REQUEST_COLOR_VALUES:
-        case COMMAND_REQUEST_TRANSITION: {
-            G.client_nr = num;
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
+        case COMMAND_REQUEST_TRANSITION:
         case COMMAND_REQUEST_AUTO_BRIGHT: {
-            // G.param1 = split(payload, length, 3);
             G.client_nr = num;
             break;
         }
