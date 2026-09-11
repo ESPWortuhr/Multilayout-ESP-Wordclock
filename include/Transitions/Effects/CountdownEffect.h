@@ -50,8 +50,8 @@ private:
         char seconds[8];
         snprintf(seconds, sizeof(seconds), "%d", m_countDown);
 
-        const Led::NumberFont numberFont =
-            Led::numberFontFor(context.out.cols(), context.out.rows());
+        const NumberFont numberFont =
+            numberFontFor(context.out.cols(), context.out.rows());
         const unsigned char digit0 = numberFont.glyph(seconds[0]);
         const unsigned char digit1 = numberFont.glyph(seconds[1]);
 

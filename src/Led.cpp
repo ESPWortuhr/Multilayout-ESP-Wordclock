@@ -76,21 +76,6 @@ uint32_t Led::reverse32BitOrder(uint32_t x) {
 
 //------------------------------------------------------------------------------
 
-Led::NumberFont Led::numberFontFor(uint8_t cols, uint8_t rows) {
-    NumberFont numberFont;
-    numberFont.font = normalSizeASCII;
-    numberFont.width = pgm_read_byte(&(fontWidth[numberFont.font]));
-    numberFont.height = pgm_read_byte(&(fontHeight[numberFont.font]));
-    if (cols < numberFont.width * 2 + 1 || rows < numberFont.height) {
-        numberFont.font = smallSizeNumbers;
-        numberFont.width = pgm_read_byte(&(fontWidth[numberFont.font]));
-        numberFont.height = pgm_read_byte(&(fontHeight[numberFont.font]));
-    }
-    return numberFont;
-}
-
-//------------------------------------------------------------------------------
-
 void Led::checkIfHueIsOutOfBound(uint16_t &hue) {
     if (hue >= 360) {
         hue = 0;
@@ -683,49 +668,35 @@ void Led::showNumbers(const char d1, const char d2) {
 
 //------------------------------------------------------------------------------
 
-fontSize Led::determineFontSize() {
-
-    if (G.clockTypeDef == Ger16x18) {
-        return normalSizeASCII;
-    }
-    return smallSizeNumbers;
-}
-
-//------------------------------------------------------------------------------
-
-void Led::setupDigitalClock(fontSize &usedFontSize, uint8_t &offsetLetterH0,
-                            uint8_t &offsetLetterH1, uint8_t &offsetLetterMin0,
+void Led::setupDigitalClock(const NumberFont &numberFont,
+                            uint8_t &offsetLetterH0, uint8_t &offsetLetterH1,
+                            uint8_t &offsetLetterMin0,
                             uint8_t &offsetLetterMin1, uint8_t &offsetRow0,
                             uint8_t &offsetRow1) {
 
     uint8_t letterSpacing = 1;
-    if (usedClockType->rowsWordMatrix() >=
-        pgm_read_byte(&(fontHeight[usedFontSize])) * 2) {
+    if (usedClockType->rowsWordMatrix() >= numberFont.height * 2 &&
+        usedClockType->colsWordMatrix() >= numberFont.width * 2 + 2) {
         letterSpacing++;
     }
 
     // 1st Row of letters vertical Offset
     offsetLetterH0 = 0;
-    offsetLetterH1 = offsetLetterH0 +
-                     pgm_read_byte(&(fontWidth[usedFontSize])) + letterSpacing;
+    offsetLetterH1 = offsetLetterH0 + numberFont.width + letterSpacing;
 
     // 2nd Row of letters vertical Offset
-    offsetLetterMin1 = usedClockType->colsWordMatrix() -
-                       pgm_read_byte(&(fontWidth[usedFontSize]));
-    offsetLetterMin0 = offsetLetterMin1 -
-                       pgm_read_byte(&(fontWidth[usedFontSize])) -
-                       letterSpacing;
+    offsetLetterMin1 = usedClockType->colsWordMatrix() - numberFont.width;
+    offsetLetterMin0 = offsetLetterMin1 - numberFont.width - letterSpacing;
 
     // 1st Row of letters horizontal Offset
     offsetRow0 = 0;
     // 2nd Row of letters horizontal Offset
-    offsetRow1 = usedClockType->rowsWordMatrix() -
-                 pgm_read_byte(&(fontHeight[usedFontSize]));
+    offsetRow1 = usedClockType->rowsWordMatrix() - numberFont.height;
 }
 
 //------------------------------------------------------------------------------
 
-void Led::toggleDigitalClockSecond(const fontSize &usedFontSize,
+void Led::toggleDigitalClockSecond(const NumberFont &numberFont,
                                    const uint8_t &offsetRow1,
                                    const uint8_t &offsetMin0) {
     if (!(_second % 2)) {
@@ -735,14 +706,15 @@ void Led::toggleDigitalClockSecond(const fontSize &usedFontSize,
     // The separator sits in the gap left of the minutes block. On narrow
     // layouts (e.g. 8 columns) there is no such gap, so the column would
     // become negative -- skip the separator instead of drawing out of bounds.
-    const int8_t distanceToMinutes = (usedFontSize == normalSizeASCII) ? 3 : 2;
+    const int8_t distanceToMinutes =
+        (numberFont.font == normalSizeASCII) ? 3 : 2;
     const int column = static_cast<int>(offsetMin0) - distanceToMinutes;
     if (column < 0) {
         return;
     }
 
-    const int8_t upperRowOffset = (usedFontSize == normalSizeASCII) ? 2 : 1;
-    const int8_t lowerRowOffset = (usedFontSize == normalSizeASCII) ? 4 : 3;
+    const int8_t upperRowOffset = (numberFont.font == normalSizeASCII) ? 2 : 1;
+    const int8_t lowerRowOffset = (numberFont.font == normalSizeASCII) ? 4 : 3;
     usedClockType->setFrontMatrixPixel(offsetRow1 + upperRowOffset, column);
     usedClockType->setFrontMatrixPixel(offsetRow1 + lowerRowOffset, column);
 }
@@ -757,23 +729,23 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
 
     resetFrontMatrixBuffer();
 
-    fontSize usedFontSize = determineFontSize();
+    const NumberFont numberFont = numberFontFor(
+        usedClockType->colsWordMatrix(), usedClockType->rowsWordMatrix(), 2);
 
     // The offsets only depend on the layout and the font size, so recomputing
     // them on every call is cheap. Caching them in static variables used to
     // leave them at zero (or at values of a previously selected layout)
     // whenever the first call came in without parametersChanged being set.
-    setupDigitalClock(usedFontSize, offsetLetterH0, offsetLetterH1,
+    setupDigitalClock(numberFont, offsetLetterH0, offsetLetterH1,
                       offsetLetterMin0, offsetLetterMin1, offsetRow0,
                       offsetRow1);
 
-    toggleDigitalClockSecond(usedFontSize, offsetRow1, offsetLetterMin0);
+    toggleDigitalClockSecond(numberFont, offsetRow1, offsetLetterMin0);
 
     bool showHours = true;
     bool showMinutes = true;
     // toogle hours and minutes if clock is not high enough
-    if (usedClockType->rowsWordMatrix() <
-        (pgm_read_byte(&(fontHeight[usedFontSize])) * 2)) {
+    if (usedClockType->rowsWordMatrix() < numberFont.height * 2) {
         if (_second % 4 < 2) { // show hours every 2 seconds
             showHours = true;
             showMinutes = false;
@@ -783,24 +755,25 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
         }
     }
 
-    uint8_t width = pgm_read_byte(&(fontWidth[usedFontSize]));
-    uint8_t height = pgm_read_byte(&(fontHeight[usedFontSize]));
-
-    for (uint8_t col = 0; col < width; col++) {
-        for (uint8_t row = 0; row < height; row++) {
+    for (uint8_t col = 0; col < numberFont.width; col++) {
+        for (uint8_t row = 0; row < numberFont.height; row++) {
             // 1st Row: Hours
             if (showHours) {
                 setPixelForChar(col, row, offsetLetterH1, offsetRow0,
-                                static_cast<unsigned char>(h1), usedFontSize);
+                                static_cast<unsigned char>(h1),
+                                numberFont.font);
                 setPixelForChar(col, row, offsetLetterH0, offsetRow0,
-                                static_cast<unsigned char>(h0), usedFontSize);
+                                static_cast<unsigned char>(h0),
+                                numberFont.font);
             }
             // 2nd Row: Minutes
             if (showMinutes) {
                 setPixelForChar(col, row, offsetLetterMin1, offsetRow1,
-                                static_cast<unsigned char>(min1), usedFontSize);
+                                static_cast<unsigned char>(min1),
+                                numberFont.font);
                 setPixelForChar(col, row, offsetLetterMin0, offsetRow1,
-                                static_cast<unsigned char>(min0), usedFontSize);
+                                static_cast<unsigned char>(min0),
+                                numberFont.font);
             }
         }
     }

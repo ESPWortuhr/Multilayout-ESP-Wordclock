@@ -1,5 +1,6 @@
 #pragma once
 #include "Arduino.h"
+#include "NumberFont.h"
 #include "version.gen.h"
 #include <NeoPixelBus.h> // HsbColor
 
@@ -371,11 +372,6 @@ enum LayoutVariants : uint8_t {
     FlipHorzVert = 3,
     ExtraLedPerRow = 4,
     MeanderRows = 5,
-};
-
-enum fontSize : uint8_t {
-    normalSizeASCII = 0,
-    smallSizeNumbers = 1,
 };
 
 enum CommandWords : uint8_t {

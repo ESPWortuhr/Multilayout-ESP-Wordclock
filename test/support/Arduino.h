@@ -10,6 +10,7 @@
 #endif
 
 #define PROGMEM
+#define pgm_read_byte(addr) (*reinterpret_cast<const uint8_t *>(addr))
 #define F(x) (x)
 
 inline unsigned long millis() {
