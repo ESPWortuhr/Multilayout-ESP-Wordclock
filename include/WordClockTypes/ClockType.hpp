@@ -103,7 +103,7 @@ public:
         }
 
         return G.minuteLedCount == MINUTE_LEDS_WIRED_7 ? MINUTE_LEDS_WIRED_7
-                                                       : MINUTE_LED_COUNT;
+                                                       : MINUTE_LEDS_WIRED_4;
     }
 
     virtual uint16_t getFrameMatrixIndex(uint16_t index) {
@@ -127,9 +127,9 @@ public:
         if (hasMinuteLeds()) {
             for (MinuteVariant variant :
                  {MinuteVariant::LED4x, MinuteVariant::LED7x}) {
-                uint16_t minutePixels[MINUTE_LED_COUNT] = {0};
+                uint16_t minutePixels[MINUTE_LEDS_WIRED_4] = {0};
                 getMinuteArray(minutePixels, variant);
-                for (uint8_t i = 0; i < MINUTE_LED_COUNT; i++) {
+                for (uint8_t i = 0; i < MINUTE_LEDS_WIRED_4; i++) {
                     if (minutePixels[i] + 1 > pixelCount) {
                         pixelCount = minutePixels[i] + 1;
                     }
@@ -278,8 +278,6 @@ public:
 
 protected:
     uint8_t currentWordId = WORD_ID_NONE;
-
-    static constexpr uint8_t MINUTE_LED_COUNT = 4;
 
     /*
      * Physical LED count consumed by the word matrix on the strip - i.e. the
