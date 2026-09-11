@@ -61,6 +61,16 @@ uint32_t split(const uint8_t *payload, size_t payloadLength, uint8_t start,
 
 //------------------------------------------------------------------------------
 
+uint32_t clampToRange(uint32_t value, uint32_t low, uint32_t high) {
+    if (value < low)
+        return low;
+    if (value > high)
+        return high;
+    return value;
+}
+
+//------------------------------------------------------------------------------
+
 void payloadTextHandling(const uint8_t *payload, size_t payloadLength,
                          char *text, uint8_t start = 3) {
     uint8_t len = PAYLOAD_LENGTH - 1;
@@ -358,9 +368,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
         case COMMAND_SET_AUTO_BRIGHT: {
             G.autoBrightEnabled = split(payload, length, 3);
-            G.autoBrightMin = split(payload, length, 6);
-            G.autoBrightMax = split(payload, length, 9);
-            G.autoBrightPeak = split(payload, length, 12, 4);
+            G.autoBrightMin = clampToRange(split(payload, length, 6), 0, 100);
+            G.autoBrightMax = clampToRange(split(payload, length, 9), 10, 100);
+            G.autoBrightPeak =
+                clampToRange(split(payload, length, 12, 4), 10, 1500);
             G.param1 = 1;
             break;
         }
