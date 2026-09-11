@@ -186,7 +186,7 @@
 /*       Bengali      */
 /**********************/
 //
-// #define DEFAULT_LAYOUT  Bn9x7
+// #define DEFAULT_LAYOUT  BN9x8
 // 8 rows, 9 LED's per row + 4 LED's for minutes, with modified
 // layout for the Bengali language
 //
@@ -212,9 +212,9 @@
  * of your choice. DEFAULT_BRIGHTNESS defines the default brightness (percent)
  * of the LEDs, if no other value is defined yet.
  *
- * Valid values for DEFAULT_LEDTYPE [Brg, Grb, Rgb, Rbg, Gbr, Grbw]
+ * Valid values for DEFAULT_LEDTYPE [Brg, Grb, Rgb, Rbg, Bgr, Grbw]
  * Valid values for WHITE_LEDTYPE [WarmWhite, NeutralWhite, ColdWhite]
- * Valid values for DEFAULT_HUE [integer 0-255]
+ * Valid values for DEFAULT_HUE [integer 0-359, hue in degrees]
  * Valid values for DEFAULT_BRIGHTNESS [one of these: 0, 20, 40, 60, 80, 100]
  */
 #define DEFAULT_LEDTYPE Grb
@@ -251,9 +251,8 @@
  *  BuildTypeDef::DoubleRes, BuildTypeDef::TrippleRes,
  *  BuildTypeDef::QuadRes]
  *
- * Changing this setting in the web interface writes the new value to EEPROM.
- * Restart the clock afterwards so the LED strip allocation matches the selected
- * build type.
+ * Changing this setting in the web interface writes the new value to EEPROM
+ * and resizes the LED strip immediately; no restart is needed.
  */
 #define DEFAULT_BUILDTYPE BuildTypeDef::Normal
 
