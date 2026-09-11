@@ -140,6 +140,5 @@ enum class FrontWord {
     w_grad,
 
     plus,
-    h_droelf,
     happy_birthday
 };

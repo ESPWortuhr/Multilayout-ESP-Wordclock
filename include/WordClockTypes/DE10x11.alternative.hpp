@@ -141,10 +141,6 @@ public:
             setFrontMatrixWord(5, 4, 8);
             break;
 
-        case FrontWord::h_droelf:
-            setFrontMatrixWord(5, 4, 8);
-            break;
-
         default:
             break;
         };
