@@ -144,6 +144,10 @@ enum class BuildTypeDef : uint8_t {
     QuadRes = 4,
 };
 
+inline bool buildTypeIsValid(uint32_t type) {
+    return type <= static_cast<uint32_t>(BuildTypeDef::QuadRes);
+}
+
 inline uint8_t getLedsPerLetter(BuildTypeDef buildTypeDef) {
     switch (buildTypeDef) {
     case BuildTypeDef::DoubleRes:
@@ -164,6 +168,10 @@ enum class MinuteVariant : uint8_t {
     InWords = 3,
 };
 
+inline bool minuteVariantIsValid(uint32_t variant) {
+    return variant <= static_cast<uint32_t>(MinuteVariant::InWords);
+}
+
 inline uint8_t minuteLedCountFor(MinuteVariant variant, uint8_t current) {
     switch (variant) {
     case MinuteVariant::LED4x:
@@ -182,6 +190,10 @@ enum class SecondVariant : uint8_t {
     FrameSectorToggle = 3,
 };
 
+inline bool secondVariantIsValid(uint32_t variant) {
+    return variant <= static_cast<uint32_t>(SecondVariant::FrameSectorToggle);
+}
+
 enum class WordclockChanges : uint8_t {
     Null,
     Parameters,
@@ -196,6 +208,10 @@ enum class ItIsVariant : uint8_t {
     Hourly = 3,
     Off = 4,
 };
+
+inline bool itIsVariantIsValid(uint32_t variant) {
+    return variant <= static_cast<uint32_t>(ItIsVariant::Off);
+}
 
 enum BitmapSymbol : uint8_t {
     WLAN100,
@@ -337,6 +353,8 @@ enum LedColorVariants : uint8_t {
     Bgr = 4,
     Grbw = 5,
 };
+
+inline bool colorTypeIsValid(uint32_t type) { return type <= Grbw; }
 
 enum LanguageDialects : uint8_t {
     ItIs15 = 0,

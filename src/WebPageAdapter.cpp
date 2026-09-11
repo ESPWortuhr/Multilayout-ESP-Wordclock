@@ -293,16 +293,26 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_SETTING_SECOND: {
             G.progInit = true;
 
-            G.secondVariant =
-                static_cast<SecondVariant>(split(payload, length, 3));
+            const uint32_t secondVariant = split(payload, length, 3);
+            if (secondVariantIsValid(secondVariant)) {
+                G.secondVariant = static_cast<SecondVariant>(secondVariant);
+            } else {
+                Serial.printf("Ignoring invalid second variant: %lu\n",
+                              static_cast<unsigned long>(secondVariant));
+            }
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_MINUTE: {
-            G.minuteVariant =
-                static_cast<MinuteVariant>(split(payload, length, 3));
+            const uint32_t minuteVariant = split(payload, length, 3);
+            if (minuteVariantIsValid(minuteVariant)) {
+                G.minuteVariant = static_cast<MinuteVariant>(minuteVariant);
+            } else {
+                Serial.printf("Ignoring invalid minute variant: %lu\n",
+                              static_cast<unsigned long>(minuteVariant));
+            }
             break;
         }
 
@@ -352,26 +362,19 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.autoBrightMax = split(payload, length, 9);
             G.autoBrightPeak = split(payload, length, 12, 4);
             G.param1 = 1;
-            if (G.autoBrightMin < 0)
-                G.autoBrightMin = 0;
-            if (G.autoBrightMin > 100)
-                G.autoBrightMin = 100;
-            if (G.autoBrightMax < 10)
-                G.autoBrightMax = 10;
-            if (G.autoBrightMax > 100)
-                G.autoBrightMax = 100;
-            if (G.autoBrightPeak < 10)
-                G.autoBrightPeak = 10;
-            if (G.autoBrightPeak > 1500)
-                G.autoBrightPeak = 1500;
-
             break;
         }
 
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_IT_IS_VARIANT: {
-            G.itIsVariant = static_cast<ItIsVariant>(split(payload, length, 3));
+            const uint32_t itIsVariant = split(payload, length, 3);
+            if (itIsVariantIsValid(itIsVariant)) {
+                G.itIsVariant = static_cast<ItIsVariant>(itIsVariant);
+            } else {
+                Serial.printf("Ignoring invalid it-is variant: %lu\n",
+                              static_cast<unsigned long>(itIsVariant));
+            }
             break;
         }
 
@@ -489,7 +492,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_COLORTYPE: {
             G.progInit = true;
 
-            G.param1 = split(payload, length, 3);
+            const uint32_t colorType = split(payload, length, 3);
+            if (colorTypeIsValid(colorType)) {
+                G.param1 = static_cast<uint8_t>(colorType);
+            } else {
+                Serial.printf("Ignoring invalid color type: %lu\n",
+                              static_cast<unsigned long>(colorType));
+                G.param1 = G.Colortype;
+            }
             break;
         }
 
@@ -498,7 +508,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         case COMMAND_SET_BUILDTYPE: {
             G.progInit = true;
 
-            G.param1 = split(payload, length, 3);
+            const uint32_t buildType = split(payload, length, 3);
+            if (buildTypeIsValid(buildType)) {
+                G.param1 = static_cast<uint8_t>(buildType);
+            } else {
+                Serial.printf("Ignoring invalid build type: %lu\n",
+                              static_cast<unsigned long>(buildType));
+                G.param1 = static_cast<uint8_t>(G.buildTypeDef);
+            }
             break;
         }
 

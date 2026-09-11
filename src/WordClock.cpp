@@ -345,16 +345,101 @@ void ensureFireSettings() {
 
 //------------------------------------------------------------------------------
 
+MinuteVariant defaultMinuteVariant() {
+#if defined(MINUTE_LED7x)
+    return MinuteVariant::LED7x;
+#elif defined(MINUTE_LED4x)
+    return MinuteVariant::LED4x;
+#else
+    return MinuteVariant::Off;
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+ItIsVariant defaultItIsVariant() {
+#if defined(IT_IS_Off)
+    return ItIsVariant::Off;
+#elif defined(IT_IS_Permanent)
+    return ItIsVariant::Permanent;
+#elif defined(IT_IS_Quarterly)
+    return ItIsVariant::Quarterly;
+#elif defined(IT_IS_HalfHourly)
+    return ItIsVariant::HalfHourly;
+#elif defined(IT_IS_Hourly)
+    return ItIsVariant::Hourly;
+#else
+    return ItIsVariant::Permanent;
+#endif
+}
+
+//------------------------------------------------------------------------------
+
 void ensureMinuteVariant() {
     constexpr uint8_t LEGACY_MINUTE_VARIANT_IN_WORDS = 4;
 
-    if (static_cast<uint8_t>(G.minuteVariant) !=
+    if (static_cast<uint8_t>(G.minuteVariant) ==
         LEGACY_MINUTE_VARIANT_IN_WORDS) {
+        Serial.println("Moving minute variant InWords from 4 to 3");
+        G.minuteVariant = MinuteVariant::InWords;
         return;
     }
 
-    Serial.println("Moving minute variant InWords from 4 to 3");
-    G.minuteVariant = MinuteVariant::InWords;
+    if (minuteVariantIsValid(static_cast<uint32_t>(G.minuteVariant))) {
+        return;
+    }
+
+    Serial.printf("Invalid minute variant %u in EEPROM, restoring default\n",
+                  static_cast<unsigned>(G.minuteVariant));
+    G.minuteVariant = defaultMinuteVariant();
+}
+
+//------------------------------------------------------------------------------
+
+void ensureSecondVariant() {
+    if (secondVariantIsValid(static_cast<uint32_t>(G.secondVariant))) {
+        return;
+    }
+
+    Serial.printf("Invalid second variant %u in EEPROM, disabling seconds\n",
+                  static_cast<unsigned>(G.secondVariant));
+    G.secondVariant = SecondVariant::Off;
+}
+
+//------------------------------------------------------------------------------
+
+void ensureItIsVariant() {
+    if (itIsVariantIsValid(static_cast<uint32_t>(G.itIsVariant))) {
+        return;
+    }
+
+    Serial.printf("Invalid it-is variant %u in EEPROM, restoring default\n",
+                  static_cast<unsigned>(G.itIsVariant));
+    G.itIsVariant = defaultItIsVariant();
+}
+
+//------------------------------------------------------------------------------
+
+void ensureColorType() {
+    if (colorTypeIsValid(G.Colortype)) {
+        return;
+    }
+
+    Serial.printf("Invalid color type %u in EEPROM, restoring default\n",
+                  G.Colortype);
+    G.Colortype = DEFAULT_LEDTYPE;
+}
+
+//------------------------------------------------------------------------------
+
+void ensureBuildType() {
+    if (buildTypeIsValid(static_cast<uint32_t>(G.buildTypeDef))) {
+        return;
+    }
+
+    Serial.printf("Invalid build type %u in EEPROM, restoring default\n",
+                  static_cast<unsigned>(G.buildTypeDef));
+    G.buildTypeDef = DEFAULT_BUILDTYPE;
 }
 
 //------------------------------------------------------------------------------
@@ -433,6 +518,10 @@ void setup() {
     ensureFireSettings();
     ensureEffectSpeed();
     ensureMinuteVariant();
+    ensureSecondVariant();
+    ensureItIsVariant();
+    ensureColorType();
+    ensureBuildType();
     ensureWhiteType();
     ensureMinuteLedCount();
 
@@ -480,19 +569,9 @@ void setup() {
         G.secondVariant = SecondVariant::Off;
         G.secondsFrameLedCount = 0;
         G.bitmapSymbol = BitmapSymbol::HEART;
-// C++23 #elifdef doesn't work yet
-#ifdef MINUTE_Off
-        G.minuteVariant = MinuteVariant::Off;
-#endif
-#ifdef MINUTE_LED4x
-        G.minuteVariant = MinuteVariant::LED4x;
-#endif
-#ifdef MINUTE_LED7x
-        G.minuteVariant = MinuteVariant::LED7x;
-#endif
+        G.minuteVariant = defaultMinuteVariant();
         G.minuteLedCount =
             minuteLedCountFor(G.minuteVariant, MINUTE_LEDS_WIRED_4);
-        G.itIsVariant = ItIsVariant::Permanent;
         strcpy(G.openWeatherMap.cityid, "");
         strcpy(G.openWeatherMap.apikey, "");
         strcpy(G.timeserver, "europe.pool.ntp.org");
@@ -520,21 +599,7 @@ void setup() {
         G.languageVariant[ItIs45] = false;
         G.languageVariant[EN_ShowAQuarter] = false;
 
-#ifdef IT_IS_Off
-        G.itIsVariant = ItIsVariant::Off;
-
-#elif defined(IT_IS_Permanent)
-        G.itIsVariant = ItIsVariant::Permanent;
-
-#elif defined(IT_IS_Quarterly)
-        G.itIsVariant = ItIsVariant::Quarterly;
-
-#elif defined(IT_IS_HalfHourly)
-        G.itIsVariant = ItIsVariant::HalfHourly;
-
-#elif defined(IT_IS_Hourly)
-        G.itIsVariant = ItIsVariant::Hourly;
-#endif
+        G.itIsVariant = defaultItIsVariant();
 
 #ifdef MQTT_SERVER
         strlcpy(G.mqtt.serverAdress, MQTT_SERVER, sizeof(G.mqtt.serverAdress));
