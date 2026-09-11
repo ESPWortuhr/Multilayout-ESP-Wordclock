@@ -628,8 +628,7 @@ void setup() {
     }
 
     usedClockType = clockWork.getPointer(G.clockTypeDef);
-    clockWork.resetMinVariantIfNotAvailable();
-    G.minuteLedCount = minuteLedCountFor(G.minuteVariant, G.minuteLedCount);
+    clockWork.normalizeMinuteVariant();
 
     // Area that will be animated:
     //         LED frame horizontal

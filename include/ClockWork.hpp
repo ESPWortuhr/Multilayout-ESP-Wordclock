@@ -841,12 +841,12 @@ void ClockWork::checkForValidLanguageVariant() {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::resetMinVariantIfNotAvailable() {
-    if (usedClockType->supportsMinuteVariant(G.minuteVariant)) {
-        return;
+void ClockWork::normalizeMinuteVariant() {
+    if (!usedClockType->supportsMinuteVariant(G.minuteVariant)) {
+        G.minuteVariant = MinuteVariant::Off;
     }
 
-    G.minuteVariant = MinuteVariant::Off;
+    G.minuteLedCount = minuteLedCountFor(G.minuteVariant, G.minuteLedCount);
 }
 
 //------------------------------------------------------------------------------
@@ -1723,8 +1723,7 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_SET_MINUTE:
         led.clear();
-        resetMinVariantIfNotAvailable();
-        G.minuteLedCount = minuteLedCountFor(G.minuteVariant, G.minuteLedCount);
+        normalizeMinuteVariant();
         eeprom::write();
         memset(frameArray, false, sizeof(frameArray));
         parametersChanged = true;
@@ -1819,8 +1818,7 @@ void ClockWork::loop(struct tm &tm) {
         Serial.printf("ClockType: %u\n", G.clockTypeDef);
 
         usedClockType = getPointer(G.clockTypeDef);
-        resetMinVariantIfNotAvailable();
-        G.minuteLedCount = minuteLedCountFor(G.minuteVariant, G.minuteLedCount);
+        normalizeMinuteVariant();
 
         checkForValidLanguageVariant();
 
