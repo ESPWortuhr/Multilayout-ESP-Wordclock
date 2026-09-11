@@ -92,7 +92,7 @@ Led::NumberFont Led::numberFontFor(uint8_t cols, uint8_t rows) {
 //------------------------------------------------------------------------------
 
 void Led::checkIfHueIsOutOfBound(uint16_t &hue) {
-    if (hue > 360) {
+    if (hue >= 360) {
         hue = 0;
     }
 }
