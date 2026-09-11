@@ -10,11 +10,11 @@ private:
     void reInit();
     static void callback(char *receivedTopic, byte *payload,
                          unsigned int length);
-    static void processState(const JsonDocument &doc);
-    static void processEffect(const JsonDocument &doc);
+    static bool processState(const JsonDocument &doc);
+    static bool processEffect(const JsonDocument &doc);
     static void processScrollingText(const JsonDocument &doc);
-    static void processColor(const JsonDocument &doc);
-    static void processBrightness(const JsonDocument &doc);
+    static bool processColor(const JsonDocument &doc);
+    static bool processBrightness(const JsonDocument &doc);
     static bool checkIfMqttUserIsEmpty();
     static const char *getEffectName();
 

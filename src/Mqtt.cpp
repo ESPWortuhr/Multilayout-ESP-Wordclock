@@ -213,7 +213,7 @@ Output:
 None
 */
 
-void Mqtt::processState(const JsonDocument &doc) {
+bool Mqtt::processState(const JsonDocument &doc) {
     if (doc.containsKey("state")) {
         const char *state = doc["state"] | "";
         bool stateChanged = false;
@@ -226,9 +226,9 @@ void Mqtt::processState(const JsonDocument &doc) {
             led.setState(false);
             stateChanged = true;
         }
-        if (stateChanged && mqttInstance)
-            mqttInstance->sendState();
+        return stateChanged;
     }
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -248,7 +248,7 @@ Output:
 None
 */
 
-void Mqtt::processEffect(const JsonDocument &doc) {
+bool Mqtt::processEffect(const JsonDocument &doc) {
     if (doc.containsKey("effect")) {
         const char *effect = doc["effect"] | "";
         bool effectChanged = false;
@@ -285,10 +285,10 @@ void Mqtt::processEffect(const JsonDocument &doc) {
         if (effectChanged) {
             G.progInit = true;
             parametersChanged = true;
-            if (mqttInstance)
-                mqttInstance->sendState();
         }
+        return effectChanged;
     }
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -362,7 +362,7 @@ Output:
 None
 */
 
-void Mqtt::processColor(const JsonDocument &doc) {
+bool Mqtt::processColor(const JsonDocument &doc) {
     JsonObjectConst color = doc["color"];
     if (!color.isNull() && color.containsKey("h") && color.containsKey("s")) {
         // Convert values from Home Assistant (0-360 for Hue, 0-100 for
@@ -381,11 +381,9 @@ void Mqtt::processColor(const JsonDocument &doc) {
         webDoc["s"] = round(s * 100); // Convert to 0-100%
         webDoc["v"] = round(G.color[Foreground].B * 100); // Convert to 0-100%
         broadcastToWeb(webDoc);
-
-        if (mqttInstance) {
-            mqttInstance->sendState();
-        }
+        return true;
     }
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -405,13 +403,13 @@ Output:
 None
 */
 
-void Mqtt::processBrightness(const JsonDocument &doc) {
+bool Mqtt::processBrightness(const JsonDocument &doc) {
     if (doc.containsKey("brightness")) {
         // Manual brightness commands must not fight the ambient-light loop.
         if (G.autoBrightEnabled) {
             Serial.println("MQTT: Ignoring brightness change - auto brightness "
                            "is enabled");
-            return;
+            return false;
         }
 
         int rawBrightness = constrain(doc["brightness"] | 0, 0, 255);
@@ -425,10 +423,9 @@ void Mqtt::processBrightness(const JsonDocument &doc) {
         Serial.println(brightness);
 
         parametersChanged = true;
-
-        if (mqttInstance)
-            mqttInstance->sendState();
+        return true;
     }
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -751,11 +748,14 @@ void Mqtt::callback(char *receivedTopic, byte *payload, unsigned int length) {
 
     // Process remaining messages
     if (topicStr == topic("cmd")) {
-        processState(doc);
-        processEffect(doc);
+        bool stateChanged = processState(doc);
+        stateChanged |= processEffect(doc);
         processScrollingText(doc);
-        processColor(doc);
-        processBrightness(doc);
+        stateChanged |= processColor(doc);
+        stateChanged |= processBrightness(doc);
+        if (stateChanged && mqttInstance) {
+            mqttInstance->sendState();
+        }
     } else if (topicStr == topic("scrolltext/set")) {
         processScrollingText(doc);
     } else if (topicStr == topic("effect_speed/set")) {
