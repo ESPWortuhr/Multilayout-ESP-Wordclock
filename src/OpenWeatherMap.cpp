@@ -79,6 +79,36 @@ bool OpenWMap::requestDue() const {
 
 //------------------------------------------------------------------------------
 
+bool OpenWMap::connectToServer() {
+    if (static_cast<uint32_t>(serverIp) == 0) {
+#ifdef ESP8266
+        const int resolved =
+            WiFi.hostByName(server, serverIp, connectTimeoutMs);
+#else
+        const int resolved = WiFi.hostByName(server, serverIp);
+#endif
+        if (resolved != 1) {
+            serverIp = IPAddress();
+            Serial.println("DNS lookup for Openweathermap.org failed");
+            return false;
+        }
+    }
+
+#ifdef ESP8266
+    weatherClient.setTimeout(connectTimeoutMs);
+    const bool ok = weatherClient.connect(serverIp, 80);
+#else
+    const bool ok = weatherClient.connect(serverIp, 80, connectTimeoutMs);
+#endif
+    if (!ok) {
+        serverIp = IPAddress();
+        Serial.println("Connection to Openweathermap.org failed");
+    }
+    return ok;
+}
+
+//------------------------------------------------------------------------------
+
 void OpenWMap::startWeatherRequest() {
     Serial.println("");
     Serial.println("--------------------------------------");
@@ -96,14 +126,7 @@ void OpenWMap::startWeatherRequest() {
     Serial.print("Calling URL: ");
     Serial.println(maskedResource);
 
-#ifdef ESP8266
-    weatherClient.setTimeout(connectTimeoutMs);
-    const bool ok = weatherClient.connect(server, 80);
-#else
-    const bool ok = weatherClient.connect(server, 80, connectTimeoutMs);
-#endif
-    if (!ok) {
-        Serial.println("Connection to Openweathermap.org failed");
+    if (!connectToServer()) {
         return;
     }
 

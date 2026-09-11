@@ -13,6 +13,7 @@ private:
     enum class RequestState : uint8_t { Idle, SkippingHeader };
 
     bool requestDue() const;
+    bool connectToServer();
     void startWeatherRequest();
     void finishWeatherRequest();
     void pollWeatherResponse();
@@ -20,6 +21,7 @@ private:
     void printDeterminedData();
 
     WiFiClient weatherClient;
+    IPAddress serverIp;
     RequestState requestState = RequestState::Idle;
     uint32_t requestStartMillis = 0;
     uint32_t lastRequestMillis = 0;
