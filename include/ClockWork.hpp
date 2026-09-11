@@ -940,17 +940,11 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
         if (8 <= min && min <= 22) {
             showQuarterPast(offsetHour);
         } else if (23 <= min && min <= 37) { // half
-            if (G.clockTypeDef == Eng10x11 || G.clockTypeDef == It10x11 ||
-                G.clockTypeDef == Es10x11 || G.clockTypeDef == Ro10x11) {
-                usedClockType->show(FrontWord::halb);
+            usedClockType->show(FrontWord::halb);
+            if (G.clockTypeDef == Es08x08Cuarto) {
                 usedClockType->show(FrontWord::nach);
             } else {
-                if (G.clockTypeDef == Fr10x11 || G.clockTypeDef == Ru10x11) {
-                    usedClockType->show(FrontWord::halb);
-                } else {
-                    usedClockType->show(FrontWord::halb);
-                    offsetHour = 1;
-                }
+                offsetHour = 1;
             }
         } else if (38 <= min && min <= 52) { // quarter to
             showQuarterTo(offsetHour);
