@@ -91,6 +91,29 @@ bool compareEffBriAndSpeedToOld(uint8_t *payload, size_t length) {
 
 //------------------------------------------------------------------------------
 
+bool modeNeedsInit(uint8_t command, uint8_t *payload, size_t length) {
+    switch (command) {
+    case COMMAND_MODE_WORD_CLOCK:
+        return G.prog != COMMAND_IDLE && G.prog != COMMAND_MODE_WORD_CLOCK;
+    case COMMAND_MODE_SECONDS:
+    case COMMAND_MODE_DIGITAL_CLOCK:
+    case COMMAND_MODE_COLOR:
+        return G.prog != command;
+    case COMMAND_MODE_RAINBOW:
+    case COMMAND_MODE_RAINBOWCYCLE:
+    case COMMAND_MODE_FIRE:
+    case COMMAND_MODE_SCROLLINGTEXT:
+    case COMMAND_MODE_SYMBOL:
+        return G.prog != command || compareEffBriAndSpeedToOld(payload, length);
+    case COMMAND_MODE_TRANSITION:
+        return true;
+    default:
+        return false;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 bool parseColor(uint8_t *payload, size_t length) {
     if (!requirePayloadLength(length, COLOR_PAYLOAD_LENGTH, "Color")) {
         return false;
@@ -180,78 +203,31 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         uint8_t command = split(payload, length, 0);
         G.param1 = 0;
 
+        if (modeNeedsInit(command, payload, length)) {
+            G.progInit = true;
+        }
+
         switch (command) {
-        case COMMAND_MODE_WORD_CLOCK: {
-            if (G.prog != COMMAND_IDLE && G.prog != COMMAND_MODE_WORD_CLOCK) {
-                G.progInit = true;
-            }
-            parametersChanged = true;
-            parseColor(payload, length);
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
-        case COMMAND_MODE_SECONDS: {
-            if (G.prog != command) {
-                G.progInit = true;
-            }
-
-            parseColor(payload, length);
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
-        case COMMAND_MODE_DIGITAL_CLOCK: {
-            if (G.prog != command) {
-                G.progInit = true;
-            }
-
-            parseColor(payload, length);
-            parametersChanged = true;
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
-        case COMMAND_MODE_RAINBOW:
-        case COMMAND_MODE_RAINBOWCYCLE:
-        case COMMAND_MODE_FIRE: {
-            if ((G.prog != command) ||
-                compareEffBriAndSpeedToOld(payload, length)) {
-                G.progInit = true;
-            }
-            break;
-        }
-
-            //------------------------------------------------------------------------------
-
+        case COMMAND_MODE_WORD_CLOCK:
+        case COMMAND_MODE_DIGITAL_CLOCK:
         case COMMAND_MODE_COLOR: {
-            if (G.prog != command) {
-                G.progInit = true;
-            }
-
             parametersChanged = true;
             parseColor(payload, length);
             break;
         }
+
             //------------------------------------------------------------------------------
+
+        case COMMAND_MODE_SECONDS:
         case COMMAND_MODE_SCROLLINGTEXT:
         case COMMAND_MODE_SYMBOL: {
-            if ((G.prog != command) ||
-                compareEffBriAndSpeedToOld(payload, length)) {
-                G.progInit = true;
-            }
-
             parseColor(payload, length);
             break;
         }
+
             //------------------------------------------------------------------------------
 
         case COMMAND_MODE_TRANSITION: {
-            G.progInit = true;
-
             const uint32_t transitionType = split(payload, length, 3);
             if (isValidTransitionType(transitionType)) {
                 G.transitionType = transitionType;
