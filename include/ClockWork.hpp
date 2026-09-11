@@ -42,8 +42,7 @@ void ClockWork::loopAutoBrightLogic() {
         return;
 
     if (G.autoBrightMin == G.autoBrightMax) {
-        // If min and max are identical, nothing needs to be measured...
-        // Besides: map() would crash with division by zero in this case
+        // If min and max are identical, nothing needs to be measured.
         ledGain = G.autoBrightMax;
         return;
     }
