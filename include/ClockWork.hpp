@@ -399,18 +399,18 @@ void ClockWork::rainbow() {
 
 void ClockWork::rainbowCycle() {
     static uint16_t hue = 0;
-    uint16_t numPixelsWordMatrix =
+    const uint16_t numPixelsWordMatrix =
         usedClockType->rowsWordMatrix() * usedClockType->colsWordMatrix();
-    uint16_t displayedHue;
+    const float hueStep = 360.f / numPixelsWordMatrix;
+    uint16_t pixel = 0;
 
-    displayedHue = hue;
     for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
+            const float displayedHue = fmodf(hue + pixel * hueStep, 360.f);
             led.setPixel(
                 row, col,
                 HsbColor(displayedHue / 360.f, 1.f, G.effectBri / 100.f));
-            displayedHue = displayedHue + 360.f / numPixelsWordMatrix;
-            led.checkIfHueIsOutOfBound(displayedHue);
+            pixel++;
         }
     }
     led.show();
