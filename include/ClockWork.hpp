@@ -48,14 +48,17 @@ void ClockWork::loopAutoBrightLogic() {
     }
 
     float ledGainOld = ledGain;
-    float luxNow = -1.0;
+    float luxNow;
 
-    if (bh1750Initialized && lightMeter.measurementReady()) {
+    if (bh1750Initialized) {
+        if (!lightMeter.measurementReady()) {
+            return;
+        }
         luxNow = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
-        autoBrightUsingBH1750 = true;
-    }
-
-    if (luxNow < 0) {
+        if (luxNow < 0) {
+            return;
+        }
+    } else {
         /*
         The lux value is considerably misrepresented upwards at ADC values above
         980. As 980 with an LDR5528 corresponds to approx. 1500 lux, but usually
@@ -72,7 +75,6 @@ void ClockWork::loopAutoBrightLogic() {
         luxNow = (adcValue * AUTOBRIGHT_LDR_RESDARK * 10.0f) /
                  (AUTOBRIGHT_LDR_RESBRIGHT * AUTOBRIGHT_LDR_RESDIVIDER *
                   (1024.0f - adcValue));
-        autoBrightUsingBH1750 = false;
     }
 
     /*
