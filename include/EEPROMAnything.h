@@ -57,6 +57,7 @@ void printConfig() {
     Serial.printf("H12       : %u\n", G.h12);
     Serial.printf("H16       : %u\n", G.h16);
     Serial.printf("H18       : %u\n", G.h18);
+    Serial.printf("H20       : %u\n", G.h20);
     Serial.printf("H22       : %u\n", G.h22);
     Serial.printf("H24       : %u\n", G.h24);
     Serial.printf("ClockType    : %u\n", G.clockTypeDef);
