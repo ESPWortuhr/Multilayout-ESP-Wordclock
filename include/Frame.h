@@ -17,7 +17,7 @@ private:
 private:
     void setInitFrameSector();
     void frameLogic();
-    bool checkIfFrameLoopShouldRun() const;
+    bool checkIfFrameLoopShouldSkip() const;
     void updateMillisCounters();
     bool checkIfFrameInit() const;
     bool checkIftoRunFrameLogic() const;
@@ -59,7 +59,7 @@ SecondsFrame::SecondsFrame(const uint8_t num) {
 // Helper functions
 //------------------------------------------------------------------------------
 
-bool SecondsFrame::checkIfFrameLoopShouldRun() const {
+bool SecondsFrame::checkIfFrameLoopShouldSkip() const {
     return usedClockType->numPixelsFrameMatrix() == 0;
 }
 
@@ -241,7 +241,7 @@ void SecondsFrame::frameLogic() {
 //------------------------------------------------------------------------------
 
 void SecondsFrame::loop() {
-    if (checkIfFrameLoopShouldRun()) {
+    if (checkIfFrameLoopShouldSkip()) {
         return;
     }
 
