@@ -848,6 +848,10 @@ void setup() {
     // Auto brightness
     //-------------------------------------
 
+#if defined(ESP32)
+    analogReadResolution(10);
+#endif
+
     // Find BH1750 and initialize if available else fallback to LDR if available
     byte bh1750Address = i2cBus::findBH1750Address(G.i2cSdaPin, G.i2cSclPin);
 
