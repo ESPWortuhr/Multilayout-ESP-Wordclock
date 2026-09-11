@@ -23,6 +23,8 @@ const char favicon[] PROGMEM = {
     0x26, 0x21, 0xD5, 0x10, 0xB0, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E,
     0x44, 0xAE, 0x42, 0x60, 0x82};
 
+const uint32_t faviconSize = sizeof(favicon);
+
 WebPageAdapter webSocket = WebPageAdapter(80);
 
 //------------------------------------------------------------------------------

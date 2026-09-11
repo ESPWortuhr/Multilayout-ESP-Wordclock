@@ -5,10 +5,9 @@
 #include "WebSocketsServer.h"
 #include "WordClockState.h"
 
-#define SIZE_OF_FAVICON 185
-
 // Defined in WebPageAdapter.cpp.
 extern const char favicon[];
+extern const uint32_t faviconSize;
 
 class WebPageAdapter : public WebSocketsServer {
 
@@ -29,14 +28,15 @@ public:
         String url = client->cUrl.substring(0, length);
         // ----------------------------------------
         if (url.endsWith("favicon.ico")) {
-            sprintf(buf,
-                    "HTTP/1.1 200 OK\r\n"
-                    "Content-Type: image/png\r\n"
-                    "Content-Length: %d\r\n"
-                    "Connection: close\r\n"
-                    "\r\n",
-                    SIZE_OF_FAVICON);
-            sendHtmlCode(client, (const uint8_t *)favicon, SIZE_OF_FAVICON);
+            snprintf(buf, sizeof(buf),
+                     "HTTP/1.1 200 OK\r\n"
+                     "Content-Type: image/png\r\n"
+                     "Content-Length: %u\r\n"
+                     "Connection: close\r\n"
+                     "\r\n",
+                     (unsigned)faviconSize);
+            client->tcp->write(buf);
+            sendHtmlCode(client, (const uint8_t *)favicon, faviconSize);
         } else if (url.equals("/")) {
             // ------------------------------------
             client->tcp->write(
