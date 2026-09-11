@@ -1505,15 +1505,7 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_RESET: {
         delay(500);
-#ifdef ESP8266
-        ESP.reset();
         ESP.restart();
-#elif defined(ESP32)
-        ESP.restart();
-        esp_restart();
-#endif
-        while (true) {
-        }
         break;
     }
 

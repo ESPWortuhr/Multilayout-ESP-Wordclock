@@ -151,10 +151,8 @@ uint8_t Led::getCurrentManualBrightnessSetting() {
         return G.h18;
     } else if (_hour < 22) {
         return G.h20;
-    } else if (_hour < 24) {
-        return G.h22;
     } else {
-        return DEFAULT_BRIGHTNESS;
+        return G.h22;
     }
 }
 

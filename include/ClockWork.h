@@ -84,7 +84,6 @@ private:
     void clearClockByProgInit();
 
 public:
-    // ClockWork() = default;
     ~ClockWork() = default;
 
     //------------------------------------------------------------------------------

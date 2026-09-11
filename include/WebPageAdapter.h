@@ -44,9 +44,7 @@ public:
                 "Server: arduino-WebSocket-Server\r\n"
                 "Content-Type: text/html\r\n"
                 "Content-Encoding: gzip\r\n" // <--- CRITICAL FOR GZIP
-                //--                    "Content-Length: 32\r\n"
                 "Connection: close\r\n"
-                //--                    "Sec-WebSocket-Version: 13\r\n"
                 "\r\n");
             sendHtmlCode(client, html_code, html_size);
         } else {
