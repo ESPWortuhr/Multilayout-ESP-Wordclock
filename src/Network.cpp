@@ -31,8 +31,6 @@ void Network::rtcMode() { wifiManager.setConfigPortalTimeout(120); }
 
 void Network::disable() { wifiManager.disconnect(); }
 
-void Network::reboot() { wifiManager.reboot(); }
-
 void Network::resetSettings() {
     wifiManager.resetSettings();
     wifiManager.reboot();
