@@ -183,6 +183,23 @@ bool parseBrightness(const uint8_t *payload, size_t length) {
     return true;
 }
 
+//------------------------------------------------------------------------------
+
+const char *loggablePayload(WStype_t type, const uint8_t *payload,
+                            size_t length) {
+    if (type == WStype_TEXT && length >= COMMAND_PAYLOAD_LENGTH) {
+        switch (split(payload, length, 0)) {
+        case COMMAND_SET_MQTT:
+        case COMMAND_SET_WEATHER_DATA:
+            return "<redacted>";
+        default:
+            break;
+        }
+    }
+
+    return reinterpret_cast<const char *>(payload);
+}
+
 } // namespace
 
 //------------------------------------------------------------------------------
@@ -190,8 +207,9 @@ bool parseBrightness(const uint8_t *payload, size_t length) {
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
                     size_t length) {
     payload = (payload == NULL) ? (uint8_t *)"" : payload;
-    Serial.printf("Client-Nr.: [%u]  WStype: %u payload: %s\n", num, type,
-                  payload);
+    Serial.printf("Client-Nr.: [%u]  WStype: %u length: %u payload: %s\n", num,
+                  type, static_cast<unsigned>(length),
+                  loggablePayload(type, payload, length));
 
     switch (type) {
     case WStype_DISCONNECTED: {
@@ -205,8 +223,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
         break;
     }
     case WStype_TEXT: {
-        Serial.printf("[%u] get Text: %s\n", length, payload);
-
         if (!requirePayloadLength(length, COMMAND_PAYLOAD_LENGTH,
                                   "WebSocket")) {
             break;
