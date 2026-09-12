@@ -1,6 +1,5 @@
 let TRANSLATION_NL = {
 	"title": "Woordklok",
-
 	"menu": {
 		"aria-show-menu": "Menu tonen",
 		"aria-hide-menu": "Menu verbergen",
@@ -15,28 +14,32 @@ let TRANSLATION_NL = {
 			"ru": "🇷🇺 Russisch"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Verbinden",
 		"text": "De verbinding met de Woordklok is verbroken."
 	},
-
 	"reboot-recommended": {
 		"button": "Herstart",
 		"text": "Een herstart wordt aanbevolen om de gewijzigde instelling toe te passen."
 	},
-
 	"colors": {
 		"h1": "Kleuren",
 		"with-background": "Met achtergrondkleur"
 	},
-
 	"functions": {
 		"h1": "Functies",
 		"color": {
 			"foreground": "Voorgrond",
 			"background": "Achtergrond",
-			"frame": "Frame"
+			"frame": "Frame",
+			"primary": "Primaire kleur",
+			"secondary": "Secundaire kleur",
+			"mode": {
+				"label": "Kleurmodus",
+				"monochrome": "Monochroom",
+				"polychrome": "Polychroom",
+				"word_random": "Willekeurig per woord"
+			}
 		},
 		"mode": {
 			"h2": "Modus",
@@ -47,6 +50,7 @@ let TRANSLATION_NL = {
 			"scrollingtext": "Tekst",
 			"rainbow": "Regenboog",
 			"color-change": "Kleurverandering",
+			"fire": "Vuur",
 			"symbol": "Symbool"
 		},
 		"transition": {
@@ -64,7 +68,6 @@ let TRANSLATION_NL = {
 				"balls": "Ballen",
 				"firework": "Vuurwerk",
 				"snake": "Slang",
-				"colored": "Kleurrijk",
 				"random": "Willekeurig"
 			},
 			"duration": {
@@ -72,15 +75,6 @@ let TRANSLATION_NL = {
 				"short": "Kort",
 				"medium": "Middel",
 				"long": "Lang"
-			},
-			"color": {
-				"label": "Kleurovergang",
-				"off": "Uit",
-				"words": "Gekleurde woorden",
-				"letters": "Gekleurde letters"
-			},
-			"speed": {
-				"label": "Snelheid"
 			},
 			"demo": {
 				"label": "Voorbeeld"
@@ -92,6 +86,8 @@ let TRANSLATION_NL = {
 			"scrollingtext": "Tekst",
 			"save": "Opslaan",
 			"speed": "Snelheid ",
+			"fire-cooling": "Afkoeling ",
+			"fire-sparking": "Vonken ",
 			"leds": "Aantal LED's ",
 			"position": "Positie "
 		}
@@ -105,10 +101,8 @@ let TRANSLATION_NL = {
 			"variant": "Klok variant",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternatief",
-			"de-10-11-alt-frame": "🇩🇪 10 × 11 Alternatief Frame",
 			"de-10-11-clock": "🇩🇪 10 × 11 Clock",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
-			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Frame",
 			"de-10-11-mrrioes": "🇩🇪 10 × 11 mrrioes",
 			"de-10-11-bayerisch": "🇩🇪 10 × 11 Beiers",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Zwabische stijl",
@@ -117,7 +111,7 @@ let TRANSLATION_NL = {
 			"de-11-11-v2": "🇩🇪 11 × 11 Versie 2",
 			"de-11-11-v3": "🇩🇪 11 × 11 (panbachi)",
 			"de-13-13": "🇩🇪 13 × 13",
-			"de-22-11-weather": "🇩🇪 10 × 11 Weer",
+			"de-22-11-weather": "🇩🇪 22 × 11 Weer",
 			"de-16-8": "🇩🇪 16 × 8",
 			"de-16-18": "🇩🇪 16 × 18",
 			"de-08-08": "🇩🇪 8 × 8",
@@ -179,11 +173,11 @@ let TRANSLATION_NL = {
 			"off": "Uit",
 			"normal-4-leds": "Normaal (4 LEDs)",
 			"normal-7-leds": "Normaal (7 LEDs)",
-			"edges": "Hoeken",
 			"in-words": "In woorden"
 		},
 		"seconds": {
 			"h2": "Seconden",
+			"led-count": "Aantal LED's in het secondenkader (0 = uitgeschakeld)",
 			"in-border": "Seconden in de rand",
 			"off": "Uit",
 			"point": "Punt",

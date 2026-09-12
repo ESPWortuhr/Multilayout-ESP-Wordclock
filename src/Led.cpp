@@ -9,14 +9,14 @@
 #include "WordClockTypes/ClockType.hpp"
 #include <Arduino.h>
 
-// Transition.h references the global usedClockType, so it must be declared
-// before the header is pulled in.
+// Led itself addresses the front through the global usedClockType.
 extern ClockType *usedClockType;
 
-#include "TransitionTypes/Transition.h"
+#include "Render/ColorStage.h"
+#include "Render/RenderPipeline.h"
 
-extern Transition *transition;
 extern Led led;
+extern RenderPipeline renderPipeline;
 extern LedStripInterface *activeLedStrip;
 
 namespace {
@@ -77,7 +77,7 @@ uint32_t Led::reverse32BitOrder(uint32_t x) {
 //------------------------------------------------------------------------------
 
 void Led::checkIfHueIsOutOfBound(uint16_t &hue) {
-    if (hue > 360) {
+    if (hue >= 360) {
         hue = 0;
     }
 }
@@ -121,6 +121,7 @@ void Led::resetFrontMatrixBuffer() {
     for (uint8_t i = 0; i < usedClockType->rowsWordMatrix(); i++) {
         frontMatrix[i] = 0;
     }
+    ClockType::resetWordIds();
 }
 
 //------------------------------------------------------------------------------
@@ -150,10 +151,8 @@ uint8_t Led::getCurrentManualBrightnessSetting() {
         return G.h18;
     } else if (_hour < 22) {
         return G.h20;
-    } else if (_hour < 24) {
-        return G.h22;
     } else {
-        return DEFAULT_BRIGHTNESS;
+        return G.h22;
     }
 }
 
@@ -182,20 +181,39 @@ void Led::mirrorMinuteArrayVertical() {
 //------------------------------------------------------------------------------
 
 void Led::mirrorFrontMatrixVertical() {
+    const uint8_t cols = usedClockType->colsWordMatrix();
     for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
         frontMatrix[row] = reverse32BitOrder(frontMatrix[row]);
-        frontMatrix[row] >>= (32 - usedClockType->colsWordMatrix());
+        frontMatrix[row] >>= (32 - cols);
+
+        // Keep the word tags aligned with the cells they describe.
+        if (cols <= MAX_COL_SIZE) {
+            for (uint8_t col = 0; col < cols / 2; col++) {
+                const uint8_t tmp = frontWordId[row][col];
+                frontWordId[row][col] = frontWordId[row][cols - 1 - col];
+                frontWordId[row][cols - 1 - col] = tmp;
+            }
+        }
     }
 }
 
 //------------------------------------------------------------------------------
 
 void Led::mirrorFrontMatrixHorizontal() {
+    const uint8_t rows = usedClockType->rowsWordMatrix();
     uint32_t tempMatrix[MAX_ROW_SIZE] = {0};
     memcpy(&tempMatrix, &frontMatrix, sizeof tempMatrix);
-    for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
-        frontMatrix[row] =
-            tempMatrix[usedClockType->rowsWordMatrix() - row - 1];
+    for (uint8_t row = 0; row < rows; row++) {
+        frontMatrix[row] = tempMatrix[rows - row - 1];
+    }
+
+    // Keep the word tags aligned with the cells they describe.
+    for (uint8_t row = 0; row < rows / 2; row++) {
+        for (uint8_t col = 0; col < MAX_COL_SIZE; col++) {
+            const uint8_t tmp = frontWordId[row][col];
+            frontWordId[row][col] = frontWordId[rows - 1 - row][col];
+            frontWordId[rows - 1 - row][col] = tmp;
+        }
     }
 }
 
@@ -212,7 +230,7 @@ void Led::shiftColumnToRight() {
 //------------------------------------------------------------------------------
 
 void Led::setState(const bool newState) {
-    static float storedBrightness[3];
+    static float storedBrightness[ColorPositionCount];
     static bool hasStoredBrightness = false;
 
     if (newState == getState()) {
@@ -220,11 +238,11 @@ void Led::setState(const bool newState) {
     }
 
     if (newState) {
-        for (uint8_t i = 0; i < 3; i++) {
+        for (uint8_t i = 0; i < ColorPositionCount; i++) {
             G.color[i].B = hasStoredBrightness ? storedBrightness[i] : 1.f;
         }
     } else {
-        for (uint8_t i = 0; i < 3; i++) {
+        for (uint8_t i = 0; i < ColorPositionCount; i++) {
             storedBrightness[i] = G.color[i].B;
             G.color[i].B = 0.f;
         }
@@ -260,15 +278,35 @@ void Led::setPixel(uint8_t row, uint8_t col, HsbColor color) {
 
 //------------------------------------------------------------------------------
 
+/*
+ * Every mode except the two rainbows paints its lit pixels here - the seconds,
+ * the digital clock, the scrolling text, the plain colour - so this is where
+ * they pick up the gradient. The word clock reaches the strip through the
+ * render pipeline instead and is coloured there.
+ *
+ * Only the foreground ramps: the background is one colour by definition, and
+ * inverting the ramp behind the letters would be noise, not a gradient.
+ */
+
 void Led::setbyFrontMatrix(ColorPosition colorPosition,
                            bool applyMirrorAndReverse) {
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
     }
-    HsbColor displayedColor =
+    const HsbColor displayedColor =
         getColorbyPositionWithAppliedBrightness(colorPosition);
+    const bool ramp =
+        (colorPosition == Foreground) && colorStage.foregroundIsGradient();
+    const HsbColor rampEnd =
+        ramp ? getColorbyPositionWithAppliedBrightness(GradientEnd)
+             : displayedColor;
 
-    for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
+    const uint8_t rows = usedClockType->rowsWordMatrix();
+    for (uint8_t row = 0; row < rows; row++) {
+        const HsbColor rowColor =
+            ramp ? gradientColorAt(displayedColor, rampEnd, row, rows)
+                 : displayedColor;
+
         for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
             bool boolSetPixel = usedClockType->getFrontMatrixPixel(row, col);
             if (colorPosition == Background) {
@@ -276,7 +314,7 @@ void Led::setbyFrontMatrix(ColorPosition colorPosition,
             }
 
             if (boolSetPixel) {
-                setPixel(row, col, displayedColor);
+                setPixel(row, col, rowColor);
             } else if (colorPosition != Background) {
                 clearPixel(row, col);
             }
@@ -286,17 +324,27 @@ void Led::setbyFrontMatrix(ColorPosition colorPosition,
 
 //------------------------------------------------------------------------------
 
-void Led::setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse) {
+/*
+ * Callers that bring their own colours rather than reading them from the
+ * configuration - the symbol mode dims to effectBri, the firework picks a hue
+ * per rocket. Passing the same colour twice paints it flat.
+ */
+
+void Led::setbyFrontMatrixGradient(HsbColor from, HsbColor to,
+                                   bool applyMirrorAndReverse) {
     if (applyMirrorAndReverse) {
         applyMirroringAndReverseIfDefined();
     }
+    const bool ramp = (from.H != to.H) || (from.S != to.S) || (from.B != to.B);
 
-    for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
+    const uint8_t rows = usedClockType->rowsWordMatrix();
+    for (uint8_t row = 0; row < rows; row++) {
+        const HsbColor rowColor =
+            ramp ? gradientColorAt(from, to, row, rows) : from;
+
         for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
-            bool boolSetPixel = usedClockType->getFrontMatrixPixel(row, col);
-
-            if (boolSetPixel) {
-                setPixel(row, col, color);
+            if (usedClockType->getFrontMatrixPixel(row, col)) {
+                setPixel(row, col, rowColor);
             }
         }
     }
@@ -304,7 +352,22 @@ void Led::setbyFrontMatrix(HsbColor color, bool applyMirrorAndReverse) {
 
 //------------------------------------------------------------------------------
 
+void Led::setbyColorMatrix(const ColorMatrix &matrix) {
+    for (uint8_t row = 0; row < matrix.rows(); row++) {
+        for (uint8_t col = 0; col < matrix.cols(); col++) {
+            const RgbfColor &cell = matrix[row][col];
+            setPixel(row, col, HsbColor{RgbColor(cell.R, cell.G, cell.B)});
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Led::setbyMinuteArray(ColorPosition colorPosition) {
+    if (!usedClockType->hasMinuteLeds()) {
+        return;
+    }
+
     HsbColor displayedColor =
         getColorbyPositionWithAppliedBrightness(colorPosition);
 
@@ -346,7 +409,7 @@ void Led::setbySecondArray(ColorPosition colorPosition) {
 
 //------------------------------------------------------------------------------
 
-void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color) {
+void Led::drawBitmapSymbol(BitmapSymbol symbolNum) {
     resetFrontMatrixBuffer();
     if (usedClockType->colsWordMatrix() < 11 ||
         usedClockType->rowsWordMatrix() < 10) {
@@ -378,8 +441,19 @@ void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color) {
             }
         }
     }
+}
 
-    setbyFrontMatrix(color);
+//------------------------------------------------------------------------------
+
+void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color) {
+    setBitmapSymbol(symbolNum, color, color);
+}
+
+//------------------------------------------------------------------------------
+
+void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor from, HsbColor to) {
+    drawBitmapSymbol(symbolNum);
+    setbyFrontMatrixGradient(from, to);
     show();
 }
 
@@ -428,9 +502,14 @@ void Led::set(WordclockChanges changed) {
     setbyFrontMatrix(Foreground);
     setbyFrontMatrix(Background, false);
 
-    if (G.transitionType == NO_TRANSITION) {
+    const bool owns = renderPipeline.ownsDisplay();
+    const bool minuteChanged = owns ? false : renderPipeline.hasMinuteChanged();
+    const DisplayAction action = decideDisplayAction(
+        changed, owns, renderPipeline.animates(), minuteChanged);
+
+    if (action.drawMinutesAndFrame) {
         if (G.minuteVariant != MinuteVariant::Off) {
-            setbyMinuteArray(Foreground);
+            setbyMinuteArray(colorStage.minutePosition());
         }
 
         if (G.secondVariant != SecondVariant::Off) {
@@ -438,10 +517,10 @@ void Led::set(WordclockChanges changed) {
         }
     }
 
-    if (transition->isOverwrittenByTransition(changed, _minute)) {
-        if (G.transitionType == NO_TRANSITION) {
-            show();
-        }
+    renderPipeline.applyDisplayAction(action, _minute);
+
+    if (action.showFromLed) {
+        show();
     }
 }
 
@@ -449,12 +528,8 @@ void Led::set(WordclockChanges changed) {
 // Pixel get Functions
 //------------------------------------------------------------------------------
 
-RgbColor Led::getPixel(uint16_t i) { return activeLedStrip->getPixel(i); }
-
-//------------------------------------------------------------------------------
-
 bool Led::getState() {
-    for (uint8_t i = 0; i < 3; i++) {
+    for (uint8_t i = 0; i < ColorPositionCount; i++) {
         if (G.color[i].B > 0) {
             return true;
         }
@@ -501,8 +576,10 @@ void Led::clearRow(uint8_t row) {
 //------------------------------------------------------------------------------
 
 void Led::clearMinArray() {
-    for (uint16_t i = minutePixelArray[0]; i <= minutePixelArray[3]; i++) {
-        clearPixel(i);
+    if (usedClockType->hasMinuteLeds()) {
+        for (uint16_t i = minutePixelArray[0]; i <= minutePixelArray[3]; i++) {
+            clearPixel(i);
+        }
     }
     minuteArray = 0;
 }
@@ -545,52 +622,39 @@ void Led::clear() {
 void Led::showNumbers(const char d1, const char d2) {
     clearClock();
 
-    // determine font size according layout
-    // fontSize usedFontSize = determineFontSize(); // not applicable due to
-    // linkage to digital clock
-    fontSize usedFontSize = normalSizeASCII;
-    // convert second to acii
-    unsigned char unsigned_d1 = static_cast<unsigned char>(d1);
-    unsigned char unsigned_d2 = static_cast<unsigned char>(d2);
-    uint8_t usedFontWidth = pgm_read_byte(&(fontWidth[usedFontSize]));
-    uint8_t usedFontHeight = pgm_read_byte(&(fontHeight[usedFontSize]));
-    if (usedClockType->colsWordMatrix() < (usedFontWidth * 2 + 1) ||
-        usedClockType->rowsWordMatrix() < usedFontHeight) {
-        usedFontSize = smallSizeNumbers;
-        usedFontWidth = pgm_read_byte(&(fontWidth[usedFontSize]));
-        usedFontHeight = pgm_read_byte(&(fontHeight[usedFontSize]));
-        // convert char to int due to differt definition in Font.h
-        unsigned_d1 -= 48;
-        unsigned_d2 -= 48;
-    }
+    const NumberFont numberFont = numberFontFor(
+        usedClockType->colsWordMatrix(), usedClockType->rowsWordMatrix());
+    const unsigned char unsigned_d1 = numberFont.glyph(d1);
+    const unsigned char unsigned_d2 = numberFont.glyph(d2);
 
-    uint8_t offsetRow = (usedClockType->rowsWordMatrix() - usedFontHeight) / 2;
+    uint8_t offsetRow =
+        (usedClockType->rowsWordMatrix() - numberFont.height) / 2;
     bool isSingleDigit = (d1 == ' ' || d1 == '0');
     uint8_t offsetLetter0, offsetLetter1, offsetCenter;
 
     if (isSingleDigit) {
-        offsetCenter = (usedClockType->colsWordMatrix() - usedFontWidth) / 2;
+        offsetCenter = (usedClockType->colsWordMatrix() - numberFont.width) / 2;
     } else {
-        offsetLetter0 = usedClockType->colsWordMatrix() / 2 - usedFontWidth;
+        offsetLetter0 = usedClockType->colsWordMatrix() / 2 - numberFont.width;
         offsetLetter1 = usedClockType->colsWordMatrix() / 2 + 1;
 
         if (usedClockType->has24HourLayout()) {
             offsetLetter0 = 3;
-            offsetLetter1 = usedFontWidth + 4;
+            offsetLetter1 = numberFont.width + 4;
         }
     }
 
-    for (uint8_t col = 0; col < usedFontWidth; col++) {
-        for (uint8_t row = 0; row < usedFontHeight; row++) {
+    for (uint8_t col = 0; col < numberFont.width; col++) {
+        for (uint8_t row = 0; row < numberFont.height; row++) {
 
             if (isSingleDigit) {
                 setPixelForChar(col, row, offsetCenter, offsetRow, unsigned_d2,
-                                usedFontSize);
+                                numberFont.font);
             } else {
                 setPixelForChar(col, row, offsetLetter0, offsetRow, unsigned_d1,
-                                usedFontSize);
+                                numberFont.font);
                 setPixelForChar(col, row, offsetLetter1, offsetRow, unsigned_d2,
-                                usedFontSize);
+                                numberFont.font);
             }
         }
     }
@@ -602,49 +666,35 @@ void Led::showNumbers(const char d1, const char d2) {
 
 //------------------------------------------------------------------------------
 
-fontSize Led::determineFontSize() {
-
-    if (G.clockTypeDef == Ger16x18) {
-        return normalSizeASCII;
-    }
-    return smallSizeNumbers;
-}
-
-//------------------------------------------------------------------------------
-
-void Led::setupDigitalClock(fontSize &usedFontSize, uint8_t &offsetLetterH0,
-                            uint8_t &offsetLetterH1, uint8_t &offsetLetterMin0,
+void Led::setupDigitalClock(const NumberFont &numberFont,
+                            uint8_t &offsetLetterH0, uint8_t &offsetLetterH1,
+                            uint8_t &offsetLetterMin0,
                             uint8_t &offsetLetterMin1, uint8_t &offsetRow0,
                             uint8_t &offsetRow1) {
 
     uint8_t letterSpacing = 1;
-    if (usedClockType->rowsWordMatrix() >=
-        pgm_read_byte(&(fontHeight[usedFontSize])) * 2) {
+    if (usedClockType->rowsWordMatrix() >= numberFont.height * 2 &&
+        usedClockType->colsWordMatrix() >= numberFont.width * 2 + 2) {
         letterSpacing++;
     }
 
     // 1st Row of letters vertical Offset
     offsetLetterH0 = 0;
-    offsetLetterH1 = offsetLetterH0 +
-                     pgm_read_byte(&(fontWidth[usedFontSize])) + letterSpacing;
+    offsetLetterH1 = offsetLetterH0 + numberFont.width + letterSpacing;
 
     // 2nd Row of letters vertical Offset
-    offsetLetterMin1 = usedClockType->colsWordMatrix() -
-                       pgm_read_byte(&(fontWidth[usedFontSize]));
-    offsetLetterMin0 = offsetLetterMin1 -
-                       pgm_read_byte(&(fontWidth[usedFontSize])) -
-                       letterSpacing;
+    offsetLetterMin1 = usedClockType->colsWordMatrix() - numberFont.width;
+    offsetLetterMin0 = offsetLetterMin1 - numberFont.width - letterSpacing;
 
     // 1st Row of letters horizontal Offset
     offsetRow0 = 0;
     // 2nd Row of letters horizontal Offset
-    offsetRow1 = usedClockType->rowsWordMatrix() -
-                 pgm_read_byte(&(fontHeight[usedFontSize]));
+    offsetRow1 = usedClockType->rowsWordMatrix() - numberFont.height;
 }
 
 //------------------------------------------------------------------------------
 
-void Led::toggleDigitalClockSecond(const fontSize &usedFontSize,
+void Led::toggleDigitalClockSecond(const NumberFont &numberFont,
                                    const uint8_t &offsetRow1,
                                    const uint8_t &offsetMin0) {
     if (!(_second % 2)) {
@@ -654,14 +704,15 @@ void Led::toggleDigitalClockSecond(const fontSize &usedFontSize,
     // The separator sits in the gap left of the minutes block. On narrow
     // layouts (e.g. 8 columns) there is no such gap, so the column would
     // become negative -- skip the separator instead of drawing out of bounds.
-    const int8_t distanceToMinutes = (usedFontSize == normalSizeASCII) ? 3 : 2;
+    const int8_t distanceToMinutes =
+        (numberFont.font == normalSizeASCII) ? 3 : 2;
     const int column = static_cast<int>(offsetMin0) - distanceToMinutes;
     if (column < 0) {
         return;
     }
 
-    const int8_t upperRowOffset = (usedFontSize == normalSizeASCII) ? 2 : 1;
-    const int8_t lowerRowOffset = (usedFontSize == normalSizeASCII) ? 4 : 3;
+    const int8_t upperRowOffset = (numberFont.font == normalSizeASCII) ? 2 : 1;
+    const int8_t lowerRowOffset = (numberFont.font == normalSizeASCII) ? 4 : 3;
     usedClockType->setFrontMatrixPixel(offsetRow1 + upperRowOffset, column);
     usedClockType->setFrontMatrixPixel(offsetRow1 + lowerRowOffset, column);
 }
@@ -676,23 +727,23 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
 
     resetFrontMatrixBuffer();
 
-    fontSize usedFontSize = determineFontSize();
+    const NumberFont numberFont = numberFontFor(
+        usedClockType->colsWordMatrix(), usedClockType->rowsWordMatrix(), 2);
 
     // The offsets only depend on the layout and the font size, so recomputing
     // them on every call is cheap. Caching them in static variables used to
     // leave them at zero (or at values of a previously selected layout)
     // whenever the first call came in without parametersChanged being set.
-    setupDigitalClock(usedFontSize, offsetLetterH0, offsetLetterH1,
+    setupDigitalClock(numberFont, offsetLetterH0, offsetLetterH1,
                       offsetLetterMin0, offsetLetterMin1, offsetRow0,
                       offsetRow1);
 
-    toggleDigitalClockSecond(usedFontSize, offsetRow1, offsetLetterMin0);
+    toggleDigitalClockSecond(numberFont, offsetRow1, offsetLetterMin0);
 
     bool showHours = true;
     bool showMinutes = true;
     // toogle hours and minutes if clock is not high enough
-    if (usedClockType->rowsWordMatrix() <
-        (pgm_read_byte(&(fontHeight[usedFontSize])) * 2)) {
+    if (usedClockType->rowsWordMatrix() < numberFont.height * 2) {
         if (_second % 4 < 2) { // show hours every 2 seconds
             showHours = true;
             showMinutes = false;
@@ -702,24 +753,25 @@ void Led::showDigitalClock(const char min1, const char min0, const char h1,
         }
     }
 
-    uint8_t width = pgm_read_byte(&(fontWidth[usedFontSize]));
-    uint8_t height = pgm_read_byte(&(fontHeight[usedFontSize]));
-
-    for (uint8_t col = 0; col < width; col++) {
-        for (uint8_t row = 0; row < height; row++) {
+    for (uint8_t col = 0; col < numberFont.width; col++) {
+        for (uint8_t row = 0; row < numberFont.height; row++) {
             // 1st Row: Hours
             if (showHours) {
                 setPixelForChar(col, row, offsetLetterH1, offsetRow0,
-                                static_cast<unsigned char>(h1), usedFontSize);
+                                static_cast<unsigned char>(h1),
+                                numberFont.font);
                 setPixelForChar(col, row, offsetLetterH0, offsetRow0,
-                                static_cast<unsigned char>(h0), usedFontSize);
+                                static_cast<unsigned char>(h0),
+                                numberFont.font);
             }
             // 2nd Row: Minutes
             if (showMinutes) {
                 setPixelForChar(col, row, offsetLetterMin1, offsetRow1,
-                                static_cast<unsigned char>(min1), usedFontSize);
+                                static_cast<unsigned char>(min1),
+                                numberFont.font);
                 setPixelForChar(col, row, offsetLetterMin0, offsetRow1,
-                                static_cast<unsigned char>(min0), usedFontSize);
+                                static_cast<unsigned char>(min0),
+                                numberFont.font);
             }
         }
     }

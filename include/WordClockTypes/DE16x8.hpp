@@ -64,19 +64,15 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual bool supportsSecondsFrame() override { return false; }
+
+    //------------------------------------------------------------------------------
+
     virtual bool hasMinuteInWords() override { return true; }
 
     //------------------------------------------------------------------------------
 
-    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
-        for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = 256 + i;
-        }
-    };
-
-    //------------------------------------------------------------------------------
-
-    void show(FrontWord word) override {
+    void drawWord(FrontWord word) override {
         switch (word) {
 
         case FrontWord::es_ist:

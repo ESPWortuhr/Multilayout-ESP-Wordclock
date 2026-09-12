@@ -41,9 +41,59 @@ Mqtt *mqttInstance = nullptr;
 
 PubSubClient mqttClient(client);
 
+static String topic(const char *suffix) {
+    return String(G.mqtt.topic) + "/" + suffix;
+}
+
+static void broadcastToWeb(JsonDocument &doc) {
+    char buffer[200];
+    size_t length = serializeJson(doc, buffer);
+    webSocket.broadcastTXT(buffer, length);
+}
+
+template <typename T>
+static void broadcastToWeb(const char *command, const char *key, T value) {
+    StaticJsonDocument<200> doc;
+    doc["command"] = command;
+    doc[key] = value;
+    broadcastToWeb(doc);
+}
+
 // Keep inbound payloads bounded; PubSubClient's default buffer is smaller, but
 // discovery raises it and callbacks should still avoid variable-length stacks.
 static constexpr unsigned int MQTT_MAX_PAYLOAD_LENGTH = 512;
+
+static constexpr int32_t MQTT_CONNECT_TIMEOUT_MS = 2000;
+
+static bool connectToBroker() {
+    if (client.connected()) {
+        return true;
+    }
+
+    IPAddress brokerIp;
+#ifdef ESP8266
+    const int resolved =
+        WiFi.hostByName(G.mqtt.serverAdress, brokerIp, MQTT_CONNECT_TIMEOUT_MS);
+#else
+    const int resolved = WiFi.hostByName(G.mqtt.serverAdress, brokerIp);
+#endif
+    if (resolved != 1) {
+        Serial.println("MQTT: DNS lookup for broker failed");
+        return false;
+    }
+
+#ifdef ESP8266
+    client.setTimeout(MQTT_CONNECT_TIMEOUT_MS);
+    const bool ok = client.connect(brokerIp, G.mqtt.port);
+#else
+    const bool ok =
+        client.connect(brokerIp, G.mqtt.port, MQTT_CONNECT_TIMEOUT_MS);
+#endif
+    if (!ok) {
+        Serial.println("MQTT: Connection to broker failed");
+    }
+    return ok;
+}
 
 // Home Assistant's birth message: HA publishes this when it (re)starts, the cue
 // to re-announce discovery and state.
@@ -90,7 +140,7 @@ static void addDiagSensor(JsonObject components, const String &deviceId,
     if (stateClass)
         c["stat_cla"] = stateClass;
     c["ent_cat"] = "diagnostic";
-    c["stat_t"] = String(G.mqtt.topic) + "/diagnostics";
+    c["stat_t"] = topic("diagnostics");
     c["val_tpl"] = valueTemplate;
 }
 
@@ -121,7 +171,7 @@ static const LabeledValue TRANSITION_TYPES[] = {
     {"Balls", 8},       {"Fire", 9},    {"Snake", 10},    {"Random", 11}};
 
 static const LabeledValue TRANSITION_COLORIZE[] = {
-    {"Off", 0}, {"Words", 1}, {"Characters", 2}};
+    {"Off", 0}, {"Gradient", 1}, {"Random", 2}};
 
 static const LabeledValue TRANSITION_DURATION[] = {
     {"Short", 1}, {"Medium", 2}, {"Long", 3}};
@@ -161,8 +211,8 @@ static void addSelect(JsonObject components, const String &deviceId,
     if (icon)
         c["ic"] = icon;
     c["ent_cat"] = "config";
-    c["stat_t"] = String(G.mqtt.topic) + "/" + id + "/state";
-    c["cmd_t"] = String(G.mqtt.topic) + "/" + id + "/set";
+    c["stat_t"] = topic(id) + "/state";
+    c["cmd_t"] = topic(id) + "/set";
     JsonArray options = c.createNestedArray("options");
     for (size_t i = 0; i < count; i++)
         options.add(table[i].label);
@@ -195,7 +245,7 @@ Output:
 None
 */
 
-void Mqtt::processState(const JsonDocument &doc) {
+bool Mqtt::processState(const JsonDocument &doc) {
     if (doc.containsKey("state")) {
         const char *state = doc["state"] | "";
         bool stateChanged = false;
@@ -208,9 +258,9 @@ void Mqtt::processState(const JsonDocument &doc) {
             led.setState(false);
             stateChanged = true;
         }
-        if (stateChanged && mqttInstance)
-            mqttInstance->sendState();
+        return stateChanged;
     }
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -230,7 +280,7 @@ Output:
 None
 */
 
-void Mqtt::processEffect(const JsonDocument &doc) {
+bool Mqtt::processEffect(const JsonDocument &doc) {
     if (doc.containsKey("effect")) {
         const char *effect = doc["effect"] | "";
         bool effectChanged = false;
@@ -253,6 +303,9 @@ void Mqtt::processEffect(const JsonDocument &doc) {
         } else if (!strcmp("Rainbow", effect)) {
             G.prog = COMMAND_MODE_RAINBOW;
             effectChanged = true;
+        } else if (!strcmp("Fire", effect)) {
+            G.prog = COMMAND_MODE_FIRE;
+            effectChanged = true;
         } else if (!strcmp("Color", effect)) {
             G.prog = COMMAND_MODE_COLOR;
             effectChanged = true;
@@ -264,9 +317,37 @@ void Mqtt::processEffect(const JsonDocument &doc) {
         if (effectChanged) {
             G.progInit = true;
             parametersChanged = true;
-            if (mqttInstance)
-                mqttInstance->sendState();
         }
+        return effectChanged;
+    }
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+const char *Mqtt::getEffectName() {
+    if (isWordClockMode(G.prog)) {
+        return "Wordclock";
+    }
+    switch (G.prog) {
+    case COMMAND_MODE_SECONDS:
+        return "Seconds";
+    case COMMAND_MODE_DIGITAL_CLOCK:
+        return "Digitalclock";
+    case COMMAND_MODE_SCROLLINGTEXT:
+        return "Scrollingtext";
+    case COMMAND_MODE_RAINBOWCYCLE:
+        return "Rainbowcycle";
+    case COMMAND_MODE_RAINBOW:
+        return "Rainbow";
+    case COMMAND_MODE_FIRE:
+        return "Fire";
+    case COMMAND_MODE_COLOR:
+        return "Color";
+    case COMMAND_MODE_SYMBOL:
+        return "Symbol";
+    default:
+        return nullptr;
     }
 }
 
@@ -292,13 +373,7 @@ void Mqtt::processScrollingText(const JsonDocument &doc) {
         strlcpy(G.scrollingText, doc["scrolling_text"] | "",
                 sizeof(G.scrollingText));
 
-        // Send update to web interface
-        StaticJsonDocument<200> webDoc;
-        webDoc["command"] = "scrolltext";
-        webDoc["scrolling_text"] = G.scrollingText;
-        char buffer[200];
-        serializeJson(webDoc, buffer);
-        webSocket.broadcastTXT(buffer, strlen(buffer));
+        broadcastToWeb("scrolltext", "scrolling_text", G.scrollingText);
     }
 }
 
@@ -319,7 +394,7 @@ Output:
 None
 */
 
-void Mqtt::processColor(const JsonDocument &doc) {
+bool Mqtt::processColor(const JsonDocument &doc) {
     JsonObjectConst color = doc["color"];
     if (!color.isNull() && color.containsKey("h") && color.containsKey("s")) {
         // Convert values from Home Assistant (0-360 for Hue, 0-100 for
@@ -337,14 +412,10 @@ void Mqtt::processColor(const JsonDocument &doc) {
         webDoc["h"] = round(h * 360); // Convert to 0-360 degrees
         webDoc["s"] = round(s * 100); // Convert to 0-100%
         webDoc["v"] = round(G.color[Foreground].B * 100); // Convert to 0-100%
-        char buffer[200];
-        serializeJson(webDoc, buffer);
-        webSocket.broadcastTXT(buffer, strlen(buffer));
-
-        if (mqttInstance) {
-            mqttInstance->sendState();
-        }
+        broadcastToWeb(webDoc);
+        return true;
     }
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -364,13 +435,13 @@ Output:
 None
 */
 
-void Mqtt::processBrightness(const JsonDocument &doc) {
+bool Mqtt::processBrightness(const JsonDocument &doc) {
     if (doc.containsKey("brightness")) {
         // Manual brightness commands must not fight the ambient-light loop.
         if (G.autoBrightEnabled) {
             Serial.println("MQTT: Ignoring brightness change - auto brightness "
                            "is enabled");
-            return;
+            return false;
         }
 
         int rawBrightness = constrain(doc["brightness"] | 0, 0, 255);
@@ -384,10 +455,9 @@ void Mqtt::processBrightness(const JsonDocument &doc) {
         Serial.println(brightness);
 
         parametersChanged = true;
-
-        if (mqttInstance)
-            mqttInstance->sendState();
+        return true;
     }
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -438,64 +508,58 @@ void Mqtt::init() {
     mqttClient.setCallback(callback);
 
     // Configure LWT (Last Will and Testament)
-    String availabilityTopic = String(G.mqtt.topic) + "/availability";
+    String availabilityTopic = topic("availability");
 
-    if (checkIfMqttUserIsEmpty()) {
-        mqttClient.connect(G.mqtt.clientId, availabilityTopic.c_str(),
-                           0,          // QoS
-                           true,       // retain
-                           "offline"); // Last Will Message
-    } else {
-        mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password,
-                           availabilityTopic.c_str(),
-                           0,          // QoS
-                           true,       // retain
-                           "offline"); // Last Will Message
+    if (!isConnected()) {
+        if (!connectToBroker()) {
+            return;
+        }
+
+        bool connected;
+        if (checkIfMqttUserIsEmpty()) {
+            connected =
+                mqttClient.connect(G.mqtt.clientId, availabilityTopic.c_str(),
+                                   0,          // QoS
+                                   true,       // retain
+                                   "offline"); // Last Will Message
+        } else {
+            connected =
+                mqttClient.connect(G.mqtt.clientId, G.mqtt.user,
+                                   G.mqtt.password, availabilityTopic.c_str(),
+                                   0,          // QoS
+                                   true,       // retain
+                                   "offline"); // Last Will Message
+        }
+        if (!connected) {
+            Serial.print("MQTT: Broker refused connection, state ");
+            Serial.println(mqttClient.state());
+            return;
+        }
     }
-    delay(50);
 
     // Send online status immediately after connection
     mqttClient.publish(availabilityTopic.c_str(), "online", true);
 
     // Main control
-    mqttClient.subscribe((std::string(G.mqtt.topic) + "/cmd").c_str());
-    delay(50);
+    mqttClient.subscribe(topic("cmd").c_str());
 
     // Re-announce discovery and state when Home Assistant (re)starts.
     mqttClient.subscribe(HOMEASSISTANT_STATUS_TOPIC);
-    delay(50);
 
     // Additional Topics
-    mqttClient.subscribe(
-        (std::string(G.mqtt.topic) + "/scrolltext/set").c_str());
-    delay(50);
-    mqttClient.subscribe(
-        (std::string(G.mqtt.topic) + "/effect_speed/set").c_str());
-    delay(50);
-    mqttClient.subscribe(
-        (std::string(G.mqtt.topic) + "/auto_brightness/set").c_str());
-    delay(50);
+    mqttClient.subscribe(topic("scrolltext/set").c_str());
+    mqttClient.subscribe(topic("effect_speed/set").c_str());
+    mqttClient.subscribe(topic("auto_brightness/set").c_str());
 
     // Transition settings
-    mqttClient.subscribe(
-        (std::string(G.mqtt.topic) + "/transition_type/set").c_str());
-    delay(50);
-    mqttClient.subscribe(
-        (std::string(G.mqtt.topic) + "/transition_colorize/set").c_str());
-    delay(50);
-    mqttClient.subscribe(
-        (std::string(G.mqtt.topic) + "/transition_duration/set").c_str());
-    delay(50);
-    mqttClient.subscribe(
-        (std::string(G.mqtt.topic) + "/transition_speed/set").c_str());
-    delay(50);
+    mqttClient.subscribe(topic("transition_type/set").c_str());
+    mqttClient.subscribe(topic("transition_colorize/set").c_str());
+    mqttClient.subscribe(topic("transition_duration/set").c_str());
 
-    if (isConnected()) {
-        Serial.println("MQTT Connected");
-        sendDiscovery(); // Re-announce entities so they self-heal after a
-                         // broker restart or purge of retained config
-        sendState();     // Send initial state
-    }
+    Serial.println("MQTT Connected");
+    sendDiscovery(); // Re-announce entities so they self-heal after a
+                     // broker restart or purge of retained config
+    sendState();     // Send initial state
 }
 
 //------------------------------------------------------------------------------
@@ -627,15 +691,14 @@ static void applyTransitionSelect(const char *id, const char *msg,
         Serial.print(": ");
         Serial.println(msg);
     }
-    mqttClient.publish(
-        (std::string(G.mqtt.topic) + "/" + id + "/state").c_str(),
-        labelForValue(table, count, field, table[0].label), true);
+    mqttClient.publish((topic(id) + "/state").c_str(),
+                       labelForValue(table, count, field, table[0].label),
+                       true);
 }
 
-void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
+void Mqtt::callback(char *receivedTopic, byte *payload, unsigned int length) {
     // Determine message type before parsing; not every topic uses JSON.
-    String topicStr = String(topic);
-    String baseTopic = String(G.mqtt.topic);
+    String topicStr = String(receivedTopic);
 
     // Copy into a fixed buffer so hostile or malformed MQTT payloads cannot
     // allocate arbitrarily large stack frames.
@@ -661,7 +724,7 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     }
 
     // MQTT switch commands are plain ON/OFF payloads, not JSON.
-    if (topicStr == baseTopic + "/auto_brightness/set") {
+    if (topicStr == topic("auto_brightness/set")) {
         bool autoBrightnessChanged = false;
         if (strcmp(msg, "ON") == 0) {
             G.autoBrightEnabled = 1;
@@ -681,54 +744,34 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
         }
 
         // Always echo the current retained state, even for invalid commands.
-        mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/auto_brightness/state").c_str(),
-            G.autoBrightEnabled ? "ON" : "OFF", true);
+        mqttClient.publish(topic("auto_brightness/state").c_str(),
+                           G.autoBrightEnabled ? "ON" : "OFF", true);
 
-        // Send update to web interface
-        StaticJsonDocument<200> webDoc;
-        webDoc["command"] = "autobright";
-        webDoc["value"] = G.autoBrightEnabled;
-        char buffer[200];
-        serializeJson(webDoc, buffer);
-        webSocket.broadcastTXT(buffer, strlen(buffer));
+        broadcastToWeb("autobright", "value", G.autoBrightEnabled);
         return;
     }
 
     // Transition selects/number/switch are plain payloads, not JSON. Each
     // applies the setting, persists it, re-inits so it takes effect, and echoes
     // the resulting state back to Home Assistant.
-    if (topicStr == baseTopic + "/transition_type/set") {
+    if (topicStr == topic("transition_type/set")) {
         applyTransitionSelect("transition_type", msg, TRANSITION_TYPES,
                               LABELED_VALUE_COUNT(TRANSITION_TYPES),
                               G.transitionType);
         return;
     }
-    if (topicStr == baseTopic + "/transition_colorize/set") {
+    if (topicStr == topic("transition_colorize/set")) {
         applyTransitionSelect("transition_colorize", msg, TRANSITION_COLORIZE,
                               LABELED_VALUE_COUNT(TRANSITION_COLORIZE),
-                              G.transitionColorize);
+                              G.colorize);
         return;
     }
-    if (topicStr == baseTopic + "/transition_duration/set") {
+    if (topicStr == topic("transition_duration/set")) {
         applyTransitionSelect("transition_duration", msg, TRANSITION_DURATION,
                               LABELED_VALUE_COUNT(TRANSITION_DURATION),
                               G.transitionDuration);
         return;
     }
-    if (topicStr == baseTopic + "/transition_speed/set") {
-        int speed = atoi(msg);
-        if (speed >= 0 && speed <= 10) {
-            G.transitionSpeed = speed;
-            G.progInit = true;
-            eeprom::write();
-        }
-        mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/transition_speed/state").c_str(),
-            String(G.transitionSpeed).c_str(), true);
-        return;
-    }
-
     // Remaining command topics use JSON payloads.
     StaticJsonDocument<512> doc;
     DeserializationError error = deserializeJson(doc, msg);
@@ -739,18 +782,21 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
     }
 
     // Process remaining messages
-    if (topicStr == baseTopic + "/cmd") {
-        processState(doc);
-        processEffect(doc);
+    if (topicStr == topic("cmd")) {
+        bool stateChanged = processState(doc);
+        stateChanged |= processEffect(doc);
         processScrollingText(doc);
-        processColor(doc);
-        processBrightness(doc);
-    } else if (topicStr == baseTopic + "/scrolltext/set") {
+        stateChanged |= processColor(doc);
+        stateChanged |= processBrightness(doc);
+        if (stateChanged && mqttInstance) {
+            mqttInstance->sendState();
+        }
+    } else if (topicStr == topic("scrolltext/set")) {
         processScrollingText(doc);
-    } else if (topicStr == baseTopic + "/effect_speed/set") {
+    } else if (topicStr == topic("effect_speed/set")) {
         // Process direct string value
         int speed = atoi(msg);
-        if (speed >= 1 && speed <= 10) {
+        if (speed >= EFFECT_SPEED_MIN && speed <= EFFECT_SPEED_MAX) {
             G.effectSpeed = speed;
 
             // Effect speed is a user setting, so persist accepted values.
@@ -763,17 +809,10 @@ void Mqtt::callback(char *topic, byte *payload, unsigned int length) {
             }
 
             // Send new state to Home Assistant
-            mqttClient.publish(
-                (std::string(G.mqtt.topic) + "/effect_speed/state").c_str(),
-                String(G.effectSpeed).c_str(), true);
+            mqttClient.publish(topic("effect_speed/state").c_str(),
+                               String(G.effectSpeed).c_str(), true);
 
-            // Send update to web interface
-            StaticJsonDocument<200> webDoc;
-            webDoc["command"] = "speed";
-            webDoc["value"] = G.effectSpeed;
-            char buffer[200];
-            serializeJson(webDoc, buffer);
-            webSocket.broadcastTXT(buffer, strlen(buffer));
+            broadcastToWeb("speed", "value", G.effectSpeed);
         }
     }
 }
@@ -817,37 +856,14 @@ void Mqtt::sendState() {
         color["h"] = round(G.color[Foreground].H * 360); // Hue 0-360
         color["s"] = round(G.color[Foreground].S * 100); // Saturation 0-100
 
-        switch (G.prog) {
-        case COMMAND_MODE_WORD_CLOCK:
-            doc["effect"] = "Wordclock";
-            break;
-        case COMMAND_MODE_SECONDS:
-            doc["effect"] = "Seconds";
-            break;
-        case COMMAND_MODE_DIGITAL_CLOCK:
-            doc["effect"] = "Digitalclock";
-            break;
-        case COMMAND_MODE_SCROLLINGTEXT:
-            doc["effect"] = "Scrollingtext";
-            break;
-        case COMMAND_MODE_RAINBOWCYCLE:
-            doc["effect"] = "Rainbowcycle";
-            break;
-        case COMMAND_MODE_RAINBOW:
-            doc["effect"] = "Rainbow";
-            break;
-        case COMMAND_MODE_COLOR:
-            doc["effect"] = "Color";
-            break;
-        case COMMAND_MODE_SYMBOL:
-            doc["effect"] = "Symbol";
-            break;
+        const char *effect = getEffectName();
+        if (effect) {
+            doc["effect"] = effect;
         }
 
         char buffer[200];
         serializeJson(doc, buffer);
-        mqttClient.publish((std::string(G.mqtt.topic) + "/status").c_str(),
-                           buffer, true);
+        mqttClient.publish(topic("status").c_str(), buffer, true);
     }
 
     // Send diagnostic values
@@ -862,15 +878,13 @@ void Mqtt::sendState() {
         doc["uptime"] = millis() / 1000;       // Seconds since boot
         char buffer[320];
         serializeJson(doc, buffer);
-        mqttClient.publish((std::string(G.mqtt.topic) + "/diagnostics").c_str(),
-                           buffer, true);
+        mqttClient.publish(topic("diagnostics").c_str(), buffer, true);
     }
 
     // Effect speed status - Always update current value
     {
-        mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/effect_speed/state").c_str(),
-            String(G.effectSpeed).c_str(), true);
+        mqttClient.publish(topic("effect_speed/state").c_str(),
+                           String(G.effectSpeed).c_str(), true);
     }
 
     // Scrolling text status
@@ -879,46 +893,39 @@ void Mqtt::sendState() {
         doc["scrolling_text"] = G.scrollingText;
         char buffer[200];
         serializeJson(doc, buffer);
-        mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/scrolltext/state").c_str(), buffer,
-            true);
+        mqttClient.publish(topic("scrolltext/state").c_str(), buffer, true);
     }
 
     // Auto brightness status
     {
-        mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/auto_brightness/state").c_str(),
-            G.autoBrightEnabled ? "ON" : "OFF", true);
+        mqttClient.publish(topic("auto_brightness/state").c_str(),
+                           G.autoBrightEnabled ? "ON" : "OFF", true);
     }
 
     // Transition settings status (selects echo their labels)
     {
+        mqttClient.publish(topic("transition_type/state").c_str(),
+                           labelForValue(TRANSITION_TYPES,
+                                         LABELED_VALUE_COUNT(TRANSITION_TYPES),
+                                         G.transitionType,
+                                         TRANSITION_TYPES[0].label),
+                           true);
         mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/transition_type/state").c_str(),
-            labelForValue(TRANSITION_TYPES,
-                          LABELED_VALUE_COUNT(TRANSITION_TYPES),
-                          G.transitionType, TRANSITION_TYPES[0].label),
-            true);
-        mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/transition_colorize/state").c_str(),
+            topic("transition_colorize/state").c_str(),
             labelForValue(TRANSITION_COLORIZE,
-                          LABELED_VALUE_COUNT(TRANSITION_COLORIZE),
-                          G.transitionColorize, TRANSITION_COLORIZE[0].label),
+                          LABELED_VALUE_COUNT(TRANSITION_COLORIZE), G.colorize,
+                          TRANSITION_COLORIZE[0].label),
             true);
         mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/transition_duration/state").c_str(),
+            topic("transition_duration/state").c_str(),
             labelForValue(TRANSITION_DURATION,
                           LABELED_VALUE_COUNT(TRANSITION_DURATION),
                           G.transitionDuration, TRANSITION_DURATION[1].label),
             true);
-        mqttClient.publish(
-            (std::string(G.mqtt.topic) + "/transition_speed/state").c_str(),
-            String(G.transitionSpeed).c_str(), true);
     }
 
     // Update online status
-    mqttClient.publish((std::string(G.mqtt.topic) + "/availability").c_str(),
-                       "online", true);
+    mqttClient.publish(topic("availability").c_str(), "online", true);
 }
 
 //------------------------------------------------------------------------------
@@ -1015,6 +1022,7 @@ void Mqtt::sendDiscovery() {
         effectList.add("Scrollingtext");
         effectList.add("Rainbowcycle");
         effectList.add("Rainbow");
+        effectList.add("Fire");
         effectList.add("Color");
         effectList.add("Symbol");
     }
@@ -1085,19 +1093,6 @@ void Mqtt::sendDiscovery() {
     addSelect(cmps, unique_id, "transition_duration", "Transition Duration",
               "mdi:timer-outline", TRANSITION_DURATION,
               LABELED_VALUE_COUNT(TRANSITION_DURATION));
-    {
-        JsonObject speed = cmps.createNestedObject("transition_speed");
-        speed["p"] = "number";
-        speed["uniq_id"] = unique_id + "_transition_speed";
-        speed["name"] = "Transition Speed";
-        speed["ic"] = "mdi:speedometer";
-        speed["ent_cat"] = "config";
-        speed["stat_t"] = base + "/transition_speed/state";
-        speed["cmd_t"] = base + "/transition_speed/set";
-        speed["min"] = 0;
-        speed["max"] = 10;
-        speed["step"] = 1;
-    }
 
     // Diagnostic sensors, all read from the shared diagnostics topic.
     addDiagSensor(cmps, unique_id, "lux", "Illuminance", "illuminance", "lx",
@@ -1122,6 +1117,5 @@ void Mqtt::sendDiscovery() {
                       doc);
 
     // Make the device available now that its entities are announced.
-    mqttClient.publish((std::string(G.mqtt.topic) + "/availability").c_str(),
-                       "online", true);
+    mqttClient.publish(topic("availability").c_str(), "online", true);
 }

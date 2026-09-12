@@ -44,11 +44,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual bool hasMinuteInWords() override { return true; }
-
-    //------------------------------------------------------------------------------
-
-    void show(FrontWord word) override {
+    void drawWord(FrontWord word) override {
         switch (word) {
 
         case FrontWord::es_ist:

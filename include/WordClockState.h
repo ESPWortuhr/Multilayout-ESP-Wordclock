@@ -1,10 +1,13 @@
 #pragma once
 #include "Arduino.h"
+#include "NumberFont.h"
 #include "version.gen.h"
 #include <NeoPixelBus.h> // HsbColor
 
 #define PAYLOAD_LENGTH 30
 #define MAX_ROW_SIZE 22
+// Widest front matrix currently supported (Ger16x18).
+#define MAX_COL_SIZE 18
 #define MAX_BIRTHDAY_COUNT 5
 
 // The Unique ID is a cross-reference for HTML/JavaScript
@@ -15,80 +18,48 @@
     /* CH (Swiss) */                                                           \
     X(Ch10x11, 1, _ch10x11, "ch-10-11")                                        \
     X(Ch10x11V2, 2, _ch10x11v2, "ch-10-11-v2")                                 \
-    X(Ch10x11ZH, 35, _ch10x11zh, "ch-10-11-zh")                                \
+    X(Ch10x11ZH, 3, _ch10x11zh, "ch-10-11-zh")                                 \
     /* EN (English) */                                                         \
-    X(Eng08x08, 3, _en08x08, "en-08-08")                                       \
-    X(Eng10x11, 4, _en10x11, "en-10-11")                                       \
-    X(Eng11x12, 5, _en11x12, "en-11-12")                                       \
+    X(Eng08x08, 4, _en08x08, "en-08-08")                                       \
+    X(Eng10x11, 5, _en10x11, "en-10-11")                                       \
+    X(Eng11x12, 6, _en11x12, "en-11-12")                                       \
     /* ES (Spanish) */                                                         \
-    X(Es08x08Cuarto, 6, _es08x08Cuarto, "es-08-08-cuarto")                     \
-    X(Es10x11, 7, _es10x11, "es-10-11")                                        \
+    X(Es08x08Cuarto, 7, _es08x08Cuarto, "es-08-08-cuarto")                     \
+    X(Es10x11, 8, _es10x11, "es-10-11")                                        \
     /* FR (French) */                                                          \
-    X(Fr10x11, 8, _fr10x11, "fr-10-11")                                        \
+    X(Fr10x11, 9, _fr10x11, "fr-10-11")                                        \
     /* DE (German) */                                                          \
-    X(Ger08x08, 9, _de08x08, "de-08-08")                                       \
-    X(Ger08x08Viertel, 10, _de08x08Viertel, "de-08-08-viertel")                \
-    X(Ger10x11, 11, _de10x11, "de-10-11")                                      \
-    X(Ger10x11Alternative, 12, _de10x11Alternative, "de-10-11-alt")            \
-    X(Ger10x11AlternativeFrame, 13, _de10x11AlternativeFrame,                  \
-      "de-10-11-alt-frame")                                                    \
+    X(Ger08x08, 10, _de08x08, "de-08-08")                                      \
+    X(Ger08x08Viertel, 11, _de08x08Viertel, "de-08-08-viertel")                \
+    X(Ger10x11, 12, _de10x11, "de-10-11")                                      \
+    X(Ger10x11Alternative, 13, _de10x11Alternative, "de-10-11-alt")            \
     X(Ger10x11bayerisch, 14, _de10x11bayerisch, "de-10-11-bayerisch")          \
     X(Ger10x11Clock, 15, _de10x11Clock, "de-10-11-clock")                      \
     X(Ger10x11Mrrioes, 16, _de10x11Mrrioes, "de-10-11-mrrioes")                \
     X(Ger10x11Nero, 17, _de10x11Nero, "de-10-11-nero")                         \
-    X(Ger10x11NeroFrame, 18, _de10x11NeroFrame, "de-10-11-nero-frame")         \
-    X(Ger10x11schwaebisch, 19, _de10x11schwaebisch, "de-10-11-schwaebisch")    \
-    X(Ger11x11, 20, _de11x11, "de-11-11")                                      \
-    X(Ger11x11schwaebisch, 21, _de11x11schwaebisch, "de-11-11-schwaebisch")    \
-    X(Ger11x11V2, 22, _de11x11V2, "de-11-11-v2")                               \
-    X(Ger11x11V3, 23, _de11x11V3, "de-11-11-v3")                               \
-    X(Ger13x13, 24, _de13x13, "de-13-13")                                      \
-    X(Ger16x8, 25, _de16x8, "de-16-8")                                         \
-    X(Ger16x18, 26, _de16x18, "de-16-18")                                      \
-    X(Ger22x11Weather, 27, _de22x11Weather, "de-22-11-weather")                \
+    X(Ger10x11schwaebisch, 18, _de10x11schwaebisch, "de-10-11-schwaebisch")    \
+    X(Ger11x11, 19, _de11x11, "de-11-11")                                      \
+    X(Ger11x11schwaebisch, 20, _de11x11schwaebisch, "de-11-11-schwaebisch")    \
+    X(Ger11x11V2, 21, _de11x11V2, "de-11-11-v2")                               \
+    X(Ger11x11V3, 22, _de11x11V3, "de-11-11-v3")                               \
+    X(Ger13x13, 23, _de13x13, "de-13-13")                                      \
+    X(Ger16x8, 24, _de16x8, "de-16-8")                                         \
+    X(Ger16x18, 25, _de16x18, "de-16-18")                                      \
+    X(Ger22x11Weather, 26, _de22x11Weather, "de-22-11-weather")                \
     /* HU (Hungarian) */                                                       \
-    X(Hu10x10, 28, _hu10x10, "hu-10-10")                                       \
+    X(Hu10x10, 27, _hu10x10, "hu-10-10")                                       \
     /* IT (Italian) */                                                         \
-    X(It10x11, 29, _it10x11, "it-10-11")                                       \
+    X(It10x11, 28, _it10x11, "it-10-11")                                       \
     /* NL (Dutch) */                                                           \
-    X(Nl10x11, 30, _nl10x11, "nl-10-11")                                       \
+    X(Nl10x11, 29, _nl10x11, "nl-10-11")                                       \
     /* RO (Romanian) */                                                        \
-    X(Ro10x11, 31, _ro10x11, "ro-10-11")                                       \
+    X(Ro10x11, 30, _ro10x11, "ro-10-11")                                       \
     /* RU (Russian) */                                                         \
-    X(Ru10x11, 32, _ru10x11, "ru-10-11")                                       \
+    X(Ru10x11, 31, _ru10x11, "ru-10-11")                                       \
     /* SE (Swedish) */                                                         \
-    X(Se10x11, 33, _se10x11, "se-10-11")                                       \
+    X(Se10x11, 32, _se10x11, "se-10-11")                                       \
     /* TR (Turkish) */                                                         \
-    X(Tr10x11, 34, _tr10x11, "tr-10-11")
-
-enum ClockWords : uint8_t {
-    ESIST = 0,
-    VOR = 1,
-    NACH = 2,
-    UHR = 3,
-
-    FUENF = 4,
-    ZEHN = 5,
-    VIERTEL = 6,
-    DREIVIERTEL = 22,
-    ZWANZIG = 7,
-    HALB = 8,
-    EINS = 9,
-
-    H_EIN = 10,
-    H_ZWEI = 11,
-    H_DREI = 12,
-    H_VIER = 13,
-    H_FUENF = 14,
-    H_SECHS = 15,
-    H_SIEBEN = 16,
-    H_ACHT = 17,
-    H_NEUN = 18,
-    H_ZEHN = 19,
-    H_ELF = 20,
-    H_ZWOELF = 21,
-    H_MITTERNACHT = 23
-};
+    X(Tr10x11, 33, _tr10x11, "tr-10-11")
 
 struct MqttData {
     bool state;
@@ -106,10 +77,51 @@ enum class WhiteType : uint8_t {
     ColdWhite = 2,
 };
 
+inline bool whiteTypeIsValid(uint32_t type) {
+    return type <= static_cast<uint32_t>(WhiteType::ColdWhite);
+}
+
+constexpr uint8_t MINUTE_LEDS_WIRED_4 = 4;
+constexpr uint8_t MINUTE_LEDS_WIRED_7 = 7;
+
+inline bool minuteLedCountIsValid(uint32_t count) {
+    return count == MINUTE_LEDS_WIRED_4 || count == MINUTE_LEDS_WIRED_7;
+}
+
 struct Birthday {
     uint8_t day;
     uint8_t month;
 };
+
+constexpr uint8_t FIRE_COOLING_MIN = 20;
+constexpr uint8_t FIRE_COOLING_MAX = 120;
+constexpr uint8_t FIRE_COOLING_DEFAULT = 65;
+constexpr uint8_t FIRE_SPARKING_MIN = 40;
+constexpr uint8_t FIRE_SPARKING_MAX = 220;
+constexpr uint8_t FIRE_SPARKING_DEFAULT = 120;
+
+inline bool fireSettingsAreValid(uint8_t cooling, uint8_t sparking) {
+    return (cooling >= FIRE_COOLING_MIN) && (cooling <= FIRE_COOLING_MAX) &&
+           (sparking >= FIRE_SPARKING_MIN) && (sparking <= FIRE_SPARKING_MAX);
+}
+
+constexpr uint8_t EFFECT_SPEED_MIN = 1;
+constexpr uint8_t EFFECT_SPEED_MAX = 10;
+constexpr uint8_t EFFECT_SPEED_DEFAULT = 5;
+
+inline bool effectSpeedIsValid(uint32_t speed) {
+    return (speed >= EFFECT_SPEED_MIN) && (speed <= EFFECT_SPEED_MAX);
+}
+
+inline uint16_t effectSpeedIntervalMillis(uint8_t speed) {
+    uint8_t clamped = speed;
+    if (clamped < EFFECT_SPEED_MIN) {
+        clamped = EFFECT_SPEED_MIN;
+    } else if (clamped > EFFECT_SPEED_MAX) {
+        clamped = EFFECT_SPEED_MAX;
+    }
+    return static_cast<uint16_t>((EFFECT_SPEED_MAX + 1u - clamped) * 30u);
+}
 
 constexpr uint8_t HARDWARE_PIN_DISABLED = UINT8_MAX;
 
@@ -122,7 +134,7 @@ struct HardwarePins {
 
 struct OpenWeatherMapData {
     char apikey[35];
-    char cityid[8];
+    char cityid[9];
 };
 
 enum class BuildTypeDef : uint8_t {
@@ -132,6 +144,10 @@ enum class BuildTypeDef : uint8_t {
     TrippleRes = 3,
     QuadRes = 4,
 };
+
+inline bool buildTypeIsValid(uint32_t type) {
+    return type <= static_cast<uint32_t>(BuildTypeDef::QuadRes);
+}
 
 inline uint8_t getLedsPerLetter(BuildTypeDef buildTypeDef) {
     switch (buildTypeDef) {
@@ -150,9 +166,23 @@ enum class MinuteVariant : uint8_t {
     Off = 0,
     LED4x = 1,
     LED7x = 2,
-    Corners = 3,
-    InWords = 4,
+    InWords = 3,
 };
+
+inline bool minuteVariantIsValid(uint32_t variant) {
+    return variant <= static_cast<uint32_t>(MinuteVariant::InWords);
+}
+
+inline uint8_t minuteLedCountFor(MinuteVariant variant, uint8_t current) {
+    switch (variant) {
+    case MinuteVariant::LED4x:
+        return MINUTE_LEDS_WIRED_4;
+    case MinuteVariant::LED7x:
+        return MINUTE_LEDS_WIRED_7;
+    default:
+        return current;
+    }
+}
 
 enum class SecondVariant : uint8_t {
     Off = 0,
@@ -161,11 +191,14 @@ enum class SecondVariant : uint8_t {
     FrameSectorToggle = 3,
 };
 
+inline bool secondVariantIsValid(uint32_t variant) {
+    return variant <= static_cast<uint32_t>(SecondVariant::FrameSectorToggle);
+}
+
 enum class WordclockChanges : uint8_t {
     Null,
     Parameters,
     Minute,
-    Layout,
     Words,
 };
 
@@ -176,6 +209,10 @@ enum class ItIsVariant : uint8_t {
     Hourly = 3,
     Off = 4,
 };
+
+inline bool itIsVariantIsValid(uint32_t variant) {
+    return variant <= static_cast<uint32_t>(ItIsVariant::Off);
+}
 
 enum BitmapSymbol : uint8_t {
     WLAN100,
@@ -196,17 +233,26 @@ enum BitmapSymbol : uint8_t {
     MAX_BITMAP_SYMBOLS
 };
 
+enum ColorPosition : uint8_t {
+    Foreground = 0,
+    Background = 1,
+    Frame = 2,
+    GradientEnd = 3,
+    ColorPositionCount = 4,
+};
+
 struct GLOBAL {
     uint16_t sernr;
     uint16_t prog;
     uint8_t param1;
     bool progInit;
     uint16_t conf;
-    HsbColor color[3];
+    HsbColor color[ColorPositionCount];
     uint8_t effectBri;
     uint8_t effectSpeed;
     uint8_t client_nr;
     SecondVariant secondVariant;
+    uint8_t secondsFrameLedCount;
     MinuteVariant minuteVariant;
     ItIsVariant itIsVariant;
     bool languageVariant[5];
@@ -240,8 +286,7 @@ struct GLOBAL {
     uint16_t autoBrightPeak;
     uint8_t transitionType;
     uint8_t transitionDuration;
-    uint8_t transitionSpeed;
-    uint8_t transitionColorize;
+    uint8_t colorize;
     uint8_t transitionDemo;
 
     bool bootLedBlink;
@@ -255,6 +300,9 @@ struct GLOBAL {
     char timezone[PAYLOAD_LENGTH];
     uint8_t i2cSdaPin;
     uint8_t i2cSclPin;
+    uint8_t fireCooling;
+    uint8_t fireSparking;
+    uint8_t minuteLedCount;
 };
 extern GLOBAL G;
 
@@ -272,24 +320,31 @@ extern uint8_t lastMinute;
 
 extern uint32_t frontMatrix[MAX_ROW_SIZE];
 extern uint32_t lastFrontMatrix[MAX_ROW_SIZE];
+
+/*
+ * Which word lit each cell, as a FrontWord cast to uint8_t. Filled by
+ * ClockType::setFrontMatrixPixel() while a word is being drawn, so consumers
+ * (colorization) know word boundaries instead of having to guess them from
+ * runs of lit cells - which fails for words that are not laid out
+ * horizontally.
+ *
+ * Indexed in display coordinates, i.e. the same [row][col] that
+ * getFrontMatrixPixel() uses, NOT the bit position that setFrontMatrixPixel()
+ * takes.
+ */
+constexpr uint8_t WORD_ID_NONE = 0; // == FrontWord::error
+extern uint8_t frontWordId[MAX_ROW_SIZE][MAX_COL_SIZE];
 extern uint8_t minuteArray; /* Using a byte as a per bit array */
 extern uint8_t lastMinuteArray;
 extern uint16_t minutePixelArray[4];
-extern bool frameArray[200];
+constexpr uint8_t MAX_SECONDS_FRAME_LED_COUNT = 200;
+extern bool frameArray[MAX_SECONDS_FRAME_LED_COUNT];
 extern bool parametersChanged;
-extern bool layoutChanged;
 extern bool colorChangedByWebsite;
-extern uint8_t statusAccessPoint;
 extern uint8_t i2cScanSdaPin;
 extern uint8_t i2cScanSclPin;
 
 extern bool externalRTC;
-
-enum ColorPosition : uint8_t {
-    Foreground = 0,
-    Background = 1,
-    Frame = 2,
-};
 
 enum LedColorVariants : uint8_t {
     Brg = 0,
@@ -299,6 +354,8 @@ enum LedColorVariants : uint8_t {
     Bgr = 4,
     Grbw = 5,
 };
+
+inline bool colorTypeIsValid(uint32_t type) { return type <= Grbw; }
 
 enum LanguageDialects : uint8_t {
     ItIs15 = 0,
@@ -317,11 +374,6 @@ enum LayoutVariants : uint8_t {
     MeanderRows = 5,
 };
 
-enum fontSize : uint8_t {
-    normalSizeASCII = 0,
-    smallSizeNumbers = 1,
-};
-
 enum CommandWords : uint8_t {
     COMMAND_IDLE = 0,
 
@@ -333,6 +385,7 @@ enum CommandWords : uint8_t {
     COMMAND_MODE_COLOR = 6,
     COMMAND_MODE_DIGITAL_CLOCK = 7,
     COMMAND_MODE_SYMBOL = 8,
+    COMMAND_MODE_FIRE = 9,
     COMMAND_MODE_TRANSITION = 10,
 
     PLACEHOLDER_MAX_MODE = 19,
@@ -366,6 +419,9 @@ enum CommandWords : uint8_t {
     COMMAND_SET_IT_IS_VARIANT = 106,
     COMMAND_SET_HARDWARE_PINS = 107,
     COMMAND_SET_TIMEZONE = 108,
+    COMMAND_SET_COLORIZE = 109,
+    COMMAND_SET_SECONDS_FRAME = 110,
+    COMMAND_SET_FIRE = 111,
 
     COMMAND_SPEED = 152,
 
@@ -373,7 +429,6 @@ enum CommandWords : uint8_t {
 
     COMMAND_REQUEST_CONFIG_VALUES = 200,
     COMMAND_REQUEST_COLOR_VALUES = 201,
-    COMMAND_REQUEST_WIFI_LIST = 202,
     COMMAND_REQUEST_AUTO_BRIGHT = 203,
     COMMAND_REQUEST_TRANSITION = 204,
     COMMAND_REQUEST_MQTT_VALUES = 205,
@@ -383,11 +438,52 @@ enum CommandWords : uint8_t {
     PLACEHOLDER_MAX_REQUEST = 255,
 };
 
+/*
+ * Handling COMMAND_MODE_WORD_CLOCK leaves G.prog on COMMAND_IDLE, so idle is
+ * the steady state of the word clock rather than "nothing running". Everything
+ * that is only meaningful for the clock face has to ask for both.
+ *
+ * COMMAND_MODE_TRANSITION only carries new transition settings and falls
+ * straight through to COMMAND_MODE_WORD_CLOCK in the clock work; the front
+ * matrix keeps holding a clock face throughout, so it counts as well.
+ */
+inline bool isWordClockMode(uint8_t prog) {
+    return (prog == COMMAND_IDLE) || (prog == COMMAND_MODE_WORD_CLOCK) ||
+           (prog == COMMAND_MODE_TRANSITION);
+}
+
+inline bool isValidModeCommand(uint16_t command) {
+    switch (command) {
+    case COMMAND_IDLE:
+    case COMMAND_MODE_WORD_CLOCK:
+    case COMMAND_MODE_SECONDS:
+    case COMMAND_MODE_SCROLLINGTEXT:
+    case COMMAND_MODE_RAINBOWCYCLE:
+    case COMMAND_MODE_RAINBOW:
+    case COMMAND_MODE_COLOR:
+    case COMMAND_MODE_DIGITAL_CLOCK:
+    case COMMAND_MODE_SYMBOL:
+    case COMMAND_MODE_FIRE:
+    case COMMAND_MODE_TRANSITION:
+        return true;
+    default:
+        return false;
+    }
+}
+
 enum ClockTypeDef : uint8_t {
 #define X(name, id, var, i18n) name = id,
     CLOCK_TYPES_LIST
 #undef X
-        ClockTypeDefMax,
 };
 
-inline bool isValidClockTypeDef(uint8_t type) { return type < ClockTypeDefMax; }
+inline bool isValidClockTypeDef(uint8_t type) {
+    switch (type) {
+#define X(name, id, var, i18n) case id:
+        CLOCK_TYPES_LIST
+#undef X
+        return true;
+    default:
+        return false;
+    }
+}

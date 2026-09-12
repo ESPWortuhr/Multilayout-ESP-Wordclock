@@ -16,19 +16,10 @@ namespace eeprom {
 
 namespace detail {
 
-template <size_t destSize, size_t sourceSize>
-void copyBoundedString(char (&dest)[destSize],
-                       const char (&source)[sourceSize]) {
-    static_assert(destSize > 0, "destination buffer must not be empty");
-    size_t copyLen = min(destSize - 1, sourceSize);
-    memcpy(dest, source, copyLen);
-    dest[copyLen] = '\0';
-}
-
 template <size_t sourceSize>
 void printSafeString(const char *label, const char (&source)[sourceSize]) {
     char buffer[sourceSize + 1] = {0};
-    copyBoundedString(buffer, source);
+    sensitive::copyBoundedString(buffer, source);
     Serial.printf("%s%s\n", label, buffer);
 }
 
@@ -66,6 +57,7 @@ void printConfig() {
     Serial.printf("H12       : %u\n", G.h12);
     Serial.printf("H16       : %u\n", G.h16);
     Serial.printf("H18       : %u\n", G.h18);
+    Serial.printf("H20       : %u\n", G.h20);
     Serial.printf("H22       : %u\n", G.h22);
     Serial.printf("H24       : %u\n", G.h24);
     Serial.printf("ClockType    : %u\n", G.clockTypeDef);
@@ -84,8 +76,7 @@ void printConfig() {
     Serial.printf("autoBrightPeak    : %u\n", G.autoBrightPeak);
     Serial.printf("transitionDuration    : %u\n", G.transitionDuration);
     Serial.printf("transitionType    : %u\n", G.transitionType);
-    Serial.printf("transitionSpeed    : %u\n", G.transitionSpeed);
-    Serial.printf("transitionColorize    : %u\n", G.transitionColorize);
+    Serial.printf("colorize    : %u\n", G.colorize);
     Serial.printf("transitionDemo    : %u\n", G.transitionDemo);
 
     Serial.printf("bootLedBlink    : %u\n", G.bootLedBlink);

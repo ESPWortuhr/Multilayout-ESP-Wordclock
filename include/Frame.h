@@ -12,13 +12,12 @@ private:
     uint8_t lastSecondFrame;
     uint8_t lastSyncedSecond;
     uint16_t countMillisFrameIntervall;
-    uint16_t countMillisSpeed;
     uint16_t previousMillis;
 
 private:
     void setInitFrameSector();
     void frameLogic();
-    bool checkIfFrameLoopShouldRun() const;
+    bool checkIfFrameLoopShouldSkip() const;
     void updateMillisCounters();
     bool checkIfFrameInit() const;
     bool checkIftoRunFrameLogic() const;
@@ -53,7 +52,6 @@ SecondsFrame::SecondsFrame(const uint8_t num) {
     // 0xFF cannot collide with a second, so the first loop() resyncs.
     lastSyncedSecond = 0xFF;
     countMillisFrameIntervall = 0;
-    countMillisSpeed = 0;
     previousMillis = 0;
 }
 
@@ -61,7 +59,7 @@ SecondsFrame::SecondsFrame(const uint8_t num) {
 // Helper functions
 //------------------------------------------------------------------------------
 
-bool SecondsFrame::checkIfFrameLoopShouldRun() const {
+bool SecondsFrame::checkIfFrameLoopShouldSkip() const {
     return usedClockType->numPixelsFrameMatrix() == 0;
 }
 
@@ -243,7 +241,7 @@ void SecondsFrame::frameLogic() {
 //------------------------------------------------------------------------------
 
 void SecondsFrame::loop() {
-    if (checkIfFrameLoopShouldRun()) {
+    if (checkIfFrameLoopShouldSkip()) {
         return;
     }
 

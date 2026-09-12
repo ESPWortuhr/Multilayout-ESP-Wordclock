@@ -45,7 +45,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void show(FrontWord word) override {
+    void drawWord(FrontWord word) override {
 
         switch (word) {
             break;

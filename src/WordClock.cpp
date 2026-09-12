@@ -60,12 +60,14 @@ RTC_Type RTC;
 #include "Led.h"
 #include "Mqtt.h"
 #include "Network.h"
-#include "TransitionTypes/Transition.h"
+#include "Render/ColorStage.h"
+#include "Render/RenderPipeline.h"
 #include "WifiHelper.h"
 
-Transition *transition;
 SecondsFrame *secondsFrame;
 Led led;
+ColorStage colorStage;
+RenderPipeline renderPipeline;
 ClockWork clockWork;
 Mqtt mqtt(clockWork);
 Network network;
@@ -74,6 +76,13 @@ void setDefaultHardwarePins();
 bool hardwarePinsAreValid();
 void ensureI2CPins();
 void ensureTimezone();
+void ensureTransitionType();
+void ensureFireSettings();
+void ensureEffectSpeed();
+void ensureMinuteVariant();
+void ensureWhiteType();
+void ensureMinuteLedCount();
+void ensureWeatherData();
 
 LedStripInterface *activeLedStrip = nullptr;
 
@@ -83,8 +92,11 @@ void deleteActiveLedStrip() {
 }
 
 #include "ClockWork.hpp"
+#include "Render/ColorStage.hpp"
 #include "Symbols.h"
-#include "TransitionTypes/Transition.hpp"
+#include "Transitions/Transition.hpp"
+
+#include "Render/RenderPipeline.hpp"
 
 namespace {
 constexpr uint16_t EEPROM_SIZE = 512;
@@ -288,6 +300,197 @@ void ensureI2CPins() {
 }
 
 //------------------------------------------------------------------------------
+
+/*
+COLORED (12) was removed as a transition type: colouring is a mode of its own
+now and no longer needs a transition. A configuration written by an older build
+can still hold it, so a stored value is checked once at boot rather than in
+every frame.
+*/
+
+void ensureTransitionType() {
+    if (isValidTransitionType(G.transitionType)) {
+        return;
+    }
+
+    Serial.printf(
+        "Invalid transition type %u in EEPROM, disabling transition\n",
+        G.transitionType);
+    G.transitionType = NO_TRANSITION;
+}
+
+//------------------------------------------------------------------------------
+
+void ensureEffectSpeed() {
+    if (effectSpeedIsValid(G.effectSpeed)) {
+        return;
+    }
+
+    Serial.printf("Invalid effect speed %u in EEPROM, restoring default\n",
+                  G.effectSpeed);
+    G.effectSpeed = EFFECT_SPEED_DEFAULT;
+}
+
+//------------------------------------------------------------------------------
+
+void ensureFireSettings() {
+    if (fireSettingsAreValid(G.fireCooling, G.fireSparking)) {
+        return;
+    }
+
+    Serial.println("Invalid fire settings in EEPROM, restoring defaults");
+    G.fireCooling = FIRE_COOLING_DEFAULT;
+    G.fireSparking = FIRE_SPARKING_DEFAULT;
+}
+
+//------------------------------------------------------------------------------
+
+MinuteVariant defaultMinuteVariant() {
+#if defined(MINUTE_LED7x)
+    return MinuteVariant::LED7x;
+#elif defined(MINUTE_LED4x)
+    return MinuteVariant::LED4x;
+#else
+    return MinuteVariant::Off;
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+ItIsVariant defaultItIsVariant() {
+#if defined(IT_IS_Off)
+    return ItIsVariant::Off;
+#elif defined(IT_IS_Permanent)
+    return ItIsVariant::Permanent;
+#elif defined(IT_IS_Quarterly)
+    return ItIsVariant::Quarterly;
+#elif defined(IT_IS_HalfHourly)
+    return ItIsVariant::HalfHourly;
+#elif defined(IT_IS_Hourly)
+    return ItIsVariant::Hourly;
+#else
+    return ItIsVariant::Permanent;
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+void ensureMinuteVariant() {
+    constexpr uint8_t LEGACY_MINUTE_VARIANT_IN_WORDS = 4;
+
+    if (static_cast<uint8_t>(G.minuteVariant) ==
+        LEGACY_MINUTE_VARIANT_IN_WORDS) {
+        Serial.println("Moving minute variant InWords from 4 to 3");
+        G.minuteVariant = MinuteVariant::InWords;
+        return;
+    }
+
+    if (minuteVariantIsValid(static_cast<uint32_t>(G.minuteVariant))) {
+        return;
+    }
+
+    Serial.printf("Invalid minute variant %u in EEPROM, restoring default\n",
+                  static_cast<unsigned>(G.minuteVariant));
+    G.minuteVariant = defaultMinuteVariant();
+}
+
+//------------------------------------------------------------------------------
+
+void ensureSecondVariant() {
+    if (secondVariantIsValid(static_cast<uint32_t>(G.secondVariant))) {
+        return;
+    }
+
+    Serial.printf("Invalid second variant %u in EEPROM, disabling seconds\n",
+                  static_cast<unsigned>(G.secondVariant));
+    G.secondVariant = SecondVariant::Off;
+}
+
+//------------------------------------------------------------------------------
+
+void ensureItIsVariant() {
+    if (itIsVariantIsValid(static_cast<uint32_t>(G.itIsVariant))) {
+        return;
+    }
+
+    Serial.printf("Invalid it-is variant %u in EEPROM, restoring default\n",
+                  static_cast<unsigned>(G.itIsVariant));
+    G.itIsVariant = defaultItIsVariant();
+}
+
+//------------------------------------------------------------------------------
+
+void ensureColorType() {
+    if (colorTypeIsValid(G.Colortype)) {
+        return;
+    }
+
+    Serial.printf("Invalid color type %u in EEPROM, restoring default\n",
+                  G.Colortype);
+    G.Colortype = DEFAULT_LEDTYPE;
+}
+
+//------------------------------------------------------------------------------
+
+void ensureBuildType() {
+    if (buildTypeIsValid(static_cast<uint32_t>(G.buildTypeDef))) {
+        return;
+    }
+
+    Serial.printf("Invalid build type %u in EEPROM, restoring default\n",
+                  static_cast<unsigned>(G.buildTypeDef));
+    G.buildTypeDef = DEFAULT_BUILDTYPE;
+}
+
+//------------------------------------------------------------------------------
+
+void ensureWhiteType() {
+    if (whiteTypeIsValid(static_cast<uint32_t>(G.wType))) {
+        return;
+    }
+
+    Serial.printf("Invalid white type %u in EEPROM, restoring default\n",
+                  static_cast<unsigned>(G.wType));
+    G.wType = WHITE_LEDTYPE;
+}
+
+//------------------------------------------------------------------------------
+
+void ensureMinuteLedCount() {
+    if (minuteLedCountIsValid(G.minuteLedCount)) {
+        return;
+    }
+
+    G.minuteLedCount = minuteLedCountFor(G.minuteVariant, MINUTE_LEDS_WIRED_4);
+    Serial.printf("Invalid minute LED count in EEPROM, deriving %u from the "
+                  "minute variant\n",
+                  G.minuteLedCount);
+}
+
+//------------------------------------------------------------------------------
+
+void ensureWeatherData() {
+#ifdef OWM_CITY_ID
+    static_assert(sizeof(OWM_CITY_ID) <= sizeof(G.openWeatherMap.cityid),
+                  "OWM_CITY_ID is too long");
+    if (G.openWeatherMap.cityid[0] == '\0') {
+        strlcpy(G.openWeatherMap.cityid, OWM_CITY_ID,
+                sizeof(G.openWeatherMap.cityid));
+        Serial.println("No OpenWeatherMap city ID in EEPROM, using Config.h");
+    }
+#endif
+#ifdef OWM_API_KEY
+    static_assert(sizeof(OWM_API_KEY) <= sizeof(G.openWeatherMap.apikey),
+                  "OWM_API_KEY is too long");
+    if (G.openWeatherMap.apikey[0] == '\0') {
+        strlcpy(G.openWeatherMap.apikey, OWM_API_KEY,
+                sizeof(G.openWeatherMap.apikey));
+        Serial.println("No OpenWeatherMap API key in EEPROM, using Config.h");
+    }
+#endif
+}
+
+//------------------------------------------------------------------------------
 // Start setup()
 //------------------------------------------------------------------------------
 
@@ -311,6 +514,16 @@ void setup() {
     ensureHardwarePins();
     ensureI2CPins();
     ensureTimezone();
+    ensureTransitionType();
+    ensureFireSettings();
+    ensureEffectSpeed();
+    ensureMinuteVariant();
+    ensureSecondVariant();
+    ensureItIsVariant();
+    ensureColorType();
+    ensureBuildType();
+    ensureWhiteType();
+    ensureMinuteLedCount();
 
     //-------------------------------------
 
@@ -340,26 +553,25 @@ void setup() {
         G.param1 = 0;
         G.progInit = true;
         G.conf = COMMAND_IDLE;
-        for (uint8_t i = 0; i < 3; i++) {
+        for (uint8_t i = 0; i < ColorPositionCount; i++) {
             G.color[i] = {0, 0, 0};
         }
         G.color[Foreground] = HsbColor(DEFAULT_HUE / 360.f, 1.f, 0.5f);
+        // Second gradient colour: a third of the colour circle further on, so
+        // the default gradient is visible without configuring anything.
+        G.color[GradientEnd] =
+            HsbColor(fmodf(DEFAULT_HUE / 360.f + 0.33f, 1.f), 1.f, 0.5f);
         G.effectBri = 2;
-        G.effectSpeed = 5;
+        G.effectSpeed = EFFECT_SPEED_DEFAULT;
+        G.fireCooling = FIRE_COOLING_DEFAULT;
+        G.fireSparking = FIRE_SPARKING_DEFAULT;
         G.client_nr = 0;
         G.secondVariant = SecondVariant::Off;
+        G.secondsFrameLedCount = 0;
         G.bitmapSymbol = BitmapSymbol::HEART;
-// C++23 #elifdef doesn't work yet
-#ifdef MINUTE_Off
-        G.minuteVariant = MinuteVariant::Off;
-#endif
-#ifdef MINUTE_LED4x
-        G.minuteVariant = MinuteVariant::LED4x;
-#endif
-#ifdef MINUTE_LED7x
-        G.minuteVariant = MinuteVariant::LED7x;
-#endif
-        G.itIsVariant = ItIsVariant::Permanent;
+        G.minuteVariant = defaultMinuteVariant();
+        G.minuteLedCount =
+            minuteLedCountFor(G.minuteVariant, MINUTE_LEDS_WIRED_4);
         strcpy(G.openWeatherMap.cityid, "");
         strcpy(G.openWeatherMap.apikey, "");
         strcpy(G.timeserver, "europe.pool.ntp.org");
@@ -387,21 +599,7 @@ void setup() {
         G.languageVariant[ItIs45] = false;
         G.languageVariant[EN_ShowAQuarter] = false;
 
-#ifdef IT_IS_Off
-        G.itIsVariant = ItIsVariant::Off;
-
-#elif defined(IT_IS_Permanent)
-        G.itIsVariant = ItIsVariant::Permanent;
-
-#elif defined(IT_IS_Quarterly)
-        G.itIsVariant = ItIsVariant::Quarterly;
-
-#elif defined(IT_IS_HalfHourly)
-        G.itIsVariant = ItIsVariant::HalfHourly;
-
-#elif defined(IT_IS_Hourly)
-        G.itIsVariant = ItIsVariant::Hourly;
-#endif
+        G.itIsVariant = defaultItIsVariant();
 
 #ifdef MQTT_SERVER
         strlcpy(G.mqtt.serverAdress, MQTT_SERVER, sizeof(G.mqtt.serverAdress));
@@ -457,8 +655,7 @@ void setup() {
         G.autoBrightPeak = 750;
         G.transitionType = 0; // Transition::NO_TRANSITION;
         G.transitionDuration = 2;
-        G.transitionSpeed = 30;
-        G.transitionColorize = 0;
+        G.colorize = 0;
         G.transitionDemo = false;
 
         for (uint8_t i = 0; i < MAX_BIRTHDAY_COUNT; i++) {
@@ -472,12 +669,21 @@ void setup() {
         Serial.println("EEPROM written");
     }
 
+    ensureWeatherData();
+
     // Initialization of COMMAND_MODE_xxx (color)
     G.progInit = true;
 
     //-------------------------------------
     // Get Pointer for ClockType
     //-------------------------------------
+
+    if (!isValidModeCommand(G.prog)) {
+        Serial.printf("Invalid Programm %u in EEPROM, using word clock\n",
+                      G.prog);
+        G.prog = COMMAND_MODE_WORD_CLOCK;
+        eeprom::write();
+    }
 
     if (!isValidClockTypeDef(G.clockTypeDef)) {
         Serial.printf("Invalid ClockType %u in EEPROM, using default %u\n",
@@ -487,6 +693,7 @@ void setup() {
     }
 
     usedClockType = clockWork.getPointer(G.clockTypeDef);
+    clockWork.normalizeMinuteVariant();
 
     // Area that will be animated:
     //         LED frame horizontal
@@ -494,8 +701,8 @@ void setup() {
     //         Number of rows (including frames)
     //         Number of columns (including frames)
     // TODO: Get frame width from usedClockType.
-    transition = new Transition(usedClockType->rowsWordMatrix(),
-                                usedClockType->colsWordMatrix());
+    renderPipeline.resize(usedClockType->rowsWordMatrix(),
+                          usedClockType->colsWordMatrix());
 
     if (usedClockType->numPixelsFrameMatrix() != 0) {
         secondsFrame = new SecondsFrame(usedClockType->numPixelsFrameMatrix());
@@ -532,7 +739,7 @@ void setup() {
     // Start external real-time clock
     //-------------------------------------
 
-    if (RTC.begin() == true) {
+    if (i2cBus::pinsAreEnabled(G.i2cSdaPin, G.i2cSclPin) && RTC.begin()) {
         Serial.println("External real-time clock found");
         struct timeval tv;
         tv.tv_sec = RTC.now().unixtime();
@@ -641,6 +848,10 @@ void setup() {
     // Auto brightness
     //-------------------------------------
 
+#if defined(ESP32)
+    analogReadResolution(10);
+#endif
+
     // Find BH1750 and initialize if available else fallback to LDR if available
     byte bh1750Address = i2cBus::findBH1750Address(G.i2cSdaPin, G.i2cSclPin);
 
@@ -676,11 +887,6 @@ void setup() {
     if (secondsFrame) {
         secondsFrame->initFrame();
     }
-
-    //-------------------------------------
-    // Transition Init
-    //-------------------------------------
-    transition->init();
 
     //-------------------------------------
     // Setup Done
@@ -735,12 +941,9 @@ void loop() {
     }
 
     //------------------------------------------------
-    // Transition
+    // Render Pipeline
     //------------------------------------------------
-    transition->loop(tm); // must be called periodically
-
-    // make the time run faster in the demo mode of the transition
-    transition->demoMode(_hour, _minute, _second);
+    renderPipeline.loop(tm); // must be called periodically
 
     //------------------------------------------------
     // Clockwork

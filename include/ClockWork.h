@@ -24,6 +24,7 @@ private:
     void nextHardwareButtonHue();
     void requestHardwareButtonDisplayRefresh();
     uint32_t num32BitWithOnesAccordingToColumns();
+    void reallocateSecondsFrame();
 
     //------------------------------------------------------------------------------
     // Front Effect Functions
@@ -39,7 +40,7 @@ private:
 
     void rainbow();
     void rainbowCycle();
-    void rainbowSpiralCycle();
+    void fire();
     bool getStaticScrollingTextInfo(const char *buf, StaticScrollingText &info);
     void displayStaticScrollingText(const char *buf,
                                     const StaticScrollingText &info);
@@ -55,11 +56,12 @@ private:
     bool checkIfClockHasMinuteInWordsAndItIsSet();
     void showMinute(uint8_t min);
     void checkForValidLanguageVariant();
-    void resetMinVariantIfNotAvailable();
     FrontWord getFrontWordForNum(uint8_t min);
     bool checkTwentyUsage();
     bool hasTwentyAndCheckForUsage();
     bool hasDreiviertelAndCheckForUsage();
+    void showQuarterPast(uint8_t &offsetHour);
+    void showQuarterTo(uint8_t &offsetHour);
     void setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour);
 
     //------------------------------------------------------------------------------
@@ -82,7 +84,6 @@ private:
     void clearClockByProgInit();
 
 public:
-    // ClockWork() = default;
     ~ClockWork() = default;
 
     //------------------------------------------------------------------------------
@@ -92,17 +93,11 @@ public:
     void initLedStrip(uint8_t num);
     void initHardwareButtons();
     uint32_t getLuxValue() const { return lux; }
-    float getAdcValue() const {
-        uint16_t adcRaw = analogRead(A0);
-        float voltage = (adcRaw * 3.3f) / 1023.0f;
-        return round(voltage * 100.0f) / 100.0f;
-    }
-    uint16_t getAdcRawValue() const { return analogRead(A0); }
 
     //------------------------------------------------------------------------------
     // Minute Functions
     //------------------------------------------------------------------------------
-    uint8_t determineWhichMinuteVariant();
+    void normalizeMinuteVariant();
 
     //------------------------------------------------------------------------------
     // Boot Functions

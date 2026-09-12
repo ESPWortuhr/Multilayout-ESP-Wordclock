@@ -1,19 +1,17 @@
 #include "ClockWork.h"
+#include "Font.h"
 #include "I2CBus.h"
 #include "NeoMultiFeature.hpp"
 #include "OpenWeatherMap.h"
 #include "SensitiveData.h"
-#include "TransitionTypes/Transition.h"
+#include "Transitions/Transition.h"
 #include "WordClockState.h"
 #include "WordClockTypes/ClockType.hpp"
 #include "math.h"
 #include <Arduino.h>
 #include <BH1750.h>
 
-#define MAX_LED_COUNT 300
-
 BH1750 lightMeter;
-OpenWMap weather;
 
 uint8_t activeLedPin = UINT8_MAX;
 uint8_t activeLedColorType = UINT8_MAX;
@@ -44,24 +42,23 @@ void ClockWork::loopAutoBrightLogic() {
         return;
 
     if (G.autoBrightMin == G.autoBrightMax) {
-        // If min and max are identical, nothing needs to be measured...
-        // Besides: map() would crash with division by zero in this case
+        // If min and max are identical, nothing needs to be measured.
         ledGain = G.autoBrightMax;
         return;
     }
 
     float ledGainOld = ledGain;
-    float luxNow = -1.0;
+    float luxNow;
 
-    if (bh1750Initialized && lightMeter.measurementReady()) {
-        /*
-        If BH1750 is not available or did not return a value, try to use LDR
-        */
+    if (bh1750Initialized) {
+        if (!lightMeter.measurementReady()) {
+            return;
+        }
         luxNow = lightMeter.readLightLevel(); // 0.0-54612.5 LUX
-        autoBrightUsingBH1750 = true;
-    }
-
-    else if (luxNow < 0) {
+        if (luxNow < 0) {
+            return;
+        }
+    } else {
         /*
         The lux value is considerably misrepresented upwards at ADC values above
         980. As 980 with an LDR5528 corresponds to approx. 1500 lux, but usually
@@ -75,19 +72,9 @@ void ClockWork::loopAutoBrightLogic() {
             adcValue = 980;
         }
 
-        luxNow = (adcValue * AUTOBRIGHT_LDR_RESDARK * 10) /
+        luxNow = (adcValue * AUTOBRIGHT_LDR_RESDARK * 10.0f) /
                  (AUTOBRIGHT_LDR_RESBRIGHT * AUTOBRIGHT_LDR_RESDIVIDER *
-                  (1024 - adcValue));
-        autoBrightUsingBH1750 = false;
-    }
-
-    else {
-        /*
-        If luxNow is still negative, no data could be retrieved from BH1750 or
-        LDR. We return to preserve the previous ledGain (potentially default).
-        Otherwise we may end up in a blinking light.
-        */
-        return;
+                  (1024.0f - adcValue));
     }
 
     /*
@@ -137,8 +124,9 @@ void ClockWork::nextHardwareButtonMode() {
     static const uint8_t modes[] = {
         COMMAND_MODE_WORD_CLOCK,    COMMAND_MODE_SECONDS,
         COMMAND_MODE_SCROLLINGTEXT, COMMAND_MODE_RAINBOWCYCLE,
-        COMMAND_MODE_RAINBOW,       COMMAND_MODE_COLOR,
-        COMMAND_MODE_DIGITAL_CLOCK, COMMAND_MODE_SYMBOL};
+        COMMAND_MODE_RAINBOW,       COMMAND_MODE_FIRE,
+        COMMAND_MODE_COLOR,         COMMAND_MODE_DIGITAL_CLOCK,
+        COMMAND_MODE_SYMBOL};
 
     uint8_t nextMode = modes[0];
     for (uint8_t i = 0; i < sizeof(modes) / sizeof(modes[0]); i++) {
@@ -158,9 +146,8 @@ void ClockWork::nextHardwareButtonMode() {
 
 void ClockWork::nextHardwareButtonTransition() {
     static const uint8_t transitions[] = {
-        NO_TRANSITION, ROLL_UP, ROLL_DOWN,   SHIFT_LEFT, SHIFT_RIGHT,
-        FADE,          LASER,   MATRIX_RAIN, BALLS,      FIRE,
-        SNAKE,         COLORED, RANDOM};
+        NO_TRANSITION, ROLL_UP,     ROLL_DOWN, SHIFT_LEFT, SHIFT_RIGHT, FADE,
+        LASER,         MATRIX_RAIN, BALLS,     FIRE,       SNAKE,       RANDOM};
 
     uint8_t nextTransition = transitions[0];
     for (uint8_t i = 0; i < sizeof(transitions) / sizeof(transitions[0]); i++) {
@@ -265,9 +252,21 @@ ClockType *ClockWork::getPointer(uint8_t type) {
 
 //------------------------------------------------------------------------------
 
+void ClockWork::reallocateSecondsFrame() {
+    delete secondsFrame;
+    secondsFrame = nullptr;
+
+    if (usedClockType->numPixelsFrameMatrix() != 0) {
+        secondsFrame = new SecondsFrame(usedClockType->numPixelsFrameMatrix());
+        G.progInit = true;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::initLedStrip(uint8_t num) {
     NeoMultiFeature::setColortype(num);
-    const uint16_t ledCount = MAX_LED_COUNT * getLedsPerLetter(G.buildTypeDef);
+    const uint16_t ledCount = usedClockType->numPixelsOnStrip();
 
     if (activeLedPin != G.hardwarePins.led || activeLedColorType != num ||
         activeLedCount != ledCount) {
@@ -401,18 +400,18 @@ void ClockWork::rainbow() {
 
 void ClockWork::rainbowCycle() {
     static uint16_t hue = 0;
-    uint16_t numPixelsWordMatrix =
+    const uint16_t numPixelsWordMatrix =
         usedClockType->rowsWordMatrix() * usedClockType->colsWordMatrix();
-    uint16_t displayedHue;
+    const float hueStep = 360.f / numPixelsWordMatrix;
+    uint16_t pixel = 0;
 
-    displayedHue = hue;
     for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
+            const float displayedHue = fmodf(hue + pixel * hueStep, 360.f);
             led.setPixel(
                 row, col,
                 HsbColor(displayedHue / 360.f, 1.f, G.effectBri / 100.f));
-            displayedHue = displayedHue + 360.f / numPixelsWordMatrix;
-            led.checkIfHueIsOutOfBound(displayedHue);
+            pixel++;
         }
     }
     led.show();
@@ -422,55 +421,79 @@ void ClockWork::rainbowCycle() {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::rainbowSpiralCycle() {
-    static uint16_t hue = 0;
+namespace {
 
-    uint8_t rows = usedClockType->rowsWordMatrix();
-    uint8_t cols = usedClockType->colsWordMatrix();
+// Fire2012 by Mark Kriegsman, July 2012 - one simulation per matrix column.
+constexpr uint8_t FIRE_SPARK_ROWS = 3;
 
-    // 1. Calculate the center of the matrix.
-    float centerRow = (rows - 1) / 2.0f;
-    float centerCol = (cols - 1) / 2.0f;
+uint8_t coolCell(uint8_t heat, uint8_t amount) {
+    return (heat > amount) ? (heat - amount) : 0;
+}
 
-    // 2. Calculate the maximum distance from the center to any corner.
-    // This scales the color gradient cleanly to the matrix size.
-    float maxDist = sqrt(centerRow * centerRow + centerCol * centerCol);
+uint8_t igniteCell(uint8_t heat, uint8_t amount) {
+    uint16_t sum = static_cast<uint16_t>(heat) + amount;
+    return (sum > 255) ? 255 : static_cast<uint8_t>(sum);
+}
 
-    for (uint8_t row = 0; row < rows; row++) {
-        for (uint8_t col = 0; col < cols; col++) {
+HsbColor heatColor(uint8_t heat, float brightness) {
+    constexpr float yellow = 60.f / 360.f;
 
-            // 3. Calculate the current pixel's distance from the center.
-            float dRow = row - centerRow;
-            float dCol = col - centerCol;
-            float distance = sqrt(dRow * dRow + dCol * dCol);
+    if (heat < 85) {
+        return HsbColor(0.f, 1.f, brightness * heat / 85.f);
+    }
+    if (heat < 170) {
+        return HsbColor(yellow * (heat - 85) / 85.f, 1.f, brightness);
+    }
+    return HsbColor(yellow, 1.f - (heat - 170) / 85.f, brightness);
+}
 
-            // 4. Calculate the color based on distance and base hue.
-            // distance / maxDist returns a value between 0.0 and 1.0.
-            // Multiplying it by 360 stretches the rainbow across the radius.
-            float hueOffset = (distance / maxDist) * 360.0f;
+} // namespace
 
-            // Add the base hue, which drives the movement, and the offset.
-            uint16_t pixelHue = hue + (uint16_t)hueOffset;
+void ClockWork::fire() {
+    static uint8_t heat[MAX_ROW_SIZE][MAX_COL_SIZE];
+    static uint8_t heatRows = 0;
+    static uint8_t heatCols = 0;
 
-            // Keep generated hue values inside the 0-359 range.
-            while (pixelHue >= 360) {
-                pixelHue -= 360;
-            }
+    const uint8_t rows = usedClockType->rowsWordMatrix();
+    const uint8_t cols = usedClockType->colsWordMatrix();
 
-            led.setPixel(row, col,
-                         HsbColor(pixelHue / 360.f, 1.f, G.effectBri / 100.f));
+    if (rows == 0 || cols == 0) {
+        return;
+    }
+
+    if (rows != heatRows || cols != heatCols) {
+        memset(heat, 0, sizeof(heat));
+        heatRows = rows;
+        heatCols = cols;
+    }
+
+    const uint8_t cooling =
+        static_cast<uint8_t>((G.fireCooling * 10u) / rows) + 2u;
+    const uint8_t sparkRows = (rows < FIRE_SPARK_ROWS) ? rows : FIRE_SPARK_ROWS;
+    const float brightness = G.effectBri / 100.f;
+
+    for (uint8_t col = 0; col < cols; col++) {
+        for (uint8_t cell = 0; cell < rows; cell++) {
+            heat[cell][col] = coolCell(heat[cell][col], random(cooling));
+        }
+
+        for (uint8_t cell = rows - 1; cell >= 2; cell--) {
+            uint16_t below = heat[cell - 1][col] + 2u * heat[cell - 2][col];
+            heat[cell][col] = static_cast<uint8_t>(below / 3u);
+        }
+
+        if (random(256) < G.fireSparking) {
+            const uint8_t cell = static_cast<uint8_t>(random(sparkRows));
+            heat[cell][col] = igniteCell(heat[cell][col], random(160, 256));
+        }
+
+        for (uint8_t cell = 0; cell < rows; cell++) {
+            led.setPixel(static_cast<uint8_t>(rows - 1 - cell), col,
+                         heatColor(heat[cell][col], brightness));
         }
     }
 
     led.show();
-
-    // 5. Advance the animation.
-    // hue++ moves the colors inward.
-    // hue-- (or hue + 359) would move the colors outward.
-    hue++;
-    if (hue >= 360) {
-        hue = 0;
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -622,8 +645,18 @@ void ClockWork::displaySymbols(BitmapSymbol symbolNum) {
         symbolNum = BitmapSymbol::HEART;
     }
 
+    // This mode has its own brightness, so both ends of the ramp are dimmed to
+    // it rather than read through the display brightness.
     HsbColor color = G.color[Foreground];
     color.B = G.effectBri / 100.f;
+
+    if (colorStage.foregroundIsGradient()) {
+        HsbColor gradientEnd = G.color[GradientEnd];
+        gradientEnd.B = color.B;
+        led.setBitmapSymbol(symbolNum, color, gradientEnd);
+        return;
+    }
+
     led.setBitmapSymbol(symbolNum, color);
 }
 
@@ -718,32 +751,6 @@ void ClockWork::initBootLed() {
 // Minute Functions
 //------------------------------------------------------------------------------
 
-uint8_t ClockWork::determineWhichMinuteVariant() {
-    switch (G.minuteVariant) {
-    case MinuteVariant::Off:
-        return 0;
-        break;
-    case MinuteVariant::LED4x:
-        return 0;
-        break;
-    case MinuteVariant::LED7x:
-        return 1;
-        break;
-    case MinuteVariant::Corners:
-        return 2;
-        break;
-    case MinuteVariant::InWords:
-        return 0;
-        break;
-    default:
-        Serial.println("[ERROR] G.minuteVariant undefined");
-        return 0;
-        break;
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void ClockWork::showSpecialWordBeen(const uint8_t min) {
     if (usedClockType->hasSpecialWordBeen()) {
         if (min == 0) {
@@ -801,8 +808,7 @@ void ClockWork::showMinute(uint8_t min) {
     min %= 5;
 
     /* saving corosponding minutePixelArray */
-    usedClockType->getMinuteArray(minutePixelArray,
-                                  determineWhichMinuteVariant());
+    usedClockType->getMinuteArray(minutePixelArray, G.minuteVariant);
     /* Reseting minute byte */
     minuteArray = 0;
     if (usedClockType->hasMinuteInWords() && min > 0) {
@@ -836,17 +842,12 @@ void ClockWork::checkForValidLanguageVariant() {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::resetMinVariantIfNotAvailable() {
-    if (usedClockType->supportsMinuteVariant(G.minuteVariant)) {
-        return;
-    }
-
-    if (G.minuteVariant == MinuteVariant::Corners &&
-        usedClockType->supportsMinuteVariant(MinuteVariant::LED4x)) {
-        G.minuteVariant = MinuteVariant::LED4x;
-    } else {
+void ClockWork::normalizeMinuteVariant() {
+    if (!usedClockType->supportsMinuteVariant(G.minuteVariant)) {
         G.minuteVariant = MinuteVariant::Off;
     }
+
+    G.minuteLedCount = minuteLedCountFor(G.minuteVariant, G.minuteLedCount);
 }
 
 //------------------------------------------------------------------------------
@@ -890,6 +891,36 @@ bool ClockWork::hasDreiviertelAndCheckForUsage() {
 
 //------------------------------------------------------------------------------
 
+void ClockWork::showQuarterPast(uint8_t &offsetHour) {
+    if (G.languageVariant[ItIs15]) {
+        usedClockType->show(FrontWord::viertel);
+        offsetHour = 1;
+    } else {
+        if (G.languageVariant[EN_ShowAQuarter]) {
+            usedClockType->show(FrontWord::a_quarter);
+        }
+        usedClockType->show(FrontWord::viertel);
+        usedClockType->show(FrontWord::v_nach);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClockWork::showQuarterTo(uint8_t &offsetHour) {
+    if (hasDreiviertelAndCheckForUsage()) {
+        usedClockType->show(FrontWord::dreiviertel);
+    } else {
+        if (G.languageVariant[EN_ShowAQuarter]) {
+            usedClockType->show(FrontWord::a_quarter);
+        }
+        usedClockType->show(FrontWord::viertel);
+        usedClockType->show(FrontWord::v_vor);
+    }
+    offsetHour = 1;
+}
+
+//------------------------------------------------------------------------------
+
 void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     if (usedClockType->has60MinuteLayout()) {
         usedClockType->show(FrontWord::uhr);
@@ -909,42 +940,16 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
     } else if (usedClockType->hasOnlyQuarterLayout()) {
 
         if (8 <= min && min <= 22) {
-            if (G.languageVariant[ItIs15]) {
-                usedClockType->show(FrontWord::viertel);
-                offsetHour = 1;
-            } else {
-                // A Quarter past
-                if (G.languageVariant[EN_ShowAQuarter]) {
-                    usedClockType->show(FrontWord::a_quarter);
-                }
-                usedClockType->show(FrontWord::viertel);
-                usedClockType->show(FrontWord::v_nach);
-            }
+            showQuarterPast(offsetHour);
         } else if (23 <= min && min <= 37) { // half
-            if (G.clockTypeDef == Eng10x11 || G.clockTypeDef == It10x11 ||
-                G.clockTypeDef == Es10x11 || G.clockTypeDef == Ro10x11) {
-                usedClockType->show(FrontWord::halb);
+            usedClockType->show(FrontWord::halb);
+            if (G.clockTypeDef == Es08x08Cuarto) {
                 usedClockType->show(FrontWord::nach);
             } else {
-                if (G.clockTypeDef == Fr10x11 || G.clockTypeDef == Ru10x11) {
-                    usedClockType->show(FrontWord::halb);
-                } else {
-                    usedClockType->show(FrontWord::halb);
-                    offsetHour = 1;
-                }
+                offsetHour = 1;
             }
         } else if (38 <= min && min <= 52) { // quarter to
-            if (hasDreiviertelAndCheckForUsage()) {
-                usedClockType->show(FrontWord::dreiviertel);
-            } else {
-                // A Quarter to
-                if (G.languageVariant[EN_ShowAQuarter]) {
-                    usedClockType->show(FrontWord::a_quarter);
-                }
-                usedClockType->show(FrontWord::viertel);
-                usedClockType->show(FrontWord::v_vor);
-            }
-            offsetHour = 1;
+            showQuarterTo(offsetHour);
         } else if (53 <= min && min <= 59) { // almost full hour
             offsetHour = 1;
         }
@@ -985,17 +990,7 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             usedClockType->show(FrontWord::nach);
             break;
         case 15: // quarter past
-            if (G.languageVariant[ItIs15]) {
-                usedClockType->show(FrontWord::viertel);
-                offsetHour = 1;
-            } else {
-                // A Quarter past
-                if (G.languageVariant[EN_ShowAQuarter]) {
-                    usedClockType->show(FrontWord::a_quarter);
-                }
-                usedClockType->show(FrontWord::viertel);
-                usedClockType->show(FrontWord::v_nach);
-            }
+            showQuarterPast(offsetHour);
             break;
         case 16:
         case 17:
@@ -1130,18 +1125,8 @@ void ClockWork::setMinute(uint8_t min, uint8_t &offsetHour, bool &fullHour) {
             if (G.clockTypeDef == Tr10x11) {
                 usedClockType->show(FrontWord::min_45);
                 usedClockType->show(FrontWord::nach);
-            } else if (hasDreiviertelAndCheckForUsage()) {
-                usedClockType->show(FrontWord::dreiviertel);
             } else {
-                // A Quarter to
-                if (G.languageVariant[EN_ShowAQuarter]) {
-                    usedClockType->show(FrontWord::a_quarter);
-                }
-                usedClockType->show(FrontWord::viertel);
-                usedClockType->show(FrontWord::v_vor);
-            }
-            if (G.clockTypeDef != Tr10x11) {
-                offsetHour = 1;
+                showQuarterTo(offsetHour);
             }
             break;
         case 46:
@@ -1323,9 +1308,6 @@ WordclockChanges ClockWork::changesInClockface() {
     if (parametersChanged) {
         parametersChanged = false;
         return WordclockChanges::Parameters;
-    } else if (layoutChanged) {
-        layoutChanged = false;
-        return WordclockChanges::Layout;
     } else if (lastMinuteArray != minuteArray) {
         return WordclockChanges::Minute;
     }
@@ -1461,7 +1443,7 @@ void ClockWork::loop(struct tm &tm) {
     loopHardwareButtons();
 
     // Faster runtime for demo
-    transition->demoMode(_hour, _minute, _second);
+    renderPipeline.demoMode(_hour, _minute, _second);
 
     //------------------------------------------------
     // Seconds and LDR Routine
@@ -1484,19 +1466,11 @@ void ClockWork::loop(struct tm &tm) {
         //--------------------------------------------
         // Auto Brightness Logic
         //--------------------------------------------
-        if (G.autoBrightEnabled == 1) {
-            loopAutoBrightLogic();
-        }
+        loopAutoBrightLogic();
 
         if (G.prog == COMMAND_IDLE && G.conf == COMMAND_IDLE) {
             led.clear();
             G.prog = COMMAND_MODE_WORD_CLOCK;
-        }
-
-        if (G.prog == COMMAND_MODE_DIGITAL_CLOCK) {
-            led.clear();
-            led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
-                                 _hour / 10);
         }
 
         lastSecond = _second;
@@ -1520,19 +1494,14 @@ void ClockWork::loop(struct tm &tm) {
         sendMQTTUpdate();
     }
 
+    const bool setCommandPending =
+        G.conf != COMMAND_IDLE && G.conf < PLACEHOLDER_MAX_SET;
+
     switch (G.conf) {
 
     case COMMAND_RESET: {
         delay(500);
-#ifdef ESP8266
-        ESP.reset();
         ESP.restart();
-#elif defined(ESP32)
-        ESP.restart();
-        esp_restart();
-#endif
-        while (true) {
-        }
         break;
     }
 
@@ -1616,10 +1585,14 @@ void ClockWork::loop(struct tm &tm) {
         config["hasTwenty"] = usedClockType->hasTwenty();
         config["hasWeatherLayout"] = usedClockType->hasWeatherLayout();
         config["hasSecondsFrame"] = usedClockType->hasSecondsFrame();
+        config["supportsSecondsFrame"] = usedClockType->supportsSecondsFrame();
+        config["secondsFrameLedCount"] = G.secondsFrameLedCount;
         config["hasMinuteInWords"] = usedClockType->hasMinuteInWords();
         config["hasSpecialWordHappyBirthday"] =
             usedClockType->hasSpecialWordHappyBirthday();
         config["numOfRows"] = usedClockType->rowsWordMatrix();
+        config["fireCooling"] = G.fireCooling;
+        config["fireSparking"] = G.fireSparking;
 
         sendJsonToClient(G.client_nr, config);
         break;
@@ -1651,7 +1624,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_REQUEST_COLOR_VALUES: {
         DynamicJsonDocument config(768);
         config["command"] = "set";
-        for (uint8_t i = 0; i < 3; i++) {
+        for (uint8_t i = 0; i < ColorPositionCount; i++) {
             char string2Send[7];
             sprintf(string2Send, "hsb%d%d", i, 0);
             config[string2Send] = static_cast<uint16_t>(G.color[i].H * 360);
@@ -1695,9 +1668,8 @@ void ClockWork::loop(struct tm &tm) {
         config["command"] = "transition";
         config["transitionType"] = G.transitionType;
         config["transitionDuration"] = G.transitionDuration;
-        config["transitionSpeed"] = G.transitionSpeed;
         config["transitionDemo"] = G.transitionDemo;
-        config["transitionColorize"] = G.transitionColorize;
+        config["colorize"] = G.colorize;
 
         sendJsonToClient(G.client_nr, config);
         break;
@@ -1737,9 +1709,9 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_SET_MINUTE:
-        resetMinVariantIfNotAvailable();
-        eeprom::write();
         led.clear();
+        normalizeMinuteVariant();
+        eeprom::write();
         memset(frameArray, false, sizeof(frameArray));
         parametersChanged = true;
         break;
@@ -1756,6 +1728,7 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
+    case COMMAND_SET_COLORIZE:
     case COMMAND_SET_LANGUAGE_VARIANT:
     case COMMAND_SET_SETTING_SECOND: {
         eeprom::write();
@@ -1802,7 +1775,6 @@ void ClockWork::loop(struct tm &tm) {
         eeprom::write();
         i2cBus::begin(G.i2cSdaPin, G.i2cSclPin);
         initHardwareButtons();
-        initLedStrip(G.Colortype);
         led.clear();
         parametersChanged = true;
         break;
@@ -1812,11 +1784,8 @@ void ClockWork::loop(struct tm &tm) {
         // G.param1 sets new Colortype
         Serial.printf("LED Colortype: %u\n", G.param1);
 
-        // the G.Colortype must be called at the same time as initLedStrip,
-        // otherwise it is referenced via a null-pointer.
         G.Colortype = G.param1;
         eeprom::write();
-        initLedStrip(G.Colortype);
 
         clearClockByProgInit();
         parametersChanged = true;
@@ -1836,24 +1805,44 @@ void ClockWork::loop(struct tm &tm) {
         Serial.printf("ClockType: %u\n", G.clockTypeDef);
 
         usedClockType = getPointer(G.clockTypeDef);
-        resetMinVariantIfNotAvailable();
+        normalizeMinuteVariant();
 
         checkForValidLanguageVariant();
 
-        delete secondsFrame;
-        secondsFrame = nullptr;
+        reallocateSecondsFrame();
 
-        if (usedClockType->numPixelsFrameMatrix() != 0) {
-            secondsFrame =
-                new SecondsFrame(usedClockType->numPixelsFrameMatrix());
-            G.progInit = true;
-        }
-
-        transition->resize(usedClockType->rowsWordMatrix(),
-                           usedClockType->colsWordMatrix());
-        transition->init();
+        renderPipeline.resize(usedClockType->rowsWordMatrix(),
+                              usedClockType->colsWordMatrix());
 
         parametersChanged = true;
+        break;
+    }
+
+    case COMMAND_SET_SECONDS_FRAME: {
+        // led.clear() must run while G.secondsFrameLedCount still holds the
+        // OLD count, so a shrink clears the LEDs that are about to fall out
+        // of range - clearFrame() loops on the CURRENT count, and updating
+        // G.secondsFrameLedCount first would leave those LEDs stuck on.
+        led.clear();
+        led.show();
+        delay(10);
+
+        G.secondsFrameLedCount = G.param1;
+        eeprom::write();
+        Serial.printf("Seconds frame LED count: %u\n", G.secondsFrameLedCount);
+
+        reallocateSecondsFrame();
+
+        parametersChanged = true;
+        break;
+    }
+
+    case COMMAND_SET_FIRE: {
+        if (G.param1) {
+            eeprom::write();
+            Serial.printf("Fire: cooling %u, sparking %u\n", G.fireCooling,
+                          G.fireSparking);
+        }
         break;
     }
 
@@ -1861,7 +1850,7 @@ void ClockWork::loop(struct tm &tm) {
         Serial.print("Hostname: ");
         Serial.println(G.hostname);
         eeprom::write();
-        network.reboot();
+        network.changeHostname(G.hostname);
         break;
     }
 
@@ -1881,6 +1870,10 @@ void ClockWork::loop(struct tm &tm) {
 
     default:
         break;
+    }
+
+    if (setCommandPending) {
+        initLedStrip(G.Colortype);
     }
 
     G.conf = COMMAND_IDLE;
@@ -1905,36 +1898,43 @@ void ClockWork::loop(struct tm &tm) {
         lastShownSecond = _second;
         parametersChanged = false;
 
-        char d1[5];
-        char d2[5];
-        sprintf(d1, "%d", static_cast<uint8_t>(_second / 10));
-        sprintf(d2, "%d", static_cast<uint8_t>(_second % 10));
-        led.showNumbers(d1[0], d2[0]);
+        led.showNumbers('0' + _second / 10, '0' + _second % 10);
         break;
     }
 
     case COMMAND_MODE_DIGITAL_CLOCK: {
+        static uint8_t lastShownSecond = 0xFF;
+
         if (G.progInit) {
             clearClockByProgInit();
+            lastShownSecond = 0xFF;
         }
-        if (parametersChanged) {
-            led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
-                                 _hour / 10);
-            parametersChanged = false;
+
+        if (lastShownSecond == _second && !parametersChanged) {
+            break;
         }
+        lastShownSecond = _second;
+        parametersChanged = false;
+
+        led.clear();
+        led.showDigitalClock(_minute % 10, _minute / 10, _hour % 10,
+                             _hour / 10);
         break;
     }
 
     case COMMAND_MODE_SCROLLINGTEXT:
     case COMMAND_MODE_RAINBOWCYCLE:
     case COMMAND_MODE_RAINBOW:
+    case COMMAND_MODE_FIRE:
     case COMMAND_MODE_SYMBOL: {
+        const uint16_t effectInterval =
+            effectSpeedIntervalMillis(G.effectSpeed);
         if (G.progInit) {
-            countMillisSpeed = (11u - G.effectSpeed) * 30u;
+            countMillisSpeed = effectInterval;
             clearClockByProgInit();
         }
 
-        if (countMillisSpeed >= (11u - G.effectSpeed) * 30u) {
+        if (countMillisSpeed >= effectInterval) {
             switch (G.prog) {
             case COMMAND_MODE_SCROLLINGTEXT: {
                 scrollingText(G.scrollingText);
@@ -1946,6 +1946,10 @@ void ClockWork::loop(struct tm &tm) {
             }
             case COMMAND_MODE_RAINBOW: {
                 rainbow();
+                break;
+            }
+            case COMMAND_MODE_FIRE: {
+                fire();
                 break;
             }
             case COMMAND_MODE_SYMBOL: {
@@ -2001,9 +2005,6 @@ void ClockWork::loop(struct tm &tm) {
             lastMinuteArray = minuteArray;
             memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
             led.set(WordclockChanges::Words);
-            break;
-        case WordclockChanges::Layout:
-            led.set(WordclockChanges::Layout);
             break;
         case WordclockChanges::Parameters:
             led.set(WordclockChanges::Parameters);

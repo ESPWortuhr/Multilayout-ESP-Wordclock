@@ -325,26 +325,52 @@ a:visited:hover {
     gap: .5em;
 }
 
+.mode-form {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 @media (width >= 41em) {
-    .mode-form,
     .symbol-form {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
 
 .mode-color-form {
-    display: inline-grid;
+    --tile-width: 8.4em;
+
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: .5em;
     margin-bottom: 1em;
-    grid-template-columns: 1fr 1fr;
+    width: min(100%, calc(var(--tile-width) * 3 + 1em));
 }
 
-.mode-color-form:has(.specific-layout-7:not([style*="display: none"])) {
-    grid-template-columns: 1fr 1fr 1fr;
+.mode-color-form .radio-select span {
+    hyphens: none;
+}
+
+.mode-color-form .radio-select {
+    box-sizing: border-box;
+    flex: 0 1 var(--tile-width);
 }
 
 .mode-color-form .specific-layout-7:not([style*="display: none"]) {
     display: contents !important;
+}
+
+.box-color .colorize-mode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6em;
+    margin: 0 auto 1em;
+    width: min(100%, calc(8.4em * 3 + 1em));
+}
+
+.box-color .colorize-mode select {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .radio-select {
@@ -370,7 +396,8 @@ a:visited:hover {
     transform: translateY(-1px);
 }
 
-.radio-select input[type='radio'] {
+.radio-select input[type='radio'],
+.radio-select input[type='checkbox'] {
     position: fixed;
     opacity: 0;
     pointer-events: none;
@@ -386,12 +413,14 @@ a:visited:hover {
     margin: auto;
 }
 
-.radio-select:has(input[type='radio']:focus-visible) {
+.radio-select:has(input[type='radio']:focus-visible),
+.radio-select:has(input[type='checkbox']:focus-visible) {
     outline: 3px solid rgb(20 118 189 / 32%);
     outline-offset: 2px;
 }
 
-.radio-select:has(input[type='radio']:checked) {
+.radio-select:has(input[type='radio']:checked),
+.radio-select:has(input[type='checkbox']:checked) {
     border-color: rgb(20 118 189 / 62%);
     background: linear-gradient(180deg, rgb(32 133 203 / 96%), rgb(16 106 176 / 96%));
     box-shadow: inset 0 0 0 1px rgb(255 255 255 / 55%), 0 10px 24px rgb(20 118 189 / 24%);
@@ -399,7 +428,9 @@ a:visited:hover {
 }
 
 .radio-select:has(input[type='radio']:checked) svg,
-.radio-select:has(input[type='radio']:checked) .icon {
+.radio-select:has(input[type='radio']:checked) .icon,
+.radio-select:has(input[type='checkbox']:checked) svg,
+.radio-select:has(input[type='checkbox']:checked) .icon {
     filter: brightness(0) invert(1);
 }
 
@@ -928,6 +959,7 @@ input:checked + .slider::before {
 
 .brightness,
 .speed,
+.fire,
 .functions-settings,
 .leds,
 .position,
