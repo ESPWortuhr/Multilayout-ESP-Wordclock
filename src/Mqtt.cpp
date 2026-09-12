@@ -63,6 +63,38 @@ static void broadcastToWeb(const char *command, const char *key, T value) {
 // discovery raises it and callbacks should still avoid variable-length stacks.
 static constexpr unsigned int MQTT_MAX_PAYLOAD_LENGTH = 512;
 
+static constexpr int32_t MQTT_CONNECT_TIMEOUT_MS = 2000;
+
+static bool connectToBroker() {
+    if (client.connected()) {
+        return true;
+    }
+
+    IPAddress brokerIp;
+#ifdef ESP8266
+    const int resolved =
+        WiFi.hostByName(G.mqtt.serverAdress, brokerIp, MQTT_CONNECT_TIMEOUT_MS);
+#else
+    const int resolved = WiFi.hostByName(G.mqtt.serverAdress, brokerIp);
+#endif
+    if (resolved != 1) {
+        Serial.println("MQTT: DNS lookup for broker failed");
+        return false;
+    }
+
+#ifdef ESP8266
+    client.setTimeout(MQTT_CONNECT_TIMEOUT_MS);
+    const bool ok = client.connect(brokerIp, G.mqtt.port);
+#else
+    const bool ok =
+        client.connect(brokerIp, G.mqtt.port, MQTT_CONNECT_TIMEOUT_MS);
+#endif
+    if (!ok) {
+        Serial.println("MQTT: Connection to broker failed");
+    }
+    return ok;
+}
+
 // Home Assistant's birth message: HA publishes this when it (re)starts, the cue
 // to re-announce discovery and state.
 #define HOMEASSISTANT_STATUS_TOPIC HOMEASSISTANT_DISCOVERY_TOPIC "/status"
@@ -478,53 +510,56 @@ void Mqtt::init() {
     // Configure LWT (Last Will and Testament)
     String availabilityTopic = topic("availability");
 
-    if (checkIfMqttUserIsEmpty()) {
-        mqttClient.connect(G.mqtt.clientId, availabilityTopic.c_str(),
-                           0,          // QoS
-                           true,       // retain
-                           "offline"); // Last Will Message
-    } else {
-        mqttClient.connect(G.mqtt.clientId, G.mqtt.user, G.mqtt.password,
-                           availabilityTopic.c_str(),
-                           0,          // QoS
-                           true,       // retain
-                           "offline"); // Last Will Message
+    if (!isConnected()) {
+        if (!connectToBroker()) {
+            return;
+        }
+
+        bool connected;
+        if (checkIfMqttUserIsEmpty()) {
+            connected =
+                mqttClient.connect(G.mqtt.clientId, availabilityTopic.c_str(),
+                                   0,          // QoS
+                                   true,       // retain
+                                   "offline"); // Last Will Message
+        } else {
+            connected =
+                mqttClient.connect(G.mqtt.clientId, G.mqtt.user,
+                                   G.mqtt.password, availabilityTopic.c_str(),
+                                   0,          // QoS
+                                   true,       // retain
+                                   "offline"); // Last Will Message
+        }
+        if (!connected) {
+            Serial.print("MQTT: Broker refused connection, state ");
+            Serial.println(mqttClient.state());
+            return;
+        }
     }
-    delay(50);
 
     // Send online status immediately after connection
     mqttClient.publish(availabilityTopic.c_str(), "online", true);
 
     // Main control
     mqttClient.subscribe(topic("cmd").c_str());
-    delay(50);
 
     // Re-announce discovery and state when Home Assistant (re)starts.
     mqttClient.subscribe(HOMEASSISTANT_STATUS_TOPIC);
-    delay(50);
 
     // Additional Topics
     mqttClient.subscribe(topic("scrolltext/set").c_str());
-    delay(50);
     mqttClient.subscribe(topic("effect_speed/set").c_str());
-    delay(50);
     mqttClient.subscribe(topic("auto_brightness/set").c_str());
-    delay(50);
 
     // Transition settings
     mqttClient.subscribe(topic("transition_type/set").c_str());
-    delay(50);
     mqttClient.subscribe(topic("transition_colorize/set").c_str());
-    delay(50);
     mqttClient.subscribe(topic("transition_duration/set").c_str());
-    delay(50);
 
-    if (isConnected()) {
-        Serial.println("MQTT Connected");
-        sendDiscovery(); // Re-announce entities so they self-heal after a
-                         // broker restart or purge of retained config
-        sendState();     // Send initial state
-    }
+    Serial.println("MQTT Connected");
+    sendDiscovery(); // Re-announce entities so they self-heal after a
+                     // broker restart or purge of retained config
+    sendState();     // Send initial state
 }
 
 //------------------------------------------------------------------------------
