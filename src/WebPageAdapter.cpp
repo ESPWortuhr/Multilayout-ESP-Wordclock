@@ -36,6 +36,10 @@ constexpr size_t EFFECT_PAYLOAD_LENGTH = 27;
 constexpr size_t FIRE_PAYLOAD_LENGTH = 12;
 constexpr size_t BRIGHTNESS_PAYLOAD_LENGTH = 30;
 constexpr size_t COMMAND_PAYLOAD_LENGTH = 3;
+constexpr size_t MQTT_TEXT_START = 11;
+constexpr size_t MQTT_TEXT_FIELDS = 5;
+constexpr size_t MQTT_PAYLOAD_LENGTH =
+    MQTT_TEXT_START + MQTT_TEXT_FIELDS * PAYLOAD_LENGTH;
 
 bool requirePayloadLength(size_t length, size_t required, const char *command) {
     if (length >= required) {
@@ -74,15 +78,15 @@ uint32_t clampToRange(uint32_t value, uint32_t low, uint32_t high) {
 //------------------------------------------------------------------------------
 
 void payloadTextHandling(const uint8_t *payload, size_t payloadLength,
-                         char *text, uint8_t start = 3) {
-    uint8_t len = PAYLOAD_LENGTH - 1;
-    if (static_cast<size_t>(start) + len > payloadLength) {
+                         char *text, size_t start = 3) {
+    const size_t len = PAYLOAD_LENGTH - 1;
+    if (start + len > payloadLength) {
         return;
     }
 
     memcpy(text, payload + start, len);
     text[len] = '\0';
-    for (int8_t i = len - 1; i >= 0; i--) {
+    for (int16_t i = static_cast<int16_t>(len) - 1; i >= 0; i--) {
         if (isSpace(text[i]))
             text[i] = '\0';
         else
@@ -433,6 +437,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             //------------------------------------------------------------------------------
 
         case COMMAND_SET_MQTT: {
+            if (!requirePayloadLength(length, MQTT_PAYLOAD_LENGTH, "MQTT")) {
+                break;
+            }
+
             uint8_t newState = split(payload, length, 3);
 
             if (newState && !G.mqtt.state) {
@@ -441,7 +449,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
 
             G.mqtt.state = newState;
             G.mqtt.port = split(payload, length, 6, 5);
-            uint8_t index_start = 11;
+            size_t index_start = MQTT_TEXT_START;
             payloadTextHandling(payload, length, G.mqtt.serverAdress,
                                 index_start);
             index_start += PAYLOAD_LENGTH;

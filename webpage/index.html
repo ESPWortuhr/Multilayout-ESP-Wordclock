@@ -521,7 +521,7 @@
                         </div>
                         <div class="pure-control-group text">
                             <label for="scrollingtext" data-i18next="functions.settings.scrollingtext"></label>
-                            <input id="scrollingtext" type="text">
+                            <input id="scrollingtext" type="text" maxlength="29">
                             <div class="pure-controls">
                                 <button id="scrollingtext-button" type="button" class="pure-button" data-i18next="functions.settings.save"></button>
                             </div>
@@ -840,7 +840,7 @@
                     <h2 data-i18next="settings.time-server.h2"></h2>
                     <form class="pure-form pure-form-aligned">
                         <div class="pure-control-group">
-                            <label for="timeserver" data-i18next="settings.time-server.label"></label><input id="timeserver" type="text">
+                            <label for="timeserver" data-i18next="settings.time-server.label"></label><input id="timeserver" type="text" maxlength="29">
                         </div>
                         <div class="pure-controls">
                             <button type="button" id="timeserver-button" class="pure-button" data-i18next="settings.time-server.save"></button>
@@ -852,7 +852,7 @@
                     <h2 data-i18next="settings.timezone.h2"></h2>
                     <form class="pure-form pure-form-aligned">
                         <div class="pure-control-group">
-                            <label for="timezone" data-i18next="settings.timezone.label"></label><input id="timezone" type="text" value="CET-1CEST,M3.5.0,M10.5.0/3">
+                            <label for="timezone" data-i18next="settings.timezone.label"></label><input id="timezone" type="text" maxlength="29" value="CET-1CEST,M3.5.0,M10.5.0/3">
                         </div>
                         <div class="pure-controls">
                             <button type="button" id="timezone-button" class="pure-button" data-i18next="settings.timezone.save"></button>
@@ -877,7 +877,7 @@
                     <h2 data-i18next="settings.hostname.h2"></h2>
                     <form class="pure-form pure-form-aligned">
                         <div class="pure-control-group">
-                            <label for="hostname" data-i18next="settings.hostname.label"></label><input id="hostname" type="text">
+                            <label for="hostname" data-i18next="settings.hostname.label"></label><input id="hostname" type="text" maxlength="29">
                         </div>
                         <div class="pure-controls">
                             <button type="button" id="hostname-button" class="pure-button" data-i18next="settings.hostname.save"></button>
@@ -953,22 +953,22 @@
                         </label>
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-server" data-i18next="smart-home.mqtt.server"></label><input id="mqtt-server" type="text" required spellcheck="false">
+                            <label for="mqtt-server" data-i18next="smart-home.mqtt.server"></label><input id="mqtt-server" type="text" maxlength="29" required spellcheck="false">
                         </div>
                         <div class="pure-control-group">
                             <label for="mqtt-port" data-i18next="smart-home.mqtt.port"></label><input id="mqtt-port" type="number" min="1" max="65535" value="1883" required>
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-user" data-i18next="smart-home.mqtt.username"></label><input id="mqtt-user" type="text" autocomplete="username" spellcheck="false" autocapitalize="none">
+                            <label for="mqtt-user" data-i18next="smart-home.mqtt.username"></label><input id="mqtt-user" type="text" maxlength="29" autocomplete="username" spellcheck="false" autocapitalize="none">
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-pass" data-i18next="smart-home.mqtt.password"></label><input id="mqtt-pass" type="password" autocomplete="current-password">
+                            <label for="mqtt-pass" data-i18next="smart-home.mqtt.password"></label><input id="mqtt-pass" type="password" maxlength="29" autocomplete="current-password">
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-clientid" data-i18next="smart-home.mqtt.client-id"></label><input id="mqtt-clientid" type="text" spellcheck="false" autocapitalize="none">
+                            <label for="mqtt-clientid" data-i18next="smart-home.mqtt.client-id"></label><input id="mqtt-clientid" type="text" maxlength="29" spellcheck="false" autocapitalize="none">
                         </div>
                         <div class="pure-control-group">
-                            <label for="mqtt-topic" data-i18next="smart-home.mqtt.topic"></label><input id="mqtt-topic" type="text" spellcheck="false" autocapitalize="none">
+                            <label for="mqtt-topic" data-i18next="smart-home.mqtt.topic"></label><input id="mqtt-topic" type="text" maxlength="29" spellcheck="false" autocapitalize="none">
                         </div>
                         <div class="pure-controls">
                             <button type="button" id="mqtt-button" class="pure-button" data-i18next="smart-home.mqtt.save"></button>

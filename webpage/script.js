@@ -155,11 +155,8 @@ const MODE_CONTROL_STATE = {
 };
 
 // data that gets send back to the esp
-const DATA_SCROLLINGTEXT_LENGTH = 30;
-const DATA_TIMESERVER_TEXT_LENGTH = 30;
-const DATA_TIMEZONE_TEXT_LENGTH = 30;
-const DATA_MQTT_RESPONSE_TEXT_LENGTH = 30;
-const DATA_HOST_TEXT_LENGTH = 30;
+const DATA_TEXT_SLOT_BYTES = 30;
+const DATA_TEXT_MAX_BYTES = DATA_TEXT_SLOT_BYTES - 1;
 const DEFAULT_TIMEZONE = "CET-1CEST,M3.5.0,M10.5.0/3";
 
 // color pickers
@@ -354,22 +351,12 @@ function initWebsocket() {
 		switch (data.command) {
 			case "mqtt": {
 				document.getElementById("mqtt-port").value = data.MQTT_Port;
-				const mqttServer = document.getElementById("mqtt-server");
-				mqttServer.value = data.MQTT_Server;
-				mqttServer.setAttribute("maxlength", DATA_MQTT_RESPONSE_TEXT_LENGTH);
+				document.getElementById("mqtt-server").value = data.MQTT_Server;
 				document.getElementById("mqtt-state").checked = data.MQTT_State;
-				const mqttUser = document.getElementById("mqtt-user");
-				mqttUser.value = data.MQTT_User;
-				mqttUser.setAttribute("maxlength", DATA_MQTT_RESPONSE_TEXT_LENGTH);
-				const mqttPass = document.getElementById("mqtt-pass");
-				mqttPass.value = data.MQTT_Pass;
-				mqttPass.setAttribute("maxlength", DATA_MQTT_RESPONSE_TEXT_LENGTH);
-				const mqttClientId = document.getElementById("mqtt-clientid");
-				mqttClientId.value = data.MQTT_ClientId;
-				mqttClientId.setAttribute("maxlength", DATA_MQTT_RESPONSE_TEXT_LENGTH);
-				const mqttTopic = document.getElementById("mqtt-topic");
-				mqttTopic.value = data.MQTT_Topic;
-				mqttTopic.setAttribute("maxlength", DATA_MQTT_RESPONSE_TEXT_LENGTH);
+				document.getElementById("mqtt-user").value = data.MQTT_User;
+				document.getElementById("mqtt-pass").value = data.MQTT_Pass;
+				document.getElementById("mqtt-clientid").value = data.MQTT_ClientId;
+				document.getElementById("mqtt-topic").value = data.MQTT_Topic;
 				break;
 			}
 			case "birthdays":
@@ -383,9 +370,7 @@ function initWebsocket() {
 			case "config": {
 				document.getElementById("ssid").value = data.ssid;
 				document.getElementById("timeserver").value = data.timeserver;
-				const timezone = document.getElementById("timezone");
-				timezone.value = data.timezone || DEFAULT_TIMEZONE;
-				timezone.setAttribute("maxlength", DATA_TIMEZONE_TEXT_LENGTH);
+				document.getElementById("timezone").value = data.timezone || DEFAULT_TIMEZONE;
 				document.getElementById("hostname").value = data.hostname;
 				document.getElementById("scrollingtext").value = data.scrollingText;
 
@@ -696,8 +681,56 @@ function nstr(number) {
 	return Math.round(number).toString().padStart(3, "0");
 }
 
-function getPaddedString(string, maxStringLength) {
-	return string.padEnd(maxStringLength, " ");
+function utf8ByteLength(string) {
+	return new TextEncoder().encode(string).length;
+}
+
+function truncateToByteLength(string, maxByteLength) {
+	let byteLength = 0;
+	let truncated = "";
+	for (const character of string) {
+		const characterBytes = utf8ByteLength(character);
+		if (byteLength + characterBytes > maxByteLength) {
+			break;
+		}
+		byteLength += characterBytes;
+		truncated += character;
+	}
+	return truncated;
+}
+
+function getPaddedString(string, slotByteLength) {
+	const truncated = truncateToByteLength(string, slotByteLength);
+	return truncated + " ".repeat(slotByteLength - utf8ByteLength(truncated));
+}
+
+function getPaddedTextField(string) {
+	return getPaddedString(truncateToByteLength(string, DATA_TEXT_MAX_BYTES), DATA_TEXT_SLOT_BYTES);
+}
+
+function limitInputToTextFieldBytes(input) {
+	if (!input) {
+		return;
+	}
+
+	input.setAttribute("maxlength", DATA_TEXT_MAX_BYTES);
+	input.addEventListener("input", function() {
+		const limited = truncateToByteLength(input.value, DATA_TEXT_MAX_BYTES);
+		if (limited !== input.value) {
+			const cursor = input.selectionStart;
+			input.value = limited;
+			if (cursor !== null) {
+				const position = Math.min(cursor, limited.length);
+				input.setSelectionRange(position, position);
+			}
+		}
+	});
+}
+
+function limitTextFieldInputs() {
+	const ids = ["mqtt-server", "mqtt-user", "mqtt-pass", "mqtt-clientid", "mqtt-topic",
+		"timeserver", "timezone", "hostname", "scrollingtext"];
+	ids.forEach(id => limitInputToTextFieldBytes(document.getElementById(id)));
 }
 
 function sendCmd(command, addData = "") {
@@ -745,6 +778,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	createColorPicker();
 	setSliders();
 	setElementsForFunctionsMenu();
+	limitTextFieldInputs();
 	initWebsocket();
 	setColors();
 
@@ -961,7 +995,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const timeServerBtn = document.getElementById("timeserver-button");
 	if (timeServerBtn) {
 		timeServerBtn.addEventListener("click", function() {
-			sendCmd(CMD.SET_TIMESERVER, getPaddedString(document.getElementById("timeserver").value, DATA_TIMESERVER_TEXT_LENGTH));
+			sendCmd(CMD.SET_TIMESERVER, getPaddedTextField(document.getElementById("timeserver").value));
 			debugMessage(`Timeserver${debugMessageReconfigured}`);
 		});
 	}
@@ -969,7 +1003,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const timezoneBtn = document.getElementById("timezone-button");
 	if (timezoneBtn) {
 		timezoneBtn.addEventListener("click", function() {
-			sendCmd(CMD.SET_TIMEZONE, getPaddedString(document.getElementById("timezone").value, DATA_TIMEZONE_TEXT_LENGTH));
+			sendCmd(CMD.SET_TIMEZONE, getPaddedTextField(document.getElementById("timezone").value));
 			sendCmd(CMD.REQ_CONFIG_VALUES);
 			debugMessage(`Timezone${debugMessageReconfigured}`);
 		});
@@ -978,7 +1012,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const scrollTextBtn = document.getElementById("scrollingtext-button");
 	if (scrollTextBtn) {
 		scrollTextBtn.addEventListener("click", function() {
-			sendCmd(CMD.SET_SCROLLINGTEXT, getPaddedString(document.getElementById("scrollingtext").value, DATA_SCROLLINGTEXT_LENGTH));
+			sendCmd(CMD.SET_SCROLLINGTEXT, getPaddedTextField(document.getElementById("scrollingtext").value));
 			debugMessage(`ScrollingText${debugMessageReconfigured}`);
 		});
 	}
@@ -1135,7 +1169,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const hostNameBtn = document.getElementById("hostname-button");
 	if (hostNameBtn) {
 		hostNameBtn.addEventListener("click", function() {
-			sendCmd(CMD.SET_HOSTNAME, getPaddedString(document.getElementById("hostname").value, DATA_HOST_TEXT_LENGTH));
+			sendCmd(CMD.SET_HOSTNAME, getPaddedTextField(document.getElementById("hostname").value));
 			debugMessage(`Hostname${debugMessageReconfigured}`);
 		});
 	}
@@ -1214,11 +1248,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 			const payload = nstr(state) +
 							nstr5(port) +
-							getPaddedString(server, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
-							getPaddedString(user, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
-							getPaddedString(pass, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
-							getPaddedString(clientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
-							getPaddedString(topic, DATA_MQTT_RESPONSE_TEXT_LENGTH);
+							getPaddedTextField(server) +
+							getPaddedTextField(user) +
+							getPaddedTextField(pass) +
+							getPaddedTextField(clientId) +
+							getPaddedTextField(topic);
 
 			sendCmd(CMD.SET_MQTT, payload);
 			debugMessage(`MQTT config${debugMessageReconfigured}`);
