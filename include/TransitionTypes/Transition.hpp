@@ -425,9 +425,17 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
     for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
         for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
             if (source == STRIPE) {
-                color = RgbfColor(
-                    led.getPixel(usedClockType->getFrontMatrixIndex(row, col) *
-                                 numLEDsPerLetter));
+                // physical LED position may be mirrored versus the internal
+                // (logical, row 0 = top) animation matrix - see copy2Stripe()
+                uint8_t physRow = G.layoutVariant[MirrorHorizontal]
+                                       ? usedClockType->rowsWordMatrix() - 1 - row
+                                       : row;
+                uint8_t physCol = G.layoutVariant[MirrorVertical]
+                                       ? usedClockType->colsWordMatrix() - 1 - col
+                                       : col;
+                color = RgbfColor(led.getPixel(
+                    usedClockType->getFrontMatrixIndex(physRow, physCol) *
+                    numLEDsPerLetter));
             } else {
                 color = source[row][col];
             }
@@ -478,9 +486,18 @@ void Transition::analyzeColors(RgbfColor **dest, RgbfColor **source,
 
 void Transition::copy2Stripe(RgbfColor **source) {
     for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
+        // mirror row/col into physical LED coordinates, matching what
+        // Led::applyMirroringAndReverseIfDefined() does for static words -
+        // the internal animation matrix always treats row 0 as the top
+        uint8_t physRow = G.layoutVariant[MirrorHorizontal]
+                               ? usedClockType->rowsWordMatrix() - 1 - row
+                               : row;
         for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
+            uint8_t physCol = G.layoutVariant[MirrorVertical]
+                                   ? usedClockType->colsWordMatrix() - 1 - col
+                                   : col;
             led.setPixel(
-                row, col,
+                physRow, physCol,
                 HsbColor{RgbColor(source[row][col].R, source[row][col].G,
                                   source[row][col].B)});
         }
