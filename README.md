@@ -400,6 +400,57 @@ Befehle werden als JSON-String an das Topic `<TOPIC>/cmd` gesendet. Du kannst me
 }
 ```
 
+#### Benannte und benutzerdefinierte Symbole
+
+Ein vorhandenes Symbol wird über seinen Namen ausgewählt:
+
+```json
+{"state":"ON","effect":"Symbol","symbol":"Heart"}
+```
+
+Mit `leds` wird ein Custom-Symbol neu angelegt oder unter demselben Namen
+geändert. Die Werte sind **nullbasierte logische Matrixpositionen in
+Zeilenreihenfolge** (`Position = Zeile * Spalten + Spalte`), keine physischen
+LED-Strip-Indizes. Das Symbol wird für die aktuell konfigurierte logische
+Matrixgröße gespeichert und muss auf einem Layout mit derselben Größe angezeigt
+werden.
+
+```json
+{"state":"ON","effect":"Symbol","symbol":"MySymbol","leds":[1,2,3,10,11,12]}
+```
+
+Ein gespeichertes Custom-Symbol kann später ohne `leds` erneut angezeigt werden:
+
+```json
+{"state":"ON","effect":"Symbol","symbol":"MySymbol"}
+```
+
+Ein nicht leeres `leds`-Array überschreibt ein vorhandenes Custom-Symbol. Ein
+leeres Array löscht es aus LittleFS; eingebaute Symbole können weder
+überschrieben noch gelöscht werden:
+
+```json
+{"state":"ON","effect":"Symbol","symbol":"MySymbol","leds":[]}
+```
+
+Es sind bis zu 8 Custom-Symbole mit Namen aus maximal 24 Buchstaben, Ziffern,
+Bindestrichen oder Unterstrichen möglich. Ein unbekannter Name ohne `leds` und
+ungültige Positionen werden ignoriert. Custom-Symbole verwenden die aktuelle
+Vordergrundfarbe und die vorhandenen Transitionen. Bei `state: "OFF"` wird die
+gesamte restliche MQTT-Nachricht absichtlich ignoriert, beispielsweise:
+
+```json
+{"state":"OFF","brightness":180,"effect":"Symbol","symbol":"MySymbol"}
+```
+
+Die Firmware veröffentlicht retained eine kleine Übersicht unter
+`<TOPIC>/capabilities/state` und einzelne Beschreibungen mit direkt verwendbaren
+Beispielen unter `<TOPIC>/capabilities/effects/<Effekt>/state`. Das Symbol-Topic
+enthält alle eingebauten sowie aktuell gespeicherten Custom-Symbole. Es wird
+beim Start, nach einer MQTT-Neuverbindung und nach dem Anlegen, Ändern oder
+Löschen eines Custom-Symbols aktualisiert. Das optionale Feld `speed` in `/cmd`
+akzeptiert Werte von 1 bis 10.
+
 ---
 
 ### 4. Status Empfangen (Status Payload)

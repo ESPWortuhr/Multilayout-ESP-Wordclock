@@ -1,20 +1,104 @@
 #include "SensitiveData.h"
 #include <Arduino.h>
 #include <EEPROM.h>
+#include <LittleFS.h>
 #include <string.h>
 
 namespace eeprom {
 
-/*
- * Legacy raw-config storage.
- *
- * The public read()/write() API intentionally remains unchanged for now: the
- * complete global config struct G is persisted byte-for-byte. Future storage
- * work should migrate this to a versioned config format or a packed config
- * struct with explicit migration logic.
- */
-
 namespace detail {
+
+constexpr char CONFIG_FILE[] = "/wordclock-config.bin";
+constexpr char CONFIG_TEMP_FILE[] = "/wordclock-config.tmp";
+constexpr char CONFIG_BACKUP_FILE[] = "/wordclock-config.bak";
+constexpr uint32_t CONFIG_MAGIC = 0x57434C4B; // WCLK
+constexpr uint16_t CONFIG_FORMAT_VERSION = 1;
+
+struct ConfigHeader {
+    uint32_t magic;
+    uint16_t formatVersion;
+    uint16_t schemaVersion;
+    uint16_t payloadSize;
+    uint16_t reserved;
+    uint32_t crc32;
+};
+
+uint32_t calculateCrc32(const uint8_t *data, size_t size) {
+    uint32_t crc = 0xFFFFFFFF;
+    for (size_t i = 0; i < size; ++i) {
+        crc ^= data[i];
+        for (uint8_t bit = 0; bit < 8; ++bit)
+            crc = (crc >> 1) ^ (0xEDB88320 & (0U - (crc & 1U)));
+    }
+    return ~crc;
+}
+
+bool loadConfigFile(const char *path, GLOBAL &config) {
+    File file = LittleFS.open(path, "r");
+    if (!file)
+        return false;
+
+    ConfigHeader header = {};
+    if (file.read(reinterpret_cast<uint8_t *>(&header), sizeof(header)) !=
+            sizeof(header) ||
+        header.magic != CONFIG_MAGIC ||
+        header.formatVersion != CONFIG_FORMAT_VERSION ||
+        header.schemaVersion != SERNR || header.payloadSize != sizeof(config) ||
+        file.read(reinterpret_cast<uint8_t *>(&config), sizeof(config)) !=
+            sizeof(config) ||
+        calculateCrc32(reinterpret_cast<const uint8_t *>(&config),
+                       sizeof(config)) != header.crc32) {
+        file.close();
+        return false;
+    }
+
+    file.close();
+    return true;
+}
+
+bool storeConfigFile(const GLOBAL &config) {
+    ConfigHeader header = {
+        CONFIG_MAGIC,
+        CONFIG_FORMAT_VERSION,
+        SERNR,
+        static_cast<uint16_t>(sizeof(config)),
+        0,
+        calculateCrc32(reinterpret_cast<const uint8_t *>(&config),
+                       sizeof(config)),
+    };
+
+    File file = LittleFS.open(CONFIG_TEMP_FILE, "w");
+    if (!file)
+        return false;
+
+    const bool written =
+        file.write(reinterpret_cast<const uint8_t *>(&header), sizeof(header)) ==
+            sizeof(header) &&
+        file.write(reinterpret_cast<const uint8_t *>(&config), sizeof(config)) ==
+            sizeof(config);
+    file.flush();
+    file.close();
+
+    GLOBAL verification = {};
+    if (!written || !loadConfigFile(CONFIG_TEMP_FILE, verification)) {
+        LittleFS.remove(CONFIG_TEMP_FILE);
+        return false;
+    }
+
+    LittleFS.remove(CONFIG_BACKUP_FILE);
+    if (LittleFS.exists(CONFIG_FILE) &&
+        !LittleFS.rename(CONFIG_FILE, CONFIG_BACKUP_FILE)) {
+        LittleFS.remove(CONFIG_TEMP_FILE);
+        return false;
+    }
+    if (!LittleFS.rename(CONFIG_TEMP_FILE, CONFIG_FILE)) {
+        if (LittleFS.exists(CONFIG_BACKUP_FILE))
+            LittleFS.rename(CONFIG_BACKUP_FILE, CONFIG_FILE);
+        LittleFS.remove(CONFIG_TEMP_FILE);
+        return false;
+    }
+    return true;
+}
 
 template <size_t destSize, size_t sourceSize>
 void copyBoundedString(char (&dest)[destSize],
@@ -133,6 +217,12 @@ template <class T> int readAnything(int ee, T &value) {
 //------------------------------------------------------------------------------
 
 void write() {
+    if (LittleFS.begin() && detail::storeConfigFile(G)) {
+        Serial.println("Configuration saved");
+        return;
+    }
+
+    Serial.println("Configuration file unavailable, using legacy EEPROM");
     writeAnything(0, G);
     EEPROM.commit();
 }
@@ -140,7 +230,26 @@ void write() {
 //------------------------------------------------------------------------------
 
 void read() {
-    readAnything(0, G);
+    if (LittleFS.begin()) {
+        if (detail::loadConfigFile(detail::CONFIG_FILE, G)) {
+            Serial.println("Configuration loaded");
+        } else if (detail::loadConfigFile(detail::CONFIG_BACKUP_FILE, G)) {
+            Serial.println("Configuration backup loaded");
+            LittleFS.remove(detail::CONFIG_FILE);
+            LittleFS.rename(detail::CONFIG_BACKUP_FILE, detail::CONFIG_FILE);
+        } else if (LittleFS.exists(detail::CONFIG_FILE) ||
+                   LittleFS.exists(detail::CONFIG_BACKUP_FILE)) {
+            Serial.println("Configuration files invalid, restoring defaults");
+            G = GLOBAL{};
+        } else {
+            readAnything(0, G);
+            if (G.sernr == SERNR && detail::storeConfigFile(G))
+                Serial.println("Legacy EEPROM configuration migrated");
+        }
+    } else {
+        Serial.println("LittleFS unavailable, loading legacy EEPROM");
+        readAnything(0, G);
+    }
 
 #if GENERAL_VERBOSE
     detail::printConfig();

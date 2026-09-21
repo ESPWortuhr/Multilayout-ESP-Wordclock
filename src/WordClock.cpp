@@ -13,6 +13,7 @@
 #include <Update.h>
 #include <WebServer.h>
 #include <WiFi.h>
+#include <esp_system.h>
 #include <esp_sntp.h>
 #endif
 
@@ -27,6 +28,7 @@
 #include "WordClockState.h"
 
 #include "ClockType.gen.h"
+#include "CustomSymbols.h"
 #include "WebPageAdapter.h"
 
 #include "EEPROMAnything.h"
@@ -70,6 +72,15 @@ ClockWork clockWork;
 Mqtt mqtt(clockWork);
 Network network;
 
+// WebSocket callbacks must not drive PubSubClient directly. In particular,
+// symbol editor requests can send several WebSocket frames and touch
+// LittleFS before returning. Publishing the complete MQTT state from inside
+// that callback can leave the MQTT connection unable to process subsequent
+// commands. Coalesce web-triggered updates and publish them from loop().
+bool mqttStateUpdatePending = false;
+uint32_t mqttStateUpdateRequestedAt = 0;
+constexpr uint32_t MQTT_STATE_UPDATE_DEBOUNCE_MS = 250;
+
 void setDefaultHardwarePins();
 bool hardwarePinsAreValid();
 void ensureI2CPins();
@@ -104,6 +115,18 @@ static_assert(sizeof(G) < EEPROM_SIZE,
               "Configuration data is too large for reserved EEPROM storage");
 
 uint16_t powerCycleCount = 0; // Variable to store power cycle count
+
+//------------------------------------------------------------------------------
+
+void printResetReason() {
+#ifdef ESP8266
+    Serial.print("Reset reason     : ");
+    Serial.println(ESP.getResetInfo());
+#elif defined(ESP32)
+    Serial.printf("Reset reason     : %u\n",
+                  static_cast<unsigned int>(esp_reset_reason()));
+#endif
+}
 
 //------------------------------------------------------------------------------
 
@@ -162,10 +185,8 @@ void incrementPowerCycleCount() {
 //------------------------------------------------------------------------------
 
 void sendMQTTUpdate() {
-    // send status update via MQTT
-    if ((G.mqtt.state) && (WiFi.status() == WL_CONNECTED)) {
-        mqtt.sendState();
-    }
+    mqttStateUpdatePending = true;
+    mqttStateUpdateRequestedAt = millis();
 }
 
 //------------------------------------------------------------------------------
@@ -301,6 +322,7 @@ void setup() {
     Serial.println("--------------------------------------");
     Serial.println("Begin Setup");
     Serial.println("--------------------------------------");
+    printResetReason();
 #endif
     //-------------------------------------
     // Read / initialize EEPROM
@@ -308,6 +330,8 @@ void setup() {
 
     EEPROM.begin(EEPROM_SIZE);
     eeprom::read();
+    customSymbols.begin();
+    customSymbols.select(CustomSymbols::builtinName(G.bitmapSymbol));
     ensureHardwarePins();
     ensureI2CPins();
     ensureTimezone();
@@ -725,6 +749,12 @@ void loop() {
     //------------------------------------------------
     if (G.mqtt.state && WiFi.status() == WL_CONNECTED) {
         mqtt.loop();
+        if (mqttStateUpdatePending && mqtt.isConnected() &&
+            millis() - mqttStateUpdateRequestedAt >=
+                MQTT_STATE_UPDATE_DEBOUNCE_MS) {
+            mqttStateUpdatePending = false;
+            mqtt.sendState();
+        }
     }
 
     //------------------------------------------------

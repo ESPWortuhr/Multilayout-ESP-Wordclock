@@ -557,9 +557,14 @@ void ClockWork::displayStaticScrollingText(const char *buf,
 
 //------------------------------------------------------------------------------
 
-void ClockWork::scrollingText(const char *buf) {
+void ClockWork::scrollingText(const char *buf, bool restart) {
     static uint8_t i = 0, ii = 0;
     StaticScrollingText staticText;
+
+    if (restart) {
+        i = 0;
+        ii = 0;
+    }
 
     if (getStaticScrollingTextInfo(buf, staticText)) {
         i = 0;
@@ -617,14 +622,20 @@ void ClockWork::scrollingText(const char *buf) {
 
 //------------------------------------------------------------------------------
 
-void ClockWork::displaySymbols(BitmapSymbol symbolNum) {
-    if (symbolNum >= BitmapSymbol::MAX_BITMAP_SYMBOLS) {
-        symbolNum = BitmapSymbol::HEART;
+void ClockWork::displaySymbols(bool force) {
+    if (!force && !parametersChanged)
+        return;
+    if (!customSymbols.renderActive()) {
+        parametersChanged = false;
+        return;
     }
 
+    // Symbols use the same logical target buffer as words, allowing the
+    // existing transition engine to animate both built-in and custom targets.
     HsbColor color = G.color[Foreground];
     color.B = G.effectBri / 100.f;
-    led.setBitmapSymbol(symbolNum, color);
+    led.setLogicalSymbol(color);
+    parametersChanged = false;
 }
 
 //------------------------------------------------------------------------------
@@ -1625,6 +1636,40 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
+    case COMMAND_REQUEST_SYMBOLS: {
+        DynamicJsonDocument symbols(1024);
+        symbols["command"] = "symbols";
+        symbols["activeSymbol"] = customSymbols.activeName();
+        symbols["rows"] = usedClockType->rowsWordMatrix();
+        symbols["cols"] = usedClockType->colsWordMatrix();
+        JsonArray customNames = symbols.createNestedArray("customSymbols");
+        for (uint8_t i = 0; i < customSymbols.customCount(); ++i)
+            customNames.add(customSymbols.customName(i));
+        JsonArray activeBitmap = symbols.createNestedArray("activeBitmap");
+        customSymbols.appendRowMasks(customSymbols.activeName(), activeBitmap,
+                                     usedClockType->rowsWordMatrix(),
+                                     usedClockType->colsWordMatrix());
+        sendJsonToClient(G.client_nr, symbols);
+
+        auto sendPreview = [&](const char *name) {
+            DynamicJsonDocument preview(768);
+            preview["command"] = "symbolPreview";
+            preview["name"] = name;
+            preview["cols"] = usedClockType->colsWordMatrix();
+            JsonArray bitmap = preview.createNestedArray("bitmap");
+            customSymbols.appendRowMasks(name, bitmap,
+                                         usedClockType->rowsWordMatrix(),
+                                         usedClockType->colsWordMatrix());
+            sendJsonToClient(G.client_nr, preview);
+        };
+        for (uint8_t i = 0; i < BitmapSymbol::MAX_BITMAP_SYMBOLS; ++i)
+            sendPreview(CustomSymbols::builtinName(
+                static_cast<BitmapSymbol>(i)));
+        for (uint8_t i = 0; i < customSymbols.customCount(); ++i)
+            sendPreview(customSymbols.customName(i));
+        break;
+    }
+
     case COMMAND_REQUEST_BIRTHDAYS: {
         DynamicJsonDocument config(256);
         config["command"] = "birthdays";
@@ -1668,6 +1713,7 @@ void ClockWork::loop(struct tm &tm) {
         config["hasSecondsFrame"] = usedClockType->hasSecondsFrame();
         config["prog"] = G.prog;
         config["bitmapSymbol"] = static_cast<uint8_t>(G.bitmapSymbol);
+        config["activeSymbol"] = customSymbols.activeName();
 
         sendJsonToClient(G.client_nr, config);
         break;
@@ -1925,10 +1971,21 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
+    case COMMAND_MODE_SYMBOL: {
+        if (G.progInit) {
+            G.progInit = false;
+            displaySymbols(true);
+        } else {
+            displaySymbols(false);
+        }
+        break;
+    }
+
     case COMMAND_MODE_SCROLLINGTEXT:
     case COMMAND_MODE_RAINBOWCYCLE:
-    case COMMAND_MODE_RAINBOW:
-    case COMMAND_MODE_SYMBOL: {
+    case COMMAND_MODE_RAINBOW: {
+        const bool restartScrollingText =
+            G.prog == COMMAND_MODE_SCROLLINGTEXT && G.progInit;
         if (G.progInit) {
             countMillisSpeed = (11u - G.effectSpeed) * 30u;
             clearClockByProgInit();
@@ -1937,7 +1994,7 @@ void ClockWork::loop(struct tm &tm) {
         if (countMillisSpeed >= (11u - G.effectSpeed) * 30u) {
             switch (G.prog) {
             case COMMAND_MODE_SCROLLINGTEXT: {
-                scrollingText(G.scrollingText);
+                scrollingText(G.scrollingText, restartScrollingText);
                 break;
             }
             case COMMAND_MODE_RAINBOWCYCLE: {
@@ -1946,10 +2003,6 @@ void ClockWork::loop(struct tm &tm) {
             }
             case COMMAND_MODE_RAINBOW: {
                 rainbow();
-                break;
-            }
-            case COMMAND_MODE_SYMBOL: {
-                displaySymbols(G.bitmapSymbol);
                 break;
             }
             default:
@@ -1988,8 +2041,20 @@ void ClockWork::loop(struct tm &tm) {
     }
 
     case COMMAND_MODE_WORD_CLOCK: {
+        const bool enteringWordClock = G.progInit;
         clearClockByProgInit();
         calcClockface();
+
+        // Transitions describe changes of time while the word clock is
+        // already visible.  Entering it from another display mode is a mode
+        // switch and must therefore render the current time immediately.
+        if (enteringWordClock) {
+            lastMinuteArray = minuteArray;
+            memcpy(&lastFrontMatrix, &frontMatrix, sizeof lastFrontMatrix);
+            led.setImmediate();
+            G.prog = COMMAND_IDLE;
+            break;
+        }
 
         switch (changesInClockface()) {
         case WordclockChanges::Minute:

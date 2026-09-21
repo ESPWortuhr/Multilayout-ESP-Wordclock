@@ -403,6 +403,63 @@ a:visited:hover {
     filter: brightness(0) invert(1);
 }
 
+.symbol-editor {
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: 1px solid var(--app-border);
+}
+
+.symbol-card-preview {
+    --preview-cols: 11;
+
+    display: grid;
+    grid-template-columns: repeat(var(--preview-cols), .3em);
+    gap: .08em;
+    margin: 0 auto .45em;
+}
+
+.symbol-card-preview i {
+    width: .3em;
+    aspect-ratio: 1;
+    border-radius: 25%;
+    background: rgb(30 42 54 / 14%);
+}
+
+.symbol-card-preview i.active {
+    background: currentcolor;
+}
+
+.symbol-editor-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5em;
+    margin-top: 1em;
+}
+
+.symbol-matrix {
+    --symbol-cols: 11;
+
+    display: grid;
+    grid-template-columns: repeat(var(--symbol-cols), minmax(1.6em, 2.5em));
+    gap: .25em;
+    width: max-content;
+    max-width: 100%;
+}
+
+.symbol-pixel {
+    aspect-ratio: 1;
+    min-width: 1.6em;
+    border: 1px solid var(--app-border-strong);
+    border-radius: 20%;
+    background: rgb(30 42 54 / 12%);
+    cursor: pointer;
+}
+
+.symbol-pixel[aria-pressed='true'] {
+    background: rgb(32 133 203 / 96%);
+    box-shadow: 0 0 .45em rgb(32 133 203 / 70%);
+}
+
 /**
  * Misc.
  */
