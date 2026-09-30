@@ -31,6 +31,10 @@ public:
 
     //------------------------------------------------------------------------------
 
+    virtual bool hasTwenty() override { return false; }
+
+    //------------------------------------------------------------------------------
+
     void drawWord(FrontWord word) override {
         switch (word) {
 
