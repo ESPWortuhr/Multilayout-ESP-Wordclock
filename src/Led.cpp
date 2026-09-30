@@ -379,6 +379,7 @@ void Led::setBitmapSymbol(BitmapSymbol symbolNum, HsbColor color) {
         }
     }
 
+    mirrorFrontMatrixVertical(); // Needed for correct displaying of symbols
     setbyFrontMatrix(color);
     show();
 }
