@@ -18,19 +18,7 @@
 This is a project for a multilingual word clock based on an ESP8266 microcontroller and a programmable LED strip (WS2812 or SK6812). A word clock is a beautiful DIY project for beginners that combines technology and design to create a functional and aesthetically pleasing clock.
 Whether you are a beginner or an experienced maker, this project is a great way to put your skills to work and build something truly special.
 The software offers many features:
-- Multilingual:
-  - 🇬🇧 English
-  - 🇩🇪 German (Deutsch)
-  - 🇪🇸 Spanish (Español)
-  - 🇮🇹 Italian (Italiano)
-  - 🇳🇱 Dutch (Nederlands)
-  - 🇭🇺 Hungarian (Magyar)
-  - 🇷🇴 Romanian (Română)
-  - 🇨🇭 Swiss German (Schwiizerdütsch)
-  - 🇷🇺 Russian (Русский)
-  - 🇸🇪 Swedish (Svenska)
-  - 🇫🇷 French (Français)
-  - 🇧🇩 Bengali (বাংলা)
+- Multilingual: 13 languages with more than 30 front panel layouts, see [Supported languages](#supported-languages)
 - Support for multiple layouts and LED spacings
 - Adjustable display colour (RGB or RGBW)
 - Digital clock display
@@ -42,8 +30,31 @@ The software offers many features:
 
 <img src="https://community-assets.home-assistant.io/original/4X/0/4/b/04b7e3172e215e6f727c17f55b039ade3986ebcb.png" alt="drawing" width="200"/>
 
+## Supported languages
+
+The language of the clock is set by the front layout. All layouts are part of the firmware and can be switched in the web interface under "View Options".
+
+| | Language | Native name | Layouts (rows × columns) |
+|---|---|---|---|
+| 🇩🇪 | German | Deutsch | 10 × 11 (standard, alternative, clock, Nero, mrrioes), 11 × 11 (standard, version 2, panbachi), 13 × 13, 16 × 8, 16 × 18, 22 × 11 weather, 8 × 8, 8 × 8 quarter hours |
+| 🇩🇪 | Bavarian | Boarisch | 10 × 11 |
+| 🇩🇪 | Swabian | Schwäbisch | 10 × 11, 11 × 11 |
+| 🇬🇧 | English | English | 10 × 11, 11 × 12, 8 × 8 |
+| 🇳🇱 | Dutch | Nederlands | 10 × 11 |
+| 🇫🇷 | French | Français | 10 × 11 |
+| 🇪🇸 | Spanish | Español | 10 × 11, 8 × 8 quarter hours |
+| 🇮🇹 | Italian | Italiano | 10 × 11 |
+| 🇨🇭 | Swiss German | Schwiizerdütsch | 10 × 11, 10 × 11 version 2, 10 × 11 Züridütsch (Zurich) |
+| 🇸🇪 | Swedish | Svenska | 10 × 11 |
+| 🇭🇺 | Hungarian | Magyar | 10 × 10 |
+| 🇷🇴 | Romanian | Română | 10 × 11 |
+| 🇷🇺 | Russian | Русский | 10 × 11 |
+| 🇹🇷 | Turkish | Türkçe | 10 × 11 |
+| 🇧🇩 | Bengali | বাংলা | 9 × 8 |
+
 ## Table of contents
 
+- [Supported languages](#supported-languages)
 - [Clock display modes](#clock-display-modes)
 - [Required hardware and software](#required-hardware-and-software)
 - [Installing and flashing the firmware](#installing-and-flashing-the-firmware)
@@ -285,7 +296,7 @@ Defines which pins the hardware is connected to (note: the ESP8266 is currently 
 * **`RTC_Type`**: the real-time clock module used, so the clock keeps running without WiFi. *(Default: `RTC_DS3231`)*
 
 ### Language & front layout
-Defines the language and the grid the word clock is built with. A large number of languages is available (German, English, Dutch, Spanish, etc.).
+Defines the language and the grid the word clock is built with. All available languages and layouts are listed in the [Supported languages](#supported-languages) table.
 * **`DEFAULT_LAYOUT`**: *(Active default: `Ger10x11Alternative`)*
   * 10 rows, 11 LEDs per row + 4 minute LEDs.
   * This is the alternative German layout by GitHub user @dbambus with additional words.
