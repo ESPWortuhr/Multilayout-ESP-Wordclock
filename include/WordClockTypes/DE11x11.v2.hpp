@@ -28,7 +28,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void show(FrontWord word) override {
+    void drawWord(FrontWord word) override {
         switch (word) {
 
         case FrontWord::es_ist:
@@ -124,10 +124,6 @@ public:
 
         case FrontWord::hour_12:
             setFrontMatrixWord(9, 6, 10);
-            break;
-
-        case FrontWord::funk:
-            setFrontMatrixWord(10, 3, 6);
             break;
 
         default:

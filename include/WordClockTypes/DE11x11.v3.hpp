@@ -22,17 +22,6 @@
 
 class De11x11V3_t : public De11x11_t {
 public:
-    virtual void getMinuteArray(uint16_t *returnArr, uint8_t col) override {
-
-        uint16_t numPixelsWordMatrix = rowsWordMatrix() * colsWordMatrix();
-
-        for (uint8_t i = 0; i < 4; i++) {
-            returnArr[i] = numPixelsWordMatrix + i;
-        }
-    };
-
-    //------------------------------------------------------------------------------
-
     virtual bool hasLed4x() override { return false; }
 
     //------------------------------------------------------------------------------
@@ -41,7 +30,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void show(FrontWord word) override {
+    void drawWord(FrontWord word) override {
         switch (word) {
 
         case FrontWord::es_ist:
@@ -137,9 +126,6 @@ public:
 
         case FrontWord::hour_12:
             setFrontMatrixWord(4, 1, 5);
-            break;
-
-        case FrontWord::funk:
             break;
 
         case FrontWord::m_num1:

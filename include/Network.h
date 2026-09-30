@@ -10,7 +10,6 @@ public:
     void info();
     int getQuality();
     void disable();
-    void reboot();
     void resetSettings();
     String getSSID();
     void rtcMode();

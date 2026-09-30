@@ -1,6 +1,5 @@
 let TRANSLATION_EN_US = {
 	"title": "Wordclock",
-
 	"menu": {
 		"aria-show-menu": "Show Menu",
 		"aria-hide-menu": "Hide Menu",
@@ -15,28 +14,32 @@ let TRANSLATION_EN_US = {
 			"ru": "🇷🇺 Russian"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Connect",
 		"text": "The connection to the Word Clock has been lost."
 	},
-
 	"reboot-recommended": {
 		"button": "Restart",
 		"text": "A restart is recommended to apply the changed setting."
 	},
-
 	"colors": {
 		"h1": "Colors",
 		"with-background": "With Background Color"
 	},
-
 	"functions": {
 		"h1": "Functions",
 		"color": {
 			"foreground": "Foreground",
 			"background": "Background",
-			"frame": "Frame"
+			"frame": "Frame",
+			"primary": "Primary color",
+			"secondary": "Secondary color",
+			"mode": {
+				"label": "Color mode",
+				"monochrome": "Monochrome",
+				"polychrome": "Polychrome",
+				"word_random": "Random per word"
+			}
 		},
 		"mode": {
 			"h2": "Mode",
@@ -47,6 +50,7 @@ let TRANSLATION_EN_US = {
 			"scrollingtext": "Scrollingtext",
 			"rainbow": "Rainbow",
 			"color-change": "Color Change",
+			"fire": "Fire",
 			"symbol": "Symbol"
 		},
 		"birthdays": {
@@ -87,7 +91,6 @@ let TRANSLATION_EN_US = {
 				"balls": "Balls",
 				"firework": "Firework",
 				"snake": "Snake",
-				"colored": "Colored",
 				"random": "Random"
 			},
 			"duration": {
@@ -95,15 +98,6 @@ let TRANSLATION_EN_US = {
 				"short": "Short",
 				"medium": "Medium",
 				"long": "Long"
-			},
-			"color": {
-				"label": "Color transition",
-				"off": "Off",
-				"words": "Colored Words",
-				"letters": "Colored Letters"
-			},
-			"speed": {
-				"label": "Speed"
 			},
 			"demo": {
 				"label": "Demo"
@@ -115,6 +109,8 @@ let TRANSLATION_EN_US = {
 			"scrollingtext": "Scrolling text",
 			"save": "Save",
 			"speed": "Speed ",
+			"fire-cooling": "Cooling ",
+			"fire-sparking": "Sparking ",
 			"leds": "Number of LEDs ",
 			"position": "Position "
 		}
@@ -128,10 +124,8 @@ let TRANSLATION_EN_US = {
 			"variant": "Choice of Clock Variant",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternative",
-			"de-10-11-alt-frame": "🇩🇪 10 × 11 Alternative Frame",
 			"de-10-11-clock": "🇩🇪 10 × 11 Clock",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
-			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Frame",
 			"de-10-11-mrrioes": "🇩🇪 10 × 11 mrrioes",
 			"de-10-11-bayerisch": "🇩🇪 10 × 11 Bavarian",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Swabian Style",
@@ -140,7 +134,7 @@ let TRANSLATION_EN_US = {
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
 			"de-11-11-v3": "🇩🇪 11 × 11 (panbachi)",
 			"de-13-13": "🇩🇪 13 × 13",
-			"de-22-11-weather": "🇩🇪 10 × 11 Weather",
+			"de-22-11-weather": "🇩🇪 22 × 11 Weather",
 			"de-16-8": "🇩🇪 16 × 8",
 			"de-16-18": "🇩🇪 16 × 18",
 			"de-08-08": "🇩🇪 8 × 8",
@@ -205,11 +199,11 @@ let TRANSLATION_EN_US = {
 			"off": "Off",
 			"normal-4-leds": "Normal (4 LEDs)",
 			"normal-7-leds": "Normal (7 LEDs)",
-			"edges": "Edges",
 			"in-words": "In Words"
 		},
 		"seconds": {
 			"h2": "Seconds",
+			"led-count": "Number of LED's in the seconds frame (0 = disabled)",
 			"in-border": "Seconds in the Border",
 			"off": "Off",
 			"point": "Dot",

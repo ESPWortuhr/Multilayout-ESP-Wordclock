@@ -10,29 +10,53 @@
 
 extern ClockWork clockWork;
 
-//---------------------------------------------------------
-// WLAN-Status
-//---------------------------------------------------------
-char wstatus[7][25] = {"WL_IDLE_STATUS",    "WL_NO_SSID_AVAIL",
-                       "WL_SCAN_COMPLETED", "WL_CONNECTED",
-                       "WL_CONNECT_FAILED", "WL_CONNECTION_LOST",
-                       "WL_DISCONNECTED"};
-// WL_NO_SHIELD        = 255,   // for compatibility with WiFi Shield library
-// WL_IDLE_STATUS      = 0,
-// WL_NO_SSID_AVAIL    = 1,
-// WL_SCAN_COMPLETED   = 2,
-// WL_CONNECTED        = 3,
-// WL_CONNECT_FAILED   = 4,
-// WL_CONNECTION_LOST  = 5,
-// WL_DISCONNECTED     = 6
-//---------------------------------------------------------
-// WIFI_EVENT_STAMODE_CONNECTED = 0,
-// WIFI_EVENT_STAMODE_DISCONNECTED
-// WIFI_EVENT_STAMODE_AUTHMODE_CHANGE
-// WIFI_EVENT_STAMODE_GOT_IP
-// WIFI_EVENT_STAMODE_DHCP_TIMEOUT
-// WIFI_EVENT_SOFTAPMODE_STACONNECTED
-//---------------------------------------------------------
+namespace {
+
+bool wifiConnected = false;
+
+void logGotIp(const IPAddress &ip) {
+    wifiConnected = true;
+    Serial.print("[WiFi] connected, IP: ");
+    Serial.println(ip);
+}
+
+void logDisconnected(int reason) {
+    if (!wifiConnected) {
+        return;
+    }
+    wifiConnected = false;
+    Serial.printf("[WiFi] connection lost (reason %d)\n", reason);
+}
+
+#ifdef ESP8266
+WiFiEventHandler gotIpHandler;
+WiFiEventHandler disconnectedHandler;
+#endif
+
+void registerWifiEventLogging() {
+    wifiConnected = WiFi.isConnected();
+#ifdef ESP8266
+    gotIpHandler = WiFi.onStationModeGotIP(
+        [](const WiFiEventStationModeGotIP &event) { logGotIp(event.ip); });
+    disconnectedHandler = WiFi.onStationModeDisconnected(
+        [](const WiFiEventStationModeDisconnected &event) {
+            logDisconnected(event.reason);
+        });
+#elif defined(ESP32)
+    WiFi.onEvent(
+        [](arduino_event_id_t, arduino_event_info_t info) {
+            logGotIp(IPAddress(info.got_ip.ip_info.ip.addr));
+        },
+        ARDUINO_EVENT_WIFI_STA_GOT_IP);
+    WiFi.onEvent(
+        [](arduino_event_id_t, arduino_event_info_t info) {
+            logDisconnected(info.wifi_sta_disconnected.reason);
+        },
+        ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
+#endif
+}
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -49,48 +73,7 @@ void wifiStart() {
         clockWork.initBootShowIp(ip_adress);
     }
 
+    registerWifiEventLogging();
+
     Serial.printf("-- End  Wlan -- \n\n");
 }
-
-//------------------------------------------------------------------------------
-
-void handleWiFiEvent(const char *eventType, const IPAddress &ip) {
-    Serial.printf("[WiFi-event] event: %s\n", eventType);
-    if (strcmp(eventType, "GOT_IP") == 0) {
-        Serial.println("WiFi connected");
-        Serial.println("IP address: ");
-        Serial.println(ip);
-    } else if (strcmp(eventType, "DISCONNECTED") == 0) {
-        Serial.println("WiFi lost connection");
-    }
-}
-
-//------------------------------------------------------------------------------
-
-#ifdef ESP8266
-void WiFiEvent(WiFiEvent_t event) {
-    switch (event) {
-    case WIFI_EVENT_STAMODE_GOT_IP:
-        handleWiFiEvent("GOT_IP", WiFi.localIP());
-        break;
-    case WIFI_EVENT_STAMODE_DISCONNECTED:
-        handleWiFiEvent("DISCONNECTED", IPAddress());
-        break;
-    default:
-        break;
-    }
-}
-#elif defined(ESP32)
-void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
-    switch (event) {
-    case SYSTEM_EVENT_STA_GOT_IP:
-        handleWiFiEvent("GOT_IP", WiFi.localIP());
-        break;
-    case SYSTEM_EVENT_STA_DISCONNECTED:
-        handleWiFiEvent("DISCONNECTED", IPAddress());
-        break;
-    default:
-        break;
-    }
-}
-#endif

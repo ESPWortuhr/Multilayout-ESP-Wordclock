@@ -1,6 +1,5 @@
 let TRANSLATION_RU = {
 	"title": "Словесные часы by Ragman",
-
 	"menu": {
 		"aria-show-menu": "Покажи мне меню",
 		"aria-hide-menu": "Скрыть меню",
@@ -15,28 +14,32 @@ let TRANSLATION_RU = {
 			"ru": "🇷🇺 Pусский"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Соединять",
 		"text": "Потерялась связь с часами."
 	},
-
 	"reboot-recommended": {
 		"button": "Перезапуск",
 		"text": "Рекомендуется перезапустить часы, чтобы применить измененную настройку."
 	},
-
 	"colors": {
 		"h1": "Цвета",
 		"with-background": "С цветом фона"
 	},
-
 	"functions": {
 		"h1": "Характеристики",
 		"color": {
 			"foreground": "Передний план",
 			"background": "Фон",
-			"frame": "Рама"
+			"frame": "Рама",
+			"primary": "Основной цвет",
+			"secondary": "Дополнительный цвет",
+			"mode": {
+				"label": "Режим цвета",
+				"monochrome": "Монохром",
+				"polychrome": "Полихром",
+				"word_random": "Случайно по словам"
+			}
 		},
 		"mode": {
 			"h2": "Режим",
@@ -47,6 +50,7 @@ let TRANSLATION_RU = {
 			"scrollingtext": "Бегущий текст",
 			"rainbow": "Радуга",
 			"color-change": "Изменение цвета",
+			"fire": "Огонь",
 			"symbol": "Символ"
 		},
 		"animation": {
@@ -60,15 +64,6 @@ let TRANSLATION_RU = {
 				"medium": "половина",
 				"long": "длинный"
 			},
-			"color": {
-				"label": "Анимация в цветах",
-				"off": "Bыключен",
-				"words": "Красочные слова",
-				"letters": "Красочные буквы"
-			},
-			"speed": {
-				"label": "Скорость"
-			},
 			"demo": {
 				"label": "Демо"
 			}
@@ -79,6 +74,8 @@ let TRANSLATION_RU = {
 			"scrollingtext": "Бегущий текст",
 			"save": "сохранять",
 			"speed": "Скорость ",
+			"fire-cooling": "Охлаждение ",
+			"fire-sparking": "Искры ",
 			"leds": "Количество светодиодов ",
 			"position": "Позиция "
 		}
@@ -92,10 +89,8 @@ let TRANSLATION_RU = {
 			"variant": "Выбор варианта часов",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Альтернатива",
-			"de-10-11-alt-frame": "🇩🇪 10 × 11 Альтернативная рама",
 			"de-10-11-clock": "🇩🇪 10 × 11 Часы",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
-			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Rahmen",
 			"de-10-11-mrrioes": "🇩🇪 10 × 11 mrrioes",
 			"de-10-11-bayerisch": "🇩🇪 10 × 11 Баварский",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Швабия",
@@ -104,7 +99,7 @@ let TRANSLATION_RU = {
 			"de-11-11-v2": "🇩🇪 11 × 11 V2",
 			"de-11-11-v3": "🇩🇪 11 × 11 (panbachi)",
 			"de-13-13": "🇩🇪 13 × 13",
-			"de-22-11-weather": "🇩🇪 10 × 11 Погода",
+			"de-22-11-weather": "🇩🇪 22 × 11 Погода",
 			"de-16-8": "🇩🇪 16 × 8",
 			"de-16-18": "🇩🇪 16 × 18",
 			"de-08-08": "🇩🇪 8 × 8",
@@ -163,11 +158,11 @@ let TRANSLATION_RU = {
 			"off": "Bыключен",
 			"normal-4-leds": "Нормальный (4 LEDs)",
 			"normal-7-leds": "Нормальный (7 LEDs)",
-			"edges": "Углы",
 			"in-words": "В словах"
 		},
 		"seconds": {
 			"h2": "Секунды",
+			"led-count": "Количество светодиодов в рамке секунд (0 = отключено)",
 			"in-border": "Секунды отображаются в рамке.",
 			"off": "Bыключен",
 			"point": "Место",

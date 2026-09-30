@@ -1,6 +1,5 @@
 let TRANSLATION_HU = {
 	"title": "Szövegóra",
-
 	"menu": {
 		"aria-show-menu": "Menü mutatása",
 		"aria-hide-menu": "Menü elrejtése",
@@ -15,28 +14,32 @@ let TRANSLATION_HU = {
 			"ru": "🇷🇺 Orosz"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Kapcsolódás",
 		"text": "A kapcsolódás a Szövegórához megszakadt."
 	},
-
 	"reboot-recommended": {
 		"button": "Újraindítás",
 		"text": "Az újraindítás ajánlott a módosított beállítás alkalmazásához."
 	},
-
 	"colors": {
 		"h1": "Színek",
 		"with-background": "Háttérszínnel"
 	},
-
 	"functions": {
 		"h1": "Funkciók",
 		"color": {
 			"foreground": "Új ismeretek",
 			"background": "Háttér",
-			"frame": "Keret"
+			"frame": "Keret",
+			"primary": "Elsődleges szín",
+			"secondary": "Másodlagos szín",
+			"mode": {
+				"label": "Színmód",
+				"monochrome": "Monokróm",
+				"polychrome": "Polikróm",
+				"word_random": "Szavanként véletlen"
+			}
 		},
 		"mode": {
 			"h2": "Mód",
@@ -47,6 +50,7 @@ let TRANSLATION_HU = {
 			"scrollingtext": "Futó felirat",
 			"rainbow": "Szivárvány",
 			"color-change": "Szín megváltoztatása",
+			"fire": "Tűz",
 			"symbol": "Szimbólum"
 		},
 		"transition": {
@@ -64,7 +68,6 @@ let TRANSLATION_HU = {
 				"balls": "Labdák",
 				"firework": "Tűzijáték",
 				"snake": "Kígyó",
-				"colored": "Színes",
 				"random": "Véletlen"
 			},
 			"duration": {
@@ -72,15 +75,6 @@ let TRANSLATION_HU = {
 				"short": "Rövid",
 				"medium": "Közepes",
 				"long": "Hosszú"
-			},
-			"color": {
-				"label": "Színátmenet",
-				"off": "Ki",
-				"words": "Színes szavak",
-				"letters": "Színes betűk"
-			},
-			"speed": {
-				"label": "Sebesség"
 			},
 			"demo": {
 				"label": "Bemutató"
@@ -92,6 +86,8 @@ let TRANSLATION_HU = {
 			"scrollingtext": "Futó felirat",
 			"save": "Mentés",
 			"speed": "Sebesség",
+			"fire-cooling": "Hűlés ",
+			"fire-sparking": "Szikrázás ",
 			"leds": "LED-ek száma",
 			"position": "Pozíció"
 		}
@@ -105,10 +101,8 @@ let TRANSLATION_HU = {
 			"variant": "Óraváltozatok kiválasztása",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternatív",
-			"de-10-11-alt-frame": "🇩🇪 10 × 11 Alternatív keretek",
 			"de-10-11-clock": "🇩🇪 10 × 11 óra",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
-			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero keretek",
 			"de-10-11-mrrioes": "🇩🇪 10 × 11 mrrioes",
 			"de-10-11-bayerisch": "🇩🇪 10 × 11 bajor",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 sváb stílus",
@@ -117,7 +111,7 @@ let TRANSLATION_HU = {
 			"de-11-11-v2": "🇩🇪 11 × 11 verzió 2",
 			"de-11-11-v3": "🇩🇪 11 × 11 (panbachi)",
 			"de-13-13": "🇩🇪 13 × 13",
-			"de-22-11-weather": "🇩🇪 10 × 11 időjárás",
+			"de-22-11-weather": "🇩🇪 22 × 11 időjárás",
 			"de-16-8": "🇩🇪 16 × 8",
 			"de-16-18": "🇩🇪 16 × 18",
 			"de-08-08": "🇩🇪 8 × 8",
@@ -176,11 +170,11 @@ let TRANSLATION_HU = {
 			"off": "Ki",
 			"normal-4-leds": "Normál (4 LED)",
 			"normal-7-leds": "Normál (7 LED)",
-			"edges": "Szegélyek",
 			"in-words": "Szavakkal"
 		},
 		"seconds": {
 			"h2": "Másodpercek",
+			"led-count": "LED-ek száma a másodperc-keretben (0 = kikapcsolva)",
 			"in-border": "Másodperc mutatása keretben",
 			"off": "Ki",
 			"point": "Pont",

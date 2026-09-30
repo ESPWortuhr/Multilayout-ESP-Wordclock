@@ -1,6 +1,5 @@
 let TRANSLATION_IT = {
 	"title": "Orologio di parole",
-
 	"menu": {
 		"aria-show-menu": "Mostra menù",
 		"aria-hide-menu": "Nascondi menù",
@@ -15,28 +14,32 @@ let TRANSLATION_IT = {
 			"ru": "🇷🇺 Russo"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Collegare",
 		"text": "La connessione con l'orologio è stata persa."
 	},
-
 	"reboot-recommended": {
 		"button": "Riavvia",
 		"text": "Si consiglia un riavvio per applicare l'impostazione modificata."
 	},
-
 	"colors": {
 		"h1": "Colori",
 		"with-background": "Con colore di sfondo"
 	},
-
 	"functions": {
 		"h1": "Caratteristiche",
 		"color": {
 			"foreground": "Primo",
 			"background": "Sfondo",
-			"frame": "Telaio"
+			"frame": "Telaio",
+			"primary": "Colore primario",
+			"secondary": "Colore secondario",
+			"mode": {
+				"label": "Modalità colore",
+				"monochrome": "Monocromo",
+				"polychrome": "Policromo",
+				"word_random": "Casuale per parola"
+			}
 		},
 		"mode": {
 			"h2": "Modalità",
@@ -47,6 +50,7 @@ let TRANSLATION_IT = {
 			"scrollingtext": "Testo in esecuzione",
 			"rainbow": "Arcobaleno",
 			"color-change": "Cambio di colore",
+			"fire": "Fuoco",
 			"symbol": "Simbolo"
 		},
 		"transition": {
@@ -64,7 +68,6 @@ let TRANSLATION_IT = {
 				"balls": "Palle",
 				"firework": "Fuoco d'artificio",
 				"snake": "Serpente",
-				"colored": "Colorato",
 				"random": "Casuale"
 			},
 			"duration": {
@@ -72,15 +75,6 @@ let TRANSLATION_IT = {
 				"short": "corto",
 				"medium": "metà",
 				"long": "lungo"
-			},
-			"color": {
-				"label": "Transizione a colori",
-				"off": "Spegni",
-				"words": "Parole colorate",
-				"letters": "Lettere colorate"
-			},
-			"speed": {
-				"label": "Velocità"
 			},
 			"demo": {
 				"label": "Demo"
@@ -92,6 +86,8 @@ let TRANSLATION_IT = {
 			"scrollingtext": "Testo in esecuzione",
 			"save": "Salvar",
 			"speed": "Velocità ",
+			"fire-cooling": "Raffreddamento ",
+			"fire-sparking": "Scintille ",
 			"leds": "Numero de LEDs ",
 			"position": "Posizione "
 		}
@@ -105,10 +101,8 @@ let TRANSLATION_IT = {
 			"variant": "Scelta della variante dell'orologio",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternativ",
-			"de-10-11-alt-frame": "🇩🇪 10 × 11 Alternativer Rahmen",
 			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
-			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Rahmen",
 			"de-10-11-mrrioes": "🇩🇪 10 × 11 mrrioes",
 			"de-10-11-bayerisch": "🇩🇪 10 × 11 bavarese",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Stile svevo",
@@ -117,7 +111,7 @@ let TRANSLATION_IT = {
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
 			"de-11-11-v3": "🇩🇪 11 × 11 (panbachi)",
 			"de-13-13": "🇩🇪 13 × 13",
-			"de-22-11-weather": "🇩🇪 10 × 11 Wetter",
+			"de-22-11-weather": "🇩🇪 22 × 11 Wetter",
 			"de-16-8": "🇩🇪 16 × 8",
 			"de-16-18": "🇩🇪 16 × 18",
 			"de-08-08": "🇩🇪 8 × 8",
@@ -176,11 +170,11 @@ let TRANSLATION_IT = {
 			"off": "Apagado",
 			"normal-4-leds": "Normal (4 LEDs)",
 			"normal-7-leds": "Normal (7 LEDs)",
-			"edges": "Esquinas",
 			"in-words": "En palabras"
 		},
 		"seconds": {
 			"h2": "Segundos",
+			"led-count": "Numero di LED nella cornice dei secondi (0 = disattivato)",
 			"in-border": "Los segundos se muestran en el marco.",
 			"off": "Spegni",
 			"point": "Punto",

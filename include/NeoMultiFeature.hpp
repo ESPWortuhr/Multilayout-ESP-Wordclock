@@ -114,7 +114,6 @@ public:
             color.R = pgm_read_byte(p++);
             color.B = pgm_read_byte(p);
             break;
-            break;
         case Rbg:
             color.R = pgm_read_byte(p++);
             color.B = pgm_read_byte(p++);

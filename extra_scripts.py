@@ -1,5 +1,7 @@
 Import("env")
 
+import os
+
 package_json = env.File("package.json")
 
 #
@@ -56,11 +58,37 @@ npm_ci = env.Command(
 
 env["ENV"]["PIO_ENV_NAME"] = env.subst("$PIOENV")
 
+build_dir = env.subst("$BUILD_DIR")
+web_page_content = os.path.join(build_dir, "WebPageContent.gen.inc")
+
+
+def for_grunt(path):
+    try:
+        path = os.path.relpath(path, env.subst("$PROJECT_DIR"))
+    except ValueError:
+        pass
+    return path.replace(os.sep, "/")
+
+
+env["ENV"]["PIO_WEBPAGE_TARGET"] = for_grunt(web_page_content)
+env["ENV"]["PIO_WEBPAGE_TEMP"] = for_grunt(os.path.join(build_dir, "webpage"))
+
+env.Prepend(CPPPATH=[build_dir])
+
+legacy = os.path.join("include", "WebPageContent.gen.inc")
+if os.path.exists(legacy):
+    os.remove(legacy)
+
 grunt_build = env.Command(
-    target="include/WebPageContent.gen.inc",
+    target=web_page_content,
     source="Gruntfile.js",
     action="npx --no-install grunt build"
 )
 env.Depends(grunt_build, npm_ci)
 env.Depends(grunt_build, package_json)
 env.Depends(grunt_build, env.Glob("webpage/*"))
+# Subdirectories too: a glob on "webpage/*" only tracks the directory node, so
+# editing an existing icon or language file would not trigger a rebuild -- only
+# adding or removing one changes the directory's timestamp.
+env.Depends(grunt_build, env.Glob("webpage/icons/*"))
+env.Depends(grunt_build, env.Glob("webpage/language/*"))
