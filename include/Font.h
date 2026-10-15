@@ -1,9 +1,7 @@
 #pragma once
 
+#include "NumberFont.h"
 #include <Arduino.h>
-
-const PROGMEM uint8_t fontHeight[2] = {7, 5};
-const PROGMEM uint8_t fontWidth[2] = {5, 3};
 
 const PROGMEM uint8_t font_7x5[256][5] = {
     {0x3E, 0x51, 0x49, 0x45, 0x3E}, // 0

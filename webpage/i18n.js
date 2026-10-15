@@ -38,12 +38,10 @@ i18next.init({
 	}
 	initLanguageDropdown(i18next.resolvedLanguage);
 	applyLanguageToAnnotatedElements();
-	applyLanguageSpecialCases();
 });
 
 i18next.on("languageChanged", () => {
 	applyLanguageToAnnotatedElements();
-	applyLanguageSpecialCases();
 });
 
 /**
@@ -55,19 +53,22 @@ function applyLanguageToAnnotatedElements() {
 		.forEach((element) => {
 			element.innerHTML = i18next.t(element.dataset.i18next);
 		});
+	document.querySelectorAll("[data-i18next-aria]")
+		.forEach((element) => {
+			element.setAttribute("aria-label", i18next.t(element.dataset.i18nextAria));
+		});
+	updateLanguageFlag();
 }
 
 /**
- * There are some translation that are not applied via the general method above (`data-i18next`). This function
- * applies the translation manually in some special cases.
+ * Phones only show the flag of the selected language (the part of the option text before the first space).
  */
-function applyLanguageSpecialCases() {
-	// Translate the `aria-label` attribute of the menu link depending on the menu state
-	const menuLink = document.getElementsByClassName("hamburger")[0];
-	if (menuLink.getAttribute("aria-expanded") === "true") {
-		menuLink.setAttribute("aria-label", i18next.t("menu.aria-hide-menu"));
-	} else {
-		menuLink.setAttribute("aria-label", i18next.t("menu.aria-show-menu"));
+function updateLanguageFlag() {
+	const languageSelect = document.getElementById("language");
+	const flag = document.getElementById("language-flag");
+	const selected = languageSelect && languageSelect.selectedOptions[0];
+	if (flag && selected) {
+		flag.textContent = selected.textContent.split(" ")[0];
 	}
 }
 
@@ -88,6 +89,7 @@ function initLanguageDropdown(language) {
 
 	// set initial language for the dropdown
 	languageSelect.value = language;
+	updateLanguageFlag();
 
 	// setup listener for dropdown change
 	languageSelect.addEventListener("change", (event) => {

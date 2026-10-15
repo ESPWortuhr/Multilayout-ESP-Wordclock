@@ -1,6 +1,6 @@
 {
 	"name": "multilayout-esp-wordclock",
-	"version": "4.4.1",
+	"version": "5.0.0-rc.1",
 	"description": "For building a wordclock with an ESP modules (ESP8266, ESP32, ESP32c3) and WS2812/SK2812.",
 	"license": "BSD-3-Clause",
 	"contributors": [
@@ -101,7 +101,6 @@
 		"@tootallnate/once": "^2.0.1"
 	},
 	"dependencies": {
-		"@jaames/iro": "^5.5.2",
 		"i18next": "^26.4.4",
 		"i18next-browser-languagedetector": "^8.2.1",
 		"minified": "^1.0.1",

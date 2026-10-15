@@ -1,9 +1,8 @@
 let TRANSLATION_ES = {
 	"title": "Reloj de Palabras",
-
 	"menu": {
-		"aria-show-menu": "Muestrame el menu",
-		"aria-hide-menu": "Ocultar el menú",
+		"more": "Más",
+		"view": "Vista",
 		"language": {
 			"label": "Idioma",
 			"de": "🇩🇪 Alemán",
@@ -15,28 +14,42 @@ let TRANSLATION_ES = {
 			"ru": "🇷🇺 Ruso"
 		}
 	},
-
 	"connection-lost": {
 		"button": "Conectar",
 		"text": "Se perdió la conexión con el reloj."
 	},
-
 	"reboot-recommended": {
 		"button": "Reiniciar",
 		"text": "Se recomienda reiniciar para aplicar la configuración modificada."
 	},
-
+	"status": {
+		"online": "Conectado",
+		"offline": "Desconectado"
+	},
 	"colors": {
 		"h1": "Colores",
-		"with-background": "Con color de fondo"
+		"hint": "Los cambios se envían al reloj de inmediato.",
+		"target": "¿Qué colorear?",
+		"wheel": "Rueda de color",
+		"temperature": "Temperatura de color",
+		"brightness": "Brillo",
+		"favorites": "Favoritos",
+		"off": "Apagar"
 	},
-
 	"functions": {
 		"h1": "Características",
 		"color": {
 			"foreground": "Primer",
 			"background": "Fondo",
-			"frame": "Marco"
+			"frame": "Marco",
+			"primary": "Color primario",
+			"secondary": "Color secundario",
+			"mode": {
+				"label": "Modo de color",
+				"monochrome": "Monocromo",
+				"polychrome": "Policromo",
+				"word_random": "Aleatorio por palabra"
+			}
 		},
 		"mode": {
 			"h2": "Modo",
@@ -47,6 +60,7 @@ let TRANSLATION_ES = {
 			"scrollingtext": "Texto en Ejecución",
 			"rainbow": "Arcoíris",
 			"color-change": "Cambio de color",
+			"fire": "Fuego",
 			"symbol": "Símbolo"
 		},
 		"transition": {
@@ -64,7 +78,6 @@ let TRANSLATION_ES = {
 				"balls": "Bolas",
 				"fireworks": "Fuegos artificiales",
 				"snake": "Serpiente",
-				"colored": "Colorido",
 				"random": "Al azar"
 			},
 			"duration": {
@@ -72,15 +85,6 @@ let TRANSLATION_ES = {
 				"short": "corto",
 				"medium": "medio",
 				"long": "largo"
-			},
-			"color": {
-				"label": "Transición en Colores",
-				"off": "Apagado",
-				"words": "Palabras Coloridas",
-				"letters": "Letras Coloridas"
-			},
-			"speed": {
-				"label": "Velocidad"
 			},
 			"demo": {
 				"label": "Demo"
@@ -92,6 +96,8 @@ let TRANSLATION_ES = {
 			"scrollingtext": "Texto en Ejecución",
 			"save": "Ahorrar",
 			"speed": "Velocidad ",
+			"fire-cooling": "Enfriamiento ",
+			"fire-sparking": "Chispas ",
 			"leds": "Número de LEDs ",
 			"position": "Posición "
 		}
@@ -105,10 +111,8 @@ let TRANSLATION_ES = {
 			"variant": "Elección de variante de reloj",
 			"de-10-11": "🇩🇪 10 × 11",
 			"de-10-11-alt": "🇩🇪 10 × 11 Alternativ",
-			"de-10-11-alt-frame": "🇩🇪 10 × 11 Alternativer Rahmen",
 			"de-10-11-clock": "🇩🇪 10 × 11 Uhr",
 			"de-10-11-nero": "🇩🇪 10 × 11 Nero",
-			"de-10-11-nero-frame": "🇩🇪 10 × 11 Nero Rahmen",
 			"de-10-11-mrrioes": "🇩🇪 10 × 11 mrrioes",
 			"de-10-11-bayerisch": "🇩🇪 10 × 11 bávaro",
 			"de-10-11-schwaebisch": "🇩🇪 10 × 11 Estilo suabo",
@@ -117,7 +121,7 @@ let TRANSLATION_ES = {
 			"de-11-11-v2": "🇩🇪 11 × 11 Version 2",
 			"de-11-11-v3": "🇩🇪 11 × 11 (panbachi)",
 			"de-13-13": "🇩🇪 13 × 13",
-			"de-22-11-weather": "🇩🇪 10 × 11 Wetter",
+			"de-22-11-weather": "🇩🇪 22 × 11 Wetter",
 			"de-16-8": "🇩🇪 16 × 8",
 			"de-16-18": "🇩🇪 16 × 18",
 			"de-08-08": "🇩🇪 8 × 8",
@@ -176,11 +180,11 @@ let TRANSLATION_ES = {
 			"off": "Apagado",
 			"normal-4-leds": "Normal (4 LEDs)",
 			"normal-7-leds": "Normal (7 LEDs)",
-			"edges": "Esquinas",
 			"in-words": "En palabras"
 		},
 		"seconds": {
 			"h2": "Segundos",
+			"led-count": "Número de LED's en el marco de segundos (0 = desactivado)",
 			"in-border": "Los segundos se muestran en el marco.",
 			"off": "Apagado",
 			"point": "Punto",

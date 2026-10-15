@@ -1,40 +1,4 @@
 "use strict";
-const iro = window.iro; // require("@jaames/iro");
-(function(window, document) {
-
-	let layout = document.querySelector(".layout");
-	let menu = document.querySelector(".menu");
-	let menuLink = document.querySelector(".hamburger");
-
-	function toggleMenuEventHandler(event) {
-		// It's a link, so don't activate the link but do some JS instead
-		event.preventDefault();
-
-		const active = "active";
-		const menuIsOpen = menuLink.getAttribute("aria-expanded") === "true";
-
-		if (menuIsOpen) {
-			// Close menu
-			console.log("is open, closing");
-			menuLink.setAttribute("aria-expanded", "false");
-			menuLink.setAttribute("aria-label", i18next.t("menu.aria-show-menu"));
-			layout.classList.remove(active);
-			menu.classList.remove(active);
-		} else {
-			console.log("is closed, opening");
-			// Open menu
-			menuLink.setAttribute("aria-expanded", "true");
-			menuLink.setAttribute("aria-label", i18next.t("menu.aria-hide-menu"));
-			layout.classList.add(active);
-			menu.classList.add(active);
-		}
-	}
-
-	if (menuLink) {
-		menuLink.addEventListener("click", toggleMenuEventHandler);
-	}
-}(this, this.document));
-
 // minified.js dependency removed
 let debugMessageReconfigured = " was reconfigured.";
 let websocket;
@@ -44,11 +8,14 @@ let command = 1;
 let hsb = [
 	[0, 100, 50],
 	[120, 100, 50],
-	[240, 100, 50]
+	[240, 100, 50],
+	[40, 100, 50]
 ];
 let colorPosition = 0;
 let effectBri = 2;
 let effectSpeed = 10;
+let fireCooling = 65;
+let fireSparking = 120;
 let langVar = [0, 0, 0, 0, 0];
 let layVar = [0, 0, 0, 0, 0, 0];
 let itIsVar = 0;
@@ -61,8 +28,7 @@ let autoBrightMax = 80;
 let autoBrightPeak = 750;
 let transitionType = 0;
 let transitionDuration = 1;
-let transitionSpeed = 30;
-let transitionColorize = 1;
+let colorize = 1;
 let transitionDemo = false;
 
 const CMD = {
@@ -75,6 +41,7 @@ const CMD = {
 	MODE_COLOR: 6,
 	MODE_DIGITAL_CLOCK: 7,
 	MODE_SYMBOL: 8,
+	MODE_FIRE: 9,
 	MODE_TRANSITION: 10,
 
 	// Settings
@@ -106,12 +73,14 @@ const CMD = {
 	SET_IT_IS_VARIANT: 106,
 	SET_HARDWARE_PINS: 107,
 	SET_TIMEZONE: 108,
+	SET_COLORIZE: 109,
+	SET_SECONDS_FRAME: 110,
+	SET_FIRE: 111,
 	SPEED: 152,
 
 	// Requests
 	REQ_CONFIG_VALUES: 200,
 	REQ_COLOR_VALUES: 201,
-	REQ_WIFI_LIST: 202,
 	REQ_AUTO_BRIGHT: 203,
 	REQ_TRANSITION: 204,
 	REQ_MQTT_VALUES: 205,
@@ -134,29 +103,29 @@ MODE_TO_INPUT_ID.set(CMD.MODE_RAINBOW, "mode-change"); // Color change
 MODE_TO_INPUT_ID.set(CMD.MODE_COLOR, "mode-color");
 MODE_TO_INPUT_ID.set(CMD.MODE_DIGITAL_CLOCK, "mode-digital-clock");
 MODE_TO_INPUT_ID.set(CMD.MODE_SYMBOL, "mode-symbol");
+MODE_TO_INPUT_ID.set(CMD.MODE_FIRE, "mode-fire");
 MODE_TO_INPUT_ID.set(CMD.MODE_TRANSITION, "mode-wordclock");
 
 const MODE_CONTROL_STATE = {
-	"mode-wordclock": { cmd: CMD.MODE_WORD_CLOCK, bri: false, speed: false, txt: false, symbol: false },
-	"mode-seconds": { cmd: CMD.MODE_SECONDS, bri: false, speed: false, txt: false, symbol: false },
-	"mode-scrollingtext": { cmd: CMD.MODE_SCROLLINGTEXT, bri: false, speed: true, txt: true, symbol: false },
-	"mode-rainbow": { cmd: CMD.MODE_RAINBOWCYCLE, bri: true, speed: true, txt: false, symbol: false },
-	"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false, symbol: false },
-	"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false, symbol: false },
-	"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false, symbol: false },
-	"mode-symbol": { cmd: CMD.MODE_SYMBOL, bri: false, speed: false, txt: false, symbol: true }
+	"mode-wordclock": { cmd: CMD.MODE_WORD_CLOCK, bri: false, speed: false, txt: false, symbol: false, fire: false },
+	"mode-seconds": { cmd: CMD.MODE_SECONDS, bri: false, speed: false, txt: false, symbol: false, fire: false },
+	"mode-scrollingtext": { cmd: CMD.MODE_SCROLLINGTEXT, bri: false, speed: true, txt: true, symbol: false, fire: false },
+	"mode-rainbow": { cmd: CMD.MODE_RAINBOWCYCLE, bri: true, speed: true, txt: false, symbol: false, fire: false },
+	"mode-change": { cmd: CMD.MODE_RAINBOW, bri: true, speed: true, txt: false, symbol: false, fire: false },
+	"mode-fire": { cmd: CMD.MODE_FIRE, bri: true, speed: true, txt: false, symbol: false, fire: true },
+	"mode-color": { cmd: CMD.MODE_COLOR, bri: false, speed: false, txt: false, symbol: false, fire: false },
+	"mode-digital-clock": { cmd: CMD.MODE_DIGITAL_CLOCK, bri: false, speed: false, txt: false, symbol: false, fire: false },
+	"mode-symbol": { cmd: CMD.MODE_SYMBOL, bri: true, speed: false, txt: false, symbol: true, fire: false }
 };
 
 // data that gets send back to the esp
-const DATA_SCROLLINGTEXT_LENGTH = 30;
-const DATA_TIMESERVER_TEXT_LENGTH = 30;
-const DATA_TIMEZONE_TEXT_LENGTH = 30;
-const DATA_MQTT_RESPONSE_TEXT_LENGTH = 30;
-const DATA_HOST_TEXT_LENGTH = 30;
+const DATA_TEXT_SLOT_BYTES = 30;
+const DATA_TEXT_MAX_BYTES = DATA_TEXT_SLOT_BYTES - 1;
 const DEFAULT_TIMEZONE = "CET-1CEST,M3.5.0,M10.5.0/3";
 
-// color pickers
-let colorPicker;
+// color sliders
+let colorSendTimer = null;
+let colorSendPending = false;
 
 /**
  * Indicates local development of the webinterface.
@@ -180,10 +149,13 @@ function initConfigValues() {
 	hsb = [
 		[0, 100, 50],
 		[120, 100, 50],
-		[240, 100, 50]
+		[240, 100, 50],
+		[40, 100, 50]
 	];
 	effectBri = 2;
 	effectSpeed = 10;
+	fireCooling = 65;
+	fireSparking = 120;
 	langVar = [0, 0, 0, 0, 0];
 	layVar = [0, 0, 0, 0, 0, 0];
 	itIsVar = 0;
@@ -195,12 +167,10 @@ function initConfigValues() {
 	autoBrightPeak = 750;
 	transitionType = 0;
 	transitionDuration = 1;
-	transitionSpeed = 30;
-	transitionColorize = 1;
+	colorize = 1;
 	transitionDemo = false;
 }
 
-/* eslint-disable no-console */
 function debugMessage(debugMessage, someObject) {
 	if (debug === true) {
 
@@ -217,11 +187,35 @@ function debugMessage(debugMessage, someObject) {
 	}
 }
 
-/// only shows elements of class `cls` if `enbl` is true.
+function applyColorizeMode() {
+	const mode = Number(colorize);
+	const showForeground = mode !== 2;
+	const showSecondary = mode === 1;
+
+	const foreground = document.querySelector("label[for='colorwheel-foreground']");
+	if (foreground) foreground.style.display = showForeground ? "" : "none";
+
+	const secondary = document.querySelector("label[for='colorwheel-gradient']");
+	if (secondary) secondary.style.display = showSecondary ? "" : "none";
+
+	const foregroundLabel = document.querySelector("label[for='colorwheel-foreground'] span[data-i18next]");
+	if (foregroundLabel) {
+		foregroundLabel.innerHTML = i18next.t(showSecondary ? "functions.color.primary" : "functions.color.foreground");
+	}
+
+	// The wheel must not keep editing a swatch that just disappeared.
+	if ((colorPosition === 0 && !showForeground) || (colorPosition === 3 && !showSecondary)) {
+		colorPosition = 1;
+		const background = document.getElementById("colorwheel-background");
+		if (background) background.checked = true;
+		setColors();
+	}
+}
+
 function enableSpecific(cls, enbl) {
 	let items = document.getElementsByClassName(cls);
 	for (const item of items) {
-		item.style.display = enbl ? "block" : "none";
+		item.style.display = enbl ? "" : "none";
 	}
 }
 
@@ -244,29 +238,29 @@ function updateMinuteOptions(supportedMinuteVariants) {
 function supportsMinuteDirection(supportedMinuteVariants) {
 	const led4x = 1 << 1;
 	const led7x = 1 << 2;
-	const corners = 1 << 3;
-	return (supportedMinuteVariants & (led4x | led7x | corners)) !== 0;
+	return (supportedMinuteVariants & (led4x | led7x)) !== 0;
 }
 
-// handle click events on the swatch
+function setI18nText(element, key) {
+	if (!element) return;
+	element.dataset.i18next = key;
+	if (window.i18next && i18next.isInitialized) {
+		element.innerHTML = i18next.t(key);
+	}
+}
 
-let swatchGrid = document.getElementById("swatch-grid");
-if (swatchGrid) {
-	swatchGrid.addEventListener("click", function(ext) {
-		let clickTarget = ext.target;
-		// read data-color attribute
-		if (clickTarget.dataset.color) {
-			// update the color picker
-			colorPicker.color.set(clickTarget.dataset.color);
-			changeColor(colorPicker.color);
-		}
-	});
+function setConnectionState(online) {
+	const conn = document.getElementById("conn");
+	if (conn) conn.classList.toggle("online", online);
+	setI18nText(document.getElementById("conn-text"), online ? "status.online" : "status.offline");
 }
 
 function initWebsocket() {
 	websocket = new WebSocket(ipEsp);
 
 	websocket.onopen = function(event) {
+
+		setConnectionState(true);
 
 		const statusEl = document.getElementById("status");
 		if (statusEl) {
@@ -292,6 +286,8 @@ function initWebsocket() {
 
 	websocket.onclose = function(event) {
 
+		setConnectionState(false);
+
 		const statusEl = document.getElementById("status");
 		if (statusEl) {
 			statusEl.classList.remove("online");
@@ -314,8 +310,6 @@ function initWebsocket() {
 
 	websocket.onmessage = function(event) {
 
-		const modeColorForm = document.getElementById("mode-color-form");
-
 		let data = JSON.parse(event.data);
 
 		debugMessage(`WebSocket response arrived (command ${data.command}).`, data);
@@ -323,22 +317,12 @@ function initWebsocket() {
 		switch (data.command) {
 			case "mqtt": {
 				document.getElementById("mqtt-port").value = data.MQTT_Port;
-				const mqttServer = document.getElementById("mqtt-server");
-				mqttServer.value = data.MQTT_Server;
-				mqttServer.setAttribute("maxlength", DATA_MQTT_RESPONSE_TEXT_LENGTH);
+				document.getElementById("mqtt-server").value = data.MQTT_Server;
 				document.getElementById("mqtt-state").checked = data.MQTT_State;
-				const mqttUser = document.getElementById("mqtt-user");
-				mqttUser.value = data.MQTT_User;
-				mqttUser.setAttribute("maxlength", DATA_MQTT_RESPONSE_TEXT_LENGTH);
-				const mqttPass = document.getElementById("mqtt-pass");
-				mqttPass.value = data.MQTT_Pass;
-				mqttPass.setAttribute("maxlength", DATA_MQTT_RESPONSE_TEXT_LENGTH);
-				const mqttClientId = document.getElementById("mqtt-clientid");
-				mqttClientId.value = data.MQTT_ClientId;
-				mqttClientId.setAttribute("maxlength", DATA_MQTT_RESPONSE_TEXT_LENGTH);
-				const mqttTopic = document.getElementById("mqtt-topic");
-				mqttTopic.value = data.MQTT_Topic;
-				mqttTopic.setAttribute("maxlength", DATA_MQTT_RESPONSE_TEXT_LENGTH);
+				document.getElementById("mqtt-user").value = data.MQTT_User;
+				document.getElementById("mqtt-pass").value = data.MQTT_Pass;
+				document.getElementById("mqtt-clientid").value = data.MQTT_ClientId;
+				document.getElementById("mqtt-topic").value = data.MQTT_Topic;
 				break;
 			}
 			case "birthdays":
@@ -352,10 +336,9 @@ function initWebsocket() {
 			case "config": {
 				document.getElementById("ssid").value = data.ssid;
 				document.getElementById("timeserver").value = data.timeserver;
-				const timezone = document.getElementById("timezone");
-				timezone.value = data.timezone || DEFAULT_TIMEZONE;
-				timezone.setAttribute("maxlength", DATA_TIMEZONE_TEXT_LENGTH);
+				document.getElementById("timezone").value = data.timezone || DEFAULT_TIMEZONE;
 				document.getElementById("hostname").value = data.hostname;
+				document.querySelectorAll(".hostname").forEach(el => { el.textContent = data.hostname; });
 				document.getElementById("scrollingtext").value = data.scrollingText;
 
 				[6, 8, 12, 16, 18, 20, 22, 24].forEach(h => {
@@ -377,6 +360,11 @@ function initWebsocket() {
 				document.getElementById("it-is-variant").value = data.itIsVariant;
 				document.getElementById("slider-brightness").value = data.effectBri;
 				document.getElementById("slider-speed").value = data.effectSpeed;
+				fireCooling = data.fireCooling;
+				fireSparking = data.fireSparking;
+				document.getElementById("slider-fire-cooling").value = fireCooling;
+				document.getElementById("slider-fire-sparking").value = fireSparking;
+				setSliders();
 				document.getElementById("show-seconds").value = data.secondVariant;
 				document.getElementById("show-minutes").value = data.minuteVariant;
 				updateMinuteOptions(data.supportedMinuteVariants);
@@ -386,6 +374,7 @@ function initWebsocket() {
 
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
 				document.getElementById("front-layout").value = data.clockTypeDef;
+				document.getElementById("seconds-frame-led-count").value = data.secondsFrameLedCount;
 				document.getElementById("buildtype").value = data.buildtype;
 				document.getElementById("whitetype").value = data.wType;
 				document.getElementById("colortype").value = data.colortype;
@@ -402,14 +391,10 @@ function initWebsocket() {
 				document.getElementById("boot-show-wifi").checked = data.bootShowWifi;
 				document.getElementById("boot-show-ip").checked = data.bootShowIP;
 
-				if (modeColorForm) {
-					modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
-				}
-
 				enableSpecific("specific-layout-0", !data.isRomanLanguage);
 				enableSpecific("specific-layout-2", data.hasDreiviertel);
 				enableSpecific("specific-layout-3", data.hasTwenty && data.clockTypeDef !== 4);
-				enableSpecific("specific-layout-4", data.hasSecondsFrame);
+				enableSpecific("specific-supports-frame", data.supportsSecondsFrame);
 				enableSpecific("specific-layout-5", data.hasWeatherLayout);
 
 				// clockTypeDef 4 is EN10x11, doesn't need the options of layout 1 and 3, but needs its own layout 6.
@@ -434,6 +419,7 @@ function initWebsocket() {
 				document.getElementById("auto-bright-min").value = autoBrightMin;
 				document.getElementById("auto-bright-max").value = autoBrightMax;
 				document.getElementById("auto-bright-peak").value = autoBrightPeak;
+				updateAutoBrightValues();
 				break;
 			}
 			case "i2c-scan": {
@@ -462,10 +448,6 @@ function initWebsocket() {
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
 				setSelectedSymbol(data.bitmapSymbol);
 
-				if (modeColorForm) {
-					modeColorForm.style.gridTemplateColumns = data.hasSecondsFrame ? "1fr 1fr 1fr" : "1fr 1fr";
-				}
-
 				command = data.prog === 0 ? CMD.MODE_WORD_CLOCK : data.prog;
 				const inputID = MODE_TO_INPUT_ID.get(data.prog);
 				debugMessage(`Mode is ${data.prog} (${inputID})`);
@@ -480,16 +462,11 @@ function initWebsocket() {
 				setElementsForFunctionsMenu();
 				break;
 			}
-			case "wlan":
-				document.getElementById("wlanlist").innerHTML = data.list;
-				break;
-
 			case "transition":
 				transitionType = data.transitionType;
 				transitionDuration = data.transitionDuration;
-				transitionSpeed = data.transitionSpeed;
-				transitionColorize = data.transitionColorize;
 				transitionDemo = data.transitionDemo;
+				colorize = data.colorize;
 				setElementsForFunctionsMenu();
 				break;
 
@@ -505,6 +482,7 @@ function initWebsocket() {
 					document.getElementById("auto-bright-min").value = autoBrightMin;
 					document.getElementById("auto-bright-max").value = autoBrightMax;
 					document.getElementById("auto-bright-peak").value = autoBrightPeak;
+					updateAutoBrightValues();
 				}
 
 				if (data.autoBrightEnabled === 1) {
@@ -520,42 +498,132 @@ function initWebsocket() {
 	};
 }
 
-function changeColor(color) {
-	hsb[colorPosition][0] = color.hue;
-	hsb[colorPosition][1] = color.saturation;
-	if (color.value !== 100) {
-		hsb[colorPosition][2] = color.value;
-	}
-
-	setColors();
-	sendColorData(command, nstr(1));
+function hsvToHex(hue, saturation, value) {
+	const sat = saturation / 100;
+	const val = value / 100;
+	const channel = offset => {
+		const sector = (offset + hue / 60) % 6;
+		const level = Math.round(255 * (val - val * sat * Math.max(0, Math.min(sector, 4 - sector, 1))));
+		return level.toString(16).padStart(2, "0");
+	};
+	return `#${channel(5)}${channel(3)}${channel(1)}`;
 }
 
-function createColorPicker() {
-	colorPicker = new iro.ColorPicker("#color-picker", {
-		wheelLightness: false,
-		borderWidth: 3,
-		borderColor: "#777",
-		layout: [{
-			component: iro.ui.Wheel
-		}, {
-			component: iro.ui.Slider,
-			options: { sliderType: "value" }
-		}, {
-			component: iro.ui.Slider,
-			options: { sliderType: "kelvin" }
-		}]
-	});
-	colorPicker.on("input:change", changeColor);
+function hexToHsv(hex) {
+	const rgb = parseInt(hex.slice(1), 16);
+	const red = (rgb >> 16 & 255) / 255;
+	const green = (rgb >> 8 & 255) / 255;
+	const blue = (rgb & 255) / 255;
+	const max = Math.max(red, green, blue);
+	const delta = max - Math.min(red, green, blue);
+	let hue = 0;
+	if (delta) {
+		if (max === red) {
+			hue = ((green - blue) / delta + 6) % 6;
+		} else if (max === green) {
+			hue = (blue - red) / delta + 2;
+		} else {
+			hue = (red - green) / delta + 4;
+		}
+	}
+	return [Math.round(hue * 60), max ? Math.round(delta / max * 100) : 0, Math.round(max * 100)];
+}
+
+/**
+ * Sends the edited color, but at most every 50 ms while a slider is dragged. The last value is always sent.
+ */
+function queueColorSend() {
+	if (colorSendTimer) {
+		colorSendPending = true;
+		return;
+	}
+	sendColorData(command);
+	colorSendTimer = setTimeout(function() {
+		colorSendTimer = null;
+		if (colorSendPending) {
+			colorSendPending = false;
+			queueColorSend();
+		}
+	}, 50);
+}
+
+function changeColor(hue, saturation, value) {
+	hsb[colorPosition] = [hue, saturation, value];
+	setColors();
+	queueColorSend();
+}
+
+function clearSwatchSelection() {
+	document.querySelectorAll(".swatch.selected").forEach(el => el.classList.remove("selected"));
+}
+
+/**
+ * The page accent follows the foreground color. The stylesheet picks a lightness that stays readable in each theme.
+ */
+function updateAccent() {
+	const hue = hsb[0][0];
+	const saturation = Math.min(hsb[0][1], 90);
+	const rootStyle = document.documentElement.style;
+	rootStyle.setProperty("--accent-h", hue);
+	rootStyle.setProperty("--accent-s", `${saturation}%`);
 }
 
 function setColors() {
-	let hsbFg = {
-		h: hsb[colorPosition][0],
-		s: hsb[colorPosition][1],
-		v: hsb[colorPosition][2]
-	};
-	colorPicker.setColors([hsbFg]);
+	const [hue, saturation, value] = hsb[colorPosition];
+	const wheel = document.getElementById("color-wheel");
+	const valInput = document.getElementById("color-val");
+	if (!wheel || !valInput) return;
+
+	// Hue runs clockwise from the right edge, saturation grows from the center.
+	const radius = saturation / 2;
+	const thumb = document.getElementById("wheel-thumb");
+	thumb.style.left = `${50 + radius * Math.cos(hue * Math.PI / 180)}%`;
+	thumb.style.top = `${50 + radius * Math.sin(hue * Math.PI / 180)}%`;
+	thumb.style.background = hsvToHex(hue, saturation, 100);
+
+	const hex = hsvToHex(hue, saturation, value);
+	wheel.setAttribute("aria-valuenow", hue);
+	wheel.setAttribute("aria-valuetext", hex);
+	valInput.value = value;
+	valInput.style.setProperty("--track", `linear-gradient(90deg, #000, ${hsvToHex(hue, saturation, 100)})`);
+
+	document.getElementById("color-hex").textContent = hex.toUpperCase();
+	document.getElementById("color-current").style.background = hex;
+	document.getElementById("color-val-value").textContent = value;
+	document.querySelectorAll("[data-dot]").forEach(dot => {
+		dot.style.background = hsvToHex(...hsb[dot.dataset.dot]);
+	});
+
+	// Only the areas around the words can be switched off completely.
+	document.getElementById("color-off").hidden = colorPosition === 0 || colorPosition === 3;
+	updateAccent();
+}
+
+/**
+ * Approximates the color of a black body at the given temperature (after Tanner Helland).
+ *
+ * @param {number} kelvin 1000 to 40000
+ * @returns {string} hex color
+ */
+function kelvinToHex(kelvin) {
+	const temp = kelvin / 100;
+	let red = 255;
+	let green;
+	let blue = 255;
+	if (temp <= 66) {
+		green = 99.4708025861 * Math.log(temp) - 161.1195681661;
+		if (temp <= 19) {
+			blue = 0;
+		} else {
+			blue = 138.5177312231 * Math.log(temp - 10) - 305.0447927307;
+		}
+	} else {
+		red = 329.698727446 * Math.pow(temp - 60, -0.1332047592);
+		green = 288.1221695283 * Math.pow(temp - 60, -0.0755148492);
+	}
+	return "#" + [red, green, blue]
+		.map(level => Math.max(0, Math.min(255, Math.round(level))).toString(16).padStart(2, "0"))
+		.join("");
 }
 
 function setSliders() {
@@ -568,6 +636,14 @@ function setSliders() {
 	if (briValue) briValue.textContent = effectBri;
 	const speedValue = document.getElementById("slider-speed-value");
 	if (speedValue) speedValue.textContent = effectSpeed;
+	const coolingValue = document.getElementById("slider-fire-cooling-value");
+	if (coolingValue) coolingValue.textContent = fireCooling;
+	const sparkingValue = document.getElementById("slider-fire-sparking-value");
+	if (sparkingValue) sparkingValue.textContent = fireSparking;
+}
+
+function sendFireData(persist) {
+	sendCmd(CMD.SET_FIRE, nstr(fireCooling) + nstr(fireSparking) + nstr(persist ? 1 : 0));
 }
 
 function setSelectedSymbol(symbolValue) {
@@ -581,10 +657,11 @@ function getSelectedModeControlState() {
 }
 
 function setModeSpecificControls(selected) {
-	document.querySelectorAll(".brightness").forEach(el => { el.style.display = selected.bri ? "block" : "none"; });
-	document.querySelectorAll(".speed").forEach(el => { el.style.display = selected.speed ? "block" : "none"; });
-	document.querySelectorAll(".functions-settings").forEach(el => { el.style.display = (selected.bri || selected.speed) ? "block" : "none"; });
-	document.querySelectorAll(".text").forEach(el => { el.style.display = selected.txt ? "block" : "none"; });
+	document.querySelectorAll(".brightness").forEach(el => { el.style.display = selected.bri ? "grid" : "none"; });
+	document.querySelectorAll(".speed").forEach(el => { el.style.display = selected.speed ? "grid" : "none"; });
+	document.querySelectorAll(".fire").forEach(el => { el.style.display = selected.fire ? "grid" : "none"; });
+	document.querySelectorAll(".functions-settings").forEach(el => { el.style.display = (selected.bri || selected.speed || selected.fire) ? "block" : "none"; });
+	document.querySelectorAll(".text").forEach(el => { el.style.display = selected.txt ? "grid" : "none"; });
 	document.querySelectorAll(".symbol").forEach(el => { el.style.display = selected.symbol ? "block" : "none"; });
 }
 
@@ -609,14 +686,9 @@ function setElementsForFunctionsMenu() {
 	const transitionDurationEl = document.getElementById("transition-duration");
 	if (transitionDurationEl) transitionDurationEl.value = transitionDuration;
 
-	const transitionSpeedValue = document.getElementById("transition-speed-value");
-	if (transitionSpeedValue) transitionSpeedValue.textContent = transitionSpeed;
-
-	const transitionSpeedEl = document.getElementById("transition-speed");
-	if (transitionSpeedEl) transitionSpeedEl.value = transitionSpeed;
-
-	const transitionColorizeEl = document.getElementById("transition-colorize");
-	if (transitionColorizeEl) transitionColorizeEl.value = transitionColorize;
+	const colorizeModeEl = document.getElementById("colorize-mode");
+	if (colorizeModeEl) colorizeModeEl.value = colorize;
+	applyColorizeMode();
 
 	const transitionDemoEl = document.getElementById("transition-demo");
 	if (transitionDemoEl) transitionDemoEl.checked = transitionDemo;
@@ -628,6 +700,12 @@ function updateManualTimeInput() {
 	const minutes = currentDate.getMinutes().toString().padStart(2, "0");
 	const timeEl = document.getElementById("time");
 	if (timeEl) timeEl.value = `${hours}:${minutes}`;
+}
+
+function updateAutoBrightValues() {
+	["min", "max", "peak"].forEach(name => {
+		document.getElementById(`auto-bright-${name}-value`).textContent = document.getElementById(`auto-bright-${name}`).value;
+	});
 }
 
 function autoBrightUpdater() {
@@ -660,8 +738,56 @@ function nstr(number) {
 	return Math.round(number).toString().padStart(3, "0");
 }
 
-function getPaddedString(string, maxStringLength) {
-	return string.padEnd(maxStringLength, " ");
+function utf8ByteLength(string) {
+	return new TextEncoder().encode(string).length;
+}
+
+function truncateToByteLength(string, maxByteLength) {
+	let byteLength = 0;
+	let truncated = "";
+	for (const character of string) {
+		const characterBytes = utf8ByteLength(character);
+		if (byteLength + characterBytes > maxByteLength) {
+			break;
+		}
+		byteLength += characterBytes;
+		truncated += character;
+	}
+	return truncated;
+}
+
+function getPaddedString(string, slotByteLength) {
+	const truncated = truncateToByteLength(string, slotByteLength);
+	return truncated + " ".repeat(slotByteLength - utf8ByteLength(truncated));
+}
+
+function getPaddedTextField(string) {
+	return getPaddedString(truncateToByteLength(string, DATA_TEXT_MAX_BYTES), DATA_TEXT_SLOT_BYTES);
+}
+
+function limitInputToTextFieldBytes(input) {
+	if (!input) {
+		return;
+	}
+
+	input.setAttribute("maxlength", DATA_TEXT_MAX_BYTES);
+	input.addEventListener("input", function() {
+		const limited = truncateToByteLength(input.value, DATA_TEXT_MAX_BYTES);
+		if (limited !== input.value) {
+			const cursor = input.selectionStart;
+			input.value = limited;
+			if (cursor !== null) {
+				const position = Math.min(cursor, limited.length);
+				input.setSelectionRange(position, position);
+			}
+		}
+	});
+}
+
+function limitTextFieldInputs() {
+	const ids = ["mqtt-server", "mqtt-user", "mqtt-pass", "mqtt-clientid", "mqtt-topic",
+		"timeserver", "timezone", "hostname", "scrollingtext"];
+	ids.forEach(id => limitInputToTextFieldBytes(document.getElementById(id)));
 }
 
 function sendCmd(command, addData = "") {
@@ -706,26 +832,86 @@ function hideRebootRecommendedBanner() {
 document.addEventListener("DOMContentLoaded", function() {
 
 	initConfigValues();
-	createColorPicker();
 	setSliders();
 	setElementsForFunctionsMenu();
+	limitTextFieldInputs();
 	initWebsocket();
 	setColors();
 
 	document.querySelectorAll("input[name='colorwheel']").forEach(input => {
 		input.addEventListener("change", function(event) {
-			let id = event.target.id;
-			if (id === "colorwheel-frame") {
-				colorPosition = 2;
-			} else if (id === "colorwheel-background") {
-				colorPosition = 1;
-			} else {
-				colorPosition = 0;
-			}
-			console.log(`colorPosition: ${colorPosition}`);
+			colorPosition = Number(event.target.value);
+			debugMessage(`colorPosition: ${colorPosition}`);
+			clearSwatchSelection();
 			setColors();
 		});
 	});
+
+	const wheel = document.getElementById("color-wheel");
+
+	function pickFromWheel(event) {
+		const rect = wheel.getBoundingClientRect();
+		const radius = rect.width / 2;
+		const dx = event.clientX - rect.left - radius;
+		const dy = event.clientY - rect.top - radius;
+		const hue = Math.round((Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360);
+		const saturation = Math.round(Math.min(1, Math.hypot(dx, dy) / radius) * 100);
+		clearSwatchSelection();
+		changeColor(hue, saturation, hsb[colorPosition][2]);
+	}
+
+	wheel.addEventListener("pointerdown", function(event) {
+		wheel.setPointerCapture(event.pointerId);
+		pickFromWheel(event);
+	});
+	wheel.addEventListener("pointermove", function(event) {
+		if (wheel.hasPointerCapture(event.pointerId)) pickFromWheel(event);
+	});
+	wheel.addEventListener("keydown", function(event) {
+		// Left/right turn the hue, up/down change the saturation.
+		const steps = { ArrowLeft: [-5, 0], ArrowRight: [5, 0], ArrowDown: [0, -5], ArrowUp: [0, 5] }[event.key];
+		if (!steps) return;
+		event.preventDefault();
+		const [hue, saturation, value] = hsb[colorPosition];
+		changeColor((hue + steps[0] + 360) % 360, Math.max(0, Math.min(100, saturation + steps[1])), value);
+	});
+
+	document.getElementById("color-val").addEventListener("input", function(event) {
+		clearSwatchSelection();
+		changeColor(hsb[colorPosition][0], hsb[colorPosition][1], Number(event.target.value));
+	});
+
+	const kelvinInput = document.getElementById("color-kelvin");
+	const kelvinStops = [];
+	for (let kelvin = Number(kelvinInput.min); kelvin <= Number(kelvinInput.max); kelvin += 1300) {
+		kelvinStops.push(kelvinToHex(kelvin));
+	}
+	kelvinInput.style.setProperty("--track", `linear-gradient(90deg, ${kelvinStops.join(", ")})`);
+	kelvinInput.addEventListener("input", function() {
+		const kelvin = Number(kelvinInput.value);
+		document.getElementById("color-kelvin-value").textContent = kelvin;
+		const [hue, saturation] = hexToHsv(kelvinToHex(kelvin));
+		clearSwatchSelection();
+		changeColor(hue, saturation, hsb[colorPosition][2]);
+	});
+
+	document.getElementById("swatch-grid").addEventListener("click", function(event) {
+		const swatch = event.target.closest(".swatch");
+		if (!swatch) return;
+		clearSwatchSelection();
+		swatch.classList.add("selected");
+		changeColor(...hexToHsv(swatch.dataset.color));
+	});
+
+	document.getElementById("color-off").addEventListener("click", function() {
+		clearSwatchSelection();
+		changeColor(hsb[colorPosition][0], hsb[colorPosition][1], 0);
+	});
+
+	document.getElementById("color-form").addEventListener("submit", event => event.preventDefault());
+
+	const connHost = document.getElementById("conn-host");
+	if (connHost) connHost.textContent = location.hostname;
 
 	document.querySelectorAll(".status-button").forEach(btn => {
 		btn.addEventListener("click", function() {
@@ -758,15 +944,37 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	}
 
-	const menuLinks = document.querySelectorAll(".pure-menu-link[data-navigation]");
+	const menu = document.getElementById("menu");
+	const menuLinks = document.querySelectorAll(".nav-link[data-navigation]");
+	const navMore = document.getElementById("nav-more");
+
+	function setMoreOpen(open) {
+		menu.classList.toggle("more-open", open);
+		navMore.setAttribute("aria-expanded", open);
+	}
+
+	navMore.addEventListener("click", () => setMoreOpen(!menu.classList.contains("more-open")));
+	document.addEventListener("click", function(event) {
+		if (!menu.contains(event.target)) setMoreOpen(false);
+	});
+	menu.addEventListener("keydown", function(event) {
+		if (event.key === "Escape") setMoreOpen(false);
+	});
 
 	function setActiveNavigation(navigation) {
+		let activeInMore = false;
 		menuLinks.forEach(elem => {
 			const isActive = elem.dataset.navigation === navigation;
-			elem.classList.toggle("pure-menu-selected", isActive);
+			elem.classList.toggle("active", isActive);
 			elem.toggleAttribute("aria-current", isActive);
-			if (isActive) elem.setAttribute("aria-current", "page");
+			if (isActive) {
+				elem.setAttribute("aria-current", "page");
+				activeInMore = elem.parentElement.id === "menu-more";
+				setI18nText(document.getElementById("page-title"), elem.dataset.title || elem.querySelector("span").dataset.i18next);
+			}
 		});
+		navMore.classList.toggle("active", activeInMore);
+		document.getElementById("page-sub").hidden = navigation !== "main";
 	}
 
 	/**
@@ -778,6 +986,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			let navigation = this.dataset.navigation;
 
 			setActiveNavigation(navigation);
+			setMoreOpen(false);
 
 			if (navigation === "functions") {
 				sendCmd(CMD.REQ_BIRTHDAYS);
@@ -799,9 +1008,10 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 
 			// show/hide sections
-			document.querySelectorAll(".section").forEach(sec => { sec.style.display = "none"; });
-			const targetSection = document.querySelector(`.section-${navigation}`);
-			if (targetSection) targetSection.style.display = "block";
+			document.querySelectorAll(".section").forEach(sec => {
+				sec.hidden = !sec.classList.contains(`section-${navigation}`);
+			});
+			window.scrollTo(0, 0);
 		});
 	});
 
@@ -840,6 +1050,11 @@ document.addEventListener("DOMContentLoaded", function() {
 				effectSpeed = event.target.value;
 				sendCmd(CMD.SPEED, nstr(effectSpeed));
 			}
+			if (id === "slider-fire-cooling" || id === "slider-fire-sparking") {
+				fireCooling = document.getElementById("slider-fire-cooling").value;
+				fireSparking = document.getElementById("slider-fire-sparking").value;
+				sendFireData(false);
+			}
 			setSliders();
 
 			sliderTimeout = setTimeout(function() {
@@ -848,24 +1063,34 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	});
 
-	const transSpeedEl = document.getElementById("transition-speed");
-	if (transSpeedEl) {
-		transSpeedEl.addEventListener("input", function(event) {
-			transitionSpeed = event.target.value;
-			const tsv = document.getElementById("transition-speed-value");
-			if (tsv) tsv.textContent = transitionSpeed;
+	["slider-fire-cooling", "slider-fire-sparking"].forEach(id => {
+		const slider = document.getElementById(id);
+		if (!slider) return;
+		slider.addEventListener("change", function() {
+			fireCooling = document.getElementById("slider-fire-cooling").value;
+			fireSparking = document.getElementById("slider-fire-sparking").value;
+			setSliders();
+			sendFireData(true);
 		});
-	}
+	});
+
+	document.querySelectorAll("[id^='colorize-']").forEach(el => {
+		el.addEventListener("change", function() {
+			colorize = document.getElementById("colorize-mode").value;
+
+			applyColorizeMode();
+			sendCmd(CMD.SET_COLORIZE, nstr(colorize));
+			debugMessage(`Colorize${debugMessageReconfigured}`);
+		});
+	});
 
 	document.querySelectorAll("[id*='transition']").forEach(el => {
 		el.addEventListener("change", function(event) {
 			transitionType = document.getElementById("transition-types").value;
 			transitionDuration = document.getElementById("transition-duration").value;
-			transitionSpeed = document.getElementById("transition-speed").value;
-			transitionColorize = document.getElementById("transition-colorize").value;
 			transitionDemo = document.getElementById("transition-demo").checked;
 
-			sendCmd(CMD.MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionSpeed) + nstr(transitionColorize) + nstr(transitionDemo ? 1 : 0));
+			sendCmd(CMD.MODE_TRANSITION, nstr(transitionType) + nstr(transitionDuration) + nstr(transitionDemo ? 1 : 0));
 			debugMessage(`Transition${debugMessageReconfigured}`);
 			setElementsForFunctionsMenu();
 		});
@@ -883,6 +1108,10 @@ document.addEventListener("DOMContentLoaded", function() {
 			debugMessage(`WiFi${debugMessageReconfigured}`);
 		});
 	}
+
+	["auto-bright-min", "auto-bright-max", "auto-bright-peak"].forEach(id => {
+		document.getElementById(id).addEventListener("input", updateAutoBrightValues);
+	});
 
 	document.querySelectorAll("[id*='auto-bright']").forEach(el => {
 		el.addEventListener("change", function(event) {
@@ -905,18 +1134,10 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	});
 
-	const wlanScanBtn = document.getElementById("_wlanscan");
-	if (wlanScanBtn) {
-		wlanScanBtn.addEventListener("click", function() {
-			sendCmd(CMD.REQ_WIFI_LIST);
-			document.getElementById("wlanlist").innerHTML = "<div>WLAN Netzwerke werden gesucht</div>";
-		});
-	}
-
 	const timeServerBtn = document.getElementById("timeserver-button");
 	if (timeServerBtn) {
 		timeServerBtn.addEventListener("click", function() {
-			sendCmd(CMD.SET_TIMESERVER, getPaddedString(document.getElementById("timeserver").value, DATA_TIMESERVER_TEXT_LENGTH));
+			sendCmd(CMD.SET_TIMESERVER, getPaddedTextField(document.getElementById("timeserver").value));
 			debugMessage(`Timeserver${debugMessageReconfigured}`);
 		});
 	}
@@ -924,7 +1145,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const timezoneBtn = document.getElementById("timezone-button");
 	if (timezoneBtn) {
 		timezoneBtn.addEventListener("click", function() {
-			sendCmd(CMD.SET_TIMEZONE, getPaddedString(document.getElementById("timezone").value, DATA_TIMEZONE_TEXT_LENGTH));
+			sendCmd(CMD.SET_TIMEZONE, getPaddedTextField(document.getElementById("timezone").value));
 			sendCmd(CMD.REQ_CONFIG_VALUES);
 			debugMessage(`Timezone${debugMessageReconfigured}`);
 		});
@@ -933,7 +1154,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const scrollTextBtn = document.getElementById("scrollingtext-button");
 	if (scrollTextBtn) {
 		scrollTextBtn.addEventListener("click", function() {
-			sendCmd(CMD.SET_SCROLLINGTEXT, getPaddedString(document.getElementById("scrollingtext").value, DATA_SCROLLINGTEXT_LENGTH));
+			sendCmd(CMD.SET_SCROLLINGTEXT, getPaddedTextField(document.getElementById("scrollingtext").value));
 			debugMessage(`ScrollingText${debugMessageReconfigured}`);
 		});
 	}
@@ -979,6 +1200,18 @@ document.addEventListener("DOMContentLoaded", function() {
 			sendCmd(CMD.SET_CLOCK_TYPE, nstr(this.value));
 			sendCmd(CMD.REQ_CONFIG_VALUES);
 			debugMessage(`FrontLayout${debugMessageReconfigured}`);
+		});
+	}
+
+	const secondsFrameLedCountInput = document.getElementById("seconds-frame-led-count");
+	if (secondsFrameLedCountInput) {
+		secondsFrameLedCountInput.addEventListener("change", function() {
+			if (!this.reportValidity()) {
+				return;
+			}
+			sendCmd(CMD.SET_SECONDS_FRAME, nstr(this.value));
+			sendCmd(CMD.REQ_CONFIG_VALUES);
+			debugMessage(`SecondsFrameLedCount${debugMessageReconfigured}`);
 		});
 	}
 
@@ -1078,7 +1311,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const hostNameBtn = document.getElementById("hostname-button");
 	if (hostNameBtn) {
 		hostNameBtn.addEventListener("click", function() {
-			sendCmd(CMD.SET_HOSTNAME, getPaddedString(document.getElementById("hostname").value, DATA_HOST_TEXT_LENGTH));
+			sendCmd(CMD.SET_HOSTNAME, getPaddedTextField(document.getElementById("hostname").value));
 			debugMessage(`Hostname${debugMessageReconfigured}`);
 		});
 	}
@@ -1157,11 +1390,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 			const payload = nstr(state) +
 							nstr5(port) +
-							getPaddedString(server, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
-							getPaddedString(user, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
-							getPaddedString(pass, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
-							getPaddedString(clientId, DATA_MQTT_RESPONSE_TEXT_LENGTH) +
-							getPaddedString(topic, DATA_MQTT_RESPONSE_TEXT_LENGTH);
+							getPaddedTextField(server) +
+							getPaddedTextField(user) +
+							getPaddedTextField(pass) +
+							getPaddedTextField(clientId) +
+							getPaddedTextField(topic);
 
 			sendCmd(CMD.SET_MQTT, payload);
 			debugMessage(`MQTT config${debugMessageReconfigured}`);

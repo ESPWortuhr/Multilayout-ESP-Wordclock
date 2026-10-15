@@ -5,9 +5,9 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 
 		settings: {
-			tempDirectory: ".pio/build/webpage",
+			tempDirectory: process.env.PIO_WEBPAGE_TEMP || ".pio/build/webpage",
 			srcDirectory: "webpage",
-			target: "include/WebPageContent.gen.inc"
+			target: process.env.PIO_WEBPAGE_TARGET || "include/WebPageContent.gen.inc"
 		},
 
 		clean: {
@@ -168,11 +168,6 @@ module.exports = function(grunt) {
 					expand: true,
 					cwd: "node_modules/minified/",
 					src: ["minified-web.js"],
-					dest: "<%= settings.tempDirectory %>"
-				}, {
-					expand: true,
-					cwd: "node_modules/@jaames/iro/dist/",
-					src: ["iro.min.js"],
 					dest: "<%= settings.tempDirectory %>"
 				}, {
 					expand: true,
