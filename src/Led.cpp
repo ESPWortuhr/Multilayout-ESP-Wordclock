@@ -356,7 +356,9 @@ void Led::setbyColorMatrix(const ColorMatrix &matrix) {
     for (uint8_t row = 0; row < matrix.rows(); row++) {
         for (uint8_t col = 0; col < matrix.cols(); col++) {
             const RgbfColor &cell = matrix[row][col];
-            setPixel(row, col, HsbColor{RgbColor(cell.R, cell.G, cell.B)});
+            setPixel(mirroredRow(row, matrix.rows()),
+                     mirroredCol(col, matrix.cols()),
+                     HsbColor{RgbColor(cell.R, cell.G, cell.B)});
         }
     }
 }
