@@ -32,8 +32,8 @@
     --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23c8ccd2' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 
     /* Background light that shines through the glass */
-    --blob-b: rgb(91 108 255 / 36%);
-    --blob-c: rgb(46 211 198 / 20%);
+    --light-a: rgb(255 255 255 / 9%);
+    --light-b: rgb(255 255 255 / 5%);
 
     /* The script sets hue and saturation from the foreground color of the clock. */
     --accent-h: 30;
@@ -41,7 +41,6 @@
     --accent: hsl(var(--accent-h) var(--accent-s) 68%);
     --accent-soft: hsl(var(--accent-h) var(--accent-s) 68% / 18%);
     --accent-ink: var(--accent);
-    --accent-glow: hsl(var(--accent-h) var(--accent-s) 60% / 42%);
     --on-accent: #111317;
     --ok: #4ade80;
     --danger: #ff6b6b;
@@ -85,11 +84,10 @@
         --ring: rgb(20 30 60 / 20%);
         --icon-filter: none;
         --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%234a515b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-        --blob-b: rgb(122 167 255 / 40%);
-        --blob-c: rgb(46 211 198 / 26%);
+        --light-a: rgb(255 255 255 / 90%);
+        --light-b: rgb(255 255 255 / 70%);
         --accent-soft: hsl(var(--accent-h) var(--accent-s) 60% / 22%);
         --accent-ink: hsl(var(--accent-h) var(--accent-s) 32%);
-        --accent-glow: hsl(var(--accent-h) var(--accent-s) 65% / 45%);
         --ok: #16a34a;
         --danger: #d64545;
         --warning: #d99a1e;
@@ -117,15 +115,14 @@ html {
     background: var(--bg);
 }
 
-/* Soft colored light behind the glass. It follows the clock's foreground color. */
+/* Soft neutral light behind the glass. */
 body::before {
     position: fixed;
     inset: 0;
     z-index: -1;
     background:
-        radial-gradient(55vmax 55vmax at 80% -5%, var(--accent-glow), rgb(0 0 0 / 0%) 70%),
-        radial-gradient(50vmax 50vmax at -10% 75%, var(--blob-b), rgb(0 0 0 / 0%) 70%),
-        radial-gradient(40vmax 40vmax at 95% 100%, var(--blob-c), rgb(0 0 0 / 0%) 70%);
+        radial-gradient(55vmax 55vmax at 80% -5%, var(--light-a), rgb(0 0 0 / 0%) 70%),
+        radial-gradient(50vmax 50vmax at -10% 85%, var(--light-b), rgb(0 0 0 / 0%) 70%);
     content: "";
     pointer-events: none;
 }
