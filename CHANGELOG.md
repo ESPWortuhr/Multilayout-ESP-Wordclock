@@ -6,7 +6,7 @@ Release candidate for 5.0.0. This release brings a new web interface, gradient a
 
 ### Upgrade notes
 
-- All settings are reset to default values after the update (`SERNR` changed from 440 to 450). Note your hardware pins, MQTT, OpenWeatherMap and layout settings before updating.
+- All settings are reset to default values after the update (`SERNR` changed from 440 to 500). Note your hardware pins, MQTT, OpenWeatherMap and layout settings before updating.
 - The minute variant "Corners" was removed. The 11x11 layouts now use the standard minute LEDs.
 
 ### Added
