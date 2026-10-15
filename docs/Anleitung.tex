@@ -92,15 +92,17 @@ Eine Wortuhr (auch als Wordclock bekannt) ist ein schönes DIY-Projekt für Anf�
 Die bereitgestellte Software zum Betreiben der Wortuhr hat mehrere Funktionen:
 
 \begin{itemize}
-    \item Mehrsprachig (Deutsch, Englisch, Niederländisch, Italienisch, Spanisch, Ungarisch, Französisch, Rumänisch, Schweizer Deutsch, Russisch und Schwedisch)
+    \item Mehrsprachig (Deutsch, Englisch, Niederländisch, Italienisch, Spanisch, Ungarisch, Französisch, Rumänisch, Schweizer Deutsch, Russisch, Schwedisch, Bengalisch und Türkisch)
     \item Unterstützung für mehrere Matrizengrößen und LED-Abstände
     \item Farbwechsel der Anzeigefarbe möglich (RGB oder RGBW)
+    \item Farbmodi: einfarbig, Farbverlauf mit zweiter Farbe oder wortweise zufällige Farben
     \item Digitale Uhranzeige
     \item Laufschrift, kurzer statischer Text und Symbol-Anzeige
     \item Regenbogenfarbwechsel
+    \item Feuer-Animation
     \item Einstellbare Übergangsanimationen zwischen Anzeigewechseln
     \item Geburtstags- und Silvester-Animationen
-    \item Umgebungslicht (als Sekundenzeiger ausgeführt oder Ambientlight)
+    \item Umgebungslicht (als Sekundenzeiger ausgeführt oder Ambientlight) mit frei einstellbarer LED-Anzahl
     \item Minuten- und Sekundenanzeige im Rahmen oder in Worten
     \item Automatische Helligkeitsregelung (optional über Sensor)
     \item Offlinebetrieb (optional über entsprechende RTC)
@@ -120,8 +122,8 @@ Die Firmware unterstützt verschiedene Frontplatten und Matrixgrößen. Die pass
 \begin{itemize}
     \item Klassische deutsche Layouts mit 10 \(\times\) 11, 11 \(\times\) 11, 13 \(\times\) 13, 16 \(\times\) 8 oder 16 \(\times\) 18 LEDs
     \item Kompakte Varianten mit 8 \(\times\) 8 LEDs, teilweise für Viertelstunden-Anzeige
-    \item Internationale Layouts, unter anderem Englisch, Niederländisch, Spanisch, Italienisch, Ungarisch, Französisch, Rumänisch, Schweizer Deutsch, Russisch, Schwedisch und Bengalisch
-    \item Dialekt- und Sondervarianten wie Bayerisch, Schwäbisch, Nero, mrrioes oder Wetter-Layout
+    \item Internationale Layouts, unter anderem Englisch, Niederländisch, Spanisch, Italienisch, Ungarisch, Französisch, Rumänisch, Schweizer Deutsch, Russisch, Schwedisch, Bengalisch und Türkisch
+    \item Dialekt- und Sondervarianten wie Bayerisch, Schwäbisch, Züridütsch, Nero, mrrioes oder Wetter-Layout
     \item Bauarten mit einer LED pro Buchstabe, jeder zweiten LED pro Buchstabe oder zwei, drei bzw. vier LEDs pro Buchstabe
 \end{itemize}
 
@@ -357,7 +359,7 @@ Die Einschränkungen orientieren sich an den GPIO-Hinweisen der Espressif-Dokume
 \chapter{Funktionen der Uhrensoftware auf dem ESP}
 
 \section{Anzeigemodi im Web-Frontend}
-Die wichtigsten Funktionen werden im Web-Frontend unter \say{Funktionen} ausgewählt. Neben der klassischen Wortuhr stehen Sekundenanzeige, Digitaluhr, Laufschrift, Regenbogen, Farbwechsel, feste Farbe und Symbol-Anzeige zur Verfügung. Je nach Modus werden darunter nur die jeweils passenden Einstellungen eingeblendet, zum Beispiel Geschwindigkeit, Helligkeit, Lauftext oder Symbolauswahl.
+Die wichtigsten Funktionen werden im Web-Frontend unter \say{Funktionen} ausgewählt. Neben der klassischen Wortuhr stehen Sekundenanzeige, Digitaluhr, Laufschrift, Regenbogen, Farbwechsel, Feuer, feste Farbe und Symbol-Anzeige zur Verfügung. Je nach Modus werden darunter nur die jeweils passenden Einstellungen eingeblendet, zum Beispiel Geschwindigkeit, Helligkeit, Lauftext, Symbolauswahl oder die Feuer-Parameter.
 
     \begin{figure} [H]
         \centering
@@ -368,7 +370,7 @@ Die wichtigsten Funktionen werden im Web-Frontend unter \say{Funktionen} ausgew�
 
 Im Modus \say{Laufschrift} wird der unter \say{Lauftext} gespeicherte Text über die Matrix bewegt. Sehr kurze Texte werden automatisch anders behandelt: Nach dem Entfernen führender und nachfolgender Leerzeichen werden ein oder zwei Zeichen statisch zentriert angezeigt, sofern sie auf die gewählte Matrix passen. Ein- oder zweistellige Zahlen werden dabei wie eine kleine Digitalanzeige dargestellt.
 
-Im Modus \say{Symbol} kann eines der vordefinierten Bitmap-Symbole angezeigt werden. Zur Auswahl stehen Herz, Smiley, Note, Schneeflocke, Brief, Glocke, Stop und Standby. Die Farbe wird über die normalen Vordergrund-Farbeinstellungen bestimmt; die Geschwindigkeit beeinflusst die Wiederholung bzw. Aktualisierung des Modus.
+Im Modus \say{Symbol} kann eines der vordefinierten Bitmap-Symbole angezeigt werden. Zur Auswahl stehen Herz, Smiley, Note, Schneeflocke, Brief, Glocke, Stop und Standby. Die Farbe wird über die normalen Vordergrund-Farbeinstellungen bestimmt; im Farbmodus \say{Polychrom} wird das Symbol mit dem Verlauf von der Vordergrund- zur Sekundärfarbe gezeichnet. Die Helligkeit des Symbols wird über den Regler \say{Helligkeit} des Modus eingestellt, die Geschwindigkeit beeinflusst die Wiederholung bzw. Aktualisierung des Modus.
 
     \begin{figure} [H]
         \centering
@@ -377,11 +379,20 @@ Im Modus \say{Symbol} kann eines der vordefinierten Bitmap-Symbole angezeigt wer
         \label{abb.WebFrontendSymbolMode}
     \end{figure}
 
+Im Modus \say{Feuer} zeigt die gesamte Matrix eine Flammenanimation, die von der untersten Zeile nach oben steigt. Die Uhrzeit wird in diesem Modus nicht angezeigt. Neben Helligkeit und Geschwindigkeit stehen zwei weitere Regler zur Verfügung:
+
+\begin{itemize}
+    \item \say{Abkühlung} (20 bis 120, Standard 65): Je höher der Wert, desto schneller kühlen die Flammen ab und desto niedriger bleiben sie.
+    \item \say{Funkenflug} (40 bis 220, Standard 120): Je höher der Wert, desto häufiger entstehen am unteren Rand neue Funken und desto unruhiger wirkt das Feuer.
+\end{itemize}
+
 \section{Übergänge und Animationen}
 
-Unter \say{Funktionen} kann im Bereich \say{Übergang} eingestellt werden, wie Änderungen der Wortmatrix animiert werden. Zur Auswahl stehen unter anderem Hoch- und Runterscrollen, Schieben nach links oder rechts, Überblenden, Laser, Matrix-Regen, Bälle, Feuerwerk, Schlange, Bunt und Zufällig. Zusätzlich lässt sich die Dauer des Übergangs einstellen. Die Option \say{Demo} löst die gewählte Transition zu Testzwecken aus.
+Unter \say{Funktionen} kann im Bereich \say{Übergang} eingestellt werden, wie Änderungen der Wortmatrix animiert werden. Zur Auswahl stehen unter anderem Hoch- und Runterscrollen, Schieben nach links oder rechts, Überblenden, Laser, Matrix-Regen, Bälle, Feuerwerk, Schlange und Zufällig. Zusätzlich lässt sich die Dauer des Übergangs einstellen. Die Option \say{Demo} löst die gewählte Transition zu Testzwecken aus.
 
-Im Bereich \say{Farben} wird über den \say{Farbmodus} festgelegt, wie die Wörter eingefärbt werden: \say{Monochrom} verwendet eine einzige Vordergrundfarbe, \say{Polychrom} blendet zeilenweise von der Vordergrundfarbe in eine zweite, frei wählbare \say{Sekundärfarbe} über, und \say{Wortweise zufällig} färbt jedes angezeigte Wort einzeln zufällig ein. Der Farbmodus wirkt sowohl auf die laufende Anzeige als auch auf Übergänge. Vordergrund-, Sekundär-, Hintergrund- und, bei Frontplatten mit Rahmen-LEDs, Rahmenfarbe werden über die jeweilige Auswahl und das Farbrad darunter gesetzt.
+Im Bereich \say{Farben} wird über den \say{Farbmodus} festgelegt, wie die Wörter eingefärbt werden: \say{Monochrom} verwendet eine einzige Vordergrundfarbe, \say{Polychrom} blendet zeilenweise von der Vordergrundfarbe in eine zweite, frei wählbare \say{Sekundärfarbe} über, und \say{Wortweise zufällig} färbt jedes angezeigte Wort einzeln zufällig ein. Der Farbmodus wirkt sowohl auf die laufende Anzeige als auch auf Übergänge. Vordergrund-, Sekundär-, Hintergrund- und, bei aktivem Sekundenrahmen, Rahmenfarbe werden über die jeweilige Auswahl und das Farbrad darunter gesetzt.
+
+Der Farbverlauf des Modus \say{Polychrom} gilt nicht nur für die Wortuhr, sondern auch für Digitaluhr, Laufschrift, feste Farbe und Symbol-Anzeige. Die Minuten-LEDs leuchten in diesem Modus in der Sekundärfarbe, also in der Farbe der untersten Zeile. \say{Wortweise zufällig} benötigt einzelne Wörter und wirkt deshalb nur in der Wortuhr; in allen anderen Modi wird stattdessen die Vordergrundfarbe verwendet. Farbänderungen werden auch während eines laufenden Übergangs sofort übernommen, ohne dass die Animation neu startet.
 
 Einige Animationen werden auch für besondere Ereignisse verwendet. An Silvester zeigt die Uhr einen Countdown und anschließend eine Feuerwerksanimation. Im Bereich \say{Geburtstage} können bis zu fünf Termine im Format \texttt{MM-DD} hinterlegt werden. An diesen Tagen erscheint alle fünf Minuten eine Feuerwerksanimation. Bei kompatiblen Frontplatten werden währenddessen die Wörter \say{Happy Birthday} statt der Uhrzeit angezeigt.
 
@@ -391,13 +402,21 @@ Unter \say{Anzeigeoptionen} werden nicht nur Frontplatte und Bauart gesetzt, son
 
 \subsection{Sprach- und Minutenlogik}
 
-Im Bereich \say{Sprache} kann eingestellt werden, wann der Text \say{Es ist} angezeigt wird. Außerdem lassen sich sprachliche Varianten für Viertelstunden und Zwanzig-Minuten-Angaben wählen, zum Beispiel \say{viertel nach neun} oder \say{viertel zehn}. Diese Optionen hängen von der gewählten Sprache und Frontplatte ab.
+Im Bereich \say{Sprache} kann eingestellt werden, wann der Text \say{Es ist} angezeigt wird. Außerdem lassen sich sprachliche Varianten für Viertelstunden und Zwanzig-Minuten-Angaben wählen, zum Beispiel \say{viertel nach neun} oder \say{viertel zehn}. Diese Optionen hängen von der gewählten Sprache und Frontplatte ab; es werden nur die Varianten eingeblendet, für die die Frontplatte die passenden Wörter besitzt.
+
+Die Voreinstellung richtet sich nach der Frontplatte: Besitzt sie das Wort \say{zwanzig}, zeigt die Uhr um 9:20 Uhr \say{zwanzig nach neun} und um 9:40 Uhr \say{zwanzig vor zehn}. Besitzt sie das Wort \say{dreiviertel}, zeigt sie um 9:45 Uhr \say{dreiviertel zehn}. Wer die jeweils andere Schreibweise bevorzugt, also \say{zehn vor halb zehn}, \say{zehn nach halb zehn} oder \say{viertel vor zehn}, stellt die Option im Bereich \say{Sprache} um. Bei einigen Sprachen, zum Beispiel Spanisch, Türkisch, Russisch, Bengalisch und Ungarisch, ist die Schreibweise fest vorgegeben.
+
+Diese Voreinstellung wird beim Zurücksetzen auf Standardwerte und bei jedem Wechsel der Frontplatte gesetzt. Eine bereits eingerichtete Uhr behält bei einem Firmware-Update ihre gespeicherten Einstellungen.
 
 Die Minutenanzeige kann deaktiviert oder über zusätzliche LEDs dargestellt werden. Je nach Bauart stehen vier Minuten-LEDs, sieben Minuten-LEDs oder die Anzeige in Worten zur Verfügung. Die Einstellung muss zur mechanischen Front und zur Verdrahtung passen.
 
 \subsection{Sekunden im Rahmen}
 
-Die Sekundenanzeige im Rahmen kann ausgeschaltet oder als Punkt, Sektor oder umlaufender Sektor dargestellt werden. Diese Funktion setzt voraus, dass die gebaute Uhr entsprechende Rahmen-LEDs besitzt. Bei Frontplatten ohne Rahmen-LEDs sollte die Anzeige deaktiviert bleiben.
+Ein Sekundenrahmen ist ein zusätzlicher LED-Streifen, der um die Buchstabenmatrix herum verlegt ist. Er kann bei fast allen Frontplatten nachgerüstet werden; ausgenommen sind nur die Layouts 16 \(\times\) 8 und 22 \(\times\) 11 Wetter. Im Bereich \say{Sekunden} wird unter \say{Anzahl LEDs im Sekundenrahmen} eingetragen, wie viele LEDs der Rahmen tatsächlich besitzt. Möglich sind 0 bis 200 LEDs; der Wert 0 deaktiviert den Rahmen und ist die Voreinstellung.
+
+Die Rahmen-LEDs werden am Ende des LED-Streifens angeschlossen, also hinter der Buchstabenmatrix und den Minuten-LEDs. Die Gesamtlänge des Streifens berechnet die Firmware aus Frontplatte, Bauart, Minuten-LEDs und Rahmen selbst.
+
+Sobald eine LED-Anzahl größer als 0 eingetragen ist, kann die Sekundenanzeige im Rahmen ausgeschaltet oder als Punkt, Sektor oder umlaufender Sektor dargestellt werden. Zusätzlich erscheint im Bereich \say{Farben} die Auswahl \say{Rahmen}, über die der Rahmen eine eigene Farbe erhält.
 
 \subsection{Boot-Optionen}
 
@@ -415,6 +434,9 @@ Die WLAN-Konfiguration befindet sich im Web-Frontend unter \say{Einstellungen} i
         \label{abb.WebFrontendWifi}
     \end{figure}
  
+\section{Hostname}
+Unter \say{Einstellungen} im Bereich \say{Hostname} wird der Name festgelegt, unter dem sich die Uhr im Netzwerk anmeldet. Die Voreinstellung ist \say{ESPWordclock}. Ein neuer Hostname wird gespeichert und sofort übernommen, ein Neustart ist nicht nötig; auf ESP32-Boards verbindet sich die Uhr dabei kurz neu mit dem WLAN. In Netzwerken mit mDNS-Unterstützung ist das Web-Frontend anschließend auch ohne IP-Adresse unter \texttt{http://<Hostname>.local} erreichbar. Werden mehrere Uhren im selben Netzwerk betrieben, sollte jede einen eigenen Hostnamen erhalten.
+
 \section{Zeitserver (NTP Server)}
 Falls die Uhr an das eigene WLAN mit Internet angebunden wird, kann ein Zeitserver hinterlegt werden. Dieser sorgt dafür, dass die Uhrzeit zyklisch sekundengenau gestellt wird. 
 
@@ -457,13 +479,22 @@ Im manuellen Modus kann die Helligkeit zeitabhängig gesetzt werden. Dafür steh
 
 Unter \say{Einstellungen} kann der verwendete LED-Typ ausgewählt werden. Für WS2812-Streifen stehen verschiedene Farbreihenfolgen wie BRG, GRB, RGB, RBG und BGR zur Verfügung. Bei SK6812-RGBW-Streifen kann zusätzlich der Typ der weißen LED als Warmweiß, Neutralweiß oder Kaltweiß gesetzt werden. Wenn Farben falsch angezeigt werden, ist dies meistens die erste Einstellung, die geprüft werden sollte.
 
-Für Wetter-Frontplatten kann im Bereich \say{Wetter} ein OpenWeatherMap-API-Schlüssel und eine City-ID hinterlegt werden. Die Uhr ruft damit Wettervorhersagen ab und kann diese auf Layouts anzeigen, die Wetterwörter bzw. Wetterbereiche unterstützen. Ohne passende Frontplatte oder ohne gültigen API-Schlüssel bleibt diese Funktion wirkungslos.
+Für Wetter-Frontplatten kann im Bereich \say{Wetter} ein OpenWeatherMap-API-Schlüssel und eine City-ID hinterlegt werden. Die Uhr ruft damit Wettervorhersagen ab und kann diese auf Layouts anzeigen, die Wetterwörter bzw. Wetterbereiche unterstützen. Ohne passende Frontplatte oder ohne gültigen API-Schlüssel bleibt diese Funktion wirkungslos. Kann die Uhr über längere Zeit keine neue Vorhersage abrufen, wird die veraltete Vorhersage ausgeblendet, statt weiter angezeigt zu werden.
 
 \section{Smart Home und MQTT}
 
 Die Uhr kann über MQTT in ein Smart-Home-System eingebunden werden. Im Web-Frontend befindet sich dafür der Bereich \say{Smart Home}. Dort werden MQTT aktiviert sowie Serveradresse, Port, Benutzername, Passwort, Client-ID und Topic gespeichert. Die MQTT-Zugangsdaten können alternativ bereits in \texttt{include/Config.h} vorkonfiguriert werden.
 
 Über MQTT lassen sich grundlegende Funktionen wie Ein-/Ausschalten, Helligkeit, Farbe, Effekt bzw. Modus, Lauftext, automatische Helligkeit und Übergangseinstellungen steuern. Statuswerte wie aktuelle Farbe, Helligkeit, Modus, WLAN-Signal, Uptime und Sensordaten werden ebenfalls veröffentlicht.
+
+Als Effekte stehen \say{Wordclock}, \say{Seconds}, \say{Digitalclock}, \say{Scrollingtext}, \say{Rainbowcycle}, \say{Rainbow}, \say{Fire}, \say{Color} und \say{Symbol} zur Auswahl. Für Helligkeit und Farbe gelten folgende Regeln:
+
+\begin{itemize}
+    \item Ein Helligkeitsbefehl setzt die Helligkeit von Vordergrund- und Sekundärfarbe gemeinsam. Im Farbmodus \say{Polychrom} wird dadurch der gesamte Verlauf einschließlich der Minuten-LEDs gleichmäßig heller oder dunkler. Ein im Web-Frontend eingestellter Helligkeitsunterschied zwischen beiden Farben geht dabei verloren.
+    \item Ist die automatische Helligkeitsregelung aktiv, werden Helligkeitsbefehle über MQTT ignoriert.
+    \item Ein Farbbefehl ändert nur die Vordergrundfarbe. Die Sekundärfarbe kann ausschließlich im Web-Frontend gewählt werden.
+    \item Ein- und Ausschalten wirkt auf alle Farben; beim Einschalten wird die vorherige Helligkeit wiederhergestellt.
+\end{itemize}
 
 Mit \say{Sende HA Discovery} sendet die Uhr die Home-Assistant-Autodiscovery-Konfiguration. Danach erscheint sie in Home Assistant als MQTT-Gerät mit Licht-Entität und zusätzlichen Steuerelementen, ohne dass die YAML-Konfiguration manuell angelegt werden muss. Voraussetzung ist ein erreichbarer MQTT-Broker und aktivierte MQTT-Discovery in Home Assistant.
 

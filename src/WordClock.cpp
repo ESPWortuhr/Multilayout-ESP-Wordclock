@@ -593,10 +593,6 @@ void setup() {
         G.layoutVariant[FlipHorzVert] = FLIP_HORIZONTAL_VERTICAL;
         G.layoutVariant[ExtraLedPerRow] = EXTRA_LED_PER_ROW;
         G.layoutVariant[MeanderRows] = MEANDER_ROWS;
-        G.languageVariant[ItIs15] = false;
-        G.languageVariant[ItIs20] = false;
-        G.languageVariant[ItIs40] = false;
-        G.languageVariant[ItIs45] = false;
         G.languageVariant[EN_ShowAQuarter] = false;
 
         G.itIsVariant = defaultItIsVariant();
@@ -640,6 +636,8 @@ void setup() {
 #endif
 
         G.clockTypeDef = DEFAULT_LAYOUT;
+        usedClockType = clockWork.getPointer(G.clockTypeDef);
+        clockWork.checkForValidLanguageVariant();
         G.buildTypeDef = DEFAULT_BUILDTYPE;
         G.Colortype = DEFAULT_LEDTYPE;
         G.wType = WHITE_LEDTYPE;

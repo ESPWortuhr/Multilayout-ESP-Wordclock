@@ -451,6 +451,7 @@ bool Mqtt::processBrightness(const JsonDocument &doc) {
         // Set brightness directly
         G.color[Foreground] =
             HsbColor(G.color[Foreground].H, G.color[Foreground].S, brightness);
+        G.color[GradientEnd].B = brightness;
         Serial.print("MQTT: Setting manual brightness: ");
         Serial.println(brightness);
 

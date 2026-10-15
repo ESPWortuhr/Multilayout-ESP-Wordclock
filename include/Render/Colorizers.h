@@ -59,8 +59,11 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline uint8_t wordIdAt(uint8_t row, uint8_t col) {
-    return (col < MAX_COL_SIZE) ? frontWordId[row][col] : WORD_ID_NONE;
+inline uint8_t wordIdAt(uint8_t row, uint8_t col, uint8_t rows, uint8_t cols) {
+    const uint8_t frontCol = mirroredCol(col, cols);
+    return (frontCol < MAX_COL_SIZE)
+               ? frontWordId[mirroredRow(row, rows)][frontCol]
+               : WORD_ID_NONE;
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +126,8 @@ public:
                     continue;
                 }
 
-                const uint8_t wordId = wordIdAt(row, col);
+                const uint8_t wordId =
+                    wordIdAt(row, col, matrix.rows(), matrix.cols());
                 float hue;
                 if (!words.find(wordId, hue)) {
                     hue = hues.next();

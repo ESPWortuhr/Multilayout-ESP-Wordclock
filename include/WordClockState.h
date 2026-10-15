@@ -374,6 +374,14 @@ enum LayoutVariants : uint8_t {
     MeanderRows = 5,
 };
 
+inline uint8_t mirroredRow(uint8_t row, uint8_t rows) {
+    return G.layoutVariant[MirrorHorizontal] ? rows - 1 - row : row;
+}
+
+inline uint8_t mirroredCol(uint8_t col, uint8_t cols) {
+    return G.layoutVariant[MirrorVertical] ? cols - 1 - col : col;
+}
+
 enum CommandWords : uint8_t {
     COMMAND_IDLE = 0,
 

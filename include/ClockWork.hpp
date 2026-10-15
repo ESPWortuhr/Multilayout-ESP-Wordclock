@@ -829,15 +829,10 @@ void ClockWork::showMinute(uint8_t min) {
 //------------------------------------------------------------------------------
 
 void ClockWork::checkForValidLanguageVariant() {
-    if (G.clockTypeDef == Eng10x11) {
-        G.languageVariant[ItIs15] = false;
-        G.languageVariant[ItIs20] = true;
-        G.languageVariant[ItIs40] = true;
-    } else { // default values
-        G.languageVariant[ItIs15] = false;
-        G.languageVariant[ItIs20] = false;
-        G.languageVariant[ItIs40] = false;
-    }
+    G.languageVariant[ItIs15] = false;
+    G.languageVariant[ItIs20] = usedClockType->hasTwenty();
+    G.languageVariant[ItIs40] = usedClockType->hasTwenty();
+    G.languageVariant[ItIs45] = usedClockType->hasDreiviertel();
 }
 
 //------------------------------------------------------------------------------
@@ -1798,7 +1793,6 @@ void ClockWork::loop(struct tm &tm) {
             break;
         }
 
-        eeprom::write();
         led.clear();
         led.show();
         delay(10);
@@ -1808,6 +1802,7 @@ void ClockWork::loop(struct tm &tm) {
         normalizeMinuteVariant();
 
         checkForValidLanguageVariant();
+        eeprom::write();
 
         reallocateSecondsFrame();
 

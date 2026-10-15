@@ -18,19 +18,7 @@
 Dies ist ein Projekt für eine mehrsprachige Wortuhr auf Grundlage eines ESP8266-Mikrocontrollers und einer programmierbaren LED-Leiste (WS2812 oder SK6812). Eine Wortuhr ist ein wunderschönes DIY-Projekt für Anfänger, das Technologie und Design kombiniert, um eine funktionale und ästhetisch ansprechende Uhr zu schaffen. 
 Egal, ob Sie ein Anfänger oder ein erfahrener Bastler sind, dieses Projekt ist eine großartige Möglichkeit, Ihre Fähigkeiten unter Beweis zu stellen und etwas wirklich Besonderes zu schaffen.
 Die Software hat viele Funktionen:
-- Mehrsprachig:
-  - 🇬🇧 Englisch (English)
-  - 🇩🇪 Deutsch
-  - 🇪🇸 Spanisch (Español)
-  - 🇮🇹 Italienisch (Italiano)
-  - 🇳🇱 Niederländisch (Nederlands)
-  - 🇭🇺 Ungarisch (Magyar)
-  - 🇷🇴 Rumänisch (Română)
-  - 🇨🇭 Schweizerdeutsch (Schwiizerdütsch)
-  - 🇷🇺 Russisch (Русский)
-  - 🇸🇪 Schwedisch (Svenska)
-  - 🇫🇷 Französisch (Français)
-  - 🇧🇩 Bengalisch (বাংলা)
+- Mehrsprachig: 13 Sprachen mit über 30 Frontplatten-Layouts, siehe [Unterstützte Sprachen](#unterstützte-sprachen)
 - Unterstützung für mehrere Layouts und LED-Abstände
 - Farbwechsel der Displayfarbe möglich (RGB oder RGBW)
 - Digitale Uhranzeige
@@ -42,8 +30,31 @@ Die Software hat viele Funktionen:
 
 <img src="https://community-assets.home-assistant.io/original/4X/0/4/b/04b7e3172e215e6f727c17f55b039ade3986ebcb.png" alt="drawing" width="200"/>
 
+## Unterstützte Sprachen
+
+Die Sprache der Uhr wird über das Front-Layout festgelegt. Alle Layouts sind in der Firmware enthalten und lassen sich im Web-Frontend unter „Anzeigeoptionen“ umschalten.
+
+| | Sprache | Eigenname | English | Layouts (Zeilen × Spalten) |
+|---|---|---|---|---|
+| 🇩🇪 | Deutsch | Deutsch | German | 10 × 11 (Standard, Alternativ, Uhr, Nero, mrrioes), 11 × 11 (Standard, Version 2, panbachi), 13 × 13, 16 × 8, 16 × 18, 22 × 11 Wetter, 8 × 8, 8 × 8 Viertelstunden |
+| 🇩🇪 | Bayerisch | Boarisch | Bavarian | 10 × 11 |
+| 🇩🇪 | Schwäbisch | Schwäbisch | Swabian | 10 × 11, 11 × 11 |
+| 🇬🇧 | Englisch | English | English | 10 × 11, 11 × 12, 8 × 8 |
+| 🇳🇱 | Niederländisch | Nederlands | Dutch | 10 × 11 |
+| 🇫🇷 | Französisch | Français | French | 10 × 11 |
+| 🇪🇸 | Spanisch | Español | Spanish | 10 × 11, 8 × 8 Viertelstunden |
+| 🇮🇹 | Italienisch | Italiano | Italian | 10 × 11 |
+| 🇨🇭 | Schweizerdeutsch | Schwiizerdütsch | Swiss German | 10 × 11, 10 × 11 Version 2, 10 × 11 Züridütsch (Zürich) |
+| 🇸🇪 | Schwedisch | Svenska | Swedish | 10 × 11 |
+| 🇭🇺 | Ungarisch | Magyar | Hungarian | 10 × 10 |
+| 🇷🇴 | Rumänisch | Română | Romanian | 10 × 11 |
+| 🇷🇺 | Russisch | Русский | Russian | 10 × 11 |
+| 🇹🇷 | Türkisch | Türkçe | Turkish | 10 × 11 |
+| 🇧🇩 | Bengalisch | বাংলা | Bengali | 9 × 8 |
+
 ## Inhaltsverzeichnis
 
+- [Unterstützte Sprachen](#unterstützte-sprachen)
 - [Betriebsmodi der Uhr](#betriebsmodi-der-uhr)
 - [Benötigte Hardware und Software](#benötigte-hardware-und-software)
 - [Installation und Flashen der Firmware](#installation-und-flashen-der-firmware)
@@ -285,7 +296,7 @@ Legt fest, an welchen Pins die Hardware angeschlossen ist (Hinweis: Der ESP8266 
 * **`RTC_Type`**: Verwendetes Echtzeituhr-Modul (RTC), damit die Uhr auch ohne WLAN weiterläuft. *(Standard: `RTC_DS3231`)*
 
 ### Sprache & Front-Layout
-Definiert, in welcher Sprache und mit welchem Raster die Wortuhr aufgebaut ist. Es ist eine Vielzahl an Sprachen hinterlegt (Deutsch, Englisch, Niederländisch, Spanisch, etc.).
+Definiert, in welcher Sprache und mit welchem Raster die Wortuhr aufgebaut ist. Alle verfügbaren Sprachen und Layouts stehen in der Tabelle [Unterstützte Sprachen](#unterstützte-sprachen).
 * **`DEFAULT_LAYOUT`**: *(Aktiver Standard: `Ger10x11Alternative`)* * 10 Zeilen, 11 LEDs pro Zeile + 4 Minuten-LEDs.
   * Dies ist das alternative deutsche Layout von Github-User @dbambus mit zusätzlichen Wörtern.
 

@@ -73,7 +73,9 @@ void ColorStage::build(ColorMatrix &dest, RgbfColor foreground,
                        RgbfColor background) const {
     for (uint8_t row = 0; row < dest.rows(); row++) {
         for (uint8_t col = 0; col < dest.cols(); col++) {
-            dest[row][col] = usedClockType->getFrontMatrixPixel(row, col)
+            dest[row][col] = usedClockType->getFrontMatrixPixel(
+                                 mirroredRow(row, dest.rows()),
+                                 mirroredCol(col, dest.cols()))
                                  ? foreground
                                  : background;
         }
