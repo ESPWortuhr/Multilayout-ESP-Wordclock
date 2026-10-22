@@ -928,8 +928,10 @@ svg {
     }
 }
 
-.i2c-scan-result-group {
-    margin-top: 18px;
+.pure-form-aligned .pure-control-group.i2c-scan-group {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--glass-border);
 }
 
 /*
@@ -970,6 +972,13 @@ svg {
     color: var(--text-soft);
     font-size: 13px;
     font-weight: 500;
+}
+
+.pure-button.button-secondary {
+    border: 1px solid var(--glass-border);
+    background: var(--glass-sheen), var(--glass);
+    box-shadow: var(--glass-hl);
+    color: var(--text);
 }
 
 .pure-button[hidden] {

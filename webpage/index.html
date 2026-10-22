@@ -824,14 +824,14 @@
                             <div class="pure-control-group">
                                 <label for="i2c-scl-pin" data-i18next="settings.hardware-pins.i2c-scl"></label><input id="i2c-scl-pin" type="number" min="0" max="255" step="1" required>
                             </div>
+                            <div class="pure-control-group i2c-scan-group">
+                                <label for="i2c-scan-result" data-i18next="settings.hardware-pins.i2c-result"></label><input id="i2c-scan-result" type="text" readonly>
+                                <div class="pure-controls">
+                                    <button id="i2c-scan-button" type="button" class="pure-button button-secondary" data-i18next="settings.hardware-pins.i2c-scan"></button>
+                                </div>
+                            </div>
                             <div class="pure-controls">
                                 <button id="hardware-pins-button" type="button" class="pure-button" data-i18next="settings.hardware-pins.save"></button>
-                            </div>
-                            <div class="pure-controls">
-                                <button id="i2c-scan-button" type="button" class="pure-button" data-i18next="settings.hardware-pins.i2c-scan"></button>
-                            </div>
-                            <div class="pure-control-group i2c-scan-result-group">
-                                <label for="i2c-scan-result" data-i18next="settings.hardware-pins.i2c-result"></label><input id="i2c-scan-result" type="text" readonly>
                             </div>
                         </fieldset>
                     </form>
