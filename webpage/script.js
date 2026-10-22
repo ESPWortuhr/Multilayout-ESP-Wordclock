@@ -828,9 +828,46 @@ function hideRebootRecommendedBanner() {
 	if (rebootRecommendedEl) rebootRecommendedEl.style.display = "none";
 }
 
+const MASONRY_ROW_HEIGHT = 2;
+
+function layoutMasonry(section) {
+	const boxes = Array.from(section.children);
+	const columns = getComputedStyle(section).gridTemplateColumns.split(" ").length;
+	const masonry = !section.hidden && columns > 1;
+	section.classList.toggle("masonry", masonry);
+	if (!masonry) {
+		boxes.forEach(box => { box.style.gridRowEnd = ""; });
+		return;
+	}
+	const gap = parseFloat(getComputedStyle(section).columnGap) || 0;
+	boxes.forEach(box => {
+		const height = box.getBoundingClientRect().height;
+		box.style.gridRowEnd = height ? `span ${Math.ceil((height + gap) / MASONRY_ROW_HEIGHT)}` : "";
+	});
+}
+
+function initMasonry() {
+	const pending = new Set();
+	const observer = new ResizeObserver(entries => {
+		entries.forEach(entry => {
+			const section = entry.target.closest(".section");
+			if (section) pending.add(section);
+		});
+		requestAnimationFrame(() => {
+			pending.forEach(layoutMasonry);
+			pending.clear();
+		});
+	});
+	document.querySelectorAll(".section").forEach(section => {
+		observer.observe(section);
+		Array.from(section.children).forEach(box => observer.observe(box));
+	});
+}
+
 // Replaced $.ready with DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function() {
 
+	initMasonry();
 	initConfigValues();
 	setSliders();
 	setElementsForFunctionsMenu();

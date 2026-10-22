@@ -593,6 +593,11 @@ svg {
     align-items: start;
 }
 
+.section.masonry {
+    grid-auto-rows: 2px;
+    row-gap: 0;
+}
+
 .section[hidden] {
     display: none;
 }
@@ -673,7 +678,7 @@ svg {
     padding: 24px;
     border-radius: var(--radius-card);
     text-align: left;
-    hyphens: auto;
+    overflow-wrap: break-word;
 }
 
 .box h2 {
@@ -797,6 +802,14 @@ svg {
     line-height: normal;
 }
 
+.pure-form input[type="time"] {
+    line-height: calc(var(--control-height) - 2px);
+}
+
+.pure-form input[type="time"]::-webkit-date-and-time-value {
+    text-align: left;
+}
+
 /* The arrow keeps the same distance to the right edge as the text to the left edge. */
 .pure-form select {
     padding-right: calc(var(--field-pad) * 2 + 12px);
@@ -867,8 +880,12 @@ svg {
     justify-self: end;
 }
 
-.pure-form-aligned .pure-control-group.field-wide {
-    grid-template-columns: auto minmax(0, 1fr);
+.pure-form-aligned .pure-control-group:has(> label.switch) {
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.pure-form-aligned .pure-control-group.field-wide > select {
+    grid-column: 1 / -1;
 }
 
 .pure-form-aligned .pure-control-group > :is(input[type="range"], .pure-controls, .pure-control-group, legend) {
