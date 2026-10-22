@@ -152,7 +152,7 @@ let TRANSLATION_HU = {
 		},
 		"language": {
 			"h2": "Nyelv",
-			"hide-it-is": "„Mutasd meg a 'Ez a'“",
+			"hide-it-is": "Mutasd meg az „Ez a” szöveget",
 			"it-is-off": "Off",
 			"it-is-hourly": "Óránként",
 			"it-is-half-hourly": "Félóránként",

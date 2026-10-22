@@ -155,7 +155,7 @@ let TRANSLATION_ES = {
 		},
 		"language": {
 			"h2": "Idioma",
-			"hide-it-is": "Mostrar 'Son Las'“",
+			"hide-it-is": "Mostrar «Son las»",
 			"it-is-off": "Apagado",
 			"it-is-hourly": "Por hora",
 			"it-is-half-hourly": "Media hora",

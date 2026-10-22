@@ -143,7 +143,7 @@ let TRANSLATION_RU = {
 		},
 		"language": {
 			"h2": "Язык",
-			"hide-it-is": "Отображение 'ЧАС, ЧАСA, ЧАСОВ'“",
+			"hide-it-is": "Отображение «ЧАС, ЧАСА, ЧАСОВ»",
 			"it-is-off": "Выключено",
 			"it-is-hourly": "Почасовая",
 			"it-is-half-hourly": "Half-hourly",

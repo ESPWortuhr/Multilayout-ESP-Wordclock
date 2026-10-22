@@ -181,7 +181,7 @@ let TRANSLATION_EN_US = {
 		},
 		"language": {
 			"h2": "Language",
-			"hide-it-is": "„Display 'It is'“",
+			"hide-it-is": "“It is” display",
 			"it-is-off": "Off",
 			"it-is-hourly": "Hourly",
 			"it-is-half-hourly": "Half-hourly",

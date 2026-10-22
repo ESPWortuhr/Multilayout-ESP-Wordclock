@@ -155,7 +155,7 @@ let TRANSLATION_NL = {
 		},
 		"language": {
 			"h2": "Taal",
-			"hide-it-is": "„Display 'Het is'“",
+			"hide-it-is": "“Het is” weergeven",
 			"it-is-off": "Uit",
 			"it-is-hourly": "Per uur",
 			"it-is-half-hourly": "Per half uur",

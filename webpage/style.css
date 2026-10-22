@@ -470,18 +470,15 @@ svg {
 }
 
 .page-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 6px 16px;
     margin-bottom: 24px;
 }
 
 .page-heading {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 0;
+    display: contents;
 }
 
 .page-header h1 {
@@ -494,6 +491,7 @@ svg {
 }
 
 .page-sub {
+    grid-column: 1 / -1;
     margin: 0;
     font-size: 15px;
     color: var(--text-soft);
@@ -514,7 +512,8 @@ svg {
 /* Language and connection status, centered on the first line of the page title */
 .header-tools {
     display: flex;
-    flex: 0 0 auto;
+    grid-row: 1;
+    grid-column: 2;
     align-items: center;
     gap: 10px;
     margin-top: 2px;
@@ -613,18 +612,12 @@ svg {
         margin-bottom: 16px;
     }
 
-    .page-heading {
-        display: contents;
-    }
-
     .page-brand {
         grid-row: 1;
         grid-column: 1;
     }
 
     .header-tools {
-        grid-row: 1;
-        grid-column: 2;
         gap: 8px;
         margin: 0;
     }
@@ -874,6 +867,10 @@ svg {
     justify-self: end;
 }
 
+.pure-form-aligned .pure-control-group.field-wide {
+    grid-template-columns: auto minmax(0, 1fr);
+}
+
 .pure-form-aligned .pure-control-group > :is(input[type="range"], .pure-controls, .pure-control-group, legend) {
     grid-column: 1 / -1;
 }
@@ -1102,7 +1099,7 @@ input[type="range"]:focus-visible,
     display: contents !important;
 }
 
-/* Two per row; an odd one out takes the full row */
+/* Two per row, three share one row on wider screens */
 .segmented .seg {
     display: flex;
     flex: 1 1 calc(50% - 2px);
@@ -1120,6 +1117,12 @@ input[type="range"]:focus-visible,
     font-weight: 600;
     hyphens: none;
     cursor: pointer;
+}
+
+@media (width >= 30em) {
+    .segmented:not(:has(.specific-layout-7:not([style*="display: none"]))) .seg {
+        flex-basis: 0;
+    }
 }
 
 .seg input {

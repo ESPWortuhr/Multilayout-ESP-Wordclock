@@ -155,7 +155,7 @@ let TRANSLATION_IT = {
 		},
 		"language": {
 			"h2": "Lingua",
-			"hide-it-is": "Visualizza 'Sono le'“",
+			"hide-it-is": "Visualizza «Sono le»",
 			"it-is-off": "Spento",
 			"it-is-hourly": "Oario",
 			"it-is-half-hourly": "Mezz'ora",
