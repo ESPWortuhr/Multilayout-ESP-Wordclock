@@ -1485,7 +1485,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 input:checked + .slider {
-    background: var(--accent);
+    background: var(--ok);
 }
 
 input:checked + .slider::before {

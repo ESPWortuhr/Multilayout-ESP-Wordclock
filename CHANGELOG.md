@@ -1,5 +1,35 @@
 # Changelog
 
+## V5.0.0-rc.3
+
+Third release candidate for 5.0.0. The WiFi setup portal can now set up the clock without a home network, the laser and fireworks follow the clock brightness and the random word colours survive brightness changes.
+
+### Upgrade notes
+
+- Updating from V5.0.0-rc.1 or rc.2 keeps all settings (`SERNR` is still 500). Updating from 4.x resets all settings, see the notes for rc.1.
+
+### Added
+
+- The WiFi setup portal sets the time from the connected phone and has a new "Clock" page for the foreground colour, the clock variant, the layout switches, the build type and a manual time. "Continue without WiFi" leaves the portal so the clock runs without a home network (#830, #245).
+- The README documents the setup portal, running without WiFi and disabling the charging circuit of the HW-111 RTC module for CR2032 cells (#812).
+
+### Improved
+
+- Switched-on toggles in the web interface are green, so they are easy to tell from switched-off ones in dark mode with a white or grey clock colour.
+
+### Fixed
+
+- The laser and the fireworks are dimmed with the clock brightness instead of lighting up at full brightness at night (#828, #487).
+- "Random per word" keeps its colours through brightness changes and minute ticks instead of turning white or rolling new colours (#829, #586).
+- Text sent to Home Assistant via MQTT is escaped, so a `"` or `\` in a message or the scrolling text no longer breaks the JSON (#827).
+- The timezone is applied before WiFi starts, so a manually set time is local time.
+
+### Internal / Maintenance
+
+- WiFiManager updated to `32655b72` (fixes a crash when the setup portal shuts down).
+- New host tests for the render pipeline and the transition effects.
+- Bumped version in `package.json` to `5.0.0-rc.3`.
+
 ## V5.0.0-rc.2
 
 Second release candidate for 5.0.0. It fixes the Home Assistant discovery for openHAB and other integrations, shows the MQTT connection status and polishes the web interface.
