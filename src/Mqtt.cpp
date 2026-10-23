@@ -123,6 +123,12 @@ static String discoveryTopic(const char *platform, const String &node) {
            "/config";
 }
 
+static String macDiscoveryNode() {
+    String node = WiFi.macAddress();
+    node.replace(":", "");
+    return node;
+}
+
 static void beginDiscovery(JsonDocument &doc, const String &deviceId) {
     doc.clear();
     doc["avty_t"] = topic("availability");
@@ -177,6 +183,19 @@ static void publishDiagSensor(JsonDocument &doc, const String &deviceId,
 // it does not leave stale or duplicate entities in Home Assistant.
 static void clearDiscovery(const char *platform, const String &node) {
     mqttClient.publish(discoveryTopic(platform, node).c_str(), "", true);
+}
+
+static constexpr uint32_t DISCOVERY_MIGRATION_DELAY_MS = 1000;
+static bool discoveryMigrated = false;
+static bool discoveryMigrationPending = false;
+static uint32_t discoveryMigrationStartedAt = 0;
+
+static void clearRetiredDiscovery() {
+    String node = macDiscoveryNode();
+    clearDiscovery("device", node);
+    clearDiscovery("light", String(G.mqtt.topic) + "/light");
+    clearDiscovery("sensor", node + "_adc_value");
+    clearDiscovery("sensor", node + "_adc_raw");
 }
 
 // Home Assistant "select" entities exchange human-readable labels, while the
@@ -676,6 +695,15 @@ void Mqtt::loop() {
     }
     mqttClient.loop();
 
+    if (discoveryMigrationPending && isConnected() &&
+        millis() - discoveryMigrationStartedAt >=
+            DISCOVERY_MIGRATION_DELAY_MS) {
+        discoveryMigrationPending = false;
+        publishDiscoveryConfigs();
+        clearRetiredDiscovery();
+        discoveryMigrated = true;
+    }
+
     // Regular status update
     if (millis() - lastStateUpdate >= STATE_UPDATE_INTERVAL) {
         sendState();
@@ -973,17 +1001,22 @@ None
 */
 
 void Mqtt::sendDiscovery() {
+    if (discoveryMigrated) {
+        publishDiscoveryConfigs();
+        return;
+    }
+    mqttClient.publish(discoveryTopic("device", macDiscoveryNode()).c_str(),
+                       "{\"migrate_discovery\":true}");
+    discoveryMigrationPending = true;
+    discoveryMigrationStartedAt = millis();
+}
+
+void Mqtt::publishDiscoveryConfigs() {
     // The MAC is the stable device identifier and the base for every entity's
     // unique_id, so renaming the MQTT base topic never orphans the device. The
     // colon-free variant is used in the discovery topic path.
     String unique_id = WiFi.macAddress();
-    String discoveryNode = unique_id;
-    discoveryNode.replace(":", "");
-
-    clearDiscovery("device", discoveryNode);
-    clearDiscovery("light", String(G.mqtt.topic) + "/light");
-    clearDiscovery("sensor", discoveryNode + "_adc_value");
-    clearDiscovery("sensor", discoveryNode + "_adc_raw");
+    String discoveryNode = macDiscoveryNode();
 
     String base = String(G.mqtt.topic);
     DynamicJsonDocument doc(3072);

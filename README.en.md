@@ -439,10 +439,14 @@ Once the clock has processed a command (or something changes internally), it pub
 ---
 
 ### 5. Home Assistant auto-discovery
-This clock supports MQTT auto-discovery for Home Assistant.
-When the clock starts, or when the "MQTT Discovery" button in the web interface is pressed, it automatically publishes its full configuration to the topic:
+This clock supports MQTT auto-discovery for Home Assistant. Systems that emulate the Home Assistant format (e.g. openHAB) find the clock as well.
+When the clock connects to the broker, Home Assistant restarts, or the "MQTT Discovery" button in the web interface is pressed, it publishes a separate retained configuration for every entity to:
 
-`homeassistant/light/<TOPIC>/light/config`
+`homeassistant/<type>/<MAC>/config` for the light, e.g. `homeassistant/light/24A1602FF8C5/config`
+
+`homeassistant/<type>/<MAC>_<ID>/config` for all other entities, e.g. `homeassistant/sensor/24A1602FF8C5_lux/config`
+
+`<MAC>` is the clock's MAC address without colons. All entities are grouped into one device.
 
 As a result the word clock appears in Home Assistant as a light entity, fully automatically. You immediately get access to:
 

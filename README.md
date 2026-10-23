@@ -437,10 +437,14 @@ Sobald die Uhr einen Befehl verarbeitet hat (oder sich intern etwas ändert), se
 ---
 
 ### 5. Home Assistant Auto-Discovery
-Diese Uhr unterstützt MQTT Auto-Discovery für Home Assistant.
-Wenn die Uhr startet oder der Button "MQTT Discovery" im Webinterface gedrückt wird, sendet sie automatisch ihre komplette Konfiguration an das Topic:
+Diese Uhr unterstützt MQTT Auto-Discovery für Home Assistant. Systeme, die das Home-Assistant-Format nachbilden (z. B. openHAB), finden die Uhr ebenfalls.
+Wenn die Uhr sich mit dem Broker verbindet, Home Assistant neu startet oder der Button "MQTT Discovery" im Webinterface gedrückt wird, sendet sie für jede Entität eine eigene Konfiguration (retained) an:
 
-`homeassistant/light/<TOPIC>/light/config`
+`homeassistant/<Typ>/<MAC>/config` für das Licht, z. B. `homeassistant/light/24A1602FF8C5/config`
+
+`homeassistant/<Typ>/<MAC>_<ID>/config` für alle weiteren Entitäten, z. B. `homeassistant/sensor/24A1602FF8C5_lux/config`
+
+`<MAC>` ist die MAC-Adresse der Uhr ohne Doppelpunkte. Alle Entitäten werden zu einem Gerät zusammengefasst.
 
 Dadurch taucht die Wortuhr in Home Assistant vollautomatisch als Licht-Entität auf. Du hast dort sofort Zugriff auf:
 
