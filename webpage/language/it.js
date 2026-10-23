@@ -341,7 +341,17 @@ let TRANSLATION_IT = {
 			"client-id": "Client-ID",
 			"topic": "Argomento",
 			"save": "Guardar ajustes",
-			"discovery": "Send HA Discovery"
+			"discovery": "Send HA Discovery",
+			"status": "Stato",
+			"status-not-configured": "Non configurato",
+			"status-connected": "Connesso",
+			"status-disconnected": "Non connesso",
+			"status-server-not-found": "Server non trovato",
+			"status-unreachable": "Server non raggiungibile",
+			"status-bad-credentials": "Rifiutato: credenziali errate",
+			"status-unauthorized": "Rifiutato: non autorizzato",
+			"status-bad-client-id": "Rifiutato: ID client non valido",
+			"status-refused": "Rifiutato dal server"
 		}
 	},
 

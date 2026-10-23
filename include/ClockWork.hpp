@@ -1515,6 +1515,7 @@ void ClockWork::loop(struct tm &tm) {
 
         config["MQTT_ClientId"] = G.mqtt.clientId;
         config["MQTT_Topic"] = G.mqtt.topic;
+        config["MQTT_Status"] = mqtt.status();
 
         sendJsonToClient(G.client_nr, config);
         break;
@@ -1741,6 +1742,7 @@ void ClockWork::loop(struct tm &tm) {
         delay(100);
 
         eeprom::write();
+        mqtt.notifyStatus();
         break;
     }
 

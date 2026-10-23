@@ -942,6 +942,13 @@
 
                     <form class="pure-form pure-form-aligned">
                         <div class="pure-control-group">
+                            <span data-i18next="smart-home.mqtt.status"></span>
+                            <span class="value mqtt-status" id="mqtt-status" data-status="not-configured">
+                                <span class="conn-dot"></span>
+                                <span id="mqtt-status-text" data-i18next="smart-home.mqtt.status-not-configured"></span>
+                            </span>
+                        </div>
+                        <div class="pure-control-group">
                         <label for="mqtt-state" data-i18next="smart-home.mqtt.activate"></label>
                         <label class="switch">
                             <input type="checkbox" id="mqtt-state">

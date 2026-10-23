@@ -370,7 +370,17 @@ let TRANSLATION_DE_DE = {
 			"client-id": "Client-ID",
 			"topic": "Topic",
 			"save": "Einstellungen Speichern",
-			"discovery": "Sende HA Discovery"
+			"discovery": "Sende HA Discovery",
+			"status": "Status",
+			"status-not-configured": "Nicht konfiguriert",
+			"status-connected": "Verbunden",
+			"status-disconnected": "Nicht verbunden",
+			"status-server-not-found": "Server nicht gefunden",
+			"status-unreachable": "Server nicht erreichbar",
+			"status-bad-credentials": "Abgelehnt: falsche Zugangsdaten",
+			"status-unauthorized": "Abgelehnt: keine Berechtigung",
+			"status-bad-client-id": "Abgelehnt: ungültige Client-ID",
+			"status-refused": "Vom Server abgelehnt"
 		}
 	},
 	"about": {

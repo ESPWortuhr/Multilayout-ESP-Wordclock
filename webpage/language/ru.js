@@ -329,7 +329,17 @@ let TRANSLATION_RU = {
 			"client-id": "ID клиента",
 			"topic": "Tema",
 			"save": "Сохранить настройки",
-			"discovery": "Отправить HA Discovery"
+			"discovery": "Отправить HA Discovery",
+			"status": "Статус",
+			"status-not-configured": "Не настроено",
+			"status-connected": "Подключено",
+			"status-disconnected": "Не подключено",
+			"status-server-not-found": "Сервер не найден",
+			"status-unreachable": "Сервер недоступен",
+			"status-bad-credentials": "Отклонено: неверные учётные данные",
+			"status-unauthorized": "Отклонено: нет доступа",
+			"status-bad-client-id": "Отклонено: неверный Client-ID",
+			"status-refused": "Отклонено сервером"
 		}
 	},
 

@@ -341,7 +341,17 @@ let TRANSLATION_HU = {
 			"client-id": "Ügyfélazonosító",
 			"topic": "Téma",
 			"save": "Beállítás mentése",
-			"discovery": "HA Discovery küldése"
+			"discovery": "HA Discovery küldése",
+			"status": "Állapot",
+			"status-not-configured": "Nincs beállítva",
+			"status-connected": "Csatlakozva",
+			"status-disconnected": "Nincs csatlakozva",
+			"status-server-not-found": "A szerver nem található",
+			"status-unreachable": "A szerver nem elérhető",
+			"status-bad-credentials": "Elutasítva: hibás belépési adatok",
+			"status-unauthorized": "Elutasítva: nincs jogosultság",
+			"status-bad-client-id": "Elutasítva: érvénytelen kliensazonosító",
+			"status-refused": "A szerver elutasította"
 		}
 	},
 

@@ -65,6 +65,24 @@ static constexpr unsigned int MQTT_MAX_PAYLOAD_LENGTH = 512;
 
 static constexpr int32_t MQTT_CONNECT_TIMEOUT_MS = 2000;
 
+static const char *mqttFailure = "disconnected";
+
+static const char *failureForState(int state) {
+    switch (state) {
+    case MQTT_CONNECT_BAD_CREDENTIALS:
+        return "bad-credentials";
+    case MQTT_CONNECT_UNAUTHORIZED:
+        return "unauthorized";
+    case MQTT_CONNECT_BAD_CLIENT_ID:
+        return "bad-client-id";
+    case MQTT_CONNECT_BAD_PROTOCOL:
+    case MQTT_CONNECT_UNAVAILABLE:
+        return "refused";
+    default:
+        return "unreachable";
+    }
+}
+
 static bool connectToBroker() {
     if (client.connected()) {
         return true;
@@ -79,6 +97,7 @@ static bool connectToBroker() {
 #endif
     if (resolved != 1) {
         Serial.println("MQTT: DNS lookup for broker failed");
+        mqttFailure = "server-not-found";
         return false;
     }
 
@@ -91,6 +110,7 @@ static bool connectToBroker() {
 #endif
     if (!ok) {
         Serial.println("MQTT: Connection to broker failed");
+        mqttFailure = "unreachable";
     }
     return ok;
 }
@@ -579,8 +599,10 @@ void Mqtt::init() {
         if (!connected) {
             Serial.print("MQTT: Broker refused connection, state ");
             Serial.println(mqttClient.state());
+            mqttFailure = failureForState(mqttClient.state());
             return;
         }
+        mqttFailure = "disconnected";
     }
 
     // Send online status immediately after connection
@@ -669,6 +691,26 @@ false if the MQTT client is not connected to the broker.
 
 bool Mqtt::isConnected() { return mqttClient.connected(); }
 
+const char *Mqtt::status() {
+    if (!G.mqtt.state || G.mqtt.serverAdress[0] == '\0') {
+        return "not-configured";
+    }
+    if (isConnected()) {
+        return "connected";
+    }
+    return mqttFailure;
+}
+
+void Mqtt::notifyStatus() {
+    static const char *lastStatus = nullptr;
+    const char *current = status();
+    if (current == lastStatus) {
+        return;
+    }
+    lastStatus = current;
+    broadcastToWeb("mqtt-status", "status", current);
+}
+
 //------------------------------------------------------------------------------
 
 /* Description:
@@ -709,6 +751,8 @@ void Mqtt::loop() {
         sendState();
         lastStateUpdate = millis();
     }
+
+    notifyStatus();
 }
 
 //------------------------------------------------------------------------------

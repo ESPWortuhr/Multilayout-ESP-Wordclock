@@ -29,6 +29,8 @@ public:
     void sendDiscovery();
 
     bool isConnected();
+    const char *status();
+    void notifyStatus();
 };
 
 extern Mqtt *mqttInstance;

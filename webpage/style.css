@@ -600,6 +600,30 @@ svg {
     color: var(--text-muted);
 }
 
+.pure-control-group .value.mqtt-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-align: right;
+}
+
+.pure-form-aligned .pure-control-group:has(> .mqtt-status) {
+    grid-template-columns: auto minmax(0, 1fr);
+}
+
+.mqtt-status .conn-dot {
+    flex: 0 0 auto;
+}
+
+.mqtt-status[data-status="connected"] .conn-dot {
+    background: var(--ok);
+    box-shadow: 0 0 10px var(--ok);
+}
+
+.mqtt-status[data-status="not-configured"] .conn-dot {
+    background: var(--text-muted);
+}
+
 .section {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr));

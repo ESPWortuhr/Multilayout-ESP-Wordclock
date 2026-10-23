@@ -344,7 +344,17 @@ let TRANSLATION_NL = {
 			"client-id": "Client ID",
 			"topic": "Topic",
 			"save": "Opslaan",
-			"discovery": "Send HA Discovery"
+			"discovery": "Send HA Discovery",
+			"status": "Status",
+			"status-not-configured": "Niet geconfigureerd",
+			"status-connected": "Verbonden",
+			"status-disconnected": "Niet verbonden",
+			"status-server-not-found": "Server niet gevonden",
+			"status-unreachable": "Server niet bereikbaar",
+			"status-bad-credentials": "Geweigerd: onjuiste inloggegevens",
+			"status-unauthorized": "Geweigerd: geen toestemming",
+			"status-bad-client-id": "Geweigerd: ongeldige client-ID",
+			"status-refused": "Geweigerd door server"
 		}
 	},
 	"about": {

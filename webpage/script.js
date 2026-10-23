@@ -249,6 +249,17 @@ function setI18nText(element, key) {
 	}
 }
 
+const MQTT_STATUSES = ["not-configured", "connected", "disconnected", "server-not-found",
+	"unreachable", "bad-credentials", "unauthorized", "bad-client-id", "refused"];
+
+function setMqttStatus(status) {
+	const el = document.getElementById("mqtt-status");
+	if (!el) return;
+	const known = MQTT_STATUSES.includes(status) ? status : "not-configured";
+	el.dataset.status = known;
+	setI18nText(document.getElementById("mqtt-status-text"), "smart-home.mqtt.status-" + known);
+}
+
 function setConnectionState(online) {
 	const conn = document.getElementById("conn");
 	if (conn) conn.classList.toggle("online", online);
@@ -323,8 +334,12 @@ function initWebsocket() {
 				document.getElementById("mqtt-pass").value = data.MQTT_Pass;
 				document.getElementById("mqtt-clientid").value = data.MQTT_ClientId;
 				document.getElementById("mqtt-topic").value = data.MQTT_Topic;
+				setMqttStatus(data.MQTT_Status);
 				break;
 			}
+			case "mqtt-status":
+				setMqttStatus(data.status);
+				break;
 			case "birthdays":
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
 				for (let i = 0; i < 5; i++) {

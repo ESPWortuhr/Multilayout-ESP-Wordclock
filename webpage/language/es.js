@@ -341,7 +341,17 @@ let TRANSLATION_ES = {
 			"client-id": "Client-ID",
 			"topic": "Tema",
 			"save": "Guardar ajustes",
-			"discovery": "Send HA Discovery"
+			"discovery": "Send HA Discovery",
+			"status": "Estado",
+			"status-not-configured": "No configurado",
+			"status-connected": "Conectado",
+			"status-disconnected": "No conectado",
+			"status-server-not-found": "Servidor no encontrado",
+			"status-unreachable": "Servidor no accesible",
+			"status-bad-credentials": "Rechazado: credenciales incorrectas",
+			"status-unauthorized": "Rechazado: sin autorización",
+			"status-bad-client-id": "Rechazado: ID de cliente no válido",
+			"status-refused": "Rechazado por el servidor"
 		}
 	},
 
