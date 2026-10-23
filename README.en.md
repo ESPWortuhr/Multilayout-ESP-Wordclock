@@ -264,6 +264,7 @@ While the portal is open the display does not update. Color and time appear once
 * **Without an RTC** the portal stays open until it is left via "Continue without WiFi". The time then comes from your phone. After a power cut it is lost and has to be taken over again through the portal.
 * **With an RTC** the portal closes by itself after 120 seconds without use, and the clock keeps running on the RTC time. So when no WiFi is reachable, booting takes up to about 20 s + 120 s.
 * **RTC module HW-111 (Tiny RTC):** this module uses a DS1307. Set `RTC_Type` to `RTC_DS1307` in `include/Config.h` and build the firmware yourself, because the prebuilt firmware is built for the DS3231. Then enter SDA and SCL in the web interface under **Settings → Hardware pins**. **Scan I2C addresses** should list `0x68` (usually also `0x50` for the EEPROM on the module).
+  * **Disable the charging circuit:** the HW-111 charges the coin cell through a diode and resistors. This is meant for a rechargeable LIR2032. With a regular CR2032 the charging circuit must be removed, otherwise the cell gets charged and may leak or swell. The usual fix is to desolder D1, R4, R5 and R6 and bridge the pads of R6 (see the [Arduino forum](https://forum.arduino.cc/t/tiny-rtc-i2c-module-issue/173162/22)).
 
 ---
 

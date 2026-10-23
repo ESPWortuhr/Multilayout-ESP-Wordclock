@@ -266,6 +266,7 @@ Solange der Dialog offen ist, steht die Anzeige. Farbe und Uhrzeit erscheinen er
 * **Ohne RTC** bleibt der Dialog geöffnet, bis er über „Continue without WiFi“ verlassen wird. Die Uhrzeit kommt dann vom Smartphone. Nach einem Stromausfall ist sie verloren und muss über den Dialog neu übernommen werden.
 * **Mit RTC** schließt sich der Dialog nach 120 Sekunden ohne Bedienung von selbst. Die Uhr läuft dann mit der Zeit der RTC weiter. Beim Start wartet die Uhr also bis zu etwa 20 s + 120 s, wenn kein WLAN erreichbar ist.
 * **RTC-Modul HW-111 (Tiny RTC):** Dieses Modul verwendet einen DS1307. Dafür in `include/Config.h` `RTC_Type` auf `RTC_DS1307` setzen und selbst kompilieren, denn die fertige Firmware ist für den DS3231 gebaut. Anschließend im Webinterface unter **Einstellungen → Hardware-Pins** SDA und SCL eintragen. Mit **I2C-Adressen suchen** sollte `0x68` erscheinen (dazu meist `0x50` für das EEPROM auf dem Modul).
+  * **Ladeschaltung deaktivieren:** Das HW-111 lädt die Knopfzelle über eine Diode und Widerstände. Gedacht ist das für eine aufladbare LIR2032. Mit einer normalen CR2032 muss diese Ladeschaltung entfernt werden, sonst wird die Zelle geladen und kann auslaufen oder aufblähen. Üblich ist, D1, R4, R5 und R6 auszulöten und die Pads von R6 zu überbrücken (siehe [Arduino-Forum](https://forum.arduino.cc/t/tiny-rtc-i2c-module-issue/173162/22)).
 
 ---
 
