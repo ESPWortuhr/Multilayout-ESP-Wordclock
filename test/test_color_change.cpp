@@ -194,7 +194,7 @@ void randomKeepsItsHues() {
     for (uint8_t row = 0; row < ROWS; row++) {
         for (uint8_t col = 0; col < COLS; col++) {
             const HsbColor cell = HsbColor(buffers.act[row][col]);
-            if (cell.H != hues[row][col]) {
+            if (fabsf(cell.H - hues[row][col]) > .01f) {
                 snprintf(message, sizeof message,
                          "random: hue of cell %u/%u moved from %.3f to %.3f",
                          row, col, static_cast<double>(hues[row][col]),

@@ -43,6 +43,7 @@ private:
                           2;
         m_sparkle = false;
         m_subPhase = 1;
+        dimColors(effectBrightness(context));
         m_firework.prepare(0, m_white, FIRE_1, m_mirrored);
 
         if ((context.type == BIRTHDAY) &&
@@ -165,6 +166,14 @@ private:
         }
     }
 
+    void dimColors(uint8_t level) {
+        m_white = RgbColor(level, level, level);
+        m_green = RgbColor(0, level, 0);
+        m_red = RgbColor(level, 0, 0);
+        m_blue = RgbColor(0, 0, level);
+        m_yellow = RgbColor(level, level, 0);
+    }
+
     static void copyFlags(ColorMatrix &dest, const ColorMatrix &source) {
         for (uint8_t row = 0; row < dest.rows(); row++) {
             for (uint8_t col = 0; col < dest.cols(); col++) {
@@ -179,9 +188,9 @@ private:
     /* Alternates between runs so consecutive fireworks are not identical. */
     bool m_mirrored = false;
 
-    RgbColor m_white = RgbColor(255, 255, 255);
-    RgbColor m_green = RgbColor(0, 255, 0);
-    RgbColor m_red = RgbColor(255, 0, 0);
-    RgbColor m_blue = RgbColor(0, 0, 255);
-    RgbColor m_yellow = RgbColor(255, 255, 0);
+    RgbColor m_white;
+    RgbColor m_green;
+    RgbColor m_red;
+    RgbColor m_blue;
+    RgbColor m_yellow;
 };

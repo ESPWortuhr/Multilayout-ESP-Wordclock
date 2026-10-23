@@ -1098,7 +1098,7 @@ void Mqtt::publishDiscoveryConfigs() {
     doc["stat_t"] = base + "/scrolltext/state";
     doc["cmd_t"] = base + "/scrolltext/set";
     doc["val_tpl"] = "{{ value_json.scrolling_text }}";
-    doc["cmd_tpl"] = "{ \"scrolling_text\": \"{{ value }}\" }";
+    doc["cmd_tpl"] = "{ \"scrolling_text\": {{ value | to_json }} }";
     doc["max"] = sizeof(G.scrollingText) - 1;
     publishJsonStream(discoveryTopic("text", discoveryNode + "_scrolltext"),
                       doc);
@@ -1111,7 +1111,7 @@ void Mqtt::publishDiscoveryConfigs() {
     doc["name"] = "Message";
     doc["ic"] = "mdi:message-text";
     doc["cmd_t"] = base + "/cmd";
-    doc["cmd_tpl"] = "{\"scrolling_text\": \"{{ value }}\", \"effect\": "
+    doc["cmd_tpl"] = "{\"scrolling_text\": {{ value | to_json }}, \"effect\": "
                      "\"Scrollingtext\"}";
     publishJsonStream(discoveryTopic("notify", discoveryNode + "_message"),
                       doc);
