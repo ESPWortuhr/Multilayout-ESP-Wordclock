@@ -16,6 +16,7 @@ public:
             m_row = 0;
             m_col = 0;
             m_erasing = true;
+            m_beam = RgbfColor(effectBrightness(context));
             context.out.copyFrom(context.from);
         }
 
@@ -44,5 +45,5 @@ private:
     uint8_t m_row = 0;
     uint8_t m_col = 0;
     bool m_erasing = true;
-    RgbfColor m_beam = RgbfColor(255);
+    RgbfColor m_beam;
 };
