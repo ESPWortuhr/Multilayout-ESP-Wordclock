@@ -383,7 +383,7 @@
  * Valid values BOOT_SHOWIP [true, false]
  * Valid values BOOT_LEDSWEEP [true, false]
  */
-#define BOOT_SHOWIP false
+#define BOOT_SHOWIP true
 #define BOOT_LEDSWEEP false
 
 //--------------------------------------------------------------------------
