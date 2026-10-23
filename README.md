@@ -64,6 +64,8 @@ Die Sprache der Uhr wird über das Front-Layout festgelegt. Alle Layouts sind in
   - [Fertige Firmware flashen (ohne Entwicklungsumgebung)](#fertige-firmware-flashen-ohne-entwicklungsumgebung)
   - [Nightly-Builds (aktueller Entwicklungsstand)](#nightly-builds-aktueller-entwicklungsstand)
   - [Nach der Installation: Der Erste Start](#nach-der-installation-der-erste-start)
+  - [Einrichtungsdialog: Uhrzeit, Farbe und Front ohne WLAN](#einrichtungsdialog-uhrzeit-farbe-und-front-ohne-wlan)
+  - [Betrieb ohne WLAN](#betrieb-ohne-wlan)
 - [Anschluss der Hardware](#anschluss-der-hardware)
 - [Schematischer Aufbau einer Wordclock](#schematischer-aufbau-einer-wordclock)
 - [Konfigurationsübersicht](#konfigurationsübersicht)
@@ -233,9 +235,37 @@ Zu beachten:
 Sobald der Upload auf den ESP erfolgreich war (Meldung `SUCCESS` im Terminal), startet die Uhr neu.
 
 1. Die Wortuhr spannt nun ein eigenes WLAN-Netzwerk (Access Point) auf.
-2. Suchen Sie mit Ihrem Smartphone oder Laptop nach einem neuen WLAN (meist "Wortuhr" oder ähnlich) und verbinden Sie sich damit.
+2. Suchen Sie mit Ihrem Smartphone oder Laptop nach einem neuen WLAN (Standard: `Connect_to_Wordclock`) und verbinden Sie sich damit.
 3. Es sollte sich automatisch ein Anmeldefenster öffnen (Captive Portal). Falls nicht, öffnen Sie Ihren Browser und rufen Sie die Adresse `http://192.168.4.1` auf.
 4. Tragen Sie dort Ihre heimischen WLAN-Zugangsdaten ein. Die Uhr startet neu, verbindet sich mit Ihrem Heimnetzwerk und ist fortan über ihre eigene IP-Adresse im Netzwerk erreichbar.
+
+### Einrichtungsdialog: Uhrzeit, Farbe und Front ohne WLAN
+
+Der Einrichtungsdialog (Captive Portal) kann mehr als nur WLAN-Daten speichern. Damit lässt sich die Uhr auch ganz ohne Heimnetz in Betrieb nehmen.
+
+* **Uhrzeit vom Smartphone:** Sobald eine Seite des Dialogs geöffnet ist, übernimmt die Uhr automatisch die Uhrzeit des verbundenen Geräts. Ist eine RTC verbaut, wird sie gleich mit gestellt.
+* **Menüpunkt „Clock“:** Hier lassen sich einstellen:
+  * Vordergrundfarbe
+  * Uhrvariante, die sechs Layout-Schalter und die Bauart (wie im Webinterface unter **Front**)
+  * Uhrzeit von Hand, falls die automatische Übernahme nicht klappt
+
+  Die Einstellungen werden mit **Save settings** gespeichert. Änderungen der Matrixgröße werden wie im Webinterface erst nach einem Neustart übernommen.
+* **„Continue without WiFi“** beendet den Dialog. Die Uhr läuft dann mit der übernommenen Uhrzeit weiter.
+
+Solange der Dialog offen ist, steht die Anzeige. Farbe und Uhrzeit erscheinen erst, nachdem der Dialog verlassen wurde.
+
+**Den Dialog öffnen:**
+
+* Beim ersten Start oder wenn das gespeicherte WLAN nicht erreichbar ist, öffnet er sich von selbst, spätestens nach etwa 20 Sekunden Verbindungsversuch.
+* Bei bestehender WLAN-Verbindung: Die Uhr **dreimal hintereinander** kurz vom Strom trennen, jeweils bevor sie fertig gestartet ist (innerhalb weniger Sekunden). Beim dritten Start öffnet sich der Dialog, die WLAN-Daten bleiben erhalten.
+
+> **Achtung:** Beim **sechsten** Start in Folge setzt die Uhr alle Einstellungen auf Werkseinstellungen zurück (die WLAN-Daten bleiben erhalten). Die Zählung beginnt neu, sobald die Uhr einmal vollständig gestartet ist.
+
+### Betrieb ohne WLAN
+
+* **Ohne RTC** bleibt der Dialog geöffnet, bis er über „Continue without WiFi“ verlassen wird. Die Uhrzeit kommt dann vom Smartphone. Nach einem Stromausfall ist sie verloren und muss über den Dialog neu übernommen werden.
+* **Mit RTC** schließt sich der Dialog nach 120 Sekunden ohne Bedienung von selbst. Die Uhr läuft dann mit der Zeit der RTC weiter. Beim Start wartet die Uhr also bis zu etwa 20 s + 120 s, wenn kein WLAN erreichbar ist.
+* **RTC-Modul HW-111 (Tiny RTC):** Dieses Modul verwendet einen DS1307. Dafür in `include/Config.h` `RTC_Type` auf `RTC_DS1307` setzen und selbst kompilieren, denn die fertige Firmware ist für den DS3231 gebaut. Anschließend im Webinterface unter **Einstellungen → Hardware-Pins** SDA und SCL eintragen. Mit **I2C-Adressen suchen** sollte `0x68` erscheinen (dazu meist `0x50` für das EEPROM auf dem Modul).
 
 ---
 
