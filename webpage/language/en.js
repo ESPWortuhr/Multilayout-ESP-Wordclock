@@ -181,7 +181,7 @@ let TRANSLATION_EN_US = {
 		},
 		"language": {
 			"h2": "Language",
-			"hide-it-is": "„Display 'It is'“",
+			"hide-it-is": "“It is” display",
 			"it-is-off": "Off",
 			"it-is-hourly": "Hourly",
 			"it-is-half-hourly": "Half-hourly",
@@ -370,7 +370,17 @@ let TRANSLATION_EN_US = {
 			"client-id": "Client ID",
 			"topic": "Topic",
 			"save": "Save Settings",
-			"discovery": "Send HA Discovery"
+			"discovery": "Send HA Discovery",
+			"status": "Status",
+			"status-not-configured": "Not configured",
+			"status-connected": "Connected",
+			"status-disconnected": "Not connected",
+			"status-server-not-found": "Server not found",
+			"status-unreachable": "Server not reachable",
+			"status-bad-credentials": "Refused: wrong credentials",
+			"status-unauthorized": "Refused: not authorised",
+			"status-bad-client-id": "Refused: invalid client ID",
+			"status-refused": "Refused by server"
 		}
 	},
 	"about": {
@@ -378,7 +388,6 @@ let TRANSLATION_EN_US = {
 		"text-general": "The software of this Word Clock is based on the Word Clock by <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (as of 2019)</a> and is now being further developed <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>by the community</a> on <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
 		"text-update": "An update of the software is possible, please <a href='update' onmouseover='javascript:event.target.port=81'>switch to the update page</a>.",
 		"text-license": "This project is open source licensed under the BSD 3-Clause License.",
-		"software": "Libraries and Software",
 		"debug": "Debug Output"
 	},
 	"footer": {

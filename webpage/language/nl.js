@@ -155,7 +155,7 @@ let TRANSLATION_NL = {
 		},
 		"language": {
 			"h2": "Taal",
-			"hide-it-is": "„Display 'Het is'“",
+			"hide-it-is": "“Het is” weergeven",
 			"it-is-off": "Uit",
 			"it-is-hourly": "Per uur",
 			"it-is-half-hourly": "Per half uur",
@@ -344,7 +344,17 @@ let TRANSLATION_NL = {
 			"client-id": "Client ID",
 			"topic": "Topic",
 			"save": "Opslaan",
-			"discovery": "Send HA Discovery"
+			"discovery": "Send HA Discovery",
+			"status": "Status",
+			"status-not-configured": "Niet geconfigureerd",
+			"status-connected": "Verbonden",
+			"status-disconnected": "Niet verbonden",
+			"status-server-not-found": "Server niet gevonden",
+			"status-unreachable": "Server niet bereikbaar",
+			"status-bad-credentials": "Geweigerd: onjuiste inloggegevens",
+			"status-unauthorized": "Geweigerd: geen toestemming",
+			"status-bad-client-id": "Geweigerd: ongeldige client-ID",
+			"status-refused": "Geweigerd door server"
 		}
 	},
 	"about": {
@@ -352,7 +362,6 @@ let TRANSLATION_NL = {
 		"text-general": "De software van deze Woordklok is gebaseerd op een project van <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (as of 2019)</a> en wordt nu verder ontwikkeld <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>door de community</a> op <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
 		"text-update": "Een update voor de software is mogelijk, daarvoor kun je <a href='update' onmouseover='javascript:event.target.port=81'>hier klikken</a>.",
 		"text-license": "Dit project is open source gelicenseerd onder de BSD 3-Clause License.",
-		"software": "Bibliotheken en software",
 		"debug": "Debug Output"
 	},
 	"footer": {

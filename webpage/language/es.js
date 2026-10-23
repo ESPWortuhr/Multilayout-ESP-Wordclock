@@ -155,7 +155,7 @@ let TRANSLATION_ES = {
 		},
 		"language": {
 			"h2": "Idioma",
-			"hide-it-is": "Mostrar 'Son Las'“",
+			"hide-it-is": "Mostrar «Son las»",
 			"it-is-off": "Apagado",
 			"it-is-hourly": "Por hora",
 			"it-is-half-hourly": "Media hora",
@@ -341,7 +341,17 @@ let TRANSLATION_ES = {
 			"client-id": "Client-ID",
 			"topic": "Tema",
 			"save": "Guardar ajustes",
-			"discovery": "Send HA Discovery"
+			"discovery": "Send HA Discovery",
+			"status": "Estado",
+			"status-not-configured": "No configurado",
+			"status-connected": "Conectado",
+			"status-disconnected": "No conectado",
+			"status-server-not-found": "Servidor no encontrado",
+			"status-unreachable": "Servidor no accesible",
+			"status-bad-credentials": "Rechazado: credenciales incorrectas",
+			"status-unauthorized": "Rechazado: sin autorización",
+			"status-bad-client-id": "Rechazado: ID de cliente no válido",
+			"status-refused": "Rechazado por el servidor"
 		}
 	},
 
@@ -350,7 +360,6 @@ let TRANSLATION_ES = {
 		"text-general": "El software de este reloj se basa en el reloj de <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (Stand 2019)</a> y lo haré ahora <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>de la comunidad</a> desarrollado adicionalmente <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
 		"text-update": "Es posible realizar una actualización del software, hágalo. <a href='update' onmouseover='javascript:event.target.port=81'>Ir a la página de actualización</a>.",
 		"text-license": "Este proyecto es de código abierto con licencia bajo el <span lang='en'>3-Clause BSD License</span>.",
-		"software": "Bibliotecas y software",
 		"debug": "Salida de Debug"
 	},
 	"footer": {

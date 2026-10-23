@@ -143,7 +143,7 @@ let TRANSLATION_RU = {
 		},
 		"language": {
 			"h2": "Язык",
-			"hide-it-is": "Отображение 'ЧАС, ЧАСA, ЧАСОВ'“",
+			"hide-it-is": "Отображение «ЧАС, ЧАСА, ЧАСОВ»",
 			"it-is-off": "Выключено",
 			"it-is-hourly": "Почасовая",
 			"it-is-half-hourly": "Half-hourly",
@@ -329,7 +329,17 @@ let TRANSLATION_RU = {
 			"client-id": "ID клиента",
 			"topic": "Tema",
 			"save": "Сохранить настройки",
-			"discovery": "Отправить HA Discovery"
+			"discovery": "Отправить HA Discovery",
+			"status": "Статус",
+			"status-not-configured": "Не настроено",
+			"status-connected": "Подключено",
+			"status-disconnected": "Не подключено",
+			"status-server-not-found": "Сервер не найден",
+			"status-unreachable": "Сервер недоступен",
+			"status-bad-credentials": "Отклонено: неверные учётные данные",
+			"status-unauthorized": "Отклонено: нет доступа",
+			"status-bad-client-id": "Отклонено: неверный Client-ID",
+			"status-refused": "Отклонено сервером"
 		}
 	},
 
@@ -338,7 +348,6 @@ let TRANSLATION_RU = {
 		"text-general": "Программное обеспечение этих часов основано на часах из <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort- uhr-neu'>Ульрих Радиг (Стенд 2019)</a> и я теперь <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>от сообщества</a> продолжим разработку <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
 		"text-update": "Можно выполнить обновление ПО, сделайте это. <a href='update' onmouseover='javascript:event.target.port=81'>Перейти на страницу обновления</a>.",
 		"text-license": "Этот проект имеет открытый исходный код и распространяется по <span lang='en'>3-пунктной лицензии BSD.</span>.",
-		"software": "Библиотеки и программное обеспечение",
 		"debug": "Отладочный вывод"
 	},
 	"footer": {

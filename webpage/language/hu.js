@@ -152,7 +152,7 @@ let TRANSLATION_HU = {
 		},
 		"language": {
 			"h2": "Nyelv",
-			"hide-it-is": "„Mutasd meg a 'Ez a'“",
+			"hide-it-is": "Mutasd meg az „Ez a” szöveget",
 			"it-is-off": "Off",
 			"it-is-hourly": "Óránként",
 			"it-is-half-hourly": "Félóránként",
@@ -341,7 +341,17 @@ let TRANSLATION_HU = {
 			"client-id": "Ügyfélazonosító",
 			"topic": "Téma",
 			"save": "Beállítás mentése",
-			"discovery": "HA Discovery küldése"
+			"discovery": "HA Discovery küldése",
+			"status": "Állapot",
+			"status-not-configured": "Nincs beállítva",
+			"status-connected": "Csatlakozva",
+			"status-disconnected": "Nincs csatlakozva",
+			"status-server-not-found": "A szerver nem található",
+			"status-unreachable": "A szerver nem elérhető",
+			"status-bad-credentials": "Elutasítva: hibás belépési adatok",
+			"status-unauthorized": "Elutasítva: nincs jogosultság",
+			"status-bad-client-id": "Elutasítva: érvénytelen kliensazonosító",
+			"status-refused": "A szerver elutasította"
 		}
 	},
 
@@ -350,7 +360,6 @@ let TRANSLATION_HU = {
 		"text-general": "Ennek a Szövegórának a szoftverje <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (Állapot 2019)</a> szoftverje alapján készült, amelyet a közösség <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>GitHub-on</a> fejleszt tovább.",
 		"text-update": "A szoftver frissítése lehetséges, ehhez kérjük <a href='update' onmouseover='javascript:event.target.port=81'>váltson az Update-oldalra</a>.",
 		"text-license": "Ez a projekt Open-Source-licensz alatt van a <span lang='en'>3-Clause BSD License</span> alapján.",
-		"software": "Könyvtárak és szoftver",
 		"debug": "Debug-Kiadás"
 	},
 	"footer": {

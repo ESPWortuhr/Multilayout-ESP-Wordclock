@@ -9,7 +9,6 @@
     <meta name="theme-color" content="#e9e6e0" media="(prefers-color-scheme: light)">
 
     <!-- stylesheets -->
-    <link rel="stylesheet" href="./pure-min.css">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -107,7 +106,7 @@
     <main class="main">
         <header class="page-header">
             <div class="page-heading">
-                <span class="eyebrow page-brand"><span data-i18next="title"></span><span class="hostname"></span></span>
+                <span class="eyebrow page-brand" data-i18next="title"></span>
                 <h1 id="page-title" data-i18next="colors.h1"></h1>
                 <p id="page-sub" class="page-sub" data-i18next="colors.hint"></p>
             </div>
@@ -614,7 +613,7 @@
                                     <span class="slider round"></span>
                                 </label>
                             </div>
-                            <div class="pure-control-group">
+                            <div class="pure-control-group field-wide">
                                 <label for="buildtype" data-i18next="view.front.buildtype"></label><select name="buildtype" id="buildtype" size="1">
                                     <option value="0"  data-i18next="view.front.normal" selected></option>
                                     <option value="1"  data-i18next="view.front.doubleResM1"></option>
@@ -824,14 +823,14 @@
                             <div class="pure-control-group">
                                 <label for="i2c-scl-pin" data-i18next="settings.hardware-pins.i2c-scl"></label><input id="i2c-scl-pin" type="number" min="0" max="255" step="1" required>
                             </div>
+                            <div class="pure-control-group i2c-scan-group">
+                                <label for="i2c-scan-result" data-i18next="settings.hardware-pins.i2c-result"></label><input id="i2c-scan-result" type="text" readonly>
+                                <div class="pure-controls">
+                                    <button id="i2c-scan-button" type="button" class="pure-button button-secondary" data-i18next="settings.hardware-pins.i2c-scan"></button>
+                                </div>
+                            </div>
                             <div class="pure-controls">
                                 <button id="hardware-pins-button" type="button" class="pure-button" data-i18next="settings.hardware-pins.save"></button>
-                            </div>
-                            <div class="pure-controls">
-                                <button id="i2c-scan-button" type="button" class="pure-button" data-i18next="settings.hardware-pins.i2c-scan"></button>
-                            </div>
-                            <div class="pure-control-group i2c-scan-result-group">
-                                <label for="i2c-scan-result" data-i18next="settings.hardware-pins.i2c-result"></label><input id="i2c-scan-result" type="text" readonly>
                             </div>
                         </fieldset>
                     </form>
@@ -943,6 +942,13 @@
 
                     <form class="pure-form pure-form-aligned">
                         <div class="pure-control-group">
+                            <span data-i18next="smart-home.mqtt.status"></span>
+                            <span class="value mqtt-status" id="mqtt-status" data-status="not-configured">
+                                <span class="conn-dot"></span>
+                                <span id="mqtt-status-text" data-i18next="smart-home.mqtt.status-not-configured"></span>
+                            </span>
+                        </div>
+                        <div class="pure-control-group">
                         <label for="mqtt-state" data-i18next="smart-home.mqtt.activate"></label>
                         <label class="switch">
                             <input type="checkbox" id="mqtt-state">
@@ -968,10 +974,8 @@
                             <label for="mqtt-topic" data-i18next="smart-home.mqtt.topic"></label><input id="mqtt-topic" type="text" maxlength="29" spellcheck="false" autocapitalize="none">
                         </div>
                         <div class="pure-controls">
-                            <button type="button" id="mqtt-button" class="pure-button" data-i18next="smart-home.mqtt.save"></button>
-                        </div>
-                        <div class="pure-controls">
                             <button type="button" id="mqtt-discovery-button" class="pure-button" data-i18next="smart-home.mqtt.discovery"></button>
+                            <button type="button" id="mqtt-button" class="pure-button" data-i18next="smart-home.mqtt.save"></button>
                         </div>
                     </form>
                 </div>
@@ -983,12 +987,6 @@
                     <p data-i18next="about.text-general"></p>
                     <p data-i18next="about.text-update"></p>
                     <p data-i18next="about.text-license"></p>
-                </div>
-
-                <div class="box">
-                    <h2 data-i18next="about.software"></h2>
-
-                    <p>Pure.css &ndash; <a href="https://purecss.io">https://purecss.io</a></p>
                 </div>
 
                 <div class="box box-debug">

@@ -1,5 +1,37 @@
 # Changelog
 
+## V5.0.0-rc.2
+
+Second release candidate for 5.0.0. It fixes the Home Assistant discovery for openHAB and other integrations, shows the MQTT connection status and polishes the web interface.
+
+### Upgrade notes
+
+- Updating from V5.0.0-rc.1 keeps all settings (`SERNR` is still 500). Updating from 4.x resets all settings, see the notes for rc.1.
+- The single device discovery bundle of rc.1 is migrated to per-entity configs once on the first boot. Home Assistant keeps the entities with their areas and names.
+
+### Added
+
+- The MQTT section of the web interface shows the connection status: connected, disconnected, server not found, server not reachable, wrong credentials, not authorised or invalid client ID.
+
+### Improved
+
+- Pure.css was removed from the web interface, the firmware image is about 1 KB smaller.
+- Cards in the web interface no longer leave empty gaps, labels next to switches no longer wrap early.
+- The page title stays on one line below the language and status pills.
+- The I2C scan has its own block in the hardware pins card.
+- The MQTT save button sits next to the discovery button.
+- The IP address is shown on boot by default again (#781).
+
+### Fixed
+
+- Home Assistant discovery is published per entity again, so openHAB and other integrations that emulate the discovery find the clock again (#824).
+- The README documents the per-entity discovery topics.
+
+### Internal / Maintenance
+
+- Updated `i18next`.
+- Bumped version in `package.json` to `5.0.0-rc.2`.
+
 ## V5.0.0-rc.1
 
 Release candidate for 5.0.0. This release brings a new web interface, gradient and per-word colouring, a new render pipeline for colours and transitions, a reworked OpenWeatherMap integration and many stability fixes.

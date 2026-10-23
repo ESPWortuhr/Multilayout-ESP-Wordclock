@@ -249,6 +249,17 @@ function setI18nText(element, key) {
 	}
 }
 
+const MQTT_STATUSES = ["not-configured", "connected", "disconnected", "server-not-found",
+	"unreachable", "bad-credentials", "unauthorized", "bad-client-id", "refused"];
+
+function setMqttStatus(status) {
+	const el = document.getElementById("mqtt-status");
+	if (!el) return;
+	const known = MQTT_STATUSES.includes(status) ? status : "not-configured";
+	el.dataset.status = known;
+	setI18nText(document.getElementById("mqtt-status-text"), "smart-home.mqtt.status-" + known);
+}
+
 function setConnectionState(online) {
 	const conn = document.getElementById("conn");
 	if (conn) conn.classList.toggle("online", online);
@@ -323,8 +334,12 @@ function initWebsocket() {
 				document.getElementById("mqtt-pass").value = data.MQTT_Pass;
 				document.getElementById("mqtt-clientid").value = data.MQTT_ClientId;
 				document.getElementById("mqtt-topic").value = data.MQTT_Topic;
+				setMqttStatus(data.MQTT_Status);
 				break;
 			}
+			case "mqtt-status":
+				setMqttStatus(data.status);
+				break;
 			case "birthdays":
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
 				for (let i = 0; i < 5; i++) {
@@ -828,9 +843,46 @@ function hideRebootRecommendedBanner() {
 	if (rebootRecommendedEl) rebootRecommendedEl.style.display = "none";
 }
 
+const MASONRY_ROW_HEIGHT = 2;
+
+function layoutMasonry(section) {
+	const boxes = Array.from(section.children);
+	const columns = getComputedStyle(section).gridTemplateColumns.split(" ").length;
+	const masonry = !section.hidden && columns > 1;
+	section.classList.toggle("masonry", masonry);
+	if (!masonry) {
+		boxes.forEach(box => { box.style.gridRowEnd = ""; });
+		return;
+	}
+	const gap = parseFloat(getComputedStyle(section).columnGap) || 0;
+	boxes.forEach(box => {
+		const height = box.getBoundingClientRect().height;
+		box.style.gridRowEnd = height ? `span ${Math.ceil((height + gap) / MASONRY_ROW_HEIGHT)}` : "";
+	});
+}
+
+function initMasonry() {
+	const pending = new Set();
+	const observer = new ResizeObserver(entries => {
+		entries.forEach(entry => {
+			const section = entry.target.closest(".section");
+			if (section) pending.add(section);
+		});
+		requestAnimationFrame(() => {
+			pending.forEach(layoutMasonry);
+			pending.clear();
+		});
+	});
+	document.querySelectorAll(".section").forEach(section => {
+		observer.observe(section);
+		Array.from(section.children).forEach(box => observer.observe(box));
+	});
+}
+
 // Replaced $.ready with DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function() {
 
+	initMasonry();
 	initConfigValues();
 	setSliders();
 	setElementsForFunctionsMenu();

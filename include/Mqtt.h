@@ -8,6 +8,7 @@ class Mqtt {
 private:
     ClockWork &clockWork;
     void reInit();
+    void publishDiscoveryConfigs();
     static void callback(char *receivedTopic, byte *payload,
                          unsigned int length);
     static bool processState(const JsonDocument &doc);
@@ -28,6 +29,8 @@ public:
     void sendDiscovery();
 
     bool isConnected();
+    const char *status();
+    void notifyStatus();
 };
 
 extern Mqtt *mqttInstance;
