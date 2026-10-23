@@ -90,6 +90,11 @@ void ColorStage::colorize(ColorMatrix &dest, RgbfColor foreground,
     // What the ramp on the strip was built from. applyColorChange() has
     // nothing else to compare an edit of the secondary colour against.
     m_gradientEnd = RgbfColor(context.gradientEnd, F_NULL);
+    if (context.mode == WORD_RANDOM) {
+        m_wordHues.clear();
+        RandomColorizer::paint(dest, context, m_hues, m_wordHues);
+        return;
+    }
     colorizerFor(context.mode)->apply(dest, context, m_hues);
 }
 
@@ -143,7 +148,8 @@ bool ColorStage::applyColorChange(ColorMatrix *const *matrices, uint8_t count,
         return false;
     }
 
-    const float brightness = HsbColor(newForeground).B;
+    const HsbColor newForegroundHsb(newForeground);
+    const float brightness = newForegroundHsb.B;
     const bool keepHues = (mode() == WORD_RANDOM);
 
     for (uint8_t m = 0; m < count; m++) {
@@ -175,7 +181,14 @@ bool ColorStage::applyColorChange(ColorMatrix *const *matrices, uint8_t count,
                     continue;
                 }
                 if (keepHues) {
+                    const uint8_t wordId =
+                        wordIdAt(row, col, matrix.rows(), matrix.cols());
+                    float hue;
                     HsbColor hsbColor = HsbColor(cell);
+                    if (m_wordHues.find(wordId, hue)) {
+                        hsbColor = newForegroundHsb;
+                        hsbColor.H = hue;
+                    }
                     hsbColor.B = brightness;
                     cell.changeRgb(hsbColor);
                 } else {

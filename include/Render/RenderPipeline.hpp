@@ -240,11 +240,8 @@ void RenderPipeline::applyDisplayAction(const DisplayAction &action,
             }
         } else if (m_face.rows() != 0) {
             ColorMatrix *matrices[1] = {&m_face};
-            if (colorStage.applyColorChange(matrices, 1, m_foreground,
-                                            m_background)) {
-                led.setbyColorMatrix(m_face);
-            }
-            m_redrawPending = false;
+            colorStage.applyColorChange(matrices, 1, m_foreground,
+                                        m_background);
         }
     } else {
         m_lastMinute = minute;
@@ -297,6 +294,7 @@ void RenderPipeline::loop(struct tm &tm) {
         // clock face, and it will not be one again until the clock work says
         // so.
         m_faceCalculated = false;
+        releaseFace();
         return;
     }
     if (!pipelineMayRender(G.prog, m_faceCalculated)) {
@@ -326,6 +324,7 @@ void RenderPipeline::loop(struct tm &tm) {
 //------------------------------------------------------------------------------
 
 void RenderPipeline::plainStep() {
+    bool rebuild = m_matrixChanged || (m_face.rows() == 0);
     m_matrixChanged = false;
     m_startPending = false;
 
@@ -339,19 +338,23 @@ void RenderPipeline::plainStep() {
         // Among other things this is how the clock face comes back after a
         // special event has finished.
         redraw = true;
+        rebuild = true;
     }
     if (colorStage.modeChanged()) {
         redraw = true;
+        rebuild = true;
     }
 
     if (redraw) {
-        renderFace();
+        if (rebuild) {
+            renderFace();
+        }
         present(m_face, true, true);
     }
 
     // Keep the buffer while a transition is configured but could not be
     // allocated, so a low heap is not churned further.
-    if (!animates()) {
+    if (!animates() && !colorStage.isColorizing()) {
         releaseFace();
     }
 }
