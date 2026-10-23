@@ -338,7 +338,6 @@ let TRANSLATION_RU = {
 		"text-general": "Программное обеспечение этих часов основано на часах из <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort- uhr-neu'>Ульрих Радиг (Стенд 2019)</a> и я теперь <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>от сообщества</a> продолжим разработку <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
 		"text-update": "Можно выполнить обновление ПО, сделайте это. <a href='update' onmouseover='javascript:event.target.port=81'>Перейти на страницу обновления</a>.",
 		"text-license": "Этот проект имеет открытый исходный код и распространяется по <span lang='en'>3-пунктной лицензии BSD.</span>.",
-		"software": "Библиотеки и программное обеспечение",
 		"debug": "Отладочный вывод"
 	},
 	"footer": {

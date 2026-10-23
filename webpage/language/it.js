@@ -350,7 +350,6 @@ let TRANSLATION_IT = {
 		"text-general": "Il software di questo orologio è basato sull'orologio <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (Stand 2019)</a> e lo farò ora <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>dalla comunità</a> ulteriormente sviluppato <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
 		"text-update": "È possibile eseguire un aggiornamento software, per favore fallo. <a href='update' onmouseover='javascript:event.target.port=81'>Vai alla pagina di aggiornamento</a>.",
 		"text-license": "Questo progetto è concesso in licenza open source con la licenza <span lang='en'>3-Clause BSD License</span>.",
-		"software": "Librerie e software",
 		"debug": "Uscita di debug"
 	},
 	"footer": {

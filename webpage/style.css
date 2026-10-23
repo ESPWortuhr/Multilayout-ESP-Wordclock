@@ -113,6 +113,8 @@ body {
 /* Only the root gets the background, a body background would cover the light below. */
 html {
     background: var(--bg);
+    line-height: 1.15;
+    text-size-adjust: 100%;
 }
 
 /* Soft neutral light behind the glass. */
@@ -127,11 +129,23 @@ body::before {
     pointer-events: none;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 button,
 input,
 select,
 textarea {
+    margin: 0;
     font-family: var(--font);
+    font-size: 100%;
+    line-height: 1.15;
+}
+
+legend {
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 p {
@@ -763,6 +777,8 @@ svg {
 }
 
 .pure-form legend {
+    display: block;
+    width: 100%;
     margin: 0 0 16px;
     padding: 0;
     border: 0;
@@ -773,7 +789,19 @@ svg {
 }
 
 .pure-form label {
+    margin: 0.5em 0 0.2em;
     color: var(--text);
+}
+
+.pure-form :is(input, select, textarea),
+.pure-form-aligned .pure-control-group label {
+    vertical-align: middle;
+}
+
+@media (width <= 30em) {
+    .pure-form label {
+        margin-bottom: 0.3em;
+    }
 }
 
 .pure-form input[type="text"],
@@ -937,6 +965,11 @@ svg {
 
 .pure-button {
     min-height: var(--control-height);
+    line-height: normal;
+    vertical-align: middle;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
     padding: 0 20px;
     border: 1px solid rgb(255 255 255 / 25%);
     border-radius: 14px;

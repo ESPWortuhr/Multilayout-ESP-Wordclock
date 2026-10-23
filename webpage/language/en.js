@@ -378,7 +378,6 @@ let TRANSLATION_EN_US = {
 		"text-general": "The software of this Word Clock is based on the Word Clock by <a href='https://web.archive.org/web/20180422160812/http://www.ulrichradig.de/home/index.php/projekte/wort-uhr-neu'>Ulrich Radig (as of 2019)</a> and is now being further developed <a href='https://github.com/ESPWortuhr/Wortuhr/graphs/contributors'>by the community</a> on <a href='https://github.com/ESPWortuhr/Wortuhr'>GitHub</a>.",
 		"text-update": "An update of the software is possible, please <a href='update' onmouseover='javascript:event.target.port=81'>switch to the update page</a>.",
 		"text-license": "This project is open source licensed under the BSD 3-Clause License.",
-		"software": "Libraries and Software",
 		"debug": "Debug Output"
 	},
 	"footer": {
