@@ -93,3 +93,14 @@ inline RgbColor linearBlendCell(const RgbfColor &from, const RgbfColor &to,
     RgbColor blend;
     return blend.LinearBlend(from, to, progress);
 }
+
+inline uint8_t brightestChannel(const RgbColor &color) {
+    const uint8_t brightest = color.R > color.G ? color.R : color.G;
+    return brightest > color.B ? brightest : color.B;
+}
+
+inline uint8_t effectBrightness(const TransitionContext &context) {
+    const uint8_t foreground = brightestChannel(context.foreground);
+    const uint8_t background = brightestChannel(context.background);
+    return foreground > background ? foreground : background;
+}

@@ -229,6 +229,58 @@ void durationSettingChangesThePace() {
           "zero frames does not divide by zero");
 }
 
+void laserFollowsTheBrightness() {
+    const uint8_t levels[] = {0, 25, 200};
+
+    for (const uint8_t level : levels) {
+        ColorMatrix from, to, out;
+        from.resize(ROWS, COLS);
+        to.resize(ROWS, COLS);
+        out.resize(ROWS, COLS);
+        fill(from, RgbfColor(level, F_FOREGROUND));
+        fill(to, RgbfColor(level, F_FOREGROUND));
+        fill(out, RgbfColor(level, F_FOREGROUND));
+
+        LaserEffect laser;
+        RgbfColor foreground(level, F_FOREGROUND);
+        RgbfColor background(0, F_NULL);
+        uint16_t phase = 1;
+        uint32_t delayMs = 100;
+        uint16_t steps = 0;
+        uint8_t brightest = 0;
+
+        while (phase != 0 && steps < STEP_LIMIT) {
+            TransitionContext context{from,
+                                      to,
+                                      out,
+                                      foreground,
+                                      background,
+                                      LASER,
+                                      /*time*/ nullptr,
+                                      phase,
+                                      delayMs,
+                                      /*duration*/ 2};
+            phase = laser.step(context);
+            delayMs = context.delayMs;
+            steps++;
+
+            for (uint8_t row = 0; row < ROWS; row++) {
+                for (uint8_t col = 0; col < COLS; col++) {
+                    const uint8_t channel = brightestChannel(out[row][col]);
+                    if (channel > brightest) {
+                        brightest = channel;
+                    }
+                }
+            }
+        }
+
+        snprintf(message, sizeof(message),
+                 "Laser: the beam stays at or below brightness %u (got %u)",
+                 level, brightest);
+        check(brightest <= level, message);
+    }
+}
+
 } // namespace
 
 int main() {
@@ -236,5 +288,6 @@ int main() {
     effectsFollowALayoutChange();
     scrollingTakesOneStepPerRowOrColumn();
     durationSettingChangesThePace();
+    laserFollowsTheBrightness();
     return report("transition effects");
 }
