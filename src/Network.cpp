@@ -16,8 +16,8 @@ namespace {
 WiFiManager wifiManager(Serial);
 
 Network::TimeHandler portalSetTime;
-Network::ColorHandler portalSetColor;
-Network::ColorProvider portalGetColor;
+Network::SettingsRenderer portalRenderSettings;
+Network::SettingsApplier portalApplySettings;
 
 std::vector<const char *> portalMenu = {"wifi", "custom", "info",
                                         "exit", "sep",    "update"};
@@ -38,15 +38,6 @@ void applyPortalTime(time_t utc) {
     }
     Serial.println("Time set from captive portal");
     portalSetTime(utc);
-}
-
-bool parseHexColor(const String &value, uint32_t &rgb) {
-    if (value.length() != 7 || value[0] != '#') {
-        return false;
-    }
-    char *end = nullptr;
-    rgb = strtoul(value.c_str() + 1, &end, 16);
-    return end != nullptr && *end == '\0';
 }
 
 bool parseLocalTime(const String &value, time_t &utc) {
@@ -82,12 +73,15 @@ void handlePortalClock() {
     auto &server = *wifiManager.server;
     String status;
 
-    uint32_t rgb = 0;
-    if (server.hasArg("color") && parseHexColor(server.arg("color"), rgb)) {
-        if (portalSetColor) {
-            portalSetColor(rgb >> 16, (rgb >> 8) & 0xFF, rgb & 0xFF);
-        }
-        status = "Color saved";
+    if (server.hasArg("settings") && portalApplySettings) {
+        portalApplySettings([&server](const char *name, String &value) {
+            if (!server.hasArg(name)) {
+                return false;
+            }
+            value = server.arg(name);
+            return true;
+        });
+        status = "Settings saved";
     }
 
     time_t manualTime = 0;
@@ -96,11 +90,6 @@ void handlePortalClock() {
         applyPortalTime(manualTime);
         status = "Time saved";
     }
-
-    char colorValue[8];
-    snprintf(colorValue, sizeof(colorValue), "#%06X",
-             static_cast<unsigned>(portalGetColor ? portalGetColor() & 0xFFFFFF
-                                                  : 0xFFFFFF));
 
     time_t now = time(nullptr);
     struct tm tm;
@@ -122,13 +111,13 @@ void handlePortalClock() {
     if (now >= MIN_VALID_TIME) {
         page += "<p>Current time: " + String(timeValue) + "</p>";
     }
+    if (portalRenderSettings) {
+        page += "<form action='/clock' method='post'>"
+                "<input type='hidden' name='settings' value='1'>";
+        page += portalRenderSettings();
+        page += "<button type='submit'>Save settings</button></form><br/>";
+    }
     page += "<form action='/clock' method='get'>"
-            "<label for='color'>Color</label>"
-            "<input type='color' id='color' name='color' value='";
-    page += colorValue;
-    page += "' style='height:3em;padding:2px'>"
-            "<button type='submit'>Save color</button></form><br/>"
-            "<form action='/clock' method='get'>"
             "<label for='time'>Time</label>"
             "<input type='time' id='time' name='time' required value='";
     page += timeValue;
@@ -191,11 +180,12 @@ void Network::changeHostname(const char *hostname) {
 #endif
 }
 
-void Network::setPortalHandlers(TimeHandler setTime, ColorHandler setColor,
-                                ColorProvider getColor) {
+void Network::setPortalHandlers(TimeHandler setTime,
+                                SettingsRenderer renderSettings,
+                                SettingsApplier applySettings) {
     portalSetTime = setTime;
-    portalSetColor = setColor;
-    portalGetColor = getColor;
+    portalRenderSettings = renderSettings;
+    portalApplySettings = applySettings;
 }
 
 void Network::setup(const char *hostname) {

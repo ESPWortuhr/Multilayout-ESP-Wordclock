@@ -60,6 +60,7 @@ RTC_Type RTC;
 #include "Led.h"
 #include "Mqtt.h"
 #include "Network.h"
+#include "PortalSettings.h"
 #include "Render/ColorStage.h"
 #include "Render/RenderPipeline.h"
 #include "WifiHelper.h"
@@ -538,16 +539,7 @@ void setup() {
                 RTC.adjust(DateTime(utc));
             }
         },
-        [](uint8_t r, uint8_t g, uint8_t b) {
-            G.color[Foreground] = HsbColor(RgbColor(r, g, b));
-            parametersChanged = true;
-            eeprom::write();
-        },
-        []() -> uint32_t {
-            RgbColor rgb(G.color[Foreground]);
-            return (static_cast<uint32_t>(rgb.R) << 16) |
-                   (static_cast<uint32_t>(rgb.G) << 8) | rgb.B;
-        });
+        portalSettings::render, portalSettings::apply);
 
     // Read the power cycle count from EEPROM
     powerCycleCount = EEPROM.read(POWER_CYCLE_COUNT_ADDRESS);
