@@ -40,6 +40,8 @@ public:
         return false;
     }
 
+    void clear() { m_count = 0; }
+
     void add(uint8_t wordId, float value) {
         if (m_count < MAX_COLORIZED_WORDS) {
             m_entries[m_count].wordId = wordId;
@@ -118,6 +120,11 @@ public:
     void apply(ColorMatrix &matrix, const ColorContext &context,
                HueSequence &hues) override {
         WordValues words;
+        paint(matrix, context, hues, words);
+    }
+
+    static void paint(ColorMatrix &matrix, const ColorContext &context,
+                      HueSequence &hues, WordValues &words) {
         HsbColor color = context.foreground;
 
         for (uint8_t row = 0; row < matrix.rows(); row++) {

@@ -2,6 +2,7 @@
 
 #include "Render/ColorContext.h"
 #include "Render/ColorMatrix.h"
+#include "Render/Colorizers.h"
 #include "Render/HueSequence.h"
 #include "WordClockState.h"
 
@@ -28,6 +29,7 @@ private:
     ColorContext contextFor(RgbfColor foreground, RgbfColor background) const;
 
     HueSequence m_hues;
+    WordValues m_wordHues;
     uint8_t m_lastMode = MONOCHROME;
     // Neither the foreground nor the background, so a change of it has to be
     // noticed here or nowhere.
