@@ -482,12 +482,15 @@ svg {
 }
 
 .page-header h1 {
+    grid-column: 1 / -1;
     margin: 0;
+    overflow: hidden;
     font-size: 34px;
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: -0.02em;
-    overflow-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .page-sub {
@@ -509,14 +512,15 @@ svg {
     content: " · ";
 }
 
-/* Language and connection status, centered on the first line of the page title */
+/* Language and connection status, in their own row above the page title */
 .header-tools {
     display: flex;
     grid-row: 1;
     grid-column: 2;
+    justify-self: end;
     align-items: center;
     gap: 10px;
-    margin-top: 2px;
+    margin-bottom: 10px;
 }
 
 .conn {
@@ -608,10 +612,8 @@ svg {
         padding: 22px 16px calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 28px);
     }
 
-    /* The status pill moves up next to the small brand line, the title gets the full width. */
+    /* The status pill sits next to the small brand line. */
     .page-header {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
         gap: 4px 12px;
         margin-bottom: 16px;
@@ -624,7 +626,7 @@ svg {
 
     .header-tools {
         gap: 8px;
-        margin: 0;
+        margin-bottom: 0;
     }
 
     .conn {
@@ -653,7 +655,6 @@ svg {
     }
 
     .page-header h1 {
-        grid-column: 1 / -1;
         font-size: 26px;
     }
 
