@@ -508,10 +508,6 @@ svg {
     display: none;
 }
 
-.page-brand .hostname::before {
-    content: " · ";
-}
-
 /* Language and connection status, in their own row above the page title */
 .header-tools {
     display: flex;
