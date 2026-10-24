@@ -128,20 +128,20 @@ public:
             setFrontMatrixWord(4, 1, 5);
             break;
 
-        case FrontWord::m_num1:
-            setFrontMatrixWord(10, 8, 8);
-            break;
-
-        case FrontWord::m_num2:
-            setFrontMatrixWord(10, 6, 6);
-            break;
+        case FrontWord::m_num4:
+            setFrontMatrixWord(10, 2, 2);
+            [[fallthrough]];
 
         case FrontWord::m_num3:
             setFrontMatrixWord(10, 4, 4);
-            break;
+            [[fallthrough]];
 
-        case FrontWord::m_num4:
-            setFrontMatrixWord(10, 2, 2);
+        case FrontWord::m_num2:
+            setFrontMatrixWord(10, 6, 6);
+            [[fallthrough]];
+
+        case FrontWord::m_num1:
+            setFrontMatrixWord(10, 8, 8);
             break;
 
         default:
