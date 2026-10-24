@@ -405,11 +405,14 @@ void ClockWork::rainbowCycle() {
     const float hueStep = 360.f / numPixelsWordMatrix;
     uint16_t pixel = 0;
 
-    for (uint8_t row = 0; row < usedClockType->rowsWordMatrix(); row++) {
-        for (uint8_t col = 0; col < usedClockType->colsWordMatrix(); col++) {
+    const uint8_t rows = usedClockType->rowsWordMatrix();
+    const uint8_t cols = usedClockType->colsWordMatrix();
+
+    for (uint8_t row = 0; row < rows; row++) {
+        for (uint8_t col = 0; col < cols; col++) {
             const float displayedHue = fmodf(hue + pixel * hueStep, 360.f);
             led.setPixel(
-                row, col,
+                mirroredRow(row, rows), mirroredCol(col, cols),
                 HsbColor(displayedHue / 360.f, 1.f, G.effectBri / 100.f));
             pixel++;
         }
@@ -488,8 +491,9 @@ void ClockWork::fire() {
         }
 
         for (uint8_t cell = 0; cell < rows; cell++) {
-            led.setPixel(static_cast<uint8_t>(rows - 1 - cell), col,
-                         heatColor(heat[cell][col], brightness));
+            led.setPixel(
+                mirroredRow(static_cast<uint8_t>(rows - 1 - cell), rows),
+                mirroredCol(col, cols), heatColor(heat[cell][col], brightness));
         }
     }
 
