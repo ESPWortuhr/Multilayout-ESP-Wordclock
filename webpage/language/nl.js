@@ -120,9 +120,7 @@ let TRANSLATION_NL = {
 			"save": "Opslaan",
 			"speed": "Snelheid ",
 			"fire-cooling": "Afkoeling ",
-			"fire-sparking": "Vonken ",
-			"leds": "Aantal LED's ",
-			"position": "Positie "
+			"fire-sparking": "Vonken "
 		}
 	},
 

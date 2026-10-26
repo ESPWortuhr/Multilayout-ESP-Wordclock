@@ -120,9 +120,7 @@ let TRANSLATION_HU = {
 			"save": "Mentés",
 			"speed": "Sebesség",
 			"fire-cooling": "Hűlés ",
-			"fire-sparking": "Szikrázás ",
-			"leds": "LED-ek száma",
-			"position": "Pozíció"
+			"fire-sparking": "Szikrázás "
 		}
 	},
 

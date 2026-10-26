@@ -990,19 +990,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	});
 
-	const clockBtn = document.getElementById("_clock");
-	if (clockBtn) {
-		clockBtn.addEventListener("click", function() {
-			let date = new Date();
-			let timeZoneOffset = date.getTimezoneOffset();
-			timeZoneOffset = timeZoneOffset / 60 * -1;
-			let time = date.getTime() / 1000;
-
-			sendCmd(CMD.SET_TIME, getPaddedString(nstr(timeZoneOffset) + time, 21));
-			debugMessage("Clock data: ");
-		});
-	}
-
 	const menu = document.getElementById("menu");
 	const menuLinks = document.querySelectorAll(".nav-link[data-navigation]");
 	const navMore = document.getElementById("nav-more");

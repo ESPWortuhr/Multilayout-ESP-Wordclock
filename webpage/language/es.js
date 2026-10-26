@@ -120,9 +120,7 @@ let TRANSLATION_ES = {
 			"save": "Ahorrar",
 			"speed": "Velocidad ",
 			"fire-cooling": "Enfriamiento ",
-			"fire-sparking": "Chispas ",
-			"leds": "Número de LEDs ",
-			"position": "Posición "
+			"fire-sparking": "Chispas "
 		}
 	},
 

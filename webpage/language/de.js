@@ -120,9 +120,7 @@ let TRANSLATION_DE_DE = {
 			"save": "Speichern",
 			"speed": "Geschwindigkeit ",
 			"fire-cooling": "Abkühlung ",
-			"fire-sparking": "Funkenflug ",
-			"leds": "Anzahl LEDs ",
-			"position": "Position "
+			"fire-sparking": "Funkenflug "
 		}
 	},
 

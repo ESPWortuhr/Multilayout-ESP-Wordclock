@@ -120,9 +120,7 @@ let TRANSLATION_IT = {
 			"save": "Salvar",
 			"speed": "Velocità ",
 			"fire-cooling": "Raffreddamento ",
-			"fire-sparking": "Scintille ",
-			"leds": "Numero de LEDs ",
-			"position": "Posizione "
+			"fire-sparking": "Scintille "
 		}
 	},
 

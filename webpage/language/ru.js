@@ -120,9 +120,7 @@ let TRANSLATION_RU = {
 			"save": "сохранять",
 			"speed": "Скорость ",
 			"fire-cooling": "Охлаждение ",
-			"fire-sparking": "Искры ",
-			"leds": "Количество светодиодов ",
-			"position": "Позиция "
+			"fire-sparking": "Искры "
 		}
 	},
 
