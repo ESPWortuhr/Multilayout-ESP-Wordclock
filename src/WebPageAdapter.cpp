@@ -288,6 +288,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             const uint32_t speed = split(payload, length, 3);
             if (effectSpeedIsValid(speed)) {
                 G.effectSpeed = static_cast<uint8_t>(speed);
+                G.param1 = split(payload, length, 6) ? 1 : 0;
             }
             break;
         }

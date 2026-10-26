@@ -1893,6 +1893,14 @@ void ClockWork::loop(struct tm &tm) {
         break;
     }
 
+    case COMMAND_SPEED: {
+        if (G.param1) {
+            eeprom::write();
+            Serial.printf("Effect speed: %u\n", G.effectSpeed);
+        }
+        break;
+    }
+
     case COMMAND_SET_HOSTNAME: {
         Serial.print("Hostname: ");
         Serial.println(G.hostname);

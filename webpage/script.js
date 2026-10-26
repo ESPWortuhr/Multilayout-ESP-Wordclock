@@ -657,6 +657,10 @@ function setSliders() {
 	if (sparkingValue) sparkingValue.textContent = fireSparking;
 }
 
+function sendSpeedData(persist) {
+	sendCmd(CMD.SPEED, nstr(effectSpeed) + nstr(persist ? 1 : 0));
+}
+
 function sendFireData(persist) {
 	sendCmd(CMD.SET_FIRE, nstr(fireCooling) + nstr(fireSparking) + nstr(persist ? 1 : 0));
 }
@@ -1113,7 +1117,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 			if (id === "slider-speed") {
 				effectSpeed = event.target.value;
-				sendCmd(CMD.SPEED, nstr(effectSpeed));
+				sendSpeedData(false);
 			}
 			if (id === "slider-fire-cooling" || id === "slider-fire-sparking") {
 				fireCooling = document.getElementById("slider-fire-cooling").value;
@@ -1127,6 +1131,15 @@ document.addEventListener("DOMContentLoaded", function() {
 			}, 20);
 		});
 	});
+
+	const speedSlider = document.getElementById("slider-speed");
+	if (speedSlider) {
+		speedSlider.addEventListener("change", function() {
+			effectSpeed = speedSlider.value;
+			setSliders();
+			sendSpeedData(true);
+		});
+	}
 
 	["slider-fire-cooling", "slider-fire-sparking"].forEach(id => {
 		const slider = document.getElementById(id);
