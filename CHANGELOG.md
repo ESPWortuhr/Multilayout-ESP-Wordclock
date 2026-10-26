@@ -1,5 +1,35 @@
 # Changelog
 
+## V5.0.0
+
+Version 5.0.0 is the first stable release of the 5.x line. It brings a new web interface, gradient and per-word colouring, a new render pipeline for colours and transitions, a WiFi setup portal that works without a home network, a reworked Home Assistant integration and many stability fixes. The changes in detail are listed under the release candidates rc.1 to rc.4 below.
+
+### Upgrade notes
+
+- Updating from 4.x resets all settings to default values (`SERNR` changed from 440 to 500). Note your hardware pins, MQTT, OpenWeatherMap and layout settings before updating.
+- Updating from V5.0.0-rc.1 to rc.4 keeps all settings.
+- The minute variant "Corners" was removed. The 11x11 layouts use the standard minute LEDs.
+
+### Highlights since 4.4.0
+
+- New web interface with a liquid glass look, light and dark mode, a sidebar on desktop and a floating tab bar on phones.
+- New colour modes "Polychrom" (gradient from a primary to a secondary colour) and "Random per word", a lightweight colour wheel with colour temperature and the new mode "Fire".
+- Colours and transitions are separate render stages, colour and brightness changes reach a running transition without restarting it.
+- The WiFi setup portal sets the time from the connected phone and can leave the portal to run the clock without a home network.
+- Home Assistant discovery per entity, MQTT connection status in the web interface, and changes from Home Assistant and the hardware buttons show up in every open web interface.
+- All seven web interface languages are complete.
+
+### Fixed since rc.4
+
+- ESP8266 clocks showed UTC instead of local time after a restart, in winter one hour too early. The timezone is now set together with the time server.
+- On iPhones with Safari 26 the shadow of the tab bar and the background light ended in a hard edge above Safari's toolbars, visible as a dark box under the tab bar (#841).
+
+### Internal / Maintenance
+
+- Cleaned up the web interface stylesheet without visual changes (#842).
+- New desktop and phone screenshots of the web interface in the README.
+- Bumped version in `package.json` to `5.0.0`.
+
 ## V5.0.0-rc.4
 
 Fourth release candidate for 5.0.0. The web interface now stays in sync with the clock: changes from Home Assistant and the hardware buttons show up on the page, and colours, auto brightness limits and several settings are no longer lost or overwritten. All seven languages are complete.
