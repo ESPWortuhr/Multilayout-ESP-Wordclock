@@ -293,6 +293,7 @@ function initWebsocket() {
 		sendCmd(CMD.REQ_COLOR_VALUES);
 		sendCmd(CMD.REQ_TRANSITION);
 		sendCmd(CMD.REQ_CONFIG_VALUES);
+		sendCmd(CMD.REQ_AUTO_BRIGHT);
 	};
 
 	websocket.onclose = function(event) {
@@ -339,6 +340,12 @@ function initWebsocket() {
 			}
 			case "mqtt-status":
 				setMqttStatus(data.status);
+				break;
+			case "scrolltext":
+				document.getElementById("scrollingtext").value = data.scrolling_text;
+				break;
+			case "autobright":
+				applyAutoBrightEnabled(data.value);
 				break;
 			case "birthdays":
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
@@ -420,17 +427,7 @@ function initWebsocket() {
 				enableSpecific("specific-colortype-4", data.colortype === 5);
 				enableSpecific("specific-minute-direction", supportsMinuteDirection(data.supportedMinuteVariants));
 
-				autoBrightEnabled = data.autoBrightEnabled;
-				const autoBrightSelect = document.getElementById("auto-bright-enabled");
-				if (autoBrightEnabled === 1) {
-					if (autoBrightSelect) autoBrightSelect.value = 1;
-					autoBrightUpdater();
-				} else {
-					if (autoBrightSelect) autoBrightSelect.value = 0;
-					autoBrightStop();
-				}
-				enableSpecific("specific-layout-brightness-man", autoBrightEnabled !== 1);
-				enableSpecific("specific-layout-brightness-auto", autoBrightEnabled === 1);
+				applyAutoBrightEnabled(data.autoBrightEnabled);
 				document.getElementById("auto-bright-min").value = autoBrightMin;
 				document.getElementById("auto-bright-max").value = autoBrightMax;
 				document.getElementById("auto-bright-peak").value = autoBrightPeak;
@@ -493,7 +490,7 @@ function initWebsocket() {
 				document.getElementById("auto-bright-sensor").value = data.autoBrightSensor;
 				document.getElementById("auto-bright-source").value = data.autoBrightSource || "";
 				document.getElementById("auto-bright-gain").value = data.autoBrightGain;
-				if (data.autoBrightMin && data.autoBrightMax && data.autoBrightPeak) {
+				if (data.autoBrightMin !== undefined && data.autoBrightMax !== undefined && data.autoBrightPeak !== undefined) {
 					autoBrightMin = data.autoBrightMin;
 					autoBrightMax = data.autoBrightMax;
 					autoBrightPeak = data.autoBrightPeak;
@@ -726,6 +723,19 @@ function updateAutoBrightValues() {
 	});
 }
 
+function applyAutoBrightEnabled(enabled) {
+	autoBrightEnabled = Number(enabled);
+	const autoBrightSelect = document.getElementById("auto-bright-enabled");
+	if (autoBrightSelect) autoBrightSelect.value = autoBrightEnabled;
+	enableSpecific("specific-layout-brightness-man", autoBrightEnabled !== 1);
+	enableSpecific("specific-layout-brightness-auto", autoBrightEnabled === 1);
+	if (autoBrightEnabled === 1) {
+		autoBrightUpdater();
+	} else {
+		autoBrightStop();
+	}
+}
+
 function autoBrightUpdater() {
 	if (autoBrightInterval !== null || (autoBrightEnabled !== 1 && autoBrightEnabled !== "1")) {
 		return;
@@ -733,7 +743,7 @@ function autoBrightUpdater() {
 	autoBrightInterval = setInterval(function() {
 		const autoBrightEl = document.getElementById("auto-bright-enabled");
 		if (autoBrightEl && autoBrightEl.value === "1") {
-			sendCmd(CMD.REQ_AUTO_BRIGHT, 1);
+			sendCmd(CMD.REQ_AUTO_BRIGHT);
 		}
 	}, 1000);
 	debugMessage(`Start timer autoBrightInterval with ID ${autoBrightInterval}`);

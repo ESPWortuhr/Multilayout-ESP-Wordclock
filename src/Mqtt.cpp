@@ -323,6 +323,9 @@ bool Mqtt::processState(const JsonDocument &doc) {
             led.setState(false);
             stateChanged = true;
         }
+        if (stateChanged) {
+            webStateChanged = true;
+        }
         return stateChanged;
     }
     return false;
@@ -382,6 +385,7 @@ bool Mqtt::processEffect(const JsonDocument &doc) {
         if (effectChanged) {
             G.progInit = true;
             parametersChanged = true;
+            webStateChanged = true;
         }
         return effectChanged;
     }
@@ -470,14 +474,7 @@ bool Mqtt::processColor(const JsonDocument &doc) {
         // Keep current brightness
         G.color[Foreground] = HsbColor(h, s, G.color[Foreground].B);
         parametersChanged = true;
-
-        // Send update to web interface
-        StaticJsonDocument<200> webDoc;
-        webDoc["command"] = "color";
-        webDoc["h"] = round(h * 360); // Convert to 0-360 degrees
-        webDoc["s"] = round(s * 100); // Convert to 0-100%
-        webDoc["v"] = round(G.color[Foreground].B * 100); // Convert to 0-100%
-        broadcastToWeb(webDoc);
+        webStateChanged = true;
         return true;
     }
     return false;
@@ -521,6 +518,7 @@ bool Mqtt::processBrightness(const JsonDocument &doc) {
         Serial.println(brightness);
 
         parametersChanged = true;
+        webStateChanged = true;
         return true;
     }
     return false;
@@ -784,6 +782,7 @@ static void applyTransitionSelect(const char *id, const char *msg,
         field = value;
         G.progInit = true;
         eeprom::write();
+        webStateChanged = true;
     } else {
         Serial.print("MQTT: Unknown option for ");
         Serial.print(id);
@@ -911,7 +910,7 @@ void Mqtt::callback(char *receivedTopic, byte *payload, unsigned int length) {
             mqttClient.publish(topic("effect_speed/state").c_str(),
                                String(G.effectSpeed).c_str(), true);
 
-            broadcastToWeb("speed", "value", G.effectSpeed);
+            webStateChanged = true;
         }
     }
 }
