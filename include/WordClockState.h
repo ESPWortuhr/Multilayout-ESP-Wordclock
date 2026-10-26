@@ -341,6 +341,7 @@ constexpr uint8_t MAX_SECONDS_FRAME_LED_COUNT = 200;
 extern bool frameArray[MAX_SECONDS_FRAME_LED_COUNT];
 extern bool parametersChanged;
 extern bool colorChangedByWebsite;
+extern bool webStateChanged;
 extern uint8_t i2cScanSdaPin;
 extern uint8_t i2cScanSclPin;
 
