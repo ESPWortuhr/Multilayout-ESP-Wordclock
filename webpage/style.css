@@ -129,6 +129,12 @@ body::before {
     pointer-events: none;
 }
 
+@media (width < 48em) {
+    body::before {
+        mask-image: linear-gradient(transparent, #000 15%, #000 80%, transparent);
+    }
+}
+
 [hidden] {
     display: none !important;
 }
@@ -399,6 +405,7 @@ svg {
         justify-content: space-between;
         align-items: center;
         border-radius: 30px;
+        box-shadow: var(--glass-hl), 0 -16px 32px -16px rgb(0 0 0 / 40%);
     }
 
     .brand {
