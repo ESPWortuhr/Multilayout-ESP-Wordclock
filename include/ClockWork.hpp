@@ -1762,7 +1762,16 @@ void ClockWork::loop(struct tm &tm) {
         parametersChanged = true;
         break;
 
-    case COMMAND_SET_BRIGHTNESS:
+    case COMMAND_SET_BRIGHTNESS: {
+        if (G.param1) {
+            eeprom::write();
+        }
+        led.clear();
+        memset(frameArray, false, sizeof(frameArray));
+        parametersChanged = true;
+        break;
+    }
+
     case COMMAND_SET_AUTO_BRIGHT:
     case COMMAND_SET_WHITETYPE:
     case COMMAND_SET_TIME_MANUAL:

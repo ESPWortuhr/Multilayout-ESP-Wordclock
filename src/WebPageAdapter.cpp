@@ -184,6 +184,9 @@ bool parseBrightness(const uint8_t *payload, size_t length) {
     G.h22 = brightness[6];
     G.h24 = brightness[7];
     G.effectBri = brightness[8];
+    G.param1 = (length > BRIGHTNESS_PAYLOAD_LENGTH)
+                   ? (split(payload, length, BRIGHTNESS_PAYLOAD_LENGTH) ? 1 : 0)
+                   : 1;
     return true;
 }
 
