@@ -63,6 +63,29 @@ let TRANSLATION_ES = {
 			"fire": "Fuego",
 			"symbol": "Símbolo"
 		},
+		"birthdays": {
+			"h1": "Cumpleaños",
+			"help": "En los cumpleaños aparece una animación de fuegos artificiales cada 5 minutos.\n" +
+				"Los tipos de reloj compatibles muestran las palabras «Happy Birthday» en lugar de la hora durante la animación. Formato de fecha MM-DD\n",
+			"dates": {
+				"save": "Guardar",
+				"date0": {
+					"label": "Fecha 1:"
+				},
+				"date1": {
+					"label": "Fecha 2:"
+				},
+				"date2": {
+					"label": "Fecha 3:"
+				},
+				"date3": {
+					"label": "Fecha 4:"
+				},
+				"date4": {
+					"label": "Fecha 5:"
+				}
+			}
+		},
 		"transition": {
 			"h2": "Transición",
 			"type": {
@@ -76,7 +99,7 @@ let TRANSLATION_ES = {
 				"laser": "Láser",
 				"matrix_rain": "Lluvia matricial",
 				"balls": "Bolas",
-				"fireworks": "Fuegos artificiales",
+				"firework": "Fuegos artificiales",
 				"snake": "Serpiente",
 				"random": "Al azar"
 			},
@@ -146,6 +169,9 @@ let TRANSLATION_ES = {
 			"invert-min-dir": "Invertir la dirección de conteo de minutos",
 			"mirror-vertically": "Voltear el reloj verticalmente",
 			"mirror-horizontally": "Voltear el reloj horizontalmente",
+			"extra-led-per-row": "Añadir un LED extra por fila",
+			"flip-horz-vert": "Girar el diseño horizontal y verticalmente",
+			"meander-rows": "Filas dispuestas en meandro",
 			"buildtype": "Tipo de Diseño",
 			"normal": "Cada LED corresponde a una letra",
 			"doubleResM1": "Cada segundo LED corresponde a una letra",
@@ -166,11 +192,14 @@ let TRANSLATION_ES = {
 			"quarter-nine": "un cuarto de diez",
 			"at-nine-twenty": "Son las 9:20 ...",
 			"twenty-past-nine": "nueve y veinte",
+			"ten-before-half-past-ten": "diez para las nueve y media",
 			"at-nine-fourty": "Son las 9:40 ...",
 			"twenty-before-ten": "de veinte a diez",
+			"ten-after-half-past-ten": "diez después de las nueve y media",
 			"at-nine-fourtyfive-german": "Son las 9:45 ...",
 			"quarter-to-ten": "un cuarto para las diez",
 			"three-quarter-ten": "las diez menos cuarto",
+			"at-nine-fourtyfive-english": "Son las 9:45 ...",
 			"quarter-to-ten-english": "Quarter to ten",
 			"a-quarter-to-ten-english": "A quarter to ten"
 		},
