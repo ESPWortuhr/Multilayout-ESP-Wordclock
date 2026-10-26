@@ -1130,8 +1130,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	});
 
-	document.querySelectorAll("[id*='transition']").forEach(el => {
-		el.addEventListener("change", function(event) {
+	["transition-types", "transition-duration", "transition-demo"].forEach(id => {
+		document.getElementById(id).addEventListener("change", function() {
 			transitionType = document.getElementById("transition-types").value;
 			transitionDuration = document.getElementById("transition-duration").value;
 			transitionDemo = document.getElementById("transition-demo").checked;
