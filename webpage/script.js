@@ -241,6 +241,10 @@ function supportsMinuteDirection(supportedMinuteVariants) {
 	return (supportedMinuteVariants & (led4x | led7x)) !== 0;
 }
 
+function translate(key) {
+	return (window.i18next && i18next.isInitialized) ? i18next.t(key) : key;
+}
+
 function setI18nText(element, key) {
 	if (!element) return;
 	element.dataset.i18next = key;
@@ -277,11 +281,11 @@ function initWebsocket() {
 		if (statusEl) {
 			statusEl.classList.add("online");
 			statusEl.classList.remove("offline");
-			statusEl.setAttribute("value", "Online");
+			statusEl.value = translate("status.online");
 		}
 
 		document.querySelectorAll(".status-button").forEach(btn => {
-			btn.textContent = "Disconnect";
+			setI18nText(btn, "settings.status.disconnect");
 			btn.value = "1";
 		});
 
@@ -303,11 +307,11 @@ function initWebsocket() {
 		if (statusEl) {
 			statusEl.classList.remove("online");
 			statusEl.classList.add("offline");
-			statusEl.setAttribute("value", "Offline");
+			statusEl.value = translate("status.offline");
 		}
 
 		document.querySelectorAll(".status-button").forEach(btn => {
-			btn.textContent = "Verbinden";
+			setI18nText(btn, "settings.status.connect");
 			btn.value = "0";
 		});
 
@@ -972,7 +976,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		btn.addEventListener("click", function() {
 			let value = this.value;
 			const statusEl = document.getElementById("status");
-			if (statusEl) statusEl.textContent = "Verbinden ...";
+			if (statusEl) statusEl.value = translate("settings.status.connecting");
 
 			if (value === "1") {
 				value = 0;

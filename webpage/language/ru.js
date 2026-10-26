@@ -235,7 +235,9 @@ let TRANSLATION_RU = {
 		"status": {
 			"h2": "Состояние",
 			"label": "Статус подключения",
-			"connect": "Соединять"
+			"connect": "Соединять",
+			"disconnect": "Отключить",
+			"connecting": "Подключение ..."
 		},
 		"led-type": {
 			"h2": "Тип светодиода",

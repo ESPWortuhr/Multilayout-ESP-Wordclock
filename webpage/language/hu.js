@@ -235,7 +235,9 @@ let TRANSLATION_HU = {
 		"status": {
 			"h2": "Állapot",
 			"label": "Kapcsolódás állapota",
-			"connect": "Kapcsolódás"
+			"connect": "Kapcsolódás",
+			"disconnect": "Kapcsolat bontása",
+			"connecting": "Csatlakozás ..."
 		},
 		"led-type": {
 			"h2": "LED-típus",

@@ -235,7 +235,9 @@ let TRANSLATION_ES = {
 		"status": {
 			"h2": "Estado",
 			"label": "Estado de Conexión",
-			"connect": "Conectar"
+			"connect": "Conectar",
+			"disconnect": "Desconectar",
+			"connecting": "Conectando ..."
 		},
 		"led-type": {
 			"h2": "Tipo de LED",
