@@ -188,23 +188,16 @@ function debugMessage(debugMessage, someObject) {
 }
 
 function applyColorizeMode() {
-	const mode = Number(colorize);
-	const showForeground = mode !== 2;
-	const showSecondary = mode === 1;
-
-	const foreground = document.querySelector("label[for='colorwheel-foreground']");
-	if (foreground) foreground.style.display = showForeground ? "" : "none";
+	const showSecondary = Number(colorize) === 1;
 
 	const secondary = document.querySelector("label[for='colorwheel-gradient']");
 	if (secondary) secondary.style.display = showSecondary ? "" : "none";
 
-	const foregroundLabel = document.querySelector("label[for='colorwheel-foreground'] span[data-i18next]");
-	if (foregroundLabel) {
-		foregroundLabel.innerHTML = i18next.t(showSecondary ? "functions.color.primary" : "functions.color.foreground");
-	}
+	setI18nText(document.querySelector("label[for='colorwheel-foreground'] span[data-i18next]"),
+		showSecondary ? "functions.color.primary" : "functions.color.foreground");
 
 	// The wheel must not keep editing a swatch that just disappeared.
-	if ((colorPosition === 0 && !showForeground) || (colorPosition === 3 && !showSecondary)) {
+	if (colorPosition === 3 && !showSecondary) {
 		colorPosition = 1;
 		const background = document.getElementById("colorwheel-background");
 		if (background) background.checked = true;
