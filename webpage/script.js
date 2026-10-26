@@ -661,6 +661,10 @@ function setSliders() {
 	if (sparkingValue) sparkingValue.textContent = fireSparking;
 }
 
+function sendSpeedData(persist) {
+	sendCmd(CMD.SPEED, nstr(effectSpeed) + nstr(persist ? 1 : 0));
+}
+
 function sendFireData(persist) {
 	sendCmd(CMD.SET_FIRE, nstr(fireCooling) + nstr(fireSparking) + nstr(persist ? 1 : 0));
 }
@@ -830,14 +834,14 @@ function sendCmd(command, addData = "") {
 	}
 }
 
-function sendBrightnessData() {
+function sendBrightnessData(persist) {
 	let payload = "";
 	[6, 8, 12, 16, 18, 20, 22, 24].forEach(h => {
 		let val = document.getElementById(`brightness-${h}`).value;
 		window[`h${h}`] = val;
 		payload += nstr(val);
 	});
-	sendCmd(CMD.SET_BRIGHTNESS, payload + nstr(effectBri));
+	sendCmd(CMD.SET_BRIGHTNESS, payload + nstr(effectBri) + nstr(persist ? 1 : 0));
 	debugMessage(`Brightness${debugMessageReconfigured}`);
 }
 
@@ -1100,11 +1104,11 @@ document.addEventListener("DOMContentLoaded", function() {
 			let id = event.target.id;
 			if (id === "slider-brightness") {
 				effectBri = event.target.value;
-				sendBrightnessData();
+				sendBrightnessData(false);
 			}
 			if (id === "slider-speed") {
 				effectSpeed = event.target.value;
-				sendCmd(CMD.SPEED, nstr(effectSpeed));
+				sendSpeedData(false);
 			}
 			if (id === "slider-fire-cooling" || id === "slider-fire-sparking") {
 				fireCooling = document.getElementById("slider-fire-cooling").value;
@@ -1118,6 +1122,15 @@ document.addEventListener("DOMContentLoaded", function() {
 			}, 20);
 		});
 	});
+
+	const speedSlider = document.getElementById("slider-speed");
+	if (speedSlider) {
+		speedSlider.addEventListener("change", function() {
+			effectSpeed = speedSlider.value;
+			setSliders();
+			sendSpeedData(true);
+		});
+	}
 
 	["slider-fire-cooling", "slider-fire-sparking"].forEach(id => {
 		const slider = document.getElementById(id);
@@ -1223,7 +1236,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	document.querySelectorAll("[id*='brightness']").forEach(el => {
-		el.addEventListener("change", () => sendBrightnessData(CMD.SET_BRIGHTNESS));
+		el.addEventListener("change", () => sendBrightnessData(true));
 	});
 
 	const weatherBtn = document.getElementById("weather-button");

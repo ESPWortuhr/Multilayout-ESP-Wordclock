@@ -1762,7 +1762,16 @@ void ClockWork::loop(struct tm &tm) {
         parametersChanged = true;
         break;
 
-    case COMMAND_SET_BRIGHTNESS:
+    case COMMAND_SET_BRIGHTNESS: {
+        if (G.param1) {
+            eeprom::write();
+        }
+        led.clear();
+        memset(frameArray, false, sizeof(frameArray));
+        parametersChanged = true;
+        break;
+    }
+
     case COMMAND_SET_AUTO_BRIGHT:
     case COMMAND_SET_WHITETYPE:
     case COMMAND_SET_TIME_MANUAL:
@@ -1889,6 +1898,14 @@ void ClockWork::loop(struct tm &tm) {
             eeprom::write();
             Serial.printf("Fire: cooling %u, sparking %u\n", G.fireCooling,
                           G.fireSparking);
+        }
+        break;
+    }
+
+    case COMMAND_SPEED: {
+        if (G.param1) {
+            eeprom::write();
+            Serial.printf("Effect speed: %u\n", G.effectSpeed);
         }
         break;
     }
