@@ -394,7 +394,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload,
             G.autoBrightMax = clampToRange(split(payload, length, 9), 10, 100);
             G.autoBrightPeak =
                 clampToRange(split(payload, length, 12, 4), 10, 1500);
-            G.param1 = 1;
             break;
         }
 

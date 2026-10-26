@@ -1702,11 +1702,9 @@ void ClockWork::loop(struct tm &tm) {
         DynamicJsonDocument config(256);
         config["command"] = "autoBright";
         config["autoBrightEnabled"] = G.autoBrightEnabled;
-        if (G.param1 == 1) {
-            config["autoBrightMin"] = G.autoBrightMin;
-            config["autoBrightMax"] = G.autoBrightMax;
-            config["autoBrightPeak"] = G.autoBrightPeak;
-        }
+        config["autoBrightMin"] = G.autoBrightMin;
+        config["autoBrightMax"] = G.autoBrightMax;
+        config["autoBrightPeak"] = G.autoBrightPeak;
         config["autoBrightSensor"] = (uint32_t)lux;
         config["autoBrightGain"] = (uint8_t)ledGain;
         config["autoBrightSource"] = autoBrightUsingBH1750 ? "BH1750" : "LDR";

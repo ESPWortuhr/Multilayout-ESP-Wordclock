@@ -293,6 +293,7 @@ function initWebsocket() {
 		sendCmd(CMD.REQ_COLOR_VALUES);
 		sendCmd(CMD.REQ_TRANSITION);
 		sendCmd(CMD.REQ_CONFIG_VALUES);
+		sendCmd(CMD.REQ_AUTO_BRIGHT);
 	};
 
 	websocket.onclose = function(event) {
@@ -489,7 +490,7 @@ function initWebsocket() {
 				document.getElementById("auto-bright-sensor").value = data.autoBrightSensor;
 				document.getElementById("auto-bright-source").value = data.autoBrightSource || "";
 				document.getElementById("auto-bright-gain").value = data.autoBrightGain;
-				if (data.autoBrightMin && data.autoBrightMax && data.autoBrightPeak) {
+				if (data.autoBrightMin !== undefined && data.autoBrightMax !== undefined && data.autoBrightPeak !== undefined) {
 					autoBrightMin = data.autoBrightMin;
 					autoBrightMax = data.autoBrightMax;
 					autoBrightPeak = data.autoBrightPeak;
@@ -742,7 +743,7 @@ function autoBrightUpdater() {
 	autoBrightInterval = setInterval(function() {
 		const autoBrightEl = document.getElementById("auto-bright-enabled");
 		if (autoBrightEl && autoBrightEl.value === "1") {
-			sendCmd(CMD.REQ_AUTO_BRIGHT, 1);
+			sendCmd(CMD.REQ_AUTO_BRIGHT);
 		}
 	}, 1000);
 	debugMessage(`Start timer autoBrightInterval with ID ${autoBrightInterval}`);
