@@ -1727,6 +1727,7 @@ void ClockWork::loop(struct tm &tm) {
     case COMMAND_SET_WEATHER_DATA:
     case COMMAND_SET_SCROLLINGTEXT:
     case COMMAND_SET_TIMESERVER:
+    case COMMAND_SET_SYMBOL:
     case COMMAND_SET_BOOT: {
         eeprom::write();
         delay(100);
@@ -1785,6 +1786,7 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_SET_COLORIZE:
     case COMMAND_SET_LANGUAGE_VARIANT:
+    case COMMAND_SET_IT_IS_VARIANT:
     case COMMAND_SET_SETTING_SECOND: {
         eeprom::write();
         led.clear();
