@@ -458,6 +458,9 @@ function initWebsocket() {
 				if (data.hsb20 !== undefined && data.hsb21 !== undefined && data.hsb22 !== undefined) {
 					hsb[2] = [data.hsb20, data.hsb21, data.hsb22];
 				}
+				if (data.hsb30 !== undefined && data.hsb31 !== undefined && data.hsb32 !== undefined) {
+					hsb[3] = [data.hsb30, data.hsb31, data.hsb32];
+				}
 				effectBri = data.effectBri;
 				effectSpeed = data.effectSpeed;
 				hasSpecialWordHappyBirthday = data.hasSpecialWordHappyBirthday;
