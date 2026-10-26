@@ -781,8 +781,8 @@ void setup() {
     Serial.printf("Signal strength: %i\n", strength);
 #endif
     wifiStart();
-    configTime(0, 0, G.timeserver);
-    applyTimezone();
+    ensureTimezone();
+    configTzTime(G.timezone, G.timeserver);
 
     delay(50);
 
