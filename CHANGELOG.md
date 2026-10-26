@@ -1,5 +1,36 @@
 # Changelog
 
+## V5.0.0-rc.4
+
+Fourth release candidate for 5.0.0. The web interface now stays in sync with the clock: changes from Home Assistant and the hardware buttons show up on the page, and colours, auto brightness limits and several settings are no longer lost or overwritten. All seven languages are complete.
+
+### Upgrade notes
+
+- Updating from V5.0.0-rc.1, rc.2 or rc.3 keeps all settings (`SERNR` is still 500). Updating from 4.x resets all settings, see the notes for rc.1.
+
+### Fixed
+
+- Colour, brightness, mode, effect speed, on/off and the transition settings changed via MQTT or the hardware buttons now show up in every open web interface. Before, the page kept the old colour and sent it back on the next mode change, overwriting the value from Home Assistant (#836).
+- The secondary colour of the gradient is loaded into the web interface instead of showing the built-in default (#836).
+- The minimum, maximum and peak of the auto brightness reach the web interface. Before, the page showed its defaults 10/80/750 and wrote them to the clock on the next change (#836).
+- Colours are rounded instead of truncated when sent to the web interface, so reloading the page no longer shifts some hues, saturations and brightnesses down by one step (#836).
+- The effect speed, the "It is" variant and the selected symbol are saved and survive a restart (#837, #839).
+- In "Random per word" mode the foreground colour can be edited again, so the saturation and brightness of the words can be changed (#838).
+- Changing a transition setting sends it to the clock once instead of twice (#835).
+- On the panbachi 11x11 the earlier minute dots stay lit, and the fire and rainbow cycle modes follow the mirror settings (#832, #578).
+
+### Improved
+
+- Dragging the effect brightness or speed slider no longer writes to flash on every step; the value is saved once when the slider is released (#837).
+- Spanish, Hungarian, Italian, Dutch and Russian are complete, including the birthday box and the newer layout options. Misnamed keys for the Dutch white type, the Russian transitions and the Spanish fireworks are fixed (#835).
+- The connect and disconnect buttons and the connection status follow the selected language (#835).
+
+### Internal / Maintenance
+
+- Removed two unused sliders and a click handler without a button from the web interface (#835).
+- i18next updated to 26.5.6, fast-uri to 3.1.9.
+- Bumped version in `package.json` to `5.0.0-rc.4`.
+
 ## V5.0.0-rc.3
 
 Third release candidate for 5.0.0. The WiFi setup portal can now set up the clock without a home network, the laser and fireworks follow the clock brightness and the random word colours survive brightness changes.
