@@ -63,6 +63,29 @@ let TRANSLATION_NL = {
 			"fire": "Vuur",
 			"symbol": "Symbool"
 		},
+		"birthdays": {
+			"h1": "Verjaardagen",
+			"help": "Op verjaardagen verschijnt elke 5 minuten een vuurwerkanimatie.\n" +
+				"Compatibele kloktypes tonen tijdens de animatie de woorden “Happy Birthday” in plaats van de tijd. Datumnotatie MM-DD\n",
+			"dates": {
+				"save": "Opslaan",
+				"date0": {
+					"label": "Datum 1:"
+				},
+				"date1": {
+					"label": "Datum 2:"
+				},
+				"date2": {
+					"label": "Datum 3:"
+				},
+				"date3": {
+					"label": "Datum 4:"
+				},
+				"date4": {
+					"label": "Datum 5:"
+				}
+			}
+		},
 		"transition": {
 			"h2": "Overgang",
 			"type": {
@@ -97,9 +120,7 @@ let TRANSLATION_NL = {
 			"save": "Opslaan",
 			"speed": "Snelheid ",
 			"fire-cooling": "Afkoeling ",
-			"fire-sparking": "Vonken ",
-			"leds": "Aantal LED's ",
-			"position": "Positie "
+			"fire-sparking": "Vonken "
 		}
 	},
 
@@ -146,6 +167,9 @@ let TRANSLATION_NL = {
 			"invert-min-dir": "Draai minuutrichting om",
 			"mirror-vertically": "Spiegel Woordklok verticaal",
 			"mirror-horizontally": "Spiegel Woordklok horizontaal",
+			"extra-led-per-row": "Extra LED per rij toevoegen",
+			"flip-horz-vert": "Layout horizontaal en verticaal omdraaien",
+			"meander-rows": "Rijen in meander geplaatst",
 			"buildtype": "bouwtype",
 			"normal": "Elke LED komt overeen met een letter",
 			"doubleResM1": "Elke tweede LED komt overeen met een letter",
@@ -209,7 +233,9 @@ let TRANSLATION_NL = {
 		"status": {
 			"h2": "Status",
 			"label": "Verbindingsstatus",
-			"connect": "Verbinden"
+			"connect": "Verbinden",
+			"disconnect": "Verbinding verbreken",
+			"connecting": "Verbinden ..."
 		},
 		"led-type": {
 			"h2": "LED Type",
@@ -246,12 +272,12 @@ let TRANSLATION_NL = {
 			"duplicate": "Elke pin mag maar één keer worden gebruikt.",
 			"save": "Opslaan"
 		},
-		"wit type": {
+		"whitetype": {
 			"h2": "Type witte LED",
 			"in-border": "Instelling van het type witte LED van de RGBW-strip",
-			"ww": "warm white",
-			"nw": "neutral white",
-			"cw": "cool white"
+			"ww": "warmwit",
+			"nw": "neutraalwit",
+			"cw": "koudwit"
 		},
 		"time-server": {
 			"h2": "Tijdserver",

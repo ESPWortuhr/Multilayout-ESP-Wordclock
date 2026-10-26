@@ -63,16 +63,51 @@ let TRANSLATION_RU = {
 			"fire": "Огонь",
 			"symbol": "Символ"
 		},
-		"animation": {
-			"h2": "Анимация",
+		"birthdays": {
+			"h1": "Дни рождения",
+			"help": "В дни рождения каждые 5 минут появляется анимация фейерверка.\n" +
+				"Совместимые типы часов во время анимации показывают слова «Happy Birthday» вместо времени. Формат даты MM-DD\n",
+			"dates": {
+				"save": "Сохранить",
+				"date0": {
+					"label": "Дата 1:"
+				},
+				"date1": {
+					"label": "Дата 2:"
+				},
+				"date2": {
+					"label": "Дата 3:"
+				},
+				"date3": {
+					"label": "Дата 4:"
+				},
+				"date4": {
+					"label": "Дата 5:"
+				}
+			}
+		},
+		"transition": {
+			"h2": "Переход",
 			"type": {
-				"label": "Тип"
+				"label": "Тип",
+				"none": "Нет",
+				"scroll_up": "Прокрутка вверх",
+				"scroll_down": "Прокрутка вниз",
+				"shift_left": "Сдвиг влево",
+				"shift_right": "Сдвиг вправо",
+				"fade": "Затухание",
+				"laser": "Лазер",
+				"matrix_rain": "Матричный дождь",
+				"balls": "Шары",
+				"firework": "Фейерверк",
+				"snake": "Змейка",
+				"random": "Случайно"
 			},
 			"duration": {
-				"label": "Временные рамки",
-				"short": "короткий",
-				"medium": "половина",
-				"long": "длинный"
+				"label": "Длительность",
+				"short": "короткая",
+				"medium": "средняя",
+				"long": "длинная"
 			},
 			"demo": {
 				"label": "Демо"
@@ -85,9 +120,7 @@ let TRANSLATION_RU = {
 			"save": "сохранять",
 			"speed": "Скорость ",
 			"fire-cooling": "Охлаждение ",
-			"fire-sparking": "Искры ",
-			"leds": "Количество светодиодов ",
-			"position": "Позиция "
+			"fire-sparking": "Искры "
 		}
 	},
 
@@ -134,6 +167,9 @@ let TRANSLATION_RU = {
 			"invert-min-dir": "Обратное направление отсчета минут",
 			"mirror-vertically": "Переверните часы вертикально",
 			"mirror-horizontally": "Переверните часы горизонтально",
+			"extra-led-per-row": "Добавить дополнительный светодиод в ряд",
+			"flip-horz-vert": "Перевернуть раскладку по горизонтали и вертикали",
+			"meander-rows": "Ряды расположены змейкой",
 			"buildtype": "Тип конструкции",
 			"normal": "Каждый светодиод соответствует букве",
 			"doubleResM1": "Каждый второй светодиод соответствует букве",
@@ -154,11 +190,14 @@ let TRANSLATION_RU = {
 			"quarter-nine": "четверть десяти",
 			"at-nine-twenty": "ЧАСОВ 9:20 ...",
 			"twenty-past-nine": "девять и двадцать",
+			"ten-before-half-past-ten": "без десяти половина десятого",
 			"at-nine-fourty": "ЧАСОВ 9:40 ...",
 			"twenty-before-ten": "от двадцати до десяти",
+			"ten-after-half-past-ten": "десять минут после половины десятого",
 			"at-nine-fourtyfive-german": "ЧАСОВ 9:45 ...",
 			"quarter-to-ten": "восемь сорок пять",
 			"three-quarter-ten": "Три четверти десять",
+			"at-nine-fourtyfive-english": "ЧАСОВ 9:45 ...",
 			"quarter-to-ten-english": "без четверти десять",
 			"a-quarter-to-ten-english": "без четверти десять"
 		},
@@ -194,7 +233,9 @@ let TRANSLATION_RU = {
 		"status": {
 			"h2": "Состояние",
 			"label": "Статус подключения",
-			"connect": "Соединять"
+			"connect": "Соединять",
+			"disconnect": "Отключить",
+			"connecting": "Подключение ..."
 		},
 		"led-type": {
 			"h2": "Тип светодиода",

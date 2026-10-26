@@ -120,9 +120,7 @@ let TRANSLATION_DE_DE = {
 			"save": "Speichern",
 			"speed": "Geschwindigkeit ",
 			"fire-cooling": "Abkühlung ",
-			"fire-sparking": "Funkenflug ",
-			"leds": "Anzahl LEDs ",
-			"position": "Position "
+			"fire-sparking": "Funkenflug "
 		}
 	},
 
@@ -235,7 +233,9 @@ let TRANSLATION_DE_DE = {
 		"status": {
 			"h2": "Status",
 			"label": "Verbindungsstatus",
-			"connect": "Verbinden"
+			"connect": "Verbinden",
+			"disconnect": "Trennen",
+			"connecting": "Verbinden ..."
 		},
 		"led-type": {
 			"h2": "LED-Typ",

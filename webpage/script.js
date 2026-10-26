@@ -241,6 +241,10 @@ function supportsMinuteDirection(supportedMinuteVariants) {
 	return (supportedMinuteVariants & (led4x | led7x)) !== 0;
 }
 
+function translate(key) {
+	return (window.i18next && i18next.isInitialized) ? i18next.t(key) : key;
+}
+
 function setI18nText(element, key) {
 	if (!element) return;
 	element.dataset.i18next = key;
@@ -277,11 +281,11 @@ function initWebsocket() {
 		if (statusEl) {
 			statusEl.classList.add("online");
 			statusEl.classList.remove("offline");
-			statusEl.setAttribute("value", "Online");
+			statusEl.value = translate("status.online");
 		}
 
 		document.querySelectorAll(".status-button").forEach(btn => {
-			btn.textContent = "Disconnect";
+			setI18nText(btn, "settings.status.disconnect");
 			btn.value = "1";
 		});
 
@@ -303,11 +307,11 @@ function initWebsocket() {
 		if (statusEl) {
 			statusEl.classList.remove("online");
 			statusEl.classList.add("offline");
-			statusEl.setAttribute("value", "Offline");
+			statusEl.value = translate("status.offline");
 		}
 
 		document.querySelectorAll(".status-button").forEach(btn => {
-			btn.textContent = "Verbinden";
+			setI18nText(btn, "settings.status.connect");
 			btn.value = "0";
 		});
 
@@ -457,6 +461,9 @@ function initWebsocket() {
 				hsb[1] = [data.hsb10, data.hsb11, data.hsb12];
 				if (data.hsb20 !== undefined && data.hsb21 !== undefined && data.hsb22 !== undefined) {
 					hsb[2] = [data.hsb20, data.hsb21, data.hsb22];
+				}
+				if (data.hsb30 !== undefined && data.hsb31 !== undefined && data.hsb32 !== undefined) {
+					hsb[3] = [data.hsb30, data.hsb31, data.hsb32];
 				}
 				effectBri = data.effectBri;
 				effectSpeed = data.effectSpeed;
@@ -969,7 +976,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		btn.addEventListener("click", function() {
 			let value = this.value;
 			const statusEl = document.getElementById("status");
-			if (statusEl) statusEl.textContent = "Verbinden ...";
+			if (statusEl) statusEl.value = translate("settings.status.connecting");
 
 			if (value === "1") {
 				value = 0;
@@ -982,19 +989,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 		});
 	});
-
-	const clockBtn = document.getElementById("_clock");
-	if (clockBtn) {
-		clockBtn.addEventListener("click", function() {
-			let date = new Date();
-			let timeZoneOffset = date.getTimezoneOffset();
-			timeZoneOffset = timeZoneOffset / 60 * -1;
-			let time = date.getTime() / 1000;
-
-			sendCmd(CMD.SET_TIME, getPaddedString(nstr(timeZoneOffset) + time, 21));
-			debugMessage("Clock data: ");
-		});
-	}
 
 	const menu = document.getElementById("menu");
 	const menuLinks = document.querySelectorAll(".nav-link[data-navigation]");
@@ -1136,8 +1130,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	});
 
-	document.querySelectorAll("[id*='transition']").forEach(el => {
-		el.addEventListener("change", function(event) {
+	["transition-types", "transition-duration", "transition-demo"].forEach(id => {
+		document.getElementById(id).addEventListener("change", function() {
 			transitionType = document.getElementById("transition-types").value;
 			transitionDuration = document.getElementById("transition-duration").value;
 			transitionDemo = document.getElementById("transition-demo").checked;

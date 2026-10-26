@@ -63,6 +63,29 @@ let TRANSLATION_HU = {
 			"fire": "Tűz",
 			"symbol": "Szimbólum"
 		},
+		"birthdays": {
+			"h1": "Születésnapok",
+			"help": "Születésnapokon 5 percenként tűzijáték-animáció jelenik meg.\n" +
+				"A kompatibilis óratípusok az animáció alatt az idő helyett a „Happy Birthday” szavakat mutatják. Dátumformátum MM-DD\n",
+			"dates": {
+				"save": "Mentés",
+				"date0": {
+					"label": "1. dátum:"
+				},
+				"date1": {
+					"label": "2. dátum:"
+				},
+				"date2": {
+					"label": "3. dátum:"
+				},
+				"date3": {
+					"label": "4. dátum:"
+				},
+				"date4": {
+					"label": "5. dátum:"
+				}
+			}
+		},
 		"transition": {
 			"h2": "Átmenet",
 			"type": {
@@ -97,9 +120,7 @@ let TRANSLATION_HU = {
 			"save": "Mentés",
 			"speed": "Sebesség",
 			"fire-cooling": "Hűlés ",
-			"fire-sparking": "Szikrázás ",
-			"leds": "LED-ek száma",
-			"position": "Pozíció"
+			"fire-sparking": "Szikrázás "
 		}
 	},
 
@@ -134,6 +155,9 @@ let TRANSLATION_HU = {
 			"es-08-08-cuarto": "🇪🇸 8 × 8 Negyed órák",
 			"it-10-11": "🇮🇹 10 × 11",
 			"hu-10-10": "🇭🇺 10 x 10",
+			"ch-10-11": "🇨🇭 10 x 11",
+			"ro-10-11": "🇷🇴 10 x 11",
+			"fr-10-11": "🇫🇷 10 x 11",
 			"se-10-11": "🇸🇪 10 × 11",
 			"ru-10-11": "🇷🇺 10 × 11",
 			"bn-9-8": "🇧🇩 9 × 8",
@@ -143,6 +167,9 @@ let TRANSLATION_HU = {
 			"invert-min-dir": "Percszámláló-irány megfordítása",
 			"mirror-vertically": "Szövegóra függőleges tükrözése",
 			"mirror-horizontally": "Szövegóra vízszintes tükrözése",
+			"extra-led-per-row": "Extra LED hozzáadása soronként",
+			"flip-horz-vert": "Elrendezés vízszintes és függőleges tükrözése",
+			"meander-rows": "Sorok meander alakban elrendezve",
 			"buildtype": "Felépítés",
 			"normal": "Minden LED egy betűnek felel meg",
 			"doubleResM1": "Minden második LED egy betűnek felel meg",
@@ -206,7 +233,9 @@ let TRANSLATION_HU = {
 		"status": {
 			"h2": "Állapot",
 			"label": "Kapcsolódás állapota",
-			"connect": "Kapcsolódás"
+			"connect": "Kapcsolódás",
+			"disconnect": "Kapcsolat bontása",
+			"connecting": "Csatlakozás ..."
 		},
 		"led-type": {
 			"h2": "LED-típus",

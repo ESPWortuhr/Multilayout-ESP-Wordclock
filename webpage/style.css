@@ -1133,10 +1133,8 @@ input[type="range"]:focus-visible,
 .speed,
 .fire,
 .functions-settings,
-.leds,
-.position,
 .symbol,
-.pure-form-aligned .pure-control-group:is(.brightness, .speed, .fire, .text, .leds, .position) {
+.pure-form-aligned .pure-control-group:is(.brightness, .speed, .fire, .text) {
     display: none;
 }
 

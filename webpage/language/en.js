@@ -120,9 +120,7 @@ let TRANSLATION_EN_US = {
 			"save": "Save",
 			"speed": "Speed ",
 			"fire-cooling": "Cooling ",
-			"fire-sparking": "Sparking ",
-			"leds": "Number of LEDs ",
-			"position": "Position "
+			"fire-sparking": "Sparking "
 		}
 	},
 
@@ -235,7 +233,9 @@ let TRANSLATION_EN_US = {
 		"status": {
 			"h2": "Status",
 			"label": "Connection Status",
-			"connect": "Connect"
+			"connect": "Connect",
+			"disconnect": "Disconnect",
+			"connecting": "Connecting ..."
 		},
 		"led-type": {
 			"h2": "LED Type",
