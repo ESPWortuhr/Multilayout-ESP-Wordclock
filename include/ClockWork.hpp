@@ -1785,6 +1785,7 @@ void ClockWork::loop(struct tm &tm) {
 
     case COMMAND_SET_COLORIZE:
     case COMMAND_SET_LANGUAGE_VARIANT:
+    case COMMAND_SET_IT_IS_VARIANT:
     case COMMAND_SET_SETTING_SECOND: {
         eeprom::write();
         led.clear();
