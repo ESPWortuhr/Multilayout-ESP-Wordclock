@@ -282,12 +282,6 @@ def rounded_rect(css, x0, y0, x1, y1, radius=0.0):
             f'height="{abs(y1 - y0):.2f}" rx="{radius:.2f}"/>')
 
 
-def montage_key(rows, cols, has_led4x, cells):
-    positions = tuple(sorted((cell[1], cell[2]) for cell in cells
-                             if cell[0] != "apostrophe"))
-    return (len(rows), cols, has_led4x, positions)
-
-
 def build_montage(title, rows, cols, has_led4x, cells, strip):
     pitch, row_pitch = pitches(strip)
     scale = pitch / REFERENCE_PITCH
@@ -296,7 +290,7 @@ def build_montage(title, rows, cols, has_led4x, cells, strip):
     origin_y = grid_origin_y(strip, has_led4x, rows, mm(size[1])) if size else 0
     has_led4x = has_led4x and not minute_strip
     if size is None:
-        return None, None, None
+        return None
     width_mm, height_mm = size
     width, height = mm(width_mm), mm(height_mm)
     origin_x = width / 2 - (cols - 1) * pitch / 2
@@ -568,14 +562,9 @@ def build_montage(title, rows, cols, has_led4x, cells, strip):
     arrows.append(f'\t<text class="caption" x="{width / 2:.2f}" '
                   f'y="{height - mm(8):.2f}">{escape(title)} · '
                   f'{width_mm} × {height_mm} mm · {strip["label"]} · '
-                  f'Rückseite / rear view</text>')
+                  f'Ansicht von vorne / front view</text>')
 
-    svg = f'''<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-	 xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-	 width="{width_mm}mm" height="{height_mm}mm" viewBox="0 0 {width:.1f} {height:.1f}">
-<title>Montage {escape(title)} {width_mm}x{height_mm} mm, {strip["label"]}</title>
-<style type="text/css">
+    style = f'''<style type="text/css">
 	.cut{{fill:none;stroke:#FF0000;stroke-width:0.236224;}}
 	.mark{{fill:none;stroke:#00FF00;stroke-width:0.236224;}}
 	.arrow{{fill:none;stroke:#000000;stroke-width:0.75;}}
@@ -588,19 +577,37 @@ def build_montage(title, rows, cols, has_led4x, cells, strip):
 	.vccdot{{fill:#E05000;}}
 	.gndlabel{{fill:#0050C8;font-family:'Helvetica';font-size:{mm(2.5):.1f}px;}}
 	.vcclabel{{fill:#E05000;font-family:'Helvetica';font-size:{mm(2.5):.1f}px;}}
-</style>
-<g id="montage" inkscape:label="Montage" inkscape:groupmode="layer">
-{chr(10).join(cut + mark)}
-</g>
-<g id="direction" inkscape:label="Richtung" inkscape:groupmode="layer">
-{chr(10).join(arrows)}
-</g>
-<g id="power" inkscape:label="Lötverbindungen" inkscape:groupmode="layer">
-{chr(10).join(power)}
-</g>
-</svg>
-'''
-    return svg, width_mm, height_mm
+</style>'''
+
+    def layer(layer_id, label, entries):
+        shapes = [entry for entry in entries
+                  if not entry.lstrip().startswith("<text")]
+        texts = []
+        for entry in entries:
+            if not entry.lstrip().startswith("<text"):
+                continue
+            entry = re.sub(r' x="([\d.]+)"',
+                           lambda m: f' x="{width - float(m.group(1)):.2f}"',
+                           entry)
+            entry = (entry.replace('text-anchor="end"', 'text-anchor="@"')
+                     .replace('text-anchor="start"', 'text-anchor="end"')
+                     .replace('text-anchor="@"', 'text-anchor="start"'))
+            texts.append(entry)
+        return (f'<g id="{layer_id}" inkscape:label="{label}" '
+                f'inkscape:groupmode="layer" style="display:none">\n'
+                f'<g transform="matrix(-1,0,0,1,{width:.2f},0)">\n'
+                f'{chr(10).join(shapes)}\n</g>\n'
+                f'{chr(10).join(texts)}\n</g>')
+
+    return "\n".join([style, layer("montage", "Montage", cut + mark),
+                      layer("direction", "Richtung", arrows),
+                      layer("power", "Lötverbindungen", power)])
+
+
+def with_montage(svg, montage):
+    if not montage:
+        return svg
+    return svg.replace("</svg>", montage + "\n</svg>")
 
 
 def write_stencil(svg, target):
@@ -620,7 +627,6 @@ def main():
     if not have_inkscape:
         print("Inkscape not found, skipping the stencil variants.")
 
-    montages = {}
     for name, header in clock_types():
         if args and name not in args:
             continue
@@ -637,15 +643,11 @@ def main():
             if svg is None:
                 continue
             has_dots = any(cell[0] == "dot" for cell in cells)
+            montage = None
             if has_led4x or has_dots:
-                key = (STRIPS.index(strip),) + montage_key(rows, cols,
-                                                           has_led4x, cells)
-                full = len(key[4]) == len(rows) * cols
-                title = f"{len(rows)}x{cols}" if full else name
-                if full and not has_led4x:
-                    title += " Minuten in der Reihe"
-                montages.setdefault(key, (title, rows, cols, has_led4x,
-                                          cells, strip))
+                montage = build_montage(name, len(rows), cols, has_led4x,
+                                        cells, strip)
+            svg = with_montage(svg, montage)
             size = f"{width_mm}x{height_mm}"
             folder = os.path.join(SVG_DIR, f"Front_{size}")
 
@@ -666,21 +668,9 @@ def main():
                 stencil_svg, _, _ = build_svg(name, rows, cols, has_led4x,
                                               cells, STENCIL_FONT,
                                               STENCIL_FONT_SIZE, strip)
-                write_stencil(stencil_svg, stencil)
+                write_stencil(with_montage(stencil_svg, montage), stencil)
                 print(f"{name}: {os.path.relpath(stencil, ROOT)}")
 
-    for title, rows, cols, has_led4x, cells, strip in montages.values():
-        svg, width_mm, height_mm = build_montage(title, len(rows), cols,
-                                                 has_led4x, cells, strip)
-        size = f"{width_mm}x{height_mm}"
-        slug = title.replace(" ", "_")
-        target = os.path.join(SVG_DIR, f"Front_{size}", "Montage",
-                              f"Montage_{slug}_{size}.svg")
-        if force or not os.path.exists(target):
-            os.makedirs(os.path.dirname(target), exist_ok=True)
-            with open(target, "w", encoding="utf-8") as handle:
-                handle.write(svg)
-            print(f"{title}: {os.path.relpath(target, ROOT)}")
 
 if __name__ == "__main__":
     main()
