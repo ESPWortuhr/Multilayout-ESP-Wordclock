@@ -636,17 +636,16 @@ def main():
                                                  cells, font, FONT_SIZE, strip)
             if svg is None:
                 continue
-            key = (STRIPS.index(strip),) + montage_key(rows, cols, has_led4x,
-                                                       cells)
-            full = len(key[4]) == len(rows) * cols
-            title = f"{len(rows)}x{cols}" if full else name
-            if full and not has_led4x:
-                if any(cell[0] == "dot" for cell in cells):
+            has_dots = any(cell[0] == "dot" for cell in cells)
+            if has_led4x or has_dots:
+                key = (STRIPS.index(strip),) + montage_key(rows, cols,
+                                                           has_led4x, cells)
+                full = len(key[4]) == len(rows) * cols
+                title = f"{len(rows)}x{cols}" if full else name
+                if full and not has_led4x:
                     title += " Minuten in der Reihe"
-                else:
-                    title += " ohne Minuten-LEDs"
-            montages.setdefault(key, (title, rows, cols, has_led4x, cells,
-                                      strip))
+                montages.setdefault(key, (title, rows, cols, has_led4x,
+                                          cells, strip))
             size = f"{width_mm}x{height_mm}"
             folder = os.path.join(SVG_DIR, f"Front_{size}")
 
