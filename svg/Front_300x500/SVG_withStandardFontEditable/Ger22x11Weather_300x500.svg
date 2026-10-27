@@ -10,10 +10,10 @@
 </style>
 <rect class="background" width="850.4" height="1417.3"/>
 <g id="minutes" inkscape:label="Minutes" inkscape:groupmode="layer">
-	<circle cx="354.33" cy="685.04" r="6.40"/>
-	<circle cx="401.57" cy="685.04" r="6.40"/>
-	<circle cx="448.82" cy="685.04" r="6.40"/>
-	<circle cx="496.06" cy="685.04" r="6.40"/>
+	<circle cx="377.95" cy="685.04" r="6.40"/>
+	<circle cx="425.20" cy="685.04" r="6.40"/>
+	<circle cx="472.44" cy="685.04" r="6.40"/>
+	<circle cx="519.69" cy="685.04" r="6.40"/>
 </g>
 <g id="letters" inkscape:label="Letters" inkscape:groupmode="layer">
 	<text x="188.98" y="222.60" class="letter">E</text>
@@ -360,10 +360,10 @@
 		<rect x="545.68" y="616.55" width="42.49" height="42.49" rx="8.50"/>
 		<rect x="592.93" y="616.55" width="42.49" height="42.49" rx="8.50"/>
 		<rect x="640.17" y="616.55" width="42.49" height="42.49" rx="8.50"/>
-		<rect x="333.08" y="663.79" width="42.49" height="42.49" rx="8.50"/>
-		<rect x="380.33" y="663.79" width="42.49" height="42.49" rx="8.50"/>
-		<rect x="427.57" y="663.79" width="42.49" height="42.49" rx="8.50"/>
-		<rect x="474.82" y="663.79" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="356.71" y="663.79" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="403.95" y="663.79" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="451.19" y="663.79" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="498.44" y="663.79" width="42.49" height="42.49" rx="8.50"/>
 		<rect x="167.73" y="711.04" width="42.49" height="42.49" rx="8.50"/>
 		<rect x="214.97" y="711.04" width="42.49" height="42.49" rx="8.50"/>
 		<rect x="262.22" y="711.04" width="42.49" height="42.49" rx="8.50"/>
