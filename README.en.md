@@ -13,7 +13,8 @@
 
 # ESP Wordclock
 
-<img src="pics/wortuhr-webpage.png" alt="Web interface on desktop" height="420"/> <img src="pics/wortuhr-webpage-mobile.png" alt="Web interface on a phone" height="420"/>
+<img src="pics/wortuhr-webpage-light.png" alt="Web interface in light mode, desktop on the left, phone on the right"/>
+<img src="pics/wortuhr-webpage-dark.png" alt="Web interface in dark mode, desktop on the left, phone on the right"/>
 
 This is a project for a multilingual word clock based on an ESP8266 microcontroller and a programmable LED strip (WS2812 or SK6812). A word clock is a beautiful DIY project for beginners that combines technology and design to create a functional and aesthetically pleasing clock.
 Whether you are a beginner or an experienced maker, this project is a great way to put your skills to work and build something truly special.
