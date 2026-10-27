@@ -8,11 +8,13 @@
 	.letter{font-family:'Helvetica';font-size:30.0px;text-anchor:middle;}
 	.guide{fill:none;stroke:#FF0000;stroke-width:0.2835;}
 </style>
-<rect class="background" width="1133.9" height="850.4"/>
-<g id="minutes" inkscape:label="Minutes" inkscape:groupmode="layer">
+<g id="background" inkscape:label="Background (do not laser)" inkscape:groupmode="layer">
+	<rect class="background" width="1133.9" height="850.4"/>
+</g>
+<g id="minutes" inkscape:label="Minutes (engrave)" inkscape:groupmode="layer">
 
 </g>
-<g id="letters" inkscape:label="Letters" inkscape:groupmode="layer">
+<g id="letters" inkscape:label="Letters (engrave)" inkscape:groupmode="layer">
 	<text x="212.60" y="269.84" class="letter">E</text>
 	<text x="259.84" y="269.84" class="letter">S</text>
 	<text x="307.09" y="269.84" class="letter">H</text>
@@ -142,7 +144,7 @@
 	<text x="874.02" y="600.55" class="letter">N</text>
 	<text x="921.26" y="600.55" class="letter">X</text>
 </g>
-<g id="guides" inkscape:label="Guides" inkscape:groupmode="layer" style="display:none">
+<g id="spacing-foam" inkscape:label="Spacing Foam (cut)" inkscape:groupmode="layer" style="display:none">
 	<g class="guide">
 		<rect x="191.35" y="238.60" width="42.49" height="42.49" rx="8.50"/>
 		<rect x="238.60" y="238.60" width="42.49" height="42.49" rx="8.50"/>

@@ -230,14 +230,16 @@ def build_svg(name, rows, cols, has_led4x, cells, font, font_size, strip):
 	.letter{{font-family:{font};font-size:{font_size:.1f}px;text-anchor:middle;}}
 	.guide{{fill:none;stroke:#FF0000;stroke-width:0.2835;}}
 </style>
-<rect class="background" width="{width:.1f}" height="{height:.1f}"/>
-<g id="minutes" inkscape:label="Minutes" inkscape:groupmode="layer">
+<g id="background" inkscape:label="Background (do not laser)" inkscape:groupmode="layer">
+	<rect class="background" width="{width:.1f}" height="{height:.1f}"/>
+</g>
+<g id="minutes" inkscape:label="Minutes (engrave)" inkscape:groupmode="layer">
 {chr(10).join(dots)}
 </g>
-<g id="letters" inkscape:label="Letters" inkscape:groupmode="layer">
+<g id="letters" inkscape:label="Letters (engrave)" inkscape:groupmode="layer">
 {chr(10).join(letters)}
 </g>
-<g id="guides" inkscape:label="Guides" inkscape:groupmode="layer" style="display:none">
+<g id="spacing-foam" inkscape:label="Spacing Foam (cut)" inkscape:groupmode="layer" style="display:none">
 	<g class="guide">
 {chr(10).join(guides)}
 	</g>
@@ -599,9 +601,11 @@ def build_montage(title, rows, cols, has_led4x, cells, strip):
                 f'{chr(10).join(shapes)}\n</g>\n'
                 f'{chr(10).join(texts)}\n</g>')
 
-    return "\n".join([style, layer("montage", "Montage", cut + mark),
-                      layer("direction", "Richtung", arrows),
-                      layer("power", "Lötverbindungen", power)])
+    return "\n".join([style,
+                      layer("instruction-mark", "Instruction (mark)", mark),
+                      layer("instruction-cut", "Instruction (cut)", cut),
+                      layer("direction", "Direction (mark if needed)",
+                            arrows + power)])
 
 
 def with_montage(svg, montage):

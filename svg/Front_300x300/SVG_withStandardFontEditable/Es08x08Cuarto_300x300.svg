@@ -8,14 +8,16 @@
 	.letter{font-family:'Helvetica';font-size:30.0px;text-anchor:middle;}
 	.guide{fill:none;stroke:#FF0000;stroke-width:0.2835;}
 </style>
-<rect class="background" width="850.4" height="850.4"/>
-<g id="minutes" inkscape:label="Minutes" inkscape:groupmode="layer">
+<g id="background" inkscape:label="Background (do not laser)" inkscape:groupmode="layer">
+	<rect class="background" width="850.4" height="850.4"/>
+</g>
+<g id="minutes" inkscape:label="Minutes (engrave)" inkscape:groupmode="layer">
 	<circle cx="215.43" cy="215.43" r="6.40"/>
 	<circle cx="634.96" cy="215.43" r="6.40"/>
 	<circle cx="634.96" cy="634.96" r="6.40"/>
 	<circle cx="215.43" cy="634.96" r="6.40"/>
 </g>
-<g id="letters" inkscape:label="Letters" inkscape:groupmode="layer">
+<g id="letters" inkscape:label="Letters (engrave)" inkscape:groupmode="layer">
 	<text x="259.84" y="269.84" class="letter">S</text>
 	<text x="307.09" y="269.84" class="letter">E</text>
 	<text x="354.33" y="269.84" class="letter">I</text>
@@ -81,7 +83,7 @@
 	<text x="543.31" y="600.55" class="letter">T</text>
 	<text x="590.55" y="600.55" class="letter">O</text>
 </g>
-<g id="guides" inkscape:label="Guides" inkscape:groupmode="layer" style="display:none">
+<g id="spacing-foam" inkscape:label="Spacing Foam (cut)" inkscape:groupmode="layer" style="display:none">
 	<g class="guide">
 		<rect x="238.60" y="238.60" width="42.49" height="42.49" rx="8.50"/>
 		<rect x="285.84" y="238.60" width="42.49" height="42.49" rx="8.50"/>
@@ -167,17 +169,8 @@
 	.gndlabel{fill:#0050C8;font-family:'Helvetica';font-size:7.1px;}
 	.vcclabel{fill:#E05000;font-family:'Helvetica';font-size:7.1px;}
 </style>
-<g id="montage" inkscape:label="Montage" inkscape:groupmode="layer" style="display:none">
+<g id="instruction-mark" inkscape:label="Instruction (mark)" inkscape:groupmode="layer" style="display:none">
 <g transform="matrix(-1,0,0,1,850.39,0)">
-	<rect class="cut" x="0.00" y="0.00" width="850.39" height="850.39" rx="56.69"/>
-	<rect class="cut" x="213.97" y="292.91" width="18.43" height="75.59" rx="4.61"/>
-	<rect class="cut" x="213.97" y="387.40" width="18.43" height="75.59" rx="4.61"/>
-	<rect class="cut" x="213.97" y="481.89" width="18.43" height="75.59" rx="4.61"/>
-	<rect class="cut" x="236.68" y="206.22" width="377.03" height="18.43" rx="4.61"/>
-	<rect class="cut" x="236.68" y="625.75" width="377.03" height="18.43" rx="4.61"/>
-	<rect class="cut" x="618.00" y="236.68" width="34.02" height="377.03" rx="4.61"/>
-	<rect class="cut" x="213.97" y="576.38" width="18.43" height="37.34" rx="4.61"/>
-	<rect class="cut" x="194.19" y="238.60" width="42.49" height="42.49" rx="8.50"/>
 	<rect class="mark" x="236.22" y="245.67" width="377.95" height="28.35" rx="0.00"/>
 	<line class="mark" x1="590.55" y1="245.67" x2="590.55" y2="251.34"/>
 	<line class="mark" x1="590.55" y1="274.02" x2="590.55" y2="268.35"/>
@@ -321,7 +314,21 @@
 </g>
 
 </g>
-<g id="direction" inkscape:label="Richtung" inkscape:groupmode="layer" style="display:none">
+<g id="instruction-cut" inkscape:label="Instruction (cut)" inkscape:groupmode="layer" style="display:none">
+<g transform="matrix(-1,0,0,1,850.39,0)">
+	<rect class="cut" x="0.00" y="0.00" width="850.39" height="850.39" rx="56.69"/>
+	<rect class="cut" x="213.97" y="292.91" width="18.43" height="75.59" rx="4.61"/>
+	<rect class="cut" x="213.97" y="387.40" width="18.43" height="75.59" rx="4.61"/>
+	<rect class="cut" x="213.97" y="481.89" width="18.43" height="75.59" rx="4.61"/>
+	<rect class="cut" x="236.68" y="206.22" width="377.03" height="18.43" rx="4.61"/>
+	<rect class="cut" x="236.68" y="625.75" width="377.03" height="18.43" rx="4.61"/>
+	<rect class="cut" x="618.00" y="236.68" width="34.02" height="377.03" rx="4.61"/>
+	<rect class="cut" x="213.97" y="576.38" width="18.43" height="37.34" rx="4.61"/>
+	<rect class="cut" x="194.19" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+</g>
+
+</g>
+<g id="direction" inkscape:label="Direction (mark if needed)" inkscape:groupmode="layer" style="display:none">
 <g transform="matrix(-1,0,0,1,850.39,0)">
 	<line class="arrow" x1="215.43" y1="259.84" x2="236.22" y2="259.84"/>
 	<polygon class="head" points="236.22,259.84 227.72,263.24 227.72,256.44"/>
@@ -363,16 +370,6 @@
 	<polygon class="head" points="634.96,236.68 638.36,245.18 631.56,245.18"/>
 	<line class="arrow" x1="613.71" y1="215.43" x2="236.68" y2="215.43"/>
 	<polygon class="head" points="236.68,215.43 245.18,212.03 245.18,218.83"/>
-</g>
-	<text class="label" x="634.96" y="254.17">DIN</text>
-	<text class="label" x="634.96" y="639.21">1</text>
-	<text class="label" x="215.43" y="639.21">2</text>
-	<text class="label" x="215.43" y="219.69">3</text>
-	<text class="label" x="634.96" y="219.69">4</text>
-	<text class="caption" x="425.19" y="827.72">Es08x08Cuarto · 300 × 300 mm · 60 LEDs/m · Ansicht von vorne / front view</text>
-</g>
-<g id="power" inkscape:label="Lötverbindungen" inkscape:groupmode="layer" style="display:none">
-<g transform="matrix(-1,0,0,1,850.39,0)">
 	<line class="gnd" x1="283.46" y1="274.02" x2="283.46" y2="292.91"/>
 	<circle class="gnddot" cx="283.46" cy="274.02" r="2.27"/>
 	<circle class="gnddot" cx="283.46" cy="292.91" r="2.27"/>
@@ -416,6 +413,12 @@
 	<circle class="vccdot" cx="330.71" cy="557.48" r="2.27"/>
 	<circle class="vccdot" cx="330.71" cy="576.38" r="2.27"/>
 </g>
+	<text class="label" x="634.96" y="254.17">DIN</text>
+	<text class="label" x="634.96" y="639.21">1</text>
+	<text class="label" x="215.43" y="639.21">2</text>
+	<text class="label" x="215.43" y="219.69">3</text>
+	<text class="label" x="634.96" y="219.69">4</text>
+	<text class="caption" x="425.19" y="827.72">Es08x08Cuarto · 300 × 300 mm · 60 LEDs/m · Ansicht von vorne / front view</text>
 	<text class="gndlabel" x="570.33" y="286.30" text-anchor="start">GND</text>
 	<text class="vcclabel" x="516.28" y="286.30" text-anchor="end">+5V</text>
 	<text class="gndlabel" x="523.08" y="333.54" text-anchor="start">GND</text>

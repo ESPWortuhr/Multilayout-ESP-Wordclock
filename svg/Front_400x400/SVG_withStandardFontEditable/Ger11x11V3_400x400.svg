@@ -8,14 +8,16 @@
 	.letter{font-family:'Helvetica';font-size:48.6px;text-anchor:middle;}
 	.guide{fill:none;stroke:#FF0000;stroke-width:0.2835;}
 </style>
-<rect class="background" width="1133.9" height="1133.9"/>
-<g id="minutes" inkscape:label="Minutes" inkscape:groupmode="layer">
+<g id="background" inkscape:label="Background (do not laser)" inkscape:groupmode="layer">
+	<rect class="background" width="1133.9" height="1133.9"/>
+</g>
+<g id="minutes" inkscape:label="Minutes (engrave)" inkscape:groupmode="layer">
 	<circle cx="337.09" cy="992.13" r="8.15"/>
 	<circle cx="490.32" cy="992.13" r="8.15"/>
 	<circle cx="643.54" cy="992.13" r="8.15"/>
 	<circle cx="796.77" cy="992.13" r="8.15"/>
 </g>
-<g id="letters" inkscape:label="Letters" inkscape:groupmode="layer">
+<g id="letters" inkscape:label="Letters (engrave)" inkscape:groupmode="layer">
 	<text x="183.87" y="157.95" class="letter">E</text>
 	<text x="260.48" y="157.95" class="letter">S</text>
 	<text x="337.09" y="157.95" class="letter">K</text>
@@ -134,7 +136,7 @@
 	<text x="873.38" y="1008.34" class="letter">P</text>
 	<text x="949.99" y="1008.34" class="letter">I</text>
 </g>
-<g id="guides" inkscape:label="Guides" inkscape:groupmode="layer" style="display:none">
+<g id="spacing-foam" inkscape:label="Spacing Foam (cut)" inkscape:groupmode="layer" style="display:none">
 	<g class="guide">
 		<rect x="149.41" y="107.28" width="68.91" height="68.91" rx="13.78"/>
 		<rect x="226.03" y="107.28" width="68.91" height="68.91" rx="13.78"/>
@@ -273,20 +275,8 @@
 	.gndlabel{fill:#0050C8;font-family:'Helvetica';font-size:7.1px;}
 	.vcclabel{fill:#E05000;font-family:'Helvetica';font-size:7.1px;}
 </style>
-<g id="montage" inkscape:label="Montage" inkscape:groupmode="layer" style="display:none">
+<g id="instruction-mark" inkscape:label="Instruction (mark)" inkscape:groupmode="layer" style="display:none">
 <g transform="matrix(-1,0,0,1,1133.86,0)">
-	<rect class="cut" x="0.00" y="0.00" width="1133.86" height="1133.86" rx="56.69"/>
-	<rect class="cut" x="972.97" y="127.56" width="18.43" height="113.39" rx="4.61"/>
-	<rect class="cut" x="142.46" y="212.60" width="18.43" height="113.39" rx="4.61"/>
-	<rect class="cut" x="972.97" y="297.64" width="18.43" height="113.39" rx="4.61"/>
-	<rect class="cut" x="142.46" y="382.68" width="18.43" height="113.39" rx="4.61"/>
-	<rect class="cut" x="972.97" y="467.72" width="18.43" height="113.39" rx="4.61"/>
-	<rect class="cut" x="142.46" y="552.76" width="18.43" height="113.39" rx="4.61"/>
-	<rect class="cut" x="972.97" y="637.80" width="18.43" height="113.39" rx="4.61"/>
-	<rect class="cut" x="142.46" y="722.83" width="18.43" height="113.39" rx="4.61"/>
-	<rect class="cut" x="972.97" y="807.87" width="18.43" height="113.39" rx="4.61"/>
-	<rect class="cut" x="142.46" y="892.91" width="18.43" height="113.39" rx="4.61"/>
-	<rect class="cut" x="77.40" y="107.28" width="68.91" height="68.91" rx="13.78"/>
 	<rect class="mark" x="164.72" y="127.56" width="804.43" height="28.35" rx="0.00"/>
 	<line class="mark" x1="949.99" y1="127.56" x2="949.99" y2="133.23"/>
 	<line class="mark" x1="949.99" y1="155.91" x2="949.99" y2="150.24"/>
@@ -547,7 +537,24 @@
 </g>
 
 </g>
-<g id="direction" inkscape:label="Richtung" inkscape:groupmode="layer" style="display:none">
+<g id="instruction-cut" inkscape:label="Instruction (cut)" inkscape:groupmode="layer" style="display:none">
+<g transform="matrix(-1,0,0,1,1133.86,0)">
+	<rect class="cut" x="0.00" y="0.00" width="1133.86" height="1133.86" rx="56.69"/>
+	<rect class="cut" x="972.97" y="127.56" width="18.43" height="113.39" rx="4.61"/>
+	<rect class="cut" x="142.46" y="212.60" width="18.43" height="113.39" rx="4.61"/>
+	<rect class="cut" x="972.97" y="297.64" width="18.43" height="113.39" rx="4.61"/>
+	<rect class="cut" x="142.46" y="382.68" width="18.43" height="113.39" rx="4.61"/>
+	<rect class="cut" x="972.97" y="467.72" width="18.43" height="113.39" rx="4.61"/>
+	<rect class="cut" x="142.46" y="552.76" width="18.43" height="113.39" rx="4.61"/>
+	<rect class="cut" x="972.97" y="637.80" width="18.43" height="113.39" rx="4.61"/>
+	<rect class="cut" x="142.46" y="722.83" width="18.43" height="113.39" rx="4.61"/>
+	<rect class="cut" x="972.97" y="807.87" width="18.43" height="113.39" rx="4.61"/>
+	<rect class="cut" x="142.46" y="892.91" width="18.43" height="113.39" rx="4.61"/>
+	<rect class="cut" x="77.40" y="107.28" width="68.91" height="68.91" rx="13.78"/>
+</g>
+
+</g>
+<g id="direction" inkscape:label="Direction (mark if needed)" inkscape:groupmode="layer" style="display:none">
 <g transform="matrix(-1,0,0,1,1133.86,0)">
 	<line class="arrow" x1="111.85" y1="141.73" x2="164.72" y2="141.73"/>
 	<polygon class="head" points="164.72,141.73 156.21,145.13 156.21,138.33"/>
@@ -593,16 +600,6 @@
 	<polygon class="head" points="969.14,907.09 977.65,903.69 977.65,910.49"/>
 	<path class="arrow" d="M164.72,907.09 C147.33,907.09 147.33,992.13 164.72,992.13"/>
 	<polygon class="head" points="164.72,992.13 156.21,995.53 156.21,988.72"/>
-</g>
-	<text class="label" x="1022.01" y="136.06">DIN</text>
-	<text class="label" x="796.77" y="996.38">4</text>
-	<text class="label" x="643.54" y="996.38">3</text>
-	<text class="label" x="490.32" y="996.38">2</text>
-	<text class="label" x="337.09" y="996.38">1</text>
-	<text class="caption" x="566.93" y="1111.18">Ger11x11V3 · 400 × 400 mm · 74 LEDs/m, every second LED · Ansicht von vorne / front view</text>
-</g>
-<g id="power" inkscape:label="Lötverbindungen" inkscape:groupmode="layer" style="display:none">
-<g transform="matrix(-1,0,0,1,1133.86,0)">
 	<line class="gnd" x1="317.94" y1="155.91" x2="317.94" y2="212.60"/>
 	<circle class="gnddot" cx="317.94" cy="155.91" r="2.27"/>
 	<circle class="gnddot" cx="317.94" cy="212.60" r="2.27"/>
@@ -664,6 +661,12 @@
 	<circle class="vccdot" cx="394.55" cy="921.26" r="2.27"/>
 	<circle class="vccdot" cx="394.55" cy="977.95" r="2.27"/>
 </g>
+	<text class="label" x="1022.01" y="136.06">DIN</text>
+	<text class="label" x="796.77" y="996.38">4</text>
+	<text class="label" x="643.54" y="996.38">3</text>
+	<text class="label" x="490.32" y="996.38">2</text>
+	<text class="label" x="337.09" y="996.38">1</text>
+	<text class="caption" x="566.93" y="1111.18">Ger11x11V3 · 400 × 400 mm · 74 LEDs/m, every second LED · Ansicht von vorne / front view</text>
 	<text class="gndlabel" x="819.32" y="187.09" text-anchor="start">GND</text>
 	<text class="vcclabel" x="774.21" y="187.09" text-anchor="end">+5V</text>
 	<text class="gndlabel" x="781.02" y="272.13" text-anchor="start">GND</text>

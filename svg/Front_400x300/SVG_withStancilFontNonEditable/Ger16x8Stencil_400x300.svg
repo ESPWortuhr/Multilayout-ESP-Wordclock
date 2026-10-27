@@ -31,18 +31,23 @@
 	.letter{font-family:'DIN Next Stencil';font-weight:300;font-size:34.0px;text-anchor:middle;}
 	.guide{fill:none;stroke:#FF0000;stroke-width:0.2835;}
 </style>
-  <rect
-     class="background"
-     width="1133.9"
-     height="850.4"
-     id="rect1" />
+  <g
+     id="background"
+     inkscape:label="Background (do not laser)"
+     inkscape:groupmode="layer">
+    <rect
+       class="background"
+       width="1133.9"
+       height="850.4"
+       id="rect1" />
+  </g>
   <g
      id="minutes"
-     inkscape:label="Minutes"
+     inkscape:label="Minutes (engrave)"
      inkscape:groupmode="layer" />
   <g
      id="letters"
-     inkscape:label="Letters"
+     inkscape:label="Letters (engrave)"
      inkscape:groupmode="layer">
     <path
        d="m 206.68401,269.84 q -0.136,0 -0.238,-0.102 -0.102,-0.102 -0.102,-0.238 v -22.44 q 0,-0.17 0.102,-0.238 0.102,-0.102 0.238,-0.102 h 1.258 q 0.17,0 0.238,0.102 0.102,0.068 0.102,0.238 v 22.44 q 0,0.136 -0.102,0.238 -0.068,0.102 -0.238,0.102 z m 3.74,-21.318 q -0.136,0 -0.238,-0.102 -0.102,-0.102 -0.102,-0.238 v -1.122 q 0,-0.17 0.102,-0.238 0.102,-0.102 0.238,-0.102 h 9.52 q 0.17,0 0.238,0.102 0.102,0.068 0.102,0.238 v 1.122 q 0,0.136 -0.102,0.238 -0.068,0.102 -0.238,0.102 z m 0,10.506 q -0.136,0 -0.238,-0.102 -0.102,-0.102 -0.102,-0.238 v -1.122 q 0,-0.17 0.102,-0.238 0.102,-0.102 0.238,-0.102 h 7.888 q 0.17,0 0.238,0.102 0.102,0.068 0.102,0.238 v 1.122 q 0,0.136 -0.102,0.238 -0.068,0.102 -0.238,0.102 z m 0,10.812 q -0.136,0 -0.238,-0.102 -0.102,-0.102 -0.102,-0.238 v -1.122 q 0,-0.17 0.102,-0.238 0.102,-0.102 0.238,-0.102 h 9.52 q 0.17,0 0.238,0.102 0.102,0.068 0.102,0.238 v 1.122 q 0,0.136 -0.102,0.238 -0.068,0.102 -0.238,0.102 z"
@@ -814,8 +819,8 @@
        aria-label="X" />
   </g>
   <g
-     id="guides"
-     inkscape:label="Guides"
+     id="spacing-foam"
+     inkscape:label="Spacing Foam (cut)"
      inkscape:groupmode="layer"
      style="display:none">
     <g
