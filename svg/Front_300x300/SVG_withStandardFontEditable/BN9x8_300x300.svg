@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+	 xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+	 width="300mm" height="300mm" viewBox="0 0 850.4 850.4">
+<title>BN9x8 300x300 mm, 60 LEDs/m</title>
+<style type="text/css">
+	.background{fill:#F75A00;fill-opacity:0.1647;}
+	.letter{font-family:'Kohinoor Bangla', 'Bangla MN', sans-serif;font-size:30.0px;text-anchor:middle;}
+	.guide{fill:none;stroke:#FF0000;stroke-width:0.2835;}
+</style>
+<rect class="background" width="850.4" height="850.4"/>
+<g id="minutes" inkscape:label="Minutes" inkscape:groupmode="layer">
+	<circle cx="191.81" cy="215.43" r="6.40"/>
+	<circle cx="658.58" cy="215.43" r="6.40"/>
+	<circle cx="658.58" cy="634.96" r="6.40"/>
+	<circle cx="191.81" cy="634.96" r="6.40"/>
+</g>
+<g id="letters" inkscape:label="Letters" inkscape:groupmode="layer">
+	<text x="236.22" y="269.84" class="letter">এ</text>
+	<text x="283.46" y="269.84" class="letter">খ</text>
+	<text x="330.71" y="269.84" class="letter">ন</text>
+	<text x="377.95" y="269.84" class="letter">ত</text>
+	<text x="425.20" y="269.84" class="letter">এ</text>
+	<text x="472.44" y="269.84" class="letter">ক</text>
+	<text x="519.69" y="269.84" class="letter">দু</text>
+	<text x="566.93" y="269.84" class="letter">ই</text>
+	<text x="614.17" y="269.84" class="letter">টা</text>
+	<text x="236.22" y="317.09" class="letter">তি</text>
+	<text x="283.46" y="317.09" class="letter">ন</text>
+	<text x="330.71" y="317.09" class="letter">য়</text>
+	<text x="377.95" y="317.09" class="letter">দ</text>
+	<text x="425.20" y="317.09" class="letter">শ</text>
+	<text x="472.44" y="317.09" class="letter">চা</text>
+	<text x="519.69" y="317.09" class="letter">র</text>
+	<text x="566.93" y="317.09" class="letter">পাঁ</text>
+	<text x="614.17" y="317.09" class="letter">চ</text>
+	<text x="236.22" y="364.33" class="letter">ছ</text>
+	<text x="283.46" y="364.33" class="letter">য</text>
+	<text x="330.71" y="364.33" class="letter">সা</text>
+	<text x="377.95" y="364.33" class="letter">ত</text>
+	<text x="425.20" y="364.33" class="letter">আ</text>
+	<text x="472.44" y="364.33" class="letter">ট</text>
+	<text x="519.69" y="364.33" class="letter">বা</text>
+	<text x="566.93" y="364.33" class="letter">রো</text>
+	<text x="614.17" y="364.33" class="letter">ফ</text>
+	<text x="236.22" y="411.57" class="letter">এ</text>
+	<text x="283.46" y="411.57" class="letter">গা</text>
+	<text x="330.71" y="411.57" class="letter">রো</text>
+	<text x="377.95" y="411.57" class="letter">বে</text>
+	<text x="425.20" y="411.57" class="letter">জে</text>
+	<text x="472.44" y="411.57" class="letter">প</text>
+	<text x="519.69" y="411.57" class="letter">য়</text>
+	<text x="566.93" y="411.57" class="letter">ত্রি</text>
+	<text x="614.17" y="411.57" class="letter">শ</text>
+	<text x="236.22" y="458.82" class="letter">বি</text>
+	<text x="283.46" y="458.82" class="letter">শ</text>
+	<text x="330.71" y="458.82" class="letter">পঁ</text>
+	<text x="377.95" y="458.82" class="letter">চি</text>
+	<text x="425.20" y="458.82" class="letter">শ</text>
+	<text x="472.44" y="458.82" class="letter">চৈ</text>
+	<text x="519.69" y="458.82" class="letter">তি</text>
+	<text x="566.93" y="458.82" class="letter">দ</text>
+	<text x="614.17" y="458.82" class="letter">শ</text>
+	<text x="236.22" y="506.06" class="letter">পঁ</text>
+	<text x="283.46" y="506.06" class="letter">য়</text>
+	<text x="330.71" y="506.06" class="letter">তা</text>
+	<text x="377.95" y="506.06" class="letter">ল্লি</text>
+	<text x="425.20" y="506.06" class="letter">শ</text>
+	<text x="472.44" y="506.06" class="letter">ফা</text>
+	<text x="519.69" y="506.06" class="letter">বি</text>
+	<text x="566.93" y="506.06" class="letter">পাঁ</text>
+	<text x="614.17" y="506.06" class="letter">চ</text>
+	<text x="236.22" y="553.31" class="letter">প</text>
+	<text x="283.46" y="553.31" class="letter">ঞ্চা</text>
+	<text x="330.71" y="553.31" class="letter">ন্ন</text>
+	<text x="377.95" y="553.31" class="letter">চ</text>
+	<text x="425.20" y="553.31" class="letter">ল্লি</text>
+	<text x="472.44" y="553.31" class="letter">শ</text>
+	<text x="519.69" y="553.31" class="letter">পো</text>
+	<text x="566.93" y="553.31" class="letter">নে</text>
+	<text x="614.17" y="553.31" class="letter">রো</text>
+	<text x="236.22" y="600.55" class="letter">বা</text>
+	<text x="283.46" y="600.55" class="letter">জে</text>
+	<text x="330.71" y="600.55" class="letter">ত</text>
+	<text x="377.95" y="600.55" class="letter">প</text>
+	<text x="425.20" y="600.55" class="letter">ঞ্চা</text>
+	<text x="472.44" y="600.55" class="letter">শ</text>
+	<text x="519.69" y="600.55" class="letter">মি</text>
+	<text x="566.93" y="600.55" class="letter">নি</text>
+	<text x="614.17" y="600.55" class="letter">ট</text>
+</g>
+<g id="guides" inkscape:label="Guides" inkscape:groupmode="layer" style="display:none">
+	<g class="guide">
+		<rect x="214.97" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="262.22" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="309.46" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="356.71" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="403.95" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="451.19" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="498.44" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="545.68" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="592.93" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="214.97" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="262.22" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="309.46" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="356.71" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="403.95" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="451.19" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="498.44" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="545.68" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="592.93" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="214.97" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="262.22" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="309.46" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="356.71" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="403.95" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="451.19" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="498.44" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="545.68" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="592.93" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="214.97" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="262.22" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="309.46" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="356.71" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="403.95" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="451.19" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="498.44" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="545.68" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="592.93" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="214.97" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="262.22" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="309.46" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="356.71" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="403.95" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="451.19" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="498.44" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="545.68" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="592.93" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="214.97" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="262.22" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="309.46" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="356.71" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="403.95" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="451.19" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="498.44" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="545.68" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="592.93" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="214.97" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="262.22" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="309.46" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="356.71" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="403.95" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="451.19" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="498.44" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="545.68" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="592.93" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="214.97" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="262.22" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="309.46" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="356.71" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="403.95" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="451.19" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="498.44" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="545.68" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="592.93" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="170.56" y="194.19" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="637.34" y="194.19" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="637.34" y="613.71" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="170.56" y="613.71" width="42.49" height="42.49" rx="8.50"/>
+	</g>
+</g>
+</svg>
