@@ -547,11 +547,19 @@
 	<line class="mark" x1="236.22" y1="1218.90" x2="236.22" y2="1213.23"/>
 	<line class="mark" x1="188.98" y1="1190.55" x2="188.98" y2="1196.22"/>
 	<line class="mark" x1="188.98" y1="1218.90" x2="188.98" y2="1213.23"/>
+	<rect class="mark" x="322.20" y="676.54" width="17.01" height="17.01" rx="2.83"/>
+	<rect class="mark" x="369.45" y="676.54" width="17.01" height="17.01" rx="2.83"/>
+	<rect class="mark" x="416.69" y="676.54" width="17.01" height="17.01" rx="2.83"/>
+	<rect class="mark" x="463.94" y="676.54" width="17.01" height="17.01" rx="2.83"/>
 </g>
 <g id="direction" inkscape:label="Richtung" inkscape:groupmode="layer">
 	<line class="arrow" x1="144.57" y1="212.60" x2="165.35" y2="212.60"/>
 	<polygon class="head" points="165.35,212.60 156.85,216.00 156.85,209.20"/>
 	<text class="label" x="144.57" y="206.93">DIN</text>
+	<text class="label" x="330.71" y="689.29">1</text>
+	<text class="label" x="377.95" y="689.29">2</text>
+	<text class="label" x="425.20" y="689.29">3</text>
+	<text class="label" x="472.44" y="689.29">4</text>
 	<line class="arrow" x1="377.95" y1="212.60" x2="472.44" y2="212.60"/>
 	<polygon class="head" points="472.44,212.60 463.94,216.00 463.94,209.20"/>
 	<line class="arrow" x1="472.44" y1="259.84" x2="377.95" y2="259.84"/>
@@ -572,8 +580,8 @@
 	<polygon class="head" points="472.44,590.55 463.94,593.95 463.94,587.15"/>
 	<line class="arrow" x1="472.44" y1="637.80" x2="377.95" y2="637.80"/>
 	<polygon class="head" points="377.95,637.80 386.46,634.39 386.46,641.20"/>
-	<line class="arrow" x1="377.95" y1="685.04" x2="472.44" y2="685.04"/>
-	<polygon class="head" points="472.44,685.04 463.94,688.44 463.94,681.64"/>
+	<line class="arrow" x1="195.12" y1="685.04" x2="289.61" y2="685.04"/>
+	<polygon class="head" points="289.61,685.04 281.10,688.44 281.10,681.64"/>
 	<line class="arrow" x1="472.44" y1="732.28" x2="377.95" y2="732.28"/>
 	<polygon class="head" points="377.95,732.28 386.46,728.88 386.46,735.69"/>
 	<line class="arrow" x1="377.95" y1="779.53" x2="472.44" y2="779.53"/>

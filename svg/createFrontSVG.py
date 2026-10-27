@@ -77,6 +77,12 @@ def read_layout(path):
     match = re.search(r"colsWordMatrix\(\) override \{ return (\d+)", source)
     cols = int(match.group(1)) if match else 11
 
+    numbers = {}
+    for number, row, col in re.findall(
+            r"case FrontWord::m_num(\d):\s*setFrontMatrixWord\((\d+),\s*(\d+)",
+            source):
+        numbers[(int(row), cols - 1 - int(col))] = int(number)
+
     cells = []
     for row_index, row in enumerate(rows):
         tokens = row.split()
@@ -88,7 +94,9 @@ def read_layout(path):
                     if part_index > 0:
                         cells.append(("apostrophe", row_index, col - 0.5))
                     cells.append(("dot" if part == "*" else "letter",
-                                  row_index, col, part))
+                                  row_index, col,
+                                  numbers.get((row_index, col), part)
+                                  if part == "*" else part))
                     col += 1
         else:
             text = row[1:]
@@ -405,10 +413,29 @@ def build_montage(title, rows, cols, has_led4x, cells, strip):
         arrows.append(f'\t<text class="label" x="{feed[0]:.2f}" '
                       f'y="{feed[1] - mm(2):.2f}">DIN</text>')
 
+    row_dots = {}
+    for cell in cells:
+        if cell[0] == "dot":
+            row_dots.setdefault(cell[1], []).append(
+                (back_x(cell[2]), cell[3] if len(cell) > 3 else None))
+    number = 0
+    for index, row in enumerate(order):
+        for x, label in sorted(row_dots.get(row, []),
+                               reverse=index % 2 == 1):
+            number += 1
+            if isinstance(label, int):
+                number = label
+            mark.append(rounded_rect("mark", x - mm(3), row_y(row) - mm(3),
+                                     x + mm(3), row_y(row) + mm(3), mm(1)))
+            arrows.append(f'\t<text class="label" x="{x:.2f}" '
+                          f'y="{row_y(row) + mm(1.5):.2f}">{number}</text>')
+
     for index, row in enumerate(order):
         start, end = strips[row]
         y = row_y(row)
         middle = (start + end) / 2
+        if row in row_dots:
+            middle = (start + min(x for x, _ in row_dots[row]) - mm(4)) / 2
         length = min(2 * pitch, (end - start) / 3)
         if index % 2 == 0:
             arrows += arrow_line((middle - length / 2, y),

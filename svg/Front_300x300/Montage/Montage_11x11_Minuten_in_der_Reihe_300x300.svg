@@ -283,11 +283,19 @@
 	<line class="mark" x1="236.22" y1="675.59" x2="236.22" y2="669.92"/>
 	<line class="mark" x1="188.98" y1="647.24" x2="188.98" y2="652.91"/>
 	<line class="mark" x1="188.98" y1="675.59" x2="188.98" y2="669.92"/>
+	<rect class="mark" x="274.96" y="652.91" width="17.01" height="17.01" rx="2.83"/>
+	<rect class="mark" x="369.45" y="652.91" width="17.01" height="17.01" rx="2.83"/>
+	<rect class="mark" x="463.94" y="652.91" width="17.01" height="17.01" rx="2.83"/>
+	<rect class="mark" x="558.43" y="652.91" width="17.01" height="17.01" rx="2.83"/>
 </g>
 <g id="direction" inkscape:label="Richtung" inkscape:groupmode="layer">
 	<line class="arrow" x1="144.57" y1="188.98" x2="165.35" y2="188.98"/>
 	<polygon class="head" points="165.35,188.98 156.85,192.38 156.85,185.57"/>
 	<text class="label" x="144.57" y="183.31">DIN</text>
+	<text class="label" x="283.46" y="665.67">4</text>
+	<text class="label" x="377.95" y="665.67">3</text>
+	<text class="label" x="472.44" y="665.67">2</text>
+	<text class="label" x="566.93" y="665.67">1</text>
 	<line class="arrow" x1="377.95" y1="188.98" x2="472.44" y2="188.98"/>
 	<polygon class="head" points="472.44,188.98 463.94,192.38 463.94,185.57"/>
 	<line class="arrow" x1="472.44" y1="236.22" x2="377.95" y2="236.22"/>
@@ -308,8 +316,8 @@
 	<polygon class="head" points="472.44,566.93 463.94,570.33 463.94,563.53"/>
 	<line class="arrow" x1="472.44" y1="614.17" x2="377.95" y2="614.17"/>
 	<polygon class="head" points="377.95,614.17 386.46,610.77 386.46,617.57"/>
-	<line class="arrow" x1="377.95" y1="661.42" x2="472.44" y2="661.42"/>
-	<polygon class="head" points="472.44,661.42 463.94,664.82 463.94,658.02"/>
+	<line class="arrow" x1="171.50" y1="661.42" x2="265.98" y2="661.42"/>
+	<polygon class="head" points="265.98,661.42 257.48,664.82 257.48,658.02"/>
 	<path class="arrow" d="M685.04,188.98 C702.43,188.98 702.43,236.22 685.04,236.22"/>
 	<polygon class="head" points="685.04,236.22 693.54,232.82 693.54,239.62"/>
 	<path class="arrow" d="M165.35,236.22 C147.97,236.22 147.97,283.46 165.35,283.46"/>
