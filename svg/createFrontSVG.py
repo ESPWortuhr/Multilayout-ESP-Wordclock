@@ -22,8 +22,9 @@ STRIPS = (
      "label": "60 LEDs/m"},
     {"pitch_mm": 1000 / 60, "sizes": (250,), "border_mm": 15,
      "rows": (10, 11), "max_cols": 11, "label": "60 LEDs/m"},
-    {"pitch_mm": 2 * 1000 / 74, "sizes": (400,), "border_mm": 25,
-     "rows": (10, 11), "max_cols": 11, "skip": True,
+    {"pitch_mm": 2 * 1000 / 74, "row_pitch_mm": 30, "sizes": (400,),
+     "border_mm": 20, "rows": (10, 11), "max_cols": 11, "skip": True,
+     "minute_strip": True,
      "label": "74 LEDs/m, every second LED"},
     {"pitch_mm": 1000 / 30, "sizes": (500,), "border_mm": 25,
      "rows": (10, 11), "max_cols": 11, "label": "30 LEDs/m"},
@@ -42,6 +43,7 @@ SLOT_WIDTH_MM = 6.5
 SLOT_GAP_MM = 1.35
 CHANNEL_WIDTH_MM = 12
 OUTLINE_RADIUS_MM = 20
+MINUTE_STRIP_OFFSET_MM = 32.3
 
 TEXT_FONT = "'Helvetica'"
 BENGALI_FONT = "'Kohinoor Bangla', 'Bangla MN', sans-serif"
@@ -99,11 +101,49 @@ def read_layout(path):
     return rows, cols, has_led4x, cells
 
 
-def front_size(cols, rows, corner_dots, pitch, sizes, border_mm):
+def pitches(strip):
+    pitch = strip["pitch_mm"] * PT_PER_MM
+    return pitch, strip.get("row_pitch_mm", strip["pitch_mm"]) * PT_PER_MM
+
+
+def grid_origin_y(strip, has_led4x, rows, height):
+    _, row_pitch = pitches(strip)
+    origin_y = height / 2 - (rows - 1) * row_pitch / 2
+    if has_led4x and strip.get("minute_strip"):
+        offset = MINUTE_STRIP_OFFSET_MM * PT_PER_MM
+        bottom = origin_y + (rows - 1) * row_pitch + offset
+        if height - bottom < strip["border_mm"] * PT_PER_MM:
+            origin_y = height / 2 - ((rows - 1) * row_pitch + offset) / 2
+    return origin_y
+
+
+def minute_positions(strip, has_led4x, rows, cols, width, height):
+    pitch, row_pitch = pitches(strip)
+    origin_x = width / 2 - (cols - 1) * pitch / 2
+    origin_y = grid_origin_y(strip, has_led4x, rows, height)
+    if not has_led4x:
+        return []
+    if strip.get("minute_strip"):
+        y = origin_y + (rows - 1) * row_pitch + MINUTE_STRIP_OFFSET_MM * PT_PER_MM
+        return [(width / 2 + k * pitch / 2, y) for k in (-3, -1, 1, 3)]
+    offset = MINUTE_DOT_OFFSET * pitch
+    left, top = origin_x - offset, origin_y - offset
+    right = origin_x + (cols - 1) * pitch + offset
+    bottom = origin_y + (rows - 1) * row_pitch + offset
+    return [(left, top), (right, top), (right, bottom), (left, bottom)]
+
+
+def front_size(cols, rows, corner_dots, strip):
+    pitch, row_pitch = pitches(strip)
+    sizes, border_mm = strip["sizes"], strip["border_mm"]
     cell = CELL * pitch / REFERENCE_PITCH
     dots = 2 * MINUTE_DOT_OFFSET * pitch if corner_dots else 0
     width = (cols - 1) * pitch + dots + cell
-    height = (rows - 1) * pitch + dots + cell
+    height = (rows - 1) * row_pitch + dots + cell
+    if corner_dots and strip.get("minute_strip"):
+        width = (cols - 1) * pitch + cell
+        height = ((rows - 1) * row_pitch + cell
+                  + MINUTE_STRIP_OFFSET_MM * PT_PER_MM)
 
     def pick(extent):
         for size in sizes:
@@ -125,25 +165,23 @@ def background(name):
 
 
 def build_svg(name, rows, cols, has_led4x, cells, font, font_size, strip):
-    pitch = strip["pitch_mm"] * PT_PER_MM
+    pitch, row_pitch = pitches(strip)
     scale = pitch / REFERENCE_PITCH
-    size = front_size(cols, len(rows), has_led4x, pitch, strip["sizes"],
-                      strip["border_mm"])
+    size = front_size(cols, len(rows), has_led4x, strip)
     if size is None:
         return None, None, None
     width_mm, height_mm = size
     width, height = width_mm * PT_PER_MM, height_mm * PT_PER_MM
     origin_x = width / 2 - (cols - 1) * pitch / 2
-    origin_y = height / 2 - (len(rows) - 1) * pitch / 2
+    origin_y = grid_origin_y(strip, has_led4x, len(rows), height)
     cell_size = CELL * scale
     cell_radius = CELL_RADIUS * scale
     baseline = BASELINE_OFFSET * scale
     dot_radius = MINUTE_DOT_RADIUS * scale ** 0.5
-    dot_offset = MINUTE_DOT_OFFSET * pitch
     font_size *= scale
 
     def centre(row, col):
-        return origin_x + col * pitch, origin_y + row * pitch
+        return origin_x + col * pitch, origin_y + row * row_pitch
 
     def guide(x, y):
         return (f'\t\t<rect x="{x - cell_size / 2:.2f}" '
@@ -168,17 +206,11 @@ def build_svg(name, rows, cols, has_led4x, cells, font, font_size, strip):
         if kind != "apostrophe":
             guides.append(guide(x, y))
 
-    if has_led4x:
-        last_row, last_col = len(rows) - 1, cols - 1
-        left, top = centre(0, 0)
-        right, bottom = centre(last_row, last_col)
-        for x, y in ((left - dot_offset, top - dot_offset),
-                     (right + dot_offset, top - dot_offset),
-                     (right + dot_offset, bottom + dot_offset),
-                     (left - dot_offset, bottom + dot_offset)):
-            dots.append(f'\t<circle cx="{x:.2f}" cy="{y:.2f}" '
-                        f'r="{dot_radius:.2f}"/>')
-            guides.append(guide(x, y))
+    for x, y in minute_positions(strip, has_led4x, len(rows), cols, width,
+                                 height):
+        dots.append(f'\t<circle cx="{x:.2f}" cy="{y:.2f}" '
+                    f'r="{dot_radius:.2f}"/>')
+        guides.append(guide(x, y))
 
     svg = f'''<?xml version="1.0" encoding="utf-8"?>
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -249,16 +281,17 @@ def montage_key(rows, cols, has_led4x, cells):
 
 
 def build_montage(title, rows, cols, has_led4x, cells, strip):
-    pitch = strip["pitch_mm"] * PT_PER_MM
+    pitch, row_pitch = pitches(strip)
     scale = pitch / REFERENCE_PITCH
-    size = front_size(cols, rows, has_led4x, pitch, strip["sizes"],
-                      strip["border_mm"])
+    size = front_size(cols, rows, has_led4x, strip)
+    minute_strip = has_led4x and strip.get("minute_strip", False)
+    origin_y = grid_origin_y(strip, has_led4x, rows, mm(size[1])) if size else 0
+    has_led4x = has_led4x and not minute_strip
     if size is None:
         return None, None, None
     width_mm, height_mm = size
     width, height = mm(width_mm), mm(height_mm)
     origin_x = width / 2 - (cols - 1) * pitch / 2
-    origin_y = height / 2 - (rows - 1) * pitch / 2
     led_pitch = pitch / 2 if strip.get("skip") else pitch
     cell_size = CELL * scale
     dot_offset = MINUTE_DOT_OFFSET * pitch
@@ -271,7 +304,7 @@ def build_montage(title, rows, cols, has_led4x, cells, strip):
         return width - (origin_x + col * pitch)
 
     def row_y(row):
-        return origin_y + row * pitch
+        return origin_y + row * row_pitch
 
     all_x = [back_x(col) for col in range(cols)]
     positions = {row: all_x for row in range(rows)}
@@ -349,7 +382,14 @@ def build_montage(title, rows, cols, has_led4x, cells, strip):
                                 bottom_y - half_cell, slot / 4))
 
     first_row_y = row_y(order[0])
-    if corners and not channel_right:
+    if minute_strip:
+        x = mm(30)
+        arrows += arrow_curve((x, mm(125)), (x, first_row_y),
+                              (x, first_row_y),
+                              (strips[order[0]][0], first_row_y), head)
+        arrows.append(f'\t<text class="label" x="{x + mm(9):.2f}" '
+                      f'y="{mm(118):.2f}">DIN</text>')
+    elif corners and not channel_right:
         x = corner_left - half_cell - mm(8)
         arrows += arrow_line((x, first_row_y),
                              (strips[order[0]][0], first_row_y), head)
@@ -410,6 +450,63 @@ def build_montage(title, rows, cols, has_led4x, cells, strip):
             x, y = corners[name]
             arrows.append(f'\t<text class="label" x="{x:.2f}" '
                           f'y="{y + mm(1.5):.2f}">{number}</text>')
+
+    if minute_strip:
+        minutes = [(width - x, y) for x, y in
+                   minute_positions(strip, True, rows, cols, width, height)]
+        minute_y = minutes[0][1]
+        minute_left = width / 2 - 3.5 * led_pitch
+        minute_right = width / 2 + 3.5 * led_pitch
+        mark.append(rounded_rect("mark", minute_left, minute_y - strip_half,
+                                 minute_right, minute_y + strip_half))
+        for x, _ in minutes:
+            for edge, sign in ((minute_y - strip_half, 1),
+                               (minute_y + strip_half, -1)):
+                mark.append(f'\t<line class="mark" x1="{x:.2f}" '
+                            f'y1="{edge:.2f}" x2="{x:.2f}" '
+                            f'y2="{edge + sign * mm(2):.2f}"/>')
+        if ends_right:
+            x0, x1 = right_slot
+            entry = minute_right
+        else:
+            x0, x1 = left_slot
+            entry = minute_left
+        cut.append(rounded_rect("cut", x0, row_y(last_row) - strip_half, x1,
+                                minute_y + slot / 2, slot / 4))
+        inner = x0 if ends_right else x1
+        cut.append(rounded_rect("cut", inner, minute_y - slot / 2, entry,
+                                minute_y + slot / 2, slot / 4))
+        end_x = strips[last_row][1] if ends_right else strips[last_row][0]
+        bend = (x0 + x1) / 2
+        radius = mm(6)
+        turn = radius if entry > bend else -radius
+        arrows.append(f'\t<path class="arrow" d="M{end_x:.2f},'
+                      f'{row_y(last_row):.2f} Q{bend:.2f},{row_y(last_row):.2f} '
+                      f'{bend:.2f},{row_y(last_row) + radius:.2f} '
+                      f'L{bend:.2f},{minute_y - radius:.2f} '
+                      f'Q{bend:.2f},{minute_y:.2f} {bend + turn:.2f},'
+                      f'{minute_y:.2f} L{entry:.2f},{minute_y:.2f}"/>')
+        arrows.append(arrow_head((entry, minute_y), (bend, minute_y), head))
+        ordered = sorted(minutes, reverse=ends_right)
+        for number, (x, y) in enumerate(ordered, start=1):
+            arrows.append(f'\t<text class="label" x="{x:.2f}" '
+                          f'y="{y + strip_half + mm(5):.2f}">{number}</text>')
+        for side in (1, -1):
+            centre_x = width / 2 + side * (width / 2 - mm(30))
+            mark.append(rounded_rect("mark", centre_x - mm(15), mm(125),
+                                     centre_x + mm(15), mm(175), mm(10)))
+            mark.append(rounded_rect("mark", centre_x - mm(15.5), mm(228.2),
+                                     centre_x + mm(15.5), mm(268.2)))
+            mark.append(rounded_rect("mark", centre_x - mm(15.5), mm(241.3),
+                                     centre_x + mm(15.5), mm(298.8)))
+            mark.append(f'\t<circle class="mark" cx="{centre_x:.2f}" '
+                        f'cy="{mm(350):.2f}" r="{mm(15):.2f}"/>')
+        esp_x = mm(30)
+        arrows.append(f'\t<text class="label" x="{esp_x:.2f}" '
+                      f'y="{mm(151.5):.2f}">ESP</text>')
+        arrows.append(f'\t<line class="arrow" x1="{esp_x:.2f}" '
+                      f'y1="{mm(175):.2f}" x2="{esp_x:.2f}" '
+                      f'y2="{mm(228.2):.2f}"/>')
 
     arrows.append(f'\t<text class="caption" x="{width / 2:.2f}" '
                   f'y="{height - mm(8):.2f}">{escape(title)} · '
