@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+	 xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+	 width="250mm" height="250mm" viewBox="0 0 708.7 708.7">
+<title>Ger11x11schwaebisch 250x250 mm, 60 LEDs/m</title>
+<style type="text/css">
+	.background{fill:#9B30F7;fill-opacity:0.1647;}
+	.letter{font-family:'Helvetica';font-size:30.0px;text-anchor:middle;}
+	.guide{fill:none;stroke:#FF0000;stroke-width:0.2835;}
+</style>
+<g id="background" inkscape:label="Background (do not laser)" inkscape:groupmode="layer">
+	<rect class="background" width="708.7" height="708.7"/>
+</g>
+<g id="minutes" inkscape:label="Minutes (engrave)" inkscape:groupmode="layer">
+	<circle cx="73.70" cy="73.70" r="6.40"/>
+	<circle cx="634.96" cy="73.70" r="6.40"/>
+	<circle cx="634.96" cy="634.96" r="6.40"/>
+	<circle cx="73.70" cy="634.96" r="6.40"/>
+</g>
+<g id="letters" inkscape:label="Letters (engrave)" inkscape:groupmode="layer">
+	<text x="118.11" y="128.11" class="letter">S</text>
+	<text x="165.35" y="128.11" class="letter">T</text>
+	<text x="212.60" y="128.11" class="letter">I</text>
+	<text x="259.84" y="128.11" class="letter">S</text>
+	<text x="307.09" y="128.11" class="letter">C</text>
+	<text x="354.33" y="128.11" class="letter">H</text>
+	<text x="401.57" y="128.11" class="letter">A</text>
+	<text x="448.82" y="128.11" class="letter">F</text>
+	<text x="496.06" y="128.11" class="letter">E</text>
+	<text x="543.31" y="128.11" class="letter">M</text>
+	<text x="590.55" y="128.11" class="letter">F</text>
+	<text x="118.11" y="175.35" class="letter">Z</text>
+	<text x="165.35" y="175.35" class="letter">E</text>
+	<text x="212.60" y="175.35" class="letter">H</text>
+	<text x="259.84" y="175.35" class="letter">N</text>
+	<text x="307.09" y="175.35" class="letter">Z</text>
+	<text x="354.33" y="175.35" class="letter">W</text>
+	<text x="401.57" y="175.35" class="letter">A</text>
+	<text x="448.82" y="175.35" class="letter">N</text>
+	<text x="496.06" y="175.35" class="letter">O</text>
+	<text x="543.31" y="175.35" class="letter">C</text>
+	<text x="590.55" y="175.35" class="letter">H</text>
+	<text x="118.11" y="222.60" class="letter">V</text>
+	<text x="165.35" y="222.60" class="letter">O</text>
+	<text x="212.60" y="222.60" class="letter">R</text>
+	<text x="259.84" y="222.60" class="letter">I</text>
+	<text x="307.09" y="222.60" class="letter">V</text>
+	<text x="354.33" y="222.60" class="letter">I</text>
+	<text x="401.57" y="222.60" class="letter">E</text>
+	<text x="448.82" y="222.60" class="letter">R</text>
+	<text x="496.06" y="222.60" class="letter">T</text>
+	<text x="543.31" y="222.60" class="letter">L</text>
+	<text x="590.55" y="222.60" class="letter">E</text>
+	<text x="118.11" y="269.84" class="letter">B</text>
+	<text x="165.35" y="269.84" class="letter">C</text>
+	<text x="212.60" y="269.84" class="letter">H</text>
+	<text x="259.84" y="269.84" class="letter">A</text>
+	<text x="307.09" y="269.84" class="letter">L</text>
+	<text x="354.33" y="269.84" class="letter">B</text>
+	<text x="401.57" y="269.84" class="letter">E</text>
+	<text x="448.82" y="269.84" class="letter">R</text>
+	<text x="496.06" y="269.84" class="letter">A</text>
+	<text x="543.31" y="269.84" class="letter">C</text>
+	<text x="590.55" y="269.84" class="letter">H</text>
+	<text x="118.11" y="317.09" class="letter">E</text>
+	<text x="165.35" y="317.09" class="letter">D</text>
+	<text x="212.60" y="317.09" class="letter">R</text>
+	<text x="259.84" y="317.09" class="letter">E</text>
+	<text x="307.09" y="317.09" class="letter">I</text>
+	<text x="354.33" y="317.09" class="letter">V</text>
+	<text x="401.57" y="317.09" class="letter">I</text>
+	<text x="448.82" y="317.09" class="letter">E</text>
+	<text x="496.06" y="317.09" class="letter">R</text>
+	<text x="543.31" y="317.09" class="letter">T</text>
+	<text x="590.55" y="317.09" class="letter">L</text>
+	<text x="118.11" y="364.33" class="letter">O</text>
+	<text x="165.35" y="364.33" class="letter">I</text>
+	<text x="212.60" y="364.33" class="letter">S</text>
+	<text x="259.84" y="364.33" class="letter">R</text>
+	<text x="307.09" y="364.33" class="letter">S</text>
+	<text x="354.33" y="364.33" class="letter">I</text>
+	<text x="401.57" y="364.33" class="letter">E</text>
+	<text x="448.82" y="364.33" class="letter">B</text>
+	<text x="496.06" y="364.33" class="letter">E</text>
+	<text x="543.31" y="364.33" class="letter">N</text>
+	<text x="590.55" y="364.33" class="letter">E</text>
+	<text x="118.11" y="411.57" class="letter">Z</text>
+	<text x="165.35" y="411.57" class="letter">W</text>
+	<text x="212.60" y="411.57" class="letter">O</text>
+	<text x="259.84" y="411.57" class="letter">I</text>
+	<text x="307.09" y="411.57" class="letter">K</text>
+	<text x="354.33" y="411.57" class="letter">S</text>
+	<text x="401.57" y="411.57" class="letter">E</text>
+	<text x="448.82" y="411.57" class="letter">C</text>
+	<text x="496.06" y="411.57" class="letter">H</text>
+	<text x="543.31" y="411.57" class="letter">S</text>
+	<text x="590.55" y="411.57" class="letter">E</text>
+	<text x="118.11" y="458.82" class="letter">D</text>
+	<text x="165.35" y="458.82" class="letter">R</text>
+	<text x="212.60" y="458.82" class="letter">E</text>
+	<text x="259.84" y="458.82" class="letter">I</text>
+	<text x="307.09" y="458.82" class="letter">S</text>
+	<text x="354.33" y="458.82" class="letter">Z</text>
+	<text x="401.57" y="458.82" class="letter">W</text>
+	<text x="448.82" y="458.82" class="letter">E</text>
+	<text x="496.06" y="458.82" class="letter">L</text>
+	<text x="543.31" y="458.82" class="letter">F</text>
+	<text x="590.55" y="458.82" class="letter">E</text>
+	<text x="118.11" y="506.06" class="letter">V</text>
+	<text x="165.35" y="506.06" class="letter">I</text>
+	<text x="212.60" y="506.06" class="letter">E</text>
+	<text x="259.84" y="506.06" class="letter">R</text>
+	<text x="307.09" y="506.06" class="letter">E</text>
+	<text x="354.33" y="506.06" class="letter">N</text>
+	<text x="401.57" y="506.06" class="letter">F</text>
+	<text x="448.82" y="506.06" class="letter">E</text>
+	<text x="496.06" y="506.06" class="letter">M</text>
+	<text x="543.31" y="506.06" class="letter">F</text>
+	<text x="590.55" y="506.06" class="letter">E</text>
+	<text x="118.11" y="553.31" class="letter">A</text>
+	<text x="165.35" y="553.31" class="letter">C</text>
+	<text x="212.60" y="553.31" class="letter">H</text>
+	<text x="259.84" y="553.31" class="letter">D</text>
+	<text x="307.09" y="553.31" class="letter">E</text>
+	<text x="354.33" y="553.31" class="letter">P</text>
+	<text x="401.57" y="553.31" class="letter">N</text>
+	<text x="448.82" y="553.31" class="letter">E</text>
+	<text x="496.06" y="553.31" class="letter">I</text>
+	<text x="543.31" y="553.31" class="letter">N</text>
+	<text x="590.55" y="553.31" class="letter">E</text>
+	<text x="118.11" y="600.55" class="letter">Z</text>
+	<text x="165.35" y="600.55" class="letter">E</text>
+	<text x="212.60" y="600.55" class="letter">H</text>
+	<text x="259.84" y="600.55" class="letter">N</text>
+	<text x="307.09" y="600.55" class="letter">E</text>
+	<text x="354.33" y="600.55" class="letter">U</text>
+	<text x="401.57" y="600.55" class="letter">N</text>
+	<text x="448.82" y="600.55" class="letter">E</text>
+	<text x="496.06" y="600.55" class="letter">L</text>
+	<text x="543.31" y="600.55" class="letter">F</text>
+	<text x="590.55" y="600.55" class="letter">E</text>
+</g>
+<g id="spacing-foam" inkscape:label="Spacing Foam (cut)" inkscape:groupmode="layer" style="display:none">
+	<g class="guide">
+		<rect x="96.86" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="96.86" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="96.86" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="144.11" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="96.86" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="191.35" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="96.86" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="238.60" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="96.86" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="285.84" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="96.86" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="333.08" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="96.86" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="380.33" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="96.86" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="427.57" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="96.86" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="474.82" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="96.86" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="522.06" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="96.86" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="144.11" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="191.35" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="238.60" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="285.84" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="333.08" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="380.33" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="427.57" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="474.82" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="522.06" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="569.30" y="569.30" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="52.45" y="52.45" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="613.71" y="52.45" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="613.71" y="613.71" width="42.49" height="42.49" rx="8.50"/>
+		<rect x="52.45" y="613.71" width="42.49" height="42.49" rx="8.50"/>
+	</g>
+</g>
+<style type="text/css">
+	.cut{fill:none;stroke:#FF0000;stroke-width:0.236224;}
+	.mark{fill:none;stroke:#00FF00;stroke-width:0.236224;}
+	.arrow{fill:none;stroke:#000000;stroke-width:0.75;}
+	.head{fill:#000000;}
+	.label{font-family:'Helvetica';font-size:11.3px;text-anchor:middle;}
+	.caption{font-family:'Helvetica';font-size:9.9px;text-anchor:middle;}
+	.gnd{fill:none;stroke:#0050C8;stroke-width:0.75;}
+	.vcc{fill:none;stroke:#E05000;stroke-width:0.75;}
+	.gnddot{fill:#0050C8;}
+	.vccdot{fill:#E05000;}
+	.gndlabel{fill:#0050C8;font-family:'Helvetica';font-size:7.1px;}
+	.vcclabel{fill:#E05000;font-family:'Helvetica';font-size:7.1px;}
+</style>
+<g id="instruction-mark" inkscape:label="Instruction (mark)" inkscape:groupmode="layer" style="display:none">
+<g transform="matrix(-1,0,0,1,708.66,0)">
+	<rect class="mark" x="94.49" y="103.94" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="103.94" x2="590.55" y2="109.61"/>
+	<line class="mark" x1="590.55" y1="132.28" x2="590.55" y2="126.61"/>
+	<line class="mark" x1="543.31" y1="103.94" x2="543.31" y2="109.61"/>
+	<line class="mark" x1="543.31" y1="132.28" x2="543.31" y2="126.61"/>
+	<line class="mark" x1="496.06" y1="103.94" x2="496.06" y2="109.61"/>
+	<line class="mark" x1="496.06" y1="132.28" x2="496.06" y2="126.61"/>
+	<line class="mark" x1="448.82" y1="103.94" x2="448.82" y2="109.61"/>
+	<line class="mark" x1="448.82" y1="132.28" x2="448.82" y2="126.61"/>
+	<line class="mark" x1="401.57" y1="103.94" x2="401.57" y2="109.61"/>
+	<line class="mark" x1="401.57" y1="132.28" x2="401.57" y2="126.61"/>
+	<line class="mark" x1="354.33" y1="103.94" x2="354.33" y2="109.61"/>
+	<line class="mark" x1="354.33" y1="132.28" x2="354.33" y2="126.61"/>
+	<line class="mark" x1="307.09" y1="103.94" x2="307.09" y2="109.61"/>
+	<line class="mark" x1="307.09" y1="132.28" x2="307.09" y2="126.61"/>
+	<line class="mark" x1="259.84" y1="103.94" x2="259.84" y2="109.61"/>
+	<line class="mark" x1="259.84" y1="132.28" x2="259.84" y2="126.61"/>
+	<line class="mark" x1="212.60" y1="103.94" x2="212.60" y2="109.61"/>
+	<line class="mark" x1="212.60" y1="132.28" x2="212.60" y2="126.61"/>
+	<line class="mark" x1="165.35" y1="103.94" x2="165.35" y2="109.61"/>
+	<line class="mark" x1="165.35" y1="132.28" x2="165.35" y2="126.61"/>
+	<line class="mark" x1="118.11" y1="103.94" x2="118.11" y2="109.61"/>
+	<line class="mark" x1="118.11" y1="132.28" x2="118.11" y2="126.61"/>
+	<rect class="mark" x="94.49" y="151.18" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="151.18" x2="590.55" y2="156.85"/>
+	<line class="mark" x1="590.55" y1="179.53" x2="590.55" y2="173.86"/>
+	<line class="mark" x1="543.31" y1="151.18" x2="543.31" y2="156.85"/>
+	<line class="mark" x1="543.31" y1="179.53" x2="543.31" y2="173.86"/>
+	<line class="mark" x1="496.06" y1="151.18" x2="496.06" y2="156.85"/>
+	<line class="mark" x1="496.06" y1="179.53" x2="496.06" y2="173.86"/>
+	<line class="mark" x1="448.82" y1="151.18" x2="448.82" y2="156.85"/>
+	<line class="mark" x1="448.82" y1="179.53" x2="448.82" y2="173.86"/>
+	<line class="mark" x1="401.57" y1="151.18" x2="401.57" y2="156.85"/>
+	<line class="mark" x1="401.57" y1="179.53" x2="401.57" y2="173.86"/>
+	<line class="mark" x1="354.33" y1="151.18" x2="354.33" y2="156.85"/>
+	<line class="mark" x1="354.33" y1="179.53" x2="354.33" y2="173.86"/>
+	<line class="mark" x1="307.09" y1="151.18" x2="307.09" y2="156.85"/>
+	<line class="mark" x1="307.09" y1="179.53" x2="307.09" y2="173.86"/>
+	<line class="mark" x1="259.84" y1="151.18" x2="259.84" y2="156.85"/>
+	<line class="mark" x1="259.84" y1="179.53" x2="259.84" y2="173.86"/>
+	<line class="mark" x1="212.60" y1="151.18" x2="212.60" y2="156.85"/>
+	<line class="mark" x1="212.60" y1="179.53" x2="212.60" y2="173.86"/>
+	<line class="mark" x1="165.35" y1="151.18" x2="165.35" y2="156.85"/>
+	<line class="mark" x1="165.35" y1="179.53" x2="165.35" y2="173.86"/>
+	<line class="mark" x1="118.11" y1="151.18" x2="118.11" y2="156.85"/>
+	<line class="mark" x1="118.11" y1="179.53" x2="118.11" y2="173.86"/>
+	<rect class="mark" x="94.49" y="198.43" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="198.43" x2="590.55" y2="204.09"/>
+	<line class="mark" x1="590.55" y1="226.77" x2="590.55" y2="221.10"/>
+	<line class="mark" x1="543.31" y1="198.43" x2="543.31" y2="204.09"/>
+	<line class="mark" x1="543.31" y1="226.77" x2="543.31" y2="221.10"/>
+	<line class="mark" x1="496.06" y1="198.43" x2="496.06" y2="204.09"/>
+	<line class="mark" x1="496.06" y1="226.77" x2="496.06" y2="221.10"/>
+	<line class="mark" x1="448.82" y1="198.43" x2="448.82" y2="204.09"/>
+	<line class="mark" x1="448.82" y1="226.77" x2="448.82" y2="221.10"/>
+	<line class="mark" x1="401.57" y1="198.43" x2="401.57" y2="204.09"/>
+	<line class="mark" x1="401.57" y1="226.77" x2="401.57" y2="221.10"/>
+	<line class="mark" x1="354.33" y1="198.43" x2="354.33" y2="204.09"/>
+	<line class="mark" x1="354.33" y1="226.77" x2="354.33" y2="221.10"/>
+	<line class="mark" x1="307.09" y1="198.43" x2="307.09" y2="204.09"/>
+	<line class="mark" x1="307.09" y1="226.77" x2="307.09" y2="221.10"/>
+	<line class="mark" x1="259.84" y1="198.43" x2="259.84" y2="204.09"/>
+	<line class="mark" x1="259.84" y1="226.77" x2="259.84" y2="221.10"/>
+	<line class="mark" x1="212.60" y1="198.43" x2="212.60" y2="204.09"/>
+	<line class="mark" x1="212.60" y1="226.77" x2="212.60" y2="221.10"/>
+	<line class="mark" x1="165.35" y1="198.43" x2="165.35" y2="204.09"/>
+	<line class="mark" x1="165.35" y1="226.77" x2="165.35" y2="221.10"/>
+	<line class="mark" x1="118.11" y1="198.43" x2="118.11" y2="204.09"/>
+	<line class="mark" x1="118.11" y1="226.77" x2="118.11" y2="221.10"/>
+	<rect class="mark" x="94.49" y="245.67" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="245.67" x2="590.55" y2="251.34"/>
+	<line class="mark" x1="590.55" y1="274.02" x2="590.55" y2="268.35"/>
+	<line class="mark" x1="543.31" y1="245.67" x2="543.31" y2="251.34"/>
+	<line class="mark" x1="543.31" y1="274.02" x2="543.31" y2="268.35"/>
+	<line class="mark" x1="496.06" y1="245.67" x2="496.06" y2="251.34"/>
+	<line class="mark" x1="496.06" y1="274.02" x2="496.06" y2="268.35"/>
+	<line class="mark" x1="448.82" y1="245.67" x2="448.82" y2="251.34"/>
+	<line class="mark" x1="448.82" y1="274.02" x2="448.82" y2="268.35"/>
+	<line class="mark" x1="401.57" y1="245.67" x2="401.57" y2="251.34"/>
+	<line class="mark" x1="401.57" y1="274.02" x2="401.57" y2="268.35"/>
+	<line class="mark" x1="354.33" y1="245.67" x2="354.33" y2="251.34"/>
+	<line class="mark" x1="354.33" y1="274.02" x2="354.33" y2="268.35"/>
+	<line class="mark" x1="307.09" y1="245.67" x2="307.09" y2="251.34"/>
+	<line class="mark" x1="307.09" y1="274.02" x2="307.09" y2="268.35"/>
+	<line class="mark" x1="259.84" y1="245.67" x2="259.84" y2="251.34"/>
+	<line class="mark" x1="259.84" y1="274.02" x2="259.84" y2="268.35"/>
+	<line class="mark" x1="212.60" y1="245.67" x2="212.60" y2="251.34"/>
+	<line class="mark" x1="212.60" y1="274.02" x2="212.60" y2="268.35"/>
+	<line class="mark" x1="165.35" y1="245.67" x2="165.35" y2="251.34"/>
+	<line class="mark" x1="165.35" y1="274.02" x2="165.35" y2="268.35"/>
+	<line class="mark" x1="118.11" y1="245.67" x2="118.11" y2="251.34"/>
+	<line class="mark" x1="118.11" y1="274.02" x2="118.11" y2="268.35"/>
+	<rect class="mark" x="94.49" y="292.91" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="292.91" x2="590.55" y2="298.58"/>
+	<line class="mark" x1="590.55" y1="321.26" x2="590.55" y2="315.59"/>
+	<line class="mark" x1="543.31" y1="292.91" x2="543.31" y2="298.58"/>
+	<line class="mark" x1="543.31" y1="321.26" x2="543.31" y2="315.59"/>
+	<line class="mark" x1="496.06" y1="292.91" x2="496.06" y2="298.58"/>
+	<line class="mark" x1="496.06" y1="321.26" x2="496.06" y2="315.59"/>
+	<line class="mark" x1="448.82" y1="292.91" x2="448.82" y2="298.58"/>
+	<line class="mark" x1="448.82" y1="321.26" x2="448.82" y2="315.59"/>
+	<line class="mark" x1="401.57" y1="292.91" x2="401.57" y2="298.58"/>
+	<line class="mark" x1="401.57" y1="321.26" x2="401.57" y2="315.59"/>
+	<line class="mark" x1="354.33" y1="292.91" x2="354.33" y2="298.58"/>
+	<line class="mark" x1="354.33" y1="321.26" x2="354.33" y2="315.59"/>
+	<line class="mark" x1="307.09" y1="292.91" x2="307.09" y2="298.58"/>
+	<line class="mark" x1="307.09" y1="321.26" x2="307.09" y2="315.59"/>
+	<line class="mark" x1="259.84" y1="292.91" x2="259.84" y2="298.58"/>
+	<line class="mark" x1="259.84" y1="321.26" x2="259.84" y2="315.59"/>
+	<line class="mark" x1="212.60" y1="292.91" x2="212.60" y2="298.58"/>
+	<line class="mark" x1="212.60" y1="321.26" x2="212.60" y2="315.59"/>
+	<line class="mark" x1="165.35" y1="292.91" x2="165.35" y2="298.58"/>
+	<line class="mark" x1="165.35" y1="321.26" x2="165.35" y2="315.59"/>
+	<line class="mark" x1="118.11" y1="292.91" x2="118.11" y2="298.58"/>
+	<line class="mark" x1="118.11" y1="321.26" x2="118.11" y2="315.59"/>
+	<rect class="mark" x="94.49" y="340.16" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="340.16" x2="590.55" y2="345.83"/>
+	<line class="mark" x1="590.55" y1="368.50" x2="590.55" y2="362.83"/>
+	<line class="mark" x1="543.31" y1="340.16" x2="543.31" y2="345.83"/>
+	<line class="mark" x1="543.31" y1="368.50" x2="543.31" y2="362.83"/>
+	<line class="mark" x1="496.06" y1="340.16" x2="496.06" y2="345.83"/>
+	<line class="mark" x1="496.06" y1="368.50" x2="496.06" y2="362.83"/>
+	<line class="mark" x1="448.82" y1="340.16" x2="448.82" y2="345.83"/>
+	<line class="mark" x1="448.82" y1="368.50" x2="448.82" y2="362.83"/>
+	<line class="mark" x1="401.57" y1="340.16" x2="401.57" y2="345.83"/>
+	<line class="mark" x1="401.57" y1="368.50" x2="401.57" y2="362.83"/>
+	<line class="mark" x1="354.33" y1="340.16" x2="354.33" y2="345.83"/>
+	<line class="mark" x1="354.33" y1="368.50" x2="354.33" y2="362.83"/>
+	<line class="mark" x1="307.09" y1="340.16" x2="307.09" y2="345.83"/>
+	<line class="mark" x1="307.09" y1="368.50" x2="307.09" y2="362.83"/>
+	<line class="mark" x1="259.84" y1="340.16" x2="259.84" y2="345.83"/>
+	<line class="mark" x1="259.84" y1="368.50" x2="259.84" y2="362.83"/>
+	<line class="mark" x1="212.60" y1="340.16" x2="212.60" y2="345.83"/>
+	<line class="mark" x1="212.60" y1="368.50" x2="212.60" y2="362.83"/>
+	<line class="mark" x1="165.35" y1="340.16" x2="165.35" y2="345.83"/>
+	<line class="mark" x1="165.35" y1="368.50" x2="165.35" y2="362.83"/>
+	<line class="mark" x1="118.11" y1="340.16" x2="118.11" y2="345.83"/>
+	<line class="mark" x1="118.11" y1="368.50" x2="118.11" y2="362.83"/>
+	<rect class="mark" x="94.49" y="387.40" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="387.40" x2="590.55" y2="393.07"/>
+	<line class="mark" x1="590.55" y1="415.75" x2="590.55" y2="410.08"/>
+	<line class="mark" x1="543.31" y1="387.40" x2="543.31" y2="393.07"/>
+	<line class="mark" x1="543.31" y1="415.75" x2="543.31" y2="410.08"/>
+	<line class="mark" x1="496.06" y1="387.40" x2="496.06" y2="393.07"/>
+	<line class="mark" x1="496.06" y1="415.75" x2="496.06" y2="410.08"/>
+	<line class="mark" x1="448.82" y1="387.40" x2="448.82" y2="393.07"/>
+	<line class="mark" x1="448.82" y1="415.75" x2="448.82" y2="410.08"/>
+	<line class="mark" x1="401.57" y1="387.40" x2="401.57" y2="393.07"/>
+	<line class="mark" x1="401.57" y1="415.75" x2="401.57" y2="410.08"/>
+	<line class="mark" x1="354.33" y1="387.40" x2="354.33" y2="393.07"/>
+	<line class="mark" x1="354.33" y1="415.75" x2="354.33" y2="410.08"/>
+	<line class="mark" x1="307.09" y1="387.40" x2="307.09" y2="393.07"/>
+	<line class="mark" x1="307.09" y1="415.75" x2="307.09" y2="410.08"/>
+	<line class="mark" x1="259.84" y1="387.40" x2="259.84" y2="393.07"/>
+	<line class="mark" x1="259.84" y1="415.75" x2="259.84" y2="410.08"/>
+	<line class="mark" x1="212.60" y1="387.40" x2="212.60" y2="393.07"/>
+	<line class="mark" x1="212.60" y1="415.75" x2="212.60" y2="410.08"/>
+	<line class="mark" x1="165.35" y1="387.40" x2="165.35" y2="393.07"/>
+	<line class="mark" x1="165.35" y1="415.75" x2="165.35" y2="410.08"/>
+	<line class="mark" x1="118.11" y1="387.40" x2="118.11" y2="393.07"/>
+	<line class="mark" x1="118.11" y1="415.75" x2="118.11" y2="410.08"/>
+	<rect class="mark" x="94.49" y="434.65" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="434.65" x2="590.55" y2="440.31"/>
+	<line class="mark" x1="590.55" y1="462.99" x2="590.55" y2="457.32"/>
+	<line class="mark" x1="543.31" y1="434.65" x2="543.31" y2="440.31"/>
+	<line class="mark" x1="543.31" y1="462.99" x2="543.31" y2="457.32"/>
+	<line class="mark" x1="496.06" y1="434.65" x2="496.06" y2="440.31"/>
+	<line class="mark" x1="496.06" y1="462.99" x2="496.06" y2="457.32"/>
+	<line class="mark" x1="448.82" y1="434.65" x2="448.82" y2="440.31"/>
+	<line class="mark" x1="448.82" y1="462.99" x2="448.82" y2="457.32"/>
+	<line class="mark" x1="401.57" y1="434.65" x2="401.57" y2="440.31"/>
+	<line class="mark" x1="401.57" y1="462.99" x2="401.57" y2="457.32"/>
+	<line class="mark" x1="354.33" y1="434.65" x2="354.33" y2="440.31"/>
+	<line class="mark" x1="354.33" y1="462.99" x2="354.33" y2="457.32"/>
+	<line class="mark" x1="307.09" y1="434.65" x2="307.09" y2="440.31"/>
+	<line class="mark" x1="307.09" y1="462.99" x2="307.09" y2="457.32"/>
+	<line class="mark" x1="259.84" y1="434.65" x2="259.84" y2="440.31"/>
+	<line class="mark" x1="259.84" y1="462.99" x2="259.84" y2="457.32"/>
+	<line class="mark" x1="212.60" y1="434.65" x2="212.60" y2="440.31"/>
+	<line class="mark" x1="212.60" y1="462.99" x2="212.60" y2="457.32"/>
+	<line class="mark" x1="165.35" y1="434.65" x2="165.35" y2="440.31"/>
+	<line class="mark" x1="165.35" y1="462.99" x2="165.35" y2="457.32"/>
+	<line class="mark" x1="118.11" y1="434.65" x2="118.11" y2="440.31"/>
+	<line class="mark" x1="118.11" y1="462.99" x2="118.11" y2="457.32"/>
+	<rect class="mark" x="94.49" y="481.89" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="481.89" x2="590.55" y2="487.56"/>
+	<line class="mark" x1="590.55" y1="510.24" x2="590.55" y2="504.57"/>
+	<line class="mark" x1="543.31" y1="481.89" x2="543.31" y2="487.56"/>
+	<line class="mark" x1="543.31" y1="510.24" x2="543.31" y2="504.57"/>
+	<line class="mark" x1="496.06" y1="481.89" x2="496.06" y2="487.56"/>
+	<line class="mark" x1="496.06" y1="510.24" x2="496.06" y2="504.57"/>
+	<line class="mark" x1="448.82" y1="481.89" x2="448.82" y2="487.56"/>
+	<line class="mark" x1="448.82" y1="510.24" x2="448.82" y2="504.57"/>
+	<line class="mark" x1="401.57" y1="481.89" x2="401.57" y2="487.56"/>
+	<line class="mark" x1="401.57" y1="510.24" x2="401.57" y2="504.57"/>
+	<line class="mark" x1="354.33" y1="481.89" x2="354.33" y2="487.56"/>
+	<line class="mark" x1="354.33" y1="510.24" x2="354.33" y2="504.57"/>
+	<line class="mark" x1="307.09" y1="481.89" x2="307.09" y2="487.56"/>
+	<line class="mark" x1="307.09" y1="510.24" x2="307.09" y2="504.57"/>
+	<line class="mark" x1="259.84" y1="481.89" x2="259.84" y2="487.56"/>
+	<line class="mark" x1="259.84" y1="510.24" x2="259.84" y2="504.57"/>
+	<line class="mark" x1="212.60" y1="481.89" x2="212.60" y2="487.56"/>
+	<line class="mark" x1="212.60" y1="510.24" x2="212.60" y2="504.57"/>
+	<line class="mark" x1="165.35" y1="481.89" x2="165.35" y2="487.56"/>
+	<line class="mark" x1="165.35" y1="510.24" x2="165.35" y2="504.57"/>
+	<line class="mark" x1="118.11" y1="481.89" x2="118.11" y2="487.56"/>
+	<line class="mark" x1="118.11" y1="510.24" x2="118.11" y2="504.57"/>
+	<rect class="mark" x="94.49" y="529.13" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="529.13" x2="590.55" y2="534.80"/>
+	<line class="mark" x1="590.55" y1="557.48" x2="590.55" y2="551.81"/>
+	<line class="mark" x1="543.31" y1="529.13" x2="543.31" y2="534.80"/>
+	<line class="mark" x1="543.31" y1="557.48" x2="543.31" y2="551.81"/>
+	<line class="mark" x1="496.06" y1="529.13" x2="496.06" y2="534.80"/>
+	<line class="mark" x1="496.06" y1="557.48" x2="496.06" y2="551.81"/>
+	<line class="mark" x1="448.82" y1="529.13" x2="448.82" y2="534.80"/>
+	<line class="mark" x1="448.82" y1="557.48" x2="448.82" y2="551.81"/>
+	<line class="mark" x1="401.57" y1="529.13" x2="401.57" y2="534.80"/>
+	<line class="mark" x1="401.57" y1="557.48" x2="401.57" y2="551.81"/>
+	<line class="mark" x1="354.33" y1="529.13" x2="354.33" y2="534.80"/>
+	<line class="mark" x1="354.33" y1="557.48" x2="354.33" y2="551.81"/>
+	<line class="mark" x1="307.09" y1="529.13" x2="307.09" y2="534.80"/>
+	<line class="mark" x1="307.09" y1="557.48" x2="307.09" y2="551.81"/>
+	<line class="mark" x1="259.84" y1="529.13" x2="259.84" y2="534.80"/>
+	<line class="mark" x1="259.84" y1="557.48" x2="259.84" y2="551.81"/>
+	<line class="mark" x1="212.60" y1="529.13" x2="212.60" y2="534.80"/>
+	<line class="mark" x1="212.60" y1="557.48" x2="212.60" y2="551.81"/>
+	<line class="mark" x1="165.35" y1="529.13" x2="165.35" y2="534.80"/>
+	<line class="mark" x1="165.35" y1="557.48" x2="165.35" y2="551.81"/>
+	<line class="mark" x1="118.11" y1="529.13" x2="118.11" y2="534.80"/>
+	<line class="mark" x1="118.11" y1="557.48" x2="118.11" y2="551.81"/>
+	<rect class="mark" x="94.49" y="576.38" width="519.69" height="28.35" rx="0.00"/>
+	<line class="mark" x1="590.55" y1="576.38" x2="590.55" y2="582.05"/>
+	<line class="mark" x1="590.55" y1="604.72" x2="590.55" y2="599.06"/>
+	<line class="mark" x1="543.31" y1="576.38" x2="543.31" y2="582.05"/>
+	<line class="mark" x1="543.31" y1="604.72" x2="543.31" y2="599.06"/>
+	<line class="mark" x1="496.06" y1="576.38" x2="496.06" y2="582.05"/>
+	<line class="mark" x1="496.06" y1="604.72" x2="496.06" y2="599.06"/>
+	<line class="mark" x1="448.82" y1="576.38" x2="448.82" y2="582.05"/>
+	<line class="mark" x1="448.82" y1="604.72" x2="448.82" y2="599.06"/>
+	<line class="mark" x1="401.57" y1="576.38" x2="401.57" y2="582.05"/>
+	<line class="mark" x1="401.57" y1="604.72" x2="401.57" y2="599.06"/>
+	<line class="mark" x1="354.33" y1="576.38" x2="354.33" y2="582.05"/>
+	<line class="mark" x1="354.33" y1="604.72" x2="354.33" y2="599.06"/>
+	<line class="mark" x1="307.09" y1="576.38" x2="307.09" y2="582.05"/>
+	<line class="mark" x1="307.09" y1="604.72" x2="307.09" y2="599.06"/>
+	<line class="mark" x1="259.84" y1="576.38" x2="259.84" y2="582.05"/>
+	<line class="mark" x1="259.84" y1="604.72" x2="259.84" y2="599.06"/>
+	<line class="mark" x1="212.60" y1="576.38" x2="212.60" y2="582.05"/>
+	<line class="mark" x1="212.60" y1="604.72" x2="212.60" y2="599.06"/>
+	<line class="mark" x1="165.35" y1="576.38" x2="165.35" y2="582.05"/>
+	<line class="mark" x1="165.35" y1="604.72" x2="165.35" y2="599.06"/>
+	<line class="mark" x1="118.11" y1="576.38" x2="118.11" y2="582.05"/>
+	<line class="mark" x1="118.11" y1="604.72" x2="118.11" y2="599.06"/>
+	<rect class="mark" x="52.45" y="52.45" width="42.49" height="42.49" rx="8.50"/>
+	<rect class="mark" x="613.71" y="52.45" width="42.49" height="42.49" rx="8.50"/>
+	<rect class="mark" x="52.45" y="613.71" width="42.49" height="42.49" rx="8.50"/>
+	<rect class="mark" x="613.71" y="613.71" width="42.49" height="42.49" rx="8.50"/>
+</g>
+
+</g>
+<g id="instruction-cut" inkscape:label="Instruction (cut)" inkscape:groupmode="layer" style="display:none">
+<g transform="matrix(-1,0,0,1,708.66,0)">
+	<rect class="cut" x="0.00" y="0.00" width="708.66" height="708.66" rx="56.69"/>
+	<rect class="cut" x="618.00" y="103.94" width="18.43" height="75.59" rx="4.61"/>
+	<rect class="cut" x="618.00" y="198.43" width="18.43" height="75.59" rx="4.61"/>
+	<rect class="cut" x="618.00" y="292.91" width="18.43" height="75.59" rx="4.61"/>
+	<rect class="cut" x="618.00" y="387.40" width="18.43" height="75.59" rx="4.61"/>
+	<rect class="cut" x="618.00" y="481.89" width="18.43" height="75.59" rx="4.61"/>
+	<rect class="cut" x="94.95" y="64.49" width="518.77" height="18.43" rx="4.61"/>
+	<rect class="cut" x="94.95" y="625.75" width="518.77" height="18.43" rx="4.61"/>
+	<rect class="cut" x="56.65" y="94.95" width="34.02" height="518.77" rx="4.61"/>
+	<rect class="cut" x="618.00" y="576.38" width="18.43" height="37.34" rx="4.61"/>
+</g>
+
+</g>
+<g id="direction" inkscape:label="Direction (mark if needed)" inkscape:groupmode="layer" style="display:none">
+<g transform="matrix(-1,0,0,1,708.66,0)">
+	<line class="arrow" x1="29.78" y1="118.11" x2="94.49" y2="118.11"/>
+	<polygon class="head" points="94.49,118.11 85.98,121.51 85.98,114.71"/>
+	<line class="arrow" x1="307.09" y1="118.11" x2="401.57" y2="118.11"/>
+	<polygon class="head" points="401.57,118.11 393.07,121.51 393.07,114.71"/>
+	<line class="arrow" x1="401.57" y1="165.35" x2="307.09" y2="165.35"/>
+	<polygon class="head" points="307.09,165.35 315.59,161.95 315.59,168.76"/>
+	<line class="arrow" x1="307.09" y1="212.60" x2="401.57" y2="212.60"/>
+	<polygon class="head" points="401.57,212.60 393.07,216.00 393.07,209.20"/>
+	<line class="arrow" x1="401.57" y1="259.84" x2="307.09" y2="259.84"/>
+	<polygon class="head" points="307.09,259.84 315.59,256.44 315.59,263.24"/>
+	<line class="arrow" x1="307.09" y1="307.09" x2="401.57" y2="307.09"/>
+	<polygon class="head" points="401.57,307.09 393.07,310.49 393.07,303.69"/>
+	<line class="arrow" x1="401.57" y1="354.33" x2="307.09" y2="354.33"/>
+	<polygon class="head" points="307.09,354.33 315.59,350.93 315.59,357.73"/>
+	<line class="arrow" x1="307.09" y1="401.57" x2="401.57" y2="401.57"/>
+	<polygon class="head" points="401.57,401.57 393.07,404.98 393.07,398.17"/>
+	<line class="arrow" x1="401.57" y1="448.82" x2="307.09" y2="448.82"/>
+	<polygon class="head" points="307.09,448.82 315.59,445.42 315.59,452.22"/>
+	<line class="arrow" x1="307.09" y1="496.06" x2="401.57" y2="496.06"/>
+	<polygon class="head" points="401.57,496.06 393.07,499.46 393.07,492.66"/>
+	<line class="arrow" x1="401.57" y1="543.31" x2="307.09" y2="543.31"/>
+	<polygon class="head" points="307.09,543.31 315.59,539.91 315.59,546.71"/>
+	<line class="arrow" x1="307.09" y1="590.55" x2="401.57" y2="590.55"/>
+	<polygon class="head" points="401.57,590.55 393.07,593.95 393.07,587.15"/>
+	<path class="arrow" d="M614.17,118.11 C631.56,118.11 631.56,165.35 614.17,165.35"/>
+	<polygon class="head" points="614.17,165.35 622.68,161.95 622.68,168.76"/>
+	<path class="arrow" d="M94.49,165.35 C66.71,165.35 66.71,212.60 94.49,212.60"/>
+	<polygon class="head" points="94.49,212.60 85.98,216.00 85.98,209.20"/>
+	<path class="arrow" d="M614.17,212.60 C631.56,212.60 631.56,259.84 614.17,259.84"/>
+	<polygon class="head" points="614.17,259.84 622.68,256.44 622.68,263.24"/>
+	<path class="arrow" d="M94.49,259.84 C66.71,259.84 66.71,307.09 94.49,307.09"/>
+	<polygon class="head" points="94.49,307.09 85.98,310.49 85.98,303.69"/>
+	<path class="arrow" d="M614.17,307.09 C631.56,307.09 631.56,354.33 614.17,354.33"/>
+	<polygon class="head" points="614.17,354.33 622.68,350.93 622.68,357.73"/>
+	<path class="arrow" d="M94.49,354.33 C66.71,354.33 66.71,401.57 94.49,401.57"/>
+	<polygon class="head" points="94.49,401.57 85.98,404.98 85.98,398.17"/>
+	<path class="arrow" d="M614.17,401.57 C631.56,401.57 631.56,448.82 614.17,448.82"/>
+	<polygon class="head" points="614.17,448.82 622.68,445.42 622.68,452.22"/>
+	<path class="arrow" d="M94.49,448.82 C66.71,448.82 66.71,496.06 94.49,496.06"/>
+	<polygon class="head" points="94.49,496.06 85.98,499.46 85.98,492.66"/>
+	<path class="arrow" d="M614.17,496.06 C631.56,496.06 631.56,543.31 614.17,543.31"/>
+	<polygon class="head" points="614.17,543.31 622.68,539.91 622.68,546.71"/>
+	<path class="arrow" d="M94.49,543.31 C66.71,543.31 66.71,590.55 94.49,590.55"/>
+	<polygon class="head" points="94.49,590.55 85.98,593.95 85.98,587.15"/>
+	<path class="arrow" d="M614.17,590.55 C634.96,590.55 634.96,590.55 634.96,613.71"/>
+	<polygon class="head" points="634.96,613.71 631.56,605.21 638.36,605.21"/>
+	<line class="arrow" x1="613.71" y1="634.96" x2="94.95" y2="634.96"/>
+	<polygon class="head" points="94.95,634.96 103.45,631.56 103.45,638.36"/>
+	<line class="arrow" x1="73.70" y1="613.71" x2="73.70" y2="94.95"/>
+	<polygon class="head" points="73.70,94.95 77.10,103.45 70.30,103.45"/>
+	<line class="arrow" x1="94.95" y1="73.70" x2="613.71" y2="73.70"/>
+	<polygon class="head" points="613.71,73.70 605.21,77.10 605.21,70.30"/>
+	<line class="gnd" x1="188.98" y1="132.28" x2="188.98" y2="151.18"/>
+	<circle class="gnddot" cx="188.98" cy="132.28" r="2.27"/>
+	<circle class="gnddot" cx="188.98" cy="151.18" r="2.27"/>
+	<line class="vcc" x1="236.22" y1="132.28" x2="236.22" y2="151.18"/>
+	<circle class="vccdot" cx="236.22" cy="132.28" r="2.27"/>
+	<circle class="vccdot" cx="236.22" cy="151.18" r="2.27"/>
+	<line class="gnd" x1="236.22" y1="179.53" x2="236.22" y2="198.43"/>
+	<circle class="gnddot" cx="236.22" cy="179.53" r="2.27"/>
+	<circle class="gnddot" cx="236.22" cy="198.43" r="2.27"/>
+	<line class="vcc" x1="283.46" y1="179.53" x2="283.46" y2="198.43"/>
+	<circle class="vccdot" cx="283.46" cy="179.53" r="2.27"/>
+	<circle class="vccdot" cx="283.46" cy="198.43" r="2.27"/>
+	<line class="gnd" x1="188.98" y1="226.77" x2="188.98" y2="245.67"/>
+	<circle class="gnddot" cx="188.98" cy="226.77" r="2.27"/>
+	<circle class="gnddot" cx="188.98" cy="245.67" r="2.27"/>
+	<line class="vcc" x1="236.22" y1="226.77" x2="236.22" y2="245.67"/>
+	<circle class="vccdot" cx="236.22" cy="226.77" r="2.27"/>
+	<circle class="vccdot" cx="236.22" cy="245.67" r="2.27"/>
+	<line class="gnd" x1="236.22" y1="274.02" x2="236.22" y2="292.91"/>
+	<circle class="gnddot" cx="236.22" cy="274.02" r="2.27"/>
+	<circle class="gnddot" cx="236.22" cy="292.91" r="2.27"/>
+	<line class="vcc" x1="283.46" y1="274.02" x2="283.46" y2="292.91"/>
+	<circle class="vccdot" cx="283.46" cy="274.02" r="2.27"/>
+	<circle class="vccdot" cx="283.46" cy="292.91" r="2.27"/>
+	<line class="gnd" x1="188.98" y1="321.26" x2="188.98" y2="340.16"/>
+	<circle class="gnddot" cx="188.98" cy="321.26" r="2.27"/>
+	<circle class="gnddot" cx="188.98" cy="340.16" r="2.27"/>
+	<line class="vcc" x1="236.22" y1="321.26" x2="236.22" y2="340.16"/>
+	<circle class="vccdot" cx="236.22" cy="321.26" r="2.27"/>
+	<circle class="vccdot" cx="236.22" cy="340.16" r="2.27"/>
+	<line class="gnd" x1="236.22" y1="368.50" x2="236.22" y2="387.40"/>
+	<circle class="gnddot" cx="236.22" cy="368.50" r="2.27"/>
+	<circle class="gnddot" cx="236.22" cy="387.40" r="2.27"/>
+	<line class="vcc" x1="283.46" y1="368.50" x2="283.46" y2="387.40"/>
+	<circle class="vccdot" cx="283.46" cy="368.50" r="2.27"/>
+	<circle class="vccdot" cx="283.46" cy="387.40" r="2.27"/>
+	<line class="gnd" x1="188.98" y1="415.75" x2="188.98" y2="434.65"/>
+	<circle class="gnddot" cx="188.98" cy="415.75" r="2.27"/>
+	<circle class="gnddot" cx="188.98" cy="434.65" r="2.27"/>
+	<line class="vcc" x1="236.22" y1="415.75" x2="236.22" y2="434.65"/>
+	<circle class="vccdot" cx="236.22" cy="415.75" r="2.27"/>
+	<circle class="vccdot" cx="236.22" cy="434.65" r="2.27"/>
+	<line class="gnd" x1="236.22" y1="462.99" x2="236.22" y2="481.89"/>
+	<circle class="gnddot" cx="236.22" cy="462.99" r="2.27"/>
+	<circle class="gnddot" cx="236.22" cy="481.89" r="2.27"/>
+	<line class="vcc" x1="283.46" y1="462.99" x2="283.46" y2="481.89"/>
+	<circle class="vccdot" cx="283.46" cy="462.99" r="2.27"/>
+	<circle class="vccdot" cx="283.46" cy="481.89" r="2.27"/>
+	<line class="gnd" x1="188.98" y1="510.24" x2="188.98" y2="529.13"/>
+	<circle class="gnddot" cx="188.98" cy="510.24" r="2.27"/>
+	<circle class="gnddot" cx="188.98" cy="529.13" r="2.27"/>
+	<line class="vcc" x1="236.22" y1="510.24" x2="236.22" y2="529.13"/>
+	<circle class="vccdot" cx="236.22" cy="510.24" r="2.27"/>
+	<circle class="vccdot" cx="236.22" cy="529.13" r="2.27"/>
+	<line class="gnd" x1="236.22" y1="557.48" x2="236.22" y2="576.38"/>
+	<circle class="gnddot" cx="236.22" cy="557.48" r="2.27"/>
+	<circle class="gnddot" cx="236.22" cy="576.38" r="2.27"/>
+	<line class="vcc" x1="283.46" y1="557.48" x2="283.46" y2="576.38"/>
+	<circle class="vccdot" cx="283.46" cy="557.48" r="2.27"/>
+	<circle class="vccdot" cx="283.46" cy="576.38" r="2.27"/>
+</g>
+	<text class="label" x="678.88" y="112.44">DIN</text>
+	<text class="label" x="73.70" y="639.21">1</text>
+	<text class="label" x="634.96" y="639.21">2</text>
+	<text class="label" x="634.96" y="77.95">3</text>
+	<text class="label" x="73.70" y="77.95">4</text>
+	<text class="caption" x="354.33" y="685.98">Ger11x11schwaebisch · 250 × 250 mm · 60 LEDs/m · Ansicht von vorne / front view</text>
+	<text class="gndlabel" x="523.09" y="144.57" text-anchor="start">GND</text>
+	<text class="vcclabel" x="469.04" y="144.57" text-anchor="end">+5V</text>
+	<text class="gndlabel" x="475.84" y="191.81" text-anchor="start">GND</text>
+	<text class="vcclabel" x="421.79" y="191.81" text-anchor="end">+5V</text>
+	<text class="gndlabel" x="523.09" y="239.06" text-anchor="start">GND</text>
+	<text class="vcclabel" x="469.04" y="239.06" text-anchor="end">+5V</text>
+	<text class="gndlabel" x="475.84" y="286.30" text-anchor="start">GND</text>
+	<text class="vcclabel" x="421.79" y="286.30" text-anchor="end">+5V</text>
+	<text class="gndlabel" x="523.09" y="333.54" text-anchor="start">GND</text>
+	<text class="vcclabel" x="469.04" y="333.54" text-anchor="end">+5V</text>
+	<text class="gndlabel" x="475.84" y="380.79" text-anchor="start">GND</text>
+	<text class="vcclabel" x="421.79" y="380.79" text-anchor="end">+5V</text>
+	<text class="gndlabel" x="523.09" y="428.03" text-anchor="start">GND</text>
+	<text class="vcclabel" x="469.04" y="428.03" text-anchor="end">+5V</text>
+	<text class="gndlabel" x="475.84" y="475.28" text-anchor="start">GND</text>
+	<text class="vcclabel" x="421.79" y="475.28" text-anchor="end">+5V</text>
+	<text class="gndlabel" x="523.09" y="522.52" text-anchor="start">GND</text>
+	<text class="vcclabel" x="469.04" y="522.52" text-anchor="end">+5V</text>
+	<text class="gndlabel" x="475.84" y="569.76" text-anchor="start">GND</text>
+	<text class="vcclabel" x="421.79" y="569.76" text-anchor="end">+5V</text>
+</g>
+</svg>
