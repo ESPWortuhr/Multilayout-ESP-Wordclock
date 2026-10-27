@@ -508,6 +508,36 @@ def build_montage(title, rows, cols, has_led4x, cells, strip):
                       f'y1="{mm(175):.2f}" x2="{esp_x:.2f}" '
                       f'y2="{mm(228.2):.2f}"/>')
 
+    power = []
+
+    def bridge(x, y0, y1, kind):
+        css = "gnd" if kind == "GND" else "vcc"
+        side = -1 if kind == "GND" else 1
+        power.append(f'\t<line class="{css}" x1="{x:.2f}" y1="{y0:.2f}" '
+                     f'x2="{x:.2f}" y2="{y1:.2f}"/>')
+        for y in (y0, y1):
+            power.append(f'\t<circle class="{css}dot" cx="{x:.2f}" '
+                         f'cy="{y:.2f}" r="{mm(0.8):.2f}"/>')
+        power.append(f'\t<text class="{css}label" '
+                     f'x="{x + side * mm(1.2):.2f}" '
+                     f'y="{(y0 + y1) / 2 + mm(1):.2f}" '
+                     f'text-anchor="{"end" if side < 0 else "start"}">'
+                     f'{"GND" if kind == "GND" else "+5V"}</text>')
+
+    start = strips[order[0]][0]
+    count = round((strips[order[0]][1] - start) / led_pitch)
+    middle = count // 2 - max(2, round(2.5 * pitch / led_pitch))
+    for index, (row, following) in enumerate(zip(order, order[1:])):
+        shift = 0 if index % 2 == 0 else 1
+        y0, y1 = row_y(row) + strip_half, row_y(following) - strip_half
+        bridge(start + (middle - 1 + shift) * led_pitch, y0, y1, "GND")
+        bridge(start + (middle + shift) * led_pitch, y0, y1, "VCC")
+    if minute_strip:
+        y0 = row_y(last_row) + strip_half
+        y1 = minute_y - strip_half
+        bridge(width / 2 - led_pitch / 2, y0, y1, "GND")
+        bridge(width / 2 + led_pitch / 2, y0, y1, "VCC")
+
     arrows.append(f'\t<text class="caption" x="{width / 2:.2f}" '
                   f'y="{height - mm(8):.2f}">{escape(title)} · '
                   f'{width_mm} × {height_mm} mm · {strip["label"]} · '
@@ -525,12 +555,21 @@ def build_montage(title, rows, cols, has_led4x, cells, strip):
 	.head{{fill:#000000;}}
 	.label{{font-family:'Helvetica';font-size:{mm(4):.1f}px;text-anchor:middle;}}
 	.caption{{font-family:'Helvetica';font-size:{mm(3.5):.1f}px;text-anchor:middle;}}
+	.gnd{{fill:none;stroke:#0050C8;stroke-width:0.75;}}
+	.vcc{{fill:none;stroke:#E05000;stroke-width:0.75;}}
+	.gnddot{{fill:#0050C8;}}
+	.vccdot{{fill:#E05000;}}
+	.gndlabel{{fill:#0050C8;font-family:'Helvetica';font-size:{mm(2.5):.1f}px;}}
+	.vcclabel{{fill:#E05000;font-family:'Helvetica';font-size:{mm(2.5):.1f}px;}}
 </style>
 <g id="montage" inkscape:label="Montage" inkscape:groupmode="layer">
 {chr(10).join(cut + mark)}
 </g>
 <g id="direction" inkscape:label="Richtung" inkscape:groupmode="layer">
 {chr(10).join(arrows)}
+</g>
+<g id="power" inkscape:label="Lötverbindungen" inkscape:groupmode="layer">
+{chr(10).join(power)}
 </g>
 </svg>
 '''

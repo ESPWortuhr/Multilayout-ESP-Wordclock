@@ -10,6 +10,12 @@
 	.head{fill:#000000;}
 	.label{font-family:'Helvetica';font-size:11.3px;text-anchor:middle;}
 	.caption{font-family:'Helvetica';font-size:9.9px;text-anchor:middle;}
+	.gnd{fill:none;stroke:#0050C8;stroke-width:0.75;}
+	.vcc{fill:none;stroke:#E05000;stroke-width:0.75;}
+	.gnddot{fill:#0050C8;}
+	.vccdot{fill:#E05000;}
+	.gndlabel{fill:#0050C8;font-family:'Helvetica';font-size:7.1px;}
+	.vcclabel{fill:#E05000;font-family:'Helvetica';font-size:7.1px;}
 </style>
 <g id="montage" inkscape:label="Montage" inkscape:groupmode="layer">
 	<rect class="cut" x="0.00" y="0.00" width="1133.86" height="1133.86" rx="56.69"/>
@@ -351,5 +357,95 @@
 	<text class="label" x="85.04" y="429.45">ESP</text>
 	<line class="arrow" x1="85.04" y1="496.06" x2="85.04" y2="646.87"/>
 	<text class="caption" x="566.93" y="1111.18">11x11 · 400 × 400 mm · 74 LEDs/m, every second LED · Rückseite / rear view</text>
+</g>
+<g id="power" inkscape:label="Lötverbindungen" inkscape:groupmode="layer">
+	<line class="gnd" x1="317.94" y1="110.13" x2="317.94" y2="166.82"/>
+	<circle class="gnddot" cx="317.94" cy="110.13" r="2.27"/>
+	<circle class="gnddot" cx="317.94" cy="166.82" r="2.27"/>
+	<text class="gndlabel" x="314.54" y="141.31" text-anchor="end">GND</text>
+	<line class="vcc" x1="356.25" y1="110.13" x2="356.25" y2="166.82"/>
+	<circle class="vccdot" cx="356.25" cy="110.13" r="2.27"/>
+	<circle class="vccdot" cx="356.25" cy="166.82" r="2.27"/>
+	<text class="vcclabel" x="359.65" y="141.31" text-anchor="start">+5V</text>
+	<line class="gnd" x1="356.25" y1="195.17" x2="356.25" y2="251.86"/>
+	<circle class="gnddot" cx="356.25" cy="195.17" r="2.27"/>
+	<circle class="gnddot" cx="356.25" cy="251.86" r="2.27"/>
+	<text class="gndlabel" x="352.84" y="226.35" text-anchor="end">GND</text>
+	<line class="vcc" x1="394.55" y1="195.17" x2="394.55" y2="251.86"/>
+	<circle class="vccdot" cx="394.55" cy="195.17" r="2.27"/>
+	<circle class="vccdot" cx="394.55" cy="251.86" r="2.27"/>
+	<text class="vcclabel" x="397.95" y="226.35" text-anchor="start">+5V</text>
+	<line class="gnd" x1="317.94" y1="280.20" x2="317.94" y2="336.90"/>
+	<circle class="gnddot" cx="317.94" cy="280.20" r="2.27"/>
+	<circle class="gnddot" cx="317.94" cy="336.90" r="2.27"/>
+	<text class="gndlabel" x="314.54" y="311.39" text-anchor="end">GND</text>
+	<line class="vcc" x1="356.25" y1="280.20" x2="356.25" y2="336.90"/>
+	<circle class="vccdot" cx="356.25" cy="280.20" r="2.27"/>
+	<circle class="vccdot" cx="356.25" cy="336.90" r="2.27"/>
+	<text class="vcclabel" x="359.65" y="311.39" text-anchor="start">+5V</text>
+	<line class="gnd" x1="356.25" y1="365.24" x2="356.25" y2="421.94"/>
+	<circle class="gnddot" cx="356.25" cy="365.24" r="2.27"/>
+	<circle class="gnddot" cx="356.25" cy="421.94" r="2.27"/>
+	<text class="gndlabel" x="352.84" y="396.43" text-anchor="end">GND</text>
+	<line class="vcc" x1="394.55" y1="365.24" x2="394.55" y2="421.94"/>
+	<circle class="vccdot" cx="394.55" cy="365.24" r="2.27"/>
+	<circle class="vccdot" cx="394.55" cy="421.94" r="2.27"/>
+	<text class="vcclabel" x="397.95" y="396.43" text-anchor="start">+5V</text>
+	<line class="gnd" x1="317.94" y1="450.28" x2="317.94" y2="506.98"/>
+	<circle class="gnddot" cx="317.94" cy="450.28" r="2.27"/>
+	<circle class="gnddot" cx="317.94" cy="506.98" r="2.27"/>
+	<text class="gndlabel" x="314.54" y="481.46" text-anchor="end">GND</text>
+	<line class="vcc" x1="356.25" y1="450.28" x2="356.25" y2="506.98"/>
+	<circle class="vccdot" cx="356.25" cy="450.28" r="2.27"/>
+	<circle class="vccdot" cx="356.25" cy="506.98" r="2.27"/>
+	<text class="vcclabel" x="359.65" y="481.46" text-anchor="start">+5V</text>
+	<line class="gnd" x1="356.25" y1="535.32" x2="356.25" y2="592.02"/>
+	<circle class="gnddot" cx="356.25" cy="535.32" r="2.27"/>
+	<circle class="gnddot" cx="356.25" cy="592.02" r="2.27"/>
+	<text class="gndlabel" x="352.84" y="566.50" text-anchor="end">GND</text>
+	<line class="vcc" x1="394.55" y1="535.32" x2="394.55" y2="592.02"/>
+	<circle class="vccdot" cx="394.55" cy="535.32" r="2.27"/>
+	<circle class="vccdot" cx="394.55" cy="592.02" r="2.27"/>
+	<text class="vcclabel" x="397.95" y="566.50" text-anchor="start">+5V</text>
+	<line class="gnd" x1="317.94" y1="620.36" x2="317.94" y2="677.06"/>
+	<circle class="gnddot" cx="317.94" cy="620.36" r="2.27"/>
+	<circle class="gnddot" cx="317.94" cy="677.06" r="2.27"/>
+	<text class="gndlabel" x="314.54" y="651.54" text-anchor="end">GND</text>
+	<line class="vcc" x1="356.25" y1="620.36" x2="356.25" y2="677.06"/>
+	<circle class="vccdot" cx="356.25" cy="620.36" r="2.27"/>
+	<circle class="vccdot" cx="356.25" cy="677.06" r="2.27"/>
+	<text class="vcclabel" x="359.65" y="651.54" text-anchor="start">+5V</text>
+	<line class="gnd" x1="356.25" y1="705.40" x2="356.25" y2="762.09"/>
+	<circle class="gnddot" cx="356.25" cy="705.40" r="2.27"/>
+	<circle class="gnddot" cx="356.25" cy="762.09" r="2.27"/>
+	<text class="gndlabel" x="352.84" y="736.58" text-anchor="end">GND</text>
+	<line class="vcc" x1="394.55" y1="705.40" x2="394.55" y2="762.09"/>
+	<circle class="vccdot" cx="394.55" cy="705.40" r="2.27"/>
+	<circle class="vccdot" cx="394.55" cy="762.09" r="2.27"/>
+	<text class="vcclabel" x="397.95" y="736.58" text-anchor="start">+5V</text>
+	<line class="gnd" x1="317.94" y1="790.44" x2="317.94" y2="847.13"/>
+	<circle class="gnddot" cx="317.94" cy="790.44" r="2.27"/>
+	<circle class="gnddot" cx="317.94" cy="847.13" r="2.27"/>
+	<text class="gndlabel" x="314.54" y="821.62" text-anchor="end">GND</text>
+	<line class="vcc" x1="356.25" y1="790.44" x2="356.25" y2="847.13"/>
+	<circle class="vccdot" cx="356.25" cy="790.44" r="2.27"/>
+	<circle class="vccdot" cx="356.25" cy="847.13" r="2.27"/>
+	<text class="vcclabel" x="359.65" y="821.62" text-anchor="start">+5V</text>
+	<line class="gnd" x1="356.25" y1="875.48" x2="356.25" y2="932.17"/>
+	<circle class="gnddot" cx="356.25" cy="875.48" r="2.27"/>
+	<circle class="gnddot" cx="356.25" cy="932.17" r="2.27"/>
+	<text class="gndlabel" x="352.84" y="906.66" text-anchor="end">GND</text>
+	<line class="vcc" x1="394.55" y1="875.48" x2="394.55" y2="932.17"/>
+	<circle class="vccdot" cx="394.55" cy="875.48" r="2.27"/>
+	<circle class="vccdot" cx="394.55" cy="932.17" r="2.27"/>
+	<text class="vcclabel" x="397.95" y="906.66" text-anchor="start">+5V</text>
+	<line class="gnd" x1="547.78" y1="960.52" x2="547.78" y2="1023.73"/>
+	<circle class="gnddot" cx="547.78" cy="960.52" r="2.27"/>
+	<circle class="gnddot" cx="547.78" cy="1023.73" r="2.27"/>
+	<text class="gndlabel" x="544.37" y="994.96" text-anchor="end">GND</text>
+	<line class="vcc" x1="586.08" y1="960.52" x2="586.08" y2="1023.73"/>
+	<circle class="vccdot" cx="586.08" cy="960.52" r="2.27"/>
+	<circle class="vccdot" cx="586.08" cy="1023.73" r="2.27"/>
+	<text class="vcclabel" x="589.48" y="994.96" text-anchor="start">+5V</text>
 </g>
 </svg>
