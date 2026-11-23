@@ -229,7 +229,6 @@ module.exports = function(grunt) {
 	});
 
 	// Linters
-	grunt.loadNpmTasks("grunt-stylelint");
 	grunt.loadNpmTasks("grunt-eslint");
 	grunt.loadNpmTasks("grunt-htmllint");
 	grunt.loadNpmTasks("grunt-contrib-htmlmin");
@@ -241,6 +240,25 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-version");
 	grunt.loadNpmTasks("grunt-replace");
 	grunt.loadNpmTasks("grunt-contrib-compress");
+
+	grunt.registerMultiTask("stylelint", function() {
+		const done = this.async();
+		const files = this.filesSrc;
+		require("stylelint").lint({ files, formatter: "string" }).then((result) => {
+			if (result.report) {
+				grunt.log.writeln(result.report);
+			}
+			if (result.errored) {
+				done(false);
+				return;
+			}
+			grunt.log.ok(files.length + " file(s) lint free.");
+			done();
+		}, (error) => {
+			grunt.log.error(error.message);
+			done(false);
+		});
+	});
 
 	grunt.registerTask("lint", ["eslint", "stylelint", "htmllint"]);
 
