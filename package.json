@@ -93,7 +93,7 @@
 		"grunt-version": "^3.0.2",
 		"stylelint": "^18.1.0",
 		"stylelint-config-standard": "^41.1.0",
-		"terser": "^5.51.3"
+		"terser": "^5.51.4"
 	},
 	"comment_overrides": "Transitive build dependencies whose direct parents still pin a vulnerable version. Drop an entry once the parent package ships the fix itself. Note: brace-expansion cannot be forced to the fixed 5.0.8+ line here -- it exports a named expand() there, while the minimatch 3.x/5.x versions in this tree call the module itself.",
 	"overrides": {
